@@ -185,6 +185,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingDto>>(src.LACK1_PBCK1_MAPPING)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantDto>>(src.LACK1_PLANT)))
                 .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
+                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.NOTED))
                 ;
 
         }

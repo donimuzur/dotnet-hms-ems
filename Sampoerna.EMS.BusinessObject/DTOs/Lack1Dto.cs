@@ -105,6 +105,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1Pbck1MappingDto> Lack1Pbck1Mapping { get; set; }
         public List<Lack1PlantDto> Lack1Plant { get; set; }
         public List<Lack1ProductionDetailDto> Lack1ProductionDetail { get; set; }
+        public string Noted { get; set; }
     }
 
 }

@@ -406,10 +406,12 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             //workflow history
-            var workflowInput = new GetByFormNumberInput();
-            workflowInput.FormNumber = lack1Data.Lack1Number;
-            workflowInput.DocumentStatus = lack1Data.Status;
-            workflowInput.NPPBKC_Id = lack1Data.NppbkcId;
+            var workflowInput = new GetByFormNumberInput
+            {
+                FormNumber = lack1Data.Lack1Number,
+                DocumentStatus = lack1Data.Status,
+                NPPBKC_Id = lack1Data.NppbkcId
+            };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -420,29 +422,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack1Data.Lack1Number));
 
-            var model = new Lack1ItemViewModel()
-            {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-                Detail = Mapper.Map<Lack1ItemModel>(lack1Data),
-                ChangesHistoryList = changesHistory,
-                WorkflowHistory = workflowHistory,
-                PrintHistoryList = printHistory
-            };
-
-            //model.DocStatus = model.Detail.Status;
+            var model = Mapper.Map<Lack1ItemViewModel>(lack1Data);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.ChangesHistoryList = changesHistory;
+            model.WorkflowHistory = workflowHistory;
+            model.PrintHistoryList = printHistory;
 
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
             {
-                DocumentStatus = model.Detail.Status,
+                DocumentStatus = model.Status,
                 FormView = Enums.FormViewType.Detail,
                 UserRole = CurrentUser.UserRole,
                 CreatedUser = lack1Data.CreateBy,
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID,
-                DocumentNumber = model.Detail.Lack1Number,
-                NppbkcId = model.Detail.NppbkcId
+                DocumentNumber = model.Lack1Number,
+                NppbkcId = model.NppbkcId
             };
 
             ////workflow
@@ -455,7 +452,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
 
-            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
 
             return View(model);
 

@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <h3>@ViewBag.Title</h3>
-                <label class="status">@Model.Detail.StatusDescription</label>
+                <label class="status">@Model.StatusDescription</label>
                 <div class="action-button">
 
                     @if (Model.Lack1Type == Enums.LACK1Type.ListByPlant)
@@ -33,7 +33,7 @@
                         /* Completed Document */
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-list" />
                     }
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "LACK1", new { id = @Model.Detail.Lack1Id })')" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "LACK1", new { id = @Model.Lack1Id })')" />
                     @if (Model.AllowApproveAndReject)
                     {
                         <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
@@ -107,7 +107,7 @@
             @using (Html.BeginForm("RejectDocument", "LACK1"))
             {
                 <div class="modal-body">
-                    @Html.HiddenFor(model => model.Detail.Lack1Id)
+                    @Html.HiddenFor(model => model.Lack1Id)
                     <div class="form-excise" role="form">
                         <div class="row">
                             <label class="col-md-3">Add Comment<span class="red">*</span></label>
@@ -145,22 +145,30 @@
 </div>
 
 @section scripts {
+    
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script src="~/Scripts/lack1/Lack1GenerateTable.js"></script>
+
     <script type="text/javascript">
         
         $('#MenuLack1CompletedDocument').addClass(@Model.MenuCompletedAddClassCss);
         $('#MenuLack1ListByPlant').addClass(@Model.MenuPlantAddClassCss);
         $('#Menulack1ListByNppbkc').addClass(@Model.MenuNppbkcAddClassCss);
         
-        $(document).ready(function() {
+        $(document).ready(function () {
+            
             $('#btn-back-plant-list').click(function (e) {
                 location.href = '@Url.Action("ListByPlant", "LACK1")';
             });
+            
             $('#btn-back-nppbkc-list').click(function (e) {
                 location.href = '@Url.Action("Index", "LACK1")';
             });
+            
             $('#btn-back-completed-list').click(function (e) {
                 location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
             });
+            
             $("#btnApprove").click(function () {
 
                 $('#btnConfirm').show();
@@ -173,7 +181,7 @@
             });
 
             $("#btnConfirm").click(function () {
-                window.location = "@Url.Action("ApproveDocument", "LACK1", new { id = @Model.Detail.Lack1Id })";
+                window.location = "@Url.Action("ApproveDocument", "LACK1", new { id = @Model.Lack1Id })";
             });
             
             $("#btnReject").click(function () {
@@ -197,6 +205,9 @@
                     $('#btnConfirmGovPartApprove').removeAttr('disabled');
                 }
             });
+            
+            $('#generated-data-container').html('');
+            $('#generated-data-container').append(@Model);
 
         });
     </script>

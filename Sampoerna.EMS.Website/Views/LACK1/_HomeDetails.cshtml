@@ -1,5 +1,4 @@
-﻿
-@model Sampoerna.EMS.Website.Models.LACK1.Lack1ItemViewModel
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1ItemViewModel
 @using Sampoerna.EMS.Core
 @using Sampoerna.EMS.Website.Helpers
 
@@ -23,7 +22,7 @@
                                     <div class="row">
                                         <label class="col-md-4">LACK-1 No</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.Lack1Number, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Lack1Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -31,8 +30,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Company</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.Bukrs)
-                                            @Html.TextBoxFor(model => model.Detail.Butxt, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.HiddenFor(model => model.Bukrs)
+                                            @Html.TextBoxFor(model => model.Butxt, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -42,11 +41,11 @@
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    @Html.HiddenFor(model => model.Detail.PeriodMonth)
-                                                    @Html.TextBoxFor(model => model.Detail.PerionNameEng, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.HiddenFor(model => model.PeriodMonth)
+                                                    @Html.TextBoxFor(model => model.PerionNameEng, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    @Html.TextBoxFor(model => model.Detail.PeriodYears, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(model => model.PeriodYears, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -75,9 +74,9 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Level</label>
-                                        @Html.HiddenFor(model => model.Detail.Lack1Level)
+                                        @Html.HiddenFor(model => model.Lack1Level)
                                         <div class="col-md-8">
-                                            @if (Model.Detail.Lack1Level == Enums.Lack1Level.Nppbkc)
+                                            @if (Model.Lack1Level == Enums.Lack1Level.Nppbkc)
                                             {
                                                 <div class="row">
                                                     <div class="col-md-4">
@@ -112,7 +111,7 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.NppbkcId, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.NppbkcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -120,7 +119,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Submission Date</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -130,8 +129,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Received Plant ID</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.LevelPlantId)
-                                            @Html.TextBoxFor(model => model.Detail.LevelPlantName, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.HiddenFor(model => model.LevelPlantId)
+                                            @Html.TextBoxFor(model => model.LevelPlantName, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +140,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Detail.SupplierPlantId, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.SupplierPlantId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -149,8 +148,8 @@
                                     <div class="row">
                                         <label class="col-md-4 long">Excisable Goods Type</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.ExGoodsType)
-                                            @Html.TextBoxFor(model => model.Detail.ExGoodsTypeDesc, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.HiddenFor(model => model.ExGoodsType)
+                                            @Html.TextBoxFor(model => model.ExGoodsTypeDesc, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -162,11 +161,11 @@
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    @Html.TextBoxFor(model => model.Detail.WasteQty, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(model => model.WasteQty, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    @Html.HiddenFor(model => model.Detail.WasteUom)
-                                                    @Html.TextBoxFor(model => model.Detail.WasteUomDesc, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.HiddenFor(model => model.WasteUom)
+                                                    @Html.TextBoxFor(model => model.WasteUomDesc, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -178,11 +177,11 @@
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    @Html.TextBoxFor(model => model.Detail.ReturnQty, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.TextBoxFor(model => model.ReturnQty, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    @Html.HiddenFor(model => model.Detail.ReturnUom)
-                                                    @Html.TextBoxFor(model => model.Detail.ReturnUomDesc, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.HiddenFor(model => model.ReturnUom)
+                                                    @Html.TextBoxFor(model => model.ReturnUomDesc, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -194,14 +193,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Note</label>
                                         <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.Detail, new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextAreaFor(model => model.Noted, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4 col-md-offset-4">
-                                    @*<input type="button" id="btn-generate-data" class="btn btn-blue full" value="Generate" onclick="generateDataClick(@Convert.ToInt32(Model.Lack1Level));" />*@
                                 </div>
                             </div>
                         </div>
@@ -246,7 +240,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Status</label>
                                         <div class="col-md-8">
-                                            @*@Html.EnumDropDownListFor(model => model.Status, Model.GovStatus, "Select", new { @class = "form-control", @disabled = "disabled" })*@
+                                            @Html.TextBoxFor(model => model.GovStatusDescription, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -254,12 +248,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date disabled">
-                                                @*@Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMMM yyyy}", new { @class = "form-control", @disabled = "disabled" })*@
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                            @Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -268,10 +257,18 @@
                                         <label class="col-md-4">Decree Doc</label>
                                         <div class="col-md-8">
                                             <div class="input-group disabled">
-                                                <input type="text" class="form-control" disabled="disabled">
-                                                <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                    Browse <input type="file" multiple disabled="disabled">
-                                                </span>
+                                                @if (Model.Lack1Document != null)
+                                                {
+                                                    foreach (var file in Model.Lack1Document)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <i class="fa fa-file"></i>
+                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -282,10 +279,24 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <span class="red">*</span> ) This Field Required
+        <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                            Workflow History
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
