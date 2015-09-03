@@ -361,7 +361,7 @@ namespace Sampoerna.EMS.Website.Controllers
         //}
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId,string destPlantId, DateTime submissionDate,string goodtypegroupid, string ck5type = "")
+        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId,string destPlantId, DateTime submissionDate,string goodtypegroupid)
         {
             //var dbPlantSource = _plantBll.GetT001ById(sourcePlantId);
             var dbPlantDest = _plantBll.GetT001ById(destPlantId);
@@ -390,20 +390,18 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetails(string plantId, string ck5type = "")
+        public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5type)
         {
             var dbPlant = _plantBll.GetT001ById(plantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlant);
-            if (!string.IsNullOrEmpty(ck5type))
+
+            if (ck5type == Enums.CK5Type.ImporterToPlant)
             {
-                Enums.CK5Type type = (Enums.CK5Type)Enum.Parse(typeof(Enums.CK5Type), ck5type);
-                if (type == Enums.CK5Type.ImporterToPlant)
-                {
 
-                    model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
-                }
-
+                model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
             }
+
+            
             //var output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(plantId, submissionDate, destNppbkc);
 
             //model.Pbck1Id = output.Pbck1Id;
