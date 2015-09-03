@@ -52,7 +52,7 @@ namespace Sampoerna.EMS.Contract
 
        void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input);
 
-       GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId);
+       GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId, int exgrouptype);
 
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByCk5Id(long ck5Id);
 
