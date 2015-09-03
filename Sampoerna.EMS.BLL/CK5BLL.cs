@@ -1645,7 +1645,10 @@ namespace Sampoerna.EMS.BLL
             };
 
             input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
-            input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
+            if (!input.Ck5Dto.SUBMISSION_DATE.HasValue) {
+                input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
+            }
+            
             input.Ck5Dto.STATUS_ID = Enums.DocumentStatus.Draft;
             input.Ck5Dto.CREATED_DATE = DateTime.Now;
             input.Ck5Dto.CREATED_BY = input.UserId;
@@ -1985,6 +1988,8 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
+        
+
         private decimal GetQuotaCk5(string plantId, string pbck1Npbkc, DateTime periodStart, DateTime periodEnd, Enums.ExGoodsType goodtypegroupid)
         {
             //get ck5 
@@ -1995,7 +2000,8 @@ namespace Sampoerna.EMS.BLL
                         && c.SOURCE_PLANT_ID == plantId
                         && c.DEST_PLANT_NPPBKC_ID == pbck1Npbkc
                         && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd 
-                        && c.EX_GOODS_TYPE == goodtypegroupid).ToList();
+                        //&& c.EX_GOODS_TYPE == goodtypegroupid
+                        ).ToList();
 
             decimal qtyCk5 = 0;
 
