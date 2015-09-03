@@ -187,8 +187,12 @@ namespace Sampoerna.EMS.BLL
             {
                 return Enums.ActionType.Submit;
             }
-            
+
             if (docStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return Enums.ActionType.Approve;
+            }
+            if (docStatus == Enums.DocumentStatus.Approved)
             {
                 return Enums.ActionType.Approve;
             }

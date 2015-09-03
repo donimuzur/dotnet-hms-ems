@@ -303,6 +303,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 item.Status = Enums.DocumentStatus.WaitingForApproval;
             }
+           
             item.Items = null;
             item.ApprovedBy = CurrentUser.USER_ID;
             item.ApprovedDate = DateTime.Now;
@@ -326,9 +327,24 @@ namespace Sampoerna.EMS.Website.Controllers
             if (item.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                item.ApprovedBy = CurrentUser.USER_ID;
+                item.ApprovedDate = DateTime.Now;
             }
-            item.ApprovedBy = CurrentUser.USER_ID;
-            item.ApprovedDate = DateTime.Now;
+            else if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                item.Status = Enums.DocumentStatus.Approved;
+                item.ApprovedByManager = CurrentUser.USER_ID;
+                item.ApprovedDateManager = DateTime.Now;
+            }
+            else if (item.Status == Enums.DocumentStatus.Approved)
+            {
+                item.Status = Enums.DocumentStatus.WaitingGovApproval;
+            }
+            else if (item.Status == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                item.Status = Enums.DocumentStatus.GovApproved;
+            }
+          
             item.Items = null;
             _lack2Bll.Insert(item);
             return RedirectToAction("Index");
