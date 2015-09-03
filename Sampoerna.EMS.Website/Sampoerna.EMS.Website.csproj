@@ -314,6 +314,8 @@
     <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1Input.cs" />
+    <Compile Include="Models\LACK1\Lack1ItemModel.cs" />
+    <Compile Include="Models\LACK1\Lack1ItemViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
     <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
@@ -1009,6 +1011,8 @@
     <Content Include="Views\CK4C\Ck4CCreateWasteProduction.cshtml" />
     <Content Include="Views\LACK2\Edit.cshtml" />
     <Content Include="Views\LACK2\Detail.cshtml" />
+    <Content Include="Views\LACK1\Details.cshtml" />
+    <Content Include="Views\LACK1\_HomeDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

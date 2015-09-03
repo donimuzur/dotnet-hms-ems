@@ -4,11 +4,9 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
-using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
-using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models;
@@ -385,10 +383,44 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            return View();
+            var model = new Lack1ItemViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo
+            };
+
+            return View(model);
 
         }
         
+        #endregion
+
+        #region ----------------PrintPreview-------------
+
+        public ActionResult PrintPreview(int? id)
+        {
+            return View();
+        }
+
+        #endregion
+
+        #region ------------- Workflow ------------
+
+        public ActionResult RejectDocument()
+        {
+            return View();
+        }
+
+        public ActionResult GovCancelDocument()
+        {
+            return View();
+        }
+
+        public ActionResult GovRejectDocument()
+        {
+            return View();
+        }
+
         #endregion
 
     }
