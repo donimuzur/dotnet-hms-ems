@@ -199,7 +199,7 @@
 
                     if (isPortToImporter) {
                         //alert(destPlant);
-                        ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
+                        ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant, ck5Type:'@Model.Ck5Type' });
                     } else {
 
 
