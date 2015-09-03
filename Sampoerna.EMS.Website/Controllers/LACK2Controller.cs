@@ -103,6 +103,16 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            var urlBuilder =
+                  new System.UriBuilder(Request.Url.AbsoluteUri)
+                  {
+                      Path = Url.Action("Index", "LACK2"),
+                      Query = null,
+                  };
+
+            Uri uri = urlBuilder.Uri;
+            if (uri != Request.UrlReferrer)
+                return HttpNotFound();
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
             model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
@@ -264,6 +274,16 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Detail(int? id)
         {
             if (!id.HasValue)
+                return HttpNotFound();
+            var urlBuilder =
+                  new System.UriBuilder(Request.Url.AbsoluteUri)
+                  {
+                      Path = Url.Action("Index", "LACK2"),
+                      Query = null,
+                  };
+
+            Uri uri = urlBuilder.Uri;
+            if (uri != Request.UrlReferrer)
                 return HttpNotFound();
             var model = InitDetailModel(id);
             var periodMonth = _monthBll.GetMonth(Convert.ToInt32(model.Lack2Model.PeriodMonth));
