@@ -278,17 +278,17 @@
                 /*First Record*/
                 '<tr><td>' + rowIndex + '</td>' +
                 '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
-                '<td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].RegistrationDate + '</td>' +
+                '<td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].StringRegistrationDate + '</td>' +
                 '<td>' + ThausandSeperator(data.IncomeList[0].Amount, 2) + '</td>' +
                 '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
-                '<td>' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
-                '<td>' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
                 '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
                 '<td rowspan="' + (rowCount + 1) + '">' + data.Noted + '</td></tr>';
                 /*loop record*/
                 for (var i = 1; i < data.IncomeList.length; i++) {
                     rowIndex = rowIndex + 1;
-                    var item = '<tr><td>' + rowIndex + '</td><td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].RegistrationDate + '</td>' +
+                    var item = '<tr><td>' + rowIndex + '</td><td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].StringRegistrationDate + '</td>' +
                                 '<td>' + data.IncomeList[0].Amount + '</td></tr>';
                     rc.append(item);
                 }
@@ -305,7 +305,7 @@
                 '<td>' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
                 '<td>' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
                 '<td>' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-                '<td>' + data.Noted + '</td></tr>';
+                '<td>' + (data.Noted ? data.Noted : '') + '</td></tr>';
             }
 
             /*footer*/
@@ -321,9 +321,9 @@
             if (data.length > 0) {
                 for (var i = 0; i < data.length; i++) {
                     if (i == data.length) {
-                        rc = rc + data.ProductAlias;
+                        rc = rc + data[i].ProductAlias;
                     } else {
-                        rc = rc + data.ProductAlias + "<br/>";
+                        rc = rc + data[i].ProductAlias + "<br/>";
                     }
                 }
             } else {
@@ -337,9 +337,9 @@
             if (data.length > 0) {
                 for (var i = 0; i < data.length; i++) {
                     if (i == data.length) {
-                        rc = rc + ThausandSeperator(data.Amount, 2);
+                        rc = rc + ThausandSeperator(data[i].Amount, 2);
                     } else {
-                        rc = rc + ThausandSeperator(data.Amount, 2) + " " + data.UomDesc + "<br/>";
+                        rc = rc + ThausandSeperator(data[i].Amount, 2) + " " + data[i].UomDesc + "<br/>";
                     }
                 }
             } else {
@@ -354,9 +354,11 @@
                 var tb = '<table border="0">';
                 for (var i = 0; i < data.length; i++) {
                     var item = '<tr><td>' + data[i].Amount + '</td><td>' + data[i].UomDesc + '</td></tr>';
-                    tb.append(item);
+                    //tb.append(item);
+                    tb = tb + item;
                 }
-                tb.append('</table>');
+                //tb.append('</table>');
+                tb = tb + '</table>';
                 loopData = tb;
             }
             var rc = '<table border="0"><tr><td>Total :</td><td>' + loopData + '</td></tr></table>';

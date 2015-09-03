@@ -45,6 +45,7 @@ namespace Sampoerna.EMS.BLL
 
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
+            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
@@ -54,6 +55,7 @@ namespace Sampoerna.EMS.BLL
             _lack1Service = new LACK1Service(_uow, _logger);
             _t001WServices = new T001WService(_uow, _logger);
             _exGroupTypeService = new ExGroupTypeService(_uow, _logger);
+
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -114,8 +116,8 @@ namespace Sampoerna.EMS.BLL
             //generate new Document Number get from Sequence Number BLL
             var generateNumberInput = new GenerateDocNumberInput()
             {
-                Year = Convert.ToInt32(input.PeriodMonth),
-                Month = Convert.ToInt32(input.PeriodYear),
+                Month = Convert.ToInt32(input.PeriodMonth),
+                Year = Convert.ToInt32(input.PeriodYear),
                 NppbkcId = input.NppbkcId
             };
             data.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
@@ -299,7 +301,12 @@ namespace Sampoerna.EMS.BLL
                 rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
             }
 
-            rc.ProductionList = SetProductionDetailBySelectionCriteria(input);
+            var productionList = GetProductionDetailBySelectionCriteria(input);
+
+            rc.ProductionList = GetGroupedProductionlist(productionList);
+
+            //set summary
+            rc.SummaryProductionList = GetSummaryGroupedProductionList(productionList);
 
             rc.PeriodMonthId = input.PeriodMonth;
 
@@ -314,8 +321,7 @@ namespace Sampoerna.EMS.BLL
 
             rc.TotalUsage = 0; //todo: get from Inventory Movement
 
-            //set summary
-            rc = SetSummaryProductionlist(rc);
+           
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
 
             oReturn.Data = rc;
@@ -327,11 +333,12 @@ namespace Sampoerna.EMS.BLL
         /// Set Production Detail from CK4C Item table 
         /// for Generate LACK-1 data by Selection Criteria
         /// </summary>
-        private List<Lack1GeneratedProductionDataDto> SetProductionDetailBySelectionCriteria(
+        private List<Lack1GeneratedProductionDataDto> GetProductionDetailBySelectionCriteria(
             Lack1GenerateDataParamInput input)
         {
 
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
+            ck4CItemInput.IsHigherFromApproved = true;
             var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
             var faCodeList = ck4CItemData.Select(c => c.FA_CODE).Distinct().ToList();
 
@@ -347,7 +354,8 @@ namespace Sampoerna.EMS.BLL
                                           ProductType = brandData.ZAIDM_EX_PRODTYP.PRODUCT_TYPE,
                                           ProductAlias = brandData.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS,
                                           Amount = ck4CItem.PROD_QTY,
-                                          UomId = ck4CItem.UOM != null ? ck4CItem.UOM.UOM_DESC : string.Empty
+                                          UomId = ck4CItem.UOM_PROD_QTY,
+                                          UomDesc = ck4CItem.UOM != null ? ck4CItem.UOM.UOM_DESC : string.Empty
                                       });
 
             return dataCk4CItemJoined.ToList();
@@ -451,15 +459,15 @@ namespace Sampoerna.EMS.BLL
         }
 
         /// <summary>
-        /// set Summary Production List 
+        /// 
         /// </summary>
-        /// <param name="rc"></param>
+        /// <param name="list"></param>
         /// <returns></returns>
-        private Lack1GeneratedDto SetSummaryProductionlist(Lack1GeneratedDto rc)
+        private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list)
         {
-            if (rc.ProductionList.Count > 0)
+            if (list.Count > 0)
             {
-                var groupedData = rc.ProductionList.GroupBy(p => new
+                var groupedData = list.GroupBy(p => new
                 {
                     p.ProdCode,
                     p.ProductType,
@@ -476,14 +484,34 @@ namespace Sampoerna.EMS.BLL
                     Amount = g.Sum(p => p.Amount)
                 });
 
-                rc.SummaryProductionList = groupedData.ToList();
+                return groupedData.ToList();
             }
-            else
-            {
-                rc.SummaryProductionList = new List<Lack1GeneratedProductionDataDto>();
-            }
+            return new List<Lack1GeneratedProductionDataDto>();
+        }
 
-            return rc;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private List<Lack1GeneratedSummaryProductionDataDto> GetSummaryGroupedProductionList(List<Lack1GeneratedProductionDataDto> list)
+        {
+            if (list.Count > 0)
+            {
+                var groupedData = list.GroupBy(p => new
+                {
+                    p.UomId,
+                    p.UomDesc
+                }).Select(g => new Lack1GeneratedSummaryProductionDataDto()
+                {
+                   UomId = g.Key.UomId,
+                    UomDesc = g.Key.UomDesc,
+                    Amount = g.Sum(p => p.Amount)
+                });
+
+                return groupedData.ToList();
+            }
+            return new List<Lack1GeneratedSummaryProductionDataDto>();
         }
 
         #endregion
