@@ -70,6 +70,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string NPPBKC_KPPBC_ID { get; set; }
         public string SUPPLIER_KPPBC_NAME { get; set; }
         public string SUPPLIER_COMPANY { get; set; }
+        public Nullable<bool> IS_NPPBKC_IMPORT { get; set; }
     
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MONTH MONTH { get; set; }

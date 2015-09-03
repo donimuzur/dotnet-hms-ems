@@ -147,6 +147,7 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(orderColumn));
             }
 
+            includeTables += ", CK5";
             var dbData = _repository.Get(queryFilter, orderBy, includeTables);
 
             return dbData.ToList();
