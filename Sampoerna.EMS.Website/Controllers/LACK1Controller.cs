@@ -273,6 +273,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        #region -------------- Private Method --------
+
         private SelectList GetNppbkcListOnPbck1ByCompanyCode(string companyCode)
         {
             var data = _pbck1Bll.GetNppbkByCompanyCode(companyCode);
@@ -325,6 +327,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(years, "ValueField", "TextField");
         }
 
+        #endregion
+
         #region Completed Document
 
         public ActionResult ListCompletedDocument()
@@ -367,6 +371,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        #endregion
+
+        #region -------------- Details -----------
+
+        public ActionResult Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            return View();
+
+        }
+        
         #endregion
 
     }
