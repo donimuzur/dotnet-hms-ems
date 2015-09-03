@@ -17,10 +17,23 @@
                 <h3>@ViewBag.Title</h3>
                 <label class="status">@Model.Detail.StatusDescription</label>
                 <div class="action-button">
-                   
-                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "LACK1", new { id = @Model.Detail.Lack1Id })')" />
 
+                    @if (Model.Lack1Type == Enums.LACK1Type.ListByPlant)
+                    {
+                        /* LACK-1 Plant Level */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-plant-list" />
+                    }
+                    else if (Model.Lack1Type == Enums.LACK1Type.ListByNppbkc)
+                    {
+                        /* LACK-1 NPPBKC Level */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-nppbkc-list" />
+                    }
+                    else
+                    {
+                        /* Completed Document */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-list" />
+                    }
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "LACK1", new { id = @Model.Detail.Lack1Id })')" />
                     @if (Model.AllowApproveAndReject)
                     {
                         <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
@@ -32,18 +45,17 @@
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
-                        
+
                         if (Model.AllowManagerReject)
                         {
                             <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                         }
                     }
-
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="container-wrap">
         <div class="row">
             <div class="col-sm-12">
@@ -58,6 +70,7 @@
                     <div class="tab-content">
                         @Html.Partial("_HomeDetails")
                         @Html.Partial("_PrintOut")
+                        @Html.Partial("_ChangeLog")
                     </div>
                 </div>
             </div>
@@ -113,64 +126,6 @@
     </div>
 </div>
 
-<div id="Lack1ModalGovReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Government Reject document</h4>
-            </div>
-            @using (Html.BeginForm("GovRejectDocument", "LACK1"))
-            {
-                <div class="modal-body">
-                    @Html.HiddenFor(model => model.Detail.Lack1Id)
-                    <div class="form-excise" role="form">
-                        <div class="row">
-                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
-                            <div class="col-md-9">
-                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmGovReject" />
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
-<div id="Lack1ModalGovCancel" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Government Cancel document</h4>
-            </div>
-            @using (Html.BeginForm("GovCancelDocument", "LACK1"))
-            {
-                <div class="modal-body">
-                    @Html.HiddenFor(model => model.Detail.Lack1Id)
-                    <div class="form-excise" role="form">
-                        <div class="row">
-                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
-                            <div class="col-md-9">
-                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovCancel" })
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                    <input type="submit" class="btn btn-danger" value="Cancel" disabled id="btnConfirmGovCancel" />
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
 <div id="ModalLack1ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -188,3 +143,61 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script type="text/javascript">
+        
+        $('#MenuLack1CompletedDocument').addClass(@Model.MenuCompletedAddClassCss);
+        $('#MenuLack1ListByPlant').addClass(@Model.MenuPlantAddClassCss);
+        $('#Menulack1ListByNppbkc').addClass(@Model.MenuNppbkcAddClassCss);
+        
+        $(document).ready(function() {
+            $('#btn-back-plant-list').click(function (e) {
+                location.href = '@Url.Action("ListByPlant", "LACK1")';
+            });
+            $('#btn-back-nppbkc-list').click(function (e) {
+                location.href = '@Url.Action("Index", "LACK1")';
+            });
+            $('#btn-back-completed-list').click(function (e) {
+                location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
+            });
+            $("#btnApprove").click(function () {
+
+                $('#btnConfirm').show();
+                $('#btnConfirmGovApprove').hide();
+                $('#btnConfirmGovPartApprove').hide();
+                $("#lblTitleModal").text('Approval');
+                $("#lblMessageModal").text('Approve Documents ?');
+                $('#Lack1Modal').modal('show');
+
+            });
+
+            $("#btnConfirm").click(function () {
+                window.location = "@Url.Action("ApproveDocument", "LACK1", new { id = @Model.Detail.Lack1Id })";
+            });
+            
+            $("#btnReject").click(function () {
+                $('#btnConfirmReject').attr('disabled', 'disabled');
+
+                $('#Detail_Comment').val('');
+
+                $('#Pbck1ModalReject').modal('show');
+
+            });
+
+            $('#Detail_Comment').bind('input propertychange', function () {
+
+                $('#btnConfirmReject').attr('disabled', 'disabled');
+                $('#btnConfirmGovReject').attr('disabled', 'disabled');
+                $('#btnConfirmGovPartApprove').attr('disabled', 'disabled');
+
+                if (this.value.length) {
+                    $('#btnConfirmReject').removeAttr('disabled');
+                    $('#btnConfirmGovReject').removeAttr('disabled');
+                    $('#btnConfirmGovPartApprove').removeAttr('disabled');
+                }
+            });
+
+        });
+    </script>
+}

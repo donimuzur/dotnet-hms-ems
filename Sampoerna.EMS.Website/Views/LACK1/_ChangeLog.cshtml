@@ -1,0 +1,52 @@
+﻿
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1ItemViewModel
+
+<div role="tabpanel" class="tab-pane" id="settings">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingChangesLog">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseChangesLog" aria-expanded="true" aria-controls="collapseChangesLog">
+                        Changes Log
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseChangesLog" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChangesLog">
+                <div class="panel-body">
+                    <div class="form-excise " role="form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-3">LACK-1 No</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" value="@Model.Detail.Lack1Number" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-3">Date</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" value="@DateTime.Now.ToString("dd MMM yyyy")" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-3"></label>
+                                    <div class="col-md-9">
+                                        <button type="button" id="btn-changelog-export-xls" class="btn btn-blue full">Export to xls</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-container">
+        @Html.Partial("_ChangesHistoryTable", Model)
+    </div>
+</div>
