@@ -283,6 +283,7 @@
     <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CCreateWasteProductionViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileUploadViewModel.cs" />
@@ -1009,6 +1010,8 @@
     <Content Include="Views\CK4C\Ck4CCreateWasteProduction.cshtml" />
     <Content Include="Views\LACK2\Edit.cshtml" />
     <Content Include="Views\LACK2\Detail.cshtml" />
+    <Content Include="Views\CK4C\DocumentList.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableDocumentList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

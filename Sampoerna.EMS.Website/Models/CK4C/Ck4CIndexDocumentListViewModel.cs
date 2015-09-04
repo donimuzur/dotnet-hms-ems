@@ -1,12 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using Sampoerna.EMS.Core;
 
-namespace Sampoerna.EMS.BusinessObject.DTOs
+namespace Sampoerna.EMS.Website.Models.CK4C
 {
-    public class Ck4CDto
+    public class Ck4CIndexDocumentListViewModel : BaseModel
+    {
+        public Ck4CIndexDocumentListViewModel()
+        {
+            Detail = new List<DataDocumentList>();    
+        }
+        public string Ck4cNumber { get; set; }
+        public string CompanyCode { get; set; }
+        public string CompanyName { get; set; }
+        public string NppbkcId { get; set; }
+
+        //selectlist
+        public SelectList DocumentNumberList { get; set; }
+        public SelectList CompanyNameList { get; set; }
+        public SelectList NppbkcIdList { get; set; }
+        public Enums.CK4CType Ck4CType { get; set; }
+        public List<DataDocumentList> Detail { get; set; }
+    }
+     public class DataDocumentList
     {
         public int Ck4CId { get; set; }
         public string Number { get; set; }
@@ -26,21 +45,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int? ReportedMonth { get; set; }
         public int? ReportedYears { get; set; }
         public int Status { get; set; }
-        public int  StatusGoverment { get; set; }
-
-        //Month
-        public int MonthId { get; set; }
-        public string MonthNameIndo { get; set; }
-        public string MonthNameEng { get; set; }
-
-        //CK4CItem
-        public long Ck4CItemId { get; set; }
-        public string FaCode { get; set; }
-        public string Werks { get; set; }
-        public Decimal ProdQtyPacked { get; set; }
-        public Decimal ProdQtyUnpacked { get; set; }
-        public string UomProudQty { get; set; }
-        public string ProdDate { get; set; }
-
+        public int StatusGoverment { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<CK4C, Ck4CDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck4CId, opt => opt.MapFrom(src => src.CK4C_ID))
                 .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.NUMBER))
-                .ForMember(dest => dest.CompnayId, opt => opt.MapFrom(src => src.COMPANY_ID))
+                .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.COMPANY_ID))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME))

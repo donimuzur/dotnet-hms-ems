@@ -27,8 +27,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IT001KBLL _t001KBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll)
+            IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -41,6 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _t001KBll = t001Kbll;
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
+            _nppbkcbll = nppbkcbll;
         }
 
 
@@ -124,6 +127,48 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return PartialView("_CK4CTableWasteProduction", viewModel);
         }
+        #endregion
+
+        #region Index Document List
+
+        public ActionResult DocumentList()
+        {
+            var data =
+            InitIndexDocumentListViewModel(new Ck4CIndexDocumentListViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Ck4CType = Enums.CK4CType.Ck4CDocument,
+                Detail = Mapper.Map<List<DataDocumentList>>(_ck4CBll.GetAllByParam(new Ck4CGetByParamInput()))
+            });
+
+            return View("DocumentList", data);
+        }
+
+        private Ck4CIndexDocumentListViewModel InitIndexDocumentListViewModel(
+            Ck4CIndexDocumentListViewModel model)
+        {
+            var listCk4cData = _ck4CBll.GetAll();
+            model.DocumentNumberList = new SelectList(listCk4cData, "NUMBER", "NUMBER");
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            return model;
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterDocumentListIndex(Ck4CIndexDocumentListViewModel model)
+        {
+            var input = Mapper.Map<Ck4CGetByParamInput>(model);
+            input.Ck4CType = Enums.CK4CType.Ck4CDocument;
+
+            var dbData = _ck4CBll.GetAllByParam(input);
+            var result = Mapper.Map<List<DataDocumentList>>(dbData);
+            var viewModel = new Ck4CIndexDocumentListViewModel();
+            viewModel.Detail = result;
+
+            return PartialView("_CK4CTableDocumentList", viewModel);
+        }
+
         #endregion
 
         #region Json

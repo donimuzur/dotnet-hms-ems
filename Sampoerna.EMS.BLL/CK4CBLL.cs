@@ -49,6 +49,14 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.PLANT_ID == input.PlantId);
             }
+            if (!string.IsNullOrEmpty(input.DocumentNumber))
+            {
+                queryFilter = queryFilter.And(c => c.NUMBER == input.DocumentNumber);
+            }
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+            }
 
             Func<IQueryable<CK4C>, IOrderedQueryable<CK4C>> orderBy = null;
             if (!string.IsNullOrEmpty(input.ShortOrderColumn))
@@ -64,6 +72,13 @@ namespace Sampoerna.EMS.BLL
             var mapResult = Mapper.Map<List<Ck4CDto>>(dbData.ToList());
 
             return mapResult;
+        }
+
+        public List<Ck4CDto> GetAll()
+        {
+            var dtData = _repository.Get(null, null, includeTables).ToList();
+
+            return Mapper.Map<List<Ck4CDto>>(dtData);
         }
     }
 }

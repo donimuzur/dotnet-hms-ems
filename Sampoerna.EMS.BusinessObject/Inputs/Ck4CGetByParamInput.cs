@@ -14,6 +14,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string CompanyId { get; set; }
         public string Company { get; set; }
         public string PlantId { get; set; }
+        public string DocumentNumber { get; set; }
+        public string NppbkcId { get; set; }
         public string ShortOrderColumn { get; set; }
         public Enums.CK4CType Ck4CType { get; set; }
 
