@@ -93,7 +93,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 // TODO: Add insert logic here
                 var data = Mapper.Map<ProductionDto>(model);
-                var company = _companyBll.GetById(model.CompanyName);
+                var company = _companyBll.GetById(model.CompanyCode);
+                var plant = _plantBll.GetT001ById(model.PlantWerks);
+               
+                data.CompanyName = company.BUTXT;
+                data.PlantName = plant.NAME1;
+
                 _productionBll.Save(data);
 
                 AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
