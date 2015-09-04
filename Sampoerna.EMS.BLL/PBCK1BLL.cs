@@ -1584,14 +1584,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }
 
-        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantNppbkcId,List<string> goodtypes)
-        {
-            var dbData =
-                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId
-                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId && goodtypes.Contains(p.EXC_GOOD_TYP)).OrderByDescending(p => p.CREATED_DATE);
-
-            return Mapper.Map<List<Pbck1Dto>>(dbData);
-        }
+        
 
         public List<ZAIDM_EX_GOODTYPCompositeDto> GetGoodsTypeByNppbkcId(string nppbkcId)
         {
@@ -1620,6 +1613,18 @@ namespace Sampoerna.EMS.BLL
             var nppbkcList = Mapper.Map<List<T001WCompositeDto>>(dbData.ToList());
 
             return nppbkcList.DistinctBy(c => c.WERKS).ToList();
+        }
+
+
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, string plantNppbkcId, DateTime? submissionDate, string destPlantNppbkcId, List<string> goodtypes)
+        {
+            
+            var dbData =
+                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId && p.SUPPLIER_NPPBKC_ID == plantNppbkcId
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId && goodtypes.Contains(p.EXC_GOOD_TYP)).OrderByDescending(p => p.CREATED_DATE);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
+        
         }
     }
 }

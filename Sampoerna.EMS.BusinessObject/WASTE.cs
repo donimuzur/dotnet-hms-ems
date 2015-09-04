@@ -22,5 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> WASTE_QTY_GRAM { get; set; }
         public Nullable<decimal> REJECT_QTY_STICK { get; set; }
         public System.DateTime WASTE_PROD_DATE { get; set; }
+        public string COMPANY_NAME { get; set; }
+        public string PLANT_NAME { get; set; }
     }
 }

@@ -10,7 +10,7 @@
 
 
 
-@using (@Html.BeginForm("Edit", "LACK2", FormMethod.Post,  new { @id="form-lack2-edit"}))
+@using (@Html.BeginForm("Edit", "LACK2", FormMethod.Post,  new { @id="form-lack2-edit", @class = "form-excise", role = "form",enctype = "multipart/form-data"  }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x=>x.IsSaveSubmit)
@@ -19,6 +19,15 @@
     @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
     @Html.HiddenFor(x => x.Lack2Model.ModifiedBy)
     @Html.HiddenFor(x => x.Lack2Model.ModifiedDate)
+    @Html.HiddenFor(x => x.Lack2Model.ApprovedBy)
+    @Html.HiddenFor(x => x.Lack2Model.ApprovedDate)
+    @Html.HiddenFor(x => x.Lack2Model.ApprovedByManager)
+    @Html.HiddenFor(x => x.Lack2Model.ApprovedDateManager)
+    @Html.HiddenFor(x => x.Lack2Model.RejectedBy)
+    @Html.HiddenFor(x => x.Lack2Model.RejectedDate)
+    @Html.HiddenFor(x=>x.Lack2Model.Status)
+   
+
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -248,6 +257,83 @@
                                         </div>
                                     </div>
                                 </div>
+                               
+                                    <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingFour">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordionFour" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                                        Status
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                                <div class="panel-body">
+                                                    <div class="form-excise" role="form">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                    <label class="col-md-4">Status Gov<span class="red">*</span></label>
+                                                                    <div class="col-md-8">
+                                                                        @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                    <label class="col-md-4">Decree Date</label>
+                                                                    <div class="col-md-8">
+                                                                        <div class="input-group date">
+                                                                            @Html.TextBoxFor(x => x.Lack2Model.DecreeDate, new {@class = "form-control"})
+                                                                            <span class="input-group-addon">
+                                                                                <i class="fa fa-calendar"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                    <label class="col-md-4">Decree Document</label>
+                                                                    <div class="col-md-8">
+                                                                        <div class="file-upload" id="poa-files">
+                                                                            @if (Model.Lack2Model.Documents != null)
+                                                                            {
+
+                                                                                foreach (var file in Model.Lack2Model.Documents)
+                                                                                {
+
+                                                                                    <div class="row">
+                                                                                        <div class="col-sm-10">
+                                                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                                        </div>
+                                                                                        <div class="col-sm-2">
+                                                                                            <button class="btn btn-danger full" type="button" onclick=" removeSK(@file.LACK2_DOCUMENT_ID, '@Url.Action("RemoveDoc", "LACK2")', this) "><i class="fa fa-times"></i></button>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                }
+                                                                            }
+
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">
+                                                                                <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    @Html.Partial("_FileUpload", Model)
+                                
                                 <div class="panel-group not-upload" id="accordion-7" role="tablist" aria-multiselectable="true">
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="heading7">
@@ -507,8 +593,9 @@
 }
 @section Scripts {
    
-
+<script src="~/Scripts/lack2/form.js"></script>
     <script type="text/javascript">
+       
     var initialEditNppbkc = true;
     var initialEditPlant = true;
     var initialEditGoodtype = true;
@@ -688,7 +775,11 @@
         $('.panel-collapse').removeClass('collapse').addClass('in');
 
     }
+    function printPreview(url) {
 
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+    }
     function GetCk5ByPeriod() {
         var month = parseInt($('#Lack2Model_PeriodMonth').val());
         var year = parseInt($('#Lack2Model_PeriodYear').val());
@@ -715,6 +806,8 @@
                 }
             }
         });
+        
+
     }
     </script>
 
