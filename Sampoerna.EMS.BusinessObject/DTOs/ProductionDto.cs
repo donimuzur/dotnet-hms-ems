@@ -16,5 +16,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? QtyPacked { get; set; }
         public string Uom { get; set; }
         public DateTime ProductionDate { get; set; }
+        public string CompanyName { get; set; }
+        public string PlantName { get; set; }
+
     }
 }

@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICompanyBLL _companyBll;
         private IPlantBLL _plantBll;
 
-        public ProductionController(IPageBLL pageBll, IProductionBLL productionBll, ICompanyBLL companyBll, IPlantBLL plantBll) 
+        public ProductionController(IPageBLL pageBll, IProductionBLL productionBll, ICompanyBLL companyBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _productionBll = productionBll;
@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Ck4CType = Enums.CK4CType.DailyProduction,
                 Details = Mapper.Map<List<ProductionDetail>>(_productionBll.GetAllByParam(new ProductionGetByParamInput()))
             });
-            return View("Index",data);
+            return View("Index", data);
         }
 
         private ProductionViewModel InitProductionViewModel(ProductionViewModel model)
@@ -74,11 +74,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Ck4CIndexViewModel() { PlanIdList = listPlant };
 
             return Json(model);
-
         }
 
 
 
         #endregion
-	}
+    }
 }

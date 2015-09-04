@@ -20,6 +20,7 @@ using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
 using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.PrintHistory;
+using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.UserAuthorization;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
@@ -837,9 +838,16 @@ namespace Sampoerna.EMS.Website
 
             //Mapper.CreateMap<Lack2, Lack2ItemDto>().IgnoreAllNonExisting()
             //.ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.Ck5Id));
-           
 
-          
+            #region Production For Ck4c
+
+            Mapper.CreateMap<ProductionDto, ProductionDetail>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompanyCode));
+
+
+            #endregion
+
+
         }
     }
 
