@@ -309,7 +309,7 @@
                                                                                             <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
                                                                                         </div>
                                                                                         <div class="col-sm-2">
-                                                                                            <button class="btn btn-danger full" type="button" onclick=" removeSK(@file.LACK2_DOCUMENT_ID, '@Url.Action("RemoveDoc", "LACK2")', this) "><i class="fa fa-times"></i></button>
+                                                                                            <button class="btn btn-danger full" type="button" onclick="removeDoc(@file.LACK2_DOCUMENT_ID, '@Url.Action("RemoveDoc", "LACK2")', this) "><i class="fa fa-times"></i></button>
                                                                                         </div>
                                                                                     </div>
 
@@ -593,222 +593,226 @@
 }
 @section Scripts {
    
-<script src="~/Scripts/lack2/form.js"></script>
+    <script src="~/Scripts/lack2/form.js"></script>
     <script type="text/javascript">
-       
-    var initialEditNppbkc = true;
-    var initialEditPlant = true;
-    var initialEditGoodtype = true;
-    $(function () {
-        openPanel();
-        $('#Lack2Model_LevelPlantId').html('');
-        $('#Lack2Model_NppbkcId').html('');
 
-        $('#Lack2Model_ExGoodTyp').html('');
-
-        $('#Lack2Model_Burks').change();
-
-    });
-    $("#btnSubmitConfirm").click(function () {
-        $('#IsSaveSubmit').val('true');
-        $('#form-lack2-edit').submit();
-    });
-
-    $('#btnSubmitDocument').click(function () {
-
-        $('#lack2Modal').modal('show');
-    });
-    $('#Lack2Model_NppbkcId').change(function () {
-
-        if ($(this).length) {
-            var nppbkc = $(this).find("option:selected").val();
-
+        var initialEditNppbkc = true;
+        var initialEditPlant = true;
+        var initialEditGoodtype = true;
+        $(function() {
+            openPanel();
             $('#Lack2Model_LevelPlantId').html('');
-            if (nppbkc != '') {
-                ajaxGetPlantByNppbkc(nppbkc);
-                ajaxGetGoodsTypeByNppbkc(nppbkc);
-                ajaxGetPoaByNppbkc(nppbkc);
-            }
-        }
+            $('#Lack2Model_NppbkcId').html('');
 
-    });
+            $('#Lack2Model_ExGoodTyp').html('');
 
-    $('#Lack2Model_Burks').change(function () {
+            $('#Lack2Model_Burks').change();
 
-        if ($(this).length) {
-            var company = $(this).find("option:selected").val();
-            if (company !== '') {
-                ajaxGetNppbkcByCompany(company);
-                
-
-            }
-        }
-    });
-
-    function ajaxGetNppbkcByCompany(company) {
-
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
-            data: { companyId: company },
-            success: function (data) {
-                $('#Lack2Model_NppbkcId').html('');
-               if (initialEditNppbkc) {
-                    var nppbkcId = '@Model.Lack2Model.NppbkcId';
-                    if (nppbkcId != '') {
-
-                        $('#Lack2Model_NppbkcId').append('<option value=' + nppbkcId + '>' + nppbkcId + '</option>');
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].value !== nppbkcId) {
-                                $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
-                            }
-                        }
-                        ajaxGetPlantByNppbkc(nppbkcId);
-                        ajaxGetPoaByNppbkc(nppbkcId);
-                        ajaxGetGoodsTypeByNppbkc(nppbkcId);
-                    }
-                    initialEditNppbkc = false;
-                } else {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
-                    }
-                }
-
-            }
+        });
+        $("#btnSubmitConfirm").click(function() {
+            $('#IsSaveSubmit').val('true');
+            $('#form-lack2-edit').submit();
         });
 
-    }
+        $('#btnSubmitDocument').click(function() {
 
-    function ajaxGetPlantByNppbkc(nppbkc) {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
-            data: { nppbkcid: nppbkc },
-            success: function (data) {
+            $('#lack2Modal').modal('show');
+        });
+        $('#Lack2Model_NppbkcId').change(function() {
+
+            if ($(this).length) {
+                var nppbkc = $(this).find("option:selected").val();
+
                 $('#Lack2Model_LevelPlantId').html('');
-
-                if (initialEditPlant) {
-                    var plantId = '@Model.Lack2Model.LevelPlantId';
-                    if (plantId != '') {
-
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].value !== plantId) {
-                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-                            }
-                        }
-                    }
-                    initialEditPlant = false;
-                } else {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-
-                    }
+                if (nppbkc != '') {
+                    ajaxGetPlantByNppbkc(nppbkc);
+                    ajaxGetGoodsTypeByNppbkc(nppbkc);
+                    ajaxGetPoaByNppbkc(nppbkc);
                 }
-
-
             }
-        }
-       );
 
-    }
+        });
 
-    function ajaxGetPoaByNppbkc(nppbkc) {
+        $('#Lack2Model_Burks').change(function() {
 
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
-            data: { nppbkcid: nppbkc },
-            success: function (data) {
-                $('#displayPoaList').html('');
-                var poalist = '';
-                for (var i = 0; i < data.length; i++) {
+            if ($(this).length) {
+                var company = $(this).find("option:selected").val();
+                if (company !== '') {
+                    ajaxGetNppbkcByCompany(company);
 
-                    poalist += data[i].PRINTED_NAME;
-                    if (data.length - 1 != i) {
-                        poalist += ', ';
-                    }
+
                 }
-                $('#displayPoaList').html(poalist);
             }
         });
 
-    }
+        function ajaxGetNppbkcByCompany(company) {
 
-    function ajaxGetGoodsTypeByNppbkc(nppbkc) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
+                data: { companyId: company },
+                success: function(data) {
+                    $('#Lack2Model_NppbkcId').html('');
+                    if (initialEditNppbkc) {
+                        var nppbkcId = '@Model.Lack2Model.NppbkcId';
+                        if (nppbkcId != '') {
 
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
-            data: { nppbkcid: nppbkc },
-            success: function (data) {
+                            $('#Lack2Model_NppbkcId').append('<option value=' + nppbkcId + '>' + nppbkcId + '</option>');
+                            for (var i = 0; i < data.length; i++) {
+                                if (data[i].value !== nppbkcId) {
+                                    $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                                }
+                            }
+                            ajaxGetPlantByNppbkc(nppbkcId);
+                            ajaxGetPoaByNppbkc(nppbkcId);
+                            ajaxGetGoodsTypeByNppbkc(nppbkcId);
+                        }
+                        initialEditNppbkc = false;
+                    } else {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
+                        }
+                    }
 
-                $('#Lack2Model_ExGoodTyp').html('');
+                }
+            });
 
-                if (initialEditGoodtype) {
-                    var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
+        }
+
+        function ajaxGetPlantByNppbkc(nppbkc) {
+            $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
+                    data: { nppbkcid: nppbkc },
+                    success: function(data) {
+                        $('#Lack2Model_LevelPlantId').html('');
+
+                        if (initialEditPlant) {
+                            var plantId = '@Model.Lack2Model.LevelPlantId';
+                            if (plantId != '') {
+
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
+                                for (var i = 0; i < data.length; i++) {
+                                    if (data[i].value !== plantId) {
+                                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+                                    }
+                                }
+                            }
+                            initialEditPlant = false;
+                        } else {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+
+                            }
+                        }
+
+
+                    }
+                }
+            );
+
+        }
+
+        function ajaxGetPoaByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function(data) {
+                    $('#displayPoaList').html('');
+                    var poalist = '';
+                    for (var i = 0; i < data.length; i++) {
+
+                        poalist += data[i].PRINTED_NAME;
+                        if (data.length - 1 != i) {
+                            poalist += ', ';
+                        }
+                    }
+                    $('#displayPoaList').html(poalist);
+                }
+            });
+
+        }
+
+        function ajaxGetGoodsTypeByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function(data) {
+
+                    $('#Lack2Model_ExGoodTyp').html('');
+
+                    if (initialEditGoodtype) {
+                        var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
 
                         if (exgoodtyp !== '') {
                             console.log(data);
 
-                            $('#Lack2Model_ExGoodTyp').append('<option value="' + '@Model.Lack2Model.ExGoodTyp' + '">'+'@Model.Lack2Model.ExGoodDesc'+'</option>');
+                            $('#Lack2Model_ExGoodTyp').append('<option value="' + '@Model.Lack2Model.ExGoodTyp' + '">' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
+                            for (var i = 0; i < data.length; i++) {
+
+                                if (data[i].ValueField !== exgoodtyp) {
+                                    $('#Lack2Model_ExGoodTyp').append('<option value="' + data[i].ValueField + '">' + data[i].TextField + '</option>');
+                                }
+                            }
+                        }
+                        initialEditGoodtype = false;
+                    } else {
                         for (var i = 0; i < data.length; i++) {
-                            console.log(data[i].ValueField);
-                            // if (data[i].ValueField !== exgoodtyp) {
-                            //$('#Lack2Model_ExGoodTyp').append('<option value="' + data[i].ValueField + '">' + data[i].TextField + '</option>');
-                            //}
+                            $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
                         }
                     }
-                    initialEditGoodtype = false;
-                } else {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
-                    }
+
                 }
+            });
 
-            }
-        });
+        }
 
-    }
+        function openPanel() {
+            $('.panel-collapse').removeClass('collapse').addClass('in');
 
-    function openPanel() {
-        $('.panel-collapse').removeClass('collapse').addClass('in');
+        }
 
-    }
-    function printPreview(url) {
+        function printPreview(url) {
 
-        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
-    }
-    function GetCk5ByPeriod() {
-        var month = parseInt($('#Lack2Model_PeriodMonth').val());
-        var year = parseInt($('#Lack2Model_PeriodYear').val());
-        var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
-        var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
-            data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
-            success: function (data) {
+        }
 
-                if (data.length > 0) {
-                    $('#tb-body-ck5-lack2').html("");
-                    for (var i = 0; i < data.length; i++) {
-                        var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
-                            '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
-                            '<td>' + data[i].GIDateStr + '</td>' +
-                            '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
-                            '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
-                            '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
-                            '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
-                        $('#tb-body-ck5-lack2').append(tableCk5Item);
-                    }
-                }
-            }
-        });
         
 
-    }
+        function GetCk5ByPeriod() {
+            var month = parseInt($('#Lack2Model_PeriodMonth').val());
+            var year = parseInt($('#Lack2Model_PeriodYear').val());
+            var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
+            var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
+                data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
+                success: function(data) {
+
+                    if (data.length > 0) {
+                        $('#tb-body-ck5-lack2').html("");
+                        for (var i = 0; i < data.length; i++) {
+                            var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                                '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
+                                '<td>' + data[i].GIDateStr + '</td>' +
+                                '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
+                                '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
+                                '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                                '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
+                            $('#tb-body-ck5-lack2').append(tableCk5Item);
+                        }
+                    }
+                }
+            });
+
+
+        }
     </script>
 
 }

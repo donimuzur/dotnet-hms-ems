@@ -237,6 +237,13 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult RemoveDoc(int docid)
+        {
+
+            return Json(_lack2Bll.RemoveDoc(docid));
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(LACK2CreateViewModel model)
         {

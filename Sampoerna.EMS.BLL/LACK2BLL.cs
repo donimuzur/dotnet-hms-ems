@@ -293,5 +293,21 @@ namespace Sampoerna.EMS.BLL
             _repositoryDocument.InsertOrUpdate(document);
             _uow.SaveChanges();
         }
+
+        public int RemoveDoc(int docId)
+        {
+            try
+            {
+                _repositoryDocument = _uow.GetGenericRepository<LACK2_DOCUMENT>();
+                _repositoryDocument.Delete(docId);
+                _uow.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+            return 0;
+
+        }
     }
 }
