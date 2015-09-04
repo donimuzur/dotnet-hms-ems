@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<LACK2> _repository;
         private IGenericRepository<LACK2_ITEM> _repositoryItem;
-      
+        private IGenericRepository<LACK2_DOCUMENT> _repositoryDocument;
         private IMonthBLL _monthBll;
         private IUserBLL _userBll;
         private IUnitOfMeasurementBLL _uomBll;
@@ -34,6 +34,7 @@ namespace Sampoerna.EMS.BLL
         private string includeTables = "MONTH";
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPOABLL _poabll;
+
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -71,8 +72,8 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrEmpty((input.SubmissionDate)))
             {
                 var dt = Convert.ToDateTime(input.SubmissionDate);
-                DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
+            //    DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
+            //    queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
             }
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
@@ -166,10 +167,11 @@ namespace Sampoerna.EMS.BLL
 
         public Lack2Dto GetByIdAndItem(int id)
         {
-            var data = _repositoryItem.Get(x => x.LACK2_ID == id, null, "LACK2, CK5");
+            var data = _repositoryItem.Get(x => x.LACK2_ID == id, null, "LACK2, CK5, LACK2.LACK2_DOCUMENT");
             var lack2dto = new Lack2Dto();
             lack2dto = data.Select(x => Mapper.Map<Lack2Dto>(x.LACK2)).FirstOrDefault();
             lack2dto.Items = data.Select(x => Mapper.Map<Lack2ItemDto>(x)).ToList();
+            
             return lack2dto;
         }
 
@@ -192,13 +194,10 @@ namespace Sampoerna.EMS.BLL
             {
                 return Enums.ActionType.Approve;
             }
-            if (docStatus == Enums.DocumentStatus.Approved)
-            {
-                return Enums.ActionType.Approve;
-            }
+         
             if (docStatus == Enums.DocumentStatus.WaitingGovApproval)
             {
-                return Enums.ActionType.GovApprove;
+                return Enums.ActionType.Approve;
             }
             if (docStatus == Enums.DocumentStatus.GovApproved)
             {
@@ -225,7 +224,7 @@ namespace Sampoerna.EMS.BLL
             {
                 return lack2.ApprovedBy;
             }
-            if (lack2.Status == Enums.DocumentStatus.Approved)
+            if (lack2.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
                 return lack2.ApprovedByManager;
             }
@@ -254,12 +253,12 @@ namespace Sampoerna.EMS.BLL
 
             LACK2 model = new LACK2();
             MONTH month = new MONTH();
-
+            
             month = _monthBll.GetMonth(item.PeriodMonth);
            
             model = AutoMapper.Mapper.Map<LACK2>(item);
             model.MONTH = month;
-         
+            model.LACK2_DOCUMENT = item.Documents;
             try
             {
                 _repository.InsertOrUpdate(model);
@@ -285,6 +284,27 @@ namespace Sampoerna.EMS.BLL
             return item;
         }
 
+        public void InsertDocument(LACK2_DOCUMENT document)
+        {
+            _repositoryDocument = _uow.GetGenericRepository<LACK2_DOCUMENT>();
+            _repositoryDocument.InsertOrUpdate(document);
+            _uow.SaveChanges();
+        }
 
+        public int RemoveDoc(int docId)
+        {
+            try
+            {
+                _repositoryDocument = _uow.GetGenericRepository<LACK2_DOCUMENT>();
+                _repositoryDocument.Delete(docId);
+                _uow.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+            return 0;
+
+        }
     }
 }

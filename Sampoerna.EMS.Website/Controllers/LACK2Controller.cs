@@ -3,6 +3,7 @@ using System.Data;
 using System.IO;
 using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using System;
@@ -78,6 +79,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
             model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
              return View("Index", model);
         }
 
@@ -193,11 +195,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Lack2Model.StatusName = EnumHelper.GetDescription(model.Lack2Model.Status);
             model.UsrRole = CurrentUser.UserRole;
 
-            var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
-                              select new { ID = (int)ds, Name = ds.ToString() };
-
-            model.GovStatusDDL = new SelectList(govStatuses, "ID", "Name");
-
+           
+            
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
 
@@ -206,9 +205,9 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.FormNumber = model.Lack2Model.Lack2Number;
             workflowInput.DocumentStatus = model.Lack2Model.Status;
             workflowInput.NPPBKC_Id = model.Lack2Model.NppbkcId;
-
+           
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
-
+            
             model.WorkflowHistory = workflowHistory;
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
@@ -236,6 +235,13 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult RemoveDoc(int docid)
+        {
+
+            return Json(_lack2Bll.RemoveDoc(docid));
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(LACK2CreateViewModel model)
         {
@@ -245,7 +251,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Submit", new {id = model.Lack2Model.Lack2Id});
             }
             Lack2Dto item = new Lack2Dto();
-
+            
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
 
             var plant = _plantBll.GetT001ById(model.Lack2Model.LevelPlantId);
@@ -259,17 +265,76 @@ namespace Sampoerna.EMS.Website.Controllers
             item.LevelPlantCity = plant.ORT01;
             item.PeriodMonth = model.Lack2Model.PeriodMonth;
             item.PeriodYear = model.Lack2Model.PeriodYear;
-         
-            item.Status = Enums.DocumentStatus.Draft;
+
             item.ModifiedBy = CurrentUser.USER_ID;
             item.ModifiedDate = DateTime.Now;
+
+            item.Status = Enums.DocumentStatus.Draft;
+
+            
+            if (item.GovStatus == Enums.DocumentStatusGov.PartialApproved)
+            {
+                item.Status = Enums.DocumentStatus.GovApproved;
+            }
+            if (item.GovStatus == Enums.DocumentStatusGov.FullApproved)
+            {
+                item.Status = Enums.DocumentStatus.GovApproved;
+            }
+            if (item.GovStatus == Enums.DocumentStatusGov.Rejected)
+            {
+                item.Status = Enums.DocumentStatus.GovRejected;
+            }
+
+
+
+            if (model.Documents != null)
+            {
+                item.Documents = new List<LACK2_DOCUMENT>();
+                foreach (var sk in model.Documents)
+                {
+                    if (sk != null)
+                    {
+                        var document = new LACK2_DOCUMENT();
+                        var filenamecheck = sk.FileName;
+                        if (filenamecheck.Contains("\\"))
+                        {
+                            document.FILE_NAME = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                        }
+                        else
+                        {
+                            document.FILE_NAME = sk.FileName;
+                        }
+                        document.LACK2_ID = item.Lack2Id;
+                        document.FILE_PATH = SaveUploadedFile(sk, item.Lack2Number.Substring(0,10));
+                        item.Documents.Add(document);
+                        _lack2Bll.InsertDocument(document);
+                    }
+                }
+            }
+
+
             _lack2Bll.Insert(item);
              AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
         #endregion
+        private string SaveUploadedFile(HttpPostedFileBase file, string lack2Num)
+        {
+            if (file == null || file.FileName == "")
+                return "";
 
+            string sFileName = "";
+
+          
+            sFileName = Constans.UploadPath + Path.GetFileName("LACK2_"+ lack2Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
 
         public ActionResult Detail(int? id)
         {
@@ -352,14 +417,11 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
             {
-                item.Status = Enums.DocumentStatus.Approved;
+                item.Status = Enums.DocumentStatus.WaitingGovApproval;
                 item.ApprovedByManager = CurrentUser.USER_ID;
                 item.ApprovedDateManager = DateTime.Now;
             }
-            else if (item.Status == Enums.DocumentStatus.Approved)
-            {
-                item.Status = Enums.DocumentStatus.WaitingGovApproval;
-            }
+           
             else if (item.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
                 item.Status = Enums.DocumentStatus.GovApproved;

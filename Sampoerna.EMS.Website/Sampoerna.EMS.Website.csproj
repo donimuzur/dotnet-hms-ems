@@ -797,6 +797,7 @@
     <Content Include="Scripts\js\vendors\datatablesResponsive.js" />
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
+    <Content Include="Scripts\lack2\form.js" />
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
@@ -1012,6 +1013,7 @@
     <Content Include="Views\LACK2\Detail.cshtml" />
     <Content Include="Views\CK4C\DocumentList.cshtml" />
     <Content Include="Views\CK4C\_CK4CTableDocumentList.cshtml" />
+    <Content Include="Views\LACK2\_FileUpload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

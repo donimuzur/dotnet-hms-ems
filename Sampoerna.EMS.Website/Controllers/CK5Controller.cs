@@ -623,7 +623,16 @@ namespace Sampoerna.EMS.Website.Controllers
                                 if (model.Ck5Type != Enums.CK5Type.Export &&
                                     model.Ck5Type != Enums.CK5Type.PortToImporter)
                                 {
-                                    var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+
+                                   // var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+
+                                    var submissionDate = DateTime.Now;
+                                    if (model.SubmissionDate.HasValue)
+                                        submissionDate = model.SubmissionDate.Value;
+
+                                    var output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(model.SourcePlantId,
+                                        model.SourceNppbkcId, submissionDate, model.DestNppbkcId, (int) model.GoodType);
+
                                     model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
                                     decimal currentCk5 = output.QtyCk5 - model.GrandTotalEx;
                                     model.Ck5TotalExciseable = currentCk5.ToString();

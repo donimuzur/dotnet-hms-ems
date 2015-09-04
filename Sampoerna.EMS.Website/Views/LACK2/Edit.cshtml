@@ -10,7 +10,7 @@
 
 
 
-@using (@Html.BeginForm("Edit", "LACK2", FormMethod.Post,  new { @id="form-lack2-edit"}))
+@using (@Html.BeginForm("Edit", "LACK2", FormMethod.Post,  new { @id="form-lack2-edit", @class = "form-excise", role = "form",enctype = "multipart/form-data"  }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x=>x.IsSaveSubmit)
@@ -19,6 +19,15 @@
     @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
     @Html.HiddenFor(x => x.Lack2Model.ModifiedBy)
     @Html.HiddenFor(x => x.Lack2Model.ModifiedDate)
+    @Html.HiddenFor(x => x.Lack2Model.ApprovedBy)
+    @Html.HiddenFor(x => x.Lack2Model.ApprovedDate)
+    @Html.HiddenFor(x => x.Lack2Model.ApprovedByManager)
+    @Html.HiddenFor(x => x.Lack2Model.ApprovedDateManager)
+    @Html.HiddenFor(x => x.Lack2Model.RejectedBy)
+    @Html.HiddenFor(x => x.Lack2Model.RejectedDate)
+    @Html.HiddenFor(x=>x.Lack2Model.Status)
+   
+
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -248,6 +257,83 @@
                                         </div>
                                     </div>
                                 </div>
+                               
+                                    <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingFour">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordionFour" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                                        Status
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                                <div class="panel-body">
+                                                    <div class="form-excise" role="form">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                    <label class="col-md-4">Status Gov<span class="red">*</span></label>
+                                                                    <div class="col-md-8">
+                                                                        @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                    <label class="col-md-4">Decree Date</label>
+                                                                    <div class="col-md-8">
+                                                                        <div class="input-group date">
+                                                                            @Html.TextBoxFor(x => x.Lack2Model.DecreeDate, new {@class = "form-control"})
+                                                                            <span class="input-group-addon">
+                                                                                <i class="fa fa-calendar"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                    <label class="col-md-4">Decree Document</label>
+                                                                    <div class="col-md-8">
+                                                                        <div class="file-upload" id="poa-files">
+                                                                            @if (Model.Lack2Model.Documents != null)
+                                                                            {
+
+                                                                                foreach (var file in Model.Lack2Model.Documents)
+                                                                                {
+
+                                                                                    <div class="row">
+                                                                                        <div class="col-sm-10">
+                                                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                                        </div>
+                                                                                        <div class="col-sm-2">
+                                                                                            <button class="btn btn-danger full" type="button" onclick="removeDoc(@file.LACK2_DOCUMENT_ID, '@Url.Action("RemoveDoc", "LACK2")', this) "><i class="fa fa-times"></i></button>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                }
+                                                                            }
+
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">
+                                                                                <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    @Html.Partial("_FileUpload", Model)
+                                
                                 <div class="panel-group not-upload" id="accordion-7" role="tablist" aria-multiselectable="true">
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="heading7">
@@ -507,215 +593,265 @@
 }
 @section Scripts {
    
-
+    <script src="~/Scripts/lack2/form.js"></script>
     <script type="text/javascript">
-    var initialEditNppbkc = true;
-    var initialEditPlant = true;
-    var initialEditGoodtype = true;
-    $(function () {
-        openPanel();
-        $('#Lack2Model_LevelPlantId').html('');
-        $('#Lack2Model_NppbkcId').html('');
 
-        $('#Lack2Model_ExGoodTyp').html('');
-
-        $('#Lack2Model_Burks').change();
-
-    });
-    $("#btnSubmitConfirm").click(function () {
-        $('#IsSaveSubmit').val('true');
-        $('#form-lack2-edit').submit();
-    });
-
-    $('#btnSubmitDocument').click(function () {
-
-        $('#lack2Modal').modal('show');
-    });
-    $('#Lack2Model_NppbkcId').change(function () {
-
-        if ($(this).length) {
-            var nppbkc = $(this).find("option:selected").val();
-
+        var initialEditNppbkc = true;
+        var initialEditPlant = true;
+        var initialEditGoodtype = true;
+        $(function() {
+            openPanel();
             $('#Lack2Model_LevelPlantId').html('');
-            if (nppbkc != '') {
-                ajaxGetPlantByNppbkc(nppbkc);
-                ajaxGetGoodsTypeByNppbkc(nppbkc);
-                ajaxGetPoaByNppbkc(nppbkc);
-            }
-        }
+            $('#Lack2Model_NppbkcId').html('');
 
-    });
+            $('#Lack2Model_ExGoodTyp').html('');
 
-    $('#Lack2Model_Burks').change(function () {
+            $('#Lack2Model_Burks').change();
 
-        if ($(this).length) {
-            var company = $(this).find("option:selected").val();
-            if (company !== '') {
-                ajaxGetNppbkcByCompany(company);
-                
-
-            }
-        }
-    });
-
-    function ajaxGetNppbkcByCompany(company) {
-
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
-            data: { companyId: company },
-            success: function (data) {
-                $('#Lack2Model_NppbkcId').html('');
-               if (initialEditNppbkc) {
-                    var nppbkcId = '@Model.Lack2Model.NppbkcId';
-                    if (nppbkcId != '') {
-
-                        $('#Lack2Model_NppbkcId').append('<option value=' + nppbkcId + '>' + nppbkcId + '</option>');
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].value !== nppbkcId) {
-                                $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
-                            }
-                        }
-                        ajaxGetPlantByNppbkc(nppbkcId);
-                        ajaxGetPoaByNppbkc(nppbkcId);
-                        ajaxGetGoodsTypeByNppbkc(nppbkcId);
-                    }
-                    initialEditNppbkc = false;
-                } else {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
-                    }
-                }
-
-            }
+        });
+        $("#btnSubmitConfirm").click(function() {
+            $('#IsSaveSubmit').val('true');
+            $('#form-lack2-edit').submit();
         });
 
-    }
+        $('#btnSubmitDocument').click(function() {
 
-    function ajaxGetPlantByNppbkc(nppbkc) {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
-            data: { nppbkcid: nppbkc },
-            success: function (data) {
+            $('#lack2Modal').modal('show');
+        });
+        $('#Lack2Model_NppbkcId').change(function() {
+
+            if ($(this).length) {
+                var nppbkc = $(this).find("option:selected").val();
+
                 $('#Lack2Model_LevelPlantId').html('');
-
-                if (initialEditPlant) {
-                    var plantId = '@Model.Lack2Model.LevelPlantId';
-                    if (plantId != '') {
-
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].value !== plantId) {
-                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-                            }
-                        }
-                    }
-                    initialEditPlant = false;
-                } else {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-
-                    }
+                if (nppbkc != '') {
+                    ajaxGetPlantByNppbkc(nppbkc);
+                    ajaxGetGoodsTypeByNppbkc(nppbkc);
+                    ajaxGetPoaByNppbkc(nppbkc);
                 }
-
-
             }
-        }
-       );
 
-    }
+        });
 
-    function ajaxGetPoaByNppbkc(nppbkc) {
+        $('#Lack2Model_Burks').change(function() {
 
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
-            data: { nppbkcid: nppbkc },
-            success: function (data) {
-                $('#displayPoaList').html('');
-                var poalist = '';
-                for (var i = 0; i < data.length; i++) {
+            if ($(this).length) {
+                var company = $(this).find("option:selected").val();
+                if (company !== '') {
+                    ajaxGetNppbkcByCompany(company);
 
-                    poalist += data[i].PRINTED_NAME;
-                    if (data.length - 1 != i) {
-                        poalist += ', ';
-                    }
+
                 }
-                $('#displayPoaList').html(poalist);
             }
         });
 
-    }
+        function ajaxGetNppbkcByCompany(company) {
 
-    function ajaxGetGoodsTypeByNppbkc(nppbkc) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
+                data: { companyId: company },
+                success: function(data) {
+                    $('#Lack2Model_NppbkcId').html('');
+                    if (initialEditNppbkc) {
+                        var nppbkcId = '@Model.Lack2Model.NppbkcId';
+                        if (nppbkcId != '') {
 
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
-            data: { nppbkcid: nppbkc },
-            success: function (data) {
+                            $('#Lack2Model_NppbkcId').append('<option value=' + nppbkcId + '>' + nppbkcId + '</option>');
+                            for (var i = 0; i < data.length; i++) {
+                                if (data[i].value !== nppbkcId) {
+                                    $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                                }
+                            }
+                            ajaxGetPlantByNppbkc(nppbkcId);
+                            ajaxGetPoaByNppbkc(nppbkcId);
+                            ajaxGetGoodsTypeByNppbkc(nppbkcId);
+                        }
+                        initialEditNppbkc = false;
+                    } else {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
+                        }
+                    }
 
-                $('#Lack2Model_ExGoodTyp').html('');
+                }
+            });
 
-                if (initialEditGoodtype) {
-                    var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
+        }
+
+        function ajaxGetPlantByNppbkc(nppbkc) {
+            $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
+                    data: { nppbkcid: nppbkc },
+                    success: function(data) {
+                        $('#Lack2Model_LevelPlantId').html('');
+
+                        if (initialEditPlant) {
+                            var plantId = '@Model.Lack2Model.LevelPlantId';
+                            if (plantId != '') {
+
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
+                                for (var i = 0; i < data.length; i++) {
+                                    if (data[i].value !== plantId) {
+                                        $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+                                    }
+                                }
+                            }
+                            initialEditPlant = false;
+                        } else {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+
+                            }
+                        }
+
+
+                    }
+                }
+            );
+
+        }
+
+        function ajaxGetPoaByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function(data) {
+                    $('#displayPoaList').html('');
+                    var poalist = '';
+                    for (var i = 0; i < data.length; i++) {
+
+                        poalist += data[i].PRINTED_NAME;
+                        if (data.length - 1 != i) {
+                            poalist += ', ';
+                        }
+                    }
+                    $('#displayPoaList').html(poalist);
+                }
+            });
+
+        }
+
+        function ajaxGetGoodsTypeByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function(data) {
+
+                    $('#Lack2Model_ExGoodTyp').html('');
+
+                    if (initialEditGoodtype) {
+                        var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
 
                         if (exgoodtyp !== '') {
                             console.log(data);
 
-                            $('#Lack2Model_ExGoodTyp').append('<option value="' + '@Model.Lack2Model.ExGoodTyp' + '">'+'@Model.Lack2Model.ExGoodDesc'+'</option>');
+                            $('#Lack2Model_ExGoodTyp').append('<option value="' + '@Model.Lack2Model.ExGoodTyp' + '">' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
+                            for (var i = 0; i < data.length; i++) {
+
+                                if (data[i].ValueField !== exgoodtyp) {
+                                    $('#Lack2Model_ExGoodTyp').append('<option value="' + data[i].ValueField + '">' + data[i].TextField + '</option>');
+                                }
+                            }
+                        }
+                        initialEditGoodtype = false;
+                    } else {
                         for (var i = 0; i < data.length; i++) {
-                            console.log(data[i].ValueField);
-                            // if (data[i].ValueField !== exgoodtyp) {
-                            //$('#Lack2Model_ExGoodTyp').append('<option value="' + data[i].ValueField + '">' + data[i].TextField + '</option>');
-                            //}
+                            $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
                         }
                     }
-                    initialEditGoodtype = false;
-                } else {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
-                    }
-                }
 
+                }
+            });
+
+        }
+
+        function openPanel() {
+            $('.panel-collapse').removeClass('collapse').addClass('in');
+
+        }
+
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
+
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateGovInput()) {
+                $('#form-lack2-edit').submit();
             }
         });
+        
+        function ValidateGovInput() {
+            var result = true;
+            var govStatus = $('#Lack2Model_StatusGov').find("option:selected").val();
 
-    }
 
-    function openPanel() {
-        $('.panel-collapse').removeClass('collapse').addClass('in');
+            if (govStatus == '') {
+                AddValidationClass(false, 'Lack2Model_StatusGov');
+                result = false;
+            }
 
-    }
+            if ($('#Lack2Model_DecreeDate').val() == '') {
+                AddValidationClass(false, 'Lack2Model_DecreeDate');
+                result = false;
+            }
 
-    function GetCk5ByPeriod() {
-        var month = parseInt($('#Lack2Model_PeriodMonth').val());
-        var year = parseInt($('#Lack2Model_PeriodYear').val());
-        var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
-        var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
-            data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
-            success: function (data) {
-
-                if (data.length > 0) {
-                    $('#tb-body-ck5-lack2').html("");
-                    for (var i = 0; i < data.length; i++) {
-                        var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
-                            '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
-                            '<td>' + data[i].GIDateStr + '</td>' +
-                            '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
-                            '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
-                            '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
-                            '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
-                        $('#tb-body-ck5-lack2').append(tableCk5Item);
-                    }
+            if ($('#Lack2Model_StatusGov').val() == 'Rejected') {
+                if ($('#Comment').val() == '') {
+                    AddValidationClass(false, 'Comment');
+                    result = false;
                 }
             }
-        });
-    }
+
+            return result;
+        }
+
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
+            }
+        }
+
+        function GetCk5ByPeriod() {
+            var month = parseInt($('#Lack2Model_PeriodMonth').val());
+            var year = parseInt($('#Lack2Model_PeriodYear').val());
+            var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
+            var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
+                data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
+                success: function(data) {
+
+                    if (data.length > 0) {
+                        $('#tb-body-ck5-lack2').html("");
+                        for (var i = 0; i < data.length; i++) {
+                            var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                                '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
+                                '<td>' + data[i].GIDateStr + '</td>' +
+                                '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
+                                '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
+                                '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                                '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
+                            $('#tb-body-ck5-lack2').append(tableCk5Item);
+                        }
+                    }
+                }
+            });
+
+
+        }
     </script>
 
 }
