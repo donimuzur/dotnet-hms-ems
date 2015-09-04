@@ -431,7 +431,7 @@ namespace Sampoerna.EMS.BLL
 
             if (ck5Data.Count > 0)
             {
-                materialIdList
+                var s = ck5Data.Select(c => c.CK5_MATERIAL);
                 rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
             }
 
