@@ -342,7 +342,15 @@ namespace Sampoerna.EMS.BLL
                     PlantId = input.ReceivedPlantId
                 });
 
-            rc.TotalUsage = invMovementData.Count > 0 ? invMovementData.Sum(d => d.QTY != null ? d.QTY.Value : 0) : 0;
+            var invUsageAdd =
+                invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd))
+                .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+
+            var invUsageMin =
+                invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin))
+                .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+
+            rc.TotalUsage = (invUsageAdd - invUsageMin);
 
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
 

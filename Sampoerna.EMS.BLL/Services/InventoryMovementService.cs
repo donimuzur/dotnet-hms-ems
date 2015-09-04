@@ -33,8 +33,8 @@ namespace Sampoerna.EMS.BLL.Services
         {
             var mvtTypeForUsage = new List<string>
             {
-                EnumHelper.GetDescription(Enums.MovementTypeCode.ProductionAdd),
-                EnumHelper.GetDescription(Enums.MovementTypeCode.ProductionMin)
+                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin)
             };
 
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => !string.IsNullOrEmpty(c.MVT) && mvtTypeForUsage.Contains(c.MVT)
