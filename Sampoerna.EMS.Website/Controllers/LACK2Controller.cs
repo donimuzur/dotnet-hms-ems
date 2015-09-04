@@ -195,9 +195,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Lack2Model.StatusName = EnumHelper.GetDescription(model.Lack2Model.Status);
             model.UsrRole = CurrentUser.UserRole;
 
-            var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
-                              select new { ID = (int)ds, Name = ds.ToString() };
-
+           
             
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
@@ -207,9 +205,9 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.FormNumber = model.Lack2Model.Lack2Number;
             workflowInput.DocumentStatus = model.Lack2Model.Status;
             workflowInput.NPPBKC_Id = model.Lack2Model.NppbkcId;
-
+           
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
-
+            
             model.WorkflowHistory = workflowHistory;
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
