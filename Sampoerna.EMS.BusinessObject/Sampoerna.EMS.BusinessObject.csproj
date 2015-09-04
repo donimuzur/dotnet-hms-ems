@@ -67,6 +67,7 @@
     <Compile Include="Business\HeaderFooter.cs" />
     <Compile Include="Business\HeaderFooterMap.cs" />
     <Compile Include="Business\Login.cs" />
+    <Compile Include="Business\MailNotification.cs" />
     <Compile Include="Business\Material.cs" />
     <Compile Include="Business\Pbck1.cs" />
     <Compile Include="Business\Pbck1ProdConverter.cs" />
