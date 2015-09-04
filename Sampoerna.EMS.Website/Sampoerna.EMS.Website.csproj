@@ -1013,6 +1013,7 @@
     <Content Include="Views\LACK2\Detail.cshtml" />
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
+    <Content Include="Views\Production\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

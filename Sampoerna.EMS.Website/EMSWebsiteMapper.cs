@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.FIRST_NAME, opt => opt.MapFrom(src => src.FIRST_NAME));
 
             ;
-         
+
             Mapper.CreateMap<UserTree, UserItem>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE.HasValue && src.IS_ACTIVE.Value))
                 ;
@@ -94,7 +94,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<T001W, SelectItemModel>().IgnoreAllNonExisting()
                   .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
                   .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS));
-           
+
 
             //Mapper.CreateMap<Plant, SelectItemModel>().IgnoreAllNonExisting()
             //    .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1))
@@ -177,7 +177,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Ort01, opt => opt.MapFrom(src => src.ORT01))
                 .ForMember(dest => dest.NPPBKC_IMPORT_ID, opt => opt.MapFrom(src => src.NPPBKC_IMPORT_ID))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
-                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED ));
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED));
 
 
             Mapper.CreateMap<DetailPlantT1001W, T001W>().IgnoreAllNonExisting()
@@ -192,7 +192,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.Ort01))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IsDeleted));
-              
+
             #endregion
 
             #region POA
@@ -254,11 +254,11 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.HeaderFooterMapList,
                     opt => opt.MapFrom(src => Mapper.Map<List<HeaderFooterMap>>(src.HeaderFooterMapList)))
                 .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED));
-                    
 
-          
-               
-               
+
+
+
+
 
 
 
@@ -278,7 +278,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.GoodsTypeId, opt => opt.MapFrom(src => src.EX_GROUP_TYPE_ID))
                 .ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.GROUP_NAME))
                 .ForMember(dest => dest.Inactive, opt => opt.MapFrom(src => src.Inactive ? "Yes" : "No"));
-                
+
 
 
             #region VirtualMappingPlant
@@ -310,7 +310,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED))
                 .ForMember(dest => dest.ImportPlanName, opt => opt.MapFrom(src => src.T001W1.WERKS + "-" + src.T001W.NAME1))
                 .ForMember(dest => dest.ExportPlanName, opt => opt.MapFrom(src => src.T001W.WERKS + "-" + src.T001W.NAME1));
-               
+
             #endregion
 
             #region BrandRegistration
@@ -548,7 +548,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IsFromSap, opt => opt.MapFrom(src => src.IS_FROM_SAP))
                 .ForMember(dest => dest.IsPlantDelete, opt => opt.MapFrom(src => src.PLANT_DELETION))
                 .ForMember(dest => dest.IsClientDelete, opt => opt.MapFrom(src => src.CLIENT_DELETION))
-               
+
              .ForMember(dest => dest.MaterialUom, opt => opt.MapFrom(src => src.MATERIAL_UOM));
 
             Mapper.CreateMap<MaterialEditViewModel, MaterialDto>().IgnoreAllNonExisting()
@@ -620,7 +620,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MaterialUom, opt => opt.MapFrom(src => src.MATERIAL_UOM))
                 .ForMember(dest => dest.IsPlantDelete, opt => opt.MapFrom(src => src.PLANT_DELETION))
                 .ForMember(dest => dest.IsClientDelete, opt => opt.MapFrom(src => src.CLIENT_DELETION));
-               
+
 
             Mapper.CreateMap<MATERIAL_UOM, MaterialUomDetails>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.MATERIAL_UOM_ID))
@@ -649,7 +649,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<UOM, UomDetails>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.UOM_ID))
                 .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM_DESC))
-                .ForMember(dest => dest.IsEmsString, opt => opt.MapFrom(src => src.IS_EMS.HasValue? src.IS_EMS.Value? "Yes" : "No" : "No" ));
+                .ForMember(dest => dest.IsEmsString, opt => opt.MapFrom(src => src.IS_EMS.HasValue ? src.IS_EMS.Value ? "Yes" : "No" : "No"));
 
             Mapper.CreateMap<UomDetailViewModel, UOM>().IgnoreAllNonExisting()
                .ForMember(dest => dest.UOM_ID, opt => opt.MapFrom(src => src.UomId))
@@ -662,7 +662,7 @@ namespace Sampoerna.EMS.Website
             #endregion
 
 
-         
+
             Mapper.CreateMap<DOC_NUMBER_SEQ, DocumentSequenceModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.LastSequence, opt => opt.MapFrom(src => src.DOC_NUMBER_SEQ_LAST))
                 .ForMember(dest => dest.MonthInt, opt => opt.MapFrom(src => src.MONTH))
@@ -687,7 +687,7 @@ namespace Sampoerna.EMS.Website
                 //.ForMember(dest => dest.ACTION_ID, opt => opt.MapFrom(src => src.StateMappingId))
                 //.ForMember(dest => dest.ACTION_NAME, opt => opt.MapFrom(src => src.State))
                 .ForMember(dest => dest.EMAIL_TEMPLATE_ID, opt => opt.MapFrom(src => src.EmailTemplateId));
-                //.ForMember(dest => dest.ListUser, opt => opt.MapFrom(src => src.USER));
+            //.ForMember(dest => dest.ListUser, opt => opt.MapFrom(src => src.USER));
 
             Mapper.CreateMap<USER, WorkflowUsers>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.User_Id, opt => opt.MapFrom(src => src.USER_ID))
@@ -701,7 +701,7 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
-           
+
             Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<T001WDto, T001WModel>().IgnoreAllNonExisting();
@@ -734,7 +734,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<BRoleDto, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.Id + Constans.DelimeterSelectItem + src.Description))
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.Id));
-          
+
 
             Mapper.CreateMap<UserAuthorizationDto, DetailIndexUserAuthorization>().IgnoreAllNonExisting();
 
@@ -782,7 +782,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.LevelPlantId))
                .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PeriodYears + "-" + src.PeriodMonth));
 
-           #endregion
+            #endregion
 
             #region Lack2
 
@@ -805,11 +805,11 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<LACK2Model, Lack2Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Lack2Number, opt => opt.MapFrom(src => src.Lack2Number))
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => src.Comment));
-               
-              
+
+
             Mapper.CreateMap<Lack2Dto, LACK2Model>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Lack2Number, opt => opt.MapFrom(src => src.Lack2Number))
-                .ForMember(dest => dest.ExGoodDesc, opt => opt.MapFrom(src =>src.ExGoodTyp + "-" + src.ExTypDesc));
+                .ForMember(dest => dest.ExGoodDesc, opt => opt.MapFrom(src => src.ExGoodTyp + "-" + src.ExTypDesc));
 
 
             Mapper.CreateMap<LACK2FilterViewModel, Lack2GetByParamInput>().IgnoreAllNonExisting()
@@ -831,19 +831,25 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<PlantDto, SelectItemModel>().IgnoreAllNonExisting()
               .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
               .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.NAME1));
-           
+
             Mapper.CreateMap<T001WDto, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.WERKS))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src =>  src.WERKS + "-" + src.NAME1));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.WERKS + "-" + src.NAME1));
 
             //Mapper.CreateMap<Lack2, Lack2ItemDto>().IgnoreAllNonExisting()
             //.ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.Ck5Id));
 
             #region Production For Ck4c
 
-            Mapper.CreateMap<ProductionDto, ProductionDetail>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompanyCode));
+            Mapper.CreateMap<ProductionDto, ProductionDetail>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<ProductionViewModel, ProductionGetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantWerks))
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.ProoductionDate, opt => opt.MapFrom(src => src.ProductionDate));
+
+            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompanyName));
 
             #endregion
 

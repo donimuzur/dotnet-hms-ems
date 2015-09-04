@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -19,14 +20,19 @@ namespace Sampoerna.EMS.Website.Controllers
         private Enums.MenuList _mainMenu;
         private ICompanyBLL _companyBll;
         private IPlantBLL _plantBll;
+        private IUnitOfMeasurementBLL _uomBll;
+        private IBrandRegistrationBLL _brandRegistrationBll;
 
-        public ProductionController(IPageBLL pageBll, IProductionBLL productionBll, ICompanyBLL companyBll, IPlantBLL plantBll)
+        public ProductionController(IPageBLL pageBll, IProductionBLL productionBll, ICompanyBLL companyBll, IPlantBLL plantBll, IUnitOfMeasurementBLL uomBll,
+            IBrandRegistrationBLL brandRegistrationBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _productionBll = productionBll;
             _mainMenu = Enums.MenuList.CK4C;
             _companyBll = companyBll;
             _plantBll = plantBll;
+            _uomBll = uomBll;
+            _brandRegistrationBll = brandRegistrationBll;
         }
         //
         // GET: /Production/
@@ -65,6 +71,48 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_ProductionTableIndex", viewModel);
         }
 
+        #region Create
+        public ActionResult Create()
+        {
+            var model = new ProductionDetail();
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlantWerkList = GlobalFunctions.GetPlantAll();
+            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public ActionResult Create(ProductionDetail model)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+                var data = Mapper.Map<ProductionDto>(model);
+                var company = _companyBll.GetById(model.CompanyName);
+                _productionBll.Save(data);
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                     );
+                return RedirectToAction("Index");
+               
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error
+                        );
+                return View(model);
+            }
+            
+
+        }
+        #endregion
+
+
         #region Json
         [HttpPost]
         public JsonResult CompanyListPartialProduction(string companyId)
@@ -76,7 +124,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
-
+        [HttpPost]
+        public JsonResult GetFaCodeDescription(string faCode)
+        {
+            var fa = _brandRegistrationBll.GetByFaCode(faCode);
+            return Json(fa.BRAND_CE);
+        }
 
         #endregion
     }

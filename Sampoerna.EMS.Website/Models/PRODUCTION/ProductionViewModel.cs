@@ -16,9 +16,12 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         }
 
         public string CompanyCode { get; set; }
+        public string CompanyName { get; set; }
         public string PlantWerks { get; set; }
+        public string PlantName { get; set; }
         public string FaCode { get; set; }
         public string Uom { get; set; }
+        public DateTime? ProductionDate { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }
@@ -30,18 +33,24 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
        
     }
 
-    public class ProductionDetail
+    public class ProductionFormModel : BaseModel
+    {
+        
+        public ProductionDetail Detail { get; set; }
+    }
+
+    public class ProductionDetail : BaseModel
     {
         public string CompanyCode { get; set; }
-        public string CompanyName { get; set; }
         public string PlantWerks { get; set; }
-        public string PlantName { get; set; }
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
         public decimal? QtyUnpacked { get; set; }
         public decimal? QtyPacked { get; set; }
         public string Uom { get; set; }
-        public DateTime ProductionDate { get; set; }
+        public DateTime? ProductionDate { get; set; }
+        public string CompanyName { get; set; }
+        public string PlantName { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }
