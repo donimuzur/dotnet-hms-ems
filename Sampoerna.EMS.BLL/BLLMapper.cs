@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection.Emit;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
@@ -345,7 +346,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
                 .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
                 .ForMember(dest => dest.QtyUnpacked, opt => opt.MapFrom(src => src.QTY_UNPACKED))
-                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM));
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME));
 
 
             Mapper.CreateMap<ProductionDto, PRODUCTION>().IgnoreAllNonExisting()
@@ -356,7 +359,9 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.BRAND_DESC, opt => opt.MapFrom(src => src.BrandDescription))
                .ForMember(dest => dest.QTY_PACKED, opt => opt.MapFrom(src => src.QtyPacked))
                .ForMember(dest => dest.QTY_UNPACKED, opt => opt.MapFrom(src => src.QtyUnpacked))
-               .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.Uom));
+               .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.Uom))
+               .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
+               .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName));
             #endregion
         }
     }
