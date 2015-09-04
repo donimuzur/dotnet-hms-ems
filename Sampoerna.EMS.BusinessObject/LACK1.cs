@@ -54,6 +54,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
         public string LACK1_UOM_ID { get; set; }
+        public string NOTED { get; set; }
     
         public virtual ICollection<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
         public virtual ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
