@@ -306,12 +306,31 @@ namespace Sampoerna.EMS.BLL
             //Set Income List by selection Criteria
             //from CK5 data
             rc = SetIncomeListBySelectionCriteria(rc, input);
+
+            if(rc.IncomeList.Count == 0)
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
+                    Data = null
+                };
+
             if (rc.IncomeList.Count > 0)
             {
                 rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
             }
 
             var productionList = GetProductionDetailBySelectionCriteria(input);
+
+            if (productionList.Count == 0)
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingProductionList.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
+                    Data = null
+                };
 
             rc.ProductionList = GetGroupedProductionlist(productionList);
 
