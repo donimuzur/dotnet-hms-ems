@@ -95,7 +95,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="REPORTED_MONTH" Type="int" />
           <Property Name="REPORTED_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
-          <Property Name="GOV_STATUS" Type="int" />
+          <Property Name="GOV_STATUS" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="CK4C_ITEM">
           <Key>
@@ -574,6 +574,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
           <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Tmp_SUPPLIER_KPPBC_NAME" Type="nvarchar" MaxLength="10" />
           <Property Name="SUPPLIER_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="SUPPLIER_COMPANY" Type="nvarchar" MaxLength="35" />
           <Property Name="IS_NPPBKC_IMPORT" Type="bit" />
@@ -644,7 +645,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PBCK3_DATE" Type="datetime" />
           <Property Name="DOC_TYPE" Type="int" Nullable="false" />
           <Property Name="NPPBCK_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="2" />
+          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="PLANT_CITY" Type="nvarchar" MaxLength="25" />
           <Property Name="EXEC_DATE_FROM" Type="datetime" />
@@ -733,6 +734,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="QTY_PACKED" Type="decimal" Precision="18" Scale="2" />
           <Property Name="UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="PRODUCTION_DATE" Type="datetime" Nullable="false" />
+          <Property Name="COMPANY_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
@@ -859,6 +862,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="WASTE_QTY_GRAM" Type="decimal" Precision="18" Scale="2" />
           <Property Name="REJECT_QTY_STICK" Type="decimal" Precision="18" Scale="2" />
           <Property Name="WASTE_PROD_DATE" Type="datetime" Nullable="false" />
+          <Property Name="COMPANY_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="WORKFLOW_HISTORY">
           <Key>
@@ -2065,15 +2070,15 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_T001K_T001W">
-          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
-          <End Role="T001K" Type="Self.T001K" Multiplicity="0..1" />
+        <Association Name="FK_T001K_T1001">
+          <End Role="T001" Type="Self.T001" Multiplicity="1" />
+          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="T001W">
-              <PropertyRef Name="WERKS" />
+            <Principal Role="T001">
+              <PropertyRef Name="BUKRS" />
             </Principal>
             <Dependent Role="T001K">
-              <PropertyRef Name="BWKEY" />
+              <PropertyRef Name="BUKRS" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2777,8 +2782,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
-          <AssociationSet Name="FK_T001K_T001W" Association="Self.FK_T001K_T001W">
-            <End Role="T001W" EntitySet="T001W" />
+          <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
+            <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
@@ -4008,6 +4013,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="SUPPLIER_COMPANY" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="IS_NPPBKC_IMPORT" Type="Boolean" />
           <NavigationProperty Name="LACK1_PBCK1_MAPPING" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" FromRole="PBCK1" ToRole="LACK1_PBCK1_MAPPING" />
+          <Property Name="Tmp_SUPPLIER_KPPBC_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           </EntityType>
         <Association Name="FK_CK5_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
@@ -5312,7 +5318,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PBCK3_DATE" Type="DateTime" Precision="3" />
           <Property Name="DOC_TYPE" Type="Int32" Nullable="false" />
           <Property Name="NPPBCK_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_ID" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_CITY" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="EXEC_DATE_FROM" Type="DateTime" Precision="3" />
@@ -6072,6 +6078,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="QTY_PACKED" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="WASTE">
           <Key>
@@ -6088,6 +6096,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="WASTE_QTY_GRAM" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="REJECT_QTY_STICK" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="WASTE_PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -6496,6 +6506,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
     <EntitySetMapping Name="PBCK1">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PBCK1)">
         <MappingFragment StoreEntitySet="PBCK1">
+                <ScalarProperty Name="Tmp_SUPPLIER_KPPBC_NAME" ColumnName="Tmp_SUPPLIER_KPPBC_NAME" />
                 <ScalarProperty Name="IS_NPPBKC_IMPORT" ColumnName="IS_NPPBKC_IMPORT" />
                 <ScalarProperty Name="SUPPLIER_COMPANY" ColumnName="SUPPLIER_COMPANY" />
                 <ScalarProperty Name="SUPPLIER_KPPBC_NAME" ColumnName="SUPPLIER_KPPBC_NAME" />
@@ -7179,6 +7190,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="PRODUCTION">
             <EntityTypeMapping TypeName="EMSModel.PRODUCTION">
               <MappingFragment StoreEntitySet="PRODUCTION">
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
                 <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
                 <ScalarProperty Name="UOM" ColumnName="UOM" />
                 <ScalarProperty Name="QTY_PACKED" ColumnName="QTY_PACKED" />
@@ -7193,6 +7206,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="WASTE">
             <EntityTypeMapping TypeName="EMSModel.WASTE">
               <MappingFragment StoreEntitySet="WASTE">
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
                 <ScalarProperty Name="WASTE_PROD_DATE" ColumnName="WASTE_PROD_DATE" />
                 <ScalarProperty Name="REJECT_QTY_STICK" ColumnName="REJECT_QTY_STICK" />
                 <ScalarProperty Name="WASTE_QTY_GRAM" ColumnName="WASTE_QTY_GRAM" />
