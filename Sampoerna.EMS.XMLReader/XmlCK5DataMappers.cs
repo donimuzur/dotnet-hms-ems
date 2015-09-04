@@ -155,8 +155,7 @@ namespace Sampoerna.EMS.XMLReader
                                         item.STATUS_ID = Enums.DocumentStatus.GIPartial;
                                     }
 
-                                    if (typeCk5 == Enums.CK5Type.Domestic)
-                                    {
+                                  
                                         #region "Domestic"
 
                                         var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
@@ -166,7 +165,7 @@ namespace Sampoerna.EMS.XMLReader
 
 
                                         #endregion
-                                    }
+                                    
                                    
 
                                 }
@@ -182,12 +181,12 @@ namespace Sampoerna.EMS.XMLReader
                                         workflowHistory.ACTION = Enums.ActionType.GRPartial;
                                         item.STATUS_ID = Enums.DocumentStatus.GRPartial;
                                     }
-                                    if (typeCk5 == Enums.CK5Type.Domestic)
+                                    if (typeCk5 != Enums.CK5Type.Intercompany)
                                     {
                                         var grDate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
                                         item.GR_DATE = _xmlMapper.GetDate(grDate);
                                     }
-                                    else if(typeCk5 == Enums.CK5Type.Intercompany)
+                                    else if (typeCk5 == Enums.CK5Type.Intercompany)
                                     {
                                         var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
                                         item.STO_SENDER_NUMBER = stoNumber;
