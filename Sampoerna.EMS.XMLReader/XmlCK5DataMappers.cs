@@ -86,6 +86,12 @@ namespace Sampoerna.EMS.XMLReader
                     return Enums.CK5XmlStatus.StoRecGRPartial;
                 case "46":
                     return Enums.CK5XmlStatus.StoRecGRCompleted;
+                case "50":
+                    return Enums.CK5XmlStatus.TFPosted;
+                case "51":
+                    return Enums.CK5XmlStatus.TFReversed;
+                case "52":
+                    return Enums.CK5XmlStatus.TFPartial;
                 default:
                     return Enums.CK5XmlStatus.None;
             }
@@ -328,6 +334,27 @@ namespace Sampoerna.EMS.XMLReader
                                              item.STATUS_ID = Enums.DocumentStatus.Cancelled;
                                              workflowHistory.ACTION = Enums.ActionType.Cancelled;
                                          }
+                                         else if (statusCk5 == Enums.CK5XmlStatus.TFPosted)
+                                         {
+                                             item.STATUS_ID = Enums.DocumentStatus.TFPosted;
+                                             workflowHistory.ACTION = Enums.ActionType.TFPosted;
+                                             UpdateMatDoc(item, existingCk5, xElement);
+                                           
+
+                                         }
+                                        else if (statusCk5 == Enums.CK5XmlStatus.TFPartial)
+                                        {
+                                            item.STATUS_ID = Enums.DocumentStatus.TFPartial;
+                                            workflowHistory.ACTION = Enums.ActionType.TFPartial;
+                                        }
+                                        else if (statusCk5 == Enums.CK5XmlStatus.TFReversed)
+                                        {
+                                            workflowHistory.ACTION = Enums.ActionType.TFReversed;
+                                            CreateCk5XmlCancel(item);
+
+                                            item.STATUS_ID = Enums.DocumentStatus.Cancelled;
+                                            workflowHistory.ACTION = Enums.ActionType.Cancelled;
+                                        }
                                 if (statusCk5 != Enums.CK5XmlStatus.None)
                                 {
                                     var emailCreator = GetEmail(item.CREATED_BY);
@@ -440,6 +467,31 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var dn_number =
                             _xmlMapper.GetElementValue(ckt5Item.Element("DELIVERY_NOTE"));
+                        if (!string.IsNullOrEmpty(dn_number))
+                        {
+                            item.DN_NUMBER = dn_number;
+                        }
+
+
+                    }
+                }
+
+            }
+        }
+
+        private void UpdateMatDoc(CK5 item, CK5 existingCk5, XElement xElement)
+        {
+            var ck5Item = GetExistingCK5Material(existingCk5.CK5_ID);
+            if (ck5Item.Count > 0)
+            {
+
+                var xmlCk5Items = xElement.Elements("Z1A_CK5_ITM");
+                if (ck5Item.Count() >= xmlCk5Items.Count())
+                {
+                    foreach (var ckt5Item in xmlCk5Items)
+                    {
+                        var dn_number =
+                            _xmlMapper.GetElementValue(ckt5Item.Element("GI_MAT_DOC"));
                         if (!string.IsNullOrEmpty(dn_number))
                         {
                             item.DN_NUMBER = dn_number;
