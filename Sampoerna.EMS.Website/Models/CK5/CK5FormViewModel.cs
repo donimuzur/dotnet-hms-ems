@@ -238,6 +238,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string ActionType { get; set; }
 
         public bool AllowCancelSAP { get; set; }
-        
+
+        public decimal MaterialQty { get; set; }
     }
 }

@@ -1,5 +1,9 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5UploadViewModel
+﻿
+@model Sampoerna.EMS.Website.Models.CK5.CK5InputManualViewModel
 
+@{
+    Layout = null;
+}
 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
     <div class="panel-body">
         <div class="form-excise" role="form">
@@ -13,9 +17,6 @@
                         </div>
                     </div>
                 </div>
-
-             
-
             </div>
 
             <div class="row">
@@ -23,7 +24,7 @@
                     <div class="row">
                         <label class="col-md-4">Material Number</label>
                         <div class="col-md-8">
-                            @Html.TextBoxFor(model => model.Brand, new { @class = "form-control" })
+                            @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control" })
 
                         </div>
                     </div>

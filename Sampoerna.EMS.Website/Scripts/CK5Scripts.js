@@ -689,46 +689,115 @@ function ValidateGRCreated() {
     return result;
 }
 
-function AddRow(url) {
-    $('#Ck5UploadModal').modal('hide');
-
-
-
-    $("#Ck5UploadTable tbody").append(
-
-		"<tr>" +
-		"<td>" + $('#uploadMaterialNumber').val() + "</td>" +
-		"<td>" + $('#uploadMaterialQty').val() + "</td>" +
-		"<td>" + $('#uploadMaterialUom').val() + "</td>" +
-		"<td>" + $('#uploadMaterialConvertion').val() + "</td>" +
-		"<td></td>" +
-		"<td>" + $('#uploadConvertedUom').val() + "</td>" +
-		"<td></td>" +
-		"<td></td>" +
-		"<td></td>" +
-		"<td>" + $('#uploadUsdValue').val() + "</td>" +
-		"<td>" + $('#uploadNote').val() + "</td>" +
-		"<td></td>" +
-
-		"</tr>");
+function ValidateManual() {
     
-    var formData = new FormData();
-    formData.append("ck5Id", 122);
-    //alert('url : ' + url);
+    var result = true;
     
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: formData,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            alert(response);
-        }
-        //,
-        //error: function (error) {
-        //    alert("errror " + error);
-        //}
-    });
+    if ($('#uploadMaterialNumber').find("option:selected").val() == '') {
+        AddValidationClass(false, 'uploadMaterialNumber');
+        result = false;
+    }
+    
+    if ($('#uploadMaterialUom').find("option:selected").val() == '') {
+        AddValidationClass(false, 'uploadMaterialUom');
+        result = false;
+    }
+    
+    if ($('#uploadConvertedUom').find("option:selected").val() == '') {
+        AddValidationClass(false, 'uploadConvertedUom');
+        result = false;
+    }
+
+    return result;
+}
+function AddRow() {
+
+    if (ValidateManual()) {
+        
+        $('#Ck5UploadModal').modal('hide');
+
+        $("#Ck5UploadTable tbody").append(
+            "<tr>" +
+                "<td>" + $('#uploadMaterialNumber').val() + "</td>" +
+                "<td>" + $('#uploadMaterialQty').val() + "</td>" +
+                "<td>" + $('#uploadMaterialUom').val() + "</td>" +
+                "<td>" + $('#uploadMaterialConvertion').val() + "</td>" +
+                "<td></td>" +
+                "<td>" + $('#uploadConvertedUom').val() + "</td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td>" + $('#uploadUsdValue').val() + "</td>" +
+                "<td>" + $('#uploadNote').val() + "</td>" +
+                "<td></td>" +
+                "</tr>");
+    }
+    
+    //var formData = new FormData();
+    //formData.append("ck5Id", 122);
+    ////alert('url : ' + url);
+    
+    //$.ajax({
+    //    type: "POST",
+    //    url: url,
+    //    data: formData,
+    //    dataType: 'json',
+    //    contentType: false,
+    //    processData: false,
+    //    success: function (response) {
+    //        alert(response);
+    //    }
+    //    //,
+    //    //error: function (error) {
+    //    //    alert("errror " + error);
+    //    //}
+    //});
+}
+
+function ajaxGetListMaterial(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                var listMaterial = $('#uploadMaterialNumber');
+                listMaterial.empty();
+                
+                var list = '<option value>Select</option>';
+
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        list += "<option value='" + data[i].MaterialNumber + "'>" + data[i].MaterialNumber  + "</option>";
+                    }
+                  
+                }
+
+                listMaterial.html(list);
+
+                
+              
+            }
+        });
+    }
+}
+
+
+function ajaxGetMaterialHjeAndTariff(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+               
+                if (data != null) {
+                    $("#uploadMaterialHje").val(data.Hje);
+                    $("#uploadMaterialTariff").val(data.Tariff);
+                }
+
+             
+            }
+        });
+    }
 }
