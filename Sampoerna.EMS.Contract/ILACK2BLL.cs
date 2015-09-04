@@ -26,5 +26,7 @@ namespace Sampoerna.EMS.Contract
         Lack2Dto Insert(Lack2Dto item);
 
         void InsertDocument(LACK2_DOCUMENT document);
+
+        int RemoveDoc(int docId);
     }
 }
