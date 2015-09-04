@@ -306,6 +306,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\KPPBC\KppbcDetailViewModel.cs" />
     <Compile Include="Models\KPPBC\KppbcIndexViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1BaseItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
     <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />

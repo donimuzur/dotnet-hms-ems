@@ -6,15 +6,12 @@ using Sampoerna.EMS.Website.Validations;
 
 namespace Sampoerna.EMS.Website.Models.LACK1
 {
-    public class Lack1CreateViewModel : BaseModel
+    public class Lack1CreateViewModel : Lack1BaseItemModel
     {
         public Lack1CreateViewModel()
         {
             SubmissionDate = null;
         }
-        public long Lack1Id { get; set; }
-        public string Lack1Number { get; set; }
-
         [Required]
         public string Bukrs { get; set; }
         public SelectList BukrList { get; set; }

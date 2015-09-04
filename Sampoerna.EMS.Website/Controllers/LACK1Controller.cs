@@ -10,10 +10,10 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models;
-using Sampoerna.EMS.Website.Models.PBCK1;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using WebGrease.Css;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -291,6 +291,28 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region -------------- Private Method --------
 
+        private List<Lack1SummaryProductionItemModel> ProcessSummaryProductionDetails(
+            List<Lack1ProductionDetailItemModel> input)
+        {
+            if (input.Count > 0)
+            {
+                var groupedData = input.GroupBy(p => new
+                {
+                    p.UomId,
+                    p.UomDesc
+                }).Select(g => new Lack1SummaryProductionItemModel()
+                {
+                    UomId = g.Key.UomId,
+                    UomDesc = g.Key.UomDesc,
+                    Amount = g.Sum(p => p.Amount)
+                });
+
+                return groupedData.ToList();
+
+            }
+            return new List<Lack1SummaryProductionItemModel>();
+        }
+
         private SelectList GetNppbkcListOnPbck1ByCompanyCode(string companyCode)
         {
             var data = _pbck1Bll.GetNppbkByCompanyCode(companyCode);
@@ -391,9 +413,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region -------------- Details -----------
 
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id, Enums.LACK1Type? lType)
         {
             if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            if (!lType.HasValue)
             {
                 return HttpNotFound();
             }
@@ -428,6 +455,21 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ChangesHistoryList = changesHistory;
             model.WorkflowHistory = workflowHistory;
             model.PrintHistoryList = printHistory;
+            model.Lack1Type = lType.Value;
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            const string activeCss = "active";
+            switch (lType)
+            {
+                case Enums.LACK1Type.ListByNppbkc:
+                    model.MenuNppbkcAddClassCss = activeCss;
+                    break;
+                case Enums.LACK1Type.ComplatedDocument:
+                    model.MenuCompletedAddClassCss = activeCss;
+                    break;
+                case Enums.LACK1Type.ListByPlant:
+                    model.MenuPlantAddClassCss = activeCss;
+                    break;
+            }
 
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
