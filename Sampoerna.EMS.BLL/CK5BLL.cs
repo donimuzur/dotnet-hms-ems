@@ -2043,7 +2043,7 @@ namespace Sampoerna.EMS.BLL
                         && c.SOURCE_PLANT_NPPBKC_ID == sourceNppbkc
                         && c.DEST_PLANT_NPPBKC_ID == pbck1Npbkc
                         && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd 
-                        //&& c.EX_GOODS_TYPE == goodtypegroupid
+                        && c.EX_GOODS_TYPE == goodtypegroupid
                         ).ToList();
 
             decimal qtyCk5 = 0;
