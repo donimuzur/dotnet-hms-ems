@@ -782,7 +782,46 @@
 
         }
 
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateGovInput()) {
+                $('#form-lack2-edit').submit();
+            }
+        });
         
+        function ValidateGovInput() {
+            var result = true;
+            var govStatus = $('#Lack2Model_StatusGov').find("option:selected").val();
+
+
+            if (govStatus == '') {
+                AddValidationClass(false, 'Lack2Model_StatusGov');
+                result = false;
+            }
+
+            if ($('#Lack2Model_DecreeDate').val() == '') {
+                AddValidationClass(false, 'Lack2Model_DecreeDate');
+                result = false;
+            }
+
+            if ($('#Lack2Model_StatusGov').val() == 'Rejected') {
+                if ($('#Comment').val() == '') {
+                    AddValidationClass(false, 'Comment');
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
+            }
+        }
 
         function GetCk5ByPeriod() {
             var month = parseInt($('#Lack2Model_PeriodMonth').val());

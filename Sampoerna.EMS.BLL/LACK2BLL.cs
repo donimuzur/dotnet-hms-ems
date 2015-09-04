@@ -194,13 +194,10 @@ namespace Sampoerna.EMS.BLL
             {
                 return Enums.ActionType.Approve;
             }
-            if (docStatus == Enums.DocumentStatus.Approved)
-            {
-                return Enums.ActionType.Approve;
-            }
+         
             if (docStatus == Enums.DocumentStatus.WaitingGovApproval)
             {
-                return Enums.ActionType.GovApprove;
+                return Enums.ActionType.Approve;
             }
             if (docStatus == Enums.DocumentStatus.GovApproved)
             {
@@ -227,7 +224,7 @@ namespace Sampoerna.EMS.BLL
             {
                 return lack2.ApprovedBy;
             }
-            if (lack2.Status == Enums.DocumentStatus.Approved)
+            if (lack2.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
                 return lack2.ApprovedByManager;
             }
