@@ -419,14 +419,11 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
             {
-                item.Status = Enums.DocumentStatus.Approved;
+                item.Status = Enums.DocumentStatus.WaitingGovApproval;
                 item.ApprovedByManager = CurrentUser.USER_ID;
                 item.ApprovedDateManager = DateTime.Now;
             }
-            else if (item.Status == Enums.DocumentStatus.Approved)
-            {
-                item.Status = Enums.DocumentStatus.WaitingGovApproval;
-            }
+           
             else if (item.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
                 item.Status = Enums.DocumentStatus.GovApproved;
