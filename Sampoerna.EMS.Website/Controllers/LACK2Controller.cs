@@ -195,9 +195,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Lack2Model.StatusName = EnumHelper.GetDescription(model.Lack2Model.Status);
             model.UsrRole = CurrentUser.UserRole;
 
-            var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
-                              select new { ID = (int)ds, Name = ds.ToString() };
-
+           
             
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
@@ -207,9 +205,9 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.FormNumber = model.Lack2Model.Lack2Number;
             workflowInput.DocumentStatus = model.Lack2Model.Status;
             workflowInput.NPPBKC_Id = model.Lack2Model.NppbkcId;
-
+           
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
-
+            
             model.WorkflowHistory = workflowHistory;
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
@@ -234,6 +232,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
             return model;
+        }
+
+        [HttpPost]
+        public JsonResult RemoveDoc(int docid)
+        {
+
+            return Json(_lack2Bll.RemoveDoc(docid));
         }
 
         [HttpPost]
@@ -412,14 +417,11 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
             {
-                item.Status = Enums.DocumentStatus.Approved;
+                item.Status = Enums.DocumentStatus.WaitingGovApproval;
                 item.ApprovedByManager = CurrentUser.USER_ID;
                 item.ApprovedDateManager = DateTime.Now;
             }
-            else if (item.Status == Enums.DocumentStatus.Approved)
-            {
-                item.Status = Enums.DocumentStatus.WaitingGovApproval;
-            }
+           
             else if (item.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
                 item.Status = Enums.DocumentStatus.GovApproved;

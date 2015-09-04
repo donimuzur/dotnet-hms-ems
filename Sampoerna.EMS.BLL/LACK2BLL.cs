@@ -194,13 +194,10 @@ namespace Sampoerna.EMS.BLL
             {
                 return Enums.ActionType.Approve;
             }
-            if (docStatus == Enums.DocumentStatus.Approved)
-            {
-                return Enums.ActionType.Approve;
-            }
+         
             if (docStatus == Enums.DocumentStatus.WaitingGovApproval)
             {
-                return Enums.ActionType.GovApprove;
+                return Enums.ActionType.Approve;
             }
             if (docStatus == Enums.DocumentStatus.GovApproved)
             {
@@ -227,7 +224,7 @@ namespace Sampoerna.EMS.BLL
             {
                 return lack2.ApprovedBy;
             }
-            if (lack2.Status == Enums.DocumentStatus.Approved)
+            if (lack2.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
                 return lack2.ApprovedByManager;
             }
@@ -292,6 +289,22 @@ namespace Sampoerna.EMS.BLL
             _repositoryDocument = _uow.GetGenericRepository<LACK2_DOCUMENT>();
             _repositoryDocument.InsertOrUpdate(document);
             _uow.SaveChanges();
+        }
+
+        public int RemoveDoc(int docId)
+        {
+            try
+            {
+                _repositoryDocument = _uow.GetGenericRepository<LACK2_DOCUMENT>();
+                _repositoryDocument.Delete(docId);
+                _uow.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+            return 0;
+
         }
     }
 }

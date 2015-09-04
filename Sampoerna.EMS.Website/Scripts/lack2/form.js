@@ -60,14 +60,14 @@ function removeUploadButton(index) {
     
 }
 
-function removeSK(id, url, obj) {
+function removeDoc(id, url, obj) {
 
    
     
         $.ajax({
             type: 'POST',
             url: url,
-            data: { skid: id },
+            data: { docId: id },
             success: function (data) {
                 var objParent = ($(obj).parent().parent());
                 objParent.remove();
