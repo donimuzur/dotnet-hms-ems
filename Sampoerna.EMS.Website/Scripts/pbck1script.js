@@ -10,6 +10,7 @@
     $('#Detail_SupplierPlant').val('');
     $('#Detail_SupplierPlantWerks').val('');
     $('#Detail_SupplierKppbcName').val('');
+    $('#Detail_SupplierCompany').val('');
 }
 
 function ajaxLoadDetailSupplierPlant(formData, url) {
@@ -31,6 +32,7 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
                 $('#Detail_SupplierAddress').val(data.Address);
                 $('#Detail_HiddendSupplierAddress').val(data.Address);
                 $('#Detail_SupplierPlant').val(data.Name1);
+                $('#Detail_SupplierCompany').val(data.SUPPLIER_COMPANY);
             } else {
                 setSupplierPlantEmpty();
             }
@@ -43,13 +45,17 @@ function disableSupplierFormInput(isDisable) {
     $('#Detail_SupplierKppbcName').prop('readonly', isDisable);
     $('#Detail_SupplierAddress').prop('readonly', isDisable);
     $('#Detail_SupplierPhone').prop('readonly', isDisable);
+    $('#Detail_SupplierCompany').prop('readonly', isDisable);
 }
 
-function supplierChange(url) {
+function supplierChange(isNppbkcImport, url) {
     if ($("#Detail_SupplierPlant_ddl").length) {
         var plantid = $("#Detail_SupplierPlant_ddl").find("option:selected").val();
+        var plantidFirst = $("#Detail_SupplierPlant_ddl").find("option:first").val();
         console.log(plantid);
-        ajaxLoadDetailSupplierPlant({ plantid: plantid }, url);
+        if (plantid == undefined)
+            plantid = plantidFirst;
+        ajaxLoadDetailSupplierPlant({ plantid: plantid, isNppbkcImport: isNppbkcImport }, url);
     }
 }
 

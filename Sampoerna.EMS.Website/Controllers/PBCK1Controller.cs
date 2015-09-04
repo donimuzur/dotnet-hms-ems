@@ -153,8 +153,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     try
                     {
+                        var text = datarow[1];
+                        decimal value;
+                        if (Decimal.TryParse(text, out value))
+                        {
+                            text = Math.Round(Convert.ToDecimal(text), 2).ToString();
+                        }
+
                         uploadItem.ProductCode = datarow[0];
-                        uploadItem.ConverterOutput = datarow[1];
+                        uploadItem.ConverterOutput = text;
                         uploadItem.ConverterUom = datarow[2];
 
                         model.Detail.Pbck1ProdConverter.Add(uploadItem);
@@ -269,9 +276,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSupplierPlant()
+        public JsonResult GetSupplierPlant(bool isNppbkcImport)
         {
-            return Json(GlobalFunctions.GetPlantAll());
+            return Json(GlobalFunctions.GetPlantByNppbkcImport(isNppbkcImport));
         }
 
         [HttpPost]
@@ -282,13 +289,16 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSupplierPlantDetail(string plantid)
+        public JsonResult GetSupplierPlantDetail(string plantid, bool isNppbkcImport)
         {
             var data = _plantBll.GetId(plantid);
 
             var lfa1Data = _lfa1Bll.GetById(data.KPPBC_NO);
 
             data.KPPBC_NAME = lfa1Data.NAME1;
+
+            if (isNppbkcImport)
+                data.NPPBKC_ID = data.NPPBKC_IMPORT_ID;
 
             return Json(Mapper.Map<DetailPlantT1001W>(data));
         }
@@ -438,6 +448,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SupInfo.SupplierNppkbc = model.Detail.SupplierNppbkcId;
                 model.SupInfo.SupplierKppkbc = model.Detail.SupplierKppbcName;
                 model.SupInfo.SupplierPlantName = model.Detail.SupplierPlant;
+                model.SupInfo.SupplierPhone = model.Detail.SupplierPhone;
 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput

@@ -390,7 +390,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export)
+                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
@@ -637,7 +637,7 @@
                             }
                             else if (Model.AllowGrCreated)
                             {
-                                <div class="row">
+                                @*<div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.SealingNotifNumber, new {@class = "col-md-4"})
@@ -656,8 +656,33 @@
 
                                         </div>
                                     </div>
-                                </div>
+                                </div>*@
 
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.SealingNotifNumber, new {@class = "col-md-4"})
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.SealingNotifNumber, new {@class = "form-control"})
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.SealingNotifDate, new {@class = "col-md-4"})
+                                            <div class="col-md-8">
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.SealingNotifDate, "{0:dd MMM yyyy}", new {@class = "form-control"})
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
 
                                     <div class="col-md-6">

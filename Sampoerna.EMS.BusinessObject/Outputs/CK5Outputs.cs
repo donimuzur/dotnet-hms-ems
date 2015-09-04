@@ -36,5 +36,6 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Pbck1DecreeDate { get; set; }
         public string Pbck1Number { get; set; }
         public int? Pbck1Id { get; set; }
+        public string PbckUom { get; set; }
     }
 }

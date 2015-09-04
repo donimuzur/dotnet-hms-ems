@@ -108,6 +108,11 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PROD_QTY" Type="decimal" Precision="15" Scale="2" Nullable="false" />
           <Property Name="UOM_PROD_QTY" Type="nvarchar" MaxLength="5" Nullable="false" />
           <Property Name="PROD_DATE" Type="datetime" Nullable="false" />
+          <Property Name="HJE_IDR" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PROD_CODE" Type="nvarchar" MaxLength="5" />
+          <Property Name="PACKED_QTY" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UNPACKED_QTY" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="CK5">
           <Key>
@@ -201,18 +206,19 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="MATERIAL_ID" Type="bigint" />
           <Property Name="LINE_ITEM" Type="int" />
           <Property Name="QTY" Type="numeric" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="numeric" Precision="18" Scale="2" />
           <Property Name="CONVERTED_UOM_ID" Type="int" />
           <Property Name="BRAND" Type="varchar" MaxLength="50" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="UOM" Type="varchar" MaxLength="50" />
-          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTION" Type="numeric" Precision="18" Scale="3" />
           <Property Name="HJE" Type="numeric" Precision="18" Scale="2" />
           <Property Name="TARIFF" Type="numeric" Precision="18" Scale="2" />
           <Property Name="EXCISE_VALUE" Type="numeric" Precision="18" Scale="2" />
           <Property Name="USD_VALUE" Type="numeric" Precision="18" Scale="2" />
           <Property Name="NOTE" Type="varchar" MaxLength="100" />
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
+          <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="COUNTRY">
           <Key>
@@ -345,7 +351,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="BEGINING_BALANCE" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="TOTAL_INCOME" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="USAGE" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TOTAL_PRODUCTION" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="LACK1_LEVEL" Type="int" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -354,6 +359,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
           <Property Name="LACK1_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="NOTED" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -377,9 +383,9 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
         </EntityType>
         <EntityType Name="LACK1_PBCK1_MAPPING">
           <Key>
-            <PropertyRef Name="LACK1_ID" />
-            <PropertyRef Name="PBCK1_ID" />
+            <PropertyRef Name="LACK1_PBCK1_MAPPING_ID" />
           </Key>
+          <Property Name="LACK1_PBCK1_MAPPING_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LACK1_ID" Type="int" Nullable="false" />
           <Property Name="PBCK1_ID" Type="int" Nullable="false" />
         </EntityType>
@@ -431,6 +437,10 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="LACK2_NUMBER" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
+          <Property Name="REJECTED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="REJECTED_DATE" Type="datetime" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="LACK2_DOCUMENT">
           <Key>
@@ -536,7 +546,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="SUPPLIER_PLANT" Type="nvarchar" MaxLength="70" Nullable="false" />
           <Property Name="SUPPLIER_PORT_ID" Type="int" />
           <Property Name="SUPPLIER_ADDRESS" Type="nvarchar" MaxLength="250" />
-          <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="15" />
+          <Property Name="SUPPLIER_PHONE" Type="nvarchar" MaxLength="25" />
           <Property Name="PLAN_PROD_FROM" Type="datetime" />
           <Property Name="PLAN_PROD_TO" Type="datetime" />
           <Property Name="REQUEST_QTY" Type="numeric" Precision="18" Scale="2" />
@@ -564,7 +574,10 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
           <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Tmp_SUPPLIER_KPPBC_NAME" Type="nvarchar" MaxLength="10" />
           <Property Name="SUPPLIER_KPPBC_ID" Type="nvarchar" MaxLength="10" />
+          <Property Name="SUPPLIER_COMPANY" Type="nvarchar" MaxLength="35" />
+          <Property Name="IS_NPPBKC_IMPORT" Type="bit" />
         </EntityType>
         <EntityType Name="PBCK1_DECREE_DOC">
           <Key>
@@ -632,7 +645,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PBCK3_DATE" Type="datetime" />
           <Property Name="DOC_TYPE" Type="int" Nullable="false" />
           <Property Name="NPPBCK_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="2" />
+          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="PLANT_CITY" Type="nvarchar" MaxLength="25" />
           <Property Name="EXEC_DATE_FROM" Type="datetime" />
@@ -706,6 +719,24 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PRINT_DATE" Type="datetime" Nullable="false" />
           <Property Name="PRINT_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="PRODUCTION">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="PRODUCTION_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
+          <Property Name="BRAND_DESC" Type="nvarchar" MaxLength="200" />
+          <Property Name="QTY_UNPACKED" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="QTY_PACKED" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UOM" Type="nvarchar" MaxLength="5" />
+          <Property Name="PRODUCTION_DATE" Type="datetime" Nullable="false" />
+          <Property Name="COMPANY_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
             <PropertyRef Name="SUPPLIER_PORT_ID" />
@@ -758,6 +789,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="IS_MAIN_PLANT" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="NPPBKC_IMPORT_ID" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="UOM">
           <Key>
@@ -814,6 +846,24 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
+        </EntityType>
+        <EntityType Name="WASTE">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="WASTE_PROD_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
+          <Property Name="BRAND_DESC" Type="nvarchar" MaxLength="200" />
+          <Property Name="WASTE_QTY_STICK" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="WASTE_QTY_GRAM" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="REJECT_QTY_STICK" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="WASTE_PROD_DATE" Type="datetime" Nullable="false" />
+          <Property Name="COMPANY_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="WORKFLOW_HISTORY">
           <Key>
@@ -2020,15 +2070,15 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_T001K_T001W">
-          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
-          <End Role="T001K" Type="Self.T001K" Multiplicity="0..1" />
+        <Association Name="FK_T001K_T1001">
+          <End Role="T001" Type="Self.T001" Multiplicity="1" />
+          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="T001W">
-              <PropertyRef Name="WERKS" />
+            <Principal Role="T001">
+              <PropertyRef Name="BUKRS" />
             </Principal>
             <Dependent Role="T001K">
-              <PropertyRef Name="BWKEY" />
+              <PropertyRef Name="BUKRS" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2368,6 +2418,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySet Name="POA_MAP" EntityType="Self.POA_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_SK" EntityType="Self.POA_SK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRINT_HISTORY" EntityType="Self.PRINT_HISTORY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCTION" EntityType="Self.PRODUCTION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPPLIER_PORT" EntityType="Self.SUPPLIER_PORT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T001" EntityType="Self.T001" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T001K" EntityType="Self.T001K" Schema="dbo" store:Type="Tables" />
@@ -2377,6 +2428,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySet Name="USER_BROLE" EntityType="Self.USER_BROLE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USER_PLANT_MAP" EntityType="Self.USER_PLANT_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="Self.VIRTUAL_PLANT_MAP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WASTE" EntityType="Self.WASTE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="Self.WORKFLOW_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_STATE" EntityType="Self.WORKFLOW_STATE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="Self.WORKFLOW_STATE_USERS" Schema="dbo" store:Type="Tables" />
@@ -2730,8 +2782,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
-          <AssociationSet Name="FK_T001K_T001W" Association="Self.FK_T001K_T001W">
-            <End Role="T001W" EntitySet="T001W" />
+          <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
+            <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
@@ -3291,16 +3343,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1" EntitySet="LACK1" />
           </AssociationSet>
-          <AssociationSet Name="LACK1_PBCK1_MAPPING" Association="EMSModel.LACK1_PBCK1_MAPPING">
-            <End Role="LACK1" EntitySet="LACK1" />
-            <End Role="PBCK1" EntitySet="PBCK1" />
-          </AssociationSet>
           <EntitySet Name="CK4C" EntityType="EMSModel.CK4C" />
-          <EntitySet Name="CK4C_ITEM" EntityType="EMSModel.CK4C_ITEM" />
-          <AssociationSet Name="FK_CK4C_ITEM_CK4C" Association="EMSModel.FK_CK4C_ITEM_CK4C">
-            <End Role="CK4C" EntitySet="CK4C" />
-            <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
-          </AssociationSet>
           <AssociationSet Name="FK_CK4C_MODIFIED_BY" Association="EMSModel.FK_CK4C_MODIFIED_BY">
             <End Role="USER" EntitySet="USER" />
             <End Role="CK4C" EntitySet="CK4C" />
@@ -3316,14 +3359,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <AssociationSet Name="FK_CK4C_USER" Association="EMSModel.FK_CK4C_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CK4C" EntitySet="CK4C" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK4C_ITEM_UOM" Association="EMSModel.FK_CK4C_ITEM_UOM">
-            <End Role="UOM" EntitySet="UOM" />
-            <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND" Association="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND">
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-            <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
           </AssociationSet>
           <EntitySet Name="LACK2" EntityType="EMSModel.LACK2" />
           <AssociationSet Name="FK_LACK2_DOCUMENT_LACK2" Association="EMSModel.FK_LACK2_DOCUMENT_LACK2">
@@ -3360,6 +3395,30 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1_PRODUCTION_DETAIL" EntitySet="LACK1_PRODUCTION_DETAIL" />
           </AssociationSet>
+          <EntitySet Name="CK4C_ITEM" EntityType="EMSModel.CK4C_ITEM" />
+          <AssociationSet Name="FK_CK4C_ITEM_CK4C" Association="EMSModel.FK_CK4C_ITEM_CK4C">
+            <End Role="CK4C" EntitySet="CK4C" />
+            <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK4C_ITEM_UOM" Association="EMSModel.FK_CK4C_ITEM_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND" Association="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND">
+            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+            <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
+          </AssociationSet>
+          <EntitySet Name="LACK1_PBCK1_MAPPING" EntityType="EMSModel.LACK1_PBCK1_MAPPING" />
+          <AssociationSet Name="FK_LACK1_PBCK1_MAPPING_LACK1" Association="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_PBCK1_MAPPING" EntitySet="LACK1_PBCK1_MAPPING" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_PBCK1_MAPPING_PBCK1" Association="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1">
+            <End Role="PBCK1" EntitySet="PBCK1" />
+            <End Role="LACK1_PBCK1_MAPPING" EntitySet="LACK1_PBCK1_MAPPING" />
+          </AssociationSet>
+          <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
+          <EntitySet Name="WASTE" EntityType="EMSModel.WASTE" />
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -3735,12 +3794,12 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="MATERIAL_ID" Type="Int64" />
           <Property Name="LINE_ITEM" Type="Int32" />
           <Property Name="QTY" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="CONVERTED_UOM_ID" Type="Int32" />
           <Property Name="BRAND" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CONVERTION" Precision="18" Scale="2" Type="Decimal" />
+          <Property Name="CONVERTION" Precision="18" Scale="3" Type="Decimal" />
           <Property Name="HJE" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="TARIFF" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="EXCISE_VALUE" Type="Decimal" Precision="18" Scale="2" />
@@ -3748,6 +3807,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="NOTE" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CONVERTED_UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5_MATERIAL" ToRole="CK5" />
+          <Property Name="MATERIAL_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="DOC_NUMBER_SEQ">
           <Key>
@@ -3907,7 +3967,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="SUPPLIER_PLANT" Type="String" Nullable="false" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_PORT_ID" Type="Int32" />
           <Property Name="SUPPLIER_ADDRESS" Type="String" FixedLength="false" Unicode="true" MaxLength="250" />
-          <Property Name="SUPPLIER_PHONE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="SUPPLIER_PHONE" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="PLAN_PROD_FROM" Type="DateTime" Precision="3" />
           <Property Name="PLAN_PROD_TO" Type="DateTime" Precision="3" />
           <Property Name="REQUEST_QTY" Type="Decimal" Precision="18" Scale="2" />
@@ -3949,8 +4009,10 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK1_USER" FromRole="PBCK1" ToRole="USER" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="PBCK1" ToRole="UOM" />
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="PBCK1" ToRole="UOM" />
-          <NavigationProperty Name="LACK1" Relationship="EMSModel.LACK1_PBCK1_MAPPING" FromRole="PBCK1" ToRole="LACK1" />
           <Property Name="SUPPLIER_KPPBC_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="SUPPLIER_COMPANY" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="IS_NPPBKC_IMPORT" Type="Boolean" />
+          <NavigationProperty Name="LACK1_PBCK1_MAPPING" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" FromRole="PBCK1" ToRole="LACK1_PBCK1_MAPPING" />
           </EntityType>
         <Association Name="FK_CK5_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
@@ -4848,6 +4910,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="T001K" Relationship="EMSModel.FK_T001K_T001W" FromRole="T001W" ToRole="T001K" />
           <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="T001W" ToRole="USER_PLANT_MAP" />
+          <Property Name="NPPBKC_IMPORT_ID" Type="String" Unicode="true" FixedLength="false" MaxLength="15" />
         </EntityType>
         <Association Name="FK_HEADER_FOOTER_HEADER_FOOTER">
           <End Type="EMSModel.T001" Role="T001" Multiplicity="1" />
@@ -5254,7 +5317,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PBCK3_DATE" Type="DateTime" Precision="3" />
           <Property Name="DOC_TYPE" Type="Int32" Nullable="false" />
           <Property Name="NPPBCK_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_ID" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_CITY" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="EXEC_DATE_FROM" Type="DateTime" Precision="3" />
@@ -5365,9 +5428,9 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="UOM" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_RETURN_UOM" FromRole="UOM" ToRole="LACK1" />
           <NavigationProperty Name="LACK11" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="UOM" ToRole="LACK1" />
-          <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_UOM" FromRole="UOM" ToRole="CK4C_ITEM" />
           <NavigationProperty Name="LACK111" Relationship="EMSModel.FK_LACK1_UOM" FromRole="UOM" ToRole="LACK1" />
           <NavigationProperty Name="LACK1_PRODUCTION_DETAIL" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_UOM" FromRole="UOM" ToRole="LACK1_PRODUCTION_DETAIL" />
+          <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_UOM" FromRole="UOM" ToRole="CK4C_ITEM" />
         </EntityType>
         <Association Name="FK_CK5_UOM">
           <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
@@ -5468,7 +5531,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="BEGINING_BALANCE" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="TOTAL_INCOME" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="USAGE" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TOTAL_PRODUCTION" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="LACK1_LEVEL" Type="EMSModel.Lack1Level" Nullable="false" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
@@ -5485,9 +5547,10 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK1_USER_APPROVED" FromRole="LACK1" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK1_USER_CREATED" FromRole="LACK1" ToRole="USER" />
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_LACK1_WASTE_UOM" FromRole="LACK1" ToRole="UOM" />
-          <NavigationProperty Name="PBCK1" Relationship="EMSModel.LACK1_PBCK1_MAPPING" FromRole="LACK1" ToRole="PBCK1" />
           <Property Name="LACK1_UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UOM11" Relationship="EMSModel.FK_LACK1_UOM" FromRole="LACK1" ToRole="UOM" />
+          <NavigationProperty Name="LACK1_PBCK1_MAPPING" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1" FromRole="LACK1" ToRole="LACK1_PBCK1_MAPPING" />
+          <Property Name="NOTED" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -5657,10 +5720,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="LACK1_PBCK1_MAPPING">
-          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="*" />
-          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="*" />
-        </Association>
         <EnumType Name="Lack1Level" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Lack1Level" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EntityType Name="CK4C">
           <Key>
@@ -5685,39 +5744,12 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="REPORTED_YEAR" Type="Int32" />
           <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
           <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" Nullable="false" />
-          <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_CK4C" FromRole="CK4C" ToRole="CK4C_ITEM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK4C_MODIFIED_BY" FromRole="CK4C" ToRole="USER" />
           <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_CK4C_MONTH" FromRole="CK4C" ToRole="MONTH" />
           <NavigationProperty Name="POA" Relationship="EMSModel.FK_CK4C_POA" FromRole="CK4C" ToRole="POA" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK4C_USER" FromRole="CK4C" ToRole="USER" />
+          <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_CK4C" FromRole="CK4C" ToRole="CK4C_ITEM" />
         </EntityType>
-        <EntityType Name="CK4C_ITEM">
-          <Key>
-            <PropertyRef Name="CK4C_ITEM_ID" />
-          </Key>
-          <Property Name="CK4C_ID" Type="Int32" Nullable="false" />
-          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="PROD_QTY" Type="Decimal" Nullable="false" Precision="15" Scale="2" />
-          <Property Name="UOM_PROD_QTY" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_ITEM_CK4C" FromRole="CK4C_ITEM" ToRole="CK4C" />
-          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK4C_ITEM_UOM" FromRole="CK4C_ITEM" ToRole="UOM" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" FromRole="CK4C_ITEM" ToRole="ZAIDM_EX_BRAND" />
-          <Property Name="CK4C_ITEM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-        </EntityType>
-        <Association Name="FK_CK4C_ITEM_CK4C">
-          <End Type="EMSModel.CK4C" Role="CK4C" Multiplicity="1" />
-          <End Type="EMSModel.CK4C_ITEM" Role="CK4C_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CK4C">
-              <PropertyRef Name="CK4C_ID" />
-            </Principal>
-            <Dependent Role="CK4C_ITEM">
-              <PropertyRef Name="CK4C_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CK4C_MODIFIED_BY">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.CK4C" Role="CK4C" Multiplicity="*" />
@@ -5766,32 +5798,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CK4C_ITEM_UOM">
-          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
-          <End Type="EMSModel.CK4C_ITEM" Role="CK4C_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UOM">
-              <PropertyRef Name="UOM_ID" />
-            </Principal>
-            <Dependent Role="CK4C_ITEM">
-              <PropertyRef Name="UOM_PROD_QTY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND">
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="1" />
-          <End Type="EMSModel.CK4C_ITEM" Role="CK4C_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="WERKS" />
-              <PropertyRef Name="FA_CODE" />
-            </Principal>
-            <Dependent Role="CK4C_ITEM">
-              <PropertyRef Name="WERKS" />
-              <PropertyRef Name="FA_CODE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="LACK2">
           <Key>
             <PropertyRef Name="LACK2_ID" />
@@ -5807,8 +5813,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="SUBMISSION_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EX_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="EX_TYP_DESC" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
-          <Property Name="GOV_STATUS" Type="Int32" Nullable="false" />
-          <Property Name="STATUS" Type="Int32" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" Nullable="false" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
@@ -5824,6 +5830,10 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="LACK2" ToRole="USER" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="LACK2" ToRole="USER" />
           <Property Name="LACK2_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="REJECTED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_LACK2_DOCUMENT_LACK2">
           <End Type="EMSModel.LACK2" Role="LACK2" Multiplicity="1" />
@@ -5960,6 +5970,134 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CK4C_ITEM">
+          <Key>
+            <PropertyRef Name="CK4C_ITEM_ID" />
+          </Key>
+          <Property Name="CK4C_ITEM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CK4C_ID" Type="Int32" Nullable="false" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PROD_QTY" Type="Decimal" Nullable="false" Precision="15" Scale="2" />
+          <Property Name="UOM_PROD_QTY" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_ITEM_CK4C" FromRole="CK4C_ITEM" ToRole="CK4C" />
+          <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK4C_ITEM_UOM" FromRole="CK4C_ITEM" ToRole="UOM" />
+          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" FromRole="CK4C_ITEM" ToRole="ZAIDM_EX_BRAND" />
+          <Property Name="HJE_IDR" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TARIFF" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PROD_CODE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PACKED_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="UNPACKED_QTY" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <Association Name="FK_CK4C_ITEM_CK4C">
+          <End Type="EMSModel.CK4C" Role="CK4C" Multiplicity="1" />
+          <End Type="EMSModel.CK4C_ITEM" Role="CK4C_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK4C">
+              <PropertyRef Name="CK4C_ID" />
+            </Principal>
+            <Dependent Role="CK4C_ITEM">
+              <PropertyRef Name="CK4C_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK4C_ITEM_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
+          <End Type="EMSModel.CK4C_ITEM" Role="CK4C_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="CK4C_ITEM">
+              <PropertyRef Name="UOM_PROD_QTY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND">
+          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="1" />
+          <End Type="EMSModel.CK4C_ITEM" Role="CK4C_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_BRAND">
+              <PropertyRef Name="WERKS" />
+              <PropertyRef Name="FA_CODE" />
+            </Principal>
+            <Dependent Role="CK4C_ITEM">
+              <PropertyRef Name="WERKS" />
+              <PropertyRef Name="FA_CODE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="LACK1_PBCK1_MAPPING">
+          <Key>
+            <PropertyRef Name="LACK1_PBCK1_MAPPING_ID" />
+          </Key>
+          <Property Name="LACK1_PBCK1_MAPPING_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK1_ID" Type="Int32" Nullable="false" />
+          <Property Name="PBCK1_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1" FromRole="LACK1_PBCK1_MAPPING" ToRole="LACK1" />
+          <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" FromRole="LACK1_PBCK1_MAPPING" ToRole="PBCK1" />
+        </EntityType>
+        <Association Name="FK_LACK1_PBCK1_MAPPING_LACK1">
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
+          <End Type="EMSModel.LACK1_PBCK1_MAPPING" Role="LACK1_PBCK1_MAPPING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PBCK1_MAPPING">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_PBCK1_MAPPING_PBCK1">
+          <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="1" />
+          <End Type="EMSModel.LACK1_PBCK1_MAPPING" Role="LACK1_PBCK1_MAPPING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK1">
+              <PropertyRef Name="PBCK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PBCK1_MAPPING">
+              <PropertyRef Name="PBCK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PRODUCTION">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="PRODUCTION_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="QTY_UNPACKED" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="QTY_PACKED" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="WASTE">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="WASTE_PROD_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="WASTE_QTY_STICK" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="WASTE_QTY_GRAM" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="REJECT_QTY_STICK" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="WASTE_PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6238,7 +6376,8 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
     <EntitySetMapping Name="CK5_MATERIAL">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5_MATERIAL)">
         <MappingFragment StoreEntitySet="CK5_MATERIAL">
-          <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
+          <ScalarProperty Name="MATERIAL_DESC" ColumnName="MATERIAL_DESC" />
+                <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
           <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
           <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
           <ScalarProperty Name="LINE_ITEM" ColumnName="LINE_ITEM" />
@@ -6366,7 +6505,9 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
     <EntitySetMapping Name="PBCK1">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PBCK1)">
         <MappingFragment StoreEntitySet="PBCK1">
-          <ScalarProperty Name="SUPPLIER_KPPBC_NAME" ColumnName="SUPPLIER_KPPBC_NAME" />
+                <ScalarProperty Name="IS_NPPBKC_IMPORT" ColumnName="IS_NPPBKC_IMPORT" />
+                <ScalarProperty Name="SUPPLIER_COMPANY" ColumnName="SUPPLIER_COMPANY" />
+                <ScalarProperty Name="SUPPLIER_KPPBC_NAME" ColumnName="SUPPLIER_KPPBC_NAME" />
                 <ScalarProperty Name="NPPBKC_KPPBC_ID" ColumnName="NPPBKC_KPPBC_ID" />
                 <ScalarProperty Name="REMAINING_QUOTA" ColumnName="REMAINING_QUOTA" />
                 <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
@@ -6648,6 +6789,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="T001W">
             <EntityTypeMapping TypeName="EMSModel.T001W">
               <MappingFragment StoreEntitySet="T001W">
+                <ScalarProperty Name="NPPBKC_IMPORT_ID" ColumnName="NPPBKC_IMPORT_ID" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="IS_MAIN_PLANT" ColumnName="IS_MAIN_PLANT" />
@@ -6838,6 +6980,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="NOTED" ColumnName="NOTED" />
                 <ScalarProperty Name="LACK1_UOM_ID" ColumnName="LACK1_UOM_ID" />
                 <ScalarProperty Name="APPROVED_DATE_MANAGER" ColumnName="APPROVED_DATE_MANAGER" />
                 <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
@@ -6846,7 +6989,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="LACK1_LEVEL" ColumnName="LACK1_LEVEL" />
-                <ScalarProperty Name="TOTAL_PRODUCTION" ColumnName="TOTAL_PRODUCTION" />
                 <ScalarProperty Name="USAGE" ColumnName="USAGE" />
                 <ScalarProperty Name="TOTAL_INCOME" ColumnName="TOTAL_INCOME" />
                 <ScalarProperty Name="BEGINING_BALANCE" ColumnName="BEGINING_BALANCE" />
@@ -6919,14 +7061,6 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="LACK1_PBCK1_MAPPING" TypeName="EMSModel.LACK1_PBCK1_MAPPING" StoreEntitySet="LACK1_PBCK1_MAPPING">
-            <EndProperty Name="PBCK1">
-              <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
-            </EndProperty>
-            <EndProperty Name="LACK1">
-              <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
-            </EndProperty>
-          </AssociationSetMapping>
           <EntitySetMapping Name="CK4C">
             <EntityTypeMapping TypeName="EMSModel.CK4C">
               <MappingFragment StoreEntitySet="CK4C">
@@ -6952,22 +7086,13 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CK4C_ITEM">
-            <EntityTypeMapping TypeName="EMSModel.CK4C_ITEM">
-              <MappingFragment StoreEntitySet="CK4C_ITEM">
-                <ScalarProperty Name="CK4C_ITEM_ID" ColumnName="CK4C_ITEM_ID" />
-                <ScalarProperty Name="PROD_DATE" ColumnName="PROD_DATE" />
-                <ScalarProperty Name="UOM_PROD_QTY" ColumnName="UOM_PROD_QTY" />
-                <ScalarProperty Name="PROD_QTY" ColumnName="PROD_QTY" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
-                <ScalarProperty Name="CK4C_ID" ColumnName="CK4C_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="LACK2">
             <EntityTypeMapping TypeName="EMSModel.LACK2">
               <MappingFragment StoreEntitySet="LACK2">
+                <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />
+                <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />
+                <ScalarProperty Name="REJECTED_BY" ColumnName="REJECTED_BY" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
                 <ScalarProperty Name="LACK2_NUMBER" ColumnName="LACK2_NUMBER" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
@@ -7030,6 +7155,65 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
                 <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
                 <ScalarProperty Name="MVT" ColumnName="MVT" />
                 <ScalarProperty Name="INVENTORY_MOVEMENT_ID" ColumnName="INVENTORY_MOVEMENT_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CK4C_ITEM">
+            <EntityTypeMapping TypeName="EMSModel.CK4C_ITEM">
+              <MappingFragment StoreEntitySet="CK4C_ITEM">
+                <ScalarProperty Name="UNPACKED_QTY" ColumnName="UNPACKED_QTY" />
+                <ScalarProperty Name="PACKED_QTY" ColumnName="PACKED_QTY" />
+                <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
+                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
+                <ScalarProperty Name="HJE_IDR" ColumnName="HJE_IDR" />
+                <ScalarProperty Name="PROD_DATE" ColumnName="PROD_DATE" />
+                <ScalarProperty Name="UOM_PROD_QTY" ColumnName="UOM_PROD_QTY" />
+                <ScalarProperty Name="PROD_QTY" ColumnName="PROD_QTY" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="CK4C_ID" ColumnName="CK4C_ID" />
+                <ScalarProperty Name="CK4C_ITEM_ID" ColumnName="CK4C_ITEM_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_PBCK1_MAPPING">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_PBCK1_MAPPING">
+              <MappingFragment StoreEntitySet="LACK1_PBCK1_MAPPING">
+                <ScalarProperty Name="PBCK1_ID" ColumnName="PBCK1_ID" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_PBCK1_MAPPING_ID" ColumnName="LACK1_PBCK1_MAPPING_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCTION">
+            <EntityTypeMapping TypeName="EMSModel.PRODUCTION">
+              <MappingFragment StoreEntitySet="PRODUCTION">
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="QTY_PACKED" ColumnName="QTY_PACKED" />
+                <ScalarProperty Name="QTY_UNPACKED" ColumnName="QTY_UNPACKED" />
+                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WASTE">
+            <EntityTypeMapping TypeName="EMSModel.WASTE">
+              <MappingFragment StoreEntitySet="WASTE">
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="WASTE_PROD_DATE" ColumnName="WASTE_PROD_DATE" />
+                <ScalarProperty Name="REJECT_QTY_STICK" ColumnName="REJECT_QTY_STICK" />
+                <ScalarProperty Name="WASTE_QTY_GRAM" ColumnName="WASTE_QTY_GRAM" />
+                <ScalarProperty Name="WASTE_QTY_STICK" ColumnName="WASTE_QTY_STICK" />
+                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

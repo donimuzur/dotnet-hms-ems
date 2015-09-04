@@ -37,42 +37,42 @@
                         @Html.HiddenFor(model => model.CeOfficeCode)
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
-                        @*@Html.HiddenFor(model => model.SubmissionDate)*@
-                        
+                     
                         @Html.HiddenFor(model => model.SourceNpwp)
                         @Html.HiddenFor(model => model.SourceNppbkcId)
                         @Html.HiddenFor(model => model.SourceCompanyCode)
-                        @Html.HiddenFor(model => model.SourceCompanyName)
-                        @Html.HiddenFor(model => model.SourceAddress)
+                      
                         @Html.HiddenFor(model => model.SourceKppbcName)
                         @Html.HiddenFor(model => model.SourcePlantName)
-
+                        
+                        @if (!Model.IsCk5PortToImporter)
+                        {
+                              @Html.HiddenFor(model => model.SourceCompanyName)
+                              @Html.HiddenFor(model => model.SourceAddress)
+                        }
+                        
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyCode)
-                        @Html.HiddenFor(model => model.DestCompanyName)
-                        @Html.HiddenFor(model => model.DestAddress)
+                       
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
                      
+                        @if (!Model.IsCk5Export)
+                        {
+                            @Html.HiddenFor(model => model.DestCompanyName)
+                            @Html.HiddenFor(model => model.DestAddress)
+                        }
+                        
                         @Html.HiddenFor(model => model.PbckDecreeId)
                         @Html.HiddenFor(model => model.PbckDecreeNumber)
                         @Html.HiddenFor(model => model.Pbck1QtyApproved)
                         @Html.HiddenFor(model => model.Ck5TotalExciseable)
                         @Html.HiddenFor(model => model.RemainQuota)
-
-                        @*@Html.HiddenFor(model => model.DnNumber)
-                        @Html.HiddenFor(model => model.StoSenderNumber)
-                        @Html.HiddenFor(model => model.DnDate)
-                        @Html.HiddenFor(model => model.StoReceiverNumber)
-                        @Html.HiddenFor(model => model.StobNumber)
-                        @Html.HiddenFor(model => model.GiDate)
-                        @Html.HiddenFor(model => model.SealingNotifNumber)
-                        @Html.HiddenFor(model => model.UnSealingNotifNumber)
-                        @Html.HiddenFor(model => model.SealingNotifDate)
-                        @Html.HiddenFor(model => model.UnsealingNotifDate)*@
+                        @Html.HiddenFor(model => model.PbckUom)
                         
                         @Html.HiddenFor(model => model.IsCk5Export)
+                        @Html.HiddenFor(model => model.IsCk5PortToImporter)
 
                         @Html.Partial("_CK5InformationCreate")
                         @Html.Partial("_CK5Printout")
@@ -95,6 +95,25 @@
             <div class="modal-body">
                 <p>
                     <span id="modalBodyMessage">Missing CK5 Materials</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ModalCk5PBCK1Quota" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Please fill Source and Destination plant</span>
                 </p>
 
             </div>
@@ -193,7 +212,7 @@
             });
 
             $('#CK5UploadSubmitBtn').click(function() {
-                GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
+                GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")', '@Model.Ck5Type.ToString()');
             });
             
             //$('#Ck5UploadTable').dataTable().makeEditable({
@@ -201,11 +220,19 @@
             //});
         });
 
-      
+
         $("#DestPlantId").change(function() {
             if ($("#DestPlantId").length) {
-               
+                //alert($('#SubmissionDate').val());
+                var isPortToImporter = false;
+                if ('@Model.Ck5Type.ToString()' == "PortToImporter") {
+                    isPortToImporter = true;
+                    RemoveTable();
+                }
+
+
                 var destPlant = $(this).find("option:selected").val();
+
                 if (destPlant == '') {
                     $("input[name='DestNpwp']").val('');
                     $("input[name='DestNppbkcId']").val('');
@@ -214,29 +241,78 @@
                     $("*[name='DestAddress']").val('');
                     $("input[name='DestKppbcName']").val('');
                     $("input[name='DestPlantName']").val('');
-                    
+
                     $("input[name='PbckDecreeId']").val('');
                     $("input[name='PbckDecreeNumber']").val('');
                     $("input[name='PbckDecreeDate']").val('');
-                    $("input[name='Pbck1QtyApproved']").val('');
-                    $("input[name='Ck5TotalExciseable']").val('');
-                    $("input[name='RemainQuota']").val('');
+                    $("input[name='Pbck1QtyApproved']").val('0');
+                    $("input[name='Ck5TotalExciseable']").val('0');
+                    $("input[name='RemainQuota']").val('0');
+                    $("input[name='PbckUom']").val('');
+
+                    if (isPortToImporter) {
+                        $("input[name='KppBcCity']").val('');
+                        $("input[name='CeOfficeCode']").val('');
+                    }
                 } else {
-                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { plantId: destPlant, submissionDate: '@DateTime.Now' });
+
+                    if (isPortToImporter) {
+                        //alert(destPlant);
+                        ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant, ck5Type:'@Model.Ck5Type' });
+                    } else {
+
+
+                        var submissionDate = $('#SubmissionDate').val();
+                        if (submissionDate == '')
+                            submissionDate = '@DateTime.Now';
+
+                        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                        var _goodtypegroupid = $("#GoodType").val();
+                        var sourceNppbkcId = $("#SourceNppbkcId").val();
+                        
+                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
+
+                    }
+
                 }
             }
+        });
+
+        $("#GoodType").change(function() {
+            var _goodtypegroupid = $("#GoodType").val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+            var destPlant = $("#DestPlantId").find("option:selected").val();
+            var sourceNppbkcId = $("#SourceNppbkcId").val();
+            if (destPlant == '' || sourcePlant == '' || destPlant == '') {
+                $("input[name='PbckDecreeId']").val('');
+                $("input[name='PbckDecreeNumber']").val('');
+                $("input[name='PbckDecreeDate']").val('');
+                $("input[name='Pbck1QtyApproved']").val('0');
+                $("input[name='Ck5TotalExciseable']").val('0');
+                $("input[name='RemainQuota']").val('0');
+                $("input[name='PbckUom']").val('');
+            } else {
+                var submissionDate = $('#SubmissionDate').val();
+                if (submissionDate == '')
+                    submissionDate = '@DateTime.Now';
+                
+
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: _goodtypegroupid });
+                
+            }
+
         });
 
         $("#SourcePlantId").change(function() {
             if ($("#SourcePlantId").length) {
                 var sourcePlant = $(this).find("option:selected").val();
-               
+
                 //remove table
                 try {
                     RemoveTable();
                 } catch(e) {
 
-                } 
+                }
                 if (sourcePlant == '') {
                     $("input[name='SourceNpwp']").val('');
                     $("input[name='SourceNppbkcId']").val('');
@@ -248,31 +324,22 @@
                     //enable upload
                     $('#btnUploadInfo').enable(false);
                     $('#CK5UploadSubmitBtn').enable(false);
-                    
+
                     $("input[name='KppBcCity']").val('');
                     $("input[name='CeOfficeCode']").val('');
-                    
-                    //$("input[name='PbckDecreeId']").val('');
-                    //$("input[name='PbckDecreeNumber']").val('');
-                    //$("input[name='PbckDecreeDate']").val('');
-                    //$("input[name='Pbck1QtyApproved']").val('');
-                    //$("input[name='Ck5TotalExciseable']").val('');
-                    //$("input[name='RemainQuota']").val('');
+
 
                 } else {
-                  
-                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
+                    
+                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type : '@Model.Ck5Type' });
                 }
             }
         });
 
-       
         
-        //$('#btnAddMaterial').click();
         $("#btnAddRow").click(function () {
             $('#Ck5UploadModal').modal('show');
         });
-        
         $("#btnSaveMaterial").click(function () {
             AddRow('@Url.Action("GetSourcePlantDetails", "CK5")');
         });

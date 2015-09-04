@@ -56,8 +56,12 @@ namespace Sampoerna.EMS.Website.Models.PLANT
 
         public string KPPBC_NAME { get; set; }
 
+        public string SUPPLIER_COMPANY { get; set; }
+
         [Required]
         public string NPPBKC_ID { get; set; }
+
+        public string NPPBKC_IMPORT_ID { get; set; }
         public DateTime? CreatedDate { get; set; }
         
         public List<PlantReceiveMaterialItemModel> ReceiveMaterials { get; set; }

@@ -8,6 +8,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models;
@@ -92,11 +93,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Lack1IndexViewModel { Details = result };
 
             return PartialView("_Lack1Table", viewModel);
-
-
-            //model.Details = GetListByNppbkc(model);
-            //return PartialView("_Lack1Table", model);
-            return null;
         }
 
         #endregion
@@ -166,23 +162,58 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(data);
         }
 
+        /// <summary>
+        /// user for get received plant id
+        /// </summary>
+        /// <param name="nppbkcId"></param>
+        /// <returns></returns>
         public JsonResult GetPlantListByNppbkcId(string nppbkcId)
         {
             var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
-            var model = new Lack1CreateNppbkcViewModel() { PlantList = listPlant };
+            var model = new Lack1CreateViewModel() { ReceivePlantList = listPlant };
             return Json(model);
+        }
+
+        public JsonResult GetExcisableGoodsTypeByNppbkcId(string nppbkcId)
+        {
+            var data = GetExciseGoodsTypeList(nppbkcId);
+            var model = new Lack1CreateViewModel() { ExGoodTypeList = data };
+            return Json(model);
+        }
+
+        public JsonResult GetSupplierListByParam(string nppbkcId, string excisableGoodsType)
+        {
+            var data = GetSupplierPlantListByParam(nppbkcId, excisableGoodsType);
+            var model = new Lack1CreateViewModel() { SupplierList = data };
+            return Json(model);
+        }
+
+        public JsonResult Generate(Lack1GenerateInputModel param)
+        {
+            var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
+            var outGeneratedData = _lack1Bll.GenerateLack1DataByParam(input);
+            return Json(outGeneratedData);
         }
 
         #endregion
 
         #region ----- create -----
 
-        public ActionResult Create()
+        public ActionResult Create(Enums.Lack1Level? lack1Level)
         {
-            var model = new Lack1CreateNppbkcViewModel
+
+            if (!lack1Level.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new Lack1CreateViewModel
             {
                 MainMenu = _mainMenu,
-                CurrentMenu = PageInfo
+                CurrentMenu = PageInfo,
+                Lack1Level = lack1Level.Value,
+                MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
+                MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : ""
             };
 
             return CreateInitial(model);
@@ -190,38 +221,28 @@ namespace Sampoerna.EMS.Website.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Lack1CreateNppbkcViewModel model)
+        public ActionResult Create(Lack1CreateViewModel model)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Invalid input, please check the input.", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
 
-                //process save
-                var dataToSave = Mapper.Map<Lack1Dto>(model);
-                dataToSave.CreateBy = CurrentUser.USER_ID;
-
-                var input = new Lack1SaveInput()
+                var input = Mapper.Map<Lack1CreateParamInput>(model);
+                input.UserId = CurrentUser.USER_ID;
+                var saveOutput = _lack1Bll.Create(input);
+                if (saveOutput.Success)
                 {
-                    Lack1 = dataToSave,
-                    UserId = CurrentUser.USER_ID,
-                    WorkflowActionType = Enums.ActionType.Created
-                };
-
-                //only add this information from gov approval,
-                //when save create/edit 
-                input.Lack1.DecreeDate = null;
-
-                var saveResult = _lack1Bll.Save(input);
-
-                if (saveResult.Success)
-                {
-                    return RedirectToAction("Edit", new { id = saveResult.Id });
+                    AddMessageInfo("Save successfull", Enums.MessageInfoType.Info);
+                    if (model.Lack1Level == Enums.Lack1Level.Nppbkc)
+                    {
+                        return RedirectToAction("Index");    
+                    }
+                    return RedirectToAction("ListByPlant");
                 }
-
             }
             catch (DbEntityValidationException ex)
             {
@@ -248,12 +269,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        public ActionResult CreateInitial(Lack1CreateNppbkcViewModel model)
+        public ActionResult CreateInitial(Lack1CreateViewModel model)
         {
             return View("Create", InitialModel(model));
         }
 
         #endregion
+
+        #region -------------- Private Method --------
 
         private SelectList GetNppbkcListOnPbck1ByCompanyCode(string companyCode)
         {
@@ -261,7 +284,23 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(data, "NPPBKC_ID", "NPPBKC_ID");
         }
 
-        private Lack1CreateNppbkcViewModel InitialModel(Lack1CreateNppbkcViewModel model)
+        private SelectList GetExciseGoodsTypeList(string nppbkcId)
+        {
+            var data = _pbck1Bll.GetGoodsTypeByNppbkcId(nppbkcId);
+            return new SelectList(data, "EXC_GOOD_TYP", "EXT_TYP_DESC");
+        }
+
+        private SelectList GetSupplierPlantListByParam(string nppbkcId, string excisableGoodsType)
+        {
+            var data = _pbck1Bll.GetSupplierPlantByParam(new Pbck1GetSupplierPlantByParamInput()
+            {
+                NppbkcId = nppbkcId,
+                ExciseableGoodsTypeId = excisableGoodsType
+            });
+            return new SelectList(data, "WERKS", "DROPDOWNTEXTFIELD");
+        }
+
+        private Lack1CreateViewModel InitialModel(Lack1CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
@@ -270,9 +309,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MontList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearsList = CreateYearList();
             model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
-            model.PlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
-            model.SupplierList = GlobalFunctions.GetSupplierPlantList();
-            model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
+            model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
+            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
             model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
             model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
 
@@ -290,6 +329,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return new SelectList(years, "ValueField", "TextField");
         }
+
+        #endregion
 
         #region Completed Document
 
@@ -333,6 +374,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        #endregion
+
+        #region -------------- Details -----------
+
+        public ActionResult Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            return View();
+
+        }
+        
         #endregion
 
     }

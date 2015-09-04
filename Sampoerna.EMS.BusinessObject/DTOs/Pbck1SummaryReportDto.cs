@@ -31,6 +31,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string SupplierNppbkcId { get; set; }
         public string SupplierKppbcId { get; set; }
         public string SupplierKppbcName { get; set; }
+        public string SupplierCompany { get; set; }
         public string SupplierPlantWerks { get; set; }
         public DateTime? PlanProdFrom { get; set; }
         public DateTime? PlanProdTo { get; set; }
@@ -58,6 +59,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string LatestSaldoUomId { get; set; }
         public string LatestSaldoUomName { get; set; }
         public List<T001WDto> NppbkcPlants { get; set; }
-
+        public bool IsNppbkcImport { get; set; }
     }
 }

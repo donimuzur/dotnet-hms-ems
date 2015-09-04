@@ -22,5 +22,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Message { get; set; }
         public string Total { get; set; }
 
+        public string MaterialDesc { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.LACK1_INCOME_DETAIL = new HashSet<LACK1_INCOME_DETAIL>();
             this.LACK1_PLANT = new HashSet<LACK1_PLANT>();
             this.LACK1_PRODUCTION_DETAIL = new HashSet<LACK1_PRODUCTION_DETAIL>();
-            this.PBCK1 = new HashSet<PBCK1>();
+            this.LACK1_PBCK1_MAPPING = new HashSet<LACK1_PBCK1_MAPPING>();
         }
     
         public int LACK1_ID { get; set; }
@@ -46,7 +46,6 @@ namespace Sampoerna.EMS.BusinessObject
         public decimal BEGINING_BALANCE { get; set; }
         public decimal TOTAL_INCOME { get; set; }
         public decimal USAGE { get; set; }
-        public decimal TOTAL_PRODUCTION { get; set; }
         public Sampoerna.EMS.Core.Enums.Lack1Level LACK1_LEVEL { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
@@ -55,6 +54,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
         public string LACK1_UOM_ID { get; set; }
+        public string NOTED { get; set; }
     
         public virtual ICollection<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
         public virtual ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual UOM UOM1 { get; set; }
-        public virtual ICollection<PBCK1> PBCK1 { get; set; }
         public virtual UOM UOM11 { get; set; }
+        public virtual ICollection<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
     }
 }

@@ -14,7 +14,7 @@ function OnReadyFunction(ck5Type) {
         $('#MenuCK5Domestic').addClass('active');
     }
 
-
+    
     $('#btnUploadInfo').click(function () {
 
         $('#home-tab').removeClass('active');
@@ -31,8 +31,11 @@ function OnReadyFunction(ck5Type) {
         var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
         $('#ck5TableItem tbody').html('');
         total = 0;
+        var isSamePbck1Uom = true;
+        
+        var data = "";
         for (var i = 0; i < datarows.length; i++) {
-            var data = '<tr>';
+            data += '<tr>';
             if (columnLength > 0) {
                 data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][0] + '">' + datarows[i][0] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
@@ -46,7 +49,9 @@ function OnReadyFunction(ck5Type) {
                 data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-                //alert(total);
+                //data += '<td> <input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">';
+                //alert(datarows[i][13]);
                 total += parseFloat(datarows[i][1]); //Qty
                 if (i == 0) {
                     //alert(datarows[i][2]);
@@ -58,12 +63,16 @@ function OnReadyFunction(ck5Type) {
                 }
             }
             data += '</tr>';
-            $('#ck5TableItem tbody').append(data);
-        }
+            if (datarows[i][2] != ($('#PbckUom').val()))
+                isSamePbck1Uom = false;
 
+            //$('#ck5TableItem tbody').append(data);
+        }
+        
         //alert(total);
         $('#GrandTotalEx').val(total.toFixed(2));
-        ValidateRemainQuota(total);
+        
+       
 
         $('#upload-tab').removeClass('active');
         $('#home-tab').addClass('active');
@@ -71,15 +80,46 @@ function OnReadyFunction(ck5Type) {
         $('#information').addClass('active');
         $('#upload').removeClass('active');
 
-        $('#collapse5').addClass('in');
+        $('#collapse5').addClass('in');        
+
+
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter') {
+            $('#ck5TableItem tbody').append(data);
+            return;
+        }
+        if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val())) {
+            $('#ck5TableItem tbody').append(data);
+            return;
+        }
+
+        //if pbck1 uom not same not append the data
+        if (!isSamePbck1Uom) {
+            var pbck1Uom = $('#PbckUom').val();
+            $('#modalBodyMessage').text('Pbck1 Uom Not Same, pbck1 Uom : ' + pbck1Uom);
+            $('#ModalCk5Material').modal('show');
+            return;
+
+        }
+
+        $('#ck5TableItem tbody').append(data);
+        
+        ValidateRemainQuota(total);
+        
     });
 
     $('#collapseTwo').addClass('in');
     $('#collapseThree').addClass('in');
+    
 }
+
+function ValidatePbck1Uom() {
+    
+}
+
 
 function ValidateRemainQuota(total) {
     // var total = parseFloat($('#GrandTotalEx').val());
+    
     var remainQuota = parseFloat($('#RemainQuota').val());
     if (total > remainQuota) {
         $('#collapseThree').removeClass('collapse');
@@ -106,7 +146,7 @@ function IsValidDataUpload() {
     return true;
 }
 
-function GenerateXlsCk5Material(url) {
+function GenerateXlsCk5Material(url, ck5Type) {
     var fileName = $('[name="itemExcelFile"]').val().trim();
     var pos = fileName.lastIndexOf('.');
     var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -119,9 +159,12 @@ function GenerateXlsCk5Material(url) {
     var totalFiles = document.getElementById("itemExcelFile").files.length;
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("itemExcelFile").files[i];
-
         formData.append("itemExcelFile", file);
-        formData.append("plantId", $('#SourcePlantId').val());
+        if (ck5Type == 'PortToImporter')
+            formData.append("plantId", $('#DestPlantId').val());
+        else 
+            formData.append("plantId", $('#SourcePlantId').val());
+        
     }
     $.ajax({
         type: "POST",
@@ -173,7 +216,7 @@ function ajaxGetPbck1Date(url, formData) {
 }
 
 function ajaxGetDestPlantDetails(url, formData) {
-    if (formData.plantId) {
+    if (formData.destPlantId) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -193,6 +236,32 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
                 $("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
                 $("input[name='RemainQuota']").val(data.RemainQuota);
+                //alert(data.PbckUom);
+                $("input[name='PbckUom']").val(data.PbckUom);
+            }
+        });
+    }
+}
+
+function ajaxGetDestPlantDetailsPortToImporter(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                $("input[name='DestNpwp']").val(data.PlantNpwp);
+                $("input[name='DestNppbkcId']").val(data.NPPBCK_ID);
+                $("input[name='DestCompanyCode']").val(data.CompanyCode);
+                $("input[name='DestCompanyName']").val(data.CompanyName);
+                $("*[name='DestAddress']").val(data.CompanyAddress);
+                $("input[name='DestKppbcName']").val(data.KppBcName);
+                $("input[name='DestPlantName']").val(data.PlantName);
+                
+
+                $("input[name='KppBcCity']").val(data.KppbcCity);
+                $("input[name='CeOfficeCode']").val(data.KppbcNo);
+
             }
         });
     }
@@ -409,12 +478,7 @@ function AddValidationClass(isValid, objName) {
 function ValidateCk5Form(ck5Type) {
     var result = true;
     var isValidCk5Detail = true;
-
-    //if ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val())
-    //    alert("True");
-    //else
-    //    alert('false');
-
+    
     if ($('#KppBcCity').find("option:selected").val() == '') {
         AddValidationClass(false, 'KppBcCity');
         result = false;
@@ -456,8 +520,10 @@ function ValidateCk5Form(ck5Type) {
         $("#collapseOne").css({ height: "auto" });
 
     }
-
-    if ($('#SourcePlantId').find("option:selected").val() == '') {
+    if (ck5Type == 'PortToImporter') {
+        $('#SourcePlantId').val('');
+    }
+    else if ($('#SourcePlantId').find("option:selected").val() == '') {
         AddValidationClass(false, 'SourcePlantId');
         result = false;
         // $('#collapseTwo').addClass('in');
@@ -552,6 +618,11 @@ function ValidateCk5Form(ck5Type) {
     // && (ck5Type != 'Domestic')
     if (result) {
 
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter')
+            return result;
+        //alert('Source : ' + $('#SourceNppbkcId').val());
+        //alert('Dest : ' + $('#DestNppbkcId').val());
+        //alert($('#SourceNppbkcId').val() == $('#DestNppbkcId').val());
         if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
             return result;
 

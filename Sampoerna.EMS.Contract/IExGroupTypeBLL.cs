@@ -20,5 +20,7 @@ namespace Sampoerna.EMS.Contract
        void DeleteDetails(EX_GROUP_TYPE_DETAILS detail);
        bool IsGroupNameExist(string name);
        void InsertDetail(int groupid, List<EX_GROUP_TYPE_DETAILS> details, string userid);
+
+        EX_GROUP_TYPE GetGroupByExGroupType(string goodTypeId);
    }
 }

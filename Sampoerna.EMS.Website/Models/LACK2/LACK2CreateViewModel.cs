@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
 {
@@ -33,6 +34,24 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public Enums.UserRole UsrRole { get; set; }
 
         public LACK2Model Lack2Model { get; set; }
-        
+
+        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
+
+        public string ActionType { get; set; }
+
+        public bool AllowApproveAndReject { get; set; }
+        public bool AllowGovApproveAndReject { get; set; }
+
+        public bool AllowManagerReject { get; set; }
+
+        public Enums.DocumentStatusGov StatusGovList { get; set; }
+
+        public Enums.DocumentStatus? DocStatus { get; set; }
+
+        public bool IsSaveSubmit { get; set; }
+
+
+        public List<HttpPostedFileBase> Documents { get; set; }
+
     }
 }

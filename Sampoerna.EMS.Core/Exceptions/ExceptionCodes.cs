@@ -53,6 +53,12 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("Do Reversal Manual SAP")]
             ReversalManualSAP,
 
+            [Description("A record with same parameter is already exist")]
+            Lack1DuplicateSelectionCriteria,
+
+            [Description("Excisable Group Type not found")]
+            ExcisabeGroupTypeNotFound
+
         }
         
         /// <summary>

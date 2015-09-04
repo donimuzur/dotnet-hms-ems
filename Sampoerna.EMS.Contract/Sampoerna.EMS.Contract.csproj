@@ -45,7 +45,7 @@
     <Compile Include="IBACK1BLL.cs" />
     <Compile Include="IBrandRegistrationBLL.cs" />
     <Compile Include="IChangesHistoryBLL.cs" />
-    <Compile Include="ICK4C_BLL.cs" />
+    <Compile Include="ICK4CBLL.cs" />
     <Compile Include="ICK5BLL.cs" />
     <Compile Include="ICountryBLL.cs" />
     <Compile Include="ILFA1BLL.cs" />
@@ -94,6 +94,15 @@
     <Compile Include="IZaidmExProdTypeBLL.cs" />
     <Compile Include="IZaidmExPOAMapBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IBrandRegistrationService.cs" />
+    <Compile Include="Services\ICK4CItemService.cs" />
+    <Compile Include="Services\ICK5Service.cs" />
+    <Compile Include="Services\IExGroupTypeService.cs" />
+    <Compile Include="Services\IInventoryMovementService.cs" />
+    <Compile Include="Services\ILACK1Service.cs" />
+    <Compile Include="Services\IPBCK1Service.cs" />
+    <Compile Include="Services\IT001KService.cs" />
+    <Compile Include="Services\IT001WService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">

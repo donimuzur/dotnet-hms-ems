@@ -75,8 +75,10 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                     </div>
                                     <div class="row">
+                                        
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-3">Plant City<span class="red">*</span></label>
@@ -94,7 +96,9 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     <div class="row">
+                                        
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <label class="col-md-4">Main Plant</label>
@@ -136,6 +140,14 @@
                                                 <label class="col-md-3">Phone<span class="red">*</span></label>
                                                 <div class="col-md-9">
                                                     @Html.TextBoxFor(model => model.Detail.Phone, new { @class = "form-control", @maxlength = "25" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">NPPBKC Import</label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.Detail.NPPBKC_IMPORT_ID, Model.Nppbkc, null, new { @class = "selectpicker form-control", id = "dropdown_nppbkc" })
                                                 </div>
                                             </div>
                                         </div>
