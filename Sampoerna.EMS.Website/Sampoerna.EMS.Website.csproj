@@ -1011,6 +1011,9 @@
     <Content Include="Views\LACK2\Edit.cshtml" />
     <Content Include="Views\LACK2\Detail.cshtml" />
     <Content Include="Views\LACK2\_FileUpload.cshtml" />
+    <Content Include="Views\LACK2\_PrintOut.cshtml" />
+    <Content Include="Views\LACK2\_ChangesLog.cshtml" />
+    <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
