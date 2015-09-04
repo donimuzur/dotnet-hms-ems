@@ -247,6 +247,8 @@ namespace Sampoerna.EMS.BLL
                 ErrorMessage = string.Empty
             };
 
+            #region Validation 
+
             //check if already exists with same selection criteria
             var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
             {
@@ -282,6 +284,8 @@ namespace Sampoerna.EMS.BLL
                     Data = null
                 };
             }
+
+            #endregion
 
             if (checkExcisableGroupType.EX_GROUP_TYPE_ID != null)
                 input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
@@ -417,14 +421,17 @@ namespace Sampoerna.EMS.BLL
         /// <param name="rc"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        private Lack1GeneratedDto SetIncomeListBySelectionCriteria(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input)
+        private Lack1GeneratedDto SetIncomeListBySelectionCriteria(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, out List<string> materialIdList)
         {
+            materialIdList = new List<string>();
             var ck5Input = Mapper.Map<Ck5GetForLack1ByParamInput>(input);
+            ck5Input.IsExcludeSameNppbkcId = true;
             var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
             rc.IncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
 
-            if (rc.IncomeList.Count > 0)
+            if (ck5Data.Count > 0)
             {
+                materialIdList
                 rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
             }
 
