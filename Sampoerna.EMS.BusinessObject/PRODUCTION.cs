@@ -22,5 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> QTY_PACKED { get; set; }
         public string UOM { get; set; }
         public System.DateTime PRODUCTION_DATE { get; set; }
+        public string COMPANY_NAME { get; set; }
+        public string PLANT_NAME { get; set; }
     }
 }
