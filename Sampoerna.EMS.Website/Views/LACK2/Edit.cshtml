@@ -775,7 +775,11 @@
         $('.panel-collapse').removeClass('collapse').addClass('in');
 
     }
+    function printPreview(url) {
 
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+    }
     function GetCk5ByPeriod() {
         var month = parseInt($('#Lack2Model_PeriodMonth').val());
         var year = parseInt($('#Lack2Model_PeriodYear').val());
@@ -802,6 +806,8 @@
                 }
             }
         });
+        
+
     }
     </script>
 
