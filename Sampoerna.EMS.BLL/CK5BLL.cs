@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.BLL
         private IPBCK1BLL _pbck1Bll;
         private ICountryBLL _countryBll;
         private IExGroupTypeBLL _goodTypeGroupBLL;
+        private IVirtualMappingPlantBLL _virtualMappingBLL;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -74,6 +75,7 @@ namespace Sampoerna.EMS.BLL
             _countryBll = new CountryBLL(_uow,_logger);
             _materialBll = new MaterialBLL(_uow, _logger);
             _goodTypeGroupBLL = new ExGroupTypeBLL(_uow, logger);
+            _virtualMappingBLL = new VirtualMappingPlantBLL(_uow, _logger);
         }
         
 
@@ -233,20 +235,22 @@ namespace Sampoerna.EMS.BLL
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
 
-                SetChangesHistory(origin, input.Ck5Dto, input.UserId);
-
-
                 if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
                 {
                     if (string.IsNullOrEmpty(input.Ck5Dto.SOURCE_PLANT_ID))
                         input.Ck5Dto.SOURCE_PLANT_ID = string.Empty;
                 }
 
+                SetChangesHistory(origin, input.Ck5Dto, input.UserId);
+
+                
                 Mapper.Map<CK5Dto, CK5>(input.Ck5Dto, dbData);
 
                 //no change status for edit 2015-07-24
                 //dbData.STATUS_ID = Enums.DocumentStatus.Revised;
                 dbData.MODIFIED_DATE = DateTime.Now;
+
+              
 
                 //delete child first
                 foreach (var ck5Material in dbData.CK5_MATERIAL.ToList())
@@ -1231,11 +1235,22 @@ namespace Sampoerna.EMS.BLL
             //ck5Report.ReportDetails = Mapper.Map<>()
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
+            
+
             result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID;
-            if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
+
+            if (string.IsNullOrEmpty(dtData.SOURCE_PLANT_NPPBKC_ID))
             {
-                result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
-                result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                result.ReportDetails.OfficeCode = string.Empty;
+                result.ReportDetails.SourceOfficeCode = string.Empty;
+            }
+            else
+            {
+                if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
+                {
+                    result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                    result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                }
             }
             result.ReportDetails.SourcePlantName = dtData.SOURCE_PLANT_COMPANY_NAME;
           
@@ -1788,7 +1803,21 @@ namespace Sampoerna.EMS.BLL
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            return Mapper.Map<CK5XmlDto>(dtData);
+            var dataXmlDto = Mapper.Map<CK5XmlDto>(dtData);
+
+            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.ImporterToPlant) {
+                var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
+                
+                dataXmlDto.SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+            }
+
+            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.Export) {
+                var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
+
+                dataXmlDto.DEST_PLANT_ID = plantMap.EXPORT_PLANT_ID;
+            }
+            
+            return dataXmlDto;
 
         }
 
@@ -1848,7 +1877,7 @@ namespace Sampoerna.EMS.BLL
             //        qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
             //}
 
-            output.QtyCk5 = GetQuotaCk5(pbck1.SupplierPlantWerks, pbck1.NppbkcId, pbck1.PeriodFrom, periodEnd, (Enums.ExGoodsType)exgrouptype);
+            output.QtyCk5 = GetQuotaCk5(pbck1.SupplierPlantWerks,pbck1.SupplierNppbkcId, pbck1.NppbkcId, pbck1.PeriodFrom, periodEnd, (Enums.ExGoodsType)exgrouptype);
 
             return output;
         }
@@ -1870,7 +1899,7 @@ namespace Sampoerna.EMS.BLL
 
             else
             {
-                var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(ck5DbData.SOURCE_PLANT_ID,
+                var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(ck5DbData.SOURCE_PLANT_ID, ck5DbData.SOURCE_PLANT_NPPBKC_ID,
                     ck5DbData.SUBMISSION_DATE, ck5DbData.DEST_PLANT_NPPBKC_ID, goodTypeGroups);
 
                 output.QtyApprovedPbck1 = 0;
@@ -1908,7 +1937,7 @@ namespace Sampoerna.EMS.BLL
                 //        qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
                 //}
 
-                output.QtyCk5 = GetQuotaCk5(ck5DbData.SOURCE_PLANT_ID, pbck1npbkc, periodStart, periodEnd, ck5DbData.EX_GOODS_TYPE);
+                output.QtyCk5 = GetQuotaCk5(ck5DbData.SOURCE_PLANT_ID, ck5DbData.SOURCE_PLANT_NPPBKC_ID, pbck1npbkc, periodStart, periodEnd, ck5DbData.EX_GOODS_TYPE);
             }
 
             return output;
@@ -1923,7 +1952,7 @@ namespace Sampoerna.EMS.BLL
         /// <param name="destPlantNppbkcId"></param>
         /// <param name="goodtypegroupid"></param>
         /// <returns></returns>
-        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId, DateTime submissionDate, string destPlantNppbkcId,int? goodtypegroupid)
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId,string plantNppbkcId, DateTime submissionDate, string destPlantNppbkcId,int? goodtypegroupid)
         {
             var output = new GetQuotaAndRemainOutput();
           
@@ -1933,8 +1962,8 @@ namespace Sampoerna.EMS.BLL
             if (dbGoodTypeList != null) {
                 goodtypelist = _goodTypeGroupBLL.GetById(goodtypegroupidval).EX_GROUP_TYPE_DETAILS.Select(x => x.GOODTYPE_ID).ToList();
             }
-            
-            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, submissionDate, destPlantNppbkcId, goodtypelist);
+
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(plantId, plantNppbkcId, submissionDate, destPlantNppbkcId, goodtypelist);
             
             
             if (listPbck1.Count == 0)
@@ -1969,6 +1998,7 @@ namespace Sampoerna.EMS.BLL
                 var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
 
                 var pbck1Npbkc = listPbck1[0].NppbkcId;
+                //var suppPlantNppbkcid = listPbck1[0].SupplierNppbkcId;
                 ////get ck5 
                 //var lisCk5 =
                 //    _repository.Get(
@@ -1987,7 +2017,7 @@ namespace Sampoerna.EMS.BLL
                 //        qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
                 //}
 
-                output.QtyCk5 = GetQuotaCk5(plantId, pbck1Npbkc, periodStart, periodEnd, (Enums.ExGoodsType)goodtypegroupidval);
+                output.QtyCk5 = GetQuotaCk5(plantId, plantNppbkcId, pbck1Npbkc, periodStart, periodEnd, (Enums.ExGoodsType)goodtypegroupidval);
 
                 output.RemainQuota = output.QtyApprovedPbck1 - output.QtyCk5;
                 
@@ -2002,7 +2032,7 @@ namespace Sampoerna.EMS.BLL
 
         
 
-        private decimal GetQuotaCk5(string plantId, string pbck1Npbkc, DateTime periodStart, DateTime periodEnd, Enums.ExGoodsType goodtypegroupid)
+        private decimal GetQuotaCk5(string plantId, string sourceNppbkc, string pbck1Npbkc, DateTime periodStart, DateTime periodEnd, Enums.ExGoodsType goodtypegroupid)
         {
             //get ck5 
             var lisCk5 =
@@ -2010,9 +2040,10 @@ namespace Sampoerna.EMS.BLL
                     c =>
                         c.STATUS_ID != Enums.DocumentStatus.Cancelled
                         && c.SOURCE_PLANT_ID == plantId
+                        && c.SOURCE_PLANT_NPPBKC_ID == sourceNppbkc
                         && c.DEST_PLANT_NPPBKC_ID == pbck1Npbkc
                         && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd 
-                        //&& c.EX_GOODS_TYPE == goodtypegroupid
+                        && c.EX_GOODS_TYPE == goodtypegroupid
                         ).ToList();
 
             decimal qtyCk5 = 0;

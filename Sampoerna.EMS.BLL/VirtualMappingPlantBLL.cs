@@ -33,6 +33,10 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
+        public VIRTUAL_PLANT_MAP GetByCompany(string companyid) {
+            return _repository.Get(x => x.COMPANY_ID == companyid).SingleOrDefault();
+        }
+
         public VIRTUAL_PLANT_MAP GetByIdIncludeChild(int id)
         {
             return _repository.Get(a => a.VIRTUAL_PLANT_MAP_ID == id, null, "T001,T001W,T001W1").FirstOrDefault();

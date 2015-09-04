@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL
     {
         private ILogger _logger;
         private IUnitOfWork _uow;
-        
+
         private IMonthBLL _monthBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
@@ -35,7 +35,10 @@ namespace Sampoerna.EMS.BLL
         private IPBCK1Service _pbck1Service;
         private IT001KService _t001KService;
         private ILACK1Service _lack1Service;
-        
+        private IT001WService _t001WServices;
+        private IExGroupTypeService _exGroupTypeService;
+        private IInventoryMovementService _inventoryMovementService;
+
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -43,6 +46,7 @@ namespace Sampoerna.EMS.BLL
 
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
+            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
@@ -50,8 +54,11 @@ namespace Sampoerna.EMS.BLL
             _pbck1Service = new PBCK1Service(_uow, _logger);
             _t001KService = new T001KService(_uow, _logger);
             _lack1Service = new LACK1Service(_uow, _logger);
+            _t001WServices = new T001WService(_uow, _logger);
+            _exGroupTypeService = new ExGroupTypeService(_uow, _logger);
+            _inventoryMovementService = new InventoryMovementService(_uow, _logger);
         }
-        
+
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
             return Mapper.Map<List<Lack1Dto>>(_lack1Service.GetAllByParam(input));
@@ -64,114 +71,94 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public SaveLack1Output Save(Lack1SaveInput input)
+        public Lack1CreateOutput Create(Lack1CreateParamInput input)
         {
-            LACK1 dbData;
-
-            if (input.Lack1.Lack1Id > 0)
+            var generatedData = GenerateLack1Data(input);
+            if (!generatedData.Success)
             {
+                return new Lack1CreateOutput()
+                {
+                    Success = generatedData.Success,
+                    ErrorCode = generatedData.ErrorCode,
+                    ErrorMessage = generatedData.ErrorMessage,
+                    Id = null,
+                    Lack1Number = string.Empty
+                };
+            }
 
-                //update
-                dbData = _lack1Service.GetById(input.Lack1.Lack1Id);
+            var rc = new Lack1CreateOutput()
+            {
+                Success = false,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
 
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            var data = Mapper.Map<LACK1>(generatedData.Data);
 
-                //set changes history
-                var origin = Mapper.Map<Lack1Dto>(dbData);
-                SetChangesHistory(origin, input.Lack1, input.UserId);
+            //set default when create new LACK-1 Document
+            data.APPROVED_BY_POA = null;
+            data.APPROVED_DATE_POA = null;
+            data.APPROVED_BY_MANAGER = null;
+            data.APPROVED_DATE_MANAGER = null;
+            data.DECREE_DATE = null;
+            data.GOV_STATUS = null;
+            data.STATUS = Enums.DocumentStatus.Draft;
+            data.CREATED_DATE = DateTime.Now;
 
-                Mapper.Map<Lack1Dto, LACK1>(input.Lack1, dbData);
-                dbData.LACK1_DOCUMENT = null;
+            //set from input, exclude on mapper
+            data.CREATED_BY = input.UserId;
+            data.LACK1_LEVEL = input.Lack1Level;
+            data.SUBMISSION_DATE = input.SubmissionDate;
+            data.WASTE_QTY = input.WasteAmount;
+            data.WASTE_UOM = input.WasteAmountUom;
+            data.RETURN_QTY = input.ReturnAmount;
+            data.RETURN_UOM = input.ReturnAmountUom;
 
-                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.Lack1.DecreeDoc);
+            //generate new Document Number get from Sequence Number BLL
+            var generateNumberInput = new GenerateDocNumberInput()
+            {
+                Month = Convert.ToInt32(input.PeriodMonth),
+                Year = Convert.ToInt32(input.PeriodYear),
+                NppbkcId = input.NppbkcId
+            };
+            data.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
 
+            data.LACK1_PLANT = null;
+
+            //set LACK1_PLANT table
+            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                var plantListFromMaster = _t001WServices.GetByNppbkcId(input.NppbkcId);
+                data.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(plantListFromMaster);
             }
             else
             {
-                //Insert
-                var generateNumberInput = new GenerateDocNumberInput()
-                {
-                    Year = Convert.ToInt32(input.Lack1.PeriodMonth),
-                    Month = Convert.ToInt32(input.Lack1.PeriodYears),
-                    NppbkcId = input.Lack1.NppbkcId
-                };
-
-                input.Lack1.Lack1Number = _docSeqNumBll.GenerateNumber(generateNumberInput);
-                input.Lack1.Status = Enums.DocumentStatus.Draft;
-                input.Lack1.CreateDate = DateTime.Now;
-                dbData = new LACK1();
-                Mapper.Map<Lack1Dto, LACK1>(input.Lack1, dbData);
-
-                _lack1Service.Insert(dbData);
-
+                var plantFromMaster = _t001WServices.GetById(input.ReceivedPlantId);
+                data.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
             }
 
-            var output = new SaveLack1Output();
+            _lack1Service.Insert(data);
 
             _uow.SaveChanges();
 
-            output.Success = true;
-            output.Id = dbData.LACK1_ID;
-            output.Lack1Number = dbData.LACK1_NUMBER;
+            rc.Success = true;
+            rc.ErrorCode = string.Empty;
+            rc.Id = data.LACK1_ID;
+            rc.Lack1Number = data.LACK1_NUMBER;
 
-            //set workflow history
-            var getUserRole = _poaBll.GetUserRole(input.UserId);
+            return rc;
+        }
 
-            var inputAddWorkflowHistory = new Lack1WorkflowDocumentInput()
-            {
-                DocumentId = output.Id,
-                DocumentNumber = output.Lack1Number,
-                ActionType = input.WorkflowActionType,
-                UserId = input.UserId,
-                UserRole = getUserRole
-            };
-
-            AddWorkflowHistory(inputAddWorkflowHistory);
-
-            _uow.SaveChanges();
-
-            return output;
+        public Lack1DetailsDto GetDetailsById(int id)
+        {
+            var dbData = _lack1Service.GetDetailsById(id);
+            return Mapper.Map<Lack1DetailsDto>(dbData);
         }
 
         public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
         {
             return _lack1Service.GetLatestSaldoPerPeriod(input);
         }
-
-        #region Private Methods
-
-        private void SetChangesHistory(Lack1Dto origin, Lack1Dto data, string userId)
-        {
-            var changesData = new Dictionary<string, bool>();
-            changesData.Add("BUKRS", origin.Bukrs == data.Bukrs);
-
-            foreach (var listChange in changesData)
-            {
-                if (!listChange.Value)
-                {
-                    var changes = new CHANGES_HISTORY
-                    {
-                        FORM_TYPE_ID = Enums.MenuList.LACK1,
-                        FORM_ID = data.Lack1Id.ToString(),
-                        FIELD_NAME = listChange.Key,
-                        MODIFIED_BY = userId,
-                        MODIFIED_DATE = DateTime.Now
-                    };
-                    switch (listChange.Key)
-                    {
-                        case "BUKRS":
-                            changes.OLD_VALUE = origin.Bukrs;
-                            changes.NEW_VALUE = data.Bukrs;
-                            break;
-                    }
-                    _changesHistoryBll.AddHistory(changes);
-                }
-            }
-
-        }
-        
-        #endregion
 
         #region workflow
 
@@ -207,15 +194,51 @@ namespace Sampoerna.EMS.BLL
         internal List<LACK1_PRODUCTION_DETAIL> GetProductionDetailByPeriode(Lack1GetByPeriodParamInput input)
         {
             var getData = _lack1Service.GetProductionDetailByPeriode(input);
-            
-            if(getData == null) return new List<LACK1_PRODUCTION_DETAIL>();
-            
+
+            if (getData == null) return new List<LACK1_PRODUCTION_DETAIL>();
+
             //todo: select by periode in range period from and period to from input param
 
             return getData.ToList();
         }
 
         public Lack1GeneratedOutput GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
+        {
+            return GenerateLack1Data(input);
+        }
+
+        #region ----------------Private Method-------------------
+        private void SetChangesHistory(Lack1Dto origin, Lack1Dto data, string userId)
+        {
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("BUKRS", origin.Bukrs == data.Bukrs);
+
+            foreach (var listChange in changesData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Enums.MenuList.LACK1,
+                        FORM_ID = data.Lack1Id.ToString(),
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+                    switch (listChange.Key)
+                    {
+                        case "BUKRS":
+                            changes.OLD_VALUE = origin.Bukrs;
+                            changes.NEW_VALUE = data.Bukrs;
+                            break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+
+        }
+
+        private Lack1GeneratedOutput GenerateLack1Data(Lack1GenerateDataParamInput input)
         {
             var oReturn = new Lack1GeneratedOutput()
             {
@@ -240,12 +263,28 @@ namespace Sampoerna.EMS.BLL
             {
                 return new Lack1GeneratedOutput()
                 {
-                    Success = false, 
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria.ToString(), 
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria.ToString(),
                     ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria),
                     Data = null
                 };
             }
+
+            //Check Excisable Group Type if exists
+            var checkExcisableGroupType = _exGroupTypeService.GetGroupTypeDetailByGoodsType(input.ExcisableGoodsType);
+            if (checkExcisableGroupType == null)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound),
+                    Data = null
+                };
+            }
+
+            if (checkExcisableGroupType.EX_GROUP_TYPE_ID != null)
+                input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
 
             var rc = new Lack1GeneratedDto
             {
@@ -254,6 +293,7 @@ namespace Sampoerna.EMS.BLL
                 NppbkcId = input.NppbkcId,
                 ExcisableGoodsType = input.ExcisableGoodsType,
                 ExcisableGoodsTypeDesc = input.ExcisableGoodsTypeDesc,
+                SupplierPlantId = input.SupplierPlantId,
                 BeginingBalance = 0 //set default
             };
 
@@ -271,7 +311,12 @@ namespace Sampoerna.EMS.BLL
                 rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
             }
 
-            rc.ProductionList = SetProductionDetailBySelectionCriteria(input);
+            var productionList = GetProductionDetailBySelectionCriteria(input);
+
+            rc.ProductionList = GetGroupedProductionlist(productionList);
+
+            //set summary
+            rc.SummaryProductionList = GetSummaryGroupedProductionList(productionList);
 
             rc.PeriodMonthId = input.PeriodMonth;
 
@@ -283,11 +328,22 @@ namespace Sampoerna.EMS.BLL
 
             rc.PeriodYear = input.PeriodYear;
             rc.Noted = input.Noted;
-            
-            rc.TotalUsage = 0; //todo: get from Inventory Movement
-            
-            //set summary
-            rc = SetSummaryProductionlist(rc);
+
+            //rc.TotalUsage = 0; //todo: get from Inventory Movement
+
+            //get total usage from INVENTORY MOVEMENT table by param input
+            var invMovementData =
+                _inventoryMovementService.GetTotalUsageForLack1Byparam(new InvMovementGetForLack1ByParamInput()
+                {
+                    Lack1Level = input.Lack1Level,
+                    NppbkcId = input.NppbkcId,
+                    PeriodMonth = input.PeriodMonth,
+                    PeriodYear = input.PeriodYear,
+                    PlantId = input.ReceivedPlantId
+                });
+
+            rc.TotalUsage = invMovementData.Count > 0 ? invMovementData.Sum(d => d.QTY != null ? d.QTY.Value : 0) : 0;
+
             rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
 
             oReturn.Data = rc;
@@ -295,17 +351,16 @@ namespace Sampoerna.EMS.BLL
             return oReturn;
         }
 
-        #region ----------------Private Method-------------------
-
         /// <summary>
         /// Set Production Detail from CK4C Item table 
         /// for Generate LACK-1 data by Selection Criteria
         /// </summary>
-        private List<Lack1GeneratedProductionDataDto> SetProductionDetailBySelectionCriteria(
+        private List<Lack1GeneratedProductionDataDto> GetProductionDetailBySelectionCriteria(
             Lack1GenerateDataParamInput input)
         {
 
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
+            ck4CItemInput.IsHigherFromApproved = true;
             var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
             var faCodeList = ck4CItemData.Select(c => c.FA_CODE).Distinct().ToList();
 
@@ -321,7 +376,8 @@ namespace Sampoerna.EMS.BLL
                                           ProductType = brandData.ZAIDM_EX_PRODTYP.PRODUCT_TYPE,
                                           ProductAlias = brandData.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS,
                                           Amount = ck4CItem.PROD_QTY,
-                                          UomId = ck4CItem.UOM != null ? ck4CItem.UOM.UOM_DESC : string.Empty
+                                          UomId = ck4CItem.UOM_PROD_QTY,
+                                          UomDesc = ck4CItem.UOM != null ? ck4CItem.UOM.UOM_DESC : string.Empty
                                       });
 
             return dataCk4CItemJoined.ToList();
@@ -382,7 +438,7 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
             }
-            
+
             return rc;
         }
 
@@ -411,21 +467,29 @@ namespace Sampoerna.EMS.BLL
                         rc.SupplierCompanyName = companyData.T001.BUTXT;
                     }
                     rc.SupplierPlantAddress = latestDecreeDate.SUPPLIER_ADDRESS;
+                    rc.SupplierPlantName = latestDecreeDate.SUPPLIER_PLANT;
+                    rc.Lack1UomId = latestDecreeDate.REQUEST_QTY_UOM;
                 }
+                rc.Pbck1List = Mapper.Map<List<Lack1GeneratedPbck1DataDto>>(pbck1Data);
+
+            }
+            else
+            {
+                rc.Pbck1List = new List<Lack1GeneratedPbck1DataDto>();
             }
             return rc;
         }
 
         /// <summary>
-        /// set Summary Production List 
+        /// 
         /// </summary>
-        /// <param name="rc"></param>
+        /// <param name="list"></param>
         /// <returns></returns>
-        private Lack1GeneratedDto SetSummaryProductionlist(Lack1GeneratedDto rc)
+        private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list)
         {
-            if (rc.ProductionList.Count > 0)
+            if (list.Count > 0)
             {
-                var groupedData = rc.ProductionList.GroupBy(p => new
+                var groupedData = list.GroupBy(p => new
                 {
                     p.ProdCode,
                     p.ProductType,
@@ -442,14 +506,34 @@ namespace Sampoerna.EMS.BLL
                     Amount = g.Sum(p => p.Amount)
                 });
 
-                rc.SummaryProductionList = groupedData.ToList();
+                return groupedData.ToList();
             }
-            else
+            return new List<Lack1GeneratedProductionDataDto>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private List<Lack1GeneratedSummaryProductionDataDto> GetSummaryGroupedProductionList(List<Lack1GeneratedProductionDataDto> list)
+        {
+            if (list.Count > 0)
             {
-                rc.SummaryProductionList = new List<Lack1GeneratedProductionDataDto>();
+                var groupedData = list.GroupBy(p => new
+                {
+                    p.UomId,
+                    p.UomDesc
+                }).Select(g => new Lack1GeneratedSummaryProductionDataDto()
+                {
+                    UomId = g.Key.UomId,
+                    UomDesc = g.Key.UomDesc,
+                    Amount = g.Sum(p => p.Amount)
+                });
+
+                return groupedData.ToList();
             }
-            
-            return rc;
+            return new List<Lack1GeneratedSummaryProductionDataDto>();
         }
 
         #endregion
