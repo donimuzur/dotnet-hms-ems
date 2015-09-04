@@ -1810,6 +1810,12 @@ namespace Sampoerna.EMS.BLL
                 
                 dataXmlDto.SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
             }
+
+            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.Export) {
+                var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
+
+                dataXmlDto.DEST_PLANT_ID = plantMap.EXPORT_PLANT_ID;
+            }
             
             return dataXmlDto;
 
