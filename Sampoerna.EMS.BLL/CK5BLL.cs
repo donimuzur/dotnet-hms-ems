@@ -681,9 +681,11 @@ namespace Sampoerna.EMS.BLL
                     CancelledDocument(input);
                     break;
                 case Enums.ActionType.GICreated:
+                case Enums.ActionType.GICompleted:
                     GiCreatedDocument(input);
                     break;
                 case Enums.ActionType.GRCreated:
+                case Enums.ActionType.GRCompleted:
                     GrCreatedDocument(input);
                     break;
                 case Enums.ActionType.CancelSAP:
@@ -704,15 +706,20 @@ namespace Sampoerna.EMS.BLL
 
         private void SendEmailWorkflow(CK5WorkflowDocumentInput input)
         {
-            //todo: body message from email template
-            //todo: to = ?
-            //todo: subject = from email template
-            var to = "irmansulaeman41@gmail.com";
-            var subject = "this is subject for " + input.DocumentNumber;
-            var body = "this is body message for " + input.DocumentNumber;
-            //var from = "a@gmail.com";
+        //    //todo: body message from email template
+        //    //todo: to = ?
+        //    //todo: subject = from email template
+        //    var to = "irmansulaeman41@gmail.com";
+        //    var subject = "this is subject for " + input.DocumentNumber;
+        //    var body = "this is body message for " + input.DocumentNumber;
+        //    //var from = "a@gmail.com";
 
-            _messageService.SendEmail( to, subject, body, true);
+            var ck5Dto = Mapper.Map<CK5Dto>(_repository.Get(c => c.CK5_ID == input.DocumentId).FirstOrDefault());
+
+            var mailProcess = ProsesMailNotificationBody(ck5Dto, input.ActionType);
+
+            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+
         }
 
         private MailNotification ProsesMailNotificationBody(CK5Dto ck5Dto, Enums.ActionType actionType)
@@ -1073,7 +1080,8 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS_ID != Enums.DocumentStatus.GICreated)
+            if (dbData.STATUS_ID != Enums.DocumentStatus.GICreated &&
+                dbData.STATUS_ID != Enums.DocumentStatus.GICompleted)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = dbData.SEALING_NOTIF_NUMBER;
@@ -1102,7 +1110,8 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS_ID != Enums.DocumentStatus.GRCreated)
+            if (dbData.STATUS_ID != Enums.DocumentStatus.GRCreated &&
+                dbData.STATUS_ID != Enums.DocumentStatus.GRCompleted)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = dbData.SEALING_NOTIF_NUMBER;
