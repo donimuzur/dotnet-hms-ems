@@ -716,42 +716,27 @@ function AddRow() {
         
         $('#Ck5UploadModal').modal('hide');
 
+        var convertedQty = parseFloat($('#uploadMaterialQty').val()) * parseFloat($('#uploadMaterialConvertion').val());
+        var total = parseFloat($('#uploadMaterialQty').val()) * convertedQty;
+        
         $("#Ck5UploadTable tbody").append(
             "<tr>" +
                 "<td>" + $('#uploadMaterialNumber').val() + "</td>" +
                 "<td>" + $('#uploadMaterialQty').val() + "</td>" +
                 "<td>" + $('#uploadMaterialUom').val() + "</td>" +
                 "<td>" + $('#uploadMaterialConvertion').val() + "</td>" +
-                "<td></td>" +
+                "<td>" + convertedQty.toFixed(3) + "</td>" +
                 "<td>" + $('#uploadConvertedUom').val() + "</td>" +
-                "<td></td>" +
-                "<td></td>" +
-                "<td></td>" +
+                "<td>" + $('#uploadMaterialHje').val() + "</td>" +
+                "<td>" + $('#uploadMaterialTariff').val() + "</td>" +
+                "<td>" + total.toFixed(3) + "</td>" +
                 "<td>" + $('#uploadUsdValue').val() + "</td>" +
                 "<td>" + $('#uploadNote').val() + "</td>" +
                 "<td></td>" +
                 "</tr>");
     }
     
-    //var formData = new FormData();
-    //formData.append("ck5Id", 122);
-    ////alert('url : ' + url);
-    
-    //$.ajax({
-    //    type: "POST",
-    //    url: url,
-    //    data: formData,
-    //    dataType: 'json',
-    //    contentType: false,
-    //    processData: false,
-    //    success: function (response) {
-    //        alert(response);
-    //    }
-    //    //,
-    //    //error: function (error) {
-    //    //    alert("errror " + error);
-    //    //}
-    //});
+  
 }
 
 function ajaxGetListMaterial(url, formData) {

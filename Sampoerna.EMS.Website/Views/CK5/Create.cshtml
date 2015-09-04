@@ -178,30 +178,20 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label class="col-md-4">USD Value</label>
-                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialConvertedQty" })
-
-                    </div>
-                    <div class="col-md-6">
                         <label class="col-md-4">Converted UOM</label>
                         @Html.DropDownListFor(model => model.PackageUomName, Model.PackageUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })
-                        
-                    </div>
-                  
-                </div>
-                <div class="row">
-                    
-                    <div class="col-md-6">
-                        <label class="col-md-4">Excise Value</label>
-                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialExciseValue", @disabled = "disabled" })
 
                     </div>
+
                     <div class="col-md-6">
                         <label class="col-md-4">USD Value</label>
                         @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadUsdValue" })
 
                     </div>
+                  
+                  
                 </div>
+               
                 <div class="row">
                     <div class="col-md-6">
                         <label class="col-md-4">Note</label>
