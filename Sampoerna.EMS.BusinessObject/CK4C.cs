@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> REPORTED_MONTH { get; set; }
         public Nullable<int> REPORTED_YEAR { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
-        public Sampoerna.EMS.Core.Enums.DocumentStatusGov GOV_STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
     
         public virtual USER USER { get; set; }
         public virtual MONTH MONTH { get; set; }
