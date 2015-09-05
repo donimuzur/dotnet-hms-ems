@@ -309,7 +309,8 @@ namespace Sampoerna.EMS.BLL
 
             //Set Income List by selection Criteria
             //from CK5 data
-            rc = SetIncomeListBySelectionCriteria(rc, input);
+            List<string> materialIdlist;
+            rc = SetIncomeListBySelectionCriteria(rc, input, out materialIdlist);
 
             if(rc.IncomeList.Count == 0)
                 return new Lack1GeneratedOutput()
@@ -431,7 +432,8 @@ namespace Sampoerna.EMS.BLL
 
             if (ck5Data.Count > 0)
             {
-                var s = ck5Data.Select(c => c.CK5_MATERIAL);
+                var s = ck5Data.Select(c => c.CK5_MATERIAL).ToList();
+                
                 rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
             }
 
