@@ -82,6 +82,10 @@ namespace Sampoerna.EMS.Core
             StoRecGICompleted = 42,
             StoRecGRPartial = 45,
             StoRecGRCompleted = 46,
+            TFPosted = 50,
+            TFReversed = 51,
+            TFPartial = 52,
+
 
             GIPartial = 15,
 
@@ -196,7 +200,16 @@ namespace Sampoerna.EMS.Core
             STOBGIPartial = 245,
             
             [Description("STOB Good Receive Partial")]
-            STOBGRPartial = 250
+            STOBGRPartial = 250,
+
+            [Description("TF Posted")]
+            TFPosted = 300,
+
+            [Description("TF Reversal")]
+            TFReversed = 310,
+
+            [Description("TF Partial")]
+            TFPartial = 315
         }
         
 
@@ -314,7 +327,15 @@ namespace Sampoerna.EMS.Core
             STOBGIPartial = 245,
             
             [Description("STOB Good Receive Partial")]
-            STOBGRPartial = 250
+            STOBGRPartial = 250,
+            [Description("TF Posted")]
+            TFPosted = 300,
+
+            [Description("TF Reversal")]
+            TFReversed = 310,
+
+            [Description("TF Partial")]
+            TFPartial = 315
         }
 
         /// <summary>
