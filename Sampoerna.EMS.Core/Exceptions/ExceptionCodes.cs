@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("Missing Income List Item")]
             MissingIncomeListItem,
 
-            [Description("'Missing Hasil Produksi BKC")]
+            [Description("Missing Hasil Produksi BKC")]
             MissingProductionList
 
         }

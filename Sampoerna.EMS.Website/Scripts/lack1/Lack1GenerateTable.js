@@ -6,7 +6,7 @@
 }
 
 function generateTable(data) {
-
+    console.log(data);
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
 
@@ -22,7 +22,7 @@ function generateTable(data) {
         '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
-        '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+        '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
         '<td rowspan="' + rowCount + '">' + (data.Noted ? data.Noted : '') + '</td></tr>';
         /*loop record*/
         for (var i = 1; i < data.IncomeList.length; i++) {
@@ -43,7 +43,7 @@ function generateTable(data) {
         '<td></td>' +
         '<td>' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
         '<td>' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
-        '<td>' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+        '<td>' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
         '<td>' + (data.Noted ? data.Noted : '') + '</td></tr>';
         $('#IncomeListCount').val(0);
     }
