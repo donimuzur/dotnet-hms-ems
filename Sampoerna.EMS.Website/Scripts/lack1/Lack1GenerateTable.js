@@ -27,8 +27,8 @@ function generateTable(data) {
         /*loop record*/
         for (var i = 1; i < data.IncomeList.length; i++) {
             rowIndex = rowIndex + 1;
-            var item = '<tr><td>' + rowIndex + '</td><td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].StringRegistrationDate + '</td>' +
-                        '<td>' + data.IncomeList[0].Amount + '</td></tr>';
+            var item = '<tr><td>' + rowIndex + '</td><td>' + data.IncomeList[i].RegistrationNumber + ' - ' + data.IncomeList[i].StringRegistrationDate + '</td>' +
+                        '<td>' + data.IncomeList[i].Amount + '</td></tr>';
             rc.append(item);
         }
         /*end loop record*/

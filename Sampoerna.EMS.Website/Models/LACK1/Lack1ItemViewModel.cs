@@ -123,6 +123,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public int PBCK1_ID { get; set; }
         public string PBCK1_NUMBER { get; set; }
         public DateTime? DECREE_DATE { get; set; }
+        public string DisplayDecreeDate { get; set; }
     }
 
     public class Lack1IncomeDetailItemModel
