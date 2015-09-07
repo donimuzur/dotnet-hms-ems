@@ -41,45 +41,32 @@
 @section scripts
 {
     <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-            $('#btnCancel').click(function (e) {
-                location.href = '@Url.Action("DocumentList", "CK4C")';
+    $(document).ready(function () {
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("DocumentList", "CK4C")';
+            });
+
+        $("input[name='based-on']").click(function (e) {
+                ChangeBasedOn(this.value);
             });
         });
 
         $('#MenuCk4cDocumentList').addClass('active');
 
+        function ChangeBasedOn(value) {
+            var IsDisabledPlant = false;
+            var IsDisabledNppbkc = true;
 
-        $("#CompanyCode").change(function () {
-            if ($("#CompanyCode").length) {
-                var cpy = $(this).find("option:selected").val();
-                $('#SearchInput_PlantId option').remove();
-                if (cpy == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
-                } else {
-                    ajaxSelectCompany('@Url.Action("CompanyListPartialCk4C", "CK4C")', { companyId: cpy });
-                }
+            if(value == 2)
+            {
+                IsDisabledPlant = true;
+                IsDisabledNppbkc = false;
             }
-        });
 
-        function ajaxSelectCompany(url, formData) {
-            if (formData.companyId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        var listPlant = data.PlanIdList;
-                        $('#SearchInput_PlantId').append('<option value="">All</option>');
-                        if (listPlant.length > 0) {
-                            for (var i = 0; i < listPlant.length; i++) {
-                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
-                            }
-                        }
-
-                    }
-                });
-            }
+            $('#Details_PlantId').val('');
+            $('#Details_NppbkcId').val('');
+            $('#Details_PlantId').prop('disabled', IsDisabledPlant);
+            $('#Details_NppbkcId').prop('disabled', IsDisabledNppbkc);
         }
     </script>
 }
