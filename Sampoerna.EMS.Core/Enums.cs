@@ -507,10 +507,10 @@ namespace Sampoerna.EMS.Core
 
         public enum MovementTypeCode
         {
-            [Description("101")]
-            ProductionAdd = 101,
-            [Description("102")]
-            ProductionMin = 102
+            [Description("261")]
+            UsageAdd = 261,
+            [Description("262")]
+            UsageMin = 262
         }
 
     }
