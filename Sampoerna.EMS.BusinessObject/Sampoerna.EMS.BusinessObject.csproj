@@ -57,6 +57,9 @@
     <Compile Include="BACK3_CK2_PBCK3_PBCK7.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="BLOCK_STOCK.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="BOM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
