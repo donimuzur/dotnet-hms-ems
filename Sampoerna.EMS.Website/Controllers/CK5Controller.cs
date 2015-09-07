@@ -361,17 +361,18 @@ namespace Sampoerna.EMS.Website.Controllers
         //}
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId,string sourceNppbkcId,string destPlantId, DateTime submissionDate,string goodtypegroupid)
+        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId, string sourceNppbkcId, string destPlantId, DateTime submissionDate, string goodTypeGroupId, Enums.CK5Type ck5Type)
         {
             //var dbPlantSource = _plantBll.GetT001ById(sourcePlantId);
             var dbPlantDest = _plantBll.GetT001ById(destPlantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlantDest);
 
             GetQuotaAndRemainOutput output;
-            if (string.IsNullOrEmpty(goodtypegroupid)) {
+            if (string.IsNullOrEmpty(goodTypeGroupId))
+            {
                 output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, null);
             } else {
-                Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodtypegroupid);
+                Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroupId);
                 output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, (int)goodtypeenum);
             }
 

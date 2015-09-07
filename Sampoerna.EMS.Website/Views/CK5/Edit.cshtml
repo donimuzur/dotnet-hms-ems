@@ -313,6 +313,18 @@
 
     });
 
+    $('#SubmissionDate').change(function () {
+        var submissionDate = $('#SubmissionDate').val();
+        if (submissionDate == '')
+            submissionDate = '@DateTime.Now';
+
+        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+        var goodTypeGroupId = $("#GoodType").val();
+        var sourceNppbkcId = $("#SourceNppbkcId").val();
+
+        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodTypeGroupId: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+    });
+
     $("#SourcePlantId").change(function () {
         if ($("#SourcePlantId").length) {
             var sourcePlant = $(this).find("option:selected").val();
