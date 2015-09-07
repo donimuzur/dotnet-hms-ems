@@ -14,9 +14,11 @@ namespace Sampoerna.EMS.Contract
     {
         List<Lack2Dto> GetAll(Lack2GetByParamInput input);
 
-        List<Lack2Dto> GetAllCompleted();
+        
+        List<Lack2Dto> GetCompletedDocumentByParam(Lack2GetByParamInput input);
+        List<Lack2Dto> GetOpenDocumentByParam(Lack2GetByParamInput input);
 
-        List<Lack2Dto> GetAllCompletedByParam(Lack2GetByParamInput input);
+        List<Lack2Dto> GetOpenDocument();
 
         Lack2Dto GetById(int id);
 

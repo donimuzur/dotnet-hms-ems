@@ -6,8 +6,8 @@
             <th class="toggle-row"> Filter </th>
             <th>Company</th>
             <th>NPPBKC</th>
-            <th>Tobacco Goods Type</th>
-            <th>Supplier</th>
+            <th>Ex Goods Type</th>
+            <th>Plant</th>
             <th>Period</th>
             <th>Status</th>
         </tr>
@@ -32,22 +32,22 @@
                     <a href="@Url.Action("Edit", "LACK2", new { id = item.Lack2Id})"><i class="fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Company)
+                    @(item.Burks + " - "+ item.Butxt)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Nppbkc)
+                    @item.NppbkcId
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.TobaccoGoodType)
+                    @(item.ExGoodTyp + " - " + item.ExTypDesc)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Supplier)
+                    @(item.LevelPlantId + " - " + item.LevelPlantName)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Period)
+                    @(item.PeriodNameInd   + " - " + item.PeriodYear)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Status)
+                    @(item.Status)
                 </td>
             </tr>
         }

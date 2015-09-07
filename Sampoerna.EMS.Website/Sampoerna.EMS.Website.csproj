@@ -987,7 +987,7 @@
     <Content Include="Views\LACK2\ListCompletedDoc.cshtml" />
     <Content Include="Views\LACK2\_Lack2CompletedDoc.cshtml" />
     <Content Include="Views\LACK2\_Lack2PlantTable .cshtml" />
-    <Content Include="Views\LACK2\_Lack2Table.cshtml" />
+    <Content Include="Views\LACK2\_Lack2OpenDoc.cshtml" />
     <Content Include="Views\LACK1\ListCompletedDocument.cshtml" />
     <Content Include="Views\LACK1\_Lack1CompletedDocumentTable.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />

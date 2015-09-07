@@ -24,7 +24,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterListByNppbkc", "LACK2",
+                @using (Ajax.BeginForm("FilterOpenDocument", "LACK2",
                         new AjaxOptions
                         {
                             HttpMethod = "POST",
@@ -56,17 +56,25 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="last-form">
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <label class="col-md-4">POA</label>
-                                    <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.Poa, Model.PoaList, "All", new { @class = "form-control selectreset" })
-                                    </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">POA</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.Poa, Model.PoaList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="last-form">
+                          <div class="col-md-4">
+                              <div class="row">
+                                  <label class="col-md-4">Sender Plant </label>
+                                  <div class="col-md-8">
+                                      @Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control selectreset" })
+                                  </div>
+                              </div>
+                          </div>
                             <div class="col-md-4">
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
@@ -87,11 +95,12 @@
                             </div>
                         </div>
                     </div>
-                }
+
+    }
             </div>
 
             <div id="contenttable" class="table-container">
-                @Html.Partial("_Lack2Table")
+                @Html.Partial("_Lack2OpenDoc")
             </div>
 
         </div>
@@ -144,57 +153,12 @@
                 $('#Menulack1ListByNppbkc').addClass('active');
             }
 
-            $("#NppbkcId").change(function () {
-                if ($("#NppbkcId").length) {
-                    var nbck = $(this).find("option:selected").text();
-                    $('#SearchInput_POA option').remove();
-                    $('#SearchInput_PlantId option').remove();
-                    console.log(nbck);
-                    if (nbck == '' || $(this).find("option:selected").val() == '') {
-                        $('#SearchInput_POA').append('<option value="">All</option>');
-                        $('#SearchInput_PlantId').append('<option value="">All</option>');
-                    } else {
-                        ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', { nppbkcId: nbck });
-                    }
-                }
-
-
-            });
 
             $(document).ready(function () {
                 setupDataTables();
             });
 
-            function ajaxSelectNppbck(url, formData) {
-                if (formData.nppbkcId) {
-                    $.ajax({
-                        type: 'POST',
-                        url: url,
-                        data: formData,
-                        success: function (data) {
-                            var list = data.PoaList;
-                            var listPlant = data.PlantIdList;
-                            $('#SearchInput_POA').append('<option value="">All</option>');
-                            $('#SearchInput_PlantId').append('<option value="">All</option>');
-                            if (list.length > 0) {
-                                for (var i = 0; i < list.length; i++) {
-                                    $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
-
-                                }
-                            }
-
-                            if (listPlant.length > 0) {
-                                for (var i = 0; i < listPlant.length; i++) {
-                                    $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
-
-                                }
-                            }
-
-                        }
-                    });
-                }
-            }
-
+       
             function ReloadDataTables() {
                 $('.toggle-row').click(function () {
 

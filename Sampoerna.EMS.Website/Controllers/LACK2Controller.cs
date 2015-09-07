@@ -76,11 +76,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
-            model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
+            var dbData = _lack2Bll.GetOpenDocument();
+            model.Details = dbData;
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
-             return View("Index", model);
+            return View("Index", model);
         }
 
         /// <summary>
@@ -478,8 +478,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             // gets the completed documents by checking the status
-            var dbData = _lack2Bll.GetAllCompleted();
-            model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
+            //var dbData = _lack2Bll.ge();
+            //model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
 
             return View("ListCompletedDoc", model);
         }
@@ -522,24 +522,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        [HttpPost]
-        public PartialViewResult FilterListByNppbkc(Lack2Input model)
-        {
-
-
-            var input = Mapper.Map<Lack2GetByParamInput>(model);
-
-            var dbData = _lack2Bll.GetAllCompletedByParam(input);
-
-            var result = Mapper.Map<List<LACK2NppbkcData>>(dbData);
-
-            var viewModel = new Lack2IndexViewModel();
-            viewModel.Details = result;
-
-            return PartialView("_Lack2Table", viewModel);
-
-        }
-
+        
+       
+        
 
         private List<LACK2PlantData> GetListByPlant(Lack2IndexPlantViewModel filter = null)
         {
@@ -578,17 +563,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterOpenDocument(LACK2FilterViewModel SearchInput)
         {
             var input = Mapper.Map<Lack2GetByParamInput>(SearchInput);
-            // to search trough the completed documents
-            input.Status = Enums.DocumentStatus.Completed;
-
-            var dbData = _lack2Bll.GetAllCompletedByParam(input);
-
-            var result = Mapper.Map<List<LACK2NppbkcData>>(dbData);
-
-            var viewModel = new Lack2IndexViewModel();
-            viewModel.Details = result;
-
-            return PartialView("_Lack2CompletedDoc", viewModel);
+            
+            var dbData = _lack2Bll.GetOpenDocumentByParam(input);
+            var model = new Lack2IndexViewModel();
+            model.Details = dbData;
+            return PartialView("_Lack2OpenDoc", model);
         }
 
         #endregion
