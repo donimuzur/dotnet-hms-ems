@@ -158,8 +158,8 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Plant</label>
                                                                 <div class="col-md-8">
-                                                                 @Html.TextBox("plant", Model.Lack2Model.LevelPlantId + "-" + Model.Lack2Model.LevelPlantName, new { @class = "form-control", @disabled = "disabled" })
-                                                                  </div>
+                                                                    @Html.TextBox("plant", Model.Lack2Model.LevelPlantId + "-" + Model.Lack2Model.LevelPlantName, new { @class = "form-control", @disabled = "disabled" })
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -349,7 +349,10 @@
                                 @Html.Partial("_WorkflowHistory", Model)
                             </div>
                         </div>
-                        @Html.Partial("_PrintOut", Model)
+                        @if (Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            @Html.Partial("_PrintOut", Model)
+                        }
                         @Html.Partial("_ChangesLog", Model)
                     </div>
                 </div>
