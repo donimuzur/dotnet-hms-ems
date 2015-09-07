@@ -295,5 +295,33 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        #region create Document List
+        public ActionResult Ck4CCreateDocumentList()
+        {
+            var model = new Ck4CIndexDocumentListViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+            };
+
+            return CreateInitial(model);
+        }
+
+        public ActionResult CreateInitial(Ck4CIndexDocumentListViewModel model)
+        {
+            return View("Ck4CCreateDocumentList", InitialModel(model));
+        }
+
+        private Ck4CIndexDocumentListViewModel InitialModel(Ck4CIndexDocumentListViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
+
+            return (model);
+
+        }
+        #endregion
     }
 }
