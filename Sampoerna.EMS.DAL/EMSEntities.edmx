@@ -24,7 +24,7 @@
           <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="BACK3_CK2_PBCK3_PBCK7">
           <Key>
             <PropertyRef Name="BACK3_CK2_PBCK3_PBCK7_ID" />
@@ -362,6 +362,8 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
           <Property Name="LACK1_UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
           <Property Name="NOTED" Type="nvarchar" MaxLength="255" />
+          <Property Name="SUPPLIER_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="SUPPLIER_COMPANY_CODE" Type="varchar" MaxLength="4" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -646,7 +648,7 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="PBCK3_DATE" Type="datetime" />
           <Property Name="DOC_TYPE" Type="int" Nullable="false" />
           <Property Name="NPPBCK_ID" Type="nvarchar" MaxLength="15" />
-          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
+          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="PLANT_CITY" Type="nvarchar" MaxLength="25" />
           <Property Name="EXEC_DATE_FROM" Type="datetime" />
@@ -2071,15 +2073,15 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_T001K_T1001">
-          <End Role="T001" Type="Self.T001" Multiplicity="1" />
-          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
+        <Association Name="FK_T001K_T001W">
+          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
+          <End Role="T001K" Type="Self.T001K" Multiplicity="0..1" />
           <ReferentialConstraint>
-            <Principal Role="T001">
-              <PropertyRef Name="BUKRS" />
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
             </Principal>
             <Dependent Role="T001K">
-              <PropertyRef Name="BUKRS" />
+              <PropertyRef Name="BWKEY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2783,8 +2785,8 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
             <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
-          <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
-            <End Role="T001" EntitySet="T001" />
+          <AssociationSet Name="FK_T001K_T001W" Association="Self.FK_T001K_T001W">
+            <End Role="T001W" EntitySet="T001W" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
@@ -5318,7 +5320,7 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="PBCK3_DATE" Type="DateTime" Precision="3" />
           <Property Name="DOC_TYPE" Type="Int32" Nullable="false" />
           <Property Name="NPPBCK_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_CITY" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="EXEC_DATE_FROM" Type="DateTime" Precision="3" />
@@ -5552,6 +5554,8 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <NavigationProperty Name="UOM11" Relationship="EMSModel.FK_LACK1_UOM" FromRole="LACK1" ToRole="UOM" />
           <NavigationProperty Name="LACK1_PBCK1_MAPPING" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1" FromRole="LACK1" ToRole="LACK1_PBCK1_MAPPING" />
           <Property Name="NOTED" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SUPPLIER_COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="SUPPLIER_COMPANY_CODE" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -6983,6 +6987,8 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="SUPPLIER_COMPANY_CODE" ColumnName="SUPPLIER_COMPANY_CODE" />
+                <ScalarProperty Name="SUPPLIER_COMPANY_NAME" ColumnName="SUPPLIER_COMPANY_NAME" />
                 <ScalarProperty Name="NOTED" ColumnName="NOTED" />
                 <ScalarProperty Name="LACK1_UOM_ID" ColumnName="LACK1_UOM_ID" />
                 <ScalarProperty Name="APPROVED_DATE_MANAGER" ColumnName="APPROVED_DATE_MANAGER" />
