@@ -558,6 +558,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("CreatedDate", System.Type.GetType("System.String"));
             dt.Columns.Add("PoaPrintedName", System.Type.GetType("System.String"));
             dt.Columns.Add("Preview", System.Type.GetType("System.String"));
+            dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
 
             //detail
             DataTable dtDetail = new DataTable("Lack2Item");
@@ -610,6 +611,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (lack2.Status != Enums.DocumentStatus.Completed)
             {
                 drow[10] = "PRINT PREVIEW";
+                drow[11] = lack2.DecreeDate.ToString("dd MMM yyyy");
             }
             dt.Rows.Add(drow);
 
