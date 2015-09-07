@@ -1023,6 +1023,7 @@
     <Content Include="Views\LACK2\_ChangesLog.cshtml" />
     <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
+    <Content Include="Views\LACK1\Test.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
