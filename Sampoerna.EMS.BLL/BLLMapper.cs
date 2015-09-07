@@ -143,6 +143,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Burks, opt => opt.MapFrom(src => src.BUKRS))
                 .ForMember(dest => dest.Butxt, opt => opt.MapFrom(src => src.BUTXT))
                 .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.PERIOD_MONTH))
+                .ForMember(dest => dest.PeriodNameInd, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_IND))
                 .ForMember(dest => dest.PeriodYear, opt => opt.MapFrom(src => src.PERIOD_YEAR))
                 .ForMember(dest => dest.LevelPlantId, opt => opt.MapFrom(src => src.LEVEL_PLANT_ID))
                 .ForMember(dest => dest.LevelPlantName, opt => opt.MapFrom(src => src.LEVEL_PLANT_NAME))
