@@ -394,6 +394,13 @@ namespace Sampoerna.EMS.Website.Controllers
             if (periodMonth != null)
                 model.Lack2Model.PeriodMonthName = periodMonth.MONTH_NAME_IND;
             model.DocStatus = model.Lack2Model.Status;
+            if (model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+            {
+                var printHistory =
+                    Mapper.Map<List<PrintHistoryItemModel>>(
+                        _printHistoryBll.GetByFormNumber(model.Lack2Model.Lack2Number));
+                model.PrintHistoryList = printHistory;
+            }
             return View("Detail", model);
         }
 
