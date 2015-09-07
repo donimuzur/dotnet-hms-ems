@@ -364,7 +364,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="BEGINING_BALANCE" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="TOTAL_INCOME" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="USAGE" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="TOTAL_PRODUCTION" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="LACK1_LEVEL" Type="int" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -5602,7 +5601,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="NOTED" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_COMPANY_CODE" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="TOTAL_PRODUCTION" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -7045,7 +7043,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
-                <ScalarProperty Name="TOTAL_PRODUCTION" ColumnName="TOTAL_PRODUCTION" />
                 <ScalarProperty Name="SUPPLIER_COMPANY_CODE" ColumnName="SUPPLIER_COMPANY_CODE" />
                 <ScalarProperty Name="SUPPLIER_COMPANY_NAME" ColumnName="SUPPLIER_COMPANY_NAME" />
                 <ScalarProperty Name="NOTED" ColumnName="NOTED" />
