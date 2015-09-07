@@ -611,7 +611,16 @@ namespace Sampoerna.EMS.Website.Controllers
             if (lack2.Status != Enums.DocumentStatus.Completed)
             {
                 drow[10] = "PRINT PREVIEW";
-                drow[11] = lack2.DecreeDate.ToString("dd MMM yyyy");
+            }
+            else
+            {
+                if (lack2.DecreeDate != null)
+                {
+                    var lack2DecreeDate = lack2.DecreeDate.Value;
+                    var lack2Month = _monthBll.GetMonth(lack2DecreeDate.Month).MONTH_NAME_IND;
+
+                    drow[11] = string.Format("{0} {1} {2}", lack2DecreeDate.Day, lack2Month, lack2DecreeDate.Year);
+                }
             }
             dt.Rows.Add(drow);
 
