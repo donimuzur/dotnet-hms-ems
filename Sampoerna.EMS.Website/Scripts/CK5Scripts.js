@@ -37,33 +37,32 @@ function OnReadyFunction(ck5Type) {
         for (var i = 0; i < datarows.length; i++) {
             data += '<tr>';
             if (columnLength > 0) {
-                data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][0] + '">' + datarows[i][0] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-                //data += '<td> <input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
-                data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">';
+                data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][15] + '">';
                 //alert(datarows[i][13]);
-                total += parseFloat(datarows[i][1]); //Qty
+                total += parseFloat(datarows[i][3]); //Qty
                 if (i == 0) {
                     //alert(datarows[i][2]);
                     $("#PackageUomName option").each(function () {
-                        if ($(this).val().toLowerCase() == datarows[i][2].toLowerCase()) {
+                        if ($(this).val().toLowerCase() == datarows[i][4].toLowerCase()) {
                             $(this).attr('selected', 'selected');
                         }
                     });
                 }
             }
             data += '</tr>';
-            if (datarows[i][2] != ($('#PbckUom').val()))
+            if (datarows[i][4] != ($('#PbckUom').val()))
                 isSamePbck1Uom = false;
 
             //$('#ck5TableItem tbody').append(data);
@@ -689,55 +688,7 @@ function ValidateGRCreated() {
     return result;
 }
 
-function ValidateManual() {
-    
-    var result = true;
-    
-    if ($('#uploadMaterialNumber').find("option:selected").val() == '') {
-        AddValidationClass(false, 'uploadMaterialNumber');
-        result = false;
-    }
-    
-    if ($('#uploadMaterialUom').find("option:selected").val() == '') {
-        AddValidationClass(false, 'uploadMaterialUom');
-        result = false;
-    }
-    
-    if ($('#uploadConvertedUom').find("option:selected").val() == '') {
-        AddValidationClass(false, 'uploadConvertedUom');
-        result = false;
-    }
 
-    return result;
-}
-function AddRow() {
-
-    if (ValidateManual()) {
-        
-        $('#Ck5UploadModal').modal('hide');
-
-        var convertedQty = parseFloat($('#uploadMaterialQty').val()) * parseFloat($('#uploadMaterialConvertion').val());
-        var total = parseFloat($('#uploadMaterialQty').val()) * convertedQty;
-        
-        $("#Ck5UploadTable tbody").append(
-            "<tr>" +
-                "<td>" + $('#uploadMaterialNumber').val() + "</td>" +
-                "<td>" + $('#uploadMaterialQty').val() + "</td>" +
-                "<td>" + $('#uploadMaterialUom').val() + "</td>" +
-                "<td>" + $('#uploadMaterialConvertion').val() + "</td>" +
-                "<td>" + convertedQty.toFixed(3) + "</td>" +
-                "<td>" + $('#uploadConvertedUom').val() + "</td>" +
-                "<td>" + $('#uploadMaterialHje').val() + "</td>" +
-                "<td>" + $('#uploadMaterialTariff').val() + "</td>" +
-                "<td>" + total.toFixed(3) + "</td>" +
-                "<td>" + $('#uploadUsdValue').val() + "</td>" +
-                "<td>" + $('#uploadNote').val() + "</td>" +
-                "<td></td>" +
-                "</tr>");
-    }
-    
-  
-}
 
 function ajaxGetListMaterial(url, formData) {
     if (formData.plantId) {
@@ -779,6 +730,7 @@ function ajaxGetMaterialHjeAndTariff(url, formData) {
                 if (data != null) {
                     $("#uploadMaterialHje").val(data.Hje);
                     $("#uploadMaterialTariff").val(data.Tariff);
+                    $("#uploadMaterialDesc").val(data.MaterialDesc);
                 }
 
              
