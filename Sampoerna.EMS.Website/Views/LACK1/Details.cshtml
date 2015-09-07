@@ -33,7 +33,7 @@
                         /* Completed Document */
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-list" />
                     }
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "LACK1", new { id = @Model.Lack1Id })')" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "LACK1", new { id = @Model.Lack1Id, lType = @Model.Lack1Type })')" />
                     @if (Model.AllowApproveAndReject)
                     {
                         <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
@@ -215,5 +215,10 @@
         $('#generated-data-container').append(generateTableD);
 
     });
+    
+        function printPreview(url) {
+            alert('Print Preview on progress...');
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        }
     </script>
 }
