@@ -83,10 +83,10 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public ProductionDto GetById(ProductionGetByIdOutput output)
+        public ProductionDto GetById(string companyCode, string plantWerk, string faCode, DateTime productionDate)
         {
 
-            var dbData = _repository.GetByID(output);
+            var dbData = _repository.GetByID(companyCode, plantWerk, faCode, productionDate);
             var item = Mapper.Map<ProductionDto>(dbData);
 
             if (dbData == null)

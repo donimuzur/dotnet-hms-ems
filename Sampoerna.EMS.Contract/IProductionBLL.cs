@@ -17,7 +17,7 @@ namespace Sampoerna.EMS.Contract
 
         void Save(ProductionDto productionDto);
 
-        ProductionDto GetById(ProductionGetByIdOutput output );
+        ProductionDto GetById(string companyCode, string plantWerk, string faCode, DateTime productionDate );
 
 
     }

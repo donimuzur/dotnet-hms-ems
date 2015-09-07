@@ -4,8 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
@@ -118,6 +120,95 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
         #endregion
+
+        #region Edit
+        public ActionResult Edit(string companyCode, string plantWerk, string faCode, DateTime productionDate)
+        {
+
+            var model = new ProductionDetail();
+            
+            var dbProduction = _productionBll.GetById(companyCode, plantWerk,faCode, productionDate);
+
+            model = Mapper.Map<ProductionDetail>(dbProduction);
+            model = IniEdit(model);
+            model.CompanyCodeX = model.CompanyCode;
+            model.PlantWerksX = model.PlantWerks;
+            model.ProductionDateX = model.ProductionDate;
+            model.FaCodeX = model.FaCode;
+
+
+            return View(model);
+        }
+
+        private ProductionDetail IniEdit(ProductionDetail model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlantWerkList = GlobalFunctions.GetPlantAll();
+            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+
+            return model;
+        }
+
+        [HttpPost]
+        public ActionResult Edit(ProductionDetail model)
+        {
+
+            var dbProduction = _productionBll.GetById(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
+               Convert.ToDateTime(model.ProductionDateX));
+
+            if (dbProduction == null)
+            {
+                ModelState.AddModelError("Production", "Data is not Found");
+                model = IniEdit(model);
+
+                return View("Edit, model");
+            }
+
+            dbProduction.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
+            dbProduction.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
+
+            try
+            {
+                _productionBll.Save(dbProduction);
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                    );
+                return RedirectToAction("Index");
+
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
+                    );
+            }
+
+            model = IniEdit(model);
+
+            return View("Edit", model);
+            
+        }
+
+        #endregion
+
+        #region Detail
+
+        public ActionResult Detail(string companyCode, string plantWerk, string faCode, DateTime productionDate)
+        {
+            var model = new ProductionDetail();
+
+            var dbProduction = _productionBll.GetById(companyCode, plantWerk, faCode, productionDate);
+
+            model = Mapper.Map<ProductionDetail>(dbProduction);
+            model = IniEdit(model);
+
+            return View(model);
+        }
+        
+        #endregion  
+
 
 
         #region Json

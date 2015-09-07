@@ -1014,6 +1014,8 @@
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
     <Content Include="Views\Production\Create.cshtml" />
+    <Content Include="Views\Production\Edit.cshtml" />
+    <Content Include="Views\Production\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
