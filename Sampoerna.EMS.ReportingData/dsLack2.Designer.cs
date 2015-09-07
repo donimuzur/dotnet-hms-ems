@@ -336,6 +336,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnPreview;
             
+            private global::System.Data.DataColumn columnDecreeDate;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Lack2DataTable() {
@@ -459,6 +461,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DecreeDateColumn {
+                get {
+                    return this.columnDecreeDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -494,7 +504,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Lack2Row AddLack2Row(string CompanyName, string Nppbkc, string Alamat, byte[] Header, string Footer, string BKC, string Period, string City, string CreatedDate, string PoaPrintedName, string Preview) {
+            public Lack2Row AddLack2Row(string CompanyName, string Nppbkc, string Alamat, byte[] Header, string Footer, string BKC, string Period, string City, string CreatedDate, string PoaPrintedName, string Preview, string DecreeDate) {
                 Lack2Row rowLack2Row = ((Lack2Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         CompanyName,
@@ -507,7 +517,8 @@ namespace Sampoerna.EMS.ReportingData {
                         City,
                         CreatedDate,
                         PoaPrintedName,
-                        Preview};
+                        Preview,
+                        DecreeDate};
                 rowLack2Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowLack2Row);
                 return rowLack2Row;
@@ -541,6 +552,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnCreatedDate = base.Columns["CreatedDate"];
                 this.columnPoaPrintedName = base.Columns["PoaPrintedName"];
                 this.columnPreview = base.Columns["Preview"];
+                this.columnDecreeDate = base.Columns["DecreeDate"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -568,6 +580,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnPoaPrintedName);
                 this.columnPreview = new global::System.Data.DataColumn("Preview", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPreview);
+                this.columnDecreeDate = new global::System.Data.DataColumn("DecreeDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDecreeDate);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1203,6 +1217,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DecreeDate {
+                get {
+                    try {
+                        return ((string)(this[this.tableLack2.DecreeDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DecreeDate\' in table \'Lack2\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLack2.DecreeDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCompanyNameNull() {
                 return this.IsNull(this.tableLack2.CompanyNameColumn);
             }
@@ -1331,6 +1361,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetPreviewNull() {
                 this[this.tableLack2.PreviewColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDecreeDateNull() {
+                return this.IsNull(this.tableLack2.DecreeDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDecreeDateNull() {
+                this[this.tableLack2.DecreeDateColumn] = global::System.Convert.DBNull;
             }
         }
         

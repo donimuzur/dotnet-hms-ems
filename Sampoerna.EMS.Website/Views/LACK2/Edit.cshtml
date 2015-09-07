@@ -5,7 +5,7 @@
 
 @{
     ViewBag.Title = "Edit LACK2";
-    int i = 0;
+    
 }
 
 
@@ -63,7 +63,6 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                     </ul>
 
@@ -231,22 +230,22 @@
                                                         <tbody id="tb-body-ck5-lack2">
                                                             @if (@Model.Lack2Model.Items != null)
                                                             {
-                                                                
-                                                                foreach (var item in @Model.Lack2Model.Items)
+
+                                                                for (int i = 0; i < @Model.Lack2Model.Items.Count; i++)
                                                                 {
                                                                     <tr>
                                                                         @Html.HiddenFor(x => x.Lack2Model.Items[i].Lack2Id)
                                                                         @Html.HiddenFor(x => x.Lack2Model.Items[i].Id)
-                                                                        @Html.HiddenFor(x=>x.Lack2Model.Items[i].Ck5Id)
-                                                                        <th></th>
-                                                                        <th>@item.Ck5Number</th>
-                                                                        <th>@item.Ck5GIDate</th>
-                                                                        <th>@item.Ck5ItemQty</th>
-                                                                        <th>@item.CompanyName</th>
-                                                                        <th>@item.CompanyNppbkc</th>
-                                                                        <th>@item.CompanyAddress</th>
+                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Ck5Id)
+                                                                        <th>@(i + 1)</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5Number</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5GIDate</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5ItemQty</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyName</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyNppbkc</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyAddress</th>
                                                                     </tr>
-                                                                    
+
                                                                 }
 
                                                             }
@@ -338,7 +337,7 @@
                             </div>
                            
                         </div>
-                        @Html.Partial("_PrintOut", Model)
+                     
                         @Html.Partial("_ChangesLog", Model)
                      </div>
                 </div>
