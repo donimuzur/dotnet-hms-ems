@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -166,6 +167,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = IniEdit(model);
 
                 return View("Edit, model");
+
             }
 
             dbProduction.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
@@ -173,9 +175,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    var error = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+                    if (error.Count > 0)
+                    {
+                        //
+                    }
+                }
                 _productionBll.Save(dbProduction);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                     );
+              
+
                 return RedirectToAction("Index");
 
             }

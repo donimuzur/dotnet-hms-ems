@@ -101,7 +101,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Qty Packed<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.QtyPacked, new { @class = "form-control selectpicker" })
+                                                                    @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "form-control selectpicker" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -109,7 +109,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Qty Unpacked<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.QtyUnpacked, new { @class = "form-control" })
+                                                                    @Html.TextBoxFor(model => model.QtyUnpackedStr, new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -145,6 +145,8 @@
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuCk4cDailyProduction').addClass('active');
 
+        $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
+        $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
 
         $("#CompanyCode").change(function () {
             if ($("#CompanyCode").length) {

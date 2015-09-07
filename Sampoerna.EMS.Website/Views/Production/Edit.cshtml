@@ -150,7 +150,9 @@
 
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuCk4cDailyProduction').addClass('active');
-
+        
+        $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
+        $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
 
         $("#CompanyCode").change(function() {
             if ($("#CompanyCode").length) {
@@ -165,8 +167,7 @@
             }
         });
 
-        $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
-        $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
+        
 
         function ajaxSelectCompany(url, formData) {
             if (formData.companyId) {
