@@ -387,14 +387,15 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
 
-        public static SelectList GetPlantByCompany(string companyId)
+        public static SelectList GetPlantByCompany(string companyId,bool isReverse = false)
         {
             IT001KBLL t001Kbll = MvcApplication.GetInstance<T001KBLL>();
-            var plantList = t001Kbll.GetPlantByCompany(companyId);
+            var plantList = t001Kbll.GetPlantByCompany(companyId,isReverse);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
         }
+
 
         public static SelectList GetCompanyListFilter(ICompanyBLL companyBll)
         {

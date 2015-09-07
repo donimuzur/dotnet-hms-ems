@@ -303,7 +303,27 @@ function ajaxGetPlantDetails(url, formData) {
                 //$("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
                 //$("input[name='RemainQuota']").val(data.RemainQuota);
                 
-               // PopulateListPbckNumber(data.PbckList);
+                // PopulateListPbckNumber(data.PbckList);
+
+                //reset destination plant
+                $("input[name='DestNpwp']").val("");
+                $("input[name='DestNppbkcId']").val("");
+                $("input[name='DestCompanyCode']").val("");
+                $("input[name='DestCompanyName']").val("");
+                $("*[name='DestAddress']").val("");
+                $("input[name='DestKppbcName']").val("");
+                $("input[name='DestPlantName']").val("");
+
+
+                
+
+                //data plant destination
+                $("#DestPlantId").html("");
+                $("#DestPlantId").append("<option value=\"\">Select</option>");
+                $.each(data.CorrespondingPlantList, function (index, optiondata) {
+                    $("#DestPlantId").append("<option value=\""+optiondata.Value+"\">"+optiondata.Text+"</option>");
+                    
+                });
             }
         });
     }

@@ -208,6 +208,29 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CK5Import", model);
         }
 
+        
+        private SelectList GetCorrespondingPlantList(string plantId, Enums.CK5Type ck5Type)
+        {
+            SelectList data;
+            T001WDto dataPlant = _plantBll.GetT001ById(plantId);
+            
+            if (ck5Type == Enums.CK5Type.Domestic) {
+                
+                data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode);
+            }
+            else if (ck5Type == Enums.CK5Type.Intercompany)
+            {
+
+                data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode,true);
+            }
+            else {
+                data = GlobalFunctions.GetPlantAll();
+            
+            }
+            
+            return data;
+        }
+
         #endregion
 
         #region Save Edit
@@ -247,7 +270,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             //model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-          
+            
+
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
 
@@ -396,7 +420,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.RemainQuota = output.RemainQuota.ToString();
                 model.PbckUom = output.PbckUom;
             }
-
+            
             
 
             return Json(model);
@@ -413,7 +437,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
             }
 
-            
+            model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
       
             return Json(model);
         }
