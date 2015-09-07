@@ -43,7 +43,7 @@
         }
         <p class="heading">Laporan Penggunaan/Persediaan Barang Kena Cukai <br />Dengan Fasilitas Tidak dipungut Cukai</p>
         <div class="modul">
-            Lack-1
+            @Model.PrintOutTitle
         </div>
         <table border="0" class="lack-title">
             <tr>
@@ -99,8 +99,7 @@
                 <td class="first">Nama Pemasok</td>
                 <td>: </td>
                 <td>
-                    PT HM Sampoerna Tbk. <br>
-                    JL. Testing 123, Surabya, Jawa Tengah
+                    @Model.SupplierCompanyName<br>@Model.SupplierPlantAddress
                 </td>
             </tr>
         </table>
@@ -151,13 +150,17 @@
                         <td rowspan="@rowCount">@Model.TotalUsage.ToString("N0")</td>
                         <td rowspan="@rowCount">
                             <!-- Generate Jenis Hasil Produksi BKC -->
-                            @if (@Model.ProductionList.Count > 0) {
-                                for (var i = 0; i < @Model.ProductionList.Count; i++) {
-                                    if (i == @Model.ProductionList.Count) {
-                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc
+                            @if (@Model.ProductionList.Count > 0)
+                            {
+                                for (var i = 0; i < @Model.ProductionList.Count; i++)
+                                {
+                                    if (i == @Model.ProductionList.Count)
+                                    {
+                                        @Model.ProductionList[i].ProductAlias
                                     }
-                                    else {
-                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc<br />
+                                    else
+                                    {
+                                        @Model.ProductionList[i].ProductAlias<br />
                                     }
                                 }
                             }
@@ -170,11 +173,11 @@
                                 {
                                     if (i == @Model.ProductionList.Count)
                                     {
-                                        @Model.ProductionList[i].ProductAlias
+                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc
                                     }
                                     else
                                     {
-                                        @Model.ProductionList[i].ProductAlias<br />
+                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc<br />
                                     }
                                 }
                             }
@@ -246,7 +249,8 @@
                             @Model.EndingBalance.ToString("N0")
                         </td>
                         <td>
-                            @if (!string.IsNullOrEmpty(@Model.Noted)) {
+                            @if (!string.IsNullOrEmpty(@Model.Noted))
+                            {
                                 @Model.Noted
                             }
                         </td>
@@ -279,7 +283,6 @@
                                 }
                             </table>
                         }
-
                     </td>
                     <td colspan="2"></td>
                 </tr>

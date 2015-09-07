@@ -527,7 +527,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
-            
+            model.PrintOutTitle = "Preview LACK-1";
             return View("PrintDocument", model);
         }
 
