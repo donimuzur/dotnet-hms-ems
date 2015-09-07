@@ -19,5 +19,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string PLANT { get; set; }
         public Nullable<decimal> BLOCKED { get; set; }
         public string BUN { get; set; }
+        public string SLOC { get; set; }
     }
 }
