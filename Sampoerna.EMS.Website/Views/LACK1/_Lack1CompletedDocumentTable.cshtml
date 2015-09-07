@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexCompletedDocumentViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexCompletedDocumentViewModel
 
 <table id="lack1Table" class="display" cellspacing="0" width="100%">
     <thead>
@@ -30,7 +31,7 @@
         {
             <tr>
                 <td class="action">
-                    <a href="#"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Details", "LACK1", new { id = @item.Lack1Id, lType = Enums.LACK1Type.ComplatedDocument })"><i class="fa fa-eye"></i></a>
                     <a href="#"><i class="fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>

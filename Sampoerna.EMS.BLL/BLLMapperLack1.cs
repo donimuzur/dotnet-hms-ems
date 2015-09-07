@@ -58,7 +58,18 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<LACK1_PRODUCTION_DETAIL, Lack1ProductionDetailDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UOM_DESC, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_DESC : string.Empty));
+            ;
+
+            Mapper.CreateMap<LACK1_DOCUMENT, Lack1DocumentDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<LACK1_INCOME_DETAIL, Lack1IncomeDetailDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<LACK1_PBCK1_MAPPING, Lack1Pbck1MappingDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PBCK1_NUMBER, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
+                .ForMember(dest => dest.DECREE_DATE, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
                 ;
+
+            Mapper.CreateMap<LACK1_PLANT, Lack1PlantDto>().IgnoreAllNonExisting();
 
             #endregion
 
@@ -140,33 +151,43 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Bukrs, opt => opt.MapFrom(src => src.BUKRS))
                 .ForMember(dest => dest.Butxt, opt => opt.MapFrom(src => src.BUTXT))
                 .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.PERIOD_MONTH))
-                .ForMember(dest => dest.PeriodYears, opt => opt.MapFrom(src => src.PERIOD_YEAR))
-                .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
-                .ForMember(dest => dest.LevelPlantId, opt => opt.MapFrom(src => src.LACK1_PLANT != null && src.LACK1_LEVEL == Enums.Lack1Level.Plant && src.LACK1_PLANT.FirstOrDefault() != null ? src.LACK1_PLANT.FirstOrDefault().PLANT_ID : string.Empty))
-                .ForMember(dest => dest.LevelPlantName, opt => opt.MapFrom(src => src.LACK1_PLANT != null && src.LACK1_LEVEL == Enums.Lack1Level.Plant && src.LACK1_PLANT.FirstOrDefault() != null ? src.LACK1_PLANT.FirstOrDefault().PLANT_NAME : string.Empty))
-                .ForMember(dest => dest.SupplierPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
-                .ForMember(dest => dest.ExGoodsType, opt => opt.MapFrom(src => src.EX_GOODTYP))
-                .ForMember(dest => dest.WasteQty, opt => opt.MapFrom(src => src.WASTE_QTY))
-                .ForMember(dest => dest.WasteUom, opt => opt.MapFrom(src => src.WASTE_UOM))
-                .ForMember(dest => dest.ReturnQty, opt => opt.MapFrom(src => src.RETURN_QTY))
-                .ForMember(dest => dest.ReturnUom, opt => opt.MapFrom(src => src.RETURN_UOM))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS))
-                .ForMember(dest => dest.GovStatus, opt => opt.MapFrom(src => src.GOV_STATUS))
-                .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DECREE_DATE))
-                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE))
-                .ForMember(dest => dest.CreateBy, opt => opt.MapFrom(src => src.CREATED_BY))
-                .ForMember(dest => dest.ApprovedByPoa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
-                .ForMember(dest => dest.ApprovedPoaDate, opt => opt.MapFrom(src => src.APPROVED_DATE_POA))
-                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
-                .ForMember(dest => dest.ExGoodsTypeDesc, opt => opt.MapFrom(src => src.EX_TYP_DESC))
                 .ForMember(dest => dest.PerionNameEng, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_ENG))
                 .ForMember(dest => dest.PeriodNameInd, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_IND))
                 .ForMember(dest => dest.Periode, opt => opt.MapFrom(src => new DateTime(src.PERIOD_YEAR.Value, src.PERIOD_MONTH.Value, 1)))
+                .ForMember(dest => dest.PeriodYears, opt => opt.MapFrom(src => src.PERIOD_YEAR))
+                .ForMember(dest => dest.LevelPlantId, opt => opt.MapFrom(src => src.LACK1_PLANT != null && src.LACK1_LEVEL == Enums.Lack1Level.Plant && src.LACK1_PLANT.FirstOrDefault() != null ? src.LACK1_PLANT.FirstOrDefault().PLANT_ID : string.Empty))
+                .ForMember(dest => dest.LevelPlantName, opt => opt.MapFrom(src => src.LACK1_PLANT != null && src.LACK1_LEVEL == Enums.Lack1Level.Plant && src.LACK1_PLANT.FirstOrDefault() != null ? src.LACK1_PLANT.FirstOrDefault().PLANT_NAME : string.Empty))
+                .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
+                .ForMember(dest => dest.SupplierPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
+                .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS))
+                .ForMember(dest => dest.SupplierPlantAddress, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_ADDRESS))
+                .ForMember(dest => dest.ExGoodsType, opt => opt.MapFrom(src => src.EX_GOODTYP))
+                .ForMember(dest => dest.ExGoodsTypeDesc, opt => opt.MapFrom(src => src.EX_TYP_DESC))
+                .ForMember(dest => dest.WasteQty, opt => opt.MapFrom(src => src.WASTE_QTY))
+                .ForMember(dest => dest.WasteUom, opt => opt.MapFrom(src => src.WASTE_UOM))
+                .ForMember(dest => dest.WasteUomDesc, opt => opt.MapFrom(src => src.UOM1 != null ? src.UOM1.UOM_DESC : string.Empty))
+                .ForMember(dest => dest.ReturnQty, opt => opt.MapFrom(src => src.RETURN_QTY))
+                .ForMember(dest => dest.ReturnUom, opt => opt.MapFrom(src => src.RETURN_UOM))
+                .ForMember(dest => dest.ReturnUomDesc, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_DESC : string.Empty))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS))
+                .ForMember(dest => dest.GovStatus, opt => opt.MapFrom(src => src.GOV_STATUS))
+                .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DECREE_DATE))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BEGINING_BALANCE))
                 .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TOTAL_INCOME))
                 .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
                 .ForMember(dest => dest.Lack1UomId, opt => opt.MapFrom(src => src.LACK1_UOM_ID))
                 .ForMember(dest => dest.Lack1UomName, opt => opt.MapFrom(src => src.UOM11 != null ? src.UOM11.UOM_DESC : string.Empty))
+                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+                .ForMember(dest => dest.CreateBy, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.ApprovedByPoa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
+                .ForMember(dest => dest.ApprovedPoaDate, opt => opt.MapFrom(src => src.APPROVED_DATE_POA))
+                .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.LACK1_DOCUMENT)))
+                .ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
+                .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingDto>>(src.LACK1_PBCK1_MAPPING)))
+                .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantDto>>(src.LACK1_PLANT)))
+                .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
+                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.NOTED))
                 ;
 
         }

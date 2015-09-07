@@ -50,6 +50,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     public class Lack1DetailsDto
     {
+        public Lack1DetailsDto()
+        {
+            Lack1Document = new List<Lack1DocumentDto>();
+            Lack1IncomeDetail = new List<Lack1IncomeDetailDto>();
+            Lack1Pbck1Mapping = new List<Lack1Pbck1MappingDto>();
+            Lack1Plant = new List<Lack1PlantDto>();
+            Lack1ProductionDetail = new List<Lack1ProductionDetailDto>();
+        }
         public int Lack1Id { get; set; }
         public string Lack1Number { get; set; }
         public string Bukrs { get; set; }
@@ -72,6 +80,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ExGoodsTypeDesc { get; set; }
         public decimal? WasteQty { get; set; }
         public string WasteUom { get; set; }
+        public string WasteUomDesc { get; set; }
         public decimal ReturnQty { get; set; }
         public string ReturnUom { get; set; }
         public string ReturnUomDesc { get; set; }
@@ -96,6 +105,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1Pbck1MappingDto> Lack1Pbck1Mapping { get; set; }
         public List<Lack1PlantDto> Lack1Plant { get; set; }
         public List<Lack1ProductionDetailDto> Lack1ProductionDetail { get; set; }
+        public string Noted { get; set; }
     }
 
 }

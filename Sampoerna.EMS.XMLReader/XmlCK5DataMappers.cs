@@ -405,7 +405,7 @@ namespace Sampoerna.EMS.XMLReader
         public CK5 GetExistingCK5(string ck5Number)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<CK5>()
-                .Get(p => p.SUBMISSION_NUMBER.Contains(ck5Number)).FirstOrDefault();
+                .Get(p => p.SUBMISSION_NUMBER.Contains(ck5Number)).OrderByDescending(x=>x.CK5_ID).FirstOrDefault();
             return existingData;
         }
         public List<CK5_MATERIAL> GetExistingCK5Material(long ck5Id)
