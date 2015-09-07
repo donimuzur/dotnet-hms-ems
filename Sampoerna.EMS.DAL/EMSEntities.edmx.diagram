@@ -191,6 +191,7 @@
         <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="11.75" PointY="0.75" />
         <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="0.75" PointY="11.75" />
         <AssociationConnector Association="EMSModel.FK_CK4C_POA" />
+        <EntityTypeShape EntityType="EMSModel.BLOCK_STOCK" Width="1.5" PointX="11.375" PointY="4.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
