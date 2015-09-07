@@ -169,7 +169,6 @@
         <EntityTypeShape EntityType="EMSModel.CK4C" Width="1.5" PointX="10.5" PointY="37.125" />
         <AssociationConnector Association="EMSModel.FK_CK4C_MODIFIED_BY" />
         <AssociationConnector Association="EMSModel.FK_CK4C_MONTH" />
-        <AssociationConnector Association="EMSModel.FK_CK4C_POA" />
         <AssociationConnector Association="EMSModel.FK_CK4C_USER" />
         <EntityTypeShape EntityType="EMSModel.LACK2" Width="1.5" PointX="13.5" PointY="39.125" />
         <AssociationConnector Association="EMSModel.FK_LACK2_DOCUMENT_LACK2" />
@@ -191,6 +190,7 @@
         <AssociationConnector Association="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" />
         <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="11.75" PointY="0.75" />
         <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="0.75" PointY="11.75" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_POA" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

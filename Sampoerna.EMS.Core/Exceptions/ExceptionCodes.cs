@@ -63,7 +63,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             MissingIncomeListItem,
 
             [Description("Missing Hasil Produksi BKC")]
-            MissingProductionList
+            MissingProductionList,
+
+            [Description("Total Usage less than or equals to zero ")]
+            TotalUsageLessThanEqualTpZero
 
         }
         

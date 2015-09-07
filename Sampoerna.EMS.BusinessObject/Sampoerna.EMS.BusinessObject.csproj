@@ -117,6 +117,7 @@
     <Compile Include="DTOs\Lack1IncomeDetailDto.cs" />
     <Compile Include="DTOs\Lack1Pbck1MappingDto.cs" />
     <Compile Include="DTOs\Lack1PlantDto.cs" />
+    <Compile Include="DTOs\Lack1PrintOutDto.cs" />
     <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />

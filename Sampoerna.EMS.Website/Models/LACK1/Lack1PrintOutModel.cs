@@ -4,7 +4,7 @@ using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.LACK1
 {
-    public class Lack1PrintOutModel
+    public class Lack1PrintOutModel : BaseModel
     {
         public long Lack1Id { get; set; }
         public string Lack1Number { get; set; }
@@ -65,6 +65,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public Lack1HeaderFooter HeaderFooter { get; set; }
 
         #endregion
+
+        //public Enums.LACK1Type Lack1Type { get; set; }
 
     }
 
