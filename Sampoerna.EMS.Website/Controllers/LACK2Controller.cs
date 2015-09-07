@@ -19,6 +19,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Reports.HeaderFooter;
 
@@ -43,8 +44,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IHeaderFooterBLL _headerFooterBll;
         private IWorkflowBLL _workflowBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IPrintHistoryBLL _printHistoryBll;
         public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
+            IPlantBLL plantBll, ICompanyBLL companyBll, IPrintHistoryBLL printHistoryBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
@@ -62,6 +64,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _headerFooterBll = headerFooterBll;
             _workflowBll = workflowBll;
             _workflowHistoryBll = workflowHistoryBll;
+            _printHistoryBll = printHistoryBll;
         }
 
 
@@ -235,9 +238,37 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
+            if (model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+            {
+                model.AllowPrintDocument = true;
+            }
             return model;
         }
+        [HttpPost]
+        public ActionResult AddPrintHistory(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
 
+            // ReSharper disable once PossibleInvalidOperationException
+            var lack2  = _lack2Bll.GetById(id.Value);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.PBCK1,
+                FORM_ID = lack2.Lack2Id,
+                FORM_NUMBER = lack2.Lack2Number,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel();
+            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack2.Lack2Number));
+            return PartialView("_PrintHistoryTable", model);
+
+        }
         [HttpPost]
         public JsonResult RemoveDoc(int docid)
         {
