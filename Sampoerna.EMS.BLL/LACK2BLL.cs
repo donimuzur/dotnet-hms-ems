@@ -210,7 +210,11 @@ namespace Sampoerna.EMS.BLL
             }
             if (docStatus == Enums.DocumentStatus.GovApproved)
             {
-                return Enums.ActionType.Completed;
+                return Enums.ActionType.GovPartialApprove;
+            }
+            if (docStatus == Enums.DocumentStatus.Completed)
+            {
+                return Enums.ActionType.GovApprove;
             }
             return Enums.ActionType.Reject;
         }

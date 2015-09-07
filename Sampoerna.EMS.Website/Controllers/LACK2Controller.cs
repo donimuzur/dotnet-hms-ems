@@ -291,7 +291,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             if (item.GovStatus == Enums.DocumentStatusGov.FullApproved)
             {
-                item.Status = Enums.DocumentStatus.GovApproved;
+                item.Status = Enums.DocumentStatus.Completed;
             }
             if (item.GovStatus == Enums.DocumentStatusGov.Rejected)
             {

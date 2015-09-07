@@ -354,7 +354,7 @@
             var month = parseInt($('#Lack2Model_PeriodMonth').val());
             var year = parseInt($('#Lack2Model_PeriodYear').val());
             var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
-            
+            var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
