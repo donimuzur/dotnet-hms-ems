@@ -174,7 +174,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Json
         [HttpPost]
-        public JsonResult CompanyListPartialCk4C(string companyId)
+        public JsonResult CompanyListPartialProduction(string companyId)
         {
             var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
 

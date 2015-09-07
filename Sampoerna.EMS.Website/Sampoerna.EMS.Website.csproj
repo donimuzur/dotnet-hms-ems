@@ -221,6 +221,7 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
@@ -356,6 +357,7 @@
     <Compile Include="Models\POAMap\PoaMapDetailViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
+    <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
@@ -989,9 +991,6 @@
     <Content Include="Views\LACK2\Create.cshtml" />
     <Content Include="Views\LACK2\CreateDocument.cshtml" />
     <Content Include="Views\LACK2\Index.cshtml" />
-    <Content Include="Views\LACK2\ListByPlant.cshtml" />
-    <Content Include="Views\LACK2\ListCompletedDoc.cshtml" />
-    <Content Include="Views\LACK2\_Lack2CompletedDoc.cshtml" />
     <Content Include="Views\LACK2\_Lack2PlantTable .cshtml" />
     <Content Include="Views\LACK2\_Lack2OpenDoc.cshtml" />
     <Content Include="Views\LACK1\ListCompletedDocument.cshtml" />
@@ -1031,6 +1030,11 @@
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\LACK1\Test.cshtml" />
+    <Content Include="Views\Production\Index.cshtml" />
+    <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
+    <Content Include="Views\Production\Create.cshtml" />
+    <Content Include="Views\Production\Edit.cshtml" />
+    <Content Include="Views\Production\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

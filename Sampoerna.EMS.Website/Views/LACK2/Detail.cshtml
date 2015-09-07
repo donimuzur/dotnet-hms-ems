@@ -5,7 +5,7 @@
 
 @{
     ViewBag.Title = "Detail LACK2";
-    int i = 0;
+   
 }
 
 
@@ -66,7 +66,10 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        @if (Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        }
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                     </ul>
 
@@ -158,8 +161,8 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Plant</label>
                                                                 <div class="col-md-8">
-                                                                 @Html.TextBox("plant", Model.Lack2Model.LevelPlantId + "-" + Model.Lack2Model.LevelPlantName, new { @class = "form-control", @disabled = "disabled" })
-                                                                  </div>
+                                                                    @Html.TextBox("plant", Model.Lack2Model.LevelPlantId + "-" + Model.Lack2Model.LevelPlantName, new { @class = "form-control", @disabled = "disabled" })
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -175,7 +178,7 @@
                                                                 <label class="col-md-4">Submission Date</label>
                                                                 <div class="col-md-8">
                                                                     <div class="input-group date">
-                                                                        @Html.TextBox("submission_date", Model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                                        @Html.TextBox("submission_date", Model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled", })
                                                                         <span class="input-group-addon">
                                                                             <i class="fa fa-calendar"></i>
                                                                         </span>
@@ -239,19 +242,19 @@
                                                             @if (@Model.Lack2Model.Items != null)
                                                             {
                                                                 
-                                                                foreach (var item in @Model.Lack2Model.Items)
+                                                                for(int i= 0; i< @Model.Lack2Model.Items.Count; i++)
                                                                 {
                                                                     <tr>
                                                                         @Html.HiddenFor(x => x.Lack2Model.Items[i].Lack2Id)
                                                                         @Html.HiddenFor(x => x.Lack2Model.Items[i].Id)
                                                                         @Html.HiddenFor(x=>x.Lack2Model.Items[i].Ck5Id)
-                                                                        <th></th>
-                                                                        <th>@item.Ck5Number</th>
-                                                                        <th>@item.Ck5GIDate</th>
-                                                                        <th>@item.Ck5ItemQty</th>
-                                                                        <th>@item.CompanyName</th>
-                                                                        <th>@item.CompanyNppbkc</th>
-                                                                        <th>@item.CompanyAddress</th>
+                                                                        <th>@(i+1)</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5Number</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5GIDate</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5ItemQty</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyName</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyNppbkc</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyAddress</th>
                                                                     </tr>
                                                                     
                                                                 }
@@ -282,8 +285,16 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Status Gov<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBox("gov-status", Model.Lack2Model.StatusGov, new { @class = "form-control", @disabled = "disabled" })
-  </div>
+                                                                    @if (Model.Lack2Model.StatusGov != 0)
+                                                                    {
+                                                                        @Html.TextBox("gov-status", Model.Lack2Model.StatusGov, new {@class = "form-control", @disabled = "disabled"})
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.TextBox("gov-status", string.Empty, new { @class = "form-control", @disabled = "disabled" })
+                                                                    }
+                                                                </div>
+
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -314,9 +325,7 @@
                                                                                     <div class="col-sm-10">
                                                                                         <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
                                                                                     </div>
-                                                                                    <div class="col-sm-2">
-                                                                                        <button class="btn btn-danger full" type="button" onclick="removeDoc(@file.LACK2_DOCUMENT_ID, '@Url.Action("RemoveDoc", "LACK2")', this) "><i class="fa fa-times"></i></button>
-                                                                                    </div>
+                                                                                    
                                                                                 </div>
 
                                                                             }
@@ -324,7 +333,9 @@
 
                                                                     </div>
                                                                     <div class="row">
-                                                                        
+                                                                        <div class="col-md-6">
+                                                                            <button class="btn btn-primary full" type="button">Add File</button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -341,7 +352,10 @@
                                 @Html.Partial("_WorkflowHistory", Model)
                             </div>
                         </div>
-                        @Html.Partial("_PrintOut", Model)
+                        @if (Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            @Html.Partial("_PrintOut", Model)
+                        }
                         @Html.Partial("_ChangesLog", Model)
                     </div>
                 </div>
@@ -477,7 +491,41 @@
 
         }
         
-    
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+            
+        }
+
     </script>
 
 }
