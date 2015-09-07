@@ -20,5 +20,7 @@ namespace Sampoerna.EMS.Contract
 
         Lack1DetailsDto GetDetailsById(int id);
 
+        Lack1PrintOutDto GetPrintOutData(int id);
+
     }
 }
