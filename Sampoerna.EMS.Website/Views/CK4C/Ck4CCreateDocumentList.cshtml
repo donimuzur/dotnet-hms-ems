@@ -1,9 +1,9 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
 @{
-    ViewBag.Title = "Ck4CCreateDailyProduction";
+    ViewBag.Title = "Ck4CCreateDocumentList";
 }
 
-@using (Html.BeginForm("Ck4CCreateDailyProduction", "CK4C"))
+@using (Html.BeginForm("Ck4CCreateDocumentList", "CK4C"))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -11,8 +11,8 @@
                 <h3>CK-4C Form</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
-                    <button class="btn btn-grey">Cancel</button>
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                 </div>
             </div>
         </div>
@@ -41,6 +41,12 @@
 @section scripts
 {
     <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("DocumentList", "CK4C")';
+            });
+        });
+
         $('#MenuCk4cDocumentList').addClass('active');
 
 
@@ -50,7 +56,6 @@
                 $('#SearchInput_PlantId option').remove();
                 if (cpy == '' || $(this).find("option:selected").val() == '') {
                     $('#SearchInput_PlantId option').append('<option value="">All</option>');
-
                 } else {
                     ajaxSelectCompany('@Url.Action("CompanyListPartialCk4C", "CK4C")', { companyId: cpy });
                 }
@@ -76,34 +81,5 @@
                 });
             }
         }
-
-        $("#FinishGoods").change(function () {
-            if ($("#FinishGoods").length) {
-                var FaDesc = $(this).find("option:selected").val();
-                if (FaDesc == '') {
-                    $('#Description').val('');
-                } else {
-                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "CK4C")', { faCode: FaDesc });
-                }
-            }
-
-        });
-
-        function ajaxFaCodeDescription(url, formData) {
-            if (formData.faCode) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#Description').val(data);
-                    }
-                });
-            }
-
-
-
-        }
-
     </script>
 }
