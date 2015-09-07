@@ -12,6 +12,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.CK4C;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -318,10 +319,33 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PeriodList = Ck4cPeriodList();
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = Ck4cYearList();
+            model.PlanList = GlobalFunctions.GetPlantAll();
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
             return (model);
 
         }
         #endregion
+
+        private SelectList Ck4cPeriodList()
+        {
+            var period = new List<SelectItemModel>();
+            var currentPeriod = 1;
+            period.Add(new SelectItemModel() { ValueField = currentPeriod, TextField = currentPeriod.ToString() });
+            period.Add(new SelectItemModel() { ValueField = currentPeriod + 1, TextField = (currentPeriod + 1).ToString() });
+            return new SelectList(period, "ValueField", "TextField");
+        }
+
+        private SelectList Ck4cYearList()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
     }
 }

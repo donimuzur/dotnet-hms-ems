@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
         public string NppbkcId { get; set; }
+        public string PlantId { get; set; }
 
         //selectlist
         public SelectList DocumentNumberList { get; set; }
@@ -24,6 +25,11 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public SelectList NppbkcIdList { get; set; }
         public Enums.CK4CType Ck4CType { get; set; }
         public List<DataDocumentList> Detail { get; set; }
+        public DataDocumentList Details { get; set; }
+        public SelectList MonthList { get; set; }
+        public SelectList YearList { get; set; }
+        public SelectList PeriodList { get; set; }
+        public SelectList PlanList { get; set; }
     }
     public class DataDocumentList
     {
@@ -46,5 +52,6 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public int? ReportedYears { get; set; }
         public int Status { get; set; }
         public int StatusGoverment { get; set; }
+        public string PoaList { get; set; }
     }
 }

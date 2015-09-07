@@ -21,7 +21,7 @@
                                     <div class="row">
                                         <label class="col-md-4">CK-4C No</label>
                                         <div class="col-md-8">
-                                            
+                                            @Html.TextBoxFor(model => model.Details.Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -29,7 +29,12 @@
                                     <div class="row">
                                         <label class="col-md-4">Reported On</label>
                                         <div class="col-md-8">
-                                            
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.Details.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -39,7 +44,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Company Code</label>
                                         <div class="col-md-8">
-                                            
+                                            @Html.DropDownListFor(model => model.Details.CompanyId, Model.CompanyNameList, "All", new { @class = "form-control " })
                                         </div>
                                     </div>
                                 </div>
@@ -47,7 +52,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Reported Period</label>
                                         <div class="col-md-8">
-                                            
+                                            @Html.DropDownListFor(model => model.Details.ReportedPeriod, Model.PeriodList, "", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -57,7 +62,7 @@
                                     <div class="row">
                                         <label class="col-md-4">POA</label>
                                         <div class="col-md-8">
-                                            
+                                            @Html.TextBoxFor(model => model.Details.PoaList, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
                                         </div>
                                     </div>
                                 </div>
@@ -65,9 +70,47 @@
                                     <div class="row">
                                         <label class="col-md-4">Reported Month</label>
                                         <div class="col-md-8">
-                                            
+                                            @Html.DropDownListFor(model => model.Details.ReportedMonth, Model.MonthList, "", new { @class = "form-control" })
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-md-6 col-md-offset-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Reported Year</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.Details.ReportedYears, Model.YearList, "", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Based on</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4"><input name="based-on" type="radio" checked> Plant Id</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.Details.PlantId, Model.PlanList, "", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4"><input name="based-on" type="radio"> NPPBKC</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.Details.NppbkcId, Model.NppbkcIdList, "", new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-blue full">Generate</button>
                                 </div>
                             </div>
                         </div>
