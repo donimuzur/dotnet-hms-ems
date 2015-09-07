@@ -95,10 +95,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var data = Mapper.Map<ProductionDto>(model);
                 var company = _companyBll.GetById(model.CompanyCode);
                 var plant = _plantBll.GetT001ById(model.PlantWerks);
-               
+                var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
+
                 data.CompanyName = company.BUTXT;
                 data.PlantName = plant.NAME1;
-
+                data.BrandDescription = brandDesc.BRAND_CE;
+                
                 _productionBll.Save(data);
 
                 AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
