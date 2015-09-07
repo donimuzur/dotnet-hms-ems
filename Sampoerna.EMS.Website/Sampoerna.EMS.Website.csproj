@@ -988,9 +988,6 @@
     <Content Include="Views\LACK2\Create.cshtml" />
     <Content Include="Views\LACK2\CreateDocument.cshtml" />
     <Content Include="Views\LACK2\Index.cshtml" />
-    <Content Include="Views\LACK2\ListByPlant.cshtml" />
-    <Content Include="Views\LACK2\ListCompletedDoc.cshtml" />
-    <Content Include="Views\LACK2\_Lack2CompletedDoc.cshtml" />
     <Content Include="Views\LACK2\_Lack2PlantTable .cshtml" />
     <Content Include="Views\LACK2\_Lack2OpenDoc.cshtml" />
     <Content Include="Views\LACK1\ListCompletedDocument.cshtml" />
