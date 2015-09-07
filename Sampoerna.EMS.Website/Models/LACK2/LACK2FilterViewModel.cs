@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
@@ -14,6 +15,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string PlantId { get; set; }
         public int? Year { get; set; }
 
+        public DateTime? ReportedOn { get; set; }
+
         /// <summary>
         /// optional if want to sorting from query
         /// </summary>
@@ -24,7 +27,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public SelectList CreatorList { get; set; }
         public SelectList PlantList { get; set; }
         public SelectList YearList { get; set; }
-
+        public bool IsOpenDocList { get; set; }
 
     }
 }

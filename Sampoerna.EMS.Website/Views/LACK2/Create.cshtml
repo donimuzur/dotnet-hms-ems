@@ -31,9 +31,7 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
-                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
-                    </ul>
+                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
@@ -224,8 +222,7 @@
                                 
                             </div>
                         </div>
-                        @Html.Partial("_PrintOut", Model)
-                        @Html.Partial("_ChangesLog", Model)
+                       
                                         </div>
                 </div>
             </div>
@@ -242,7 +239,6 @@
             $('#Lack2Model_NppbkcId').html('');
 
             $('#Lack2Model_ExGoodTyp').html('');
-
             
             
         });
@@ -267,7 +263,7 @@
                 var company = $(this).find("option:selected").val();
                 if (company !== '') {
                     ajaxGetNppbkcByCompany(company);
-                   
+
 
                 }
             }
@@ -298,12 +294,12 @@
                     data: { nppbkcid: nppbkc },
                     success: function(data) {
                         $('#Lack2Model_LevelPlantId').html('');
-                        
+
                         for (var i = 0; i < data.length; i++) {
-                            $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value +'-' + data[i].Text + '</option>');
+                            $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
 
                         }
-                        
+
                     }
                 }
             );
@@ -358,7 +354,7 @@
             var month = parseInt($('#Lack2Model_PeriodMonth').val());
             var year = parseInt($('#Lack2Model_PeriodYear').val());
             var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
-            var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
+            
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
@@ -377,6 +373,9 @@
                                 '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
                             $('#tb-body-ck5-lack2').append(tableCk5Item);
                         }
+                    } else {
+                        $('#tb-body-ck5-lack2').html("");
+                        $('#tb-body-ck5-lack2').append('<tr><td style="text-align:center" colspan="7">no data<td></tr>');
                     }
                 }
             });

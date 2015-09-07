@@ -48,59 +48,13 @@ namespace Sampoerna.EMS.BLL
             _poabll = new POABLL(_uow, _logger);
         }
 
-        /// <summary>
-        /// Gets all of the data for LACK2 Table by entered parameters
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public List<Lack2Dto> GetAll(Lack2GetByParamInput input)
+
+        public List<Lack2Dto> GetAll()
         {
-            Expression<Func<LACK2, bool>> queryFilter = PredicateHelper.True<LACK2>();
-
-            if (!string.IsNullOrEmpty((input.PlantId)))
-            {
-                queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId);
-            }
-            if (!string.IsNullOrEmpty((input.Creator)))
-            {
-                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
-            }
-            if (!string.IsNullOrEmpty((input.Poa)))
-            {
-                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
-            }
-            if (!string.IsNullOrEmpty((input.SubmissionDate)))
-            {
-                var dt = Convert.ToDateTime(input.SubmissionDate);
-            //    DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
-            //    queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
-            }
-
-            Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
-
-            if (!string.IsNullOrEmpty(input.SortOrderColumn))
-            {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<LACK2>(input.SortOrderColumn));
-
-            }
-
-            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
-            if (dbData == null)
-            {
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            }
-
-            var mapResult = Mapper.Map<List<Lack2Dto>>(dbData.ToList());
-
-            return mapResult;
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get());
         }
 
        
-        public List<Lack2Dto> GetCompletedDocumentByParam(Lack2GetByParamInput input)
-        {
-            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables));
-     
-        }
 
         public List<Lack2Dto> GetOpenDocument()
         {
@@ -108,7 +62,7 @@ namespace Sampoerna.EMS.BLL
      
         }
 
-        public List<Lack2Dto> GetOpenDocumentByParam(Lack2GetByParamInput input)
+        public List<Lack2Dto> GetDocumentByParam(Lack2GetByParamInput input)
         {
             Expression<Func<LACK2, bool>> queryFilter = PredicateHelper.True<LACK2>();
 
@@ -128,8 +82,22 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
-            
-
+            if (input.SubmissionDate.HasValue)
+            {
+                var date = input.SubmissionDate.Value.Day;
+                var month = input.SubmissionDate.Value.Month;
+                var year = input.SubmissionDate.Value.Year;
+                var dateToCompare = new DateTime(year, month, date);
+                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE.Equals(dateToCompare));
+            }
+            if (input.IsOpenDocList)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            }
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
 
@@ -346,6 +314,11 @@ namespace Sampoerna.EMS.BLL
             }
             return 0;
 
+        }
+
+        public List<Lack2Dto> GetCompletedDocument()
+        {
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables));
         }
     }
 }
