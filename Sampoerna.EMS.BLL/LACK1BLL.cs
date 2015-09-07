@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poaBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IHeaderFooterBLL _headerFooterBll;
 
         //services
         private ICK4CItemService _ck4cItemService;
@@ -47,6 +48,7 @@ namespace Sampoerna.EMS.BLL
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
+            _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
@@ -207,6 +209,23 @@ namespace Sampoerna.EMS.BLL
             return GenerateLack1Data(input);
         }
 
+        public Lack1PrintOutDto GetPrintOutData(int id)
+        {
+            var dbData = _lack1Service.GetDetailsById(id);
+            var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
+
+            //set header footer data by CompanyCode and FormTypeId
+            var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+            {
+                FormTypeId = Enums.FormType.LACK1,
+                CompanyCode = dbData.BUKRS
+            });
+
+            dtToReturn.HeaderFooter = headerFooterData;
+
+            return dtToReturn;
+        }
+
         #region ----------------Private Method-------------------
         private void SetChangesHistory(Lack1Dto origin, Lack1Dto data, string userId)
         {
@@ -247,6 +266,8 @@ namespace Sampoerna.EMS.BLL
                 ErrorMessage = string.Empty
             };
 
+            #region Validation 
+
             //check if already exists with same selection criteria
             var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
             {
@@ -283,6 +304,8 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
+            #endregion
+
             if (checkExcisableGroupType.EX_GROUP_TYPE_ID != null)
                 input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
 
@@ -297,6 +320,41 @@ namespace Sampoerna.EMS.BLL
                 BeginingBalance = 0 //set default
             };
 
+            //rc.TotalUsage = 0; //todo: get from Inventory Movement
+            //get total usage from INVENTORY MOVEMENT table by param input
+            var invMovementData =
+                _inventoryMovementService.GetTotalUsageForLack1Byparam(new InvMovementGetForLack1ByParamInput()
+                {
+                    Lack1Level = input.Lack1Level,
+                    NppbkcId = input.NppbkcId,
+                    PeriodMonth = input.PeriodMonth,
+                    PeriodYear = input.PeriodYear,
+                    PlantId = input.ReceivedPlantId 
+                });
+
+            //var invUsageAdd =
+            //    invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd))
+            //    .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+
+            //var invUsageMin =
+            //    invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin))
+            //    .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+
+            //rc.TotalUsage = (invUsageAdd - invUsageMin);
+
+            rc.TotalUsage = (-1)*(invMovementData.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0));
+
+            if (rc.TotalUsage <= 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
+                    Data = null
+                };
+            }
+
             //set begining balance
             rc = SetBeginingBalanceBySelectionCritera(rc, input);
 
@@ -306,6 +364,16 @@ namespace Sampoerna.EMS.BLL
             //Set Income List by selection Criteria
             //from CK5 data
             rc = SetIncomeListBySelectionCriteria(rc, input);
+
+            if(rc.IncomeList.Count == 0)
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
+                    Data = null
+                };
+            
             if (rc.IncomeList.Count > 0)
             {
                 rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
@@ -313,10 +381,19 @@ namespace Sampoerna.EMS.BLL
 
             var productionList = GetProductionDetailBySelectionCriteria(input);
 
-            rc.ProductionList = GetGroupedProductionlist(productionList);
+            if (productionList.Count == 0)
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingProductionList.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
+                    Data = null
+                };
+            
+            rc.ProductionList = GetGroupedProductionlist(productionList, rc.TotalUsage, rc.TotalIncome);
 
             //set summary
-            rc.SummaryProductionList = GetSummaryGroupedProductionList(productionList);
+            rc.SummaryProductionList = GetSummaryGroupedProductionList(rc.ProductionList);
 
             rc.PeriodMonthId = input.PeriodMonth;
 
@@ -329,22 +406,7 @@ namespace Sampoerna.EMS.BLL
             rc.PeriodYear = input.PeriodYear;
             rc.Noted = input.Noted;
 
-            //rc.TotalUsage = 0; //todo: get from Inventory Movement
-
-            //get total usage from INVENTORY MOVEMENT table by param input
-            var invMovementData =
-                _inventoryMovementService.GetTotalUsageForLack1Byparam(new InvMovementGetForLack1ByParamInput()
-                {
-                    Lack1Level = input.Lack1Level,
-                    NppbkcId = input.NppbkcId,
-                    PeriodMonth = input.PeriodMonth,
-                    PeriodYear = input.PeriodYear,
-                    PlantId = input.ReceivedPlantId
-                });
-
-            rc.TotalUsage = invMovementData.Count > 0 ? invMovementData.Sum(d => d.QTY != null ? d.QTY.Value : 0) : 0;
-
-            rc.EndingBalance = rc.BeginingBalance - rc.TotalUsage + rc.TotalIncome;
+            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome  - rc.TotalUsage;
 
             oReturn.Data = rc;
 
@@ -393,10 +455,11 @@ namespace Sampoerna.EMS.BLL
         private Lack1GeneratedDto SetIncomeListBySelectionCriteria(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input)
         {
             var ck5Input = Mapper.Map<Ck5GetForLack1ByParamInput>(input);
+            ck5Input.IsExcludeSameNppbkcId = true;
             var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
             rc.IncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
 
-            if (rc.IncomeList.Count > 0)
+            if (ck5Data.Count > 0)
             {
                 rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
             }
@@ -485,30 +548,42 @@ namespace Sampoerna.EMS.BLL
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list)
+        private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list, decimal totalUsage, decimal totalIncome)
         {
-            if (list.Count > 0)
-            {
-                var groupedData = list.GroupBy(p => new
-                {
-                    p.ProdCode,
-                    p.ProductType,
-                    p.ProductAlias,
-                    p.UomId,
-                    p.UomDesc
-                }).Select(g => new Lack1GeneratedProductionDataDto()
-                {
-                    ProdCode = g.Key.ProdCode,
-                    ProductType = g.Key.ProductType,
-                    ProductAlias = g.Key.ProductAlias,
-                    UomId = g.Key.UomId,
-                    UomDesc = g.Key.UomDesc,
-                    Amount = g.Sum(p => p.Amount)
-                });
+            if (list.Count <= 0) return new List<Lack1GeneratedProductionDataDto>();
+            var totalAmount = list.Sum(c => c.Amount);
 
-                return groupedData.ToList();
-            }
-            return new List<Lack1GeneratedProductionDataDto>();
+            var groupedData = list.GroupBy(p => new
+            {
+                p.ProdCode,
+                p.ProductType,
+                p.ProductAlias,
+                p.UomId,
+                p.UomDesc
+            }).Select(g => new Lack1GeneratedProductionDataDto()
+            {
+                ProdCode = g.Key.ProdCode,
+                ProductType = g.Key.ProductType,
+                ProductAlias = g.Key.ProductAlias,
+                UomId = g.Key.UomId,
+                UomDesc = g.Key.UomDesc,
+                Amount = g.Sum(p => p.Amount)
+            });
+
+            //proporsional process
+            var lack1GeneratedProductionDataDtos = groupedData as Lack1GeneratedProductionDataDto[] ?? groupedData.ToArray();
+            var dToReturn = lack1GeneratedProductionDataDtos.Select(g => new Lack1GeneratedProductionDataDto()
+            {
+                ProdCode = g.ProdCode,
+                ProductType = g.ProductType,
+                ProductAlias = g.ProductAlias,
+                UomId = g.UomId,
+                UomDesc = g.UomDesc,
+                Amount = (g.Amount/totalAmount) * ((totalIncome/totalUsage) * totalUsage)
+                //Amount = (g.Amount) //just for testing
+            });
+
+            return dToReturn.ToList();
         }
 
         /// <summary>
@@ -518,22 +593,19 @@ namespace Sampoerna.EMS.BLL
         /// <returns></returns>
         private List<Lack1GeneratedSummaryProductionDataDto> GetSummaryGroupedProductionList(List<Lack1GeneratedProductionDataDto> list)
         {
-            if (list.Count > 0)
+            if (list.Count <= 0) return new List<Lack1GeneratedSummaryProductionDataDto>();
+            var groupedData = list.GroupBy(p => new
             {
-                var groupedData = list.GroupBy(p => new
-                {
-                    p.UomId,
-                    p.UomDesc
-                }).Select(g => new Lack1GeneratedSummaryProductionDataDto()
-                {
-                    UomId = g.Key.UomId,
-                    UomDesc = g.Key.UomDesc,
-                    Amount = g.Sum(p => p.Amount)
-                });
+                p.UomId,
+                p.UomDesc
+            }).Select(g => new Lack1GeneratedSummaryProductionDataDto()
+            {
+                UomId = g.Key.UomId,
+                UomDesc = g.Key.UomDesc,
+                Amount = g.Sum(p => p.Amount)
+            });
 
-                return groupedData.ToList();
-            }
-            return new List<Lack1GeneratedSummaryProductionDataDto>();
+            return groupedData.ToList();
         }
 
         #endregion

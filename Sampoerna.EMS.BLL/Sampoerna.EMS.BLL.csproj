@@ -77,6 +77,7 @@
     <Compile Include="ProductionBLL.cs" />
     <Compile Include="Services\BrandRegistrationService.cs" />
     <Compile Include="Services\CK4CItemService.cs" />
+    <Compile Include="Services\CK5MaterialService.cs" />
     <Compile Include="Services\CK5Service.cs" />
     <Compile Include="Services\ExGroupTypeService.cs" />
     <Compile Include="Services\InventoryMovementService.cs" />

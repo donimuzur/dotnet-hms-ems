@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.BusinessObject.DTOs;
+﻿using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
     public class LACK2Model
     {
         
+
         public int Lack2Id { get; set; }
 
         public string Lack2Number { get; set; }
@@ -77,9 +79,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public string RejectedBy { get; set; }
         public DateTime? RejectedDate { get; set; }
-       
-       
-      
+
+        public List<LACK2_DOCUMENT> Documents { get; set; } 
+
     }
 
    

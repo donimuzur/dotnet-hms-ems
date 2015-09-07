@@ -57,6 +57,9 @@
     <Compile Include="BACK3_CK2_PBCK3_PBCK7.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="BLOCK_STOCK.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="BOM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -67,6 +70,7 @@
     <Compile Include="Business\HeaderFooter.cs" />
     <Compile Include="Business\HeaderFooterMap.cs" />
     <Compile Include="Business\Login.cs" />
+    <Compile Include="Business\MailNotification.cs" />
     <Compile Include="Business\Material.cs" />
     <Compile Include="Business\Pbck1.cs" />
     <Compile Include="Business\Pbck1ProdConverter.cs" />
@@ -116,6 +120,7 @@
     <Compile Include="DTOs\Lack1IncomeDetailDto.cs" />
     <Compile Include="DTOs\Lack1Pbck1MappingDto.cs" />
     <Compile Include="DTOs\Lack1PlantDto.cs" />
+    <Compile Include="DTOs\Lack1PrintOutDto.cs" />
     <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />

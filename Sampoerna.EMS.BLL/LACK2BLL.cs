@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<LACK2> _repository;
         private IGenericRepository<LACK2_ITEM> _repositoryItem;
-      
+        private IGenericRepository<LACK2_DOCUMENT> _repositoryDocument;
         private IMonthBLL _monthBll;
         private IUserBLL _userBll;
         private IUnitOfMeasurementBLL _uomBll;
@@ -34,6 +34,7 @@ namespace Sampoerna.EMS.BLL
         private string includeTables = "MONTH";
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPOABLL _poabll;
+
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -47,15 +48,28 @@ namespace Sampoerna.EMS.BLL
             _poabll = new POABLL(_uow, _logger);
         }
 
-        /// <summary>
-        /// Gets all of the data for LACK2 Table by entered parameters
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public List<Lack2Dto> GetAll(Lack2GetByParamInput input)
+
+        public List<Lack2Dto> GetAll()
+        {
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get());
+        }
+
+       
+
+        public List<Lack2Dto> GetOpenDocument()
+        {
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS != Enums.DocumentStatus.Completed, null, includeTables));
+     
+        }
+
+        public List<Lack2Dto> GetDocumentByParam(Lack2GetByParamInput input)
         {
             Expression<Func<LACK2, bool>> queryFilter = PredicateHelper.True<LACK2>();
 
+            if (!string.IsNullOrEmpty((input.NppbKcId)))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbKcId);
+            }
             if (!string.IsNullOrEmpty((input.PlantId)))
             {
                 queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID == input.PlantId);
@@ -68,11 +82,21 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
-            if (!string.IsNullOrEmpty((input.SubmissionDate)))
+            if (input.SubmissionDate.HasValue)
             {
-                var dt = Convert.ToDateTime(input.SubmissionDate);
-                DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
+                var date = input.SubmissionDate.Value.Day;
+                var month = input.SubmissionDate.Value.Month;
+                var year = input.SubmissionDate.Value.Year;
+                var dateToCompare = new DateTime(year, month, date);
+                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE.Equals(dateToCompare));
+            }
+            if (input.IsOpenDocList)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
             }
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
@@ -92,15 +116,6 @@ namespace Sampoerna.EMS.BLL
             var mapResult = Mapper.Map<List<Lack2Dto>>(dbData.ToList());
 
             return mapResult;
-        }
-
-        /// <summary>
-        /// Gets all LACK2 Documents with status Completed
-        /// </summary>
-        /// <returns></returns>
-        public List<Lack2Dto> GetAllCompleted()
-        {
-            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables));
         }
 
         /// <summary>
@@ -128,12 +143,7 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.STATUS == input.Status);
             }
-            //if (!string.IsNullOrEmpty((input.SubmissionDate)))
-            //{
-            //    var dt = Convert.ToDateTime(input.SubmissionDate);
-            //    DateTime dt2 = DateTime.ParseExact("07/01/2015", "MM/dd/yyyy", CultureInfo.InvariantCulture);
-            //    queryFilter = queryFilter.And(c => dt2.Date.ToString().Contains(c.SUBMISSION_DATE.ToString()));
-            //}
+           
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
 
@@ -166,10 +176,11 @@ namespace Sampoerna.EMS.BLL
 
         public Lack2Dto GetByIdAndItem(int id)
         {
-            var data = _repositoryItem.Get(x => x.LACK2_ID == id, null, "LACK2, CK5");
+            var data = _repositoryItem.Get(x => x.LACK2_ID == id, null, "LACK2, LACK2.MONTH, CK5, LACK2.LACK2_DOCUMENT");
             var lack2dto = new Lack2Dto();
             lack2dto = data.Select(x => Mapper.Map<Lack2Dto>(x.LACK2)).FirstOrDefault();
             lack2dto.Items = data.Select(x => Mapper.Map<Lack2ItemDto>(x)).ToList();
+            
             return lack2dto;
         }
 
@@ -192,17 +203,18 @@ namespace Sampoerna.EMS.BLL
             {
                 return Enums.ActionType.Approve;
             }
-            if (docStatus == Enums.DocumentStatus.Approved)
+         
+            if (docStatus == Enums.DocumentStatus.WaitingGovApproval)
             {
                 return Enums.ActionType.Approve;
             }
-            if (docStatus == Enums.DocumentStatus.WaitingGovApproval)
-            {
-                return Enums.ActionType.GovApprove;
-            }
             if (docStatus == Enums.DocumentStatus.GovApproved)
             {
-                return Enums.ActionType.Completed;
+                return Enums.ActionType.GovPartialApprove;
+            }
+            if (docStatus == Enums.DocumentStatus.Completed)
+            {
+                return Enums.ActionType.GovApprove;
             }
             return Enums.ActionType.Reject;
         }
@@ -225,7 +237,7 @@ namespace Sampoerna.EMS.BLL
             {
                 return lack2.ApprovedBy;
             }
-            if (lack2.Status == Enums.DocumentStatus.Approved)
+            if (lack2.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
                 return lack2.ApprovedByManager;
             }
@@ -254,12 +266,12 @@ namespace Sampoerna.EMS.BLL
 
             LACK2 model = new LACK2();
             MONTH month = new MONTH();
-
+            
             month = _monthBll.GetMonth(item.PeriodMonth);
            
             model = AutoMapper.Mapper.Map<LACK2>(item);
             model.MONTH = month;
-         
+            model.LACK2_DOCUMENT = item.Documents;
             try
             {
                 _repository.InsertOrUpdate(model);
@@ -285,6 +297,32 @@ namespace Sampoerna.EMS.BLL
             return item;
         }
 
+        public void InsertDocument(LACK2_DOCUMENT document)
+        {
+            _repositoryDocument = _uow.GetGenericRepository<LACK2_DOCUMENT>();
+            _repositoryDocument.InsertOrUpdate(document);
+            _uow.SaveChanges();
+        }
 
+        public int RemoveDoc(int docId)
+        {
+            try
+            {
+                _repositoryDocument = _uow.GetGenericRepository<LACK2_DOCUMENT>();
+                _repositoryDocument.Delete(docId);
+                _uow.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+            return 0;
+
+        }
+
+        public List<Lack2Dto> GetCompletedDocument()
+        {
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables));
+        }
     }
 }
