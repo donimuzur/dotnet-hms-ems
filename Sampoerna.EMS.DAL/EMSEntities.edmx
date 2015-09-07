@@ -40,7 +40,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PLANT" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="BLOCKED" Type="decimal" Precision="18" Scale="2" />
           <Property Name="BUN" Type="nvarchar" MaxLength="5" />
-          <Property Name="SLOC" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SLOC" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="BOM">
           <Key>
@@ -6161,7 +6161,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PLANT" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="BLOCKED" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="SLOC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SLOC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
