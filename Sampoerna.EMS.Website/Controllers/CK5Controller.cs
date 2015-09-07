@@ -376,16 +376,28 @@ namespace Sampoerna.EMS.Website.Controllers
                 output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, (int)goodtypeenum);
             }
 
-            
-            
 
-            model.Pbck1Id = output.Pbck1Id;
-            model.Pbck1Number = output.Pbck1Number;
-            model.Pbck1DecreeDate = output.Pbck1DecreeDate;
-            model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-            model.Ck5TotalExciseable = output.QtyCk5.ToString();
-            model.RemainQuota = output.RemainQuota.ToString();
-            model.PbckUom = output.PbckUom;
+            if (sourceNppbkcId == dbPlantDest.NPPBKC_ID)
+            {
+                model.Pbck1Id = null;
+                model.Pbck1Number = null;
+                model.Pbck1DecreeDate = null;
+                model.Pbck1QtyApproved = "0";
+                model.Ck5TotalExciseable = "0";
+                model.RemainQuota = "0";
+                model.PbckUom = "";
+            }
+            else {
+                model.Pbck1Id = output.Pbck1Id;
+                model.Pbck1Number = output.Pbck1Number;
+                model.Pbck1DecreeDate = output.Pbck1DecreeDate;
+                model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                model.Ck5TotalExciseable = output.QtyCk5.ToString();
+                model.RemainQuota = output.RemainQuota.ToString();
+                model.PbckUom = output.PbckUom;
+            }
+
+            
 
             return Json(model);
         }
