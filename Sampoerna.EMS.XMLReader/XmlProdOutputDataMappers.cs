@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.XMLReader
                         var item = new PRODUCTION();
                         item.WERKS = _xmlMapper.GetElementValue(xElement.Element("Plnt")); ;
                         item.FA_CODE = _xmlMapper.GetElementValue(xElement.Element("Material"));
-                        item.BRAND_DESC = _xmlMapper.GetElementValue(xElement.Element("MaterialDescriptionMaterialDescription"));
+                        item.BRAND_DESC = _xmlMapper.GetElementValue(xElement.Element("MaterialDescription"));
                         item.PRODUCTION_DATE = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("ProdDate"))));
                         
                         var company = GetCompanyByPlant(item.WERKS);
@@ -61,7 +61,6 @@ namespace Sampoerna.EMS.XMLReader
                             var existingBrand = GetMaterialBrand(item.WERKS, item.FA_CODE);
                             if (existingBrand != null)
                             {
-                                item.BRAND_DESC = existingBrand.BRAND_CE;
                                 item.UOM = bun;
                                 item.PROD_QTY_STICK = prodQty/Convert.ToDecimal(existingBrand.BRAND_CONTENT);
                                 items.Add(item);
