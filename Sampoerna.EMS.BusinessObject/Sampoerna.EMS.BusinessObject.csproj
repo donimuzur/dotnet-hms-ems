@@ -256,6 +256,7 @@
     <Compile Include="Outputs\CK5FileUploadDocumentsOutput.cs" />
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
+    <Compile Include="Outputs\InventoryMovementOutputs.cs" />
     <Compile Include="Outputs\ProductionGetByIdOutput.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\Lack1GeneratedOutput.cs" />
