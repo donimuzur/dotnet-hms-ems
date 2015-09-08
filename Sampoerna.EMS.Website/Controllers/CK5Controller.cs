@@ -46,9 +46,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poabll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IUnitOfMeasurementBLL _uomBll;
+        private IMaterialBLL _materialBll;
 
         public CK5Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbckbll, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
-            IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
+            IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll, IMaterialBLL materialBll,
             IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
@@ -62,6 +63,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _poabll = poabll;
             _nppbkcbll = nppbckbll;
             _uomBll = uomBll;
+            _materialBll = materialBll;
         }
 
         #region View Documents
@@ -2623,6 +2625,41 @@ namespace Sampoerna.EMS.Website.Controllers
         #region "Create XML"
 
       
+        #endregion
+
+        #region "Input Materials"
+
+        public ActionResult InputMaterials()
+        {
+            var model = new CK5InputManualViewModel();
+            //model.MainMenu = Enums.MenuList.CK5;
+            //model.CurrentMenu = PageInfo;
+          
+            return View("CK5InputMaterial", model);
+        }
+
+        [HttpPost]
+        public JsonResult GetListMaterials(string plantId, Enums.CK5Type ck5Type)
+        {
+
+            var dbMaterial = _materialBll.GetMaterialByPlantId(plantId);
+            var model = Mapper.Map<List<CK5InputManualViewModel>>(dbMaterial);
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetMaterialHjeAndTariff(string plantId, string materialNumber)
+        {
+
+            var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
+            var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
+
+            //model.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
+            //model.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
+            return Json(model);
+        }
+
         #endregion
     }
 }

@@ -13,7 +13,7 @@ function OnReadyFunction(ck5Type) {
     else {
         $('#MenuCK5Domestic').addClass('active');
     }
-   
+
     
     $('#btnUploadInfo').click(function () {
 
@@ -37,33 +37,32 @@ function OnReadyFunction(ck5Type) {
         for (var i = 0; i < datarows.length; i++) {
             data += '<tr>';
             if (columnLength > 0) {
-                data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][0] + '">' + datarows[i][0] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-                //data += '<td> <input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
-                data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][13] + '">';
+                data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][15] + '">';
                 //alert(datarows[i][13]);
-                total += parseFloat(datarows[i][1]); //Qty
+                total += parseFloat(datarows[i][3]); //Qty
                 if (i == 0) {
                     //alert(datarows[i][2]);
                     $("#PackageUomName option").each(function () {
-                        if ($(this).val().toLowerCase() == datarows[i][2].toLowerCase()) {
+                        if ($(this).val().toLowerCase() == datarows[i][4].toLowerCase()) {
                             $(this).attr('selected', 'selected');
                         }
                     });
                 }
             }
             data += '</tr>';
-            if (datarows[i][2] != ($('#PbckUom').val()))
+            if (datarows[i][4] != ($('#PbckUom').val()))
                 isSamePbck1Uom = false;
 
             //$('#ck5TableItem tbody').append(data);
@@ -73,7 +72,7 @@ function OnReadyFunction(ck5Type) {
         $('#GrandTotalEx').val(total.toFixed(2));
         
        
-        
+
         $('#upload-tab').removeClass('active');
         $('#home-tab').addClass('active');
 
@@ -106,7 +105,7 @@ function OnReadyFunction(ck5Type) {
         ValidateRemainQuota(total);
         
     });
-    
+
     $('#collapseTwo').addClass('in');
     $('#collapseThree').addClass('in');
     
@@ -229,7 +228,7 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("*[name='DestAddress']").val(data.CompanyAddress);
                 $("input[name='DestKppbcName']").val(data.KppBcName);
                 $("input[name='DestPlantName']").val(data.PlantName);
-                
+
                 $("input[name='PbckDecreeId']").val(data.Pbck1Id);
                 $("input[name='PbckDecreeNumber']").val(data.Pbck1Number);
                 $("input[name='PbckDecreeDate']").val(data.Pbck1DecreeDate);
@@ -288,10 +287,10 @@ function ajaxGetPlantDetails(url, formData) {
                 $("*[name='SourceAddress']").val(data.CompanyAddress);
                 $("input[name='SourceKppbcName']").val(data.KppBcName);
                 $("input[name='SourcePlantName']").val(data.PlantName);
-                
+
                 $("input[name='KppBcCity']").val(data.KppbcCity);
                 $("input[name='CeOfficeCode']").val(data.KppbcNo);
-                
+
                 //enable upload
                 $('#btnUploadInfo').enable();
                 $('#CK5UploadSubmitBtn').enable();
@@ -302,7 +301,7 @@ function ajaxGetPlantDetails(url, formData) {
                 //$("input[name='Pbck1QtyApproved']").val(data.Pbck1QtyApproved);
                 //$("input[name='Ck5TotalExciseable']").val(data.Ck5TotalExciseable);
                 //$("input[name='RemainQuota']").val(data.RemainQuota);
-                
+
                 // PopulateListPbckNumber(data.PbckList);
 
                 //reset destination plant
@@ -332,7 +331,7 @@ function ajaxGetPlantDetails(url, formData) {
 function PopulateListPbckNumber(listPbck1) {
     var selectbox = $("#PbckDecreeId");
     selectbox.empty(); // remove old options
-    
+
     var list = '<option value>Select</option>';
 
     if (listPbck1 != null) {
@@ -342,13 +341,13 @@ function PopulateListPbckNumber(listPbck1) {
 
     }
     selectbox.html(list);
-    
+
     //clear rellated field
     $("input[name='PbckDecreeDate']").val('');
     $("input[name='Pbck1QtyApproved']").val('');
     $("input[name='Ck5TotalExciseable']").val('');
     $("input[name='RemainQuota']").val('');
-    
+
     //selectbox.html('refresh', true);
 }
 
@@ -380,7 +379,7 @@ function ajaxGetCompanyCode(url, formData) {
 
 function ChangeBackSourceMaterial(plantId, url) {
     if (plantId == plantOriginal) {
-        
+
         var formData = new FormData();
         formData.append("ck5Id", $('#Ck5Id').val());
         $.ajax({
@@ -393,7 +392,7 @@ function ChangeBackSourceMaterial(plantId, url) {
             success: function (response) {
                 $('#ck5EditMaterialTable').html("");
                 $('#ck5EditMaterialTable').html(response);
-               
+
             }
             //,
             //error: function (error) {
@@ -404,12 +403,12 @@ function ChangeBackSourceMaterial(plantId, url) {
 }
 
 function OnSubmitWorkflow(id) {
-    
+
 }
 
 function ValidateGovInput() {
     var result = true;
-  
+
     if ($('#RegistrationNumber').val() == '') {
         AddValidationClass(false, 'RegistrationNumber');
         result = false;
@@ -418,17 +417,17 @@ function ValidateGovInput() {
         $("#collapseOne").css({ height: "auto" });
         $('#RegistrationNumber').focus();
     }
-    
+
     if ($('#RegistrationDate').val() == '') {
         AddValidationClass(false, 'RegistrationDate');
         result = false;
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('in');
         $("#collapseOne").css({ height: "auto" });
-       
+
     }
-   // alert($('#GovStatus').val());
-    
+    // alert($('#GovStatus').val());
+
     if ($('#GovStatus').val() == '') {
         AddValidationClass(false, 'GovStatus');
         result = false;
@@ -449,39 +448,39 @@ function ValidateGovInput() {
         }
 
     }
-  
+
     if ($('#poa_sk0').length == 0) {
         AddValidationClass(false, 'poa-files');
-        
+
         if (result) {
             $('#modalBodyMessage').text('Missing attach files');
             $('#ModalCk5ValidateGov').modal('show');
-            
+
             $('#collapseFour').removeClass('collapse');
             $('#collapseFour').addClass('in');
             $("#collapseFour").css({ height: "auto" });
-          
+
         }
         result = false;
     }
-    
+
     if (result) {
         if ($('#RegistrationNumber').val().length < 6) {
-            
+
             AddValidationClass(false, 'RegistrationNumber');
             result = false;
             $('#collapseOne').removeClass('collapse');
             $('#collapseOne').addClass('in');
             $("#collapseOne").css({ height: "auto" });
             $('#RegistrationNumber').focus();
-            
+
             $('#modalBodyMessage').text('Registration Number Length must be 6');
             $('#ModalCk5ValidateGov').modal('show');
-            
-           
+
+
         }
     }
-    
+
     return result;
 }
 
@@ -504,25 +503,25 @@ function ValidateCk5Form(ck5Type) {
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if ($('#GoodType').find("option:selected").val() == '') {
         AddValidationClass(false, 'GoodType');
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if ($('#ExciseStatus').find("option:selected").val() == '') {
         AddValidationClass(false, 'ExciseStatus');
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if ($('#ExciseSettlement').find("option:selected").val() == '') {
         AddValidationClass(false, 'ExciseSettlement');
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if ($('#RequestType').find("option:selected").val() == '') {
         AddValidationClass(false, 'RequestType');
         result = false;
@@ -533,7 +532,7 @@ function ValidateCk5Form(ck5Type) {
         result = false;
         isValidCk5Detail = false;
     }
-    
+
     if (!isValidCk5Detail) {
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('in');
@@ -577,7 +576,7 @@ function ValidateCk5Form(ck5Type) {
             result = false;
             isValidCk5Detail = false;
         }
-        
+
         if ($('#FinalPort').val() == '') {
             AddValidationClass(false, 'FinalPort');
             result = false;
@@ -593,14 +592,14 @@ function ValidateCk5Form(ck5Type) {
             result = false;
             isValidCk5Detail = false;
         }
-        
+
         if (!isValidCk5Detail) {
             $('#collapseThree').removeClass('collapse');
             $('#collapseThree').addClass('in');
             $("#collapseThree").css({ height: "auto" });
 
         }
-        
+
     } else {
 
 
@@ -612,7 +611,7 @@ function ValidateCk5Form(ck5Type) {
             $("#collapseThree").css({ height: "auto" });
         }
     }
-    
+
     if (result) {
         var rowCount = $('#ck5TableItem tr').length;
 
@@ -620,21 +619,21 @@ function ValidateCk5Form(ck5Type) {
             // alert('Missing CK5 Material');
             $('#modalBodyMessage').text('Missing CK5 Materials');
             $('#ModalCk5Material').modal('show');
-            
+
             $('#home-tab').removeClass('active');
             $('#upload-tab').addClass('active');
 
             $('#information').removeClass('active');
             $('#upload').addClass('active');
-            
+
             result = false;
         }
-        
+
     }
     //alert('type : ' + ck5Type);
     //alert('Source Plant : ' + $('#SourceNppbkcId').val());
     //alert('Dest Plant : ' + $('#DestNppbkcId').val());
-    
+
     // && (ck5Type != 'Domestic')
     if (result) {
 
@@ -655,7 +654,7 @@ function ValidateCk5Form(ck5Type) {
 
             $('#modalBodyMessage').text('CK5 Quota Exceeded');
             $('#ModalCk5Material').modal('show');
-            
+
             AddValidationClass(false, 'GrandTotalEx');
             result = false;
         }
@@ -681,7 +680,7 @@ function ValidateGiCreated() {
         $('#collapseFour').removeClass('collapse');
         $('#collapseFour').addClass('in');
         $("#collapseFour").css({ height: "auto" });
-       
+
     }
     return result;
 }
@@ -707,4 +706,55 @@ function ValidateGRCreated() {
 
     }
     return result;
+}
+
+
+
+function ajaxGetListMaterial(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                var listMaterial = $('#uploadMaterialNumber');
+                listMaterial.empty();
+                
+                var list = '<option value>Select</option>';
+
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        list += "<option value='" + data[i].MaterialNumber + "'>" + data[i].MaterialNumber  + "</option>";
+                    }
+                  
+                }
+
+                listMaterial.html(list);
+
+                
+              
+            }
+        });
+    }
+}
+
+
+function ajaxGetMaterialHjeAndTariff(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+               
+                if (data != null) {
+                    $("#uploadMaterialHje").val(data.Hje);
+                    $("#uploadMaterialTariff").val(data.Tariff);
+                    $("#uploadMaterialDesc").val(data.MaterialDesc);
+                }
+
+             
+            }
+        });
+    }
 }
