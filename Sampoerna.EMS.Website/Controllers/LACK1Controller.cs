@@ -528,6 +528,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
             model.PrintOutTitle = "Preview LACK-1";
             return View("PrintDocument", model);
+            //return PartialView("PrintDocument", model);
             //return new RazorPDF.PdfResult(model, "PrintDocument");
             //var fileName = "lack1-pdf-" + DateTime.Now.ToString("ddMMyyyyHHmmss");
             //return Pdf(fileName, "PrintDocument", model);
