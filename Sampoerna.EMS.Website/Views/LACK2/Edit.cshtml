@@ -275,7 +275,15 @@
                                                                 <div class="row">
                                                                     <label class="col-md-4">Status Gov<span class="red">*</span></label>
                                                                     <div class="col-md-8">
-                                                                        @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
+                                                                        @if(Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                        {
+                                                                            @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.TextBox("gov-status", string.Empty, new { @class = "form-control", @disabled = "disabled" })
+
+                                                                        }
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -284,7 +292,16 @@
                                                                     <label class="col-md-4">Decree Date</label>
                                                                     <div class="col-md-8">
                                                                         <div class="input-group date">
-                                                                            @Html.TextBoxFor(x => x.Lack2Model.DecreeDate, new {@class = "form-control"})
+                                                                            @if(Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                            {
+                                                                                @Html.TextBoxFor(x => x.Lack2Model.DecreeDate, new {@class = "form-control"})
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                @Html.TextBox("decree_date", Model.Lack2Model.DecreeDate, new { @class = "form-control", @disabled="disabled" })
+
+                                                                            }
+                                                                            
                                                                             <span class="input-group-addon">
                                                                                 <i class="fa fa-calendar"></i>
                                                                             </span>
@@ -318,8 +335,16 @@
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-md-6">
-                                                                                <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
-                                                                            </div>
+                                                                                @if (Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                                {
+                                                                                    <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <button class="btn btn-primary full" type="button">Add File</button>
+
+                                                                                }
+                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -379,6 +404,9 @@
 
             $('#Lack2Model_Burks').change();
 
+        });
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("Index", "Lack2")';
         });
         $("#btnSubmitConfirm").click(function() {
             $('#IsSaveSubmit').val('true');
