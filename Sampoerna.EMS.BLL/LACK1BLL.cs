@@ -353,28 +353,40 @@ namespace Sampoerna.EMS.BLL
                 BeginingBalance = 0 //set default
             };
 
-            //rc.TotalUsage = 0; //todo: get from Inventory Movement
-            //get total usage from INVENTORY MOVEMENT table by param input
-            var invMovementData =
-                _inventoryMovementService.GetTotalUsageForLack1Byparam(new InvMovementGetForLack1ByParamInput()
+            //Get Data from Inventory_Movement
+            var mvtTypeForUsage = new List<string>
+            {
+                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin)
+            };
+            var plantIdList = new List<string>();
+            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                //get plant list by nppbkcid
+                var plantList = _t001WServices.GetByNppbkcId(input.NppbkcId);
+                if (plantList.Count > 0)
                 {
-                    Lack1Level = input.Lack1Level,
-                    NppbkcId = input.NppbkcId,
-                    PeriodMonth = input.PeriodMonth,
-                    PeriodYear = input.PeriodYear,
-                    PlantId = input.ReceivedPlantId 
-                });
+                    plantIdList = plantList.Select(c => c.WERKS).ToList();
+                }
+            }
+            else
+            {
+                plantIdList = new List<string>(){ input.ReceivedPlantId };
+            }
 
-            //var invUsageAdd =
-            //    invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd))
-            //    .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+            var invDataInputForUsage = new InvMovementGetByParamInput()
+            {
+                NppbkcId = input.NppbkcId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                MvtCodeList = mvtTypeForUsage,
+                PlantIdList =  plantIdList
+            };
 
-            //var invUsageMin =
-            //    invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin))
-            //    .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+            //get all inv_movement data for usage
+            var invMovementDataForUsage = _inventoryMovementService.GetByParam(invDataInputForUsage);
 
-            //rc.TotalUsage = (invUsageAdd - invUsageMin);
-
+            //var invMovementData = 
             rc.TotalUsage = (-1)*(invMovementData.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0));
 
             if (rc.TotalUsage <= 0)
