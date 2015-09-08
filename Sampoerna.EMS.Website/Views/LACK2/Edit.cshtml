@@ -454,14 +454,14 @@
                     $('#Lack2Model_NppbkcId').html('');
                     if (initialEditNppbkc) {
                         var nppbkcId = '@Model.Lack2Model.NppbkcId';
-                        if (nppbkcId != '') {
-
-                            $('#Lack2Model_NppbkcId').append('<option value=' + nppbkcId + '>' + nppbkcId + '</option>');
-                            for (var i = 0; i < data.length; i++) {
-                                if (data[i].value !== nppbkcId) {
-                                    $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
-                                }
-                            }
+                         if (nppbkcId != '') {
+                            
+                             for (var k = 0; k < data.length; k++) {
+                                
+                                 $('#Lack2Model_NppbkcId').append('<option value=' + data[k].NPPBKC_ID + '>' + data[k].NPPBKC_ID + '</option>');
+                                
+                             }
+                            $('#Lack2Model_NppbkcId').val(nppbkcId);
                             ajaxGetPlantByNppbkc(nppbkcId);
                             ajaxGetPoaByNppbkc(nppbkcId);
                             ajaxGetGoodsTypeByNppbkc(nppbkcId);
@@ -490,12 +490,12 @@
                             var plantId = '@Model.Lack2Model.LevelPlantId';
                             if (plantId != '') {
 
-                                $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
-                                for (var i = 0; i < data.length; i++) {
-                                    if (data[i].value !== plantId) {
+                                 for (var i = 0; i < data.length; i++) {
+                                   
                                         $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-                                    }
-                                }
+                                    
+                                 }
+                                $('#Lack2Model_LevelPlantId').val(plantId);
                             }
                             initialEditPlant = false;
                         } else {
@@ -548,15 +548,13 @@
                         var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
 
                         if (exgoodtyp !== '') {
-                            console.log(data);
+                              for (var i = 0; i < data.length; i++) {
 
-                            $('#Lack2Model_ExGoodTyp').append('<option value="' + '@Model.Lack2Model.ExGoodTyp' + '">' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
-                            for (var i = 0; i < data.length; i++) {
-
-                                if (data[i].ValueField !== exgoodtyp) {
+                               
                                     $('#Lack2Model_ExGoodTyp').append('<option value="' + data[i].ValueField + '">' + data[i].TextField + '</option>');
-                                }
-                            }
+                                
+                              }
+                            $('#Lack2Model_ExGoodTyp').val(exgoodtyp);
                         }
                         initialEditGoodtype = false;
                     } else {
