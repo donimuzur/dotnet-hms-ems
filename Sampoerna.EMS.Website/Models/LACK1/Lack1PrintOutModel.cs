@@ -64,9 +64,14 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public Lack1HeaderFooter HeaderFooter { get; set; }
 
+        public string SupplierCompanyName { get; set; }
+        public string SupplierCompanyCode { get; set; }
+
         #endregion
 
         //public Enums.LACK1Type Lack1Type { get; set; }
+
+        public string PrintOutTitle { get; set; }
 
     }
 
