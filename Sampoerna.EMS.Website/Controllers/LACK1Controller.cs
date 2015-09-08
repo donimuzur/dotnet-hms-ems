@@ -8,7 +8,6 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
-using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.PrintHistory;
@@ -527,8 +526,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
-            
+            model.PrintOutTitle = "Preview LACK-1";
             return View("PrintDocument", model);
+            //return PartialView("PrintDocument", model);
+            //return new RazorPDF.PdfResult(model, "PrintDocument");
+            //var fileName = "lack1-pdf-" + DateTime.Now.ToString("ddMMyyyyHHmmss");
+            //return Pdf(fileName, "PrintDocument", model);
         }
 
         #endregion
@@ -551,6 +554,6 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-
+        
     }
 }

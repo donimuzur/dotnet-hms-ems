@@ -55,6 +55,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>references\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.6\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.6\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -222,6 +229,7 @@
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\ProductionController.cs" />
+    <Compile Include="Code\PdfResult.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
@@ -283,6 +291,7 @@
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CCreateWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
@@ -533,6 +542,10 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="Content\upload\header\header_sampoerna.jpg" />
     <Content Include="Content\upload\header\sample_header.png" />
+    <Content Include="ExtLib\itextsharp.dll" />
+    <Content Include="ExtLib\itextsharp.pdfa.dll" />
+    <Content Include="ExtLib\iTextSharp.xml" />
+    <Content Include="ExtLib\itextsharp.xtra.dll" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
@@ -1016,6 +1029,11 @@
     <Content Include="Views\CK4C\Ck4CCreateWasteProduction.cshtml" />
     <Content Include="Views\LACK2\Edit.cshtml" />
     <Content Include="Views\LACK2\Detail.cshtml" />
+    <Content Include="Views\CK4C\DocumentList.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableDocumentList.cshtml" />
+    <Content Include="Views\LACK2\_FileUpload.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateDocumentList.cshtml" />
+    <Content Include="Views\CK4C\_HomeCreate.cshtml" />
     <Content Include="Views\LACK1\Details.cshtml" />
     <Content Include="Views\LACK1\_HomeDetails.cshtml" />
     <Content Include="Views\LACK1\_ChangeLog.cshtml" />
@@ -1024,13 +1042,13 @@
     <Content Include="Views\LACK2\_ChangesLog.cshtml" />
     <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
+    <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\LACK1\Test.cshtml" />
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
     <Content Include="Views\Production\Create.cshtml" />
     <Content Include="Views\Production\Edit.cshtml" />
     <Content Include="Views\Production\Detail.cshtml" />
-
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

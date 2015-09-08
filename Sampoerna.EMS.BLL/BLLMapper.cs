@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
@@ -7,6 +8,7 @@ using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Utils;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -154,6 +156,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ExTypDesc, opt => opt.MapFrom(src => src.EX_TYP_DESC))
                 .ForMember(dest => dest.GovStatus, opt => opt.MapFrom(src => src.GOV_STATUS))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS)))
                 .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DECREE_DATE))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
@@ -348,6 +351,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
                 .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
                 .ForMember(dest => dest.QtyUnpacked, opt => opt.MapFrom(src => src.QTY_UNPACKED))
+                .ForMember(dest => dest.QtyProduced, opt => opt.MapFrom(src => src.QTY_UNPACKED + src.QTY_PACKED))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME));
