@@ -188,13 +188,13 @@
         <EntityTypeShape EntityType="EMSModel.LACK1_PBCK1_MAPPING" Width="1.5" PointX="21.75" PointY="27.375" />
         <AssociationConnector Association="EMSModel.FK_LACK1_PBCK1_MAPPING_LACK1" />
         <AssociationConnector Association="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" />
-        <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="11.75" PointY="0.75" />
         <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="0.75" PointY="11.75" />
         <AssociationConnector Association="EMSModel.FK_CK4C_POA" />
         <EntityTypeShape EntityType="EMSModel.BLOCK_STOCK" Width="1.5" PointX="11.375" PointY="4.75" />
         <EntityTypeShape EntityType="EMSModel.LACK1_TRACKING" Width="1.5" PointX="15.75" PointY="17" />
         <AssociationConnector Association="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" />
         <AssociationConnector Association="EMSModel.FK_LACK1_TRACKING_LACK1" />
+        <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="5.375" PointY="11.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
