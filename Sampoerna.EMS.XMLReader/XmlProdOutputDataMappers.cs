@@ -48,6 +48,10 @@ namespace Sampoerna.EMS.XMLReader
                             item.COMPANY_NAME = company.T001.BUTXT;
                             item.PLANT_NAME = company.T001W.NAME1;
                         }
+                        item.BATCH = _xmlMapper.GetElementValue(xElement.Element("Batch"));
+                        item.BUNDLE = Convert.ToInt32(_xmlMapper.GetElementValue(xElement.Element("Bundle")));
+                        item.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
+                        item.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
                         var qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
                         var existingMaterialUom = GetMaterialUom(item.FA_CODE, item.WERKS);
@@ -59,7 +63,7 @@ namespace Sampoerna.EMS.XMLReader
                             {
                                 item.BRAND_DESC = existingBrand.BRAND_CE;
                                 item.UOM = bun;
-                                item.QTY_PACKED = prodQty/Convert.ToDecimal(existingBrand.BRAND_CONTENT);
+                                item.PROD_QTY_STICK = prodQty/Convert.ToDecimal(existingBrand.BRAND_CONTENT);
                                 items.Add(item);
                             }
                         }
