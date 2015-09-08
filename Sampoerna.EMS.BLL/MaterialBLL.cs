@@ -397,5 +397,21 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.Get(b => b.WERKS == plantId && b.STICKER_CODE == stickerCode, null, includeTables).FirstOrDefault();
             return dbData;
         }
+
+        public List<MaterialDto> GetMaterialByPlantId(string plantId)
+        {
+            var data =
+                _repository.Get(p => p.WERKS == plantId );
+
+            return AutoMapper.Mapper.Map<List<MaterialDto>>(data);
+        }
+
+        public MaterialDto GetMaterialByPlantIdAndMaterialNumber(string plantId, string materialNumber)
+        {
+            var data =
+                _repository.Get(p => p.WERKS == plantId && p.STICKER_CODE == materialNumber).FirstOrDefault();
+
+            return AutoMapper.Mapper.Map<MaterialDto>(data);
+        }
     }
 }
