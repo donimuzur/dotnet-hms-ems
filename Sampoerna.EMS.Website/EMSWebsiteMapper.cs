@@ -857,6 +857,10 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            Mapper.CreateMap<ZAIDM_EX_BRAND, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.BRAND_CE));
+
 
         }
     }

@@ -54,9 +54,6 @@
                                 <label class="col-md-4">Plant ID</label>
                                 <div class="col-md-8">
                                     @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
-                                    @*<select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
-                                            <option value="">All</option>
-                                        </select>*@
                                 </div>
                             </div>
                         </div>
@@ -93,7 +90,7 @@
         $('#MenuCk4cDailyProduction').addClass('active');
 
         function setupDataTables() {
-            $('#btn-reset-filter').click(function() {
+            $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
             });
 
@@ -114,7 +111,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#DailyProduction .filters th').each(function() {
+            $('#DailyProduction .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -122,8 +119,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function(colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -132,7 +129,7 @@
             });
         }
 
-        $("#CompanyCode").change(function() {
+        $("#CompanyCode").change(function () {
             if ($("#CompanyCode").length) {
                 var cpy = $(this).find("option:selected").val();
                 $('#SearchInput_PlantId option').remove();
@@ -145,7 +142,7 @@
             }
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             setupDataTables();
         });
 
@@ -155,8 +152,8 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
-                        var listPlant = data.PlanIdList;
+                    success: function (data) {
+                        var listPlant = data.PlantWerkList;
                         $('#SearchInput_PlantId').append('<option value="">All</option>');
                         if (listPlant.length > 0) {
                             for (var i = 0; i < listPlant.length; i++) {
@@ -169,11 +166,11 @@
             }
         }
 
-       function ReloadDataTables() {
-            $('.toggle-row').click(function() {
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
 
                 var filter = $(".filters");
-                filter.slideToggle(100).promise().done(function() {
+                filter.slideToggle(100).promise().done(function () {
 
                 });
             });
@@ -181,5 +178,4 @@
         }
 
     </script>
-
 }

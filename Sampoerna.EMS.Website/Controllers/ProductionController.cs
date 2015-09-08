@@ -82,6 +82,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new ProductionDetail();
             model = InitCreate(model);
+            model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
+            model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
 
             return View(model);
 
@@ -257,7 +259,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
 
-            var model = new Ck4CIndexViewModel() { PlanIdList = listPlant };
+            var model = new ProductionDetail() { PlantWerkList = listPlant };
 
             return Json(model);
         }
@@ -267,6 +269,16 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var fa = _brandRegistrationBll.GetByFaCode(faCode);
             return Json(fa.BRAND_CE);
+        }
+
+        [HttpPost]
+        public JsonResult GetBrandCeByPlant(string plantWerk)
+        {
+            var listBrandCe = GlobalFunctions.GetFaCodeByPlant(plantWerk);
+
+            var model = new ProductionDetail() { FacodeList = listBrandCe };
+
+            return Json(model);
         }
 
         #endregion
