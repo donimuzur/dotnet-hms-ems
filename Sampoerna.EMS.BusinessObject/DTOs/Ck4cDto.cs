@@ -10,13 +10,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public int Ck4CId { get; set; }
         public string Number { get; set; }
-        public string CompnayId { get; set; }
+        public string CompanyId { get; set; }
         public string CompanyName { get; set; }
         public string PlantId { get; set; }
         public string PlantName { get; set; }
         public string NppbkcId { get; set; }
-        public string ApprovedBy { get; set; }
-        public DateTime? ApprovedDate { get; set; }
+        public string ApprovedByPoa { get; set; }
+        public DateTime? ApprovedDatePoa { get; set; }
+        public string ApprovedByManager { get; set; }
+        public DateTime? ApprovedDateManager { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string ModifiedBy { get; set; }
@@ -26,7 +28,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int? ReportedMonth { get; set; }
         public int? ReportedYears { get; set; }
         public int Status { get; set; }
-        public int  StatusGoverment { get; set; }
+        public int?  StatusGoverment { get; set; }
 
         //Month
         public int MonthId { get; set; }

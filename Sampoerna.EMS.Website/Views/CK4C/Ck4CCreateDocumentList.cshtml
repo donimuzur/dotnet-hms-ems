@@ -1,0 +1,159 @@
+﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
+@{
+    ViewBag.Title = "Ck4CCreateDocumentList";
+}
+
+@using (Html.BeginForm("Ck4CCreateDocumentList", "CK4C"))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>CK-4C Form</h3>
+                <label class="status">Draft</label>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeCreate")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts
+{
+    <script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function () {
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("DocumentList", "CK4C")';
+        });
+
+        $("input[name='based-on']").click(function (e) {
+            ChangeBasedOn(this.value);
+        });
+
+        $('#btnGenerate').click(function (e) {
+            getProductionData();
+        });
+    });
+
+    $('#MenuCk4cDocumentList').addClass('active');
+
+    function ChangeBasedOn(value) {
+        var IsDisabledPlant = false;
+        var IsDisabledNppbkc = true;
+
+        if (value == 2) {
+            IsDisabledPlant = true;
+            IsDisabledNppbkc = false;
+        }
+
+        $('#Details_PlantId').val('');
+        $('#Details_NppbkcId').val('');
+        $('#Details_PlantId').prop('disabled', IsDisabledPlant);
+        $('#Details_NppbkcId').prop('disabled', IsDisabledNppbkc);
+    }
+
+    $("#Details_CompanyId").change(function () {
+        $('#Details_PlantId').html('');
+        $('#Details_PlantId').append('<option value="">select</option>');
+        $('#Details_NppbkcId').html('');
+        $('#Details_NppbkcId').append('<option value="">select</option>');
+        if ($("#Details_CompanyId").length) {
+            var cpy = $(this).find("option:selected").val();
+            if (cpy != '') {
+                ajaxSelectCompany('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy });
+                ajaxGetNppbkcByCompany(cpy);
+            }
+        }
+        $('#Details_PlantId').val('');
+        $('#Details_NppbkcId').val('');
+    });
+
+    function ajaxSelectCompany(url, formData) {
+        if (formData.companyId) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var listPlant = data.PlanList;
+                    if (listPlant.length > 0) {
+                        for (var i = 0; i < listPlant.length; i++) {
+                            $('#Details_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                        }
+                    }
+
+                }
+            });
+        }
+    }
+
+    function ajaxGetNppbkcByCompany(company) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetNppbkcByCompanyId", "CK4C")',
+            data: { companyId: company },
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $('#Details_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
+                }
+            }
+        });
+    }
+
+    function getProductionData() {
+        var comp = $('#Details_CompanyId').find("option:selected").val();
+        var plant = $('#Details_PlantId').find("option:selected").val();
+        var nppbkc = $('#Details_NppbkcId').find("option:selected").val();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetProductionData", "CK4C")',
+            data: { comp: comp, plant: plant, nppbkc: nppbkc },
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $('#tb-body-ck4c').html("");
+                    for (var i = 0; i < data.length; i++) {
+                        var dt = new Date(parseInt(data[i].ProductionDate.substr(6))).toString();
+                        var date = dt.substr(8, 2) + " " + (dt.substr(4, 3)) + " " + dt.substr(11, 4);
+
+                        var tableProdItem = '<tr><td><input type="hidden" id="Ck4cModel_Items[' + i + ']__Ck4cId" name="Ck4cModel.Items[' + i + '].Ck4cId" value=' + date + '></input>' + date + '</td>' +
+                            '<td>' + data[i].FaCode + '</td>' +
+                            '<td>' + data[i].BrandDescription + '</td>' +
+                            '<td>' + data[i].PlantName + '</td>' +
+                            '<td>' + data[i].TobaccoProductType + '</td>' +
+                            '<td>' + data[i].Hje + '</td>' +
+                            '<td>' + data[i].Tarif + '</td>' +
+                            '<td>' + data[i].QtyProduced + '</td>' +
+                            '<td>' + data[i].Uom + '</td></tr>';
+                        $('#tb-body-ck4c').append(tableProdItem);
+                    }
+                } else {
+                    $('#tb-body-ck4c').html("");
+                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="9">no data<td></tr>');
+                }
+            }
+        });
+    }
+
+    </script>
+}

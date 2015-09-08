@@ -12,6 +12,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.CK4C;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -27,8 +28,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IT001KBLL _t001KBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IProductionBLL _productionBll;
+
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll) 
+            IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -41,6 +45,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _t001KBll = t001Kbll;
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
+            _nppbkcbll = nppbkcbll;
+            _productionBll = productionBll;
         }
 
 
@@ -126,11 +132,53 @@ namespace Sampoerna.EMS.Website.Controllers
         }
         #endregion
 
+        #region Index Document List
+
+        public ActionResult DocumentList()
+        {
+            var data =
+            InitIndexDocumentListViewModel(new Ck4CIndexDocumentListViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Ck4CType = Enums.CK4CType.Ck4CDocument,
+                Detail = Mapper.Map<List<DataDocumentList>>(_ck4CBll.GetAllByParam(new Ck4CGetByParamInput()))
+            });
+
+            return View("DocumentList", data);
+        }
+
+        private Ck4CIndexDocumentListViewModel InitIndexDocumentListViewModel(
+            Ck4CIndexDocumentListViewModel model)
+        {
+            var listCk4cData = _ck4CBll.GetAll();
+            model.DocumentNumberList = new SelectList(listCk4cData, "NUMBER", "NUMBER");
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            return model;
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterDocumentListIndex(Ck4CIndexDocumentListViewModel model)
+        {
+            var input = Mapper.Map<Ck4CGetByParamInput>(model);
+            input.Ck4CType = Enums.CK4CType.Ck4CDocument;
+
+            var dbData = _ck4CBll.GetAllByParam(input);
+            var result = Mapper.Map<List<DataDocumentList>>(dbData);
+            var viewModel = new Ck4CIndexDocumentListViewModel();
+            viewModel.Detail = result;
+
+            return PartialView("_CK4CTableDocumentList", viewModel);
+        }
+
+        #endregion
+
         #region Json
         [HttpPost]
         public JsonResult CompanyListPartialProduction(string companyId)
         {
-            var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
+            var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
 
             var model = new Ck4CIndexViewModel() { PlanIdList = listPlant };
 
@@ -141,7 +189,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult CompanyListPartialCk4CWaste(string companyId)
         {
-            var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
+            var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
 
             var model = new Ck4CIndexWasteProductionViewModel() { PlanIdList = listPlant };
 
@@ -150,10 +198,43 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult CompanyListPartialCk4CDocument(string companyId)
+        {
+            var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
+
+            var model = new Ck4CIndexDocumentListViewModel() { PlanList = listPlant };
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetNppbkcByCompanyId(string companyId)
+        {
+            return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
+        }
+
+        [HttpPost]
+        public JsonResult GetAllNppbkc()
+        {
+            var listNppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            var model = new Ck4CIndexDocumentListViewModel() { NppbkcIdList = listNppbkc };
+
+            return Json(model);
+        }
+
+        [HttpPost]
         public JsonResult GetFaCodeDescription(string faCode)
         {
             var fa = _brandRegistrationBll.GetByFaCode(faCode);
             return Json(fa.BRAND_CE);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductionData(string comp, string plant, string nppbkc)
+        {
+            var data = _productionBll.GetByCompPlant(comp, plant).Select(d => Mapper.Map<ProductionDto>(d)).ToList();
+            return Json(data);
         }
 
         #endregion
@@ -250,5 +331,56 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        #region create Document List
+        public ActionResult Ck4CCreateDocumentList()
+        {
+            var model = new Ck4CIndexDocumentListViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+            };
+
+            return CreateInitial(model);
+        }
+
+        public ActionResult CreateInitial(Ck4CIndexDocumentListViewModel model)
+        {
+            return View("Ck4CCreateDocumentList", InitialModel(model));
+        }
+
+        private Ck4CIndexDocumentListViewModel InitialModel(Ck4CIndexDocumentListViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PeriodList = Ck4cPeriodList();
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = Ck4cYearList();
+            model.PlanList = GlobalFunctions.GetPlantAll();
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            return (model);
+
+        }
+        #endregion
+
+        private SelectList Ck4cPeriodList()
+        {
+            var period = new List<SelectItemModel>();
+            var currentPeriod = 1;
+            period.Add(new SelectItemModel() { ValueField = currentPeriod, TextField = currentPeriod.ToString() });
+            period.Add(new SelectItemModel() { ValueField = currentPeriod + 1, TextField = (currentPeriod + 1).ToString() });
+            return new SelectList(period, "ValueField", "TextField");
+        }
+
+        private SelectList Ck4cYearList()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
     }
 }
