@@ -52,9 +52,10 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public int? ReportedPeriod { get; set; }
         public int? ReportedMonth { get; set; }
         public int? ReportedYears { get; set; }
-        public int Status { get; set; }
-        public int StatusGoverment { get; set; }
+        public Enums.DocumentStatus Status { get; set; }
+        public Enums.DocumentStatusGov? StatusGoverment { get; set; }
         public string PoaList { get; set; }
         public string ReportedMonthName { get; set; }
+        public string StatusName { get; set; }
     }
 }

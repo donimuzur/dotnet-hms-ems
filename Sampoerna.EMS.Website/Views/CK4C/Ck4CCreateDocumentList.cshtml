@@ -5,6 +5,7 @@
 
 @using (Html.BeginForm("Ck4CCreateDocumentList", "CK4C", FormMethod.Post, new { @id = "CreateForm"}))
 {
+    @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -143,7 +144,7 @@
                         var dt = new Date(parseInt(data[i].ProductionDate.substr(6))).toString();
                         var date = dt.substr(8, 2) + " " + (dt.substr(4, 3)) + " " + dt.substr(11, 4);
 
-                        var tableProdItem = '<tr><td><input type="hidden" id="Ck4cModel_Items[' + i + ']__Ck4cId" name="Ck4cModel.Items[' + i + '].Ck4cId" value=' + date + '></input>' + date + '</td>' +
+                        var tableProdItem = '<tr><td><input type="hidden" id="Ck4cModel_Items[' + i + ']_Ck4cId" name="Ck4cModel.Items[' + i + '].Ck4cId" value=' + date + '></input>' + date + '</td>' +
                             '<td>' + data[i].FaCode + '</td>' +
                             '<td>' + data[i].BrandDescription + '</td>' +
                             '<td>' + data[i].PlantName + '</td>' +

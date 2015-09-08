@@ -76,7 +76,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.ReportedYears))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.StatusGoverment))
-                .ForMember(dest => dest.ReportedMonthName, opt => opt.MapFrom(src => src.MonthId));
+                .ForMember(dest => dest.ReportedMonthName, opt => opt.MapFrom(src => src.MonthNameEng))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)));
             Mapper.CreateMap<Ck4CIndexDocumentListViewModel, Ck4CGetByParamInput>().IgnoreAllNonExisting()
                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Ck4cNumber))
                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
@@ -120,6 +121,31 @@ namespace Sampoerna.EMS.Website
             //    .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UomProudQty));
 
 
+            #endregion
+
+            #region Create Document List
+            Mapper.CreateMap<DataDocumentList, Ck4CDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck4CId, opt => opt.MapFrom(src => src.Ck4CId))
+                .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.Number))
+                .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyId))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantName))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.ApprovedByPoa, opt => opt.MapFrom(src => src.ApprovedByPoa))
+                .ForMember(dest => dest.ApprovedDatePoa, opt => opt.MapFrom(src => src.ApprovedDatePoa))
+                .ForMember(dest => dest.ApprovedByManager, opt => opt.MapFrom(src => src.ApprovedByManager))
+                .ForMember(dest => dest.ApprovedDateManager, opt => opt.MapFrom(src => src.ApprovedDateManager))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.ModifiedDate))
+                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn))
+                .ForMember(dest => dest.ReportedPeriod, opt => opt.MapFrom(src => src.ReportedPeriod))
+                .ForMember(dest => dest.ReportedMonth, opt => opt.MapFrom(src => src.ReportedMonth))
+                .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.ReportedYears))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.StatusGoverment));
             #endregion
         }
     }
