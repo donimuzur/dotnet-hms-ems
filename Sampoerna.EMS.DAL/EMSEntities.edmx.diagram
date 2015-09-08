@@ -192,6 +192,9 @@
         <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="0.75" PointY="11.75" />
         <AssociationConnector Association="EMSModel.FK_CK4C_POA" />
         <EntityTypeShape EntityType="EMSModel.BLOCK_STOCK" Width="1.5" PointX="11.375" PointY="4.75" />
+        <EntityTypeShape EntityType="EMSModel.LACK1_TRACKING" Width="1.5" PointX="15.75" PointY="17" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_TRACKING_LACK1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
