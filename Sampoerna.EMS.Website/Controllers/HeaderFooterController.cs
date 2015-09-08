@@ -191,6 +191,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyList = GetCompanyList();
             model.CurrentMenu = PageInfo;
             model.MainMenu = _mainMenu;
+            model.Detail.HeaderFooterMapList = InitialEditHeaderFooterMapList(model.Detail.HeaderFooterMapList);
             return View("Edit", model);
         }
 
@@ -354,6 +355,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+
+        private List<HeaderFooterMapItem> InitialEditHeaderFooterMapList(List<HeaderFooterMapItem> existingData)
+        {
+            var formTypeList = existingData.Select(d => d.FORM_TYPE_ID).ToList();
+            var enumValues = EnumHelper.GetValues<Enums.FormType>().Where(c => !formTypeList.Contains(c));
+            
+            var rc = enumValues.Select(enumValue => new HeaderFooterMapItem()
+            {
+                HEADER_FOOTER_FORM_MAP_ID = 0,
+                FORM_TYPE_ID = enumValue,
+                FORM_TYPE_DESC = EnumHelper.GetDescription(enumValue),
+                IS_HEADER_SET = false,
+                IS_FOOTER_SET = false,
+                HEADER_FOOTER_ID = 0
+            }).ToList();
+            existingData.AddRange(rc);
+            return existingData;
+        }
         
     }
 }

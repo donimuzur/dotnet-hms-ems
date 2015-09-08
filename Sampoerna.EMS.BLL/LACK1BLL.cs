@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poaBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IHeaderFooterBLL _headerFooterBll;
 
         //services
         private ICK4CItemService _ck4cItemService;
@@ -47,6 +48,7 @@ namespace Sampoerna.EMS.BLL
             _uomBll = new UnitOfMeasurementBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
+            _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
@@ -207,6 +209,23 @@ namespace Sampoerna.EMS.BLL
             return GenerateLack1Data(input);
         }
 
+        public Lack1PrintOutDto GetPrintOutData(int id)
+        {
+            var dbData = _lack1Service.GetDetailsById(id);
+            var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
+
+            //set header footer data by CompanyCode and FormTypeId
+            var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+            {
+                FormTypeId = Enums.FormType.LACK1,
+                CompanyCode = dbData.BUKRS
+            });
+
+            dtToReturn.HeaderFooter = headerFooterData;
+
+            return dtToReturn;
+        }
+
         #region ----------------Private Method-------------------
         private void SetChangesHistory(Lack1Dto origin, Lack1Dto data, string userId)
         {
@@ -310,18 +329,31 @@ namespace Sampoerna.EMS.BLL
                     NppbkcId = input.NppbkcId,
                     PeriodMonth = input.PeriodMonth,
                     PeriodYear = input.PeriodYear,
-                    PlantId = input.ReceivedPlantId
+                    PlantId = input.ReceivedPlantId 
                 });
 
-            var invUsageAdd =
-                invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd))
-                .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+            //var invUsageAdd =
+            //    invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd))
+            //    .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
 
-            var invUsageMin =
-                invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin))
-                .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+            //var invUsageMin =
+            //    invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin))
+            //    .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
 
-            rc.TotalUsage = (invUsageAdd - invUsageMin);
+            //rc.TotalUsage = (invUsageAdd - invUsageMin);
+
+            rc.TotalUsage = (-1)*(invMovementData.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0));
+
+            if (rc.TotalUsage <= 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
+                    Data = null
+                };
+            }
 
             //set begining balance
             rc = SetBeginingBalanceBySelectionCritera(rc, input);

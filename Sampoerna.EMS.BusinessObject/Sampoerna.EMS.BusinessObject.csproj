@@ -57,6 +57,9 @@
     <Compile Include="BACK3_CK2_PBCK3_PBCK7.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="BLOCK_STOCK.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="BOM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -117,6 +120,7 @@
     <Compile Include="DTOs\Lack1IncomeDetailDto.cs" />
     <Compile Include="DTOs\Lack1Pbck1MappingDto.cs" />
     <Compile Include="DTOs\Lack1PlantDto.cs" />
+    <Compile Include="DTOs\Lack1PrintOutDto.cs" />
     <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
@@ -136,6 +140,7 @@
     <Compile Include="DTOs\POADto.cs" />
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
+    <Compile Include="DTOs\ProductionDto.cs" />
     <Compile Include="DTOs\T001Dto.cs" />
     <Compile Include="DTOs\T001KCompositDto.cs" />
     <Compile Include="DTOs\T001KDto.cs" />
@@ -190,6 +195,7 @@
     <Compile Include="Inputs\Pbck1QuotaInput.cs" />
     <Compile Include="Inputs\Pbck7AndPbck3Input.cs" />
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
+    <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
     <Compile Include="Inputs\WorkflowHistoryInput.cs" />
@@ -241,9 +247,11 @@
     <Compile Include="Outputs\AutoCompletePlant.cs" />
     <Compile Include="Outputs\BLLBaseOutput.cs" />
     <Compile Include="Outputs\BrandRegistrationOutput.cs" />
+    <Compile Include="Outputs\Ck4COutput.cs" />
     <Compile Include="Outputs\CK5FileUploadDocumentsOutput.cs" />
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
+    <Compile Include="Outputs\ProductionGetByIdOutput.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\Lack1GeneratedOutput.cs" />
     <Compile Include="Outputs\MaterialOutput.cs" />
