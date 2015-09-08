@@ -62,7 +62,8 @@ namespace Sampoerna.EMS.XMLReader
                             if (existingBrand != null)
                             {
                                 item.UOM = bun;
-                                item.PROD_QTY_STICK = prodQty/Convert.ToDecimal(existingBrand.BRAND_CONTENT);
+                                item.PROD_QTY_STICK = prodQty;
+                                item.QTY_PACKED = prodQty/Convert.ToDecimal(existingBrand.BRAND_CONTENT);
                                 items.Add(item);
                             }
                         }
