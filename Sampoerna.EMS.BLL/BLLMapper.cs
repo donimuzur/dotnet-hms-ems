@@ -348,6 +348,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
                 .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
                 .ForMember(dest => dest.QtyUnpacked, opt => opt.MapFrom(src => src.QTY_UNPACKED))
+                .ForMember(dest => dest.QtyProduced, opt => opt.MapFrom(src => src.QTY_UNPACKED + src.QTY_PACKED))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME));

@@ -29,9 +29,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUnitOfMeasurementBLL _uomBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IProductionBLL _productionBll;
 
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll)
+            IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -45,6 +46,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
             _nppbkcbll = nppbkcbll;
+            _productionBll = productionBll;
         }
 
 
@@ -196,10 +198,43 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult CompanyListPartialCk4CDocument(string companyId)
+        {
+            var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
+
+            var model = new Ck4CIndexDocumentListViewModel() { PlanList = listPlant };
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetNppbkcByCompanyId(string companyId)
+        {
+            return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
+        }
+
+        [HttpPost]
+        public JsonResult GetAllNppbkc()
+        {
+            var listNppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            var model = new Ck4CIndexDocumentListViewModel() { NppbkcIdList = listNppbkc };
+
+            return Json(model);
+        }
+
+        [HttpPost]
         public JsonResult GetFaCodeDescription(string faCode)
         {
             var fa = _brandRegistrationBll.GetByFaCode(faCode);
             return Json(fa.BRAND_CE);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductionData(string comp, string plant, string nppbkc)
+        {
+            var data = _productionBll.GetByCompPlant(comp, plant).Select(d => Mapper.Map<ProductionDto>(d)).ToList();
+            return Json(data);
         }
 
         #endregion

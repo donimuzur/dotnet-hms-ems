@@ -155,6 +155,49 @@
             setupDataTables();
         }
 
+        $("#CompanyName").change(function () {
+            $('#SearchInput_PlantId').html('');
+            $('#SearchInput_PlantId').append('<option value="">All</option>');
+            if ($("#CompanyName").length) {
+                var cpy = $(this).find("option:selected").val();
+                if (cpy != '') {
+                    ajaxGetNppbkcByCompany(cpy);
+                }
+                else {
+                    ajaxGetAllNppbkc();
+                }
+            }
+            $('#SearchInput_PlantId').val('');
+        });
+
+        function ajaxGetNppbkcByCompany(company) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetNppbkcByCompanyId", "CK4C")',
+                data: { companyId: company },
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#SearchInput_PlantId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
+                    }
+                }
+            });
+        }
+
+        function ajaxGetAllNppbkc() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetAllNppbkc", "CK4C")',
+                success: function (data) {
+                    var listPlant = data.NppbkcIdList;
+                    if (listPlant.length > 0) {
+                        for (var i = 0; i < listPlant.length; i++) {
+                            $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                        }
+                    }
+                }
+            });
+        }
+
     </script>
 }
 
