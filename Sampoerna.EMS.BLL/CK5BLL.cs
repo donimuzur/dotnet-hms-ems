@@ -929,11 +929,18 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO); ;
+            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
+                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
-            dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
+
+            dbData.STATUS_ID = dbData.CK5_TYPE == Enums.CK5Type.Manual
+                ? Enums.DocumentStatus.Completed
+                : Enums.DocumentStatus.CreateSTO;
+
             
             oldValue = dbData.REGISTRATION_NUMBER;
             newValue = input.AdditionalDocumentData.RegistrationNumber;
