@@ -644,7 +644,11 @@ namespace Sampoerna.EMS.Website.Controllers
             drow[8] = lack2.SubmissionDate == null ? null : lack2.SubmissionDate.ToString("dd MMMM yyyy");
             if (lack2.ApprovedBy != null)
             {
-                drow[9] = _poabll.GetDetailsById(lack2.ApprovedBy).PRINTED_NAME;
+                var poa = _poabll.GetDetailsById(lack2.ApprovedBy);
+                if (poa != null)
+                {
+                    drow[9] = poa.PRINTED_NAME;
+                }
             }
             if (lack2.Status != Enums.DocumentStatus.Completed)
             {
