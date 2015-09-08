@@ -336,6 +336,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="TIME" Type="time" Precision="7" />
           <Property Name="CREATED_USER" Type="nvarchar" MaxLength="50" />
           <Property Name="MAT_DOC" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="BATCH" Type="nvarchar" MaxLength="35" />
         </EntityType>
         <EntityType Name="LACK1">
           <Key>
@@ -425,6 +426,15 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LACK1_TRACKING">
+          <Key>
+            <PropertyRef Name="LACK1_TRACKING_ID" />
+          </Key>
+          <Property Name="LACK1_TRACKING_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_ID" Type="int" Nullable="false" />
+          <Property Name="INVENTORY_MOVEMENT_ID" Type="bigint" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="LACK2">
           <Key>
@@ -742,7 +752,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           </Key>
           <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="FA_CODE" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="BRAND_DESC" Type="nvarchar" MaxLength="200" />
           <Property Name="QTY_UNPACKED" Type="decimal" Precision="18" Scale="2" />
           <Property Name="QTY_PACKED" Type="decimal" Precision="18" Scale="2" />
@@ -870,7 +880,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           </Key>
           <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="FA_CODE" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="BRAND_DESC" Type="nvarchar" MaxLength="200" />
           <Property Name="WASTE_QTY_STICK" Type="decimal" Precision="18" Scale="2" />
           <Property Name="WASTE_QTY_GRAM" Type="decimal" Precision="18" Scale="2" />
@@ -1515,6 +1525,32 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="LACK1">
               <PropertyRef Name="RETURN_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_TRACKING_INVENTORY_MOVEMENT">
+          <End Role="INVENTORY_MOVEMENT" Type="Self.INVENTORY_MOVEMENT" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="LACK1_TRACKING" Type="Self.LACK1_TRACKING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="INVENTORY_MOVEMENT">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Principal>
+            <Dependent Role="LACK1_TRACKING">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_TRACKING_LACK1">
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="1" />
+          <End Role="LACK1_TRACKING" Type="Self.LACK1_TRACKING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_TRACKING">
+              <PropertyRef Name="LACK1_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2436,6 +2472,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySet Name="LACK1_PBCK1_MAPPING" EntityType="Self.LACK1_PBCK1_MAPPING" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_PLANT" EntityType="Self.LACK1_PLANT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_PRODUCTION_DETAIL" EntityType="Self.LACK1_PRODUCTION_DETAIL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK1_TRACKING" EntityType="Self.LACK1_TRACKING" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2" EntityType="Self.LACK2" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2_DOCUMENT" EntityType="Self.LACK2_DOCUMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2_ITEM" EntityType="Self.LACK2_ITEM" Schema="dbo" store:Type="Tables" />
@@ -2632,6 +2669,14 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="Self.FK_LACK1_RETURN_UOM">
             <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_TRACKING_INVENTORY_MOVEMENT" Association="Self.FK_LACK1_TRACKING_INVENTORY_MOVEMENT">
+            <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
+            <End Role="LACK1_TRACKING" EntitySet="LACK1_TRACKING" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_TRACKING_LACK1" Association="Self.FK_LACK1_TRACKING_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_TRACKING" EntitySet="LACK1_TRACKING" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_UOM" Association="Self.FK_LACK1_UOM">
             <End Role="UOM" EntitySet="UOM" />
@@ -3467,6 +3512,15 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="CK4C" EntitySet="CK4C" />
           </AssociationSet>
           <EntitySet Name="BLOCK_STOCK" EntityType="EMSModel.BLOCK_STOCK" />
+          <EntitySet Name="LACK1_TRACKING" EntityType="EMSModel.LACK1_TRACKING" />
+          <AssociationSet Name="FK_LACK1_TRACKING_INVENTORY_MOVEMENT" Association="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT">
+            <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
+            <End Role="LACK1_TRACKING" EntitySet="LACK1_TRACKING" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_TRACKING_LACK1" Association="EMSModel.FK_LACK1_TRACKING_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_TRACKING" EntitySet="LACK1_TRACKING" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -4057,7 +4111,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK1_USER" FromRole="PBCK1" ToRole="USER" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_REQUEST_UOM" FromRole="PBCK1" ToRole="UOM" />
           <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_PBCK1_SALDO_UOM" FromRole="PBCK1" ToRole="UOM" />
-          <Property Name="SUPPLIER_KPPBC_NAME" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="SUPPLIER_KPPBC_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_COMPANY" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="IS_NPPBKC_IMPORT" Type="Boolean" />
           <NavigationProperty Name="LACK1_PBCK1_MAPPING" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" FromRole="PBCK1" ToRole="LACK1_PBCK1_MAPPING" />
@@ -5601,6 +5655,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="NOTED" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_COMPANY_CODE" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="LACK1_TRACKING" Relationship="EMSModel.FK_LACK1_TRACKING_LACK1" FromRole="LACK1" ToRole="LACK1_TRACKING" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -5997,6 +6052,8 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="TIME" Type="Time" Precision="7" />
           <Property Name="CREATED_USER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MAT_DOC" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LACK1_TRACKING" Relationship="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" FromRole="INVENTORY_MOVEMENT" ToRole="LACK1_TRACKING" />
         </EntityType>
         <Association Name="FK_LACK1_PRODUCTION_DETAIL_UOM">
           <End Type="EMSModel.UOM" Role="UOM" Multiplicity="1" />
@@ -6161,6 +6218,43 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="SLOC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="LACK1_TRACKING">
+          <Key>
+            <PropertyRef Name="LACK1_TRACKING_ID" />
+          </Key>
+          <Property Name="LACK1_TRACKING_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK1_ID" Type="Int32" Nullable="false" />
+          <Property Name="INVENTORY_MOVEMENT_ID" Type="Int64" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="INVENTORY_MOVEMENT" Relationship="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" FromRole="LACK1_TRACKING" ToRole="INVENTORY_MOVEMENT" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_TRACKING_LACK1" FromRole="LACK1_TRACKING" ToRole="LACK1" />
+        </EntityType>
+        <Association Name="FK_LACK1_TRACKING_INVENTORY_MOVEMENT">
+          <End Type="EMSModel.INVENTORY_MOVEMENT" Role="INVENTORY_MOVEMENT" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="EMSModel.LACK1_TRACKING" Role="LACK1_TRACKING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="INVENTORY_MOVEMENT">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Principal>
+            <Dependent Role="LACK1_TRACKING">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_TRACKING_LACK1">
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
+          <End Type="EMSModel.LACK1_TRACKING" Role="LACK1_TRACKING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_TRACKING">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7208,6 +7302,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="INVENTORY_MOVEMENT">
             <EntityTypeMapping TypeName="EMSModel.INVENTORY_MOVEMENT">
               <MappingFragment StoreEntitySet="INVENTORY_MOVEMENT">
+                <ScalarProperty Name="BATCH" ColumnName="BATCH" />
                 <ScalarProperty Name="MAT_DOC" ColumnName="MAT_DOC" />
                 <ScalarProperty Name="CREATED_USER" ColumnName="CREATED_USER" />
                 <ScalarProperty Name="TIME" ColumnName="TIME" />
@@ -7293,6 +7388,16 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
                 <ScalarProperty Name="PLANT" ColumnName="PLANT" />
                 <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
                 <ScalarProperty Name="BLOCK_STOCK_ID" ColumnName="BLOCK_STOCK_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_TRACKING">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_TRACKING">
+              <MappingFragment StoreEntitySet="LACK1_TRACKING">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="INVENTORY_MOVEMENT_ID" ColumnName="INVENTORY_MOVEMENT_ID" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_TRACKING_ID" ColumnName="LACK1_TRACKING_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

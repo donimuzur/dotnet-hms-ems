@@ -214,6 +214,24 @@ namespace Sampoerna.EMS.BLL
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
 
+            if (dtToReturn.Lack1Pbck1Mapping.Count > 0)
+            {
+                var monthList = _monthBll.GetAll();
+                for (int i = 0; i < dtToReturn.Lack1Pbck1Mapping.Count; i++)
+                {
+                    if (dtToReturn.Lack1Pbck1Mapping[i].DECREE_DATE.HasValue)
+                    {
+                        dtToReturn.Lack1Pbck1Mapping[i].DisplayDecreeDate = SetDisplayPbck1DecreeDate(monthList,
+                            dtToReturn.Lack1Pbck1Mapping[i].DECREE_DATE.Value);
+                    }
+                    else
+                    {
+                        dtToReturn.Lack1Pbck1Mapping[i].DisplayDecreeDate = "";
+                    }
+                }
+            }
+
+
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
             {
@@ -255,6 +273,21 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+        }
+
+        private string SetDisplayPbck1DecreeDate(IEnumerable<MONTH> months, DateTime dt)
+        {
+            int year = dt.Year;
+            int month = dt.Month;
+            int day = dt.Day;
+            string monthName = "<<undefine month>>";
+
+            var monthData = months.FirstOrDefault(c => c.MONTH_ID == month);
+            if (monthData != null)
+            {
+                monthName = monthData.MONTH_NAME_IND;
+            }
+            return day + " " + monthName + " " + year;
         }
 
         private Lack1GeneratedOutput GenerateLack1Data(Lack1GenerateDataParamInput input)

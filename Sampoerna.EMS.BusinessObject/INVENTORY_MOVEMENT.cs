@@ -14,6 +14,11 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class INVENTORY_MOVEMENT
     {
+        public INVENTORY_MOVEMENT()
+        {
+            this.LACK1_TRACKING = new HashSet<LACK1_TRACKING>();
+        }
+    
         public long INVENTORY_MOVEMENT_ID { get; set; }
         public string MVT { get; set; }
         public string MATERIAL_ID { get; set; }
@@ -28,5 +33,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.TimeSpan> TIME { get; set; }
         public string CREATED_USER { get; set; }
         public string MAT_DOC { get; set; }
+        public string BATCH { get; set; }
+    
+        public virtual ICollection<LACK1_TRACKING> LACK1_TRACKING { get; set; }
     }
 }

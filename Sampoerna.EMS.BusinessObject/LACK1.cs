@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.LACK1_PLANT = new HashSet<LACK1_PLANT>();
             this.LACK1_PRODUCTION_DETAIL = new HashSet<LACK1_PRODUCTION_DETAIL>();
             this.LACK1_PBCK1_MAPPING = new HashSet<LACK1_PBCK1_MAPPING>();
+            this.LACK1_TRACKING = new HashSet<LACK1_TRACKING>();
         }
     
         public int LACK1_ID { get; set; }
@@ -69,5 +70,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual UOM UOM1 { get; set; }
         public virtual UOM UOM11 { get; set; }
         public virtual ICollection<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
+        public virtual ICollection<LACK1_TRACKING> LACK1_TRACKING { get; set; }
     }
 }

@@ -145,79 +145,96 @@
     </div>
 </div>
 
+@*<div id="print-out-block" class="print-out">
+
+</div>*@
+
 @section scripts {
-    
+
     <script src="~/Scripts/thousand-separator.js"></script>
     <script src="~/Scripts/lack1/Lack1GenerateTable.js"></script>
 
     <script type="text/javascript">
 
-    $('#MenuLack1CompletedDocument').addClass('@Model.MenuCompletedAddClassCss');
-    $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
-    $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
+        $('#MenuLack1CompletedDocument').addClass('@Model.MenuCompletedAddClassCss');
+        $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
+        $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
 
-    $(document).ready(function () {
+        $(document).ready(function () {
 
-        $('#btn-back-plant-list').click(function (e) {
-            location.href = '@Url.Action("ListByPlant", "LACK1")';
+            $('#btn-back-plant-list').click(function (e) {
+                location.href = '@Url.Action("ListByPlant", "LACK1")';
+            });
+
+            $('#btn-back-nppbkc-list').click(function (e) {
+                location.href = '@Url.Action("Index", "LACK1")';
+            });
+
+            $('#btn-back-completed-list').click(function (e) {
+                location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
+            });
+
+            $("#btnApprove").click(function () {
+
+                $('#btnConfirm').show();
+                $('#btnConfirmGovApprove').hide();
+                $('#btnConfirmGovPartApprove').hide();
+                $("#lblTitleModal").text('Approval');
+                $("#lblMessageModal").text('Approve Documents ?');
+                $('#Lack1Modal').modal('show');
+
+            });
+
+            $("#btnConfirm").click(function () {
+                window.location = "@Url.Action("ApproveDocument", "LACK1", new { id = @Model.Lack1Id })";
+            });
+
+            $("#btnReject").click(function () {
+                $('#btnConfirmReject').attr('disabled', 'disabled');
+
+                $('#Detail_Comment').val('');
+
+                $('#Pbck1ModalReject').modal('show');
+
+            });
+
+            $('#Detail_Comment').bind('input propertychange', function () {
+
+                $('#btnConfirmReject').attr('disabled', 'disabled');
+                $('#btnConfirmGovReject').attr('disabled', 'disabled');
+                $('#btnConfirmGovPartApprove').attr('disabled', 'disabled');
+
+                if (this.value.length) {
+                    $('#btnConfirmReject').removeAttr('disabled');
+                    $('#btnConfirmGovReject').removeAttr('disabled');
+                    $('#btnConfirmGovPartApprove').removeAttr('disabled');
+                }
+            });
+
+            $('#generated-data-container').html('');
+
+            var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
+            console.log(jsonData);
+            var generateTableD = generateTable(jsonData);
+            $('#generated-data-container').append(generateTableD);
+
         });
 
-        $('#btn-back-nppbkc-list').click(function (e) {
-            location.href = '@Url.Action("Index", "LACK1")';
-        });
-
-        $('#btn-back-completed-list').click(function (e) {
-            location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
-        });
-
-        $("#btnApprove").click(function () {
-
-            $('#btnConfirm').show();
-            $('#btnConfirmGovApprove').hide();
-            $('#btnConfirmGovPartApprove').hide();
-            $("#lblTitleModal").text('Approval');
-            $("#lblMessageModal").text('Approve Documents ?');
-            $('#Lack1Modal').modal('show');
-
-        });
-
-        $("#btnConfirm").click(function () {
-            window.location = "@Url.Action("ApproveDocument", "LACK1", new { id = @Model.Lack1Id })";
-        });
-
-        $("#btnReject").click(function () {
-            $('#btnConfirmReject').attr('disabled', 'disabled');
-
-            $('#Detail_Comment').val('');
-
-            $('#Pbck1ModalReject').modal('show');
-
-        });
-
-        $('#Detail_Comment').bind('input propertychange', function () {
-
-            $('#btnConfirmReject').attr('disabled', 'disabled');
-            $('#btnConfirmGovReject').attr('disabled', 'disabled');
-            $('#btnConfirmGovPartApprove').attr('disabled', 'disabled');
-
-            if (this.value.length) {
-                $('#btnConfirmReject').removeAttr('disabled');
-                $('#btnConfirmGovReject').removeAttr('disabled');
-                $('#btnConfirmGovPartApprove').removeAttr('disabled');
-            }
-        });
-
-        $('#generated-data-container').html('');
-
-        var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
-        console.log(jsonData);
-        var generateTableD = generateTable(jsonData);
-        $('#generated-data-container').append(generateTableD);
-
-    });
-    
         function printPreview(url) {
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+            //ajaxPrintViewSet(url);
+        }
+
+        function ajaxPrintViewSet(url) {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (response) {
+                    if (response) {
+                        $('#print-out-block').html('');
+                    }
+                }
+            });
         }
     </script>
 }
