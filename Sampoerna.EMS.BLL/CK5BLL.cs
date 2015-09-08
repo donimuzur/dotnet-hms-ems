@@ -1761,16 +1761,16 @@ namespace Sampoerna.EMS.BLL
 
             CK5 dbData = null;
 
-            //create new ck5 documents
-            var generateNumberInput = new GenerateDocNumberInput()
-            {
-                Year = DateTime.Now.Year,
-                Month = DateTime.Now.Month,
-                NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID,
-                FormType = Enums.FormType.CK5
-            };
+            ////create new ck5 documents
+            //var generateNumberInput = new GenerateDocNumberInput()
+            //{
+            //    Year = DateTime.Now.Year,
+            //    Month = DateTime.Now.Month,
+            //    NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID,
+            //    FormType = Enums.FormType.CK5
+            //};
 
-            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
             if (!input.Ck5Dto.SUBMISSION_DATE.HasValue) {
                 input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
             }
