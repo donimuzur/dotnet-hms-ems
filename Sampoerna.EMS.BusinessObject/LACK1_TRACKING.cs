@@ -12,14 +12,14 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class DOC_NUMBER_SEQ
+    public partial class LACK1_TRACKING
     {
-        public long DOC_NUMBER_SEQ_ID { get; set; }
-        public long DOC_NUMBER_SEQ_LAST { get; set; }
-        public Nullable<int> MONTH { get; set; }
-        public Nullable<int> YEAR { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.FormType> FORM_TYPE_ID { get; set; }
+        public long LACK1_TRACKING_ID { get; set; }
+        public int LACK1_ID { get; set; }
+        public long INVENTORY_MOVEMENT_ID { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
     
-        public virtual MONTH MONTH1 { get; set; }
+        public virtual INVENTORY_MOVEMENT INVENTORY_MOVEMENT { get; set; }
+        public virtual LACK1 LACK1 { get; set; }
     }
 }

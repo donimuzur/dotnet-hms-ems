@@ -1,5 +1,3 @@
-USE [EMS-DEV2]
-GO
 
 /****** Object:  Table [dbo].[BLOCK_STOCK]    Script Date: 9/7/2015 3:09:59 PM ******/
 SET ANSI_NULLS ON

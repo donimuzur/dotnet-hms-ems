@@ -18,6 +18,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime ProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
-
+        public decimal? QtyProduced { get; set; }
+        public string TobaccoProductType { get; set; }
+        public decimal? Hje { get; set; }
+        public decimal? Tarif { get; set; }
     }
 }

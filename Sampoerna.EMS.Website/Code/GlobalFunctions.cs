@@ -393,7 +393,21 @@ namespace Sampoerna.EMS.Website.Code
             var plantList = t001Kbll.GetPlantByCompany(companyId,isReverse);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
 
+        public static SelectList GetPlantByCompanyId(string companyId)
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            List<T001W> plantIdList;
+            plantIdList = plantBll.GetAllPlant();
+            plantIdList =
+                plantIdList.Where(
+                    x => x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null && x.ZAIDM_EX_NPPBKC.IS_DELETED != true
+                    && x.T001K != null).Where(x => x.T001K.BUKRS == companyId)
+                    .OrderBy(x => x.WERKS)
+                    .ToList();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
 

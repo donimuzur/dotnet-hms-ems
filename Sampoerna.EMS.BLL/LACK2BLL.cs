@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.BLL
         private string includeTables = "MONTH";
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPOABLL _poabll;
-
+         
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -323,6 +323,12 @@ namespace Sampoerna.EMS.BLL
         public List<Lack2Dto> GetCompletedDocument()
         {
             return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables));
+        }
+
+        public void RemoveExistingItem(long id)
+        {
+            _repositoryItem.Delete(id);
+            _uow.SaveChanges();
         }
     }
 }

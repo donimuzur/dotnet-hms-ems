@@ -285,10 +285,19 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return RedirectToAction("Submit", new {id = model.Lack2Model.Lack2Id});
             }
-            Lack2Dto item = new Lack2Dto();
-            
-            item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
 
+              var item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
+              var exItems = new Lack2ItemDto[item.Items.Count];
+              item.Items.CopyTo(exItems);
+              item.Items = new List<Lack2ItemDto>();
+              foreach (var items in exItems)
+              {
+                    if (items.Id == 0 )
+                    {
+                        item.Items.Add(items);
+                    }
+              }
+           
             var plant = _plantBll.GetT001ById(model.Lack2Model.LevelPlantId);
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
@@ -650,9 +659,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     drow[9] = poa.PRINTED_NAME;
                 }
             }
-            if (lack2.Status != Enums.DocumentStatus.Completed)
+            if (lack2.Status != Enums.DocumentStatus.WaitingGovApproval || lack2.Status != Enums.DocumentStatus.GovApproved
+                || lack2.Status != Enums.DocumentStatus.Completed)
             {
-                drow[10] = "PRINT PREVIEW";
+                drow[10] = "PREVIEW";
             }
             else
             {
