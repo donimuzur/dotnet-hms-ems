@@ -275,7 +275,7 @@
                                                                 <div class="row">
                                                                     <label class="col-md-4">Status Gov<span class="red">*</span></label>
                                                                     <div class="col-md-8">
-                                                                        @if(Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                        @if(Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
                                                                         {
                                                                             @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
                                                                         }
@@ -292,7 +292,7 @@
                                                                     <label class="col-md-4">Decree Date</label>
                                                                     <div class="col-md-8">
                                                                         <div class="input-group date">
-                                                                            @if(Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                            @if(Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
                                                                             {
                                                                                 @Html.TextBoxFor(x => x.Lack2Model.DecreeDate, new {@class = "form-control"})
                                                                             }
@@ -335,7 +335,7 @@
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-md-6">
-                                                                                @if (Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                                @if (Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
                                                                                 {
                                                                                     <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
                                                                                 }
