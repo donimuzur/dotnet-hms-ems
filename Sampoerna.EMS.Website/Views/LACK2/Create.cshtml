@@ -242,6 +242,9 @@
             
             
         });
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("Index", "Lack2")';
+        });
         $('#Lack2Model_NppbkcId').change(function() {
 
             if ($(this).length) {
