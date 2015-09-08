@@ -53,5 +53,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public List<HttpPostedFileBase> Documents { get; set; }
 
+        public bool IsOpenDocList { get; set; }
+
+        public bool AllowPrintDocument { get; set; }
+
     }
 }

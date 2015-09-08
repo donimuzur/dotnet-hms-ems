@@ -1,22 +1,21 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
 {
     public class LACK2FilterViewModel
     {
-        public LACK2FilterViewModel()
-        {
-            NppbkcId = string.Empty;
-            Poa = null;
-            Creator = null;
-            Year = null;
-        }
+        
 
         public string NppbkcId { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
+
+        public string PlantId { get; set; }
         public int? Year { get; set; }
+
+        public DateTime? ReportedOn { get; set; }
 
         /// <summary>
         /// optional if want to sorting from query
@@ -26,9 +25,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public SelectList NppbkcIdList { get; set; }
         public SelectList PoaList { get; set; }
         public SelectList CreatorList { get; set; }
+        public SelectList PlantList { get; set; }
         public SelectList YearList { get; set; }
-
-        //public Enums.Pbck1DocumentType DocumentType { get; set; }
+        public bool IsOpenDocList { get; set; }
 
     }
 }

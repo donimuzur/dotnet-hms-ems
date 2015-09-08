@@ -40,10 +40,18 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<T001KDto>(dbData);
         }
 
-        public List<T001WDto> GetPlantByCompany(string companyId)
+        public List<T001WDto> GetPlantByCompany(string companyId, bool isReverse = false)
         {
             includeTables = "T001W";
-            var dbData = _repository.Get(c => c.BUKRS == companyId, null, includeTables);
+            IEnumerable<T001K> dbData;
+            if (!isReverse)
+            {
+                dbData = _repository.Get(c => c.BUKRS == companyId, null, includeTables);
+            }
+            else {
+                dbData = _repository.Get(c => c.BUKRS != companyId, null, includeTables);
+            }
+            
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
