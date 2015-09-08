@@ -290,6 +290,7 @@
     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
+    <Compile Include="Models\CK5\CK5InputManualViewModel.cs" />
     <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
@@ -559,6 +560,7 @@
     <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\CK5InputManual.js" />
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
@@ -999,7 +1001,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTable.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
-    <Content Include="Views\CK5\_CK5InputMaterial.cshtml" />
+    <Content Include="Views\CK5\CK5InputMaterial.cshtml" />
     <Content Include="Views\CK5\_CK5SealingInput.cshtml" />
     <Content Include="Views\CK4C\Index.cshtml" />
     <Content Include="Views\CK4C\_CreateDailyProduction.cshtml" />

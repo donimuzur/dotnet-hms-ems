@@ -174,13 +174,100 @@
     </div>
 </div>
 
+<div id="Ck5UploadModal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="lblTitleInputManual">Add Row</span></h4>
+            </div>
+            <div class="modal-body form-excise">
+                <p></p>
+                <input id="uploadMaterialRow" type="hidden" value="">
+                <input id="uploadMaterialDesc" type="hidden" value="">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Plant</label>
+                        <input class="form-control" id="uploadMaterialPlant" type="text" value="" disabled>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Material Number<span class="red">*</span></label>
+                        <select class="form-control" id="uploadMaterialNumber">
+                            <option value="">Select</option>
+                        </select>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label>Qty<span class="red">*</span></label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialQty" })
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>HJE</label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialHje", @disabled = "disabled" })
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-md-4">Tariff</label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialTariff", @disabled = "disabled" })
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>UOM<span class="red">*</span></label>
+                        @Html.DropDownListFor(model => model.PackageUomName, Model.PackageUomList, "Select", new { @class = "form-control", @id = "uploadMaterialUom" })
+
+                    </div>
+                    <div class="col-md-6">
+                        <label>Convertion<span class="red">*</span></label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialConvertion" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Converted UOM<span class="red">*</span></label>
+                        @Html.DropDownListFor(model => model.PackageUomName, Model.PackageUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>USD Value</label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadUsdValue" })
+
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Note</label>
+                        <textarea class="form-control" id="uploadNote" cols="20" rows="5"></textarea>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                <input type="button" class="btn btn-blue" value="Save" id="btnSaveMaterial" />
+                <input type="button" class="btn btn-blue" value="Update" id="btnUpdateMaterial" />
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/CK5Scripts.js"></script>
-
+<script src="~/Scripts/CK5InputManual.js"></script>
     <script type="text/javascript">
     $(document).ready(function () {
         OnReadyFunction('@Model.Ck5Type.ToString()');
@@ -234,6 +321,13 @@
         $('#CK5UploadSubmitBtn').click(function () {
             GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
         });
+        
+        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+        $("#uploadMaterialPlant").val(sourcePlant);
+
+        ajaxGetListMaterial('@Url.Action("GetListMaterials", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+
     });
 
     var plantOriginal = '@Model.SourcePlantId';
@@ -379,5 +473,49 @@
         window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
     }
+    
+    $("#btnAddRow").click(function () {
+        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+        $("#uploadMaterialPlant").val(sourcePlant);
+
+        ajaxGetListMaterial('@Url.Action("GetListMaterials", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+
+        $('#btnSaveMaterial').show();
+        $('#btnUpdateMaterial').hide();
+
+        ClearInputForm();
+        ClearValidation();
+        $("#lblTitleInputManual").text('New Input');
+
+        $('#Ck5UploadModal').modal('show');
+    });
+    $("#btnSaveMaterial").click(function () {
+        AddRow();
+    });
+
+    $("#uploadMaterialNumber").change(function () {
+        if ($("#uploadMaterialNumber").length) {
+            var materialNumber = $(this).find("option:selected").val();
+
+
+
+            if (materialNumber == '') {
+                $("#uploadMaterialHje").val('0');
+                $("#uploadMaterialTariff").val('0');
+
+            } else {
+                var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+                ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+            }
+        }
+    });
+
+    $("#btnUpdateMaterial").click(function () {
+
+        UpdateRow();
+    });
+    
     </script>
 }
