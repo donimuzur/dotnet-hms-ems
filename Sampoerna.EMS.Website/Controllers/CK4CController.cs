@@ -178,7 +178,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult CompanyListPartialProduction(string companyId)
         {
-            var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
+            var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
 
             var model = new Ck4CIndexViewModel() { PlanIdList = listPlant };
 
@@ -189,7 +189,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult CompanyListPartialCk4CWaste(string companyId)
         {
-            var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
+            var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
 
             var model = new Ck4CIndexWasteProductionViewModel() { PlanIdList = listPlant };
 
@@ -200,7 +200,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult CompanyListPartialCk4CDocument(string companyId)
         {
-            var listPlant = GlobalFunctions.GetPlantByCompany(companyId);
+            var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
 
             var model = new Ck4CIndexDocumentListViewModel() { PlanList = listPlant };
 

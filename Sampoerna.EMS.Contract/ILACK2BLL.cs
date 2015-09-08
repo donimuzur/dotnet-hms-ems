@@ -30,5 +30,7 @@ namespace Sampoerna.EMS.Contract
         int RemoveDoc(int docId);
 
         List<Lack2Dto> GetCompletedDocument();
+
+        void RemoveExistingItem(long id);
     }
 }

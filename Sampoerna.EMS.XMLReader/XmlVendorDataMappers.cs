@@ -46,6 +46,7 @@ namespace Sampoerna.EMS.XMLReader
                         if (existingCompany != null)
                         {
                             existingCompany.NPWP = _xmlMapper.GetElementValue(xElement.Element("STCEG"));
+                            existingCompany.SPRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
                             _xmlMapper.InsertOrUpdate(existingCompany);
                         }
 

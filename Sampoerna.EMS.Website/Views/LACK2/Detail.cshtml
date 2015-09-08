@@ -424,11 +424,18 @@
         ajaxGetPoaByNppbkc();
 
     });
+    
     $("#btnApproveConfirm").click(function () {
        $('#ActionType').val('Approve');
         $('#form-lack2-detail').submit();
     });
-   
+    $('#btn-back-completed-doc').click(function (e) {
+        location.href = '@Url.Action("ListCompletedDoc", "Lack2")';
+    });
+     $('#btn-back-open-doc').click(function (e) {
+        location.href = '@Url.Action("Index", "Lack2")';
+     });
+     
     $('#btnApprove').click(function () {
 
         $('#lack2ApproveModal').modal('show');

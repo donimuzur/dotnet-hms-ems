@@ -387,20 +387,29 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
 
-        public static SelectList GetPlantByCompany(string companyId)
+        public static SelectList GetPlantByCompany(string companyId,bool isReverse = false)
+        {
+            IT001KBLL t001Kbll = MvcApplication.GetInstance<T001KBLL>();
+            var plantList = t001Kbll.GetPlantByCompany(companyId,isReverse);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetPlantByCompanyId(string companyId)
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
             List<T001W> plantIdList;
             plantIdList = plantBll.GetAllPlant();
             plantIdList =
                 plantIdList.Where(
-                    x => x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null && x.ZAIDM_EX_NPPBKC.IS_DELETED != true 
-                        && x.T001K != null).Where(x => x.T001K.BUKRS == companyId)
+                    x => x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null && x.ZAIDM_EX_NPPBKC.IS_DELETED != true
+                    && x.T001K != null).Where(x => x.T001K.BUKRS == companyId)
                     .OrderBy(x => x.WERKS)
                     .ToList();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
+
 
         public static SelectList GetCompanyListFilter(ICompanyBLL companyBll)
         {

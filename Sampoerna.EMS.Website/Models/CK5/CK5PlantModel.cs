@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
@@ -27,7 +28,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string PbckUom { get; set; }
 
-        public List<Ck5ListPbck1Completed> PbckList { get; set; } 
+        public List<Ck5ListPbck1Completed> PbckList { get; set; }
+
+        public SelectList CorrespondingPlantList { get; set; }
 
     }
 
