@@ -8,21 +8,21 @@
 <html lang="en">
 <head>
     <title>EMS - Excise Management System</title>
-    <link rel="shortcut icon" href="~/Content/assets/images/favicon.png" type="image/x-icon">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="content-type" content="application/pdf">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-touch-fullscreen" content="yes">
+    <link rel="shortcut icon" href="~/Content/assets/images/favicon.png" type="image/x-icon" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    @*<meta http-equiv="content-type" content="application/pdf" />*@
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
 
     <!-- Load the site CSS after Boostrap's to override -->
-    <link rel="stylesheet" type="text/css" href="~/Content/css/main.min.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="~/Content/css/print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="~/Content/css/main.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="~/Content/css/print.css" media="print" />
 
     <!-- Load Font Awesome CSS -->
-    <link rel="stylesheet" href="~/Content/css/vendors/font-awesome.min.css" media="screen">
-    <link rel="stylesheet" href="~/Content/css/vendors/yamm.css" media="screen">
+    <link rel="stylesheet" href="~/Content/css/vendors/font-awesome.min.css" media="screen" />
+    <link rel="stylesheet" href="~/Content/css/vendors/yamm.css" media="screen" />
 
     <!-- Load jQuery -->
     <script src="~/Scripts/jquery-2.1.4.min.js"></script>
@@ -33,6 +33,12 @@
     <script src="~/Scripts/js/vendors/bootstrap-datepicker.min.js"></script>
     <!-- Load Fixed Header table JavaScript -->
     <script src="~/Scripts/js/vendors/jquery.fixedheadertable.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            window.print();
+            window.onfocus = function () { window.close(); };
+        });
+    </script>
 </head>
 
 <body>
@@ -43,7 +49,7 @@
         }
         <p class="heading">Laporan Penggunaan/Persediaan Barang Kena Cukai <br />Dengan Fasilitas Tidak dipungut Cukai</p>
         <div class="modul">
-            Lack-1
+            @Model.PrintOutTitle
         </div>
         <table border="0" class="lack-title">
             <tr>
@@ -99,8 +105,7 @@
                 <td class="first">Nama Pemasok</td>
                 <td>: </td>
                 <td>
-                    PT HM Sampoerna Tbk. <br>
-                    JL. Testing 123, Surabya, Jawa Tengah
+                    @Model.SupplierCompanyName<br />@Model.SupplierPlantAddress
                 </td>
             </tr>
         </table>
@@ -111,12 +116,12 @@
             <table border="0" class="lack-content">
                 <!-- Table Header-->
                 <tr>
-                    <td rowspan="2">No<br>Urut</td>
-                    <td rowspan="2">Saldo<br>Awal</td>
+                    <td rowspan="2">No<br />Urut</td>
+                    <td rowspan="2">Saldo<br />Awal</td>
                     <td colspan="2">Pemasukan</td>
                     <td rowspan="2">Penggunaan</td>
                     <td colspan="2">Hasil Produksi BKC</td>
-                    <td rowspan="2">Saldo<br>Akhir</td>
+                    <td rowspan="2">Saldo<br />Akhir</td>
                     <td rowspan="2">Keterangan</td>
                 </tr>
                 <tr>
@@ -151,13 +156,17 @@
                         <td rowspan="@rowCount">@Model.TotalUsage.ToString("N0")</td>
                         <td rowspan="@rowCount">
                             <!-- Generate Jenis Hasil Produksi BKC -->
-                            @if (@Model.ProductionList.Count > 0) {
-                                for (var i = 0; i < @Model.ProductionList.Count; i++) {
-                                    if (i == @Model.ProductionList.Count) {
-                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc
+                            @if (@Model.ProductionList.Count > 0)
+                            {
+                                for (var i = 0; i < @Model.ProductionList.Count; i++)
+                                {
+                                    if (i == @Model.ProductionList.Count)
+                                    {
+                                        @Model.ProductionList[i].ProductAlias
                                     }
-                                    else {
-                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc<br />
+                                    else
+                                    {
+                                        @Model.ProductionList[i].ProductAlias<br />
                                     }
                                 }
                             }
@@ -170,11 +179,11 @@
                                 {
                                     if (i == @Model.ProductionList.Count)
                                     {
-                                        @Model.ProductionList[i].ProductAlias
+                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc
                                     }
                                     else
                                     {
-                                        @Model.ProductionList[i].ProductAlias<br />
+                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc<br />
                                     }
                                 }
                             }
@@ -246,7 +255,8 @@
                             @Model.EndingBalance.ToString("N0")
                         </td>
                         <td>
-                            @if (!string.IsNullOrEmpty(@Model.Noted)) {
+                            @if (!string.IsNullOrEmpty(@Model.Noted))
+                            {
                                 @Model.Noted
                             }
                         </td>
@@ -279,7 +289,6 @@
                                 }
                             </table>
                         }
-
                     </td>
                     <td colspan="2"></td>
                 </tr>
