@@ -105,6 +105,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SupplierPlantId { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
+
+        public bool IsExcludeSameNppbkcId { get; set; }
+
+        public List<string> StoNumberList { get; set; }
+
     }
 
 }

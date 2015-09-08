@@ -5,7 +5,7 @@
 
 @{
     ViewBag.Title = "Detail LACK2";
-    int i = 0;
+   
 }
 
 
@@ -66,7 +66,10 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        @if (Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        }
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                     </ul>
 
@@ -158,8 +161,8 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Plant</label>
                                                                 <div class="col-md-8">
-                                                                 @Html.TextBox("plant", Model.Lack2Model.LevelPlantId + "-" + Model.Lack2Model.LevelPlantName, new { @class = "form-control", @disabled = "disabled" })
-                                                                  </div>
+                                                                    @Html.TextBox("plant", Model.Lack2Model.LevelPlantId + "-" + Model.Lack2Model.LevelPlantName, new { @class = "form-control", @disabled = "disabled" })
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -175,7 +178,7 @@
                                                                 <label class="col-md-4">Submission Date</label>
                                                                 <div class="col-md-8">
                                                                     <div class="input-group date">
-                                                                        @Html.TextBox("submission_date", Model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                                        @Html.TextBox("submission_date", Model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled", })
                                                                         <span class="input-group-addon">
                                                                             <i class="fa fa-calendar"></i>
                                                                         </span>
@@ -239,19 +242,19 @@
                                                             @if (@Model.Lack2Model.Items != null)
                                                             {
                                                                 
-                                                                foreach (var item in @Model.Lack2Model.Items)
+                                                                for(int i= 0; i< @Model.Lack2Model.Items.Count; i++)
                                                                 {
                                                                     <tr>
                                                                         @Html.HiddenFor(x => x.Lack2Model.Items[i].Lack2Id)
                                                                         @Html.HiddenFor(x => x.Lack2Model.Items[i].Id)
                                                                         @Html.HiddenFor(x=>x.Lack2Model.Items[i].Ck5Id)
-                                                                        <th></th>
-                                                                        <th>@item.Ck5Number</th>
-                                                                        <th>@item.Ck5GIDate</th>
-                                                                        <th>@item.Ck5ItemQty</th>
-                                                                        <th>@item.CompanyName</th>
-                                                                        <th>@item.CompanyNppbkc</th>
-                                                                        <th>@item.CompanyAddress</th>
+                                                                        <th>@(i+1)</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5Number</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5GIDate</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5ItemQty</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyName</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyNppbkc</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyAddress</th>
                                                                     </tr>
                                                                     
                                                                 }
@@ -282,8 +285,16 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Status Gov<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBox("gov-status", Model.Lack2Model.StatusGov, new { @class = "form-control", @disabled = "disabled" })
-  </div>
+                                                                    @if (Model.Lack2Model.StatusGov != 0)
+                                                                    {
+                                                                        @Html.TextBox("gov-status", Model.Lack2Model.StatusGov, new {@class = "form-control", @disabled = "disabled"})
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.TextBox("gov-status", string.Empty, new { @class = "form-control", @disabled = "disabled" })
+                                                                    }
+                                                                </div>
+
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -314,9 +325,7 @@
                                                                                     <div class="col-sm-10">
                                                                                         <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
                                                                                     </div>
-                                                                                    <div class="col-sm-2">
-                                                                                        <button class="btn btn-danger full" type="button" onclick="removeDoc(@file.LACK2_DOCUMENT_ID, '@Url.Action("RemoveDoc", "LACK2")', this) "><i class="fa fa-times"></i></button>
-                                                                                    </div>
+                                                                                    
                                                                                 </div>
 
                                                                             }
@@ -324,7 +333,9 @@
 
                                                                     </div>
                                                                     <div class="row">
-                                                                        
+                                                                        <div class="col-md-6">
+                                                                            <button class="btn btn-primary full" type="button">Add File</button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -338,238 +349,14 @@
 
 
 
-                                <div class="panel-group not-upload" id="accordion-7" role="tablist" aria-multiselectable="true">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="heading7">
-                                            <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
-                                                    Workflow History
-                                                    <i class="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
-                                            <div class="panel-body">
-                                                <div class="table-container">
-                                                    <table class="table table-bordered table-striped js-options-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Account Name</th>
-                                                                <th>Role</th>
-                                                                <th>Action</th>
-                                                                <th>Date</th>
-                                                                <th>Comment</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach (var history in Model.WorkflowHistory)
-                                                            {
-                                                                <tr>
-                                                                    <td>@history.ACTION_BY</td>
-                                                                    <td>@history.Role </td>
-                                                                    <td>@history.ACTION </td>
-                                                                    <td>@history.ACTION_DATE</td>
-                                                                    <td>@history.COMMENT</td>
-                                                                </tr>
-                                                            }
-                                                           
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
+                                @Html.Partial("_WorkflowHistory", Model)
                             </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane" id="printout">
-                            <div class="panel-group" id="accordionPrint" role="tablist" aria-multiselectable="true">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingPrint">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordionPrint" href="#collapsePrint" aria-expanded="true" aria-controls="collapsePrint">
-                                                Print Out
-                                                <i class="fa fa-caret-down"></i>
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapsePrint" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPrint">
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <form class="form-excise " role="form">
-                                                    <div class="last-form">
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-5">LACK-2 No</label>
-                                                                <div class="col-md-7">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-3">Date</label>
-                                                                <div class="col-md-9">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-3">User</label>
-                                                                <div class="col-md-9">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <button class="btn btn-blue full">Print</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="table-container">
-                                <table class="table table-bordered table-striped js-options-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>User</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="changes">
-                            <div class="panel-group" id="accordionChanges" role="tablist" aria-multiselectable="true">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingChanges">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordionChanges" href="#collapseChanges" aria-expanded="true" aria-controls="collapseChanges">
-                                                Changes Log
-                                                <i class="fa fa-caret-down"></i>
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseChanges" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChanges">
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <form class="form-excise " role="form">
-                                                    <div class="last-form">
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-5">LACK-2 No</label>
-                                                                <div class="col-md-7">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-3">Date</label>
-                                                                <div class="col-md-9">
-                                                                    <div class="input-group date">
-                                                                        <input type="text" class="form-control">
-                                                                        <span class="input-group-addon">
-                                                                            <i class="fa fa-calendar"></i>
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-3">User</label>
-                                                                <div class="col-md-9">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <button class="btn btn-blue full">Export to xls</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="table-container">
-                                <table class="table table-bordered table-striped js-options-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Field</th>
-                                            <th>Old Value</th>
-                                            <th>New Value</th>
-                                            <th>User</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        @if (Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            @Html.Partial("_PrintOut", Model)
+                        }
+                        @Html.Partial("_ChangesLog", Model)
                     </div>
                 </div>
             </div>
@@ -637,11 +424,18 @@
         ajaxGetPoaByNppbkc();
 
     });
+    
     $("#btnApproveConfirm").click(function () {
        $('#ActionType').val('Approve');
         $('#form-lack2-detail').submit();
     });
-   
+    $('#btn-back-completed-doc').click(function (e) {
+        location.href = '@Url.Action("ListCompletedDoc", "Lack2")';
+    });
+     $('#btn-back-open-doc').click(function (e) {
+        location.href = '@Url.Action("Index", "Lack2")';
+     });
+     
     $('#btnApprove').click(function () {
 
         $('#lack2ApproveModal').modal('show');
@@ -704,7 +498,41 @@
 
         }
         
-    
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+            
+        }
+
     </script>
 
 }

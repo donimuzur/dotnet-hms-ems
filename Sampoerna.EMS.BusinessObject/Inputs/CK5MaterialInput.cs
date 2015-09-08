@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -17,5 +14,21 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UsdValue { get; set; }
         public string Note { get; set; }
        
+    }
+
+    public class Ck5MaterialGetForLackByParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string ReceivedPlantId { get; set; }
+        public Enums.Lack1Level Lack1Level { get; set; }
+        public int ExGroupTypeId { get; set; }
+        public string SupplierPlantId { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+
+        public bool IsExcludeSameNppbkcId { get; set; }
+
+        public List<string> StoNumberList { get; set; }
     }
 }

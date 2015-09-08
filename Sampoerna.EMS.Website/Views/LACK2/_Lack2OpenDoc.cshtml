@@ -1,0 +1,60 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2IndexViewModel
+
+<table id="lack1Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Company</th>
+            <th>NPPBKC</th>
+            <th>Ex Goods Type</th>
+            <th>Plant</th>
+            <th>Period</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th>Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Details)
+        {
+            <tr>
+                <td class="action">
+                   
+                    <a href="@Url.Action("Detail", "LACK2", new {id = item.Lack2Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    @if (Model.IsOpenDocList)
+                    {
+                        <a href="@Url.Action("Edit", "LACK2", new {id = item.Lack2Id})" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    }
+                </td>
+                <td>
+                    @(item.Burks + " - "+ item.Butxt)
+                </td>
+                <td>
+                    @item.NppbkcId
+                </td>
+                <td>
+                    @(item.ExGoodTyp + " - " + item.ExTypDesc)
+                </td>
+                <td>
+                    @(item.LevelPlantId + " - " + item.LevelPlantName)
+                </td>
+                <td>
+                    @(item.PeriodNameInd   + " - " + item.PeriodYear)
+                </td>
+                <td>
+                    @(item.Status)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

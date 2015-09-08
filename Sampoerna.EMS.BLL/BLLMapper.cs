@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection.Emit;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
@@ -143,6 +144,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Burks, opt => opt.MapFrom(src => src.BUKRS))
                 .ForMember(dest => dest.Butxt, opt => opt.MapFrom(src => src.BUTXT))
                 .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.PERIOD_MONTH))
+                .ForMember(dest => dest.PeriodNameInd, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_IND))
                 .ForMember(dest => dest.PeriodYear, opt => opt.MapFrom(src => src.PERIOD_YEAR))
                 .ForMember(dest => dest.LevelPlantId, opt => opt.MapFrom(src => src.LEVEL_PLANT_ID))
                 .ForMember(dest => dest.LevelPlantName, opt => opt.MapFrom(src => src.LEVEL_PLANT_NAME))
@@ -335,6 +337,34 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PBCK1, ZAIDM_EX_GOODTYPCompositeDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.EXT_TYP_DESC, opt => opt.MapFrom(src => src.EXC_TYP_DESC))
                 ;
+
+            #region Production for CK4C
+
+            Mapper.CreateMap<PRODUCTION, ProductionDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.PRODUCTION_DATE))
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.COMPANY_CODE))
+                .ForMember(dest => dest.PlantWerks, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
+                .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
+                .ForMember(dest => dest.QtyUnpacked, opt => opt.MapFrom(src => src.QTY_UNPACKED))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME));
+
+
+            Mapper.CreateMap<ProductionDto, PRODUCTION>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.PRODUCTION_DATE, opt => opt.MapFrom(src => src.ProductionDate))
+               .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.CompanyCode))
+               .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantWerks))
+               .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+               .ForMember(dest => dest.BRAND_DESC, opt => opt.MapFrom(src => src.BrandDescription))
+               .ForMember(dest => dest.QTY_PACKED, opt => opt.MapFrom(src => src.QtyPacked))
+               .ForMember(dest => dest.QTY_UNPACKED, opt => opt.MapFrom(src => src.QtyUnpacked))
+               .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.Uom))
+               .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
+               .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName));
+            #endregion
         }
     }
 }

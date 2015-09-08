@@ -57,7 +57,16 @@ namespace Sampoerna.EMS.Core.Exceptions
             Lack1DuplicateSelectionCriteria,
 
             [Description("Excisable Group Type not found")]
-            ExcisabeGroupTypeNotFound
+            ExcisabeGroupTypeNotFound,
+
+            [Description("Missing Income List Item")]
+            MissingIncomeListItem,
+
+            [Description("Missing Hasil Produksi BKC")]
+            MissingProductionList,
+
+            [Description("Total Usage less than or equals to zero ")]
+            TotalUsageLessThanEqualTpZero
 
         }
         

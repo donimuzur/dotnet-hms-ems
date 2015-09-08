@@ -1,0 +1,317 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1PrintOutModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EMS - Excise Management System</title>
+    <link rel="shortcut icon" href="~/Content/assets/images/favicon.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="application/pdf">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+
+    <!-- Load the site CSS after Boostrap's to override -->
+    <link rel="stylesheet" type="text/css" href="~/Content/css/main.min.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="~/Content/css/print.css" media="print">
+
+    <!-- Load Font Awesome CSS -->
+    <link rel="stylesheet" href="~/Content/css/vendors/font-awesome.min.css" media="screen">
+    <link rel="stylesheet" href="~/Content/css/vendors/yamm.css" media="screen">
+
+    <!-- Load jQuery -->
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <!-- Load Modernizr.js -->
+    <script src="~/Scripts/modernizr.min.js"></script>
+    <!-- Load Bootstrap JavaScript -->
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/vendors/bootstrap-datepicker.min.js"></script>
+    <!-- Load Fixed Header table JavaScript -->
+    <script src="~/Scripts/js/vendors/jquery.fixedheadertable.min.js"></script>
+</head>
+
+<body>
+    <div class="print-out">
+        @if (Model.HeaderFooter != null && !string.IsNullOrEmpty(Model.HeaderFooter.ImageHeader))
+        {
+            <img class="logo" width="130" src="@Model.HeaderFooter.ImageHeader">
+        }
+        <p class="heading">Laporan Penggunaan/Persediaan Barang Kena Cukai <br />Dengan Fasilitas Tidak dipungut Cukai</p>
+        <div class="modul">
+            Lack-1
+        </div>
+        <table border="0" class="lack-title">
+            <tr>
+                <td class="first">Nama Perusahaan</td>
+                <td>: </td>
+                <td>@Model.Butxt</td>
+            </tr>
+            <tr>
+                <td class="first">NPPBKC</td>
+                <td>: </td>
+                <td>@Model.NppbkcId</td>
+            </tr>
+            <tr>
+                <td class="first">Alamat</td>
+                <td>: </td>
+                <td>
+                    @for (var i = 0; i < @Model.Lack1Plant.Count; i++)
+                    {
+                        if (i == @Model.Lack1Plant.Count)
+                        {
+                            @Model.Lack1Plant[i].Address
+                        }
+                        else
+                        {
+                            @Model.Lack1Plant[i].Address <br />
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td class="first">No & Tanggal PBCK-1</td>
+                <td>: </td>
+                <td>
+                    @for (var i = 0; i < @Model.Lack1Pbck1Mapping.Count; i++)
+                    {
+                        if (i == @Model.Lack1Pbck1Mapping.Count)
+                        {
+                            @Model.Lack1Pbck1Mapping[i].PBCK1_NUMBER <span> - </span> @Model.Lack1Pbck1Mapping[i].DisplayDecreeDate
+                        }
+                        else
+                        {
+                            @Model.Lack1Pbck1Mapping[i].PBCK1_NUMBER <span> - </span> @Model.Lack1Pbck1Mapping[i].DisplayDecreeDate<br />
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td class="first">Jenis BKC sebagai bahan baku/penolong</td>
+                <td>: </td>
+                <td>@Model.ExGoodsTypeDesc</td>
+            </tr>
+            <tr>
+                <td class="first">Nama Pemasok</td>
+                <td>: </td>
+                <td>
+                    PT HM Sampoerna Tbk. <br>
+                    JL. Testing 123, Surabya, Jawa Tengah
+                </td>
+            </tr>
+        </table>
+        <div class="date">
+            Laporan Bulan: @Model.PeriodNameInd @Model.PeriodYears
+        </div>
+        <div class="lack-table-container">
+            <table border="0" class="lack-content">
+                <!-- Table Header-->
+                <tr>
+                    <td rowspan="2">No<br>Urut</td>
+                    <td rowspan="2">Saldo<br>Awal</td>
+                    <td colspan="2">Pemasukan</td>
+                    <td rowspan="2">Penggunaan</td>
+                    <td colspan="2">Hasil Produksi BKC</td>
+                    <td rowspan="2">Saldo<br>Akhir</td>
+                    <td rowspan="2">Keterangan</td>
+                </tr>
+                <tr>
+                    <td>No. & Tgl. CK-5</td>
+                    <td>Jumlah</td>
+                    <td>Jenis</td>
+                    <td>Jumlah</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>7</td>
+                    <td>8</td>
+                    <td>9</td>
+                </tr>
+                <!-- Table Content-->
+                @if (@Model.IncomeList.Count > 0)
+                {
+                    <!-- First Row-->
+                    <tr>
+                        @{
+                    var rowCount = @Model.IncomeList.Count;
+                        }
+                        <td>1</td>
+                        <td rowspan="@rowCount">@Model.BeginingBalance.ToString("N0")</td>
+                        <td>@Model.IncomeList[0].RegistrationNumber<span> - </span>@Model.IncomeList[0].StringRegistrationDate</td>
+                        <td>@Model.IncomeList[0].Amount.ToString("N0")</td>
+                        <td rowspan="@rowCount">@Model.TotalUsage.ToString("N0")</td>
+                        <td rowspan="@rowCount">
+                            <!-- Generate Jenis Hasil Produksi BKC -->
+                            @if (@Model.ProductionList.Count > 0) {
+                                for (var i = 0; i < @Model.ProductionList.Count; i++) {
+                                    if (i == @Model.ProductionList.Count) {
+                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc
+                                    }
+                                    else {
+                                        @Model.ProductionList[i].Amount <span> </span> @Model.ProductionList[i].UomDesc<br />
+                                    }
+                                }
+                            }
+                        </td>
+                        <td rowspan="@rowCount">
+                            <!-- Generate Amount Hasil Produksi BKC -->
+                            @if (@Model.ProductionList.Count > 0)
+                            {
+                                for (var i = 0; i < @Model.ProductionList.Count; i++)
+                                {
+                                    if (i == @Model.ProductionList.Count)
+                                    {
+                                        @Model.ProductionList[i].ProductAlias
+                                    }
+                                    else
+                                    {
+                                        @Model.ProductionList[i].ProductAlias<br />
+                                    }
+                                }
+                            }
+                        </td>
+                        <td rowspan="@rowCount">
+                            <!-- Ending Balance-->
+                            @Model.EndingBalance.ToString("N0")
+                        </td>
+                        <td rowspan="@rowCount">
+                            <!-- Noted -->
+                            @Model.Noted
+                        </td>
+                    </tr>
+                    <!-- More row if exists -->
+                    for (var i = 1; i < @Model.IncomeList.Count; i++)
+                    {
+                        <tr>
+                            <td>(@i + 1)</td>
+                            <td>@Model.IncomeList[i].RegistrationNumber - @Model.IncomeList[0].StringRegistrationDate</td>
+                            <td>@Model.IncomeList[i].Amount</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <!-- Generate Empty Record-->
+                    /*Only 1 Record*/
+                    <tr>
+                        <td>1</td>
+                        <td>@Model.BeginingBalance.ToString("N0")</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <!-- Generate Jenis Hasil Produksi BKC -->
+                            @if (@Model.ProductionList.Count > 0)
+                            {
+                                for (var i = 0; i < @Model.ProductionList.Count; i++)
+                                {
+                                    if (i == @Model.ProductionList.Count)
+                                    {
+                                        @Model.ProductionList[i].Amount.ToString("N0")<span> </span> @Model.ProductionList[i].UomDesc
+                                    }
+                                    else
+                                    {
+                                        @Model.ProductionList[i].Amount.ToString("N0")<span> </span> @Model.ProductionList[i].UomDesc<br />
+                                    }
+                                }
+                            }
+                        </td>
+                        <td>
+                            <!-- Generate Jumlah Hasil Produksi BKC -->
+                            @if (@Model.ProductionList.Count > 0)
+                            {
+                                for (var i = 0; i < @Model.ProductionList.Count; i++)
+                                {
+                                    if (i == @Model.ProductionList.Count)
+                                    {
+                                        @Model.ProductionList[i].Amount.ToString("N0")<span> </span> @Model.ProductionList[i].UomDesc
+                                    }
+                                    else
+                                    {
+                                        @Model.ProductionList[i].Amount.ToString("N0")<span> </span> @Model.ProductionList[i].UomDesc<br />
+                                    }
+                                }
+                            }
+                        </td>
+                        <td>
+                            @Model.EndingBalance.ToString("N0")
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(@Model.Noted)) {
+                                @Model.Noted
+                            }
+                        </td>
+                    </tr>
+                }
+                <!-- Table Footer-->
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        Total: @if (@Model.TotalIncome == 0)
+                        {<span>-</span>}
+                        else
+                        {@Model.TotalIncome.ToString("N0")}
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        Total:
+                        @if (@Model.SummaryProductionList.Count > 0)
+                        {
+                            <table border="0">
+                                @foreach (var t in @Model.SummaryProductionList)
+                                {
+                                    <tr>
+                                        <td>@t.Amount</td>
+                                        <td>@t.UomDesc</td>
+                                    </tr>
+                                }
+                            </table>
+                        }
+
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
+
+            </table>
+        </div>
+        <div class="page-break"></div>
+        <div class="lack-bottom">
+            <div class="lack-date-bottom">
+                Diisi pejabat Bea dan Cukai<br />
+                Diterima tanggal :<br />
+                a.n Kepala Kantor <br /><br />
+                NIP :
+            </div>
+            <div class="lack-signature">
+                Dibuat di Surabaya<br />
+                Pada Tanggal 5 Oktober 2014<br />
+                <span>Pengusaha Pabrik</span>
+                (Kusno)
+            </div>
+        </div>
+        <div class="lack-note">
+            Keterangan:<br />
+            LACK-1 ini dibuat dalam 2 rangkap, dengan peruntukan:<br />
+            <ol>
+                <li>Lembar ke-1 : untuk Kepala KPPBKC yang mengawasi Pabrik</li>
+                <li>Lembar ke-2 : untuk Direktue Jenderal u.p Direktur Cukai</li>
+            </ol>
+        </div>
+    </div>
+    <!-- Load custom.js -->
+    <script src="~/Scripts/js/scripts.min.js"></script>
+    <script src="~/Scripts/js/custom.js"></script>
+</body>
+</html>

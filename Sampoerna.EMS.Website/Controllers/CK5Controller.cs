@@ -210,6 +210,29 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CK5Import", model);
         }
 
+        
+        private SelectList GetCorrespondingPlantList(string plantId, Enums.CK5Type ck5Type)
+        {
+            SelectList data;
+            T001WDto dataPlant = _plantBll.GetT001ById(plantId);
+            
+            if (ck5Type == Enums.CK5Type.Domestic) {
+                
+                data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode);
+            }
+            else if (ck5Type == Enums.CK5Type.Intercompany)
+            {
+
+                data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode,true);
+            }
+            else {
+                data = GlobalFunctions.GetPlantAll();
+            
+            }
+            
+            return data;
+        }
+
         #endregion
 
         #region Save Edit
@@ -249,7 +272,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             //model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-          
+            
+
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
 
@@ -363,30 +387,43 @@ namespace Sampoerna.EMS.Website.Controllers
         //}
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId,string sourceNppbkcId,string destPlantId, DateTime submissionDate,string goodtypegroupid)
+        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId, string sourceNppbkcId, string destPlantId, DateTime submissionDate, string goodTypeGroupId, Enums.CK5Type ck5Type)
         {
             //var dbPlantSource = _plantBll.GetT001ById(sourcePlantId);
             var dbPlantDest = _plantBll.GetT001ById(destPlantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlantDest);
 
             GetQuotaAndRemainOutput output;
-            if (string.IsNullOrEmpty(goodtypegroupid)) {
+            if (string.IsNullOrEmpty(goodTypeGroupId))
+            {
                 output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, null);
             } else {
-                Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodtypegroupid);
+                Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroupId);
                 output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, (int)goodtypeenum);
             }
 
-            
-            
 
-            model.Pbck1Id = output.Pbck1Id;
-            model.Pbck1Number = output.Pbck1Number;
-            model.Pbck1DecreeDate = output.Pbck1DecreeDate;
-            model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-            model.Ck5TotalExciseable = output.QtyCk5.ToString();
-            model.RemainQuota = output.RemainQuota.ToString();
-            model.PbckUom = output.PbckUom;
+            if (sourceNppbkcId == dbPlantDest.NPPBKC_ID)
+            {
+                model.Pbck1Id = null;
+                model.Pbck1Number = null;
+                model.Pbck1DecreeDate = null;
+                model.Pbck1QtyApproved = "0";
+                model.Ck5TotalExciseable = "0";
+                model.RemainQuota = "0";
+                model.PbckUom = "";
+            }
+            else {
+                model.Pbck1Id = output.Pbck1Id;
+                model.Pbck1Number = output.Pbck1Number;
+                model.Pbck1DecreeDate = output.Pbck1DecreeDate;
+                model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                model.Ck5TotalExciseable = output.QtyCk5.ToString();
+                model.RemainQuota = output.RemainQuota.ToString();
+                model.PbckUom = output.PbckUom;
+            }
+            
+            
 
             return Json(model);
         }
@@ -402,7 +439,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
             }
 
-            
+            model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
       
             return Json(model);
         }

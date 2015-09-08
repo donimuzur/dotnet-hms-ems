@@ -4,14 +4,16 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
-using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
-using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.PrintHistory;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -27,10 +29,15 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICompanyBLL _companyBll;
         private IPBCK1BLL _pbck1Bll;
         private IPlantBLL _plantBll;
+        private IWorkflowBLL _workflowBll;
+        private IChangesHistoryBLL _changesHistoryBll;
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IPrintHistoryBLL _printHistoryBll;
 
         public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, ICompanyBLL companyBll,
             IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll,
-            IUnitOfMeasurementBLL uomBll, IPBCK1BLL pbck1Bll, IPlantBLL plantBll)
+            IUnitOfMeasurementBLL uomBll, IPBCK1BLL pbck1Bll, IPlantBLL plantBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll,
+            IChangesHistoryBLL changesHistoryBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
             _lack1Bll = lack1Bll;
@@ -43,6 +50,12 @@ namespace Sampoerna.EMS.Website.Controllers
             _companyBll = companyBll;
             _pbck1Bll = pbck1Bll;
             _plantBll = plantBll;
+
+            _workflowHistoryBll = workflowHistoryBll;
+            _workflowBll = workflowBll;
+            _changesHistoryBll = changesHistoryBll;
+            _printHistoryBll = printHistoryBll;
+
         }
 
 
@@ -278,6 +291,28 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region -------------- Private Method --------
 
+        private List<Lack1SummaryProductionItemModel> ProcessSummaryProductionDetails(
+            List<Lack1ProductionDetailItemModel> input)
+        {
+            if (input.Count > 0)
+            {
+                var groupedData = input.GroupBy(p => new
+                {
+                    p.UomId,
+                    p.UomDesc
+                }).Select(g => new Lack1SummaryProductionItemModel()
+                {
+                    UomId = g.Key.UomId,
+                    UomDesc = g.Key.UomDesc,
+                    Amount = g.Sum(p => p.Amount)
+                });
+
+                return groupedData.ToList();
+
+            }
+            return new List<Lack1SummaryProductionItemModel>();
+        }
+
         private SelectList GetNppbkcListOnPbck1ByCompanyCode(string companyCode)
         {
             var data = _pbck1Bll.GetNppbkByCompanyCode(companyCode);
@@ -378,17 +413,143 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region -------------- Details -----------
 
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id, Enums.LACK1Type? lType)
         {
             if (!id.HasValue)
             {
                 return HttpNotFound();
             }
 
-            return View();
+            if (!lType.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput
+            {
+                FormNumber = lack1Data.Lack1Number,
+                DocumentStatus = lack1Data.Status,
+                NPPBKC_Id = lack1Data.NppbkcId
+            };
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            var changesHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
+                    id.Value.ToString()));
+
+            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack1Data.Lack1Number));
+
+            var model = Mapper.Map<Lack1ItemViewModel>(lack1Data);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.ChangesHistoryList = changesHistory;
+            model.WorkflowHistory = workflowHistory;
+            model.PrintHistoryList = printHistory;
+            model.Lack1Type = lType.Value;
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            const string activeCss = "active";
+            switch (lType)
+            {
+                case Enums.LACK1Type.ListByNppbkc:
+                    model.MenuNppbkcAddClassCss = activeCss;
+                    break;
+                case Enums.LACK1Type.ComplatedDocument:
+                    model.MenuCompletedAddClassCss = activeCss;
+                    break;
+                case Enums.LACK1Type.ListByPlant:
+                    model.MenuPlantAddClassCss = activeCss;
+                    break;
+            }
+
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = lack1Data.CreateBy,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber = model.Lack1Number,
+                NppbkcId = model.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
+
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
+
+            return View(model);
 
         }
         
+        #endregion
+
+        #region ----------------PrintPreview-------------
+
+        public ActionResult PrintPreview(int? id, Enums.LACK1Type? lType)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            if (!lType.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetPrintOutData(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = Mapper.Map<Lack1PrintOutModel>(lack1Data);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            
+            return View("PrintDocument", model);
+        }
+
+        #endregion
+
+        #region ------------- Workflow ------------
+
+        public ActionResult RejectDocument()
+        {
+            return View();
+        }
+
+        public ActionResult GovCancelDocument()
+        {
+            return View();
+        }
+
+        public ActionResult GovRejectDocument()
+        {
+            return View();
+        }
+
         #endregion
 
     }

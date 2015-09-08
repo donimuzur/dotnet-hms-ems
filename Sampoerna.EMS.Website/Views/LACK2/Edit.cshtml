@@ -5,7 +5,7 @@
 
 @{
     ViewBag.Title = "Edit LACK2";
-    int i = 0;
+    
 }
 
 
@@ -63,7 +63,6 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                     </ul>
 
@@ -231,22 +230,22 @@
                                                         <tbody id="tb-body-ck5-lack2">
                                                             @if (@Model.Lack2Model.Items != null)
                                                             {
-                                                                
-                                                                foreach (var item in @Model.Lack2Model.Items)
+
+                                                                for (int i = 0; i < @Model.Lack2Model.Items.Count; i++)
                                                                 {
                                                                     <tr>
                                                                         @Html.HiddenFor(x => x.Lack2Model.Items[i].Lack2Id)
                                                                         @Html.HiddenFor(x => x.Lack2Model.Items[i].Id)
-                                                                        @Html.HiddenFor(x=>x.Lack2Model.Items[i].Ck5Id)
-                                                                        <th></th>
-                                                                        <th>@item.Ck5Number</th>
-                                                                        <th>@item.Ck5GIDate</th>
-                                                                        <th>@item.Ck5ItemQty</th>
-                                                                        <th>@item.CompanyName</th>
-                                                                        <th>@item.CompanyNppbkc</th>
-                                                                        <th>@item.CompanyAddress</th>
+                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Ck5Id)
+                                                                        <th>@(i + 1)</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5Number</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5GIDate</th>
+                                                                        <th>@Model.Lack2Model.Items[i].Ck5ItemQty</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyName</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyNppbkc</th>
+                                                                        <th>@Model.Lack2Model.Items[i].CompanyAddress</th>
                                                                     </tr>
-                                                                    
+
                                                                 }
 
                                                             }
@@ -276,7 +275,15 @@
                                                                 <div class="row">
                                                                     <label class="col-md-4">Status Gov<span class="red">*</span></label>
                                                                     <div class="col-md-8">
-                                                                        @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
+                                                                        @if(Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                        {
+                                                                            @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @Html.TextBox("gov-status", string.Empty, new { @class = "form-control", @disabled = "disabled" })
+
+                                                                        }
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -285,7 +292,16 @@
                                                                     <label class="col-md-4">Decree Date</label>
                                                                     <div class="col-md-8">
                                                                         <div class="input-group date">
-                                                                            @Html.TextBoxFor(x => x.Lack2Model.DecreeDate, new {@class = "form-control"})
+                                                                            @if(Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                            {
+                                                                                @Html.TextBoxFor(x => x.Lack2Model.DecreeDate, new {@class = "form-control"})
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                @Html.TextBox("decree_date", Model.Lack2Model.DecreeDate, new { @class = "form-control", @disabled="disabled" })
+
+                                                                            }
+                                                                            
                                                                             <span class="input-group-addon">
                                                                                 <i class="fa fa-calendar"></i>
                                                                             </span>
@@ -319,8 +335,16 @@
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-md-6">
-                                                                                <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
-                                                                            </div>
+                                                                                @if (Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                                {
+                                                                                    <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <button class="btn btn-primary full" type="button">Add File</button>
+
+                                                                                }
+                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -333,242 +357,14 @@
                                     </div>
                                 
                                     @Html.Partial("_FileUpload", Model)
-                                
-                                <div class="panel-group not-upload" id="accordion-7" role="tablist" aria-multiselectable="true">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="heading7">
-                                            <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
-                                                    Workflow History
-                                                    <i class="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
-                                            <div class="panel-body">
-                                                <div class="table-container">
-                                                    <table class="table table-bordered table-striped js-options-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Account Name</th>
-                                                                <th>Role</th>
-                                                                <th>Action</th>
-                                                                <th>Date</th>
-                                                                <th>Comment</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach (var history in Model.WorkflowHistory)
-                                                            {
-                                                                <tr>
-                                                                    <td>@history.ACTION_BY</td>
-                                                                    <td>@history.Role </td>
-                                                                    <td>@history.ACTION </td>
-                                                                    <td>@history.ACTION_DATE</td>
-                                                                    <td>@history.COMMENT</td>
-                                                                </tr>
-                                                            }
-                                                           
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
+                                @Html.Partial("_WorkflowHistory", Model)
+                           
                             </div>
                            
                         </div>
-
-                        <div role="tabpanel" class="tab-pane" id="printout">
-                            <div class="panel-group" id="accordionPrint" role="tablist" aria-multiselectable="true">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingPrint">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordionPrint" href="#collapsePrint" aria-expanded="true" aria-controls="collapsePrint">
-                                                Print Out
-                                                <i class="fa fa-caret-down"></i>
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapsePrint" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPrint">
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <form class="form-excise " role="form">
-                                                    <div class="last-form">
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-5">LACK-2 No</label>
-                                                                <div class="col-md-7">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-3">Date</label>
-                                                                <div class="col-md-9">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-3">User</label>
-                                                                <div class="col-md-9">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <button class="btn btn-blue full">Print</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="table-container">
-                                <table class="table table-bordered table-striped js-options-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>User</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="changes">
-                            <div class="panel-group" id="accordionChanges" role="tablist" aria-multiselectable="true">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingChanges">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordionChanges" href="#collapseChanges" aria-expanded="true" aria-controls="collapseChanges">
-                                                Changes Log
-                                                <i class="fa fa-caret-down"></i>
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseChanges" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChanges">
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <form class="form-excise " role="form">
-                                                    <div class="last-form">
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-5">LACK-2 No</label>
-                                                                <div class="col-md-7">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-3">Date</label>
-                                                                <div class="col-md-9">
-                                                                    <div class="input-group date">
-                                                                        <input type="text" class="form-control">
-                                                                        <span class="input-group-addon">
-                                                                            <i class="fa fa-calendar"></i>
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <label class="col-md-3">User</label>
-                                                                <div class="col-md-9">
-                                                                    <input type="text" class="form-control" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <button class="btn btn-blue full">Export to xls</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="table-container">
-                                <table class="table table-bordered table-striped js-options-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Field</th>
-                                            <th>Old Value</th>
-                                            <th>New Value</th>
-                                            <th>User</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                     
+                        @Html.Partial("_ChangesLog", Model)
+                     </div>
                 </div>
             </div>
         </div>
@@ -608,6 +404,9 @@
 
             $('#Lack2Model_Burks').change();
 
+        });
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("Index", "Lack2")';
         });
         $("#btnSubmitConfirm").click(function() {
             $('#IsSaveSubmit').val('true');
