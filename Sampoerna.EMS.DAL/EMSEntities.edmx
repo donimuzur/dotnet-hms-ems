@@ -760,6 +760,12 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PRODUCTION_DATE" Type="datetime" Nullable="false" />
           <Property Name="COMPANY_NAME" Type="nvarchar" MaxLength="35" />
           <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="BATCH" Type="nvarchar" MaxLength="35" />
+          <Property Name="PROD_QTY_STICK" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="BUNDLE" Type="int" />
+          <Property Name="MARKET" Type="nvarchar" MaxLength="2" />
+          <Property Name="DOCGMVTER" Type="nvarchar" MaxLength="35" />
         </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
@@ -3505,7 +3511,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="PBCK1" EntitySet="PBCK1" />
             <End Role="LACK1_PBCK1_MAPPING" EntitySet="LACK1_PBCK1_MAPPING" />
           </AssociationSet>
-          <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
           <EntitySet Name="WASTE" EntityType="EMSModel.WASTE" />
           <AssociationSet Name="FK_CK4C_POA" Association="EMSModel.FK_CK4C_POA">
             <End Role="POA" EntitySet="POA" />
@@ -3521,6 +3526,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="LACK1" EntitySet="LACK1" />
             <End Role="LACK1_TRACKING" EntitySet="LACK1_TRACKING" />
           </AssociationSet>
+          <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -6159,24 +6165,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="PRODUCTION">
-          <Key>
-            <PropertyRef Name="COMPANY_CODE" />
-            <PropertyRef Name="WERKS" />
-            <PropertyRef Name="FA_CODE" />
-            <PropertyRef Name="PRODUCTION_DATE" />
-          </Key>
-          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="QTY_UNPACKED" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="QTY_PACKED" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="WASTE">
           <Key>
             <PropertyRef Name="COMPANY_CODE" />
@@ -6255,6 +6243,30 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="PRODUCTION">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="PRODUCTION_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="QTY_UNPACKED" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="QTY_PACKED" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PROD_QTY_STICK" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BUNDLE" Type="Int32" />
+          <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7347,22 +7359,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PRODUCTION">
-            <EntityTypeMapping TypeName="EMSModel.PRODUCTION">
-              <MappingFragment StoreEntitySet="PRODUCTION">
-                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
-                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
-                <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
-                <ScalarProperty Name="UOM" ColumnName="UOM" />
-                <ScalarProperty Name="QTY_PACKED" ColumnName="QTY_PACKED" />
-                <ScalarProperty Name="QTY_UNPACKED" ColumnName="QTY_UNPACKED" />
-                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
-                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="WASTE">
             <EntityTypeMapping TypeName="EMSModel.WASTE">
               <MappingFragment StoreEntitySet="WASTE">
@@ -7398,6 +7394,28 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
                 <ScalarProperty Name="INVENTORY_MOVEMENT_ID" ColumnName="INVENTORY_MOVEMENT_ID" />
                 <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
                 <ScalarProperty Name="LACK1_TRACKING_ID" ColumnName="LACK1_TRACKING_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCTION">
+            <EntityTypeMapping TypeName="EMSModel.PRODUCTION">
+              <MappingFragment StoreEntitySet="PRODUCTION">
+                <ScalarProperty Name="DOCGMVTER" ColumnName="DOCGMVTER" />
+                <ScalarProperty Name="MARKET" ColumnName="MARKET" />
+                <ScalarProperty Name="BUNDLE" ColumnName="BUNDLE" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="PROD_QTY_STICK" ColumnName="PROD_QTY_STICK" />
+                <ScalarProperty Name="BATCH" ColumnName="BATCH" />
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="QTY_PACKED" ColumnName="QTY_PACKED" />
+                <ScalarProperty Name="QTY_UNPACKED" ColumnName="QTY_UNPACKED" />
+                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

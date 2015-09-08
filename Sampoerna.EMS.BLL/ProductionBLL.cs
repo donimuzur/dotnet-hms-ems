@@ -22,12 +22,18 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<PRODUCTION> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
+        private IGenericRepository<ZAIDM_EX_BRAND> _repositoryBrand;
+        private IGenericRepository<ZAIDM_EX_GOODTYP> _repositoryGood;
+        private IGenericRepository<UOM> _repositoryUom;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<PRODUCTION>();
+            _repositoryBrand = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
+            _repositoryGood = _uow.GetGenericRepository<ZAIDM_EX_GOODTYP>();
+            _repositoryUom = _uow.GetGenericRepository<UOM>();
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -96,6 +102,29 @@ namespace Sampoerna.EMS.BLL
             return item;
         }
 
-
+        public List<ProductionDto> GetByCompPlant(string comp, string plant)
+        {
+            var dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && p.WERKS == plant)
+                         join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
+                         join g in _repositoryGood.GetQuery() on b.EXC_GOOD_TYP equals g.EXC_GOOD_TYP
+                         join u in _repositoryUom.GetQuery() on p.UOM equals u.UOM_ID
+                         select new ProductionDto() { 
+                            ProductionDate = p.PRODUCTION_DATE,
+                            FaCode = p.FA_CODE,
+                            BrandDescription = p.BRAND_DESC,
+                            PlantName = p.PLANT_NAME,
+                            TobaccoProductType = g.EXT_TYP_DESC,
+                            Hje = b.HJE_IDR,
+                            Tarif = b.TARIFF,
+                            QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
+                            Uom = u.UOM_DESC
+                         };
+            
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            return dbData.ToList();
+        }
     }
 }
