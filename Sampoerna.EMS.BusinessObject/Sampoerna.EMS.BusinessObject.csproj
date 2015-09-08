@@ -223,6 +223,9 @@
     <Compile Include="LACK1_PRODUCTION_DETAIL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="LACK1_TRACKING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LACK2.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
