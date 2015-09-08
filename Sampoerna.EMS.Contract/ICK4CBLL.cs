@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.Contract
     {
         List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input);
 
-        //SaveCk4CInput Save ()
+        Ck4CDto Save(Ck4CDto item);
 
     }
 }
