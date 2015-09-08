@@ -659,9 +659,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     drow[9] = poa.PRINTED_NAME;
                 }
             }
-            if (lack2.Status != Enums.DocumentStatus.Completed)
+            if (lack2.Status != Enums.DocumentStatus.WaitingGovApproval || lack2.Status != Enums.DocumentStatus.GovApproved
+                || lack2.Status != Enums.DocumentStatus.Completed)
             {
-                drow[10] = "PRINT PREVIEW";
+                drow[10] = "PREVIEW";
             }
             else
             {
