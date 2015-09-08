@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
@@ -37,6 +38,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
         }
+
+
         //
         // GET: /Production/
         public ActionResult Index()
@@ -78,6 +81,14 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
             var model = new ProductionDetail();
+            model = InitCreate(model);
+
+            return View(model);
+
+        }
+
+        private ProductionDetail InitCreate(ProductionDetail model)
+        {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
@@ -85,16 +96,15 @@ namespace Sampoerna.EMS.Website.Controllers
             model.FacodeList = GlobalFunctions.GetBrandList();
             model.UomList = GlobalFunctions.GetUomList(_uomBll);
 
-            return View(model);
+            return model;
 
         }
 
         [HttpPost]
         public ActionResult Create(ProductionDetail model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
                 var data = Mapper.Map<ProductionDto>(model);
                 var company = _companyBll.GetById(model.CompanyCode);
                 var plant = _plantBll.GetT001ById(model.PlantWerks);
@@ -103,34 +113,46 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.CompanyName = company.BUTXT;
                 data.PlantName = plant.NAME1;
                 data.BrandDescription = brandDesc.BRAND_CE;
-                
-                _productionBll.Save(data);
+                data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
+                data.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
+                try
+                {
 
-                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                     );
-                return RedirectToAction("Index");
-               
-            }
-            catch (Exception exception)
-            {
-                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error
-                        );
-                return View(model);
-            }
-            
+                    _productionBll.Save(data);
 
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                         );
+                    return RedirectToAction("Index");
+
+                }
+                catch (Exception exception)
+                {
+                    AddMessageInfo(exception.Message, Enums.MessageInfoType.Error
+                            );
+
+                }
+
+            }
+            model = InitCreate(model);
+            return View(model);
         }
         #endregion
 
+        //
+        // GET: /Production/Edit
         #region Edit
         public ActionResult Edit(string companyCode, string plantWerk, string faCode, DateTime productionDate)
         {
 
             var model = new ProductionDetail();
-            
-            var dbProduction = _productionBll.GetById(companyCode, plantWerk,faCode, productionDate);
+
+            var dbProduction = _productionBll.GetById(companyCode, plantWerk, faCode, productionDate);
 
             model = Mapper.Map<ProductionDetail>(dbProduction);
+
+            model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
+            model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
+
             model = IniEdit(model);
             model.CompanyCodeX = model.CompanyCode;
             model.PlantWerksX = model.PlantWerks;
@@ -154,6 +176,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
+        //
+        // POST: /Production/Edit
         [HttpPost]
         public ActionResult Edit(ProductionDetail model)
         {
@@ -186,7 +210,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 _productionBll.Save(dbProduction);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                     );
-              
+
 
                 return RedirectToAction("Index");
 
@@ -200,13 +224,15 @@ namespace Sampoerna.EMS.Website.Controllers
             model = IniEdit(model);
 
             return View("Edit", model);
-            
+
         }
 
         #endregion
 
         #region Detail
 
+        //
+        // GET: /Production/Detail
         public ActionResult Detail(string companyCode, string plantWerk, string faCode, DateTime productionDate)
         {
             var model = new ProductionDetail();
@@ -214,12 +240,14 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbProduction = _productionBll.GetById(companyCode, plantWerk, faCode, productionDate);
 
             model = Mapper.Map<ProductionDetail>(dbProduction);
+            model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
+            model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
             model = IniEdit(model);
 
             return View(model);
         }
-        
-        #endregion  
+
+        #endregion
 
 
 

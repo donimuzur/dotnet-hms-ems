@@ -59,7 +59,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         {
             get; set;
         }
-        public decimal? QtyPackedStr { get; set; }
+        public string QtyPackedStr { get; set; }
 
         public decimal? QtyPacked
         {

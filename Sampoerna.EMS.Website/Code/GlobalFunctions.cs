@@ -426,6 +426,15 @@ namespace Sampoerna.EMS.Website.Code
 
         }
 
+        public static SelectList GetFaCodeByPlant(string plantId, string faCode )
+        {
+            IBrandRegistrationBLL brandBll = MvcApplication.GetInstance<BrandRegistrationBLL>();
+            var brandCe = brandBll.GetByPlantIdAndFaCode(plantId, faCode);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(brandCe);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
+
     }
 
 }
