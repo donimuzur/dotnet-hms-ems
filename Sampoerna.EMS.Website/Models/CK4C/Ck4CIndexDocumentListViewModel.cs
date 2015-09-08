@@ -55,5 +55,6 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public int Status { get; set; }
         public int StatusGoverment { get; set; }
         public string PoaList { get; set; }
+        public string ReportedMonthName { get; set; }
     }
 }

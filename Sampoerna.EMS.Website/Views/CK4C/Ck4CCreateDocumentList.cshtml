@@ -3,7 +3,7 @@
     ViewBag.Title = "Ck4CCreateDocumentList";
 }
 
-@using (Html.BeginForm("Ck4CCreateDocumentList", "CK4C"))
+@using (Html.BeginForm("Ck4CCreateDocumentList", "CK4C", FormMethod.Post, new { @id = "CreateForm"}))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -11,7 +11,7 @@
                 <h3>CK-4C Form</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="button" class="btn btn-blue" value="Save" id="btnSaveCk4c" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                 </div>
             </div>
@@ -40,6 +40,7 @@
 }
 @section scripts
 {
+    <script src="~/Scripts/ck4cscript.js"></script>
     <script type="text/javascript" language="javascript" class="init">
     $(document).ready(function () {
         $('#btnCancel').click(function (e) {
@@ -52,6 +53,12 @@
 
         $('#btnGenerate').click(function (e) {
             getProductionData();
+        });
+
+        $("#btnSaveCk4c").click(function () {
+            if (ValidateGovInput()) {
+                $('#CreateForm').submit();
+            }
         });
     });
 

@@ -7,6 +7,7 @@ using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Website.Models.CK4C;
+using Sampoerna.EMS.Utils;
 
 namespace Sampoerna.EMS.Website
 {
@@ -74,7 +75,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReportedMonth, opt => opt.MapFrom(src => src.ReportedMonth))
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.ReportedYears))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.StatusGoverment));
+                .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.StatusGoverment))
+                .ForMember(dest => dest.ReportedMonthName, opt => opt.MapFrom(src => src.MonthId));
             Mapper.CreateMap<Ck4CIndexDocumentListViewModel, Ck4CGetByParamInput>().IgnoreAllNonExisting()
                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Ck4cNumber))
                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
