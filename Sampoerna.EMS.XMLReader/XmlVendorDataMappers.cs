@@ -42,6 +42,14 @@ namespace Sampoerna.EMS.XMLReader
                         var vendorCodeXml = xElement.Element("LIFNR").Value;
 
                         var exsitingVendor = GetExVendor(vendorCodeXml);
+                        var existingCompany = GetExCompany(vendorCodeXml);
+                        if (existingCompany != null)
+                        {
+                            existingCompany.NPWP = _xmlMapper.GetElementValue(xElement.Element("STCEG"));
+                            existingCompany.SPRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
+                            _xmlMapper.InsertOrUpdate(existingCompany);
+                        }
+
                         item.LIFNR = vendorCodeXml;
                         item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
                         item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
@@ -99,6 +107,12 @@ namespace Sampoerna.EMS.XMLReader
             return exisitingPoa;
         }
 
+        public T001 GetExCompany(string vendorCode)
+        {
+            var exisitingPoa = _xmlMapper.uow.GetGenericRepository<T001>()
+                .GetByID(vendorCode);
+            return exisitingPoa;
+        }
 
 
     }

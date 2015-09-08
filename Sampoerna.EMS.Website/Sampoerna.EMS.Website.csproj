@@ -228,6 +228,7 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
+    <Compile Include="Models\CK5\CK5InputManualViewModel.cs" />
     <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
@@ -363,6 +365,7 @@
     <Compile Include="Models\POAMap\PoaMapDetailViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
+    <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
@@ -574,6 +577,7 @@
     <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\CK5InputManual.js" />
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
@@ -1013,7 +1017,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTable.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
-    <Content Include="Views\CK5\_CK5InputMaterial.cshtml" />
+    <Content Include="Views\CK5\CK5InputMaterial.cshtml" />
     <Content Include="Views\CK5\_CK5SealingInput.cshtml" />
     <Content Include="Views\CK4C\Index.cshtml" />
     <Content Include="Views\CK4C\_CreateDailyProduction.cshtml" />
@@ -1032,6 +1036,12 @@
     <Content Include="Views\LACK2\_ChangesLog.cshtml" />
     <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
+    <Content Include="Views\Production\Index.cshtml" />
+    <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
+    <Content Include="Views\Production\Create.cshtml" />
+    <Content Include="Views\Production\Edit.cshtml" />
+    <Content Include="Views\Production\Detail.cshtml" />
+
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

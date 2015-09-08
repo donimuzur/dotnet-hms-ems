@@ -43,6 +43,10 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlBOMDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("BLOCKSTOCK"))
+            {
+                return new XmlBlockStockDataMapper(xmlfile);
+            }
             return null;
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)

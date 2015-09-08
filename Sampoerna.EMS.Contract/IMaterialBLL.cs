@@ -26,5 +26,8 @@ namespace Sampoerna.EMS.Contract
 
         ZAIDM_EX_MATERIAL GetByPlantIdAndStickerCode(string plantId, string stickerCode);
 
+        List<MaterialDto> GetMaterialByPlantId(string plantId);
+
+        MaterialDto GetMaterialByPlantIdAndMaterialNumber(string plantId, string materialNumber);
     }
 }
