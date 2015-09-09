@@ -116,7 +116,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (existingData != null)
                 {
                     AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
-                    return RedirectToAction("Edit", "Production", new {companyCode = model.CompanyCode, 
+                    return RedirectToAction("Edit", "Production",new {companyCode = model.CompanyCode, 
                       plantWerk = model.PlantWerks,faCode = model.FaCode, productionDate = model.ProductionDate });
                 }
 
@@ -165,6 +165,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model = Mapper.Map<ProductionDetail>(dbProduction);
 
+            
+
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
             model.ProdQtyStickStr = model.ProQtyStick == null ? string.Empty : model.ProQtyStick.ToString();
@@ -212,6 +214,13 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var dbPrductionNew = Mapper.Map<ProductionDto>(model);
+            var company = _companyBll.GetById(model.CompanyCode);
+            var plant = _plantBll.GetT001ById(model.PlantWerks);
+            var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
+
+            model.CompanyName = company.BUTXT;
+            model.PlantName = plant.NAME1;
+            model.BrandDescription = brandDesc.BRAND_CE;
 
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
