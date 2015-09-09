@@ -30,9 +30,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IProductionBLL _productionBll;
+        private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
 
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll)
+            IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll,
+            IDocumentSequenceNumberBLL documentSequenceNumberBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -47,6 +49,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _brandRegistrationBll = brandRegistrationBll;
             _nppbkcbll = nppbkcbll;
             _productionBll = productionBll;
+            _documentSequenceNumberBll = documentSequenceNumberBll;
         }
 
 
@@ -233,7 +236,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetProductionData(string comp, string plant, string nppbkc)
         {
-            var data = _productionBll.GetByCompPlant(comp, plant).Select(d => Mapper.Map<ProductionDto>(d)).ToList();
+            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc).Select(d => Mapper.Map<ProductionDto>(d)).ToList();
             return Json(data);
         }
 
@@ -362,6 +365,33 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return (model);
 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Ck4CCreateDocumentList(Ck4CIndexDocumentListViewModel model)
+        {
+            Ck4CDto item = new Ck4CDto();
+
+            item = AutoMapper.Mapper.Map<Ck4CDto>(model.Details);
+
+            var plant = _plantBll.GetT001ById(model.Details.PlantId);
+            var company = _companyBll.GetById(model.Details.CompanyId);
+
+            item.PlantName = plant.NAME1;
+            item.CompanyName = company.BUTXT;
+            item.CreatedBy = CurrentUser.USER_ID;
+            item.CreatedDate = DateTime.Now;
+            var inputDoc = new GenerateDocNumberInput();
+            inputDoc.Month = item.ReportedMonth;
+            inputDoc.Year = item.ReportedYears;
+            inputDoc.NppbkcId = item.NppbkcId;
+            item.Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
+            item.Status = Enums.DocumentStatus.Draft;
+
+            _ck4CBll.Save(item);
+            AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+            return RedirectToAction("DocumentList");
         }
         #endregion
 

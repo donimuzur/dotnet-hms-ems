@@ -36,6 +36,7 @@
         {
             <tr>
                 <td class="action">
+                    <a href="#" data-tooggle="tooltip" data-placement="top" title="Detail"><i class=" fa fa-eye"></i></a>
                     <a href="#" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>
@@ -57,13 +58,13 @@
                     @Html.DisplayFor(modelItem => item.ReportedPeriod)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ReportedMonth)
+                    @Html.DisplayFor(modelItem => item.ReportedMonthName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ReportedYears)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Status)
+                    @Html.DisplayFor(modelItem => item.StatusName)
                 </td>
 
             </tr>

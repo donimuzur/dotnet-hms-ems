@@ -578,6 +578,7 @@
     <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\ck4cscript.js" />
     <Content Include="Scripts\CK5InputManual.js" />
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
