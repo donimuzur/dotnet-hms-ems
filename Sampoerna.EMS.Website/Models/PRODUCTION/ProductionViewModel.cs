@@ -92,6 +92,8 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public int? Bundle { get; set; }
         public string Market { get; set; }
         public string Docgmvter { get; set; }
+        public string MatDoc { get; set; }
+        public string Ordr { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }

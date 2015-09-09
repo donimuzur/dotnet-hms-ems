@@ -28,5 +28,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int? Bundle { get; set; }
         public string Market { get; set; }
         public string Docgmvter { get; set; }
+        public string MatDoc { get; set; }
+        public string Ordr { get; set; }
     }
 }

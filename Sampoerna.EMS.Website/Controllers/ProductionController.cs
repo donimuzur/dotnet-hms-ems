@@ -39,9 +39,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _brandRegistrationBll = brandRegistrationBll;
         }
 
-
+        #region Index
         //
-        // GET: /Production/
+        // GET: /Production/Index
         public ActionResult Index()
         {
             var data = InitProductionViewModel(new ProductionViewModel()
@@ -76,8 +76,11 @@ namespace Sampoerna.EMS.Website.Controllers
             viewModel.Details = result;
             return PartialView("_ProductionTableIndex", viewModel);
         }
+        #endregion
 
         #region Create
+        //
+        // GET: /Production/Create
         public ActionResult Create()
         {
             var model = new ProductionDetail();
@@ -100,7 +103,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
 
         }
-
+        //
+        // POST: /Production/Edit
         [HttpPost]
         public ActionResult Create(ProductionDetail model)
         {
@@ -146,10 +150,10 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
         #endregion
-
+        
+        #region Edit
         //
         // GET: /Production/Edit
-        #region Edit
         public ActionResult Edit(string companyCode, string plantWerk, string faCode, DateTime productionDate)
         {
 
@@ -262,9 +266,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-
-
-
+        
         #region Json
         [HttpPost]
         public JsonResult CompanyListPartialProduction(string companyId)

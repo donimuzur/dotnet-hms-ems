@@ -359,7 +359,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY))
                 .ForMember(dest => dest.Bundle, opt => opt.MapFrom(src => src.BUNDLE))
                 .ForMember(dest => dest.Market, opt => opt.MapFrom(src => src.MARKET))
-                .ForMember(dest => dest.Docgmvter, opt => opt.MapFrom(src => src.DOCGMVTER));
+                .ForMember(dest => dest.Docgmvter, opt => opt.MapFrom(src => src.DOCGMVTER))
+                .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MATDOC))
+                .ForMember(dest => dest.Ordr, opt => opt.MapFrom(src => src.ORDR));
 
 
 
@@ -378,7 +380,9 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.QTY, opt => opt.MapFrom(src => src.Qty))
                .ForMember(dest => dest.BUNDLE, opt => opt.MapFrom(src => src.Bundle))
                .ForMember(dest => dest.MARKET, opt => opt.MapFrom(src => src.Market))
-               .ForMember(dest => dest.DOCGMVTER, opt => opt.MapFrom(src => src.Docgmvter));
+               .ForMember(dest => dest.DOCGMVTER, opt => opt.MapFrom(src => src.Docgmvter))
+               .ForMember(dest => dest.MATDOC, opt => opt.MapFrom(src => src.MatDoc))
+               .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr));
             #endregion
         }
     }

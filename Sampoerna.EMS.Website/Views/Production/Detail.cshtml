@@ -86,7 +86,7 @@
                                                                 <label class="col-md-4">Finish Good<span class="red">*</span></label>
                                                                 <div class="col-md-8">
                                                                     @Html.HiddenFor(model => model.FaCodeX)
-                                                                    @Html.DropDownListFor(model => model.FaCode, Model.FacodeList, "All", new { @class = "form-control", disabled = "disabled" })
+                                                                    @Html.DropDownListFor(model => model.FaCode, Model.FacodeList,null, new { @class = "form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -161,9 +161,9 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4"> DOC GMVTER </label>
+                                                                <label class="col-md-4"> Material Document Number </label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.Docgmvter, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                    @Html.TextBoxFor(model => model.MatDoc, new { @class = "decimal form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
