@@ -6,6 +6,7 @@ using System.Web.Configuration;
 using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
+using iTextSharp.text.pdf.qrcode;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -86,7 +87,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new ProductionDetail();
             model = InitCreate(model);
             model.ProductionDate = DateTime.Today;
-            
+
             return View(model);
 
         }
@@ -115,7 +116,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (existingData != null)
                 {
                     AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
-                    return RedirectToAction("Create");
+                    return RedirectToAction("Edit", "Production", new {companyCode = model.CompanyCode, 
+                      plantWerk = model.PlantWerks,faCode = model.FaCode, productionDate = model.ProductionDate });
                 }
 
                 var data = Mapper.Map<ProductionDto>(model);
@@ -150,7 +152,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
         #endregion
-        
+
         #region Edit
         //
         // GET: /Production/Edit
@@ -209,9 +211,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             }
 
-            dbProduction.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
-            dbProduction.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
-            
+            var dbPrductionNew = Mapper.Map<ProductionDto>(model);
+
+            dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
+            dbPrductionNew.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
+
             try
             {
                 if (!ModelState.IsValid)
@@ -222,7 +226,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         //
                     }
                 }
-                _productionBll.Save(dbProduction);
+
+                _productionBll.Save(dbPrductionNew);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                     );
 
@@ -266,7 +271,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-        
+
         #region Json
         [HttpPost]
         public JsonResult CompanyListPartialProduction(string companyId)
