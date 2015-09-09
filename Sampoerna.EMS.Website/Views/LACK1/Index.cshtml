@@ -44,7 +44,7 @@
                                 <label class="col-md-4">Reported On</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control" name="SubmissionDate">
+                                        <input type="text" class="form-control" id="SubmissionDate" name="SubmissionDate">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -102,6 +102,7 @@
         function setupDataTables() {
             $('#btn-reset-filter').click(function() {
                 $(".selectreset").val($(".selectreset option:first").val());
+                $('#SubmissionDate').val('');
             });
             // DataTable
             var table = null;

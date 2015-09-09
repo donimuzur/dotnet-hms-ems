@@ -13,6 +13,47 @@ namespace Sampoerna.EMS.Website
     {
         public static void InitializeLACK1()
         {
+
+            #region Lack1
+
+            Mapper.CreateMap<Lack1Dto, Lack1NppbkcData>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Butxt))
+                .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodsType + "-" + src.ExTypDesc))
+                .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.SupplierPlant))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PerionNameEng + ' ' + src.PeriodYears));
+
+            Mapper.CreateMap<Lack1IndexViewModel, Lack1GetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbKcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
+
+            Mapper.CreateMap<Lack1Input, Lack1GetByParamInput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1Dto, Lack1PlantData>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Butxt))
+               .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodsType + "-" + src.ExTypDesc))
+               .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.SupplierPlant))
+               .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.LevelPlantId))
+               .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PerionNameEng + ' ' + src.PeriodYears));
+
+            Mapper.CreateMap<Lack1IndexPlantViewModel, Lack1GetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbKcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
+
+            Mapper.CreateMap<Lack1Dto, Lack1CompletedDocumentData>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Butxt))
+               .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodsType + "-" + src.ExTypDesc))
+               .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.SupplierPlant))
+               .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.LevelPlantId))
+               .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PerionNameEng + ' ' + src.PeriodYears));
+
+            #endregion
+
             Mapper.CreateMap<Lack1GenerateInputModel, Lack1GenerateDataParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => (Enums.Lack1Level)src.Lack1Level));
             Mapper.CreateMap<Lack1GeneratedDto, Lack1GeneratedItemModel>().IgnoreAllNonExisting();
