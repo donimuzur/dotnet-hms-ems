@@ -34,5 +34,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public T001WDto T001W { get; set; }
         public UOM UOM { get; set; }
         public ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
+
+        public string GoodTypeDescription { get; set; }
     }
 }

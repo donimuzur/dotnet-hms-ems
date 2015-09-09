@@ -2316,7 +2316,7 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.FinalPortCode = ck5ReportDetails.FinalPortId;
 
             detailRow.MonthYear = ck5ReportDetails.MonthYear;
-
+            detailRow.CK5Type = ck5ReportDetails.CK5Type;
 
             //todo remove
             if (!Utils.ConvertHelper.IsNumeric(detailRow.ExGoodType))
@@ -2643,7 +2643,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetListMaterials(string plantId, Enums.CK5Type ck5Type)
         {
 
-            var dbMaterial = _materialBll.GetMaterialByPlantId(plantId);
+            var dbMaterial = _materialBll.GetMaterialByPlantIdAndGoodTypeNotNull(plantId);
             var model = Mapper.Map<List<CK5InputManualViewModel>>(dbMaterial);
 
             return Json(model);
