@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -25,10 +26,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ModifiedDate { get; set; }
         public DateTime? ReportedOn { get; set; }
         public int? ReportedPeriod { get; set; }
-        public int? ReportedMonth { get; set; }
-        public int? ReportedYears { get; set; }
-        public int Status { get; set; }
-        public int?  StatusGoverment { get; set; }
+        public int ReportedMonth { get; set; }
+        public int ReportedYears { get; set; }
+        public Enums.DocumentStatus Status { get; set; }
+        public Enums.DocumentStatusGov? StatusGoverment { get; set; }
+        public string Comment { get; set; }
 
         //Month
         public int MonthId { get; set; }

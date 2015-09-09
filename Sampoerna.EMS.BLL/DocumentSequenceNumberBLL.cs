@@ -77,7 +77,40 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        /// <summary>
+        /// Infinitive sequence number by Form Type
+        /// </summary>
+        /// <param name="formType"></param>
+        /// <returns></returns>
+        public string GenerateNumberByFormType(Enums.FormType formType)
+        {
+            var lastSeqData = _repository.Get(c => c.FORM_TYPE_ID == formType).FirstOrDefault();
 
+            if (lastSeqData == null)
+            {
+                //insert new record
+                lastSeqData = new DOC_NUMBER_SEQ()
+                {
+                    YEAR = 0,
+                    MONTH = 1, //have rellation with table MONTH so default will be 1
+                    FORM_TYPE_ID = formType,
+                    DOC_NUMBER_SEQ_LAST = 1
+                };
+                _repository.Insert(lastSeqData);
+            }
+            else
+            {
+                lastSeqData.DOC_NUMBER_SEQ_LAST += 1;
+                _repository.Update(lastSeqData);
+            }
+
+            var docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("0000000000");
+
+            _uow.SaveChanges();
+
+            return docNumber;
+
+        }
 
 
         public List<DOC_NUMBER_SEQ> GetDocumentSequenceList()

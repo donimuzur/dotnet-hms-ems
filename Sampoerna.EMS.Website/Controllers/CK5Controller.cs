@@ -1241,6 +1241,7 @@ namespace Sampoerna.EMS.Website.Controllers
             };
             _ck5Bll.CK5Workflow(input);
 
+            if (model.Ck5Type == Enums.CK5Type.Manual) return true;
             try
             {
                 //create xml file

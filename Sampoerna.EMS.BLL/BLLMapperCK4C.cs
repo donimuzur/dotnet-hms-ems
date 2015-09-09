@@ -41,12 +41,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ReportedMonth, opt => opt.MapFrom(src => src.REPORTED_MONTH))
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.REPORTED_YEAR))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS))
-                .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.GOV_STATUS));
-
-            Mapper.CreateMap<MONTH, Ck4CDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.MonthId, opt => opt.MapFrom(src => src.MONTH_ID))
-                .ForMember(dest => dest.MonthNameEng, opt => opt.MapFrom(src => src.MONTH_NAME_ENG))
-                .ForMember(dest => dest.MonthNameIndo, opt => opt.MapFrom(src => src.MONTH_NAME_IND));
+                .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.GOV_STATUS))
+                .ForMember(dest => dest.MonthId, opt => opt.MapFrom(src => src.MONTH.MONTH_ID))
+                .ForMember(dest => dest.MonthNameEng, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_ENG))
+                .ForMember(dest => dest.MonthNameIndo, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_IND));
 
             Mapper.CreateMap<T001K, T001KDto>().IgnoreAllNonExisting()
                .ForMember(dest => dest.BWKEY, opt => opt.MapFrom(src => src.T001W.NAME1));
@@ -62,6 +60,32 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(src => src.UomProudQty, opt => opt.MapFrom(dest => dest.UOM_PROD_QTY))
                 .ForMember(src => src.ProdDate, opt => opt.MapFrom(dest => dest.PROD_DATE));
 
+            #endregion
+
+            #region Ck4c Document List
+            Mapper.CreateMap<Ck4CDto, CK4C>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CK4C_ID, opt => opt.MapFrom(src => src.Ck4CId))
+                .ForMember(dest => dest.NUMBER, opt => opt.MapFrom(src => src.Number))
+                .ForMember(dest => dest.COMPANY_ID, opt => opt.MapFrom(src => src.CompanyId))
+                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName))
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.APPROVED_BY_POA, opt => opt.MapFrom(src => src.ApprovedByPoa))
+                .ForMember(dest => dest.APPROVED_DATE_POA, opt => opt.MapFrom(src => src.ApprovedDatePoa))
+                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.APPROVED_DATE_MANAGER, opt => opt.MapFrom(src => src.ApprovedDateManager))
+                .ForMember(dest => dest.APPROVED_BY_MANAGER, opt => opt.MapFrom(src => src.ApprovedByManager))
+                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
+                .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+                .ForMember(dest => dest.REPORTED_ON, opt => opt.MapFrom(src => src.ReportedOn))
+                .ForMember(dest => dest.REPORTED_PERIOD, opt => opt.MapFrom(src => src.ReportedPeriod))
+                .ForMember(dest => dest.REPORTED_MONTH, opt => opt.MapFrom(src => src.ReportedMonth))
+                .ForMember(dest => dest.REPORTED_YEAR, opt => opt.MapFrom(src => src.ReportedYears))
+                .ForMember(dest => dest.STATUS, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.GOV_STATUS, opt => opt.MapFrom(src => src.StatusGoverment));
             #endregion
         }
 

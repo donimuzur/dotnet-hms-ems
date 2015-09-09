@@ -82,6 +82,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new ProductionDetail();
             model = InitCreate(model);
+            model.ProductionDate = DateTime.Today;
             
             return View(model);
 
