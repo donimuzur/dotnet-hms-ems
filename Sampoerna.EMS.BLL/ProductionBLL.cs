@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<ZAIDM_EX_BRAND> _repositoryBrand;
         private IGenericRepository<ZAIDM_EX_GOODTYP> _repositoryGood;
         private IGenericRepository<UOM> _repositoryUom;
+        private IGenericRepository<T001W> _repositoryPlant;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -34,6 +35,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryBrand = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryGood = _uow.GetGenericRepository<ZAIDM_EX_GOODTYP>();
             _repositoryUom = _uow.GetGenericRepository<UOM>();
+            _repositoryPlant = _uow.GetGenericRepository<T001W>();
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -102,7 +104,7 @@ namespace Sampoerna.EMS.BLL
             return item;
         }
 
-        public List<ProductionDto> GetByCompPlant(string comp, string plant)
+        public List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc)
         {
             var dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && p.WERKS == plant)
                          join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
@@ -119,6 +121,27 @@ namespace Sampoerna.EMS.BLL
                             QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
                             Uom = u.UOM_DESC
                          };
+
+            if(nppbkc != string.Empty)
+            {
+                dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp)
+                         join n in _repositoryPlant.Get(n => n.NPPBKC_ID == nppbkc) on p.WERKS equals n.WERKS
+                         join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
+                         join g in _repositoryGood.GetQuery() on b.EXC_GOOD_TYP equals g.EXC_GOOD_TYP
+                         join u in _repositoryUom.GetQuery() on p.UOM equals u.UOM_ID
+                         select new ProductionDto()
+                         {
+                             ProductionDate = p.PRODUCTION_DATE,
+                             FaCode = p.FA_CODE,
+                             BrandDescription = p.BRAND_DESC,
+                             PlantName = p.PLANT_NAME,
+                             TobaccoProductType = g.EXT_TYP_DESC,
+                             Hje = b.HJE_IDR,
+                             Tarif = b.TARIFF,
+                             QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
+                             Uom = u.UOM_DESC
+                         };
+            }
             
             if (dbData == null)
             {
