@@ -38,7 +38,7 @@
                     {
                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                     }
-                    else
+                    else if(Model.AllowEditAndSubmit)
                     {
                         <input type="submit" class="btn btn-blue" value="Save" />
                     }
@@ -46,7 +46,8 @@
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Model.Lack2Id })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
 
-                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Draft)
+                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Draft
+                        && Model.AllowEditAndSubmit)
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }

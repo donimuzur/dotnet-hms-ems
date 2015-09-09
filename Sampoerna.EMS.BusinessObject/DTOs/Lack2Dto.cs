@@ -49,6 +49,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<LACK2_DOCUMENT> Documents;
 
+        public bool IsRejected { get; set; }
+
     }
 
     public class Lack2ItemDto

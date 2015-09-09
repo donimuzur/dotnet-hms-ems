@@ -578,6 +578,7 @@
     <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\ck4cscript.js" />
     <Content Include="Scripts\CK5InputManual.js" />
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
@@ -999,7 +1000,6 @@
     <Content Include="Views\UserPlantMap\Index.cshtml" />
     <Content Include="Views\UserPlantMap\Edit.cshtml" />
     <Content Include="Views\UserPlantMap\Detail.cshtml" />
-    <Content Include="Views\LACK1\_Lack1TableBalance.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Index.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck7TableIndex.cshtml" />
     <Content Include="Views\LACK2\Create.cshtml" />
@@ -1043,12 +1043,14 @@
     <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
-    <Content Include="Views\LACK1\Test.cshtml" />
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
     <Content Include="Views\Production\Create.cshtml" />
     <Content Include="Views\Production\Edit.cshtml" />
     <Content Include="Views\Production\Detail.cshtml" />
+    <Content Include="Views\LACK1\Edit.cshtml" />
+    <Content Include="Views\LACK1\_HomeEdit.cshtml" />
+    <Content Include="Views\LACK1\_FileUpload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
