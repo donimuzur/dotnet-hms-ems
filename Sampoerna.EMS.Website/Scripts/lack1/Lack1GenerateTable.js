@@ -16,10 +16,10 @@ function generateTable(data) {
         rc = rc +
         /*First Record*/
         '<tr><td>' + rowIndex + '</td>' +
-        '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+        '<td rowspan="' + rowCount + '">' + (data.BeginingBalance < 0 ? '-' : '') + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
         '<td>' + data.IncomeList[0].RegistrationNumber + ' - ' + data.IncomeList[0].StringRegistrationDate + '</td>' +
         '<td>' + ThausandSeperator(data.IncomeList[0].Amount, 2) + '</td>' +
-        '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
+        '<td rowspan="' + rowCount + '">' + (data.TotalUsage < 0 ? '-' : '') + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
@@ -37,7 +37,7 @@ function generateTable(data) {
         rc = rc +
         /*Only 1 Record*/
         '<tr><td>1</td>' +
-        '<td>' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+        '<td>' + (data.BeginingBalance < 0 ? '-' : '') + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
         '<td></td>' +
         '<td></td>' +
         '<td></td>' +
@@ -49,7 +49,7 @@ function generateTable(data) {
     }
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : '
-        + ((data.TotalIncome == 0) ? '-' : ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.SummaryProductionList) + '</td><td colspan="2"></td></tr>' +
+        + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.SummaryProductionList) + '</td><td colspan="2"></td></tr>' +
         '</tbody></table>';
 
     return rc;
@@ -78,9 +78,9 @@ function generateJumlahHasilProduksi(data) {
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
             if (i == data.length) {
-                rc = rc + ThausandSeperator(data[i].Amount, 2);
+                rc = rc + (data[i].Amount < 0 ? '-' : '') + ThausandSeperator(data[i].Amount, 2);
             } else {
-                rc = rc + ThausandSeperator(data[i].Amount, 2) + " " + data[i].UomDesc + "<br/>";
+                rc = rc + (data[i].Amount < 0 ? '-' : '') + ThausandSeperator(data[i].Amount, 2) + " " + data[i].UomDesc + "<br/>";
             }
         }
     } else {
@@ -94,7 +94,7 @@ function generateSummaryJumlahProduksi(data) {
     if (data.length > 0) {
         var tb = '<table border="0">';
         for (var i = 0; i < data.length; i++) {
-            var item = '<tr><td>' + data[i].Amount + '</td><td>' + data[i].UomDesc + '</td></tr>';
+            var item = '<tr><td>' + (data[i].Amount < 0 ? '-' : '') + data[i].Amount + '</td><td>' + data[i].UomDesc + '</td></tr>';
             tb = tb + item;
         }
         tb = tb + '</table>';

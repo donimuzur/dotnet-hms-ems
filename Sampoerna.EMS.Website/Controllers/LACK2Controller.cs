@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.IO;
+using System.Web.Routing;
 using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject;
@@ -159,11 +160,11 @@ namespace Sampoerna.EMS.Website.Controllers
             item.PeriodYear = model.Lack2Model.PeriodYear;
             item.CreatedBy = CurrentUser.USER_ID;
             item.CreatedDate = DateTime.Now;
-             var inputDoc = new GenerateDocNumberInput();
+            var inputDoc = new GenerateDocNumberInput();
             inputDoc.Month = item.PeriodMonth;
             inputDoc.Year = item.PeriodYear;
             inputDoc.NppbkcId = item.NppbkcId;
-            item.Lack2Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
+            item.Lack2Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
             item.Items = model.Lack2Model.Items.Select(x=>Mapper.Map<Lack2ItemDto>(x)).ToList();
             
              item.Status = Enums.DocumentStatus.Draft;
@@ -232,7 +233,7 @@ namespace Sampoerna.EMS.Website.Controllers
             ////workflow
             var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
             model.AllowApproveAndReject = allowApproveAndReject;
-
+            model.AllowEditAndSubmit = CurrentUser.USER_ID == model.Lack2Model.CreatedBy;
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
@@ -281,13 +282,17 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(LACK2CreateViewModel model)
         {
 
-            if (model.IsSaveSubmit)
-            {
-                return RedirectToAction("Submit", new {id = model.Lack2Model.Lack2Id});
-            }
-
+            //if (model.IsSaveSubmit)
+            //{
+            //    return RedirectToAction("Submit", new {id = model.Lack2Model.Lack2Id});
+            //}
+             
               var item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
-              var exItems = new Lack2ItemDto[item.Items.Count];
+            if (item.CreatedBy != CurrentUser.USER_ID)
+            {
+                return RedirectToAction("Detail", new {id = item.Lack2Id});
+            }
+            var exItems = new Lack2ItemDto[item.Items.Count];
               item.Items.CopyTo(exItems);
               item.Items = new List<Lack2ItemDto>();
               foreach (var items in exItems)
@@ -328,8 +333,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 item.Status = Enums.DocumentStatus.GovRejected;
             }
+            if (model.IsSaveSubmit)
+            {
+                if (item.Status == Enums.DocumentStatus.Draft)
+                {
+                    item.Status = Enums.DocumentStatus.WaitingForApproval;
+                }
 
-
+                item.ApprovedBy = CurrentUser.USER_ID;
+                item.ApprovedDate = DateTime.Now;
+            }
 
             if (model.Documents != null)
             {
@@ -523,7 +536,8 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var item = _lack2Bll.GetByIdAndItem(model.Lack2Model.Lack2Id);
-                item.Status = Enums.DocumentStatus.Rejected;
+                item.Status = Enums.DocumentStatus.Draft;
+                item.IsRejected = true;
                 item.Comment = model.Lack2Model.Comment;
                 item.RejectedBy = CurrentUser.USER_ID;
                 item.RejectedDate = DateTime.Now;
@@ -662,10 +676,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (lack2.Status != Enums.DocumentStatus.WaitingGovApproval || lack2.Status != Enums.DocumentStatus.GovApproved
                 || lack2.Status != Enums.DocumentStatus.Completed)
             {
-                drow[10] = "PREVIEW";
+                drow[10] = "PREVIEW LACK-2";
             }
             else
             {
+                drow[10] = "LACK-2";
                 if (lack2.DecreeDate != null)
                 {
                     var lack2DecreeDate = lack2.DecreeDate.Value;

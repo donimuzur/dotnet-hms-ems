@@ -42,6 +42,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public bool AllowApproveAndReject { get; set; }
         public bool AllowGovApproveAndReject { get; set; }
 
+        public bool AllowEditAndSubmit { get; set; }
+
         public bool AllowManagerReject { get; set; }
 
         public Enums.DocumentStatusGov StatusGovList { get; set; }

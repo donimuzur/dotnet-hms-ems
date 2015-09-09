@@ -4,6 +4,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -431,69 +432,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            //workflow history
-            var workflowInput = new GetByFormNumberInput
-            {
-                FormNumber = lack1Data.Lack1Number,
-                DocumentStatus = lack1Data.Status,
-                NPPBKC_Id = lack1Data.NppbkcId
-            };
-
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
-
-            var changesHistory =
-                Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
-                    id.Value.ToString()));
-
-            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack1Data.Lack1Number));
-
-            var model = Mapper.Map<Lack1ItemViewModel>(lack1Data);
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-            model.ChangesHistoryList = changesHistory;
-            model.WorkflowHistory = workflowHistory;
-            model.PrintHistoryList = printHistory;
-            model.Lack1Type = lType.Value;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
-            const string activeCss = "active";
-            switch (lType)
-            {
-                case Enums.LACK1Type.ListByNppbkc:
-                    model.MenuNppbkcAddClassCss = activeCss;
-                    break;
-                case Enums.LACK1Type.ComplatedDocument:
-                    model.MenuCompletedAddClassCss = activeCss;
-                    break;
-                case Enums.LACK1Type.ListByPlant:
-                    model.MenuPlantAddClassCss = activeCss;
-                    break;
-            }
-
-            //validate approve and reject
-            var input = new WorkflowAllowApproveAndRejectInput
-            {
-                DocumentStatus = model.Status,
-                FormView = Enums.FormViewType.Detail,
-                UserRole = CurrentUser.UserRole,
-                CreatedUser = lack1Data.CreateBy,
-                CurrentUser = CurrentUser.USER_ID,
-                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
-                DocumentNumber = model.Lack1Number,
-                NppbkcId = model.NppbkcId
-            };
-
-            ////workflow
-            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
-            model.AllowApproveAndReject = allowApproveAndReject;
-
-            if (!allowApproveAndReject)
-            {
-                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
-            }
-
-            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
+            var model = InitDetailModel(lack1Data, lType.Value);
 
             return View(model);
 
@@ -554,6 +493,121 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-        
+
+        #region ----------------- Edit -----------
+
+        public ActionResult Edit(int? id, Enums.LACK1Type? lType)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+            if (!lType.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = InitDetailModel(lack1Data, lType.Value);
+            model = InitDetailList(model);
+            return View(model);
+        }
+
+        #endregion
+
+        private Lack1ItemViewModel InitDetailModel(Lack1DetailsDto lack1Data, Enums.LACK1Type lType)
+        {
+            //workflow history
+            var workflowInput = new GetByFormNumberInput
+            {
+                FormNumber = lack1Data.Lack1Number,
+                DocumentStatus = lack1Data.Status,
+                NPPBKC_Id = lack1Data.NppbkcId
+            };
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            var changesHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
+                    lack1Data.Lack1Id.ToString()));
+
+            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack1Data.Lack1Number));
+
+            var model = Mapper.Map<Lack1ItemViewModel>(lack1Data);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.ChangesHistoryList = changesHistory;
+            model.WorkflowHistory = workflowHistory;
+            model.PrintHistoryList = printHistory;
+            model.Lack1Type = lType;
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            const string activeCss = "active";
+            switch (lType)
+            {
+                case Enums.LACK1Type.ListByNppbkc:
+                    model.MenuNppbkcAddClassCss = activeCss;
+                    break;
+                case Enums.LACK1Type.ComplatedDocument:
+                    model.MenuCompletedAddClassCss = activeCss;
+                    break;
+                case Enums.LACK1Type.ListByPlant:
+                    model.MenuPlantAddClassCss = activeCss;
+                    break;
+            }
+
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = lack1Data.CreateBy,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber = model.Lack1Number,
+                NppbkcId = model.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
+
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
+
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            
+            return model;
+        }
+
+        private Lack1ItemViewModel InitDetailList(Lack1ItemViewModel model)
+        {
+            model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.MontList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearsList = CreateYearList();
+            model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
+            model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
+            model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
+            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsType);
+            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
+
+            return model;
+
+        }
+
     }
 }
