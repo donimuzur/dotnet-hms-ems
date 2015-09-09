@@ -41,11 +41,6 @@
                     }
                     else
                     {
-                        if (Model.AllowGovApproveAndReject)
-                        {
-                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
-                        }
-
                         if (Model.AllowManagerReject)
                         {
                             <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
@@ -64,13 +59,20 @@
                     @Html.AntiForgeryToken()
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        }
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Lack1Type)
                         @Html.Partial("_HomeDetails")
-                        @Html.Partial("_PrintOut")
+                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            @Html.Partial("_PrintOut")
+                        }
                         @Html.Partial("_ChangeLog")
                     </div>
                 </div>
@@ -147,7 +149,7 @@
 
 @*<div id="print-out-block" class="print-out">
 
-</div>*@
+    </div>*@
 
 @section scripts {
 
