@@ -79,6 +79,19 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public DateTime? ProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
+        public string ProdQtyStickStr { get; set; }
+        public decimal? ProQtyStick
+        {
+            get; set;
+        }
+        public string QtyStr { get; set; }
+        public decimal? Qty
+        {
+            get; set;
+        }
+        public int? Bundle { get; set; }
+        public string Market { get; set; }
+        public string Docgmvter { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }

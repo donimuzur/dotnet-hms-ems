@@ -127,7 +127,46 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Product Qty Stick</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.ProdQtyStickStr, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> Quantity</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.QtyStr, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> Bundle </label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.Bundle, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> Market </label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.Market, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> DOC GMVTER </label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.Docgmvter, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -167,6 +206,8 @@
 
         $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
         $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
+        $('#ProdQtyStickStr').val(ThausandSeperator($('#ProdQtyStickStr').val(), 2));
+        $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
 
         function ajaxSelectCompany(url, formData) {
             if (formData.companyId) {

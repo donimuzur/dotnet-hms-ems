@@ -161,6 +161,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
+            model.ProdQtyStickStr = model.ProQtyStick == null ? string.Empty : model.ProQtyStick.ToString();
+            model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
 
             model = IniEdit(model);
             model.CompanyCodeX = model.CompanyCode;
@@ -205,7 +207,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             dbProduction.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbProduction.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
-
+            
             try
             {
                 if (!ModelState.IsValid)
@@ -251,6 +253,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model = Mapper.Map<ProductionDetail>(dbProduction);
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
+            model.ProdQtyStickStr = model.ProQtyStick == null ? string.Empty : model.ProQtyStick.ToString();
+            model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
+
             model = IniEdit(model);
 
             return View(model);

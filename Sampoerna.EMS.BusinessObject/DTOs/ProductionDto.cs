@@ -22,5 +22,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string TobaccoProductType { get; set; }
         public decimal? Hje { get; set; }
         public decimal? Tarif { get; set; }
+        public string Batch { get; set; }
+        public decimal? ProdQtyStick { get; set; }
+        public decimal? Qty { get; set; }
+        public int? Bundle { get; set; }
+        public string Market { get; set; }
+        public string Docgmvter { get; set; }
     }
 }
