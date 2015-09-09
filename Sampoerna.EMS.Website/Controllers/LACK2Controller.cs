@@ -676,10 +676,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (lack2.Status != Enums.DocumentStatus.WaitingGovApproval || lack2.Status != Enums.DocumentStatus.GovApproved
                 || lack2.Status != Enums.DocumentStatus.Completed)
             {
-                drow[10] = "PREVIEW";
+                drow[10] = "PREVIEW LACK-2";
             }
             else
             {
+                drow[10] = "LACK-2";
                 if (lack2.DecreeDate != null)
                 {
                     var lack2DecreeDate = lack2.DecreeDate.Value;
