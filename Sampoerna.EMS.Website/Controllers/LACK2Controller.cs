@@ -232,7 +232,7 @@ namespace Sampoerna.EMS.Website.Controllers
             ////workflow
             var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
             model.AllowApproveAndReject = allowApproveAndReject;
-
+            model.AllowEditAndSubmit = CurrentUser.USER_ID == model.Lack2Model.CreatedBy;
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
