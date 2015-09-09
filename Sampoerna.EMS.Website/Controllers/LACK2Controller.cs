@@ -333,14 +333,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 item.Status = Enums.DocumentStatus.GovRejected;
             }
-
-            if (item.Status == Enums.DocumentStatus.Draft)
+            if (model.IsSaveSubmit)
             {
-                item.Status = Enums.DocumentStatus.WaitingForApproval;
-            }
+                if (item.Status == Enums.DocumentStatus.Draft)
+                {
+                    item.Status = Enums.DocumentStatus.WaitingForApproval;
+                }
 
-            item.ApprovedBy = CurrentUser.USER_ID;
-            item.ApprovedDate = DateTime.Now;
+                item.ApprovedBy = CurrentUser.USER_ID;
+                item.ApprovedDate = DateTime.Now;
+            }
 
             if (model.Documents != null)
             {
