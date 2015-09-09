@@ -159,11 +159,11 @@ namespace Sampoerna.EMS.Website.Controllers
             item.PeriodYear = model.Lack2Model.PeriodYear;
             item.CreatedBy = CurrentUser.USER_ID;
             item.CreatedDate = DateTime.Now;
-             var inputDoc = new GenerateDocNumberInput();
+            var inputDoc = new GenerateDocNumberInput();
             inputDoc.Month = item.PeriodMonth;
             inputDoc.Year = item.PeriodYear;
             inputDoc.NppbkcId = item.NppbkcId;
-            item.Lack2Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
+            item.Lack2Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
             item.Items = model.Lack2Model.Items.Select(x=>Mapper.Map<Lack2ItemDto>(x)).ToList();
             
              item.Status = Enums.DocumentStatus.Draft;
@@ -232,7 +232,7 @@ namespace Sampoerna.EMS.Website.Controllers
             ////workflow
             var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
             model.AllowApproveAndReject = allowApproveAndReject;
-
+            model.AllowEditAndSubmit = CurrentUser.USER_ID == model.Lack2Model.CreatedBy;
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
@@ -281,10 +281,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(LACK2CreateViewModel model)
         {
 
-            if (model.IsSaveSubmit)
-            {
-                return RedirectToAction("Submit", new {id = model.Lack2Model.Lack2Id});
-            }
+            //if (model.IsSaveSubmit)
+            //{
+            //    return RedirectToAction("Submit", new {id = model.Lack2Model.Lack2Id});
+            //}
 
               var item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
               var exItems = new Lack2ItemDto[item.Items.Count];
@@ -329,7 +329,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 item.Status = Enums.DocumentStatus.GovRejected;
             }
 
+            if (item.Status == Enums.DocumentStatus.Draft)
+            {
+                item.Status = Enums.DocumentStatus.WaitingForApproval;
+            }
 
+            item.ApprovedBy = CurrentUser.USER_ID;
+            item.ApprovedDate = DateTime.Now;
 
             if (model.Documents != null)
             {
@@ -523,7 +529,8 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var item = _lack2Bll.GetByIdAndItem(model.Lack2Model.Lack2Id);
-                item.Status = Enums.DocumentStatus.Rejected;
+                item.Status = Enums.DocumentStatus.Draft;
+                item.IsRejected = true;
                 item.Comment = model.Lack2Model.Comment;
                 item.RejectedBy = CurrentUser.USER_ID;
                 item.RejectedDate = DateTime.Now;
