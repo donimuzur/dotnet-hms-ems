@@ -108,23 +108,36 @@ namespace Sampoerna.EMS.BLL
                          join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
                          join g in _repositoryGood.GetQuery() on b.EXC_GOOD_TYP equals g.EXC_GOOD_TYP
                          join u in _repositoryUom.GetQuery() on p.UOM equals u.UOM_ID
-                         select new ProductionDto() { 
-                            ProductionDate = p.PRODUCTION_DATE,
-                            FaCode = p.FA_CODE,
-                            BrandDescription = p.BRAND_DESC,
-                            PlantName = p.PLANT_NAME,
-                            TobaccoProductType = g.EXT_TYP_DESC,
-                            Hje = b.HJE_IDR,
-                            Tarif = b.TARIFF,
-                            QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
-                            Uom = u.UOM_DESC
+                         select new ProductionDto()
+                         {
+                             ProductionDate = p.PRODUCTION_DATE,
+                             FaCode = p.FA_CODE,
+                             BrandDescription = p.BRAND_DESC,
+                             PlantName = p.PLANT_NAME,
+                             TobaccoProductType = g.EXT_TYP_DESC,
+                             Hje = b.HJE_IDR,
+                             Tarif = b.TARIFF,
+                             QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
+                             Uom = u.UOM_DESC
                          };
-            
+
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
             return dbData.ToList();
+        }
+
+
+        public PRODUCTION GetExistDto(string companyCode, string plantWerk, string faCode, DateTime productionDate)
+        {
+            return
+                _uow.GetGenericRepository<PRODUCTION>()
+                    .Get(
+                        p =>
+                            p.COMPANY_CODE == companyCode && p.WERKS == plantWerk && p.FA_CODE == faCode &&
+                            p.PRODUCTION_DATE == productionDate)
+                    .FirstOrDefault();
         }
     }
 }

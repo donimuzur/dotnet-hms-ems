@@ -82,9 +82,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new ProductionDetail();
             model = InitCreate(model);
-            model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
-            model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
-
+            
             return View(model);
 
         }
@@ -107,6 +105,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingData = _productionBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
+                    Convert.ToDateTime(model.ProductionDate));
+                if (existingData != null)
+                {
+                    AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Create");
+                }
+
                 var data = Mapper.Map<ProductionDto>(model);
                 var company = _companyBll.GetById(model.CompanyCode);
                 var plant = _plantBll.GetT001ById(model.PlantWerks);

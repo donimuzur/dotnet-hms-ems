@@ -12,7 +12,7 @@
 
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
-                    <button class="btn btn-grey">Cancel</button>
+                    <a href="@Url.Action("Index", "Production")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
         </div>
@@ -152,7 +152,7 @@
         $('#MenuCk4cDailyProduction').addClass('active');
 
 
-        $("#CompanyCode").change(function() {
+        $("#CompanyCode").change(function () {
             if ($("#CompanyCode").length) {
                 var cpy = $(this).find("option:selected").val();
                 $('#SearchInput_PlantId option').remove();
@@ -174,7 +174,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         var listPlant = data.PlanIdList;
                         $('#SearchInput_PlantId').append('<option value="">All</option>');
                         if (listPlant.length > 0) {
@@ -188,7 +188,7 @@
             }
         }
 
-        $("#FaCode").change(function() {
+        $("#FaCode").change(function () {
             if ($("#FaCode").length) {
                 var FaDesc = $(this).find("option:selected").val();
                 if (FaDesc == '') {
@@ -206,7 +206,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         $('#BrandDescription').val(data);
                     }
                 });

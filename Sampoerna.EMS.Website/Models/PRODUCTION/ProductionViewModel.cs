@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -49,23 +50,32 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string FaCodeX { get; set; }
         public DateTime? ProductionDateX { get; set; }
 
+        [Required]
         public string CompanyCode { get; set; }
+        [Required]
         public string PlantWerks { get; set; }
+        [Required]
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
 
+        [Required]
         public string QtyUnpackedStr { get; set; }
         public decimal? QtyUnpacked
         {
-            get; set;
+            get;
+            set;
         }
+        [Required]
         public string QtyPackedStr { get; set; }
 
         public decimal? QtyPacked
         {
-            get; set;
+            get;
+            set;
         }
+        [Required]
         public string Uom { get; set; }
+        [Required]
         public DateTime? ProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
@@ -77,5 +87,5 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public SelectList UomList { get; set; }
         public ProductionDto ProductionDtos { get; set; }
     }
-    
+
 }
