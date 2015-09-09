@@ -103,14 +103,17 @@
                                     <tbody>
                                         @foreach (var map in Model.RoleAuthorizationDto.BRoleMaps)
                                         {
-                                            <tr>
-                                                <td>@map.User.UserId</td>
-                                                <td>@(map.User.UserFirstName + " " + map.User.UserLastName)</td>
-                                                <td>@map.User.UserEmail</td>
-                                                <td>@map.StartDate</td>
-                                                <td>@map.EndDate</td>
+                                            if (map.User != null)
+                                            {
+                                                <tr>
+                                                    <td>@map.User.UserId</td>
+                                                    <td>@(map.User.UserFirstName + " " + map.User.UserLastName)</td>
+                                                    <td>@map.User.UserEmail</td>
+                                                    <td>@map.StartDate</td>
+                                                    <td>@map.EndDate</td>
 
-                                            </tr>
+                                                </tr>
+                                            }
                                         }
                                     </tbody>
                                 </table>
