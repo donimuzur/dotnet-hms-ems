@@ -628,6 +628,22 @@ function ValidateCk5Form(ck5Type) {
 
             result = false;
         }
+        
+        rowCount = $('#Ck5UploadTable tr').length;
+        
+        if (rowCount <= 1) {
+            // alert('Missing CK5 Material');
+            $('#modalBodyMessage').text('Missing CK5 Materials');
+            $('#ModalCk5Material').modal('show');
+
+            $('#home-tab').removeClass('active');
+            $('#upload-tab').addClass('active');
+
+            $('#information').removeClass('active');
+            $('#upload').addClass('active');
+
+            result = false;
+        }
 
     }
     //alert('type : ' + ck5Type);
