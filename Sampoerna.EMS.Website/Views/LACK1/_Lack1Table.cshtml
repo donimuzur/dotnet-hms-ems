@@ -32,7 +32,7 @@
             <tr>
                 <td class="action">
                     <a href="@Url.Action("Details", "LACK1", new { id = @item.Lack1Id, lType = Enums.LACK1Type.ListByNppbkc })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                    <a href="#" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    <a href="@Url.Action("Edit", "LACK1", new { id = @item.Lack1Id, lType = Enums.LACK1Type.ListByNppbkc })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.Lack1Number)
