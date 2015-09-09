@@ -138,7 +138,7 @@ function IsValidDataUpload() {
     var datarows = GetTableData($('#Ck5UploadTable'));
 
     for (var i = 0; i < datarows.length; i++) {
-        if (datarows[i][11].length > 0)
+        if (datarows[i][13].length > 0)
             return false;
     }
 
