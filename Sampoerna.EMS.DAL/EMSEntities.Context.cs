@@ -101,6 +101,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<WASTE> WASTE { get; set; }
         public virtual DbSet<PBCK4> PBCK4 { get; set; }
         public virtual DbSet<PBCK4_DOCUMENT> PBCK4_DOCUMENT { get; set; }
+        public virtual DbSet<CK1> CK1 { get; set; }
         public virtual DbSet<PBCK4_ITEM> PBCK4_ITEM { get; set; }
     }
 }
