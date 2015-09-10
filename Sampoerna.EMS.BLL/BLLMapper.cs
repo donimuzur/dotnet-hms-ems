@@ -23,6 +23,8 @@ namespace Sampoerna.EMS.BLL
 
             InitializeLack1();
 
+            InitializePbck4();
+
             //Mapper.CreateMap<USER, UserTree>().IgnoreAllNonExisting()
             //    .ForMember(dest => dest.Manager, opt => opt.MapFrom(src => src.USER2))
             //    .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.USER1));

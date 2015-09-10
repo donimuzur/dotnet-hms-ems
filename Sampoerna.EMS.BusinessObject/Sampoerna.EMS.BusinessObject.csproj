@@ -141,6 +141,7 @@
     <Compile Include="DTOs\Pbck1QuotaDto.cs" />
     <Compile Include="DTOs\Pbck1ReportDto.cs" />
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
+    <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
     <Compile Include="DTOs\POADto.cs" />
     <Compile Include="DTOs\POA_MAPDto.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Inputs\Pbck1ProdPlanInput.cs" />
     <Compile Include="Inputs\Pbck1QuotaInput.cs" />
     <Compile Include="Inputs\Pbck7AndPbck3Input.cs" />
+    <Compile Include="Inputs\PbckInputs.cs" />
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
