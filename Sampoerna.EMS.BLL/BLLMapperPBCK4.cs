@@ -15,13 +15,13 @@ namespace Sampoerna.EMS.BLL
         public static void InitializePbck4()
         {
 
-            Mapper.CreateMap<CK5, Pbck4Dto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
-                .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.SOURCE_PLANT_NAME))
-                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.SOURCE_PLANT_NPPBKC_ID))
-                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.CREATED_DATE))
+            Mapper.CreateMap<PBCK4, Pbck4Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.PLANT_NAME))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.REPORTED_ON))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS_ID))
+                //.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS))
                 ;
 
         }
