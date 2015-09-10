@@ -56,7 +56,17 @@ namespace Sampoerna.EMS.Website.Models.Waste
 
         //waste Reject
         public string RejectCigaretteStick { get; set; }
+
+        public string MarkerStr
+        {
+            get; set;
+        }
         public decimal? MarkerRejectStickQty { get; set; }
+        public string PackerStr
+        {
+            get;
+            set;
+        }
         public decimal? PackerRejectStickQty { get; set; }
 
         public DateTime WasteProductionDate { get; set; }
@@ -65,12 +75,33 @@ namespace Sampoerna.EMS.Website.Models.Waste
 
         //WasteGram
         public decimal WasteQtyGram { get; set; }
+        public string DustGramStr
+        {
+            get;
+            set;
+        }
         public decimal? DustWasteGramQty { get; set; }
+        public string FloorGramStr
+        {
+            get;
+            set;
+        }
         public decimal? FloorWasteGramQty { get; set; }
 
         //WasteStick
         public decimal WasteQtyStick { get; set; }
+
+        public string DustStickStr
+        {
+            get;
+            set;
+        }
         public decimal? DustWasteStickQty { get; set; }
+        public string FloorStickStr
+        {
+            get;
+            set;
+        }
         public decimal? FloorWasteStickQty { get; set; }
 
         public Enums.CK4CType Ck4CType { get; set; }

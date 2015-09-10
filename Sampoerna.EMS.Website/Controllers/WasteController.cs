@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -99,6 +100,47 @@ namespace Sampoerna.EMS.Website.Controllers
           
             return model;
 
+        }
+
+        [HttpPost]
+        public ActionResult Create(WasteDetail model)
+        {
+            if (ModelState.IsValid)
+            {
+                var data = Mapper.Map<WasteDto>(model);
+                var company = _companyBll.GetById(model.CompanyCode);
+                var plant = _plantBll.GetT001ById(model.PlantWerks);
+                var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
+
+                //get desc
+                data.CompanyName = company.BUTXT;
+                data.PlantName = plant.NAME1;
+                data.BrandDescription = brandDesc.BRAND_CE;
+                
+                //waste reject
+                data.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
+                data.PackerRejectStickQty = model.PackerStr == null ? 0 : Convert.ToDecimal(model.PackerStr);
+                //waste gram
+                data.DustWasteGramQty = model.DustGramStr == null ? 0 : Convert.ToDecimal(model.DustGramStr);
+                data.FloorWasteGramQty = model.FloorGramStr == null ? 0 : Convert.ToDecimal(model.FloorGramStr);
+                //waste stick
+                data.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
+                data.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
+
+                try
+                {
+                    _wasteBll.Save(data);
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
+
+                    RedirectToAction("Index");
+                }
+                catch (Exception exception)
+                {
+                    AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                }
+            }
+            model = InitCreate(model);
+            return View(model);
         }
         #endregion
     }
