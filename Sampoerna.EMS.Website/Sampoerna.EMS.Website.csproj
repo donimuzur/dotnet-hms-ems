@@ -1055,7 +1055,7 @@
     <Content Include="Views\LACK1\Edit.cshtml" />
     <Content Include="Views\LACK1\_HomeEdit.cshtml" />
     <Content Include="Views\LACK1\_FileUpload.cshtml" />
-    <Content Include="Views\PBCK4\index.cshtml" />
+    <Content Include="Views\PBCK4\Index.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4Search.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4OpenListDocuments.cshtml" />
   </ItemGroup>
