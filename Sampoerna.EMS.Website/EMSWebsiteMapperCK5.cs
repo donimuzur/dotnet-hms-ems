@@ -318,6 +318,13 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PbckId, opt => opt.MapFrom(src => src.Pbck1Id))
                 .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.Pbck1Number))
                 ;
+
+            Mapper.CreateMap<MaterialDto, CK5InputManualViewModel>().IgnoreAllNonExisting()
+                  .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.STICKER_CODE))
+                  .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.GoodTypeDescription))
+                  .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE))
+                  .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+                ;
         }
     }
 }

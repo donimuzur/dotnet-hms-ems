@@ -79,6 +79,9 @@
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CK1.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CK4C.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -116,12 +119,14 @@
     <Compile Include="DTOs\EMAIL_TEMPLATEDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
+    <Compile Include="DTOs\InventoryMovementDto.cs" />
     <Compile Include="DTOs\Lack1GeneratedDto.cs" />
     <Compile Include="DTOs\Lack1IncomeDetailDto.cs" />
     <Compile Include="DTOs\Lack1Pbck1MappingDto.cs" />
     <Compile Include="DTOs\Lack1PlantDto.cs" />
     <Compile Include="DTOs\Lack1PrintOutDto.cs" />
     <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
+    <Compile Include="DTOs\Lack1TrackingDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
@@ -148,6 +153,7 @@
     <Compile Include="DTOs\T001WDto.cs" />
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\UserPlantMapDto.cs" />
+    <Compile Include="DTOs\WasteDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_GOODTYPCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
@@ -223,6 +229,9 @@
     <Compile Include="LACK1_PRODUCTION_DETAIL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="LACK1_TRACKING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LACK2.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -251,6 +260,7 @@
     <Compile Include="Outputs\CK5FileUploadDocumentsOutput.cs" />
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
+    <Compile Include="Outputs\InventoryMovementOutputs.cs" />
     <Compile Include="Outputs\ProductionGetByIdOutput.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\Lack1GeneratedOutput.cs" />
@@ -290,6 +300,15 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PBCK3_PBCK7.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK4.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK4_DOCUMENT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK4_ITEM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PLANT_RECEIVE_MATERIAL.cs">

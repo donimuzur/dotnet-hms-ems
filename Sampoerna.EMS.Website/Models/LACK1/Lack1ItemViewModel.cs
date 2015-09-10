@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
@@ -80,6 +81,16 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string MenuNppbkcAddClassCss { get; set; }
         public string MenuCompletedAddClassCss { get; set; }
         public int IncomeListCount { get; set; }
+
+        public SelectList BukrList { get; set; }
+        public SelectList MontList { get; set; }
+        public SelectList YearsList { get; set; }
+        public SelectList NppbkcList { get; set; }
+        public SelectList ReceivePlantList { get; set; }
+        public SelectList SupplierList { get; set; }
+        public SelectList ExGoodTypeList { get; set; }
+        public SelectList WasteUomList { get; set; }
+        public SelectList ReturnUomList { get; set; }
 
         #endregion
 

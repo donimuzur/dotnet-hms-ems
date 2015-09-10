@@ -38,7 +38,7 @@
                     {
                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                     }
-                    else
+                    else if(Model.AllowEditAndSubmit)
                     {
                         <input type="submit" class="btn btn-blue" value="Save" />
                     }
@@ -46,7 +46,8 @@
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Model.Lack2Id })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
 
-                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Draft)
+                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Draft
+                        && Model.AllowEditAndSubmit)
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }
@@ -275,7 +276,7 @@
                                                                 <div class="row">
                                                                     <label class="col-md-4">Status Gov<span class="red">*</span></label>
                                                                     <div class="col-md-8">
-                                                                        @if(Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                        @if(Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
                                                                         {
                                                                             @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
                                                                         }
@@ -292,7 +293,7 @@
                                                                     <label class="col-md-4">Decree Date</label>
                                                                     <div class="col-md-8">
                                                                         <div class="input-group date">
-                                                                            @if(Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                            @if(Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
                                                                             {
                                                                                 @Html.TextBoxFor(x => x.Lack2Model.DecreeDate, new {@class = "form-control"})
                                                                             }
@@ -335,7 +336,7 @@
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-md-6">
-                                                                                @if (Model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+                                                                                @if (Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
                                                                                 {
                                                                                     <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
                                                                                 }
@@ -454,14 +455,14 @@
                     $('#Lack2Model_NppbkcId').html('');
                     if (initialEditNppbkc) {
                         var nppbkcId = '@Model.Lack2Model.NppbkcId';
-                        if (nppbkcId != '') {
-
-                            $('#Lack2Model_NppbkcId').append('<option value=' + nppbkcId + '>' + nppbkcId + '</option>');
-                            for (var i = 0; i < data.length; i++) {
-                                if (data[i].value !== nppbkcId) {
-                                    $('#Lack2Model_NppbkcId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
-                                }
-                            }
+                         if (nppbkcId != '') {
+                            
+                             for (var k = 0; k < data.length; k++) {
+                                
+                                 $('#Lack2Model_NppbkcId').append('<option value=' + data[k].NPPBKC_ID + '>' + data[k].NPPBKC_ID + '</option>');
+                                
+                             }
+                            $('#Lack2Model_NppbkcId').val(nppbkcId);
                             ajaxGetPlantByNppbkc(nppbkcId);
                             ajaxGetPoaByNppbkc(nppbkcId);
                             ajaxGetGoodsTypeByNppbkc(nppbkcId);
@@ -490,12 +491,12 @@
                             var plantId = '@Model.Lack2Model.LevelPlantId';
                             if (plantId != '') {
 
-                                $('#Lack2Model_LevelPlantId').append('<option value=' + plantId + '>' + plantId + '-' + '@Model.Lack2Model.LevelPlantName' + '</option>');
-                                for (var i = 0; i < data.length; i++) {
-                                    if (data[i].value !== plantId) {
+                                 for (var i = 0; i < data.length; i++) {
+                                   
                                         $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-                                    }
-                                }
+                                    
+                                 }
+                                $('#Lack2Model_LevelPlantId').val(plantId);
                             }
                             initialEditPlant = false;
                         } else {
@@ -548,15 +549,13 @@
                         var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
 
                         if (exgoodtyp !== '') {
-                            console.log(data);
+                              for (var i = 0; i < data.length; i++) {
 
-                            $('#Lack2Model_ExGoodTyp').append('<option value="' + '@Model.Lack2Model.ExGoodTyp' + '">' + '@Model.Lack2Model.ExGoodDesc' + '</option>');
-                            for (var i = 0; i < data.length; i++) {
-
-                                if (data[i].ValueField !== exgoodtyp) {
+                               
                                     $('#Lack2Model_ExGoodTyp').append('<option value="' + data[i].ValueField + '">' + data[i].TextField + '</option>');
-                                }
-                            }
+                                
+                              }
+                            $('#Lack2Model_ExGoodTyp').val(exgoodtyp);
                         }
                         initialEditGoodtype = false;
                     } else {

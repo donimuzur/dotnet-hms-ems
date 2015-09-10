@@ -333,7 +333,11 @@ namespace Sampoerna.EMS.BLL
                 var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
                 if (dbMaterial == null)
                     messageList.Add("Material Number Not Exist");
-
+                else
+                {
+                    if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
+                        messageList.Add("Material is not Excisable goods");
+                }
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
                     messageList.Add("Qty not valid");
 
@@ -390,7 +394,7 @@ namespace Sampoerna.EMS.BLL
             {
                 input.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
                 input.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
-                input.MaterialDesc = dbMaterial.MATERIAL_DESC;
+                input.MaterialDesc = dbMaterial.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
             }
 
             input.ExciseValue = input.ConvertedQty * input.Tariff;
@@ -929,11 +933,18 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO); ;
+            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
+                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
-            dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
+
+            dbData.STATUS_ID = dbData.CK5_TYPE == Enums.CK5Type.Manual
+                ? Enums.DocumentStatus.Completed
+                : Enums.DocumentStatus.CreateSTO;
+
             
             oldValue = dbData.REGISTRATION_NUMBER;
             newValue = input.AdditionalDocumentData.RegistrationNumber;
@@ -1367,12 +1378,22 @@ namespace Sampoerna.EMS.BLL
             //date convertion
             if (dtData.SUBMISSION_DATE.HasValue)
                 result.ReportDetails.SubmissionDate = DateReportDisplayString(dtData.SUBMISSION_DATE.Value, false);
-            if (dtData.REGISTRATION_DATE.HasValue)
-                result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value, false);
+            //if (dtData.REGISTRATION_DATE.HasValue)
+            //    result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value, false);
+
+            result.ReportDetails.RegistrationNumber = "";
+            result.ReportDetails.RegistrationDate = "";
+
             if (dtData.PBCK1 != null)
             {
                 if (dtData.PBCK1.DECREE_DATE.HasValue)
-                    result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.PBCK1.DECREE_DATE.Value, false);
+                {
+                    if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter || dtData.CK5_TYPE == Enums.CK5Type.ImporterToPlant)
+                        result.ReportDetails.FacilityDate = DateReportDisplayString(dtData.PBCK1.DECREE_DATE.Value,
+                            false);
+                    else
+                        result.ReportDetails.FacilityDate = dtData.PBCK1.DECREE_DATE.Value.ToString("dd/MM/yyyy");
+                }
             }
             if (dtData.INVOICE_DATE.HasValue)
                 result.ReportDetails.InvoiceDate = DateReportDisplayString(dtData.INVOICE_DATE.Value, false);
@@ -1448,6 +1469,7 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.FinalPortId = "-";
             }
 
+            result.ReportDetails.CK5Type = dtData.CK5_TYPE.ToString();
             //get material desc
 
             return result;
@@ -1751,16 +1773,16 @@ namespace Sampoerna.EMS.BLL
 
             CK5 dbData = null;
 
-            //create new ck5 documents
-            var generateNumberInput = new GenerateDocNumberInput()
-            {
-                Year = DateTime.Now.Year,
-                Month = DateTime.Now.Month,
-                NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID,
-                FormType = Enums.FormType.CK5
-            };
+            ////create new ck5 documents
+            //var generateNumberInput = new GenerateDocNumberInput()
+            //{
+            //    Year = DateTime.Now.Year,
+            //    Month = DateTime.Now.Month,
+            //    NppbkcId = input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID,
+            //    FormType = Enums.FormType.CK5
+            //};
 
-            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
             if (!input.Ck5Dto.SUBMISSION_DATE.HasValue) {
                 input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
             }

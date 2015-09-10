@@ -18,6 +18,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string LevelPlantName { get; set; }
         public DateTime? SubmissionDate { get; set; }
         public string SupplierPlant { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string SupplierPlantAddress { get; set; }
+        public string SupplierCompanyName { get; set; }
+        public string SupplierCompanyCode { get; set; }
         public string ExGoodsType { get; set; }
         public decimal? WasteQty { get; set; }
         public string WasteUom { get; set; }
@@ -76,6 +80,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string SupplierPlant { get; set; }
         public string SupplierPlantId { get; set; }
         public string SupplierPlantAddress { get; set; }
+        public string SupplierCompanyName { get; set; }
+        public string SupplierCompanyCode { get; set; }
         public string ExGoodsType { get; set; }
         public string ExGoodsTypeDesc { get; set; }
         public decimal? WasteQty { get; set; }

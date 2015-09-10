@@ -236,7 +236,9 @@ namespace Sampoerna.EMS.Core
             [Description("LACK-1")]
             LACK1 = 5,
             [Description("LACK-2")]
-            LACK2 = 6
+            LACK2 = 6,
+            [Description("CK-4C")]
+            CK4C = 7,
         }
 
         public enum ActionType
@@ -510,7 +512,9 @@ namespace Sampoerna.EMS.Core
             [Description("261")]
             UsageAdd = 261,
             [Description("262")]
-            UsageMin = 262
+            UsageMin = 262,
+            [Description("101")]
+            Ck5Receiving = 101,
         }
 
     }

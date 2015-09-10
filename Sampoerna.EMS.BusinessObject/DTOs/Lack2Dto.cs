@@ -25,6 +25,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ExTypDesc { get; set; }
         public Enums.DocumentStatusGov GovStatus { get; set; }
         public Enums.DocumentStatus Status { get; set; }
+
+        public string StatusName { get; set; }
         public DateTime? DecreeDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -46,6 +48,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Comment { get; set; }
 
         public List<LACK2_DOCUMENT> Documents;
+
+        public bool IsRejected { get; set; }
 
     }
 

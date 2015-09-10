@@ -55,6 +55,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>references\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.6\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.6\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -222,6 +229,7 @@
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\ProductionController.cs" />
+    <Compile Include="Code\PdfResult.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
@@ -283,6 +291,7 @@
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CCreateWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
@@ -291,6 +300,7 @@
     <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
+    <Compile Include="Models\CK5\CK5InputManualViewModel.cs" />
     <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
@@ -329,6 +339,7 @@
     <Compile Include="Models\LACK2\LACK2NppbkcData.cs" />
     <Compile Include="Models\LACK2\LACK2PlantData.cs" />
     <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2SummaryReportModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
@@ -532,6 +543,10 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="Content\upload\header\header_sampoerna.jpg" />
     <Content Include="Content\upload\header\sample_header.png" />
+    <Content Include="ExtLib\itextsharp.dll" />
+    <Content Include="ExtLib\itextsharp.pdfa.dll" />
+    <Content Include="ExtLib\iTextSharp.xml" />
+    <Content Include="ExtLib\itextsharp.xtra.dll" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
@@ -564,6 +579,8 @@
     <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\ck4cscript.js" />
+    <Content Include="Scripts\CK5InputManual.js" />
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
@@ -984,7 +1001,6 @@
     <Content Include="Views\UserPlantMap\Index.cshtml" />
     <Content Include="Views\UserPlantMap\Edit.cshtml" />
     <Content Include="Views\UserPlantMap\Detail.cshtml" />
-    <Content Include="Views\LACK1\_Lack1TableBalance.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Index.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck7TableIndex.cshtml" />
     <Content Include="Views\LACK2\Create.cshtml" />
@@ -1003,7 +1019,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTable.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
-    <Content Include="Views\CK5\_CK5InputMaterial.cshtml" />
+    <Content Include="Views\CK5\CK5InputMaterial.cshtml" />
     <Content Include="Views\CK5\_CK5SealingInput.cshtml" />
     <Content Include="Views\CK4C\Index.cshtml" />
     <Content Include="Views\CK4C\_CreateDailyProduction.cshtml" />
@@ -1014,6 +1030,11 @@
     <Content Include="Views\CK4C\Ck4CCreateWasteProduction.cshtml" />
     <Content Include="Views\LACK2\Edit.cshtml" />
     <Content Include="Views\LACK2\Detail.cshtml" />
+    <Content Include="Views\CK4C\DocumentList.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableDocumentList.cshtml" />
+    <Content Include="Views\LACK2\_FileUpload.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateDocumentList.cshtml" />
+    <Content Include="Views\CK4C\_HomeCreate.cshtml" />
     <Content Include="Views\LACK1\Details.cshtml" />
     <Content Include="Views\LACK1\_HomeDetails.cshtml" />
     <Content Include="Views\LACK1\_ChangeLog.cshtml" />
@@ -1022,13 +1043,21 @@
     <Content Include="Views\LACK2\_ChangesLog.cshtml" />
     <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
-    <Content Include="Views\LACK1\Test.cshtml" />
+    <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
     <Content Include="Views\Production\Create.cshtml" />
     <Content Include="Views\Production\Edit.cshtml" />
     <Content Include="Views\Production\Detail.cshtml" />
-
+    <Content Include="Views\CK4C\Details.cshtml" />
+    <Content Include="Views\CK4C\_HomeDetails.cshtml" />
+    <Content Include="Views\CK4C\Edit.cshtml" />
+    <Content Include="Views\CK4C\_HomeEdit.cshtml" />
+    <Content Include="Views\CK4C\_ChangeLog.cshtml" />
+    <Content Include="Views\CK4C\_PrintOut.cshtml" />
+    <Content Include="Views\LACK1\Edit.cshtml" />
+    <Content Include="Views\LACK1\_HomeEdit.cshtml" />
+    <Content Include="Views\LACK1\_FileUpload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

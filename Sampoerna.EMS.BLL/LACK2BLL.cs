@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.BLL
         private string includeTables = "MONTH";
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPOABLL _poabll;
-
+         
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -184,10 +184,15 @@ namespace Sampoerna.EMS.BLL
             return lack2dto;
         }
 
-        private Enums.ActionType GetActionType(Enums.DocumentStatus docStatus, string modifiedBy)
+        private Enums.ActionType GetActionType(Lack2Dto lack2, string modifiedBy)
         {
+            var docStatus = lack2.Status;
             if (docStatus == Enums.DocumentStatus.Draft)
             {
+                if (lack2.IsRejected)
+                {
+                    return Enums.ActionType.Reject;
+                }
                 if (modifiedBy != null)
                 {
                     return Enums.ActionType.Modified;
@@ -223,6 +228,10 @@ namespace Sampoerna.EMS.BLL
         {
             if (lack2.Status == Enums.DocumentStatus.Draft )
             {
+                if (lack2.IsRejected)
+                {
+                    return lack2.RejectedBy;
+                }
                 if (lack2.ModifiedBy != null)
                 {
                     return lack2.ModifiedBy;
@@ -278,7 +287,7 @@ namespace Sampoerna.EMS.BLL
                 _uow.SaveChanges();
                 var history = new WorkflowHistoryDto();
                 history.FORM_ID = model.LACK2_ID;
-                history.ACTION = GetActionType(model.STATUS, item.ModifiedBy);
+                history.ACTION = GetActionType(item, item.ModifiedBy);
                 history.ACTION_BY = GetActionBy(item);
                 history.ACTION_DATE = DateTime.Now;
                 history.FORM_NUMBER = item.Lack2Number;
@@ -323,6 +332,12 @@ namespace Sampoerna.EMS.BLL
         public List<Lack2Dto> GetCompletedDocument()
         {
             return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables));
+        }
+
+        public void RemoveExistingItem(long id)
+        {
+            _repositoryItem.Delete(id);
+            _uow.SaveChanges();
         }
     }
 }

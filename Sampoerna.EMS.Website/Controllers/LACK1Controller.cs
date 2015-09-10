@@ -4,11 +4,11 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
-using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.PrintHistory;
@@ -432,6 +432,97 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            var model = InitDetailModel(lack1Data, lType.Value);
+
+            return View(model);
+
+        }
+        
+        #endregion
+
+        #region ----------------PrintPreview-------------
+
+        public ActionResult PrintPreview(int? id, Enums.LACK1Type? lType)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            if (!lType.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetPrintOutData(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = Mapper.Map<Lack1PrintOutModel>(lack1Data);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            model.PrintOutTitle = "Preview LACK-1";
+            return View("PrintDocument", model);
+            //return PartialView("PrintDocument", model);
+            //return new RazorPDF.PdfResult(model, "PrintDocument");
+            //var fileName = "lack1-pdf-" + DateTime.Now.ToString("ddMMyyyyHHmmss");
+            //return Pdf(fileName, "PrintDocument", model);
+        }
+
+        #endregion
+
+        #region ------------- Workflow ------------
+
+        public ActionResult RejectDocument()
+        {
+            return View();
+        }
+
+        public ActionResult GovCancelDocument()
+        {
+            return View();
+        }
+
+        public ActionResult GovRejectDocument()
+        {
+            return View();
+        }
+
+        #endregion
+
+        #region ----------------- Edit -----------
+
+        public ActionResult Edit(int? id, Enums.LACK1Type? lType)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+            if (!lType.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = InitDetailModel(lack1Data, lType.Value);
+            model = InitDetailList(model);
+            return View(model);
+        }
+
+        #endregion
+
+        private Lack1ItemViewModel InitDetailModel(Lack1DetailsDto lack1Data, Enums.LACK1Type lType)
+        {
             //workflow history
             var workflowInput = new GetByFormNumberInput
             {
@@ -445,7 +536,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
-                    id.Value.ToString()));
+                    lack1Data.Lack1Id.ToString()));
 
             var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack1Data.Lack1Number));
 
@@ -455,7 +546,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ChangesHistoryList = changesHistory;
             model.WorkflowHistory = workflowHistory;
             model.PrintHistoryList = printHistory;
-            model.Lack1Type = lType.Value;
+            model.Lack1Type = lType;
             model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
             const string activeCss = "active";
             switch (lType)
@@ -496,61 +587,27 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
 
-            return View(model);
-
-        }
-        
-        #endregion
-
-        #region ----------------PrintPreview-------------
-
-        public ActionResult PrintPreview(int? id, Enums.LACK1Type? lType)
-        {
-            if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
-
-            if (!lType.HasValue)
-            {
-                return HttpNotFound();
-            }
-
-            var lack1Data = _lack1Bll.GetPrintOutData(id.Value);
-
-            if (lack1Data == null)
-            {
-                return HttpNotFound();
-            }
-
-            var model = Mapper.Map<Lack1PrintOutModel>(lack1Data);
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
             
-            return View("PrintDocument", model);
+            return model;
         }
 
-        #endregion
-
-        #region ------------- Workflow ------------
-
-        public ActionResult RejectDocument()
+        private Lack1ItemViewModel InitDetailList(Lack1ItemViewModel model)
         {
-            return View();
-        }
+            model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.MontList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearsList = CreateYearList();
+            model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
+            model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
+            model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
+            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsType);
+            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
 
-        public ActionResult GovCancelDocument()
-        {
-            return View();
-        }
+            return model;
 
-        public ActionResult GovRejectDocument()
-        {
-            return View();
         }
-
-        #endregion
 
     }
 }

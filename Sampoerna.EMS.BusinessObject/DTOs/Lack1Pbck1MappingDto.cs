@@ -9,5 +9,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int PBCK1_ID { get; set; }
         public string PBCK1_NUMBER { get; set; }
         public DateTime? DECREE_DATE { get; set; }
+        public string DisplayDecreeDate { get; set; }
     }
 }

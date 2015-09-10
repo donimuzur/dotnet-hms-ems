@@ -1,6 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
 
-<table id="ck5TableIntercompany" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+<table id="ck5TableIntercompany" class="display" cellspacing="0" width="100%">
     <thead>
         <tr>
             <th class="toggle-row"> Filter </th>
@@ -13,7 +13,7 @@
             <th>Status</th>
         </tr>
     </thead>
-    <thead class="filters">
+    <thead class="filters2">
         <tr>
             <th> Action</th>
             <th></th>
@@ -26,7 +26,7 @@
         </tr>
     </thead>
     <tbody>
-      
+
         @foreach (var item in Model.DetailList2)
         {
             <tr>
@@ -34,7 +34,7 @@
                     <a href="@Url.Action("Details", "CK5", new { id = item.Ck5Id })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
                     <a href="@Url.Action("Edit", "CK5", new { id = item.Ck5Id })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
                 </td>
-               
+
                 <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
                 <td>@Html.DisplayFor(model => item.Qty)</td>
                 <td>
@@ -47,7 +47,7 @@
                 <td>@Html.DisplayFor(model => item.DestinationPlant)</td>
                 <td class="last">@Html.DisplayFor(model => item.Status)</td>
             </tr>
-           
+
         }
     </tbody>
 </table>

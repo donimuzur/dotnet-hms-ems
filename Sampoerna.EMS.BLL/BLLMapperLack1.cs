@@ -27,6 +27,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.LevelPlantId, opt => opt.MapFrom(src => src.LACK1_PLANT != null && src.LACK1_LEVEL == Enums.Lack1Level.Plant && src.LACK1_PLANT.FirstOrDefault() != null ? src.LACK1_PLANT.FirstOrDefault().PLANT_ID : string.Empty))
                 .ForMember(dest => dest.LevelPlantName, opt => opt.MapFrom(src => src.LACK1_PLANT != null && src.LACK1_LEVEL == Enums.Lack1Level.Plant && src.LACK1_PLANT.FirstOrDefault() != null ? src.LACK1_PLANT.FirstOrDefault().PLANT_NAME : string.Empty))
                 .ForMember(dest => dest.SupplierPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
+                .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS))
+                .ForMember(dest => dest.SupplierCompanyName, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY_NAME))
+                .ForMember(dest => dest.SupplierCompanyCode, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY_CODE))
+                .ForMember(dest => dest.SupplierPlantAddress, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_ADDRESS))
                 .ForMember(dest => dest.ExGoodsType, opt => opt.MapFrom(src => src.EX_GOODTYP))
                 .ForMember(dest => dest.WasteQty, opt => opt.MapFrom(src => src.WASTE_QTY))
                 .ForMember(dest => dest.WasteUom, opt => opt.MapFrom(src => src.WASTE_UOM))
@@ -121,6 +125,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PERIOD_MONTH, opt => opt.MapFrom(src => src.PeriodMonthId))
                 .ForMember(dest => dest.PERIOD_YEAR, opt => opt.MapFrom(src => src.PeriodYear))
                 .ForMember(dest => dest.SUPPLIER_PLANT, opt => opt.MapFrom(src => src.SupplierPlantName))
+                .ForMember(dest => dest.SUPPLIER_COMPANY_CODE, opt => opt.MapFrom(src => src.SupplierCompanyCode))
+                .ForMember(dest => dest.SUPPLIER_COMPANY_NAME, opt => opt.MapFrom(src => src.SupplierCompanyName))
                 .ForMember(dest => dest.SUPPLIER_PLANT_WERKS, opt => opt.MapFrom(src => src.SupplierPlantId))
                 .ForMember(dest => dest.SUPPLIER_PLANT_ADDRESS, opt => opt.MapFrom(src => src.SupplierPlantAddress))
                 .ForMember(dest => dest.EX_GOODTYP, opt => opt.MapFrom(src => src.ExcisableGoodsType))
@@ -160,6 +166,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
                 .ForMember(dest => dest.SupplierPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
                 .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS))
+                .ForMember(dest => dest.SupplierCompanyName, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY_NAME))
+                .ForMember(dest => dest.SupplierCompanyCode, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY_CODE))
                 .ForMember(dest => dest.SupplierPlantAddress, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_ADDRESS))
                 .ForMember(dest => dest.ExGoodsType, opt => opt.MapFrom(src => src.EX_GOODTYP))
                 .ForMember(dest => dest.ExGoodsTypeDesc, opt => opt.MapFrom(src => src.EX_TYP_DESC))
@@ -206,6 +214,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.SupplierPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
                 .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS))
                 .ForMember(dest => dest.SupplierPlantAddress, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_ADDRESS))
+                .ForMember(dest => dest.SupplierCompanyCode, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY_CODE))
+                .ForMember(dest => dest.SupplierCompanyName, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY_NAME))
                 .ForMember(dest => dest.ExGoodsType, opt => opt.MapFrom(src => src.EX_GOODTYP))
                 .ForMember(dest => dest.ExGoodsTypeDesc, opt => opt.MapFrom(src => src.EX_TYP_DESC))
                 .ForMember(dest => dest.WasteQty, opt => opt.MapFrom(src => src.WASTE_QTY))
@@ -234,6 +244,16 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.NOTED))
                 ;
+
+            Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedTrackingDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                ;
+
+            Mapper.CreateMap<Lack1GeneratedTrackingDto, LACK1_TRACKING>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
+                ;
+
         }
 
     }
