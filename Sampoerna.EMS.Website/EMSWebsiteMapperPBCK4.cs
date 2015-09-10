@@ -28,6 +28,16 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.Poa))
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator))
                 ;
+
+            Mapper.CreateMap<T001WDto, Pbck4PlantModel>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompanyName))
+               .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyCode))
+              .ForMember(dest => dest.PlantDesc, opt => opt.MapFrom(src => src.NAME1))
+              .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
+              .ForMember(dest => dest.NppbkcDescription, opt => opt.MapFrom(src => src.KppbcCity))
+              
+              ;
+
         }
     }
 }

@@ -19,14 +19,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poaBll;
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IPBCK4BLL _pbck4Bll;
+        private IPlantBLL _plantBll;
 
-        public PBCK4Controller(IPageBLL pageBLL, IPOABLL poabll, IZaidmExNPPBKCBLL nppbkcBll, IPBCK4BLL pbck4Bll)
+        public PBCK4Controller(IPageBLL pageBLL, IPOABLL poabll, IZaidmExNPPBKCBLL nppbkcBll,
+            IPBCK4BLL pbck4Bll, IPlantBLL plantBll)
             : base(pageBLL, Enums.MenuList.PBCK4)
         {
             _poaBll = poabll;
             _nppbkcBll = nppbkcBll;
             _pbck4Bll = pbck4Bll;
-
+            _plantBll = plantBll;
         }
 
         //
@@ -111,24 +113,76 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index");
             }
 
-            var model = InitCreatePbck4();
+            var model = new Pbck4FormViewModel();
+         
+
+            model.DocumentStatus = Enums.DocumentStatus.Draft;
+            model.ReportedOn = DateTime.Now;
+            model = InitListPbck4(model);
+         
+
             return View("Create", model);
         }
 
-        private Pbck4FormViewModel InitCreatePbck4()
+        private Pbck4FormViewModel InitListPbck4(Pbck4FormViewModel model)
         {
-
-
-            var model = new Pbck4FormViewModel();
             model.MainMenu = Enums.MenuList.PBCK4;
             model.CurrentMenu = PageInfo;
-          
-            model.DocumentStatus = Enums.DocumentStatus.Draft;
-          
-            //model = InitCK5List(model);
+
             model.PlantList = GlobalFunctions.GetPlantAll();
 
             return model;
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SavePbck4(Pbck4FormViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    //if (model.UploadItemModels.Count > 0)
+                    //{
+
+                        //var saveResult = SaveCk5ToDatabase(model);
+
+                        AddMessageInfo("Success create PBCK-4", Enums.MessageInfoType.Success);
+
+
+                        //return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
+                 //   }
+
+                   // AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
+                }
+                else
+                    AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
+
+                model = InitListPbck4(model);
+
+                return View("Create", model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = InitListPbck4(model);
+
+                return View("Create", model);
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult GetSourcePlantDetails(string plantId)
+        {
+            var dbPlant = _plantBll.GetT001ById(plantId);
+            var model = Mapper.Map<Pbck4PlantModel>(dbPlant);
+
+            var poa = _poaBll.GetById(CurrentUser.USER_ID);
+            if (poa != null)
+                model.Poa = poa.PRINTED_NAME;
+
+            return Json(model);
+        }
+      
 	}
 }

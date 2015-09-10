@@ -361,6 +361,7 @@
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4PlantModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4SearchViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
@@ -832,6 +833,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\pbck1\docupload.js" />
+    <Content Include="Scripts\Pbck4Script.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
