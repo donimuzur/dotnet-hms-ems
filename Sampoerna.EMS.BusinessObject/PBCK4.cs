@@ -48,11 +48,11 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_BY_MANAGER_DATE { get; set; }
     
         public virtual ICollection<PBCK4_DOCUMENT> PBCK4_DOCUMENT { get; set; }
-        public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
         public virtual POA POA { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual USER USER3 { get; set; }
+        public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
     }
 }
