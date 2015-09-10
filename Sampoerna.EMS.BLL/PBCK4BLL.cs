@@ -44,16 +44,16 @@ namespace Sampoerna.EMS.BLL
 
            Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
 
-           //if (!string.IsNullOrEmpty(input.NppbkcId))
-           //{
-           //    queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NppbkcId));
-           //}
+           if (!string.IsNullOrEmpty(input.NppbkcId))
+           {
+               queryFilter = queryFilter.And(c => c.NPPBKC_ID.Contains(input.NppbkcId));
+           }
 
-           //if (!string.IsNullOrEmpty(input.PlantId))
-           //{
-           //    queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.Contains(input.PlantId));
+           if (!string.IsNullOrEmpty(input.PlantId))
+           {
+               queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
 
-           //}
+           }
 
            if (input.ReportedOn.HasValue)
            {
@@ -73,14 +73,14 @@ namespace Sampoerna.EMS.BLL
                queryFilter = queryFilter.And(c => c.CREATED_BY.Contains(input.Creator));
            }
 
-           //if (input.IsCompletedDocument)
-           //{
-           //    queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
-           //}
-           //else
-           //{
-           //    queryFilter = queryFilter.And(c => c.STATUS_ID != Enums.DocumentStatus.Completed);
-           //}
+           if (input.IsCompletedDocument)
+           {
+               queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+           }
+           else
+           {
+               queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+           }
 
            Func<IQueryable<PBCK4>, IOrderedQueryable<PBCK4>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
         

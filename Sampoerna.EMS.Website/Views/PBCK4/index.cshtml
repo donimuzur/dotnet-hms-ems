@@ -5,11 +5,12 @@
         <div class="col-sm-12">
             <h3 id="lblTitle">PBCK-4 List</h3>
             <div class="action-button new">
-              
-                <a href="@Url.Action("Create", "PBCK4")">
-                    <button class="btn btn-blue">NEW</button>
-                </a>
-                   
+              @if (Model.IsShowNewButton)
+              {
+                  <a href="@Url.Action("Create", "PBCK4")">
+                      <button class="btn btn-blue">NEW</button>
+                  </a>
+              }
             </div>
         </div>
     </div>
