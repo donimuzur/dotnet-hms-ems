@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.Website
             InitializePbck7AndPbck3();
             InitializeLACK1();
             InitializeCk4C();
-
+            InitializePBCK4();
             //AutoMapper
             Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.USER_ID))
