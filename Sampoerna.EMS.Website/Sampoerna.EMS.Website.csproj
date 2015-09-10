@@ -1057,6 +1057,12 @@
     <Content Include="Views\Production\Create.cshtml" />
     <Content Include="Views\Production\Edit.cshtml" />
     <Content Include="Views\Production\Detail.cshtml" />
+    <Content Include="Views\CK4C\Details.cshtml" />
+    <Content Include="Views\CK4C\_HomeDetails.cshtml" />
+    <Content Include="Views\CK4C\Edit.cshtml" />
+    <Content Include="Views\CK4C\_HomeEdit.cshtml" />
+    <Content Include="Views\CK4C\_ChangeLog.cshtml" />
+    <Content Include="Views\CK4C\_PrintOut.cshtml" />
     <Content Include="Views\LACK1\Edit.cshtml" />
     <Content Include="Views\LACK1\_HomeEdit.cshtml" />
     <Content Include="Views\LACK1\_FileUpload.cshtml" />

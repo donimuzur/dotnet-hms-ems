@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAIDM_EX_BRAND> _repositoryBrand;
-        private IGenericRepository<ZAIDM_EX_GOODTYP> _repositoryGood;
+        private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProd;
         private IGenericRepository<UOM> _repositoryUom;
         private IGenericRepository<T001W> _repositoryPlant;
 
@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<PRODUCTION>();
             _repositoryBrand = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
-            _repositoryGood = _uow.GetGenericRepository<ZAIDM_EX_GOODTYP>();
+            _repositoryProd = _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
             _repositoryUom = _uow.GetGenericRepository<UOM>();
             _repositoryPlant = _uow.GetGenericRepository<T001W>();
         }
@@ -104,43 +104,62 @@ namespace Sampoerna.EMS.BLL
             return item;
         }
 
-        public List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc)
+        public List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc, int period, int month, int year)
         {
-            var dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && p.WERKS == plant)
+            DateTime firstDay = new DateTime(year, month, 1);
+            DateTime startDate = firstDay;
+            DateTime endDate = new DateTime(year, month, 14);
+
+            if(period == 2)
+            {
+                startDate = new DateTime(year, month, 15);
+                endDate = firstDay.AddMonths(1).AddDays(-1);
+            }
+
+            var dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && p.WERKS == plant && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
                          join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
-                         join g in _repositoryGood.GetQuery() on b.EXC_GOOD_TYP equals g.EXC_GOOD_TYP
+                         join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
                          join u in _repositoryUom.GetQuery() on p.UOM equals u.UOM_ID
-                         select new ProductionDto()
-                         {
-                             ProductionDate = p.PRODUCTION_DATE,
-                             FaCode = p.FA_CODE,
-                             BrandDescription = p.BRAND_DESC,
-                             PlantName = p.PLANT_NAME,
-                             TobaccoProductType = g.EXT_TYP_DESC,
-                             Hje = b.HJE_IDR,
-                             Tarif = b.TARIFF,
-                             QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
-                             Uom = u.UOM_DESC
+                         select new ProductionDto() { 
+                            ProductionDate = p.PRODUCTION_DATE,
+                            FaCode = p.FA_CODE,
+                            PlantWerks = p.WERKS,
+                            BrandDescription = p.BRAND_DESC,
+                            PlantName = p.PLANT_NAME,
+                            TobaccoProductType = g.PRODUCT_TYPE,
+                            Hje = b.HJE_IDR,
+                            Tarif = b.TARIFF,
+                            QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
+                            Uom = u.UOM_DESC,
+                            QtyPacked = p.QTY_PACKED,
+                            QtyUnpacked = p.QTY_UNPACKED,
+                            UomProd = p.UOM,
+                            ProdCode = b.PROD_CODE
                          };
 
             if(nppbkc != string.Empty)
             {
-                dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp)
+                dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
                          join n in _repositoryPlant.Get(n => n.NPPBKC_ID == nppbkc) on p.WERKS equals n.WERKS
                          join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
-                         join g in _repositoryGood.GetQuery() on b.EXC_GOOD_TYP equals g.EXC_GOOD_TYP
+                         join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
                          join u in _repositoryUom.GetQuery() on p.UOM equals u.UOM_ID
                          select new ProductionDto()
                          {
                              ProductionDate = p.PRODUCTION_DATE,
                              FaCode = p.FA_CODE,
+                             PlantWerks = p.WERKS,
                              BrandDescription = p.BRAND_DESC,
                              PlantName = p.PLANT_NAME,
-                             TobaccoProductType = g.EXT_TYP_DESC,
+                             TobaccoProductType = g.PRODUCT_TYPE,
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
                              QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
-                             Uom = u.UOM_DESC
+                             Uom = u.UOM_DESC,
+                             QtyPacked = p.QTY_PACKED,
+                             QtyUnpacked = p.QTY_UNPACKED,
+                             UomProd = p.UOM,
+                             ProdCode = b.PROD_CODE
                          };
             }
 
