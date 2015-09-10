@@ -7,15 +7,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public int PBCK4_ID { get; set; }
         public string PBCK1_NUMBER { get; set; }
-        public string PLANT_ID { get; set; }
+        //public string PLANT_ID { get; set; }
         public string PLANT_NAME { get; set; }
-        public string NPPBKC_ID { get; set; }
+        //public string NPPBKC_ID { get; set; }
         public string NPPBKC_DESCRIPTION { get; set; }
         public string COMPANY_ID { get; set; }
         public string COMPANY_NAME { get; set; }
-        public int STATUS { get; set; }
-        public Nullable<int> GOV_STATUS { get; set; }
-        public Nullable<System.DateTime> REPORTED_ON { get; set; }
+        //public Enums.DocumentStatus STATUS { get; set; }
+        public Enums.DocumentStatusGov? GOV_STATUS { get; set; }
+        //public DateTime? REPORTED_ON { get; set; }
         public string BACK1_NO { get; set; }
         public Nullable<System.DateTime> BACK1_DATE { get; set; }
         public string CK3_NO { get; set; }

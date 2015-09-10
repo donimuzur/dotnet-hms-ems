@@ -120,7 +120,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             var model = new Pbck4FormViewModel();
-            model.MainMenu = Enums.MenuList.CK5;
+            model.MainMenu = Enums.MenuList.PBCK4;
             model.CurrentMenu = PageInfo;
           
             model.DocumentStatus = Enums.DocumentStatus.Draft;
