@@ -195,6 +195,16 @@
         <AssociationConnector Association="EMSModel.FK_LACK1_TRACKING_LACK1" />
         <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="5.375" PointY="11.75" />
         <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="0.75" PointY="11.75" />
+        <EntityTypeShape EntityType="EMSModel.PBCK4" Width="1.5" PointX="5.875" PointY="35.75" />
+        <EntityTypeShape EntityType="EMSModel.PBCK4_DOCUMENT" Width="1.5" PointX="8.125" PointY="47.625" />
+        <EntityTypeShape EntityType="EMSModel.PBCK4_ITEM" Width="1.5" PointX="8.125" PointY="63.5" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_DOCUMENT_PBCK4" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_ITEM_PBCK4" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_POA" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_USER" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_USER_MODIFIED" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_USER_REJECT" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_USER1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
