@@ -16,5 +16,9 @@ namespace Sampoerna.EMS.Contract
         List<Ck4CDto> GetAll();
 
         Ck4CDto Save(Ck4CDto item);
+
+        Ck4CDto GetById(long id);
+
+        void Ck4cWorkflow(Ck4cWorkflowDocumentInput input);
     }
 }

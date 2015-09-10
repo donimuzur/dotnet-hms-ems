@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {

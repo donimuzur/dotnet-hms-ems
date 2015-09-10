@@ -14,6 +14,7 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.CK4C;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -31,10 +32,12 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IProductionBLL _productionBll;
         private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IWorkflowBLL _workflowBll;
 
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
             IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll,
-            IDocumentSequenceNumberBLL documentSequenceNumberBll)
+            IDocumentSequenceNumberBLL documentSequenceNumberBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -50,6 +53,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _nppbkcbll = nppbkcbll;
             _productionBll = productionBll;
             _documentSequenceNumberBll = documentSequenceNumberBll;
+            _workflowHistoryBll = workflowHistoryBll;
+            _workflowBll = workflowBll;
         }
 
 
@@ -234,9 +239,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductionData(string comp, string plant, string nppbkc)
+        public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year)
         {
-            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc).Select(d => Mapper.Map<ProductionDto>(d)).ToList();
+            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).Select(d => Mapper.Map<ProductionDto>(d)).ToList();
             return Json(data);
         }
 
@@ -364,7 +369,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
             return (model);
-
         }
 
         [HttpPost]
@@ -395,6 +399,8 @@ namespace Sampoerna.EMS.Website.Controllers
         }
         #endregion
 
+        #region Get List Data
+
         private SelectList Ck4cPeriodList()
         {
             var period = new List<SelectItemModel>();
@@ -411,6 +417,224 @@ namespace Sampoerna.EMS.Website.Controllers
             years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
             years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
             return new SelectList(years, "ValueField", "TextField");
+        }
+
+        #endregion
+
+        #region Details
+
+        public ActionResult Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var ck4cData = _ck4CBll.GetById(id.Value);
+
+            if (ck4cData == null)
+            {
+                return HttpNotFound();
+            }
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = ck4cData.Number;
+            workflowInput.DocumentStatus = ck4cData.Status;
+            workflowInput.NPPBKC_Id = ck4cData.NppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            var model = new Ck4CIndexDocumentListViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Details = Mapper.Map<DataDocumentList>(ck4cData),
+                WorkflowHistory = workflowHistory
+            };
+
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Details.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = ck4cData.CreatedBy,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber = model.Details.Number,
+                NppbkcId = model.Details.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region Edit
+
+        public ActionResult Edit(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var ck4cData = _ck4CBll.GetById(id.Value);
+
+            if (ck4cData == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new Ck4CIndexDocumentListViewModel();
+            model = InitialModel(model);
+
+            try
+            {
+                model.Details = Mapper.Map<DataDocumentList>(ck4cData);
+
+                //workflow history
+                var workflowInput = new GetByFormNumberInput();
+                workflowInput.FormNumber = ck4cData.Number;
+                workflowInput.DocumentStatus = ck4cData.Status;
+                workflowInput.NPPBKC_Id = ck4cData.NppbkcId;
+
+                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+                model.WorkflowHistory = workflowHistory;
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("DocumentList");
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Ck4CIndexDocumentListViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+
+                    if (errors.Count > 0)
+                    {
+                        //get error details
+                    }
+
+                    AddMessageInfo("Model error", Enums.MessageInfoType.Error);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+                
+                var dataToSave = Mapper.Map<Ck4CDto>(model.Details);
+
+                var plant = _plantBll.GetT001ById(model.Details.PlantId);
+                var company = _companyBll.GetById(model.Details.CompanyId);
+
+                dataToSave.PlantName = plant.NAME1;
+                dataToSave.CompanyName = company.BUTXT;
+
+                List<Ck4cItem> list = dataToSave.Ck4cItem;
+                foreach(var item in list)
+                {
+                    item.Ck4CId = dataToSave.Ck4CId;
+                }
+
+                dataToSave.Ck4cItem = list;
+
+                bool isSubmit = model.Details.IsSaveSubmit == "submit";
+
+                var saveResult = _ck4CBll.Save(dataToSave);
+
+                if (isSubmit)
+                {
+                    Ck4cWorkflow(model.Details.Ck4CId, Enums.ActionType.Submit, string.Empty);
+                    AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
+                    return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
+                }
+
+                //return RedirectToAction("Index");
+                AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
+                return RedirectToAction("Edit", new { id = model.Details.Ck4CId });
+
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                model = InitialModel(model);
+                return View(model);
+            }
+        }
+
+        #endregion
+
+        public ActionResult ApproveDocument(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+            bool isSuccess = false;
+            try
+            {
+                Ck4cWorkflow(id.Value, Enums.ActionType.Approve, string.Empty);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id });
+            AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult RejectDocument(Ck4CIndexDocumentListViewModel model)
+        {
+            bool isSuccess = false;
+            try
+            {
+                Ck4cWorkflow(model.Details.Ck4CId, Enums.ActionType.Reject, model.Details.Comment);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
+            AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("DocumentList");
+        }
+
+        private void Ck4cWorkflow(int id, Enums.ActionType actionType, string comment)
+        {
+            var input = new Ck4cWorkflowDocumentInput
+            {
+                DocumentId = id,
+                UserId = CurrentUser.USER_ID,
+                UserRole = CurrentUser.UserRole,
+                ActionType = actionType,
+                Comment = comment
+            };
+
+            _ck4CBll.Ck4cWorkflow(input);
         }
     }
 }
