@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.IO;
+using System.Web.Routing;
 using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject;
@@ -285,9 +286,13 @@ namespace Sampoerna.EMS.Website.Controllers
             //{
             //    return RedirectToAction("Submit", new {id = model.Lack2Model.Lack2Id});
             //}
-
+             
               var item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
-              var exItems = new Lack2ItemDto[item.Items.Count];
+            if (item.CreatedBy != CurrentUser.USER_ID)
+            {
+                return RedirectToAction("Detail", new {id = item.Lack2Id});
+            }
+            var exItems = new Lack2ItemDto[item.Items.Count];
               item.Items.CopyTo(exItems);
               item.Items = new List<Lack2ItemDto>();
               foreach (var items in exItems)
@@ -328,14 +333,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 item.Status = Enums.DocumentStatus.GovRejected;
             }
-
-            if (item.Status == Enums.DocumentStatus.Draft)
+            if (model.IsSaveSubmit)
             {
-                item.Status = Enums.DocumentStatus.WaitingForApproval;
-            }
+                if (item.Status == Enums.DocumentStatus.Draft)
+                {
+                    item.Status = Enums.DocumentStatus.WaitingForApproval;
+                }
 
-            item.ApprovedBy = CurrentUser.USER_ID;
-            item.ApprovedDate = DateTime.Now;
+                item.ApprovedBy = CurrentUser.USER_ID;
+                item.ApprovedDate = DateTime.Now;
+            }
 
             if (model.Documents != null)
             {
@@ -669,10 +676,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (lack2.Status != Enums.DocumentStatus.WaitingGovApproval || lack2.Status != Enums.DocumentStatus.GovApproved
                 || lack2.Status != Enums.DocumentStatus.Completed)
             {
-                drow[10] = "PREVIEW";
+                drow[10] = "PREVIEW LACK-2";
             }
             else
             {
+                drow[10] = "LACK-2";
                 if (lack2.DecreeDate != null)
                 {
                     var lack2DecreeDate = lack2.DecreeDate.Value;

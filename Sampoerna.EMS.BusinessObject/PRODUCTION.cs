@@ -30,5 +30,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> BUNDLE { get; set; }
         public string MARKET { get; set; }
         public string DOCGMVTER { get; set; }
+        public string MATDOC { get; set; }
+        public string ORDR { get; set; }
     }
 }

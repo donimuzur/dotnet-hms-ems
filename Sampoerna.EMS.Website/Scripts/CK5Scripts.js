@@ -138,7 +138,7 @@ function IsValidDataUpload() {
     var datarows = GetTableData($('#Ck5UploadTable'));
 
     for (var i = 0; i < datarows.length; i++) {
-        if (datarows[i][11].length > 0)
+        if (datarows[i][13].length > 0)
             return false;
     }
 
@@ -615,6 +615,22 @@ function ValidateCk5Form(ck5Type) {
     if (result) {
         var rowCount = $('#ck5TableItem tr').length;
 
+        if (rowCount <= 1) {
+            // alert('Missing CK5 Material');
+            $('#modalBodyMessage').text('Missing CK5 Materials');
+            $('#ModalCk5Material').modal('show');
+
+            $('#home-tab').removeClass('active');
+            $('#upload-tab').addClass('active');
+
+            $('#information').removeClass('active');
+            $('#upload').addClass('active');
+
+            result = false;
+        }
+        
+        rowCount = $('#Ck5UploadTable tr').length;
+        
         if (rowCount <= 1) {
             // alert('Missing CK5 Material');
             $('#modalBodyMessage').text('Missing CK5 Materials');
