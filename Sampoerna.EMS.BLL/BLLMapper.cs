@@ -399,9 +399,12 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PackerRejectStickQty, opt => opt.MapFrom(src => src.PACKER_REJECT_STICK_QTY))
                 .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WASTE_PROD_DATE))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
-                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME));
-
-
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME))
+                .ForMember(dest => dest.DustWasteGramQty, opt => opt.MapFrom( src => src.DUST_WASTE_GRAM_QTY))
+                .ForMember(dest => dest.FloorWasteGramQty, opt => opt.MapFrom(src => src.FLOOR_WASTE_GRAM_QTY))
+                .ForMember(dest => dest.DustWasteStickQty, opt => opt.MapFrom(src => src.DUST_WASTE_STICK_QTY))
+                .ForMember(dest => dest.FloorWasteStickQty, opt => opt.MapFrom(src => src.FLOOR_WASTE_STICK_QTY));
+            
             #endregion
         }
     }
