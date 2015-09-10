@@ -358,8 +358,10 @@
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4SearchViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3CreateViewModel.cs" />
@@ -1058,6 +1060,11 @@
     <Content Include="Views\PBCK4\Index.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4Search.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4OpenListDocuments.cshtml" />
+    <Content Include="Views\PBCK4\Create.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationCreate.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4Printout.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadCreate.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

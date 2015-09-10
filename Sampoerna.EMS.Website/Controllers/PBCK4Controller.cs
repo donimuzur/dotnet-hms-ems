@@ -8,6 +8,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.PBCK4;
 
@@ -99,6 +100,35 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.DetailsList = GetPbck4Items(model.SearchView);
             return PartialView("_Pbck4OpenListDocuments", model);
+        }
+
+        public ActionResult Create()
+        {
+
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                AddMessageInfo("Can't create PBCK-4 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
+            var model = InitCreatePbck4();
+            return View("Create", model);
+        }
+
+        private Pbck4FormViewModel InitCreatePbck4()
+        {
+
+
+            var model = new Pbck4FormViewModel();
+            model.MainMenu = Enums.MenuList.CK5;
+            model.CurrentMenu = PageInfo;
+          
+            model.DocumentStatus = Enums.DocumentStatus.Draft;
+          
+            //model = InitCK5List(model);
+            model.PlantList = GlobalFunctions.GetPlantAll();
+
+            return model;
         }
 	}
 }
