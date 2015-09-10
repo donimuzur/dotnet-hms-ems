@@ -1,0 +1,87 @@
+﻿@model Sampoerna.EMS.Website.Models.Waste.WasteViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Waste Production List</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "Waste")"><button class="btn btn-blue">NEW</button></a>
+                <a href="#7.0-pbck3-pbck7-list-edit.html"><button class="btn btn-blue">UPLOAD</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                @using (Ajax.BeginForm("FilterWasteIndex", "Waste",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables",
+                    }, new { @class = "form-excise", role = "form" }))
+                {
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-3 long">Date</label>
+                                <div class="col-md-8">
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control" name="WasteProductionDate">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Company</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = " form-control selectreset" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Plant ID</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerksList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="last-form">
+                            <div class="col-md-4 col-md-offset-8">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_WasteTableIndex")
+            </div>
+        </div>
+
+    </div>
+</div>
+

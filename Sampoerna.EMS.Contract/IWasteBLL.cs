@@ -17,10 +17,10 @@ namespace Sampoerna.EMS.Contract
 
         void Save(WasteDto wastenDto);
 
-        WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime productionDate);
+        WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate);
 
         List<WasteDto> GetByCompPlant(string comp, string plant, string nppbkc);
 
-        WASTE GetExistDto(string companyCode, string plantWerk, string faCode, DateTime productionDate);
+        WASTE GetExistDto(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate);
     }
 }
