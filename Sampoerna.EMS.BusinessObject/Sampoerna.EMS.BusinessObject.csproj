@@ -79,6 +79,9 @@
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CK1.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CK4C.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
