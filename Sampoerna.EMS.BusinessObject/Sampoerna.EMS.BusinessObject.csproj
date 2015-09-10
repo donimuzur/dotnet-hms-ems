@@ -188,6 +188,7 @@
     <Compile Include="Inputs\InventoryMovementInput.cs" />
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
+    <Compile Include="Inputs\Lack1Input.cs" />
     <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />

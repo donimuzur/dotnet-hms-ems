@@ -46,6 +46,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<Lack1GeneratedTrackingDto> InvMovementAllList { get; set; }
         public List<Lack1GeneratedTrackingDto> InvMovementReceivingCk5List { get; set; }
+        public List<Lack1GeneratedTrackingDto> InvMovementReceivingList { get; set; }
         
     }
 

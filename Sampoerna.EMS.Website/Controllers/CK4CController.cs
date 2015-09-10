@@ -375,7 +375,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             item = AutoMapper.Mapper.Map<Ck4CDto>(model.Details);
 
-            var plant = _plantBll.GetT001ById(model.Details.PlantId);
+            var plant = _plantBll.GetT001WById(model.Details.PlantId);
             var company = _companyBll.GetById(model.Details.CompanyId);
 
             item.PlantName = plant.NAME1;

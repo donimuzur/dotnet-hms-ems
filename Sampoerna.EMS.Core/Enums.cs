@@ -514,7 +514,7 @@ namespace Sampoerna.EMS.Core
             [Description("262")]
             UsageMin = 262,
             [Description("101")]
-            Ck5Receiving = 101,
+            Receiving = 101,
         }
 
     }

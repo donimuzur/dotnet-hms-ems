@@ -22,5 +22,9 @@ namespace Sampoerna.EMS.Contract
 
         Lack1PrintOutDto GetPrintOutData(int id);
 
+        void Lack1Workflow(Lack1WorkflowDocumentInput input);
+
+        SaveLack1Output SaveEdit(Lack1SaveEditInput input);
+
     }
 }
