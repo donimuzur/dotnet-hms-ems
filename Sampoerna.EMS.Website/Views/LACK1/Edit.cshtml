@@ -1,0 +1,112 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1ItemViewModel
+@{
+    ViewBag.Title = "LACK-1 Edit";
+}
+
+@section styles{
+    <link href="~/Content/css/print.css" rel="stylesheet" />
+}
+
+@using (Html.BeginForm(Model.ControllerAction, "LACK1", FormMethod.Post, new { @id = "DetailsLack1Form" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>@ViewBag.Title</h3>
+                <label class="status">@Model.StatusDescription</label>
+                <div class="action-button">
+
+                    @if (Model.AllowGovApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                    }
+                    else
+                    {
+                        <input type="submit" class="btn btn-blue" value="Save" />
+                    }
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack1Id })')" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+
+                    @if (Model.Status == Enums.DocumentStatus.Draft)
+                    {
+                        <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        }
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.HiddenFor(model => model.Lack1Type)
+                        @Html.Partial("_HomeEdit")
+                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            @Html.Partial("_PrintOut")
+                        }
+                        @Html.Partial("_ChangeLog")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@Html.Partial("_FileUpload", Model)
+
+@section scripts {
+
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script src="~/Scripts/lack1/Lack1GenerateTable.js"></script>
+
+    <script type="text/javascript">
+
+        $('#MenuLack1CompletedDocument').addClass('@Model.MenuCompletedAddClassCss');
+        $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
+        $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
+
+        $(document).ready(function () {
+
+            $('#btn-back-plant-list').click(function (e) {
+                location.href = '@Url.Action("ListByPlant", "LACK1")';
+            });
+
+            $('#btn-back-nppbkc-list').click(function (e) {
+                location.href = '@Url.Action("Index", "LACK1")';
+            });
+
+            $('#btn-back-completed-list').click(function (e) {
+                location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
+            });
+
+            $('#generated-data-container').html('');
+
+            var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
+            console.log(jsonData);
+            var generateTableD = generateTable(jsonData);
+            $('#generated-data-container').append(generateTableD);
+
+        });
+
+        function printPreview(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        }
+
+    </script>
+}

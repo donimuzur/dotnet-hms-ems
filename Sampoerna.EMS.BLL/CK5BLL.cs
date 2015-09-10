@@ -333,7 +333,11 @@ namespace Sampoerna.EMS.BLL
                 var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
                 if (dbMaterial == null)
                     messageList.Add("Material Number Not Exist");
-
+                else
+                {
+                    if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
+                        messageList.Add("Material is not Excisable goods");
+                }
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
                     messageList.Add("Qty not valid");
 
@@ -390,7 +394,7 @@ namespace Sampoerna.EMS.BLL
             {
                 input.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
                 input.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
-                input.MaterialDesc = dbMaterial.MATERIAL_DESC;
+                input.MaterialDesc = dbMaterial.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
             }
 
             input.ExciseValue = input.ConvertedQty * input.Tariff;
@@ -1465,6 +1469,7 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.FinalPortId = "-";
             }
 
+            result.ReportDetails.CK5Type = dtData.CK5_TYPE.ToString();
             //get material desc
 
             return result;

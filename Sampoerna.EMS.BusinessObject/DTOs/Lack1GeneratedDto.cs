@@ -43,6 +43,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1GeneratedSummaryProductionDataDto> SummaryProductionList { get; set; }
         public string Noted { get; set; }
         public string Lack1UomId { get; set; }
+
+        public List<Lack1GeneratedTrackingDto> InvMovementAllList { get; set; }
+        public List<Lack1GeneratedTrackingDto> InvMovementReceivingCk5List { get; set; }
+        
     }
 
     public class Lack1GeneratedSummaryProductionDataDto
@@ -83,4 +87,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UomDesc { get; set; }
     }
 
+    public class Lack1GeneratedTrackingDto
+    {
+        public long INVENTORY_MOVEMENT_ID { get; set; }
+    }
+    
 }

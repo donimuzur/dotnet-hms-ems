@@ -162,12 +162,24 @@ namespace Sampoerna.EMS.BLL
                              ProdCode = b.PROD_CODE
                          };
             }
-            
+
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
             return dbData.ToList();
+        }
+
+
+        public PRODUCTION GetExistDto(string companyCode, string plantWerk, string faCode, DateTime productionDate)
+        {
+            return
+                _uow.GetGenericRepository<PRODUCTION>()
+                    .Get(
+                        p =>
+                            p.COMPANY_CODE == companyCode && p.WERKS == plantWerk && p.FA_CODE == faCode &&
+                            p.PRODUCTION_DATE == productionDate)
+                    .FirstOrDefault();
         }
     }
 }

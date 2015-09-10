@@ -353,31 +353,39 @@ namespace Sampoerna.EMS.BLL
                 BeginingBalance = 0 //set default
             };
 
-            //rc.TotalUsage = 0; //todo: get from Inventory Movement
-            //get total usage from INVENTORY MOVEMENT table by param input
-            var invMovementData =
-                _inventoryMovementService.GetTotalUsageForLack1Byparam(new InvMovementGetForLack1ByParamInput()
+            //Get Data from Inventory_Movement
+            var mvtTypeForUsage = new List<string>
+            {
+                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin)
+            };
+            var plantIdList = new List<string>();
+            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                //get plant list by nppbkcid
+                var plantList = _t001WServices.GetByNppbkcId(input.NppbkcId);
+                if (plantList.Count > 0)
                 {
-                    Lack1Level = input.Lack1Level,
-                    NppbkcId = input.NppbkcId,
-                    PeriodMonth = input.PeriodMonth,
-                    PeriodYear = input.PeriodYear,
-                    PlantId = input.ReceivedPlantId 
-                });
+                    plantIdList = plantList.Select(c => c.WERKS).ToList();
+                }
+            }
+            else
+            {
+                plantIdList = new List<string>(){ input.ReceivedPlantId };
+            }
 
-            //var invUsageAdd =
-            //    invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd))
-            //    .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+            var invMovementInput = new InvMovementGetForLack1UsageMovementByParamInput()
+            {
+                NppbkcId = input.NppbkcId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                MvtCodeList = mvtTypeForUsage,
+                PlantIdList = plantIdList
+            };
 
-            //var invUsageMin =
-            //    invMovementData.Where(c => c.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin))
-            //    .ToList().Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+            var invMovementOutput = _inventoryMovementService.GetForLack1UsageMovementByParam(invMovementInput);
 
-            //rc.TotalUsage = (invUsageAdd - invUsageMin);
-
-            rc.TotalUsage = (-1)*(invMovementData.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0));
-
-            if (rc.TotalUsage <= 0)
+            if (invMovementOutput.IncludeInCk5List.Count <= 0)
             {
                 return new Lack1GeneratedOutput()
                 {
@@ -387,6 +395,19 @@ namespace Sampoerna.EMS.BLL
                     Data = null
                 };
             }
+
+            var totalUsageIncludeCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+            var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+
+            var allMovement = invMovementOutput.IncludeInCk5List;
+
+            allMovement.AddRange(invMovementOutput.ExcludeFromCk5List);
+
+            rc.TotalUsage = totalUsageIncludeCk5;
+
+            rc.InvMovementReceivingCk5List = Mapper.Map<List<Lack1GeneratedTrackingDto>>(invMovementOutput.Ck5ReceivingList);
+            rc.InvMovementAllList =
+                Mapper.Map<List<Lack1GeneratedTrackingDto>>(allMovement);
 
             //set begining balance
             rc = SetBeginingBalanceBySelectionCritera(rc, input);
@@ -422,8 +443,8 @@ namespace Sampoerna.EMS.BLL
                     ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
                     Data = null
                 };
-            
-            rc.ProductionList = GetGroupedProductionlist(productionList, rc.TotalUsage, rc.TotalIncome);
+
+            rc.ProductionList = GetGroupedProductionlist(productionList, (totalUsageIncludeCk5 + totalUsageExcludeCk5), totalUsageIncludeCk5);
 
             //set summary
             rc.SummaryProductionList = GetSummaryGroupedProductionList(rc.ProductionList);
@@ -580,8 +601,10 @@ namespace Sampoerna.EMS.BLL
         /// 
         /// </summary>
         /// <param name="list"></param>
+        /// <param name="totalUsage"></param>
+        /// <param name="totalUsageInCk5"></param>
         /// <returns></returns>
-        private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list, decimal totalUsage, decimal totalIncome)
+        private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list, decimal totalUsage, decimal totalUsageInCk5)
         {
             if (list.Count <= 0) return new List<Lack1GeneratedProductionDataDto>();
             var totalAmount = list.Sum(c => c.Amount);
@@ -612,7 +635,7 @@ namespace Sampoerna.EMS.BLL
                 ProductAlias = g.ProductAlias,
                 UomId = g.UomId,
                 UomDesc = g.UomDesc,
-                Amount = (g.Amount/totalAmount) * ((totalIncome/totalUsage) * totalUsage)
+                Amount = (g.Amount / totalAmount) * ((totalUsageInCk5 / totalUsage) * totalUsage)
                 //Amount = (g.Amount) //just for testing
             });
 

@@ -339,6 +339,7 @@
     <Compile Include="Models\LACK2\LACK2NppbkcData.cs" />
     <Compile Include="Models\LACK2\LACK2PlantData.cs" />
     <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2SummaryReportModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
@@ -1000,7 +1001,6 @@
     <Content Include="Views\UserPlantMap\Index.cshtml" />
     <Content Include="Views\UserPlantMap\Edit.cshtml" />
     <Content Include="Views\UserPlantMap\Detail.cshtml" />
-    <Content Include="Views\LACK1\_Lack1TableBalance.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Index.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck7TableIndex.cshtml" />
     <Content Include="Views\LACK2\Create.cshtml" />
@@ -1044,7 +1044,6 @@
     <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
-    <Content Include="Views\LACK1\Test.cshtml" />
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
     <Content Include="Views\Production\Create.cshtml" />
@@ -1056,6 +1055,9 @@
     <Content Include="Views\CK4C\_HomeEdit.cshtml" />
     <Content Include="Views\CK4C\_ChangeLog.cshtml" />
     <Content Include="Views\CK4C\_PrintOut.cshtml" />
+    <Content Include="Views\LACK1\Edit.cshtml" />
+    <Content Include="Views\LACK1\_HomeEdit.cshtml" />
+    <Content Include="Views\LACK1\_FileUpload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

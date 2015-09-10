@@ -102,6 +102,7 @@
     <Compile Include="Services\IExGroupTypeService.cs" />
     <Compile Include="Services\IInventoryMovementService.cs" />
     <Compile Include="Services\ILACK1Service.cs" />
+    <Compile Include="Services\ILack1TrackingService.cs" />
     <Compile Include="Services\IPBCK1Service.cs" />
     <Compile Include="Services\IT001KService.cs" />
     <Compile Include="Services\IT001WService.cs" />

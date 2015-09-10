@@ -52,6 +52,9 @@ namespace Sampoerna.EMS.XMLReader
                         item.BUNDLE = Convert.ToInt32(_xmlMapper.GetElementValue(xElement.Element("Bundle")));
                         item.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
                         item.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
+                        item.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
+                        item.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
+                        
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
                         var qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
                         var existingMaterialUom = GetMaterialUom(item.FA_CODE, item.WERKS);
