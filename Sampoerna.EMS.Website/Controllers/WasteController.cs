@@ -78,6 +78,28 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        #region Create
 
+        public ActionResult Create()
+        {
+            var model = new WasteDetail();
+            model = InitCreate(model);
+            model.WasteProductionDate = DateTime.Today;
+
+            return View(model);
+        }
+
+        private WasteDetail InitCreate(WasteDetail model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlantWerksList = GlobalFunctions.GetPlantAll();
+            model.FacodeList = GlobalFunctions.GetBrandList();
+          
+            return model;
+
+        }
+        #endregion
     }
 }

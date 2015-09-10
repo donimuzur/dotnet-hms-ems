@@ -7,23 +7,33 @@ using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.Waste
 {
-    public class WasteViewModel :BaseModel
+    public class WasteViewModel : BaseModel
     {
         public WasteViewModel()
         {
-                Details = new List<WasteDetail>();
+            Details = new List<WasteDetail>();
         }
         public string CompanyCode { get; set; }
         public string PlantWerks { get; set; }
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
+        
+        //waste Reject
+        public string RejectCigaretteStick{get;set;}
         public decimal? MarkerRejectStickQty { get; set; }
         public decimal? PackerRejectStickQty { get; set; }
+
         public DateTime WasteProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
+
+        //WasteGram
+        public decimal WasteQtyGram { get; set; }
         public decimal? DustWasteGramQty { get; set; }
         public decimal? FloorWasteGramQty { get; set; }
+
+        //WasteStick
+        public decimal WasteQtyStick{get;set;}
         public decimal? DustWasteStickQty { get; set; }
         public decimal? FloorWasteStickQty { get; set; }
 
@@ -34,7 +44,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
         //SelectList
         public SelectList CompanyCodeList { get; set; }
         public SelectList PlantWerksList { get; set; }
-        
+
     }
 
     public class WasteDetail : BaseModel
@@ -43,13 +53,23 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public string PlantWerks { get; set; }
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
+
+        //waste Reject
+        public string RejectCigaretteStick { get; set; }
         public decimal? MarkerRejectStickQty { get; set; }
         public decimal? PackerRejectStickQty { get; set; }
+
         public DateTime WasteProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
+
+        //WasteGram
+        public decimal WasteQtyGram { get; set; }
         public decimal? DustWasteGramQty { get; set; }
         public decimal? FloorWasteGramQty { get; set; }
+
+        //WasteStick
+        public decimal WasteQtyStick { get; set; }
         public decimal? DustWasteStickQty { get; set; }
         public decimal? FloorWasteStickQty { get; set; }
 
@@ -59,5 +79,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
         //SelectList
         public SelectList CompanyCodeList { get; set; }
         public SelectList PlantWerksList { get; set; }
+        public SelectList FacodeList { get; set; }
+        
     }
 }

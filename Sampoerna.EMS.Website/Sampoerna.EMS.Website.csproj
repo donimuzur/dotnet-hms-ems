@@ -1055,6 +1055,7 @@
     <Content Include="Views\LACK1\_FileUpload.cshtml" />
     <Content Include="Views\Waste\Index.cshtml" />
     <Content Include="Views\Waste\_WasteTableIndex.cshtml" />
+    <Content Include="Views\Waste\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -38,13 +38,10 @@
         {
             <tr>
                 <td class="action">
-                    <a href="@Url.Action("Detail", "production", new { companyCode = item.CompanyCode, plantWerk = item.PlantWerks, faCode = item.FaCode, productionDate = item.ProductionDate })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("Edit", "production", new { companyCode = item.CompanyCode, plantWerk = item.PlantWerks, faCode = item.FaCode, productionDate = item.ProductionDate })" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
+                    <a href="#@Url.Action("Detail", "Waste", new { companyCode = item.CompanyCode, plantWerk = item.PlantWerks, faCode = item.FaCode, productionDate = item.WasteProductionDate })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    <a href="#@Url.Action("Edit", "Waste", new { companyCode = item.CompanyCode, plantWerk = item.PlantWerks, faCode = item.FaCode, productionDate = item.WasteProductionDate })" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
                 </td>
-                <td>
-
-                    @Html.DisplayFor(modelItem => item.WasteProductionDate)
-                </td>
+                
                 <td>
                     @Html.DisplayFor(modelItem => item.CompanyName)
                 </td>
@@ -52,22 +49,23 @@
                     @Html.DisplayFor(modelItem => item.PlantName)
                 </td>
                 <td>
-
                     @Html.DisplayFor(modelItem => item.FaCode)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.BrandDescription)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MarkerRejectStickQty)
+                    @Html.DisplayFor(modelItem => item.RejectCigaretteStick)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PackerRejectStickQty)
+                    @Html.DisplayFor(modelItem => item.WasteQtyGram)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DustWasteGramQty)
+                    @Html.DisplayFor(modelItem => item.WasteQtyStick)
                 </td>
-
+                <td>
+                    @Html.DisplayFor(modelItem => item.WasteProductionDate)
+                </td>
             </tr>
         }
     </tbody>
