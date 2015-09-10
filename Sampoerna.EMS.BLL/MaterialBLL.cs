@@ -401,15 +401,22 @@ namespace Sampoerna.EMS.BLL
         public List<MaterialDto> GetMaterialByPlantId(string plantId)
         {
             var data =
-                _repository.Get(p => p.WERKS == plantId );
+                _repository.Get(p => p.WERKS == plantId, null, includeTables );
 
             return AutoMapper.Mapper.Map<List<MaterialDto>>(data);
         }
 
+        public List<MaterialDto> GetMaterialByPlantIdAndGoodTypeNotNull(string plantId)
+        {
+            var data =
+                _repository.Get(p => p.WERKS == plantId && p.EXC_GOOD_TYP != null, null, includeTables);
+
+            return AutoMapper.Mapper.Map<List<MaterialDto>>(data);
+        }
         public MaterialDto GetMaterialByPlantIdAndMaterialNumber(string plantId, string materialNumber)
         {
             var data =
-                _repository.Get(p => p.WERKS == plantId && p.STICKER_CODE == materialNumber).FirstOrDefault();
+                _repository.Get(p => p.WERKS == plantId && p.STICKER_CODE == materialNumber, null, includeTables).FirstOrDefault();
 
             return AutoMapper.Mapper.Map<MaterialDto>(data);
         }
