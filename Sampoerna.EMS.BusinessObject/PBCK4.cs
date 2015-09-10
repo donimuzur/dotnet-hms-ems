@@ -28,8 +28,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string NPPBKC_DESCRIPTION { get; set; }
         public string COMPANY_ID { get; set; }
         public string COMPANY_NAME { get; set; }
-        public int STATUS { get; set; }
-        public Nullable<int> GOV_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
         public Nullable<System.DateTime> REPORTED_ON { get; set; }
         public string BACK1_NO { get; set; }
         public Nullable<System.DateTime> BACK1_DATE { get; set; }
