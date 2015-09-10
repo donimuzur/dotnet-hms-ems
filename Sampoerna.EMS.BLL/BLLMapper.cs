@@ -387,6 +387,22 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.MATDOC, opt => opt.MapFrom(src => src.MatDoc))
                .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr));
             #endregion
+
+            #region Waste From
+
+            Mapper.CreateMap<WASTE, WasteDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.COMPANY_CODE))
+                .ForMember(dest => dest.PlantWerks, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
+                .ForMember(dest => dest.MarkerRejectStickQty, opt => opt.MapFrom(src => src.MARKER_REJECT_STICK_QTY))
+                .ForMember(dest => dest.PackerRejectStickQty, opt => opt.MapFrom(src => src.PACKER_REJECT_STICK_QTY))
+                .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WASTE_PROD_DATE))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME));
+
+
+            #endregion
         }
     }
 }
