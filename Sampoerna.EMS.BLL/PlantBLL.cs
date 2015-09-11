@@ -260,7 +260,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Plant>>(dbData);
         }
         
-        public T001WDto GetT001ById(string id)
+        public T001WDto GetT001WById(string id)
         {
             var dbData = _repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault();
 

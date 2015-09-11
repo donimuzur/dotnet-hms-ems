@@ -37,8 +37,9 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _repository.GetByID(plant, facode);
             if (dbData == null)
+            {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
+            }
             return dbData;
         }
 
@@ -120,6 +121,12 @@ namespace Sampoerna.EMS.BLL
             return dbData;
         }
 
+        
+        public List<ZAIDM_EX_BRAND> GetBrandCeBylant(string plantWerk)
+        {
+            var dbData = _repository.Get(c => c.WERKS == plantWerk).ToList();
 
+            return dbData;
+        }
     }
 }

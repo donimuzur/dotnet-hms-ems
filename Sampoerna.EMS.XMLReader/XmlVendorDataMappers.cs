@@ -42,7 +42,8 @@ namespace Sampoerna.EMS.XMLReader
                         var vendorCodeXml = xElement.Element("LIFNR").Value;
 
                         var exsitingVendor = GetExVendor(vendorCodeXml);
-                        var existingCompany = GetExCompany(vendorCodeXml);
+                        var companyCode = vendorCodeXml.Substring(6, 4);
+                        var existingCompany = GetExCompany(companyCode);
                         if (existingCompany != null)
                         {
                             existingCompany.NPWP = _xmlMapper.GetElementValue(xElement.Element("STCEG"));

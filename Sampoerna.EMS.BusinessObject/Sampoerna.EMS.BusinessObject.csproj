@@ -79,6 +79,9 @@
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CK1.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CK4C.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -138,6 +141,7 @@
     <Compile Include="DTOs\Pbck1QuotaDto.cs" />
     <Compile Include="DTOs\Pbck1ReportDto.cs" />
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
+    <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
     <Compile Include="DTOs\POADto.cs" />
     <Compile Include="DTOs\POA_MAPDto.cs" />
@@ -150,6 +154,7 @@
     <Compile Include="DTOs\T001WDto.cs" />
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\UserPlantMapDto.cs" />
+    <Compile Include="DTOs\WasteDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_GOODTYPCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
@@ -188,6 +193,7 @@
     <Compile Include="Inputs\InventoryMovementInput.cs" />
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
+    <Compile Include="Inputs\Lack1Input.cs" />
     <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
@@ -196,6 +202,7 @@
     <Compile Include="Inputs\Pbck1ProdPlanInput.cs" />
     <Compile Include="Inputs\Pbck1QuotaInput.cs" />
     <Compile Include="Inputs\Pbck7AndPbck3Input.cs" />
+    <Compile Include="Inputs\PbckInputs.cs" />
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
@@ -296,6 +303,15 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PBCK3_PBCK7.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK4.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK4_DOCUMENT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK4_ITEM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PLANT_RECEIVE_MATERIAL.cs">

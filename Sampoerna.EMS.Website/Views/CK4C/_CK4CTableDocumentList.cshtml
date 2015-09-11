@@ -36,8 +36,8 @@
         {
             <tr>
                 <td class="action">
-                    <a href="#" data-tooggle="tooltip" data-placement="top" title="Detail"><i class=" fa fa-eye"></i></a>
-                    <a href="#" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
+                    <a href="@Url.Action("Details", "CK4C", new { id = item.Ck4CId })" data-tooggle="tooltip" data-placement="top" title="Detail"><i class=" fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "CK4C", new { id = item.Ck4CId })" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Number)
@@ -46,7 +46,7 @@
                     @Html.DisplayFor(modelItem => item.CompanyName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Number)
+                    @Html.DisplayFor(modelItem => item.BasedOn)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.NppbkcId)

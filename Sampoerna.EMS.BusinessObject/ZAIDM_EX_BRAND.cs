@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BusinessObject
         public ZAIDM_EX_BRAND()
         {
             this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
+            this.CK1 = new HashSet<CK1>();
         }
     
         public string WERKS { get; set; }
@@ -57,5 +58,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ZAIDM_EX_PRODTYP ZAIDM_EX_PRODTYP { get; set; }
         public virtual ZAIDM_EX_SERIES ZAIDM_EX_SERIES { get; set; }
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
+        public virtual ICollection<CK1> CK1 { get; set; }
     }
 }

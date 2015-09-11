@@ -12,7 +12,7 @@
                 <label class="status">Draft</label>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
-                    <button class="btn btn-grey">Cancel</button>
+                    <a href="@Url.Action("Index", "Production")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Finish Good<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.FaCode, Model.FacodeList, "All", new { @class = "form-control" })
+                                                                    @Html.DropDownListFor(model => model.FaCode, Model.FacodeList, "All", new { @class = "form-control", id = "SearchInput_BrandCe" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -92,7 +92,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Description</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextAreaFor(model => model.BrandDescription, new { @class = "form-control", disabled = "disabled" })
+                                                                    @Html.TextAreaFor(model => model.BrandDescription, new { @class = "form-control", disabled = "disabled", id="test" })
 
                                                                 </div>
                                                             </div>
@@ -101,7 +101,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Qty Packed<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.QtyPacked, new { @class = "form-control selectpicker" })
+                                                                    @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "decimal form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -109,7 +109,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Qty Unpacked<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.QtyUnpacked, new { @class = "form-control" })
+                                                                    @Html.TextBoxFor(model => model.QtyUnpackedStr, new { @class = "decimal form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -140,37 +140,102 @@
     </div>
 
 }
+
 @section scripts
 {
+    <script src="~/Scripts/thousand-separator.js"></script>
+
     <script type="text/javascript" language="javascript" class="init">
-        $('#MenuCk4cDailyProduction').addClass('active');
+    $('#MenuCk4cDailyProduction').addClass('active');
 
+    $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
+    $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
 
-        $("#CompanyCode").change(function () {
-            if ($("#CompanyCode").length) {
-                var cpy = $(this).find("option:selected").val();
-                $('#SearchInput_PlantId option').remove();
-                if (cpy == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+    $("#CompanyCode").change(function () {
+        if ($("#CompanyCode").length) {
+            var cpy = $(this).find("option:selected").val();
+            $('#SearchInput_PlantId option').remove();
+            if (cpy == '' || $(this).find("option:selected").val() == '') {
+                $('#SearchInput_PlantId option').append('<option value="">All</option>');
 
-                } else {
-                    ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
+            } else {
+                ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
+            }
+        }
+    });
+
+    function ajaxSelectCompany(url, formData) {
+        if (formData.companyId) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var listPlant = data.PlantWerkList;
+                    $('#SearchInput_PlantId').append('<option value="">All</option>');
+                    if (listPlant.length > 0) {
+                        for (var i = 0; i < listPlant.length; i++) {
+                            $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                        }
+                    }
+
+                }
+            });
+        }
+    }
+
+    $("#SearchInput_BrandCe").change(function () {
+        if ($("#SearchInput_BrandCe").length) {
+            
+            var FaDesc = $(this).find("option:selected").val();
+            if (FaDesc == '') {
+                $('#test').val('');
+            } else {
+                ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { faCode: FaDesc });
+            }
+        }
+
+    });
+
+    function ajaxFaCodeDescription(url, formData) {
+        if (formData.faCode) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    $('#test').val(data);
+                }
+            });
+        }
+
+    }
+
+    $("#SearchInput_PlantId").change(function () {
+        if ($("#SearchInput_PlantId").length) {
+            var ce = $(this).find("option:selected").val();
+            $('#SearchInput_BrandCe option').remove();
+            if (ce == '' || $(this).find("option:selected").val() == '') {
+                $('#SearchInput_BrandCe option').append('<option value="">All</option>');
+
+            } else {
+                ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: ce });
                 }
             }
         });
 
-        function ajaxSelectCompany(url, formData) {
-            if (formData.companyId) {
+        function ajaxSelectPlantWerks(url, formData) {
+          if (formData.plantWerk) {
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: formData,
                     success: function (data) {
-                        var listPlant = data.PlanIdList;
-                        $('#SearchInput_PlantId').append('<option value="">All</option>');
-                        if (listPlant.length > 0) {
-                            for (var i = 0; i < listPlant.length; i++) {
-                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                       var facodeList = data.FacodeList;
+                        $('#SearchInput_BrandCe').append('<option value="">All</option>');
+                        if (facodeList.length > 0) {
+                           for (var i = 0; i < facodeList.length; i++) {
+                                $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
                             }
                         }
 
@@ -179,33 +244,9 @@
             }
         }
 
-        $("#FaCode").change(function () {
-            if ($("#FaCode").length) {
-                var FaDesc = $(this).find("option:selected").val();
-                if (FaDesc == '') {
-                    $('#BrandDescription').val('');
-                } else {
-                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { faCode: FaDesc });
-                }
-            }
 
-        });
+      
 
-        function ajaxFaCodeDescription(url, formData) {
-            if (formData.faCode) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#BrandDescription').val(data);
-                    }
-                });
-            }
-
-
-
-        }
 
     </script>
 }
