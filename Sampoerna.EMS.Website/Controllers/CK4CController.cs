@@ -459,11 +459,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+
             //workflow history
             var workflowInput = new GetByFormNumberInput();
             workflowInput.FormNumber = ck4cData.Number;
             workflowInput.DocumentStatus = ck4cData.Status;
-            workflowInput.NPPBKC_Id = ck4cData.NppbkcId;
+            workflowInput.NPPBKC_Id = plant.NPPBKC_ID;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -487,7 +489,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                 DocumentNumber = model.Details.Number,
-                NppbkcId = model.Details.NppbkcId
+                NppbkcId = plant.NPPBKC_ID
             };
 
             ////workflow
@@ -632,7 +634,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id });
             AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
-            return RedirectToAction("Index");
+            return RedirectToAction("DocumentList");
         }
 
         public ActionResult RejectDocument(Ck4CIndexDocumentListViewModel model)

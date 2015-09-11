@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poabll;
         private IWorkflowBLL _workflowBll;
         private ICK4CItemBLL _ck4cItemBll;
+        private IPlantBLL _plantBll;
 
         private string includeTables = "POA, MONTH, CK4C_ITEM";
 
@@ -40,6 +41,7 @@ namespace Sampoerna.EMS.BLL
             _workflowBll = new WorkflowBLL(_uow, _logger);
             _ck4cItemBll = new CK4CItemBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
+            _plantBll = new PlantBLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -311,13 +313,15 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
+            var plant = _plantBll.GetT001WById(dbData.PLANT_ID);
+
             var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
             {
                 CreatedUser = dbData.CREATED_BY,
                 CurrentUser = input.UserId,
                 DocumentStatus = dbData.STATUS,
                 UserRole = input.UserRole,
-                NppbkcId = dbData.NPPBKC_ID,
+                NppbkcId = plant.NPPBKC_ID,
                 DocumentNumber = dbData.NUMBER
             });
 
