@@ -31,6 +31,9 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string SupplierPlant { get; set; }
         public string SupplierPlantId { get; set; }
         public string SupplierPlantAddress { get; set; }
+        public string SupplierCompanyCode { get; set; }
+        public string SupplierCompanyName { get; set; }
+
         public string ExGoodsType { get; set; }
         public string ExGoodsTypeDesc { get; set; }
         public decimal? WasteQty { get; set; }
@@ -41,7 +44,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ReturnUomDesc { get; set; }
         public Enums.DocumentStatus Status { get; set; }
         public string StatusDescription { get; set; }
-        public Enums.DocumentStatus GovStatus { get; set; }
+        public Enums.DocumentStatus? GovStatus { get; set; }
         public string GovStatusDescription { get; set; }
         public DateTime? DecreeDate { get; set; }
         public string NppbkcId { get; set; }
@@ -91,6 +94,9 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public SelectList ExGoodTypeList { get; set; }
         public SelectList WasteUomList { get; set; }
         public SelectList ReturnUomList { get; set; }
+        public Enums.DocumentStatusGov DocGovStatusList { get; set; }
+
+        public string IsSaveSubmit { get; set; }
 
         #endregion
 
