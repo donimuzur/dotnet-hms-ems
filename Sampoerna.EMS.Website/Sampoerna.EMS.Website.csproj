@@ -231,6 +231,7 @@
     <Compile Include="Controllers\PBCK4Controller.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
+    <Compile Include="Controllers\WasteController.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
@@ -392,6 +393,7 @@
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
+    <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\CK5\CK5Materials.cs">
@@ -1072,6 +1074,10 @@
     <Content Include="Views\PBCK4\_Pbck4Printout.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadCreate.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadList.cshtml" />
+    <Content Include="Views\Waste\Index.cshtml" />
+    <Content Include="Views\Waste\_WasteTableIndex.cshtml" />
+    <Content Include="Views\Waste\Create.cshtml" />
+    <Content Include="Views\Waste\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
