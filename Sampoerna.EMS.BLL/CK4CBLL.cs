@@ -314,6 +314,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             var plant = _plantBll.GetT001WById(dbData.PLANT_ID);
+            var nppbkcId = plant == null ? dbData.NPPBKC_ID : plant.NPPBKC_ID;
 
             var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
             {
@@ -321,7 +322,7 @@ namespace Sampoerna.EMS.BLL
                 CurrentUser = input.UserId,
                 DocumentStatus = dbData.STATUS,
                 UserRole = input.UserRole,
-                NppbkcId = plant.NPPBKC_ID,
+                NppbkcId = nppbkcId,
                 DocumentNumber = dbData.NUMBER
             });
 

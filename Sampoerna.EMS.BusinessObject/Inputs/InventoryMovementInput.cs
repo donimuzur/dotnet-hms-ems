@@ -9,9 +9,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         {
             PlantIdList = new List<string>();
             MvtCodeList = new List<string>();
+            StoReceiverNumberList = new List<string>();
         }
         public List<string> PlantIdList { get; set; }
         public List<string> MvtCodeList { get; set; }
+        public List<string> StoReceiverNumberList { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
         public string NppbkcId { get; set; }
