@@ -73,6 +73,7 @@ namespace Sampoerna.EMS.Core
 
             StoCreated = 10,
             StoFailed = 11,
+            StoCancel = 12,
             StobGIPartial = 30,
             StobGICompleted = 31,
             StobGRPartial = 35,
@@ -95,10 +96,11 @@ namespace Sampoerna.EMS.Core
 
             GRCompleted = 21,
 
-            StoCancel = 03,
+            StoCancelSAP = 03,
 
             GRReversal = 22,
             GIReversal = 17,
+            
             STOBGIReversal = 32,
             STOBGRReversal = 37,
 
