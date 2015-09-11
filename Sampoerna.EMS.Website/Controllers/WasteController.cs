@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerksList = GlobalFunctions.GetPlantAll();
+
             return model;
         }
 
@@ -56,10 +57,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
                 Details = Mapper.Map<List<WasteDetail>>(_wasteBll.GetAllByParam(new WasteGetByParamInput()))
+
                 
             });
 
             
+
 
             return View("Index", data);
         }
@@ -116,7 +119,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantAll();
             model.FacodeList = GlobalFunctions.GetBrandList();
-          
+
             return model;
 
         }
@@ -126,6 +129,20 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingData = _wasteBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
+                    Convert.ToDateTime(model.WasteProductionDate));
+                if (existingData != null)
+                {
+                    AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Edit", "Production", new
+                    {
+                        companyCode = model.CompanyCode,
+                        plantWerk = model.PlantWerks,
+                        faCode = model.FaCode,
+                        productionDate = model.WasteProductionDate
+                    });
+                }
+
                 var data = Mapper.Map<WasteDto>(model);
                 var company = _companyBll.GetById(model.CompanyCode);
                 var plant = _plantBll.GetT001ById(model.PlantWerks);
@@ -135,7 +152,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.CompanyName = company.BUTXT;
                 data.PlantName = plant.NAME1;
                 data.BrandDescription = brandDesc.BRAND_CE;
-                
+
                 //waste reject
                 data.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
                 data.PackerRejectStickQty = model.PackerStr == null ? 0 : Convert.ToDecimal(model.PackerStr);
@@ -151,7 +168,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     _wasteBll.Save(data);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
-                    RedirectToAction("Index");
+                    return RedirectToAction("Index");
                 }
                 catch (Exception exception)
                 {
@@ -161,6 +178,45 @@ namespace Sampoerna.EMS.Website.Controllers
             model = InitCreate(model);
             return View(model);
         }
+        #endregion
+
+        #region Edit
+
+        private WasteDetail IniEdit(WasteDetail model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlantWerkList = GlobalFunctions.GetPlantAll();
+            model.FacodeList = GlobalFunctions.GetBrandList();
+           
+            return model;
+        }
+
+        //
+        // GET: /Production/Edit
+        public ActionResult Edit(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
+        {
+            var model = new WasteDetail();
+            var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
+
+            model = Mapper.Map<WasteDetail>(dbWaste);
+
+            model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
+            model.PackerStr = model.PackerRejectStickQty == null ? string.Empty : model.PackerRejectStickQty.ToString();
+
+            model.DustGramStr = model.DustWasteGramQty == null ? string.Empty : model.DustWasteGramQty.ToString();
+            model.FloorGramStr = model.FloorWasteGramQty == null ? string.Empty : model.FloorWasteGramQty.ToString();
+
+            model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
+            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
+
+            model = IniEdit(model);
+
+            return View(model);
+        }
+
         #endregion
 
         #region Json
