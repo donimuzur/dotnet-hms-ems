@@ -67,8 +67,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Document Type</label>
                                         <div class="col-md-8">
-                                            @*@Html.DropDownListFor(model => model.DocumentType, Model.DocumentTypeList,"", new {@class="form-control"})*@
-                                        </div>
+                                            @Html.EnumDropDownListFor(model => model.DocumentType, Model.DocumentTypeList, "Select", new { @class = "form-control" })
+                                    </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
