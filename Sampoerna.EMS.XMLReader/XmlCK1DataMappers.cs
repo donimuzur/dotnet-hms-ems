@@ -24,7 +24,8 @@ namespace Sampoerna.EMS.XMLReader
             get
             {
                 var xmlRoot = _xmlMapper.GetElement("IDOC");
-                var xmlItems = xmlRoot.Elements("Z1A_EKPO_SSPCP");
+                var xmlRoot2 = xmlRoot.Element("Z1A_EKKO_SSPCP");
+                var xmlItems = xmlRoot2.Elements("Z1A_EKPO_SSPCP");
                 var items = new List<CK1>();
                 foreach (var xElement in xmlItems)
                 {
@@ -32,8 +33,8 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var item = new CK1();
                         item.CK1_NUMBER = _xmlMapper.GetElementValue(xElement.Element("EBELN"));
-                       
-                        item.CK1_DATE = Convert.ToDateTime(_xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("END_DATE"))));
+
+                        item.CK1_DATE = Convert.ToDateTime(_xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("AEDAT"))));
                      
                         item.FA_CODE = _xmlMapper.GetElementValue(xElement.Element("FA_CODE"));
                         item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("MATNR"));
