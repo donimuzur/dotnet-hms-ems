@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Cryptography;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
-using Sampoerna.EMS.LinqExtensions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
@@ -51,12 +48,14 @@ namespace Sampoerna.EMS.BLL.Services
 
             //get usage in receiving data
             var usageReceivingData = (from rec in _repository.Get(c => !string.IsNullOrEmpty(c.MVT) && c.MVT == receivingMvtType)
-                join a in inventoryMovements on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                join a in inventoryMovements on rec.MATERIAL_ID equals a.MATERIAL_ID
+                where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
                 select  a).ToList();
 
             //get receiving data
             var receivingData = (from rec in _repository.Get(c => !string.IsNullOrEmpty(c.MVT) && c.MVT == receivingMvtType)
-                                 join a in inventoryMovements on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                 join a in inventoryMovements on rec.MATERIAL_ID equals a.MATERIAL_ID
+                                 where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
                                  select rec).ToList();
             
             //get exclude in receiving data

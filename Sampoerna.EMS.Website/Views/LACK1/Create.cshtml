@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1CreateViewModel
+@{
     ViewBag.Title = "Create";
 }
 
@@ -14,8 +16,17 @@
                 <h3>List by NPPBKC</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    <input type="button" class="btn btn-blue" onclick="saveClick()" value="Save"/>
-                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    <input type="button" class="btn btn-blue" onclick="saveClick()" value="Save" />
+                    @if (Model.Lack1Level == Enums.Lack1Level.Nppbkc)
+                    {
+                        /* LACK-1 Plant Level */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-nppbkc-list" />
+                    }
+                    else if (Model.Lack1Level == Enums.Lack1Level.Plant)
+                    {
+                        /* LACK-1 NPPBKC Level */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-plant-list" />
+                    }
                 </div>
             </div>
         </div>
@@ -69,9 +80,15 @@
         $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
 
         $(document).ready(function () {
-            $('#btnCancel').click(function (e) {
+            
+            $('#btn-back-nppbkc-list').click(function (e) {
                 location.href = '@Url.Action("Index", "LACK1")';
             });
+            
+            $('#btn-back-plant-list').click(function (e) {
+                location.href = '@Url.Action("ListByPlant", "LACK1")';
+            });
+            
             $('#Bukrs').on('change', function () {
                 BukrsOnChange();
             });
