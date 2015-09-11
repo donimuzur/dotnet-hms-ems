@@ -429,7 +429,7 @@ namespace Sampoerna.EMS.Website.Controllers
             foreach(var item in listData)
             {
                 var brand = _brandRegistrationBll.GetByFaCode(item.FaCode);
-                var plant = _plantBll.GetT001ById(item.Werks);
+                var plant = _plantBll.GetT001WById(item.Werks);
                 var prodType = _prodTypeBll.GetByCode(item.ProdCode);
 
                 item.ProdDateName = item.ProdDate.ToString("dd MMM yyyy");
@@ -570,7 +570,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 var dataToSave = Mapper.Map<Ck4CDto>(model.Details);
 
-                var plant = _plantBll.GetT001ById(model.Details.PlantId);
+                var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);
 
                 dataToSave.PlantName = plant.NAME1;
