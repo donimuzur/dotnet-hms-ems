@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,5 +38,31 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
 
         
+    }
+
+    public class Pbck7ItemUpload
+    {
+        public string FaCode { get; set; }
+
+        public string ProdTypeAlias { get; set; }
+
+        public string Brand { get; set; }
+
+        public int? Content { get; set; }
+
+        public Decimal? Pbck7Qty { get; set; }
+
+        public Decimal? Back1Qty { get; set; }
+
+        public int? FiscalYear { get; set; }
+
+        public Decimal? Hje { get; set; }
+
+        public Decimal? Tariff { get; set; }
+
+        public Decimal? ExciseValue { get; set; }
+
+        public Decimal? SeriesValue { get; set; }
+
     }
 }

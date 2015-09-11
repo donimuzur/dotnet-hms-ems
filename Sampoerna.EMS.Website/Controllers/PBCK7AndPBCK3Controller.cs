@@ -6,11 +6,14 @@ using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PBCK7AndPBCK3;
+using Sampoerna.EMS.Website.Utility;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -22,7 +25,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poaBll;
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IPlantBLL _plantBll;
-        public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll, IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IPlantBLL plantBll)
+        private IBrandRegistrationBLL _brandRegistration;
+        public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
+            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7AndPbck7And3Bll = pbck7AndPbck3Bll;
@@ -31,9 +36,11 @@ namespace Sampoerna.EMS.Website.Controllers
             _poaBll = poaBll;
             _nppbkcBll = nppbkcBll;
             _plantBll = plantBll;
+            _brandRegistration = brandRegistrationBll;
         }
 
         #region Index PBCK7
+
         //
         // GET: /PBCK7/
         public ActionResult Index()
@@ -44,11 +51,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Pbck7Type = Enums.Pbck7Type.Pbck7List,
 
-                Detail = Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetAllByParam(new Pbck7AndPbck3Input()))
+                Detail =
+                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetAllByParam(new Pbck7AndPbck3Input()))
             });
 
             return View("Index", data);
         }
+
         #endregion
 
         private Pbck7IndexViewModel InitPbck7ViewModel(Pbck7IndexViewModel model)
@@ -88,6 +97,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
         #region PBCK3
+
         public ActionResult ListPbck3Index()
         {
             var data = InitPbck3ViewModel(new Pbck3IndexViewModel
@@ -96,7 +106,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Pbck3Type = Enums.Pbck7Type.Pbck3List,
 
-                Detail = Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetAllByParam(new Pbck7AndPbck3Input()))
+                Detail =
+                    Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetAllByParam(new Pbck7AndPbck3Input()))
             });
 
             return View("ListPbck3Index", data);
@@ -137,12 +148,13 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion
 
         #region Json
+
         [HttpPost]
         public JsonResult PoaAndPlantListPartialPbck7(string nppbkcId)
         {
             var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
             var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
-            var model = new Pbck7IndexViewModel() { PoaList = listPoa, PlantList = listPlant };
+            var model = new Pbck7IndexViewModel() {PoaList = listPoa, PlantList = listPlant};
 
             return Json(model);
         }
@@ -152,10 +164,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
             var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
-            var model = new Pbck7IndexViewModel() { PoaList = listPoa, PlantList = listPlant };
+            var model = new Pbck7IndexViewModel() {PoaList = listPoa, PlantList = listPlant};
 
             return Json(model);
         }
+
         #endregion
 
         #region Create
@@ -171,7 +184,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
-        public ActionResult CreateInitial(Pbck7Pbck3CreateViewModel model )
+        public ActionResult CreateInitial(Pbck7Pbck3CreateViewModel model)
         {
             return View("Create", InitialModel(model));
         }
@@ -182,8 +195,55 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
-
+            // model.DocumentTypeList = 
             return (model);
         }
+
+
+        [HttpPost]
+        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
+        {
+            var data = (new ExcelReader()).ReadExcel(itemExcelFile);
+            var model = new Pbck7Pbck3CreateViewModel();
+            model.UploadItems = new List<Pbck7ItemUpload>();
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var item = new Pbck7ItemUpload();
+                    item.FaCode = datarow[0];
+                    item.Pbck7Qty = Convert.ToDecimal(datarow[1]);
+                    item.Back1Qty = Convert.ToDecimal(datarow[2]);
+                    item.FiscalYear = Convert.ToInt32(datarow[3]);
+                    item.ExciseValue = Convert.ToDecimal(datarow[4]);
+                    try
+                    {
+                        var existingBrand = _brandRegistration.GetByIdIncludeChild(plantId, item.FaCode);
+                        if (existingBrand != null)
+                        {
+                            item.Brand = existingBrand.BRAND_CE;
+                            item.SeriesValue =  existingBrand.ZAIDM_EX_SERIES.SERIES_VALUE;
+                            item.ProdTypeAlias = existingBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
+                            item.Content = Convert.ToInt32(existingBrand.BRAND_CONTENT);
+                            item.Hje = existingBrand.HJE_IDR;
+                            item.Tariff = existingBrand.TARIFF;
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+
+                    }
+                    finally
+                    {
+                        model.UploadItems.Add(item);
+                    }
+
+                   
+                }
+            }
+            return PartialView("_UploadList", model);
+        }
     }
+
 }

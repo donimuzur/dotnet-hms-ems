@@ -1,4 +1,6 @@
-﻿<div>
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+
+<div id="table-upload-preview">
     <table class="table table-bordered table-striped js-options-table">
         <thead>
             <tr>
@@ -17,20 +19,27 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-            </tr>
+            @if (Model.UploadItems != null)
+            {
+                for(int i=0; i<Model.UploadItems.Count; i++)
+                {
+                    <tr>
+                        <td>@(i+1)</td>
+                        <td>@Model.UploadItems[i].FaCode</td>
+                        <td>@Model.UploadItems[i].ProdTypeAlias</td>
+                        <td>@Model.UploadItems[i].Brand</td>
+                        <td>@Model.UploadItems[i].Content</td>
+                        <td>@Model.UploadItems[i].Pbck7Qty </td>
+                        <td>@Model.UploadItems[i].Back1Qty </td>
+                        <td>@Model.UploadItems[i].SeriesValue </td>
+                        <td>@Model.UploadItems[i].Hje</td>
+                        <td>@Model.UploadItems[i].Tariff </td>
+                        <td>@Model.UploadItems[i].FiscalYear </td>
+                        <td>@Model.UploadItems[i].ExciseValue </td>
+                    </tr>
+                }
+
+            }
        
         </tbody>
     </table>

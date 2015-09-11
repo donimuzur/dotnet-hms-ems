@@ -67,7 +67,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Document Type</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.DocumentType, Model.DocumentTypeList,"", new {@class="form-control"})
+                                            @*@Html.DropDownListFor(model => model.DocumentType, Model.DocumentTypeList,"", new {@class="form-control"})*@
                                         </div>
                                     </div>
                                 </div>
@@ -144,7 +144,7 @@
                 <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
                     <div class="panel-body">
                         <a href="#upload"><button class="btn btn-blue">Upload</button></a>
-                        <div class="table-container">
+                        <div class="table-container" id="table-upload">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
                                     <tr>

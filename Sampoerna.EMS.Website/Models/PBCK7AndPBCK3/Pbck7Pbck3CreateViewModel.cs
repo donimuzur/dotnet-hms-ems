@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 {
@@ -25,6 +26,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public SelectList DocumentTypeList { get; set; }
 
+        public List<Pbck7ItemUpload> UploadItems { get; set; }
 
 
     }

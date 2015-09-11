@@ -45,3 +45,54 @@
     </div>
 }
 
+@section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script type="text/javascript">
+        $('#btn-generate-upload').click(function() {
+            uploadXmlFile();
+        });
+        $('#btn-save-upload').click(function () {
+            $('#table-upload').html('');
+            $('#table-upload').html($('#table-upload-preview').html());
+        });
+
+        function uploadXmlFile() {
+            
+            var postUrl = '@Url.Action("UploadFile", "PBCK7AndPBCK3")';
+            var fileName = $('[name="itemExcelFile"]').val().trim();
+            var pos = fileName.lastIndexOf('.');
+            var extension = (pos <= 0) ? '' : fileName.substring(pos);
+            if (extension != '.xlsx') {
+                alert('Please browse a correct excel file to upload');
+                return false;
+            }
+
+            var formData = new FormData();
+            var totalFiles = document.getElementById("itemExcelFile").files.length;
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("itemExcelFile").files[i];
+                formData.append("itemExcelFile", file);
+                formData.append("plantId", "ID01");
+                
+            }
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data: formData,
+                dataType: 'html',
+                contentType: false,
+                processData: false,
+
+                success: function (response) {
+                    $('#UploadLIst').html('');
+                    $('#UploadLIst').html(response);
+                    $('#btn-save-upload').enable();
+                }
+                
+
+            });
+        };
+    </script>
+}
