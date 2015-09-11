@@ -19,11 +19,11 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public string BrandDescription { get; set; }
         
         //waste Reject
-        public string RejectCigaretteStick{get;set;}
+        public decimal? RejectCigaretteStick { get; set; }
         public decimal? MarkerRejectStickQty { get; set; }
         public decimal? PackerRejectStickQty { get; set; }
 
-        public DateTime WasteProductionDate { get; set; }
+        public DateTime? WasteProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
 
@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public string BrandDescription { get; set; }
 
         //waste Reject
-        public string RejectCigaretteStick { get; set; }
+        public decimal RejectCigaretteStick { get; set; }
 
         public string MarkerStr
         {
@@ -109,7 +109,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
 
         //SelectList
         public SelectList CompanyCodeList { get; set; }
-        public SelectList PlantWerksList { get; set; }
+        public SelectList PlantWerkList { get; set; }
         public SelectList FacodeList { get; set; }
         
     }

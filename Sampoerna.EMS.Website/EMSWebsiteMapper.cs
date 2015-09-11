@@ -25,6 +25,7 @@ using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.UserAuthorization;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
+using Sampoerna.EMS.Website.Models.Waste;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.Settings;
 using Sampoerna.EMS.Website.Models.WorkflowSetting;
@@ -823,6 +824,19 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.FA_CODE))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.BRAND_CE));
 
+            #region Waste For Ck4c
+
+            Mapper.CreateMap<WasteDto, WasteDetail>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<WasteViewModel, WasteGetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantWerks))
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WasteProductionDate));
+
+            Mapper.CreateMap<WasteDetail, WasteDto>().IgnoreAllNonExisting();
+
+
+            #endregion
 
         }
     }

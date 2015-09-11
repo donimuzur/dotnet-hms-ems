@@ -388,7 +388,7 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr));
             #endregion
 
-            #region Waste From
+            #region Waste For CK4C
 
             Mapper.CreateMap<WASTE, WasteDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.COMPANY_CODE))
@@ -404,7 +404,22 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.FloorWasteGramQty, opt => opt.MapFrom(src => src.FLOOR_WASTE_GRAM_QTY))
                 .ForMember(dest => dest.DustWasteStickQty, opt => opt.MapFrom(src => src.DUST_WASTE_STICK_QTY))
                 .ForMember(dest => dest.FloorWasteStickQty, opt => opt.MapFrom(src => src.FLOOR_WASTE_STICK_QTY));
-            
+
+            Mapper.CreateMap<WasteDto, WASTE>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantWerks))
+                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+                .ForMember(dest => dest.BRAND_DESC, opt => opt.MapFrom(src => src.BrandDescription))
+                .ForMember(dest => dest.MARKER_REJECT_STICK_QTY, opt => opt.MapFrom(src => src.MarkerRejectStickQty))
+                .ForMember(dest => dest.PACKER_REJECT_STICK_QTY, opt => opt.MapFrom(src => src.PackerRejectStickQty))
+                .ForMember(dest => dest.WASTE_PROD_DATE, opt => opt.MapFrom(src => src.WasteProductionDate))
+                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName))
+                .ForMember(dest => dest.DUST_WASTE_GRAM_QTY, opt => opt.MapFrom(src => src.DustWasteGramQty))
+                .ForMember(dest => dest.FLOOR_WASTE_GRAM_QTY, opt => opt.MapFrom(src => src.FloorWasteGramQty))
+                .ForMember(dest => dest.DUST_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.DustWasteGramQty))
+                .ForMember(dest => dest.FLOOR_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.FloorWasteStickQty));
+
             #endregion
         }
     }

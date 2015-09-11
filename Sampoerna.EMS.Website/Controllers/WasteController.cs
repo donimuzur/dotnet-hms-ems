@@ -56,13 +56,32 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
                 Details = Mapper.Map<List<WasteDetail>>(_wasteBll.GetAllByParam(new WasteGetByParamInput()))
+                
             });
+
+            
 
             return View("Index", data);
         }
 
         [HttpPost]
         public PartialViewResult FilterWasteIndex(WasteViewModel model)
+        {
+            var input = Mapper.Map<WasteGetByParamInput>(model);
+            if (input.WasteProductionDate != null)
+            {
+                input.WasteProductionDate = Convert.ToDateTime(input.WasteProductionDate).ToString();
+            }
+
+            var dbData = _wasteBll.GetAllByParam(input);
+            var result = Mapper.Map<List<WasteDetail>>(dbData);
+            var viewModel = new WasteViewModel();
+            viewModel.Details = result;
+            return PartialView("_WasteTableIndex", viewModel);
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterProductionIndex(WasteViewModel model)
         {
             var input = Mapper.Map<WasteGetByParamInput>(model);
             if (input.WasteProductionDate != null)
@@ -95,7 +114,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantWerksList = GlobalFunctions.GetPlantAll();
+            model.PlantWerkList = GlobalFunctions.GetPlantAll();
             model.FacodeList = GlobalFunctions.GetBrandList();
           
             return model;
@@ -143,5 +162,36 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
         #endregion
+
+        #region Json
+        [HttpPost]
+        public JsonResult CompanyListPartialProduction(string companyId)
+        {
+            var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
+
+            var model = new WasteDetail() { PlantWerkList = listPlant };
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetFaCodeDescription(string faCode)
+        {
+            var fa = _brandRegistrationBll.GetByFaCode(faCode);
+            return Json(fa.BRAND_CE);
+        }
+
+        [HttpPost]
+        public JsonResult GetBrandCeByPlant(string plantWerk)
+        {
+            var listBrandCe = GlobalFunctions.GetFaCodeByPlant(plantWerk);
+
+            var model = new WasteDetail() { FacodeList = listBrandCe };
+
+            return Json(model);
+        }
+
+        #endregion
+
     }
 }

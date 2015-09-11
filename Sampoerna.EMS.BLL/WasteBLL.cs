@@ -77,10 +77,10 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public void Save(WasteDto wastenDto)
+        public void Save(WasteDto wasteDto)
         {
-            WASTE dbWaste = new WASTE();
-            dbWaste = Mapper.Map<WASTE>(dbWaste);
+
+            var dbWaste = Mapper.Map<WASTE>(wasteDto);
 
             _repository.InsertOrUpdate(dbWaste);
             _uow.SaveChanges();
@@ -96,11 +96,6 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
             return item;
-        }
-
-        public List<WasteDto> GetByCompPlant(string comp, string plant, string nppbkc)
-        {
-            throw new NotImplementedException();
         }
 
         public WASTE GetExistDto(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
