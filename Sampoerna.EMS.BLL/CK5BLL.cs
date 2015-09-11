@@ -756,11 +756,21 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Submit:
                     if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                        List<POADto> poaList = new List<POADto>();
+                        if (ck5Dto.CK5_TYPE == Enums.CK5Type.Export)
+                        {
+                            _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+
+                        }
+                        else {
+                            _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                        }
+
                         foreach (var poaDto in poaList)
                         {
                             rc.To.Add(poaDto.POA_EMAIL);
-                        }
+                        }    
+                        
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
@@ -1571,7 +1581,7 @@ namespace Sampoerna.EMS.BLL
                         messageList.Add("ExciseStatus not valid");
                 }
 
-                var sourcePlant = _plantBll.GetT001ById(ck5UploadFileDocuments.SourcePlantId);
+                var sourcePlant = _plantBll.GetT001WById(ck5UploadFileDocuments.SourcePlantId);
 
                 if (sourcePlant == null)
                     messageList.Add("Source Plant Not Exist");
@@ -1587,7 +1597,7 @@ namespace Sampoerna.EMS.BLL
                     output.SOURCE_PLANT_NAME = sourcePlant.NAME1;
                 }
 
-                var destPlant = _plantBll.GetT001ById(ck5UploadFileDocuments.DestPlantId);
+                var destPlant = _plantBll.GetT001WById(ck5UploadFileDocuments.DestPlantId);
 
                 if (destPlant == null)
                     messageList.Add("Destination Plant Not Exist");

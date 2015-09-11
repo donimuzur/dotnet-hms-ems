@@ -34,10 +34,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
+        private IZaidmExProdTypeBLL _prodTypeBll;
 
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
             IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll,
-            IDocumentSequenceNumberBLL documentSequenceNumberBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll)
+            IDocumentSequenceNumberBLL documentSequenceNumberBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IZaidmExProdTypeBLL prodTypeBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -55,6 +56,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _documentSequenceNumberBll = documentSequenceNumberBll;
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
+            _prodTypeBll = prodTypeBll;
         }
 
 
@@ -247,7 +249,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
-
         #region create daily Production
 
         public ActionResult Ck4CCreateDailyProduction()
@@ -379,7 +380,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             item = AutoMapper.Mapper.Map<Ck4CDto>(model.Details);
 
-            var plant = _plantBll.GetT001ById(model.Details.PlantId);
+            var plant = _plantBll.GetT001WById(model.Details.PlantId);
             var company = _companyBll.GetById(model.Details.CompanyId);
 
             item.PlantName = plant.NAME1;
@@ -419,6 +420,27 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(years, "ValueField", "TextField");
         }
 
+        private List<Ck4cItemData> SetOtherCk4cItemData(List<Ck4cItemData> ck4cItemData)
+        {
+            List<Ck4cItemData> listData;
+
+            listData = ck4cItemData;
+
+            foreach(var item in listData)
+            {
+                var brand = _brandRegistrationBll.GetByFaCode(item.FaCode);
+                var plant = _plantBll.GetT001WById(item.Werks);
+                var prodType = _prodTypeBll.GetByCode(item.ProdCode);
+
+                item.ProdDateName = item.ProdDate.ToString("dd MMM yyyy");
+                item.BrandDescription = brand.BRAND_CE;
+                item.PlantName = item.Werks + "-" + plant.NAME1;
+                item.ProdType = prodType.PRODUCT_TYPE;
+            }
+
+            return listData;
+        }
+
         #endregion
 
         #region Details
@@ -452,6 +474,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 Details = Mapper.Map<DataDocumentList>(ck4cData),
                 WorkflowHistory = workflowHistory
             };
+
+            model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
 
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
@@ -503,6 +527,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.Details = Mapper.Map<DataDocumentList>(ck4cData);
 
+                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+
                 //workflow history
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = ck4cData.Number;
@@ -544,7 +570,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 var dataToSave = Mapper.Map<Ck4CDto>(model.Details);
 
-                var plant = _plantBll.GetT001ById(model.Details.PlantId);
+                var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);
 
                 dataToSave.PlantName = plant.NAME1;
@@ -583,6 +609,8 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        #region Workflow
 
         public ActionResult ApproveDocument(int? id)
         {
@@ -636,5 +664,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             _ck4CBll.Ck4cWorkflow(input);
         }
+
+        #endregion
     }
 }

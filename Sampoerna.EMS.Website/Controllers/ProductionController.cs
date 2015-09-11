@@ -122,7 +122,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var data = Mapper.Map<ProductionDto>(model);
                 var company = _companyBll.GetById(model.CompanyCode);
-                var plant = _plantBll.GetT001ById(model.PlantWerks);
+                var plant = _plantBll.GetT001WById(model.PlantWerks);
                 var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
 
                 data.CompanyName = company.BUTXT;
@@ -215,7 +215,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbPrductionNew = Mapper.Map<ProductionDto>(model);
             var company = _companyBll.GetById(model.CompanyCode);
-            var plant = _plantBll.GetT001ById(model.PlantWerks);
+            var plant = _plantBll.GetT001WById(model.PlantWerks);
             var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
 
             model.CompanyName = company.BUTXT;

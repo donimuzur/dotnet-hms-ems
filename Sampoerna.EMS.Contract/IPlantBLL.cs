@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Contract
         List<T001W> Get(string nppbkcId);
         List<Plant> GetPlantByNppbkc(string nppbkcId);
         
-        T001WDto GetT001ById(string id);
+        T001WDto GetT001WById(string id);
 
         T001WDto GetMainPlantByNppbkcId(string nppbkcId);
 
