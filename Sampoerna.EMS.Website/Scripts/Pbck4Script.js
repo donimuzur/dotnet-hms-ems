@@ -195,7 +195,7 @@ function GenerateXlsPbck4Items(url) {
     function IsValidDataUpload() {
 
         var datarows = GetTableData($('#Ck5UploadTable'));
-        alert('2');
+        
         for (var i = 0; i < datarows.length; i++) {
            
             if (datarows[i][17].length > 0)
