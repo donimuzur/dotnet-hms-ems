@@ -9,6 +9,7 @@ using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -109,6 +110,15 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(src => src.PROD_CODE, opt => opt.MapFrom(dest => dest.ProdCode))
                 .ForMember(src => src.PACKED_QTY, opt => opt.MapFrom(dest => dest.PackedQty))
                 .ForMember(src => src.UNPACKED_QTY, opt => opt.MapFrom(dest => dest.UnpackedQty));
+
+            Mapper.CreateMap<Ck4cWorkflowDocumentInput, WorkflowHistoryDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => src.ActionType))
+                .ForMember(dest => dest.FORM_NUMBER, opt => opt.MapFrom(src => src.DocumentNumber))
+                .ForMember(dest => dest.FORM_ID, opt => opt.MapFrom(src => src.DocumentId))
+                .ForMember(dest => dest.COMMENT, opt => opt.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.ACTION_BY, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.ROLE, opt => opt.MapFrom(src => src.UserRole))
+                ;
 
             #endregion
         }

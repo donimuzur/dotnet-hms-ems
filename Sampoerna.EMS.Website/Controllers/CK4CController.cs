@@ -575,6 +575,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 dataToSave.PlantName = plant.NAME1;
                 dataToSave.CompanyName = company.BUTXT;
+                dataToSave.ModifiedBy = CurrentUser.USER_ID;
+                dataToSave.ModifiedDate = DateTime.Now;
 
                 List<Ck4cItem> list = dataToSave.Ck4cItem;
                 foreach(var item in list)
