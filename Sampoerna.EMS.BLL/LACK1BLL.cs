@@ -62,6 +62,8 @@ namespace Sampoerna.EMS.BLL
             _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
+            _poaBll = new POABLL(_uow, _logger);
+            _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);

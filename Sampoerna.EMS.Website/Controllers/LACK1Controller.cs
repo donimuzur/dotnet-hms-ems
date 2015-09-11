@@ -610,6 +610,12 @@ namespace Sampoerna.EMS.Website.Controllers
             catch (Exception)
             {
                 AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
+                model = InitDetailList(model);
+                model = SetHistory(model);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+                model = SetActiveMenu(model, model.Lack1Type);
+                return View(model);
             }
             model = InitDetailList(model);
             model = SetHistory(model);
