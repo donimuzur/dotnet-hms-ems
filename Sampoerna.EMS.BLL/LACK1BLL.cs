@@ -179,7 +179,7 @@ namespace Sampoerna.EMS.BLL
 
             if (input == null)
             {
-                throw  new Exception("Invalid data entry");
+                throw new Exception("Invalid data entry");
             }
 
             //origin
@@ -248,7 +248,7 @@ namespace Sampoerna.EMS.BLL
         }
 
         #region workflow
-        
+
         public void Lack1Workflow(Lack1WorkflowDocumentInput input)
         {
             var isNeedSendNotif = true;
@@ -379,7 +379,7 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            
+
             if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
                 dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
                 dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
@@ -414,7 +414,7 @@ namespace Sampoerna.EMS.BLL
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
-            
+
             dbData.LACK1_DOCUMENT = null;
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
@@ -442,7 +442,7 @@ namespace Sampoerna.EMS.BLL
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
-            
+
             input.DocumentNumber = dbData.LACK1_NUMBER;
 
             dbData.LACK1_DOCUMENT = null;
@@ -747,7 +747,7 @@ namespace Sampoerna.EMS.BLL
                 ErrorMessage = string.Empty
             };
 
-            #region Validation 
+            #region Validation
 
             //check if already exists with same selection criteria
             var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
@@ -801,12 +801,28 @@ namespace Sampoerna.EMS.BLL
                 BeginingBalance = 0 //set default
             };
 
+            //Set Income List by selection Criteria
+            //from CK5 data
+            rc = SetIncomeListBySelectionCriteria(rc, input);
+
+            if (rc.IncomeList.Count == 0)
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
+                    Data = null
+                };
+
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.StoReceiverNumber).ToList();
+
             //Get Data from Inventory_Movement
             var mvtTypeForUsage = new List<string>
             {
                 EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd),
                 EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin)
             };
+
             var plantIdList = new List<string>();
             if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
             {
@@ -819,7 +835,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                plantIdList = new List<string>(){ input.ReceivedPlantId };
+                plantIdList = new List<string>() { input.ReceivedPlantId };
             }
 
             var invMovementInput = new InvMovementGetForLack1UsageMovementByParamInput()
@@ -828,21 +844,22 @@ namespace Sampoerna.EMS.BLL
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 MvtCodeList = mvtTypeForUsage,
-                PlantIdList = plantIdList
+                PlantIdList = plantIdList,
+                StoReceiverNumberList = stoReceiverNumberList
             };
 
             var invMovementOutput = _inventoryMovementService.GetForLack1UsageMovementByParam(invMovementInput);
 
-            //if (invMovementOutput.IncludeInCk5List.Count <= 0)
-            //{
-            //    return new Lack1GeneratedOutput()
-            //    {
-            //        Success = false,
-            //        ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
-            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
-            //        Data = null
-            //    };
-            //}
+            if (invMovementOutput.IncludeInCk5List.Count <= 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
+                    Data = null
+                };
+            }
 
             var totalUsageIncludeCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
             var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
@@ -859,24 +876,6 @@ namespace Sampoerna.EMS.BLL
 
             //set Pbck-1 Data by selection criteria
             rc = SetPbck1DataBySelectionCriteria(rc, input);
-
-            //Set Income List by selection Criteria
-            //from CK5 data
-            rc = SetIncomeListBySelectionCriteria(rc, input);
-
-            if(rc.IncomeList.Count == 0)
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
-                    Data = null
-                };
-            
-            if (rc.IncomeList.Count > 0)
-            {
-                rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
-            }
 
             var productionList = GetProductionDetailBySelectionCriteria(input);
 
@@ -905,7 +904,7 @@ namespace Sampoerna.EMS.BLL
             rc.PeriodYear = input.PeriodYear;
             rc.Noted = input.Noted;
 
-            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome  - rc.TotalUsage;
+            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage;
 
             oReturn.Data = rc;
 

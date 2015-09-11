@@ -114,6 +114,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<CK5, Lack1GeneratedIncomeDataDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
+                .ForMember(dest => dest.StoReceiverNumber, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
                 .ForMember(dest => dest.StringRegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty))
