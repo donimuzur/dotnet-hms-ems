@@ -145,7 +145,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var data = Mapper.Map<WasteDto>(model);
                 var company = _companyBll.GetById(model.CompanyCode);
-                var plant = _plantBll.GetT001ById(model.PlantWerks);
+                var plant = _plantBll.GetT001WById(model.PlantWerks);
                 var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
 
                 //get desc
