@@ -1949,6 +1949,7 @@ namespace Sampoerna.EMS.BLL
                 var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
 
                 dataXmlDto.SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+                dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
             }
             
             return dataXmlDto;
