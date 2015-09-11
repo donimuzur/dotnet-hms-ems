@@ -26,8 +26,22 @@
                     {
                         <input type="submit" class="btn btn-blue" value="Save" />
                     }
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack1Id })')" />
-                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack1", new { id = @Model.Lack1Id })')" />
+                    @if (Model.Lack1Type == Enums.LACK1Type.ListByPlant)
+                    {
+                        /* LACK-1 Plant Level */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-plant-list" />
+                    }
+                    else if (Model.Lack1Type == Enums.LACK1Type.ListByNppbkc)
+                    {
+                        /* LACK-1 NPPBKC Level */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-nppbkc-list" />
+                    }
+                    else
+                    {
+                        /* Completed Document */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-list" />
+                    }
 
                     @if (Model.Status == Enums.DocumentStatus.Draft)
                     {
@@ -70,7 +84,9 @@
                         @Html.HiddenFor(model => model.SupplierCompanyCode)
                         @Html.HiddenFor(model => model.SupplierCompanyName)
                         @Html.HiddenFor(model => model.Status)
+                        @Html.HiddenFor(model => model.StatusDescription)
                         @Html.HiddenFor(model => model.GovStatus)
+                        @Html.HiddenFor(model => model.GovStatusDescription)
                         @Html.Partial("_HomeEdit")
                         @if (Model.Status == Enums.DocumentStatus.Completed)
                         {

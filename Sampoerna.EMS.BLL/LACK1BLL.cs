@@ -64,6 +64,7 @@ namespace Sampoerna.EMS.BLL
             _userBll = new UserBLL(_uow, _logger);
             _poaBll = new POABLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
@@ -291,7 +292,7 @@ namespace Sampoerna.EMS.BLL
             var dbData = Mapper.Map<WorkflowHistoryDto>(input);
 
             dbData.ACTION_DATE = DateTime.Now;
-            dbData.FORM_TYPE_ID = Enums.FormType.PBCK1;
+            dbData.FORM_TYPE_ID = Enums.FormType.LACK1;
 
             _workflowHistoryBll.Save(dbData);
 
@@ -621,6 +622,10 @@ namespace Sampoerna.EMS.BLL
 
         private class Lack1MailNotification
         {
+            public Lack1MailNotification()
+            {
+                To = new List<string>();
+            }
             public string Subject { get; set; }
             public string Body { get; set; }
             public List<string> To { get; set; }

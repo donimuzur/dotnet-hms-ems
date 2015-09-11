@@ -159,7 +159,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
         #endregion
 
-        #region
+        #region --------------- Json ------------------
 
         [HttpPost]
         public JsonResult PoaAndPlantListPartial(string nppbkcId)
@@ -438,14 +438,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region -------------- Details -----------
 
-        public ActionResult Details(int? id, Enums.LACK1Type? lType)
+        public ActionResult Details(int? id)
         {
             if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
-
-            if (!lType.HasValue)
             {
                 return HttpNotFound();
             }
@@ -457,8 +452,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            var model = InitDetailModel(lack1Data, lType.Value);
-
+            var model = InitDetailModel(lack1Data);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model = SetActiveMenu(model, model.Lack1Type);
             return View(model);
 
         }
@@ -521,17 +518,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region ----------------- Edit -----------
 
-        public ActionResult Edit(int? id, Enums.LACK1Type? lType)
+        public ActionResult Edit(int? id)
         {
             if (!id.HasValue)
             {
                 return HttpNotFound();
             }
-            if (!lType.HasValue)
-            {
-                return HttpNotFound();
-            }
-
+            
             var lack1Data = _lack1Bll.GetDetailsById(id.Value);
 
             if (lack1Data == null)
@@ -539,7 +532,28 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            var model = InitDetailModel(lack1Data, lType.Value);
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //redirect to details for approval/rejected
+                return RedirectToAction("Details", new { id });
+            }
+
+            if (CurrentUser.USER_ID == lack1Data.CreateBy &&
+                (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+                 lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
+            if (IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status))
+            {
+                AddMessageInfo(
+                    "Operation not allowed.",
+                    Enums.MessageInfoType.Error);
+                return null;
+            }
+
+            var model = InitDetailModel(lack1Data);
             model = InitDetailList(model);
 
             if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
@@ -549,8 +563,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model = SetActiveMenu(model, lType.Value);
+            model = SetActiveMenu(model, model.Lack1Type);
             return View(model);
+        }
+
+        private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
+        {
+            bool isAllow = CurrentUser.USER_ID == userId;
+            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.WaitingGovApproval))
+            {
+                isAllow = false;
+            }
+
+            return isAllow;
         }
 
         [HttpPost]
@@ -654,17 +679,27 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
-        private Lack1ItemViewModel InitDetailModel(Lack1DetailsDto lack1Data, Enums.LACK1Type lType)
+        private Lack1ItemViewModel InitDetailModel(Lack1DetailsDto lack1Data)
         {
 
             var model = Mapper.Map<Lack1ItemViewModel>(lack1Data);
             
             model = SetHistory(model);
 
-            model.Lack1Type = lType;
+            Enums.LACK1Type lack1Type;
+            if (lack1Data.Status == Enums.DocumentStatus.Completed)
+            {
+                lack1Type = Enums.LACK1Type.ComplatedDocument;
+            }
+            else
+            {
+                lack1Type = lack1Data.Lack1Level == Enums.Lack1Level.Nppbkc ? Enums.LACK1Type.ListByNppbkc : Enums.LACK1Type.ListByPlant;
+            }
+
+            model.Lack1Type = lack1Type;
             model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
 
-            SetActiveMenu(model, lType);
+            SetActiveMenu(model, lack1Type);
 
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
