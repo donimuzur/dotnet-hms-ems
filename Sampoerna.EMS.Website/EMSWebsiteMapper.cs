@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.Website
             InitializePbck7AndPbck3();
             InitializeLACK1();
             InitializeCk4C();
-
+            InitializePBCK4();
             //AutoMapper
             Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.USER_ID))
@@ -814,10 +814,14 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCode))
                 .ForMember(dest => dest.ProoductionDate, opt => opt.MapFrom(src => src.ProductionDate));
 
-            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompanyName));
+            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
+                
 
             #endregion
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.BRAND_CE));
 
 
         }

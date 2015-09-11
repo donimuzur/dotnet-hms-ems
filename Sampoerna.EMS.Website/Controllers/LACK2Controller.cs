@@ -763,6 +763,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+
+        public ActionResult Summary()
+        {
+            var model = new Lack2SummaryReportModel();
+            model.CompanyList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.PlantList = GlobalFunctions.GetPlantAll();
+
+            return View("Summary");
+        }
     }
 
 }

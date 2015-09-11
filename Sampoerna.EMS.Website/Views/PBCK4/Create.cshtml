@@ -1,0 +1,58 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
+
+@using (Html.BeginForm("SaveCK5", "PBCK4", FormMethod.Post, new { @id = "SavePbck4Forms" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>PBCK-4 Form</h3>
+                <label class="status">Draft</label>
+                <div class="action-button">
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
+
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_Pbck4InformationCreate")
+                        @Html.Partial("_Pbck4Printout")
+                        @Html.Partial("_Pbck4UploadCreate")
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+
+  <script type="text/javascript">
+
+    $(document).ready(function () {
+        
+
+    });
+
+    </script>
+
+}

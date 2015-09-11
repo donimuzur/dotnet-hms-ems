@@ -1,0 +1,51 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4IndexViewModel
+
+<table id="pbck4Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Plant Id</th>
+            <th>Plant Desc</th>
+            <th>NPPBKC ID</th>
+            <th>Reported On</th>
+            <th>POA</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th> Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.DetailsList)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Details", "CK5", new { id = item.PbckId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                    @if (!Model.IsCompletedType)
+                    {
+                        <a href="@Url.Action("Edit", "CK5", new {id = item.PbckId})" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                    }
+                </td>
+                <td>@Html.DisplayFor(model => item.PlantId)</td>
+                <td>@Html.DisplayFor(model => item.PlantDescription)</td>
+                <td>
+                    @Html.DisplayFor(model => item.NppbkcId)
+                </td>
+                <td>@Html.DisplayFor(model => item.ReportedOn)</td>
+                <td>@Html.DisplayFor(model => item.Poa)</td>
+                <td class="last">@Html.DisplayFor(model => item.Status)</td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+

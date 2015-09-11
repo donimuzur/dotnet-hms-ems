@@ -756,11 +756,21 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Submit:
                     if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                        List<POADto> poaList = new List<POADto>();
+                        if (ck5Dto.CK5_TYPE == Enums.CK5Type.Export)
+                        {
+                            _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+
+                        }
+                        else {
+                            _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                        }
+
                         foreach (var poaDto in poaList)
                         {
                             rc.To.Add(poaDto.POA_EMAIL);
-                        }
+                        }    
+                        
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
@@ -1932,6 +1942,12 @@ namespace Sampoerna.EMS.BLL
                 var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.SOURCE_PLANT_COMPANY_CODE);
 
                 dataXmlDto.DEST_PLANT_ID = plantMap.EXPORT_PLANT_ID;
+            }
+
+            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.PortToImporter) {
+                var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
+
+                dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
             }
             
             return dataXmlDto;
