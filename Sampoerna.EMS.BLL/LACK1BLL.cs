@@ -190,7 +190,8 @@ namespace Sampoerna.EMS.BLL
             SetChangesHistory(origin, input.Detail, input.UserId);
 
             //doing map
-            Mapper.Map(input.Detail, dbData);
+            //Mapper.Map(input.Detail, dbData);
+            Mapper.Map<Lack1DetailsDto, LACK1>(input.Detail, dbData);
 
             //delete first
             _lack1IncomeDetailService.DeleteByLack1Id(input.Detail.Lack1Id);

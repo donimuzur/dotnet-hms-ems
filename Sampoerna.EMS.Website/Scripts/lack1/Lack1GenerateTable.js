@@ -19,7 +19,8 @@ function generateTable(data) {
         '<td rowspan="' + rowCount + '">' + '<input name="BeginingBalance" type="hidden" value = "' + data.BeginingBalance + '" />' + +(data.BeginingBalance < 0 ? '-' : '') + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
         '<td><input name="IncomeList[0].RegistrationNumber" type="hidden" value = "' + data.IncomeList[0].RegistrationNumber + '" />' +
             '<input name="IncomeList[0].StringRegistrationDate" type="hidden" value = "' + data.IncomeList[0].StringRegistrationDate + '" />' +
-            '<input name="IncomeList[0].Ck5Id" type="hidden" value = "' + data.IncomeList[0].Ck5Id + '" />'
+            '<input name="IncomeList[0].Ck5Id" type="hidden" value = "' + data.IncomeList[0].Ck5Id + '" />' +
+            '<input name="IncomeList[0].Lack1Id" type="hidden" value = "' + data.IncomeList[0].Lack1Id + '" />'
             + '<input name="IncomeList[0].RegistrationDate" type="hidden" value = "' + data.IncomeList[0].RegistrationDate + '" />'
             + data.IncomeList[0].RegistrationNumber + ' - '
             + data.IncomeList[0].StringRegistrationDate + '</td>' +
@@ -35,6 +36,7 @@ function generateTable(data) {
         for (var i = 1; i < data.IncomeList.length; i++) {
             rowIndex = rowIndex + 1;
             var item = '<tr><td>' +
+                '<input name="IncomeList[' + i + '].Lack1Id" type="hidden" value = "' + data.IncomeList[i].Lack1Id + '" />' +
                 '<input name="IncomeList[' + i + '].Ck5Id" type="hidden" value = "' + data.IncomeList[i].Ck5Id + '" />' +
                 '<input name="IncomeList[' + i + '].RegistrationDate" type="hidden" value = "' + data.IncomeList[i].RegistrationDate + '" />'
                 + '<input name="IncomeList[' + i + '].RegistrationNumber" type="hidden" value = "' + data.IncomeList[i].RegistrationNumber + '" />'
