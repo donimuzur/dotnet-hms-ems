@@ -11,6 +11,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
     public class Pbck7Pbck3CreateViewModel : BaseModel
     {
         public string Pbck7Number { get; set; }
+
+        public string PlantId { get; set; }
+
+        public string PlantName { get; set; }
         public DateTime Pbck7Date { get; set; }
         public string Pbck3Number { get; set; }
         public DateTime? Pbck3Date { get; set; }

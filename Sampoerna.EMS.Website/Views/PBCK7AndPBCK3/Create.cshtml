@@ -27,9 +27,9 @@
                     <!-- Nav tabs -->
                     @Html.AntiForgeryToken()
                     <ul role="tablist" class="nav nav-tabs">
-                        <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
-                        <li role="presentation" class=""><a data-toggle="tab" role="tab" aria-controls="printout" href="#printout">Print Out</a></li>
-                        <li role="presentation" class=""><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
+                        <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                        <li role="presentation" ><a data-toggle="tab" role="tab" aria-controls="printout" href="#printout">Print Out</a></li>
+                        <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
                         @*<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="changes" href="#changes">Changes Log</a></li>*@
                     </ul>
 
@@ -53,13 +53,23 @@
         $('#btn-generate-upload').click(function() {
             uploadXmlFile();
         });
-        $('#btn-save-upload').click(function () {
+        $('#btn-save-upload').click(function() {
             $('#table-upload').html('');
             $('#table-upload').html($('#table-upload-preview').html());
+            $('#tab-upload').removeClass('active');
+            $('#tab-information').addClass('active');
+            $('#tab-information').children()[0].click();
         });
 
+        function toUploadTab() {
+            $('#tab-information').removeClass('active');
+            $('#tab-upload').addClass('active');
+            $('#tab-upload').children()[0].click();
+           
+        }
+
         function uploadXmlFile() {
-            
+
             var postUrl = '@Url.Action("UploadFile", "PBCK7AndPBCK3")';
             var fileName = $('[name="itemExcelFile"]').val().trim();
             var pos = fileName.lastIndexOf('.');
@@ -75,7 +85,7 @@
                 var file = document.getElementById("itemExcelFile").files[i];
                 formData.append("itemExcelFile", file);
                 formData.append("plantId", "ID01");
-                
+
             }
             $.ajax({
                 type: "POST",
@@ -85,14 +95,14 @@
                 contentType: false,
                 processData: false,
 
-                success: function (response) {
+                success: function(response) {
                     $('#UploadLIst').html('');
                     $('#UploadLIst').html(response);
                     $('#btn-save-upload').enable();
                 }
-                
-
             });
-        };
+        }
+
+        ;
     </script>
 }
