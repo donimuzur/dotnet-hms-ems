@@ -119,7 +119,6 @@ namespace Sampoerna.EMS.BLL
             var dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && p.WERKS == plant && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
                          join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
                          join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
-                         join u in _repositoryUom.GetQuery() on p.UOM equals u.UOM_ID
                          select new ProductionDto() { 
                             ProductionDate = p.PRODUCTION_DATE,
                             FaCode = p.FA_CODE,
@@ -130,10 +129,9 @@ namespace Sampoerna.EMS.BLL
                             Hje = b.HJE_IDR,
                             Tarif = b.TARIFF,
                             QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
-                            Uom = u.UOM_DESC,
+                            Uom = p.UOM,
                             QtyPacked = p.QTY_PACKED,
                             QtyUnpacked = p.QTY_UNPACKED,
-                            UomProd = p.UOM,
                             ProdCode = b.PROD_CODE
                          };
 
@@ -143,7 +141,6 @@ namespace Sampoerna.EMS.BLL
                          join n in _repositoryPlant.Get(n => n.NPPBKC_ID == nppbkc) on p.WERKS equals n.WERKS
                          join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
                          join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
-                         join u in _repositoryUom.GetQuery() on p.UOM equals u.UOM_ID
                          select new ProductionDto()
                          {
                              ProductionDate = p.PRODUCTION_DATE,
@@ -155,10 +152,9 @@ namespace Sampoerna.EMS.BLL
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
                              QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
-                             Uom = u.UOM_DESC,
+                             Uom = p.UOM,
                              QtyPacked = p.QTY_PACKED,
                              QtyUnpacked = p.QTY_UNPACKED,
-                             UomProd = p.UOM,
                              ProdCode = b.PROD_CODE
                          };
             }

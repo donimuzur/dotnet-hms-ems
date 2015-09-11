@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poabll;
         private IWorkflowBLL _workflowBll;
 
-        private string includeTables = "POA, MONTH";
+        private string includeTables = "POA, MONTH, CK4C_ITEM";
 
         public CK4CBLL(ILogger logger, IUnitOfWork uow)
         {

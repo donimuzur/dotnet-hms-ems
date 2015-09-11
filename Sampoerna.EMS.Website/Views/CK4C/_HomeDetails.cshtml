@@ -132,7 +132,7 @@
                                     <th>Production Date</th>
                                     <th>FA Code</th>
                                     <th>Brand Description</th>
-                                    <th>Plant Id</th>
+                                    <th>Plant</th>
                                     <th>Tobacco Product Type</th>
                                     <th>HJE</th>
                                     <th>Tarif</th>
@@ -141,18 +141,22 @@
                                 </tr>
                             </thead>
                             <tbody id="tb-body-ck4c">
-                                <tr>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                </tr>
-                                </tbodyid>
+                                @for (var i = 0; i < Model.Details.Ck4cItemData.Count; i++)
+                                {
+                                    var item = Model.Details.Ck4cItemData[i];
+                                    <tr>
+                                        <td>@item.ProdDateName</td>
+                                        <td>@item.FaCode</td>
+                                        <td>@item.BrandDescription</td>
+                                        <td>@item.PlantName</td>
+                                        <td>@item.ProdType</td>
+                                        <td>@item.HjeIdr</td>
+                                        <td>@item.Tarif</td>
+                                        <td>@item.ProdQty</td>
+                                        <td>@item.ProdQtyUom</td>
+                                    </tr>
+                                }
+                            </tbody>
                         </table>
                     </div>
                 </div>

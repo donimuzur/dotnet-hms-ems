@@ -142,7 +142,7 @@
                                     <th>Production Date</th>
                                     <th>FA Code</th>
                                     <th>Brand Description</th>
-                                    <th>Plant Id</th>
+                                    <th>Plant</th>
                                     <th>Tobacco Product Type</th>
                                     <th>HJE</th>
                                     <th>Tarif</th>
@@ -151,18 +151,26 @@
                                 </tr>
                             </thead>
                             <tbody id="tb-body-ck4c">
-                                <tr>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                </tr>
-                                </tbodyid>
+                                @for (var i = 0; i < Model.Details.Ck4cItemData.Count; i++)
+                                {
+                                    var item = Model.Details.Ck4cItemData[i];
+                                    <tr>
+                                        <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CItemId" type="hidden" value="@item.Ck4CItemId" /></td>
+                                        <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CId" type="hidden" value="@item.Ck4CId" /></td>
+                                        <td style="display:none"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" /></td>
+                                        <td style="display:none"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" /></td>
+                                        <td><input name="Details.Ck4cItemData[@i].ProdDate" type="hidden" value="@item.ProdDate" />@item.ProdDateName</td>
+                                        <td><input name="Details.Ck4cItemData[@i].FaCode" type="hidden" value="@item.FaCode" />@item.FaCode</td>
+                                        <td><input name="Details.Ck4cItemData[@i].BrandDescription" type="hidden" value="@item.BrandDescription" />@item.BrandDescription</td>
+                                        <td><input name="Details.Ck4cItemData[@i].Werks" type="hidden" value="@item.Werks" />@item.PlantName</td>
+                                        <td><input name="Details.Ck4cItemData[@i].ProdCode" type="hidden" value="@item.ProdCode" />@item.ProdType</td>
+                                        <td><input name="Details.Ck4cItemData[@i].HjeIdr" type="hidden" value="@item.HjeIdr" />@item.HjeIdr</td>
+                                        <td><input name="Details.Ck4cItemData[@i].Tarif" type="hidden" value="@item.Tarif" />@item.Tarif</td>
+                                        <td><input name="Details.Ck4cItemData[@i].ProdQty" type="hidden" value="@item.ProdQty" />@item.ProdQty</td>
+                                        <td><input name="Details.Ck4cItemData[@i].ProdQtyUom" type="hidden" value="@item.ProdQtyUom" />@item.ProdQtyUom</td>
+                                    </tr>
+                                }
+                            </tbody>
                         </table>
                     </div>
                 </div>

@@ -70,6 +70,7 @@
     <Compile Include="BLLMapperPBCK4.cs" />
     <Compile Include="BLLMapperPBCK7.cs" />
     <Compile Include="ChangesHistoryBLL.cs" />
+    <Compile Include="CK4CItemBLL.cs" />
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CountryBLL.cs" />
