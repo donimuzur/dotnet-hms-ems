@@ -499,20 +499,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region ------------- Workflow ------------
 
-        public ActionResult RejectDocument()
-        {
-            return View();
-        }
-
-        public ActionResult GovCancelDocument()
-        {
-            return View();
-        }
-
-        public ActionResult GovRejectDocument()
-        {
-            return View();
-        }
 
         #endregion
 
@@ -545,7 +531,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Details", new { id });
             }
 
-            if (IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status))
+            if (!IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status))
             {
                 AddMessageInfo(
                     "Operation not allowed.",
@@ -665,7 +651,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.LACK1,
                     model.Lack1Id.ToString()));
 
             var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(model.Lack1Number));
