@@ -57,7 +57,13 @@ namespace Sampoerna.EMS.XMLReader
 
             return _xmlData.Elements(elementName);
         }
-       
+
+        public string NoInsert<T>(List<T> items) where T : class
+        {
+            return MoveFile();
+           
+        }
+
         public string InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
@@ -69,6 +75,10 @@ namespace Sampoerna.EMS.XMLReader
                 var existingData = repo.Get();
                 foreach (var item in existingData)
                 {
+                    if (item is LFA1)
+                    {
+                        continue;
+                    }
                     var is_deleted = item.GetType().GetProperty("IS_DELETED");
                     if (is_deleted != null)
                     {
@@ -169,7 +179,17 @@ namespace Sampoerna.EMS.XMLReader
             }
             return null;
         }
-
+        public DateTime? GetDateDotSeparator(string valueStr)
+        {
+            if (valueStr.Length == 10)
+            {
+                var year = Convert.ToInt32(valueStr.Substring(6, 4));
+                var month = Convert.ToInt32(valueStr.Substring(3, 2));
+                var date = Convert.ToInt32(valueStr.Substring(0, 2));
+                return new DateTime(year, month, date);
+            }
+            return null;
+        }
         public string GetElementValue(XElement element)
         {
             if (element == null)

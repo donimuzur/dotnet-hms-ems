@@ -42,18 +42,32 @@ namespace Sampoerna.EMS.XMLReader
                         var vendorCodeXml = xElement.Element("LIFNR").Value;
 
                         var exsitingVendor = GetExVendor(vendorCodeXml);
+                        var companyCode = vendorCodeXml.Substring(6, 4);
+                        var existingCompany = GetExCompany(companyCode);
+                        if (existingCompany != null)
+                        {
+                            existingCompany.NPWP = _xmlMapper.GetElementValue(xElement.Element("STCEG"));
+                            existingCompany.SPRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
+                            _xmlMapper.InsertOrUpdate(existingCompany);
+                        }
+
                         item.LIFNR = vendorCodeXml;
                         item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
                         item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
                         item.STRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
-                        item.CREATED_BY = Constans.PICreator;
+                        var isDeleted = _xmlMapper.GetElementValue(xElement.Element("LOEVM"));
+                        if (isDeleted != null)
+                        {
+                            item.IS_DELETED = true;
+                        }
+                        item.CREATED_BY = Constans.PI;
 
                         if (exsitingVendor != null)
                         {
                             item.CREATED_DATE = exsitingVendor.CREATED_DATE;
                             item.MODIFIED_DATE = DateTime.Now;
                             item.CREATED_BY = exsitingVendor.CREATED_BY;
-                            item.MODIFIED_BY = Constans.PICreator;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
 
                         }
@@ -94,6 +108,12 @@ namespace Sampoerna.EMS.XMLReader
             return exisitingPoa;
         }
 
+        public T001 GetExCompany(string vendorCode)
+        {
+            var exisitingPoa = _xmlMapper.uow.GetGenericRepository<T001>()
+                .GetByID(vendorCode);
+            return exisitingPoa;
+        }
 
 
     }

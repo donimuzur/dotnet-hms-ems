@@ -48,6 +48,7 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/pbck1script.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
 
         var supplierData;
@@ -58,7 +59,8 @@
             });
 
             $("#Detail_SupplierPortId").change(function() {
-                supplierPortOnChange();
+                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+                $('#Detail_SupplierPortName').val(port_name);
             });
 
             $('#prod-conv-save').click(function() {
@@ -95,7 +97,7 @@
                 nppbkcIdOnChange();
             });
 
-            ajaxLoadSupplierPlant('@Url.Action("GetSupplierPlant", "PBCK1")');
+            ajaxLoadSupplierPlant({ isNppbkcImport: false },'@Url.Action("GetSupplierPlant", "PBCK1")');
 
             pbck1TypeOnchange();
 
@@ -103,15 +105,15 @@
                 goodTypeOnChange();
             });
 
-            $("#externalSupPort").click(function () {
+            $("#Detail_IsExternalSupplier").click(function () {
                 supplierPortOnChange();
             });
 
-        });
+            $("#Detail_IsNppbkcImport").click(function () {
+                isNppbkcImportChecked();
+            });
 
-        //$('#Detail_RequestQtyUomName').change(function () {
-        //    $('#Detail_LatestSaldoUomName').
-        //});
+        });
 
         $('#Detail_Lack1FromMonthId').change(function () {
             ChangeLatestSaldo();
@@ -153,8 +155,12 @@
         function loadSupplierPlant() {
             var list = supplierData;
             if (list.length > 0) {
+                var isNppbkcImport = false;
+                if ($("#Detail_IsNppbkcImport").is(':checked')) {
+                    isNppbkcImport = true;
+                }
                 var htmlSelect = '';
-                htmlSelect += '<select class="form-control" id="Detail_SupplierPlant_ddl" name="Detail.SupplierPlant_ddl" onchange="supplierChange(\'@Url.Action("GetSupplierPlantDetail", "PBCK1")\');">';
+                htmlSelect += '<select class="form-control" id="Detail_SupplierPlant_ddl" name="Detail.SupplierPlant_ddl" onchange="supplierChange('+isNppbkcImport+',\'@Url.Action("GetSupplierPlantDetail", "PBCK1")\');">';
                 for (var i = 0; i < list.length; i++) {
                     htmlSelect += '<option value=' + list[i].Value + '>' + list[i].Text + '</option>';
                 }
@@ -162,7 +168,7 @@
                 htmlSelect += '<input id="Detail_SupplierPlant" name="Detail.SupplierPlant" value="" type="hidden">';
                 $('#supp-plant').html(htmlSelect);
                 //selected to 1
-                supplierChange('@Url.Action("GetSupplierPlantDetail", "PBCK1")');
+                supplierChange(isNppbkcImport, '@Url.Action("GetSupplierPlantDetail", "PBCK1")');
             }
         }
 
@@ -197,10 +203,11 @@
             }
         }
 
-        function ajaxLoadSupplierPlant(url) {
+        function ajaxLoadSupplierPlant(formData, url) {
             $.ajax({
                 type: 'POST',
                 url: url,
+                data: formData,
                 success: function(data) {
                     supplierData = data;
                     //load supplier plant
@@ -215,7 +222,7 @@
                 var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
                 console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
-                if ($("#externalSupPort").is(':checked')) {
+                if ($("#Detail_IsExternalSupplier").is(':checked')) {
                     //
                     $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
                     disableSupplierFormInput(false);
@@ -235,13 +242,32 @@
                 data: formData,
                 success: function (data) {
                     if (data != null) {
-                        $('#Detail_LatestSaldo').val(data.latestSaldo);
+                        $("input[name='Detail.LatestSaldo']:hidden").val(data.latestSaldo);
+                        $("input[name='Detail.LatestSaldo']:text").val(data.latestSaldo);
                     } else {
-                        $('#Detail_LatestSaldo').val('0');
+                        $("input[name='Detail.LatestSaldo']:hidden").val('0');
+                        $("input[name='Detail.LatestSaldo']:text").val('0');
                     }
                     
                 }
             });
+        }
+
+        function isNppbkcImportChecked() {
+            var isDisabled = false;
+            var isChecked;
+            var isNppbkcImport = false;
+
+            if ($("#Detail_IsNppbkcImport").is(':checked')) {
+                isDisabled = true;
+                isChecked = false;
+                isNppbkcImport = true;
+            }
+
+            $('#Detail_IsExternalSupplier').prop('disabled', isDisabled);
+            $("#Detail_IsExternalSupplier").prop('checked', isChecked);
+            
+            ajaxLoadSupplierPlant({ isNppbkcImport: isNppbkcImport }, '@Url.Action("GetSupplierPlant", "PBCK1")');
         }
 
     </script>

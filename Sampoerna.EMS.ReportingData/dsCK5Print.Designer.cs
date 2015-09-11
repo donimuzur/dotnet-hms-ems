@@ -447,6 +447,10 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnDocumentText;
             
+            private global::System.Data.DataColumn columnMonthYear;
+            
+            private global::System.Data.DataColumn columnCK5Type;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public dtCk5DataTable() {
@@ -874,6 +878,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn MonthYearColumn {
+                get {
+                    return this.columnMonthYear;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CK5TypeColumn {
+                get {
+                    return this.columnCK5Type;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -958,7 +978,9 @@ namespace Sampoerna.EMS.ReportingData {
                         string FinalPort, 
                         string FinalPortName, 
                         string FinalPortCode, 
-                        string DocumentText) {
+                        string DocumentText, 
+                        string MonthYear, 
+                        string CK5Type) {
                 dtCk5Row rowdtCk5Row = ((dtCk5Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         OfficeName,
@@ -1009,7 +1031,9 @@ namespace Sampoerna.EMS.ReportingData {
                         FinalPort,
                         FinalPortName,
                         FinalPortCode,
-                        DocumentText};
+                        DocumentText,
+                        MonthYear,
+                        CK5Type};
                 rowdtCk5Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdtCk5Row);
                 return rowdtCk5Row;
@@ -1081,6 +1105,8 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnFinalPortName = base.Columns["FinalPortName"];
                 this.columnFinalPortCode = base.Columns["FinalPortCode"];
                 this.columnDocumentText = base.Columns["DocumentText"];
+                this.columnMonthYear = base.Columns["MonthYear"];
+                this.columnCK5Type = base.Columns["CK5Type"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1184,6 +1210,10 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnFinalPortCode);
                 this.columnDocumentText = new global::System.Data.DataColumn("DocumentText", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDocumentText);
+                this.columnMonthYear = new global::System.Data.DataColumn("MonthYear", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMonthYear);
+                this.columnCK5Type = new global::System.Data.DataColumn("CK5Type", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCK5Type);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2912,6 +2942,38 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string MonthYear {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.MonthYearColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'MonthYear\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.MonthYearColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CK5Type {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtCk5.CK5TypeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CK5Type\' in table \'dtCk5\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtCk5.CK5TypeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsOfficeNameNull() {
                 return this.IsNull(this.tabledtCk5.OfficeNameColumn);
             }
@@ -3496,6 +3558,30 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetDocumentTextNull() {
                 this[this.tabledtCk5.DocumentTextColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsMonthYearNull() {
+                return this.IsNull(this.tabledtCk5.MonthYearColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetMonthYearNull() {
+                this[this.tabledtCk5.MonthYearColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCK5TypeNull() {
+                return this.IsNull(this.tabledtCk5.CK5TypeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCK5TypeNull() {
+                this[this.tabledtCk5.CK5TypeColumn] = global::System.Convert.DBNull;
             }
         }
         

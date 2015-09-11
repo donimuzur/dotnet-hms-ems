@@ -20,6 +20,13 @@
 
                         <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                     }
+                    else
+                    {
+                        if (Model.AllowManagerReject)
+                        {
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                        }
+                    }
 
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
 
@@ -254,6 +261,8 @@
 
             ResetPrintHistoryDataTable();
 
+            setSupplierName();
+
         });
 
         function ajaxLoadPoa(formData) {
@@ -331,6 +340,20 @@
             //            .draw();
             //    });
             //});
+        }
+
+        function setSupplierName() {
+            var suppId = $("#Detail_SupplierPlantWerks").val();
+            var suppName = $("input[name='Detail.SupplierPlant']:hidden").val();
+            var correctSupName = suppId + '-' + suppName;
+            var isExternal = true;
+
+            if (suppId != '') {
+                $("input[name='Detail.SupplierPlant']:text").val(correctSupName);
+                isExternal = false;
+            }
+
+            $("#Detail_IsExternalSupplier").prop('checked', isExternal);
         }
         
     </script>

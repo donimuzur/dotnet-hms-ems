@@ -38,6 +38,7 @@
     <Reference Include="AutoMapper.Net4">
       <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
@@ -62,15 +63,32 @@
   <ItemGroup>
     <Compile Include="BACK1BLL.cs" />
     <Compile Include="BLLMapper.cs" />
+    <Compile Include="BLLMapperCK4C.cs" />
     <Compile Include="BLLMapperCK5.cs" />
+    <Compile Include="BLLMapperLack1.cs" />
     <Compile Include="BLLMapperPBCK1.cs" />
+    <Compile Include="BLLMapperPBCK4.cs" />
     <Compile Include="BLLMapperPBCK7.cs" />
     <Compile Include="ChangesHistoryBLL.cs" />
+    <Compile Include="CK4CItemBLL.cs" />
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CountryBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
+    <Compile Include="PBCK4BLL.cs" />
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
+    <Compile Include="ProductionBLL.cs" />
+    <Compile Include="Services\BrandRegistrationService.cs" />
+    <Compile Include="Services\CK4CItemService.cs" />
+    <Compile Include="Services\CK5MaterialService.cs" />
+    <Compile Include="Services\CK5Service.cs" />
+    <Compile Include="Services\ExGroupTypeService.cs" />
+    <Compile Include="Services\InventoryMovementService.cs" />
+    <Compile Include="Services\LACK1Service.cs" />
+    <Compile Include="Services\Lack1TrackingService.cs" />
+    <Compile Include="Services\PBCK1Service.cs" />
+    <Compile Include="Services\T001KService.cs" />
+    <Compile Include="Services\T001WService.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
     <Compile Include="LACK2BLL.cs" />
     <Compile Include="Pbck1DecreeDocBLL.cs" />
@@ -90,7 +108,7 @@
     <Compile Include="MonthBLL.cs" />
     <Compile Include="PageBLL.cs" />
     <Compile Include="PBCK1BLL.cs" />
-    <Compile Include="CK4C_BLL.cs" />
+    <Compile Include="CK4CBLL.cs" />
     <Compile Include="PlantBLL.cs" />
     <Compile Include="PrintHistoryBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

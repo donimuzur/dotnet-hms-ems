@@ -5,19 +5,19 @@
 
 @using (Html.BeginForm("Edit", "CK5", FormMethod.Post, new { @id = "EditCk5Forms" }))
 {
-     @Html.AntiForgeryToken()
-    
+    @Html.AntiForgeryToken()
+
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 <h3>@Model.Ck5Type.ToString()</h3>
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
-                   
+
                     <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
-                    
+
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                 </div>
             </div>
@@ -43,62 +43,63 @@
                         @Html.HiddenFor(model => model.CreatedBy)
                         @Html.HiddenFor(model => model.CreatedDate)
                         @Html.HiddenFor(model => model.DocumentStatus)
+
+                        @Html.HiddenFor(model => model.KppBcCity)
                         @Html.HiddenFor(model => model.CeOfficeCode)
-                        @Html.HiddenFor(model => model.KppBcCityName)
-                        
+
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
-                        @Html.HiddenFor(model => model.SubmissionDate)
-                       
+
+
+
                         @Html.HiddenFor(model => model.SourceNpwp)
                         @Html.HiddenFor(model => model.SourceNppbkcId)
                         @Html.HiddenFor(model => model.SourceCompanyCode)
-                        @Html.HiddenFor(model => model.SourceCompanyName)
-                        @Html.HiddenFor(model => model.SourceAddress)
                         @Html.HiddenFor(model => model.SourceKppbcName)
                         @Html.HiddenFor(model => model.SourcePlantName)
+
+                        @if (Model.IsCk5PortToImporter)
+                        {
+                            @Html.HiddenFor(model => model.SourcePlantId)
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.SourceCompanyName)
+                            @Html.HiddenFor(model => model.SourceAddress)
+                        }
 
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyCode)
-                        @Html.HiddenFor(model => model.DestCompanyName)
-                        @Html.HiddenFor(model => model.DestAddress)
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
+                        
+                        @if (!Model.IsCk5Export)
+                        {
+                            @Html.HiddenFor(model => model.DestCompanyName)
+                            @Html.HiddenFor(model => model.DestAddress)
+                        }
 
+
+
+                        @Html.HiddenFor(model => model.PbckDecreeId)
                         @Html.HiddenFor(model => model.PbckDecreeNumber)
+                        @Html.HiddenFor(model => model.Pbck1QtyApproved)
+                        @Html.HiddenFor(model => model.Ck5TotalExciseable)
+                        @Html.HiddenFor(model => model.RemainQuota)
 
-                        @Html.HiddenFor(model => model.DnNumber)
-                        @Html.HiddenFor(model => model.StoSenderNumber)
-                        @Html.HiddenFor(model => model.DnDate)
-                        @Html.HiddenFor(model => model.StoReceiverNumber)
-                        @Html.HiddenFor(model => model.StobNumber)
-                        @Html.HiddenFor(model => model.GiDate)
-                        @Html.HiddenFor(model => model.SealingNotifNumber)
-                        @Html.HiddenFor(model => model.UnSealingNotifNumber)
-                        @Html.HiddenFor(model => model.SealingNotifDate)
-                        @Html.HiddenFor(model => model.UnsealingNotifDate)
-                        
-                      @Html.HiddenFor(model => model.IsCk5Export)
+                        @Html.HiddenFor(model => model.IsCk5Export)
+                        @Html.HiddenFor(model => model.IsCk5PortToImporter)
                         @Html.HiddenFor(model => model.CountryName)
 
-                        @*@Html.HiddenFor(model => model.CountryCode)
-                        @Html.HiddenFor(model => model.CountryName)
-
-                        @Html.HiddenFor(model => model.LoadingPort)
-                        @Html.HiddenFor(model => model.LoadingPortId)
-                        @Html.HiddenFor(model => model.LoadingPortName)
-                        @Html.HiddenFor(model => model.FinalPort)
-                        @Html.HiddenFor(model => model.FinalPortId)
-                        @Html.HiddenFor(model => model.FinalPortName)*@
-                        
+                        @Html.HiddenFor(model => model.Command)
 
                         @Html.Partial("_CK5InformationEdit")
                         @Html.Partial("_CK5Printout")
                         @Html.Partial("_CK5UploadEdit")
                         @Html.Partial("_CK5ChangeLog")
-                       
-                     
+
+
 
                     </div>
                 </div>
@@ -114,7 +115,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                    Missing CK5 Materials
+                    <span id="modalBodyMessage">Missing CK5 Materials</span>
                 </p>
 
             </div>
@@ -136,8 +137,8 @@
                 Submit Documents  ?
             </div>
             <div class="modal-footer">
-                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes"/>
-                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No"/>
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
             </div>
         </div>
     </div>
@@ -173,177 +174,373 @@
     </div>
 </div>
 
+<div id="Ck5UploadModal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="lblTitleInputManual">Add Row</span></h4>
+            </div>
+            <div class="modal-body form-excise">
+                <p></p>
+                <input id="uploadMaterialRow" type="hidden" value="">
+                <input id="uploadMaterialDesc" type="hidden" value="">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Plant</label>
+                        <input class="form-control" id="uploadMaterialPlant" type="text" value="" disabled>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Material Number<span class="red">*</span></label>
+                        <select class="form-control" id="uploadMaterialNumber">
+                            <option value="">Select</option>
+                        </select>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label>Qty<span class="red">*</span></label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialQty" })
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>HJE</label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialHje", @disabled = "disabled" })
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-md-4">Tariff</label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialTariff", @disabled = "disabled" })
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>UOM<span class="red">*</span></label>
+                        @Html.DropDownListFor(model => model.PackageUomName, Model.PackageUomList, "Select", new { @class = "form-control", @id = "uploadMaterialUom" })
+
+                    </div>
+                    <div class="col-md-6">
+                        <label>Convertion<span class="red">*</span></label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialConvertion" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Converted UOM<span class="red">*</span></label>
+                        @Html.DropDownListFor(model => model.PackageUomName, Model.PackageUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>USD Value</label>
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadUsdValue" })
+
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Note</label>
+                        <textarea class="form-control" id="uploadNote" cols="20" rows="5"></textarea>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                <input type="button" class="btn btn-blue" value="Save" id="btnSaveMaterial" />
+                <input type="button" class="btn btn-blue" value="Update" id="btnUpdateMaterial" />
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/CK5Scripts.js"></script>
-
+    <script src="~/Scripts/CK5InputManual.js"></script>
     <script type="text/javascript">
-    $(document).ready(function () {
-        OnReadyFunction('@Model.Ck5Type.ToString()');
-        //enable upload
-        $('#btnUploadInfo').enable();
-        $('#CK5UploadSubmitBtn').enable();
+        $(document).ready(function() {
+            OnReadyFunction('@Model.Ck5Type.ToString()');
+            //enable upload
+            $('#btnUploadInfo').enable();
+            $('#CK5UploadSubmitBtn').enable();
 
-        $("#KppBcCity option").each(function () {
-            if ($(this).text() == $("input[name='KppBcCityName']").val()) {
-                $(this).attr('selected', 'selected');
+            $("#KppBcCity option").each(function() {
+                if ($(this).text() == $("input[name='KppBcCityName']").val()) {
+                    $(this).attr('selected', 'selected');
+                }
+            });
+
+
+            $("#btnCancelDocument").click(function() {
+                $('#btnConfirmCancel').attr('disabled', 'disabled');
+
+                $('#Comment').val('');
+
+                $('#Ck5ModalCancel').modal('show');
+
+            });
+
+            $('#Comment').bind('input propertychange', function() {
+
+                $('#btnConfirmCancel').attr('disabled', 'disabled');
+
+                if (this.value.length) {
+                    $('#btnConfirmCancel').removeAttr('disabled');
+                }
+            });
+
+            $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+            $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
+            $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+            $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
+
+            $('#btn-changelog-export-xls').click(function() {
+                location.href = '@Url.Action("ExportXls", "CK5", new {ck5Id = Model.Ck5Id})';
+            });
+
+            $("#btnSave").click(function() {
+
+                if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+                    $('#Command').val('Save');
+                    $('#EditCk5Forms').submit();
+                }
+
+            });
+
+            $('#CK5UploadSubmitBtn').click(function() {
+                GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
+            });
+
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+            $("#uploadMaterialPlant").val(sourcePlant);
+
+            ajaxGetListMaterial('@Url.Action("GetListMaterials", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+
+        });
+
+        var plantOriginal = '@Model.SourcePlantId';
+
+        $("#DestPlantId").change(function() {
+            if ($("#DestPlantId").length) {
+                var destPlant = $(this).find("option:selected").val();
+                var isPortToImporter = false;
+                if ('@Model.Ck5Type.ToString()' == "PortToImporter") {
+                    isPortToImporter = true;
+                    RemoveTable();
+                }
+
+                if (destPlant == '') {
+                    $("input[name='DestNpwp']").val('');
+                    $("input[name='DestNppbkcId']").val('');
+                    $("input[name='DestCompanyCode']").val('');
+                    $("input[name='DestCompanyName']").val('');
+                    $("*[name='DestAddress']").val('');
+                    $("input[name='DestKppbcName']").val('');
+                    $("input[name='DestPlantName']").val('');
+
+                    $("input[name='PbckDecreeId']").val('');
+                    $("input[name='PbckDecreeNumber']").val('');
+                    $("input[name='PbckDecreeDate']").val('');
+                    $("input[name='Pbck1QtyApproved']").val('0');
+                    $("input[name='Ck5TotalExciseable']").val('0');
+                    $("input[name='RemainQuota']").val('0');
+
+                    $("input[name='PbckUom']").val('');
+
+                } else {
+
+                    if (isPortToImporter) {
+                        //alert(destPlant);
+                        ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant, ck5Type: '@Model.Ck5Type' });
+                    } else {
+                        var submissionDate = $('#SubmissionDate').val();
+                        if (submissionDate == '')
+                            submissionDate = '@DateTime.Now';
+
+                        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                        var goodTypeGroupId = $("#GoodType").val();
+                        //var Ck5_Type = $("#Ck5Type").val();
+                        var sourceNppbkcId = $("#SourceNppbkcId").val();
+
+                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+
+                    }
+                }
+            }
+        });
+
+        $("#GoodType").change(function() {
+            var goodTypeGroupId = $("#GoodType").val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+            var destPlant = $("#DestPlantId").find("option:selected").val();
+            var sourceNppbkcId = $("#SourceNppbkcId").val();
+            var Ck5_Type = $("#Ck5Type").val();
+            if (destPlant == '' || sourcePlant == '' || destPlant == '') {
+                $("input[name='PbckDecreeId']").val('');
+                $("input[name='PbckDecreeNumber']").val('');
+                $("input[name='PbckDecreeDate']").val('');
+                $("input[name='Pbck1QtyApproved']").val('0');
+                $("input[name='Ck5TotalExciseable']").val('0');
+                $("input[name='RemainQuota']").val('0');
+                $("input[name='PbckUom']").val('');
+            } else {
+                var submissionDate = $('#SubmissionDate').val();
+                if (submissionDate == '')
+                    submissionDate = '@DateTime.Now';
+
+
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+
+            }
+
+        });
+
+        $('#SubmissionDate').change(function() {
+            var goodTypeGroupId = $("#GoodType").val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+            var destPlant = $("#DestPlantId").find("option:selected").val();
+            var sourceNppbkcId = $("#SourceNppbkcId").val();
+            if (destPlant == '' || sourcePlant == '' || destPlant == '') {
+                $("input[name='PbckDecreeId']").val('');
+                $("input[name='PbckDecreeNumber']").val('');
+                $("input[name='PbckDecreeDate']").val('');
+                $("input[name='Pbck1QtyApproved']").val('0');
+                $("input[name='Ck5TotalExciseable']").val('0');
+                $("input[name='RemainQuota']").val('0');
+                $("input[name='PbckUom']").val('');
+            } else {
+                var submissionDate = $('#SubmissionDate').val();
+                if (submissionDate == '')
+                    submissionDate = '@DateTime.Now';
+
+
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+
+            }
+        });
+
+        $("#SourcePlantId").change(function() {
+            if ($("#SourcePlantId").length) {
+                var sourcePlant = $(this).find("option:selected").val();
+                //var submissionDate = $('#SubmissionDate').val();
+                //remove table
+                RemoveTable();
+
+                if (sourcePlant == '') {
+                    $("input[name='SourceNpwp']").val('');
+                    $("input[name='SourceNppbkcId']").val('');
+                    $("input[name='SourceCompanyCode']").val('');
+                    $("input[name='SourceCompanyName']").val('');
+                    $("*[name='SourceAddress']").val('');
+                    $("input[name='SourceKppbcName']").val('');
+                    $("input[name='SourcePlantName']").val('');
+                    //enable upload
+                    $('#btnUploadInfo').enable(false);
+                    $('#CK5UploadSubmitBtn').enable(false);
+
+                    $("input[name='KppBcCity']").val('');
+                    $("input[name='CeOfficeCode']").val('');
+
+
+                } else {
+
+
+                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+
+                    ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
+                }
             }
         });
 
 
-        $("#btnCancelDocument").click(function () {
-            $('#btnConfirmCancel').attr('disabled', 'disabled');
-
-            $('#Comment').val('');
-
-            $('#Ck5ModalCancel').modal('show');
-
-        });
-
-        $('#Comment').bind('input propertychange', function () {
-
-            $('#btnConfirmCancel').attr('disabled', 'disabled');
-
-            if (this.value.length) {
-                $('#btnConfirmCancel').removeAttr('disabled');
-            }
-        });
-
-        $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
-        $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
-        $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
-        $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
-        
-        $('#btn-changelog-export-xls').click(function () {
-            location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
-        });
-        
-        $("#btnSave").click(function () {
-
+        $("#btnSubmitDocument").click(function() {
             if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+                $('#Ck5Modal').modal('show');
+            }
+
+        });
+
+        $("#btnSubmitConfirm").click(function() {
+                    @*window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";*@
+            if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+                $('#Command').val('Submit');
                 $('#EditCk5Forms').submit();
             }
-
         });
-        
-        $('#CK5UploadSubmitBtn').click(function () {
-            GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
-        });
-    });
 
-    $("#PbckDecreeId").change(function () {
-        if ($("#PbckDecreeId").length) {
-            var pbck1 = $(this).find("option:selected").val();
-            var pbck1Number = $('option:selected', $(this)).text();
-            if (pbck1 == '') {
-                $("input[name='PbckDecreeDate']").val('');
-                $("input[name='PbckDecreeNumber']").val('');
-            } else {
-                ajaxGetPbck1Date('@Url.Action("Pbck1DatePartial", "CK5")', { pbck1Id: pbck1 });
-                $("input[name='PbckDecreeNumber']").val(pbck1Number);
-            }
-        }
-
-    });
-
-    var plantOriginal = '@Model.SourcePlantId';
-
-    $("#DestPlantId").change(function () {
-        if ($("#DestPlantId").length) {
-            var destPlant = $(this).find("option:selected").val();
-            if (destPlant == '') {
-                $("input[name='DestNpwp']").val('');
-                $("input[name='DestNppbkcId']").val('');
-                $("input[name='DestCompanyCode']").val('');
-                $("input[name='DestCompanyName']").val('');
-                $("*[name='DestAddress']").val('');
-                $("input[name='DestKppbcName']").val('');
-                $("input[name='DestPlantName']").val('');
-            } else {
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant });
-
-            }
-        }
-    });
-
-    $("#SourcePlantId").change(function () {
-        if ($("#SourcePlantId").length) {
-            var sourcePlant = $(this).find("option:selected").val();
-
-            //remove table
-            RemoveTable();
-
-            if (sourcePlant == '') {
-                $("input[name='SourceNpwp']").val('');
-                $("input[name='SourceNppbkcId']").val('');
-                $("input[name='SourceCompanyCode']").val('');
-                $("input[name='SourceCompanyName']").val('');
-                $("*[name='SourceAddress']").val('');
-                $("input[name='SourceKppbcName']").val('');
-                $("input[name='SourcePlantName']").val('');
-                //enable upload
-                $('#btnUploadInfo').enable(false);
-                $('#CK5UploadSubmitBtn').enable(false);
-
-
-            } else {
-                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant });
-
-                ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
-            }
-        }
-    });
-
-    $("#KppBcCity").change(function () {
-        if ($("#KppBcCity").length) {
-            var nppBkcCity = $(this).find("option:selected").val();
-            var cityName = $('option:selected', $(this)).text();
-            if (nppBkcCity == '') {
-                $("input[name='CeOfficeCode']").val('');
-                $("input[name='KppBcCityName']").val('');
-                //$("input[name='CompanyCode']").val('');
-            } else {
-                $("input[name='CeOfficeCode']").val(nppBkcCity);
-                $("input[name='KppBcCityName']").val(cityName);
-
-                 @*ajaxGetCompanyCode('@Url.Action("GetCompanyCode", "CK5")', { nppBkcCityId: nppBkcCity });*@
-                 }
-        }
-
-    });
-    $("#btnSubmitDocument").click(function () {
-        $('#Ck5Modal').modal('show');
-        @*var r = confirm("Submit Documents ?");
-            if (r == true) {
-                window.location = "@Url.Action("Delete", "CK5", new {id = @Model.Ck5Id})";
-            }*@
-    });
-
-    $("#btnSubmitConfirm").click(function () {
-        window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";
-    });
-    
-        $("#CountryCode").change(function () {
+        $("#CountryCode").change(function() {
             if ($("#CountryCode").length) {
                 var countryName = $('option:selected', $(this)).text();
                 if (countryName == '') {
                     $("input[name='CountryName']").val('');
-                   
+
                 } else {
                     $("input[name='CountryName']").val(countryName);
-                 
-                     }
+
+                }
             }
 
         });
-        
+
         function printPreview(url) {
 
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
         }
-</script>
+
+        $("#btnAddRow").click(function() {
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+            $("#uploadMaterialPlant").val(sourcePlant);
+
+            ajaxGetListMaterial('@Url.Action("GetListMaterials", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+
+            $('#btnSaveMaterial').show();
+            $('#btnUpdateMaterial').hide();
+
+            ClearInputForm();
+            ClearValidation();
+            $("#lblTitleInputManual").text('New Input');
+
+            $('#Ck5UploadModal').modal('show');
+        });
+        $("#btnSaveMaterial").click(function() {
+            AddRow();
+        });
+
+        $("#uploadMaterialNumber").change(function() {
+            if ($("#uploadMaterialNumber").length) {
+                var materialNumber = $(this).find("option:selected").val();
+
+
+                if (materialNumber == '') {
+                    $("#uploadMaterialHje").val('0');
+                    $("#uploadMaterialTariff").val('0');
+
+                } else {
+                    var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+                    ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                }
+            }
+        });
+
+        $("#btnUpdateMaterial").click(function() {
+
+            UpdateRow();
+        });
+
+    </script>
 }

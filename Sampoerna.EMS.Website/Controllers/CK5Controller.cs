@@ -46,9 +46,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poabll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IUnitOfMeasurementBLL _uomBll;
+        private IMaterialBLL _materialBll;
 
         public CK5Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbckbll, ICK5BLL ck5Bll,  IPBCK1BLL pbckBll, 
-            IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll,
+            IWorkflowHistoryBLL workflowHistoryBll,IChangesHistoryBLL changesHistoryBll, IMaterialBLL materialBll,
             IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
@@ -62,6 +63,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _poabll = poabll;
             _nppbkcbll = nppbckbll;
             _uomBll = uomBll;
+            _materialBll = materialBll;
         }
 
         #region View Documents
@@ -208,6 +210,29 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CK5Import", model);
         }
 
+        
+        private SelectList GetCorrespondingPlantList(string plantId, Enums.CK5Type ck5Type)
+        {
+            SelectList data;
+            T001WDto dataPlant = _plantBll.GetT001ById(plantId);
+            
+            if (ck5Type == Enums.CK5Type.Domestic) {
+                
+                data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode);
+            }
+            else if (ck5Type == Enums.CK5Type.Intercompany)
+            {
+
+                data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode,true);
+            }
+            else {
+                data = GlobalFunctions.GetPlantAll();
+            
+            }
+            
+            return data;
+        }
+
         #endregion
 
         #region Save Edit
@@ -234,6 +259,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
             model.DocumentStatus = Enums.DocumentStatus.Draft;
+            model.SubmissionDate = DateTime.Now;
             model = InitCK5List(model);
 
             return model;
@@ -245,15 +271,15 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+            //model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+            
 
-           //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
 
-            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
-          
+            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
+
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
@@ -295,6 +321,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index");
             }
             var model = InitCreateCK5(Enums.CK5Type.PortToImporter);
+            model.IsCk5PortToImporter = true;
             return View("Create", model);
         }
 
@@ -348,46 +375,76 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
-        [HttpPost]
-        public JsonResult GetCompanyCode(string nppBkcCityId)
-        {
-            var companyCode = "";
-            var data = GlobalFunctions.GetNppbkcById(nppBkcCityId);
-            //var data = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
-            if (data != null)
-                companyCode = data.BUKRS;
-            return Json(companyCode);
-        }
+        //[HttpPost]
+        //public JsonResult GetCompanyCode(string nppBkcCityId)
+        //{
+        //    var companyCode = "";
+        //    var data = GlobalFunctions.GetNppbkcById(nppBkcCityId);
+        //    //var data = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
+        //    if (data != null)
+        //        companyCode = data.BUKRS;
+        //    return Json(companyCode);
+        //}
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetails(string plantId)
+        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId, string sourceNppbkcId, string destPlantId, DateTime submissionDate, string goodTypeGroupId, Enums.CK5Type ck5Type)
         {
-            var dbPlant = _plantBll.GetT001ById(plantId);
-            var model = Mapper.Map<CK5PlantModel>(dbPlant);
+            //var dbPlantSource = _plantBll.GetT001ById(sourcePlantId);
+            var dbPlantDest = _plantBll.GetT001ById(destPlantId);
+            var model = Mapper.Map<CK5PlantModel>(dbPlantDest);
+
+            GetQuotaAndRemainOutput output;
+            if (string.IsNullOrEmpty(goodTypeGroupId))
+            {
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, null);
+            } else {
+                Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroupId);
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, (int)goodtypeenum);
+            }
+
+
+            if (sourceNppbkcId == dbPlantDest.NPPBKC_ID)
+            {
+                model.Pbck1Id = null;
+                model.Pbck1Number = null;
+                model.Pbck1DecreeDate = null;
+                model.Pbck1QtyApproved = "0";
+                model.Ck5TotalExciseable = "0";
+                model.RemainQuota = "0";
+                model.PbckUom = "";
+            }
+            else {
+                model.Pbck1Id = output.Pbck1Id;
+                model.Pbck1Number = output.Pbck1Number;
+                model.Pbck1DecreeDate = output.Pbck1DecreeDate;
+                model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                model.Ck5TotalExciseable = output.QtyCk5.ToString();
+                model.RemainQuota = output.RemainQuota.ToString();
+                model.PbckUom = output.PbckUom;
+            }
+            
+            
+
             return Json(model);
         }
 
         [HttpPost]
-        public JsonResult Pbck1DatePartial(long pbck1Id)
+        public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5Type)
         {
-            //var pbck1 = _pbck1Bll.GetById(pbck1Id);
+            var dbPlant = _plantBll.GetT001ById(plantId);
+            var model = Mapper.Map<CK5PlantModel>(dbPlant);
 
-            //return Json(pbck1.DECREE_DATE.HasValue ? pbck1.DECREE_DATE.Value.ToString("dd/MM/yyyy"):string.Empty);
-            return Json(GetDatePbck1ByPbckId(pbck1Id));
+            if (ck5Type == Enums.CK5Type.ImporterToPlant)
+            {
+                model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
+            }
+
+            model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
+      
+            return Json(model);
         }
 
-        private string GetDatePbck1ByPbckId(long? id)
-        {
-            if (id == null)
-                return string.Empty;
-
-            var pbck1 = _pbck1Bll.GetById(id.Value);
-            if (pbck1.DecreeDate.HasValue)
-                return pbck1.DecreeDate.Value.ToString("dd/MM/yyyy");
-
-            return string.Empty;
-        }
-        
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult SaveCK5(CK5FormViewModel model)
@@ -398,10 +455,35 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.UploadItemModels.Count > 0)
                     {
-                        var saveResult = SaveCk5ToDatabase(model);
+                        if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
+                        {
 
+                        }
+                        else
+                        {
+                            if (model.Ck5Type != Enums.CK5Type.Export &&
+                                model.Ck5Type != Enums.CK5Type.PortToImporter)
+                            {
+                                //double check
+                                GetQuotaAndRemainOutput output;
+
+                                if (!model.SubmissionDate.HasValue)
+                                    model.SubmissionDate = DateTime.Now;
+
+                                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(model.SourcePlantId, model.SourceNppbkcId,
+                                    model.SubmissionDate.Value, model.DestNppbkcId, (int) model.GoodType);
+
+
+                                model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+                            }
+                        }
+
+
+                        var saveResult = SaveCk5ToDatabase(model);
+                        
                         AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
+                        
                         return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
                     }
 
@@ -476,15 +558,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
-            
-            
-            //model.SourcePlantList = GlobalFunctions.GetSourcePlantList();
-            //model.DestPlantList = GlobalFunctions.GetSourcePlantList();
+            //model.KppBcCityList = GlobalFunctions.GetKppBcCityList();
+           
             model.SourcePlantList = GlobalFunctions.GetPlantAll();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
 
-            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant(model.SourcePlantId);
 
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
@@ -520,7 +600,28 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
-             
+                if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
+                {
+
+                }
+                else
+                {
+                    if (model.Ck5Type != Enums.CK5Type.Export &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter)
+                    {
+
+                        var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
+                        model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                        //
+                        //decimal currentCk5 = output.QtyCk5;//- model.GrandTotalEx;
+
+                        model.Ck5TotalExciseable = (output.QtyCk5 - model.GrandTotalEx).ToString();
+                        model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+
+                        model.PbckUom = output.PbckUom;
+                    }
+
+                }
             }
             catch (Exception ex)
             {
@@ -542,6 +643,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.UploadItemModels.Count > 0)
                     {
+                        bool isSubmit = model.Command == "Submit";
+
                         //validate
                         var input = new WorkflowAllowEditAndSubmitInput();
                         input.DocumentStatus = model.DocumentStatus;
@@ -549,10 +652,45 @@ namespace Sampoerna.EMS.Website.Controllers
                         input.CurrentUser = CurrentUser.USER_ID;
                         if (_workflowBll.AllowEditDocument(input))
                         {
+                            //quota
+                            if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
+                            {
+
+                            }
+                            else
+                            {
+                                if (model.Ck5Type != Enums.CK5Type.Export &&
+                                    model.Ck5Type != Enums.CK5Type.PortToImporter)
+                                {
+
+                                   // var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
+
+                                    var submissionDate = DateTime.Now;
+                                    if (model.SubmissionDate.HasValue)
+                                        submissionDate = model.SubmissionDate.Value;
+
+                                    var output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(model.SourcePlantId,
+                                        model.SourceNppbkcId, submissionDate, model.DestNppbkcId, (int) model.GoodType);
+
+                                    model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                                    decimal currentCk5 = output.QtyCk5 - model.GrandTotalEx;
+                                    model.Ck5TotalExciseable = currentCk5.ToString();
+                                    model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5).ToString();
+                                }
+                            }
 
                             SaveCk5ToDatabase(model);
-
+                            if (isSubmit)
+                            {
+                                CK5Workflow(model.Ck5Id, Enums.ActionType.Submit, string.Empty);
+                                AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
+                                return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
+                               
+                            }
+                            //update info quota
+                            //model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5 - model.GrandTotalEx).ToString();
                             AddMessageInfo("Success", Enums.MessageInfoType.Success);
+                            return RedirectToAction("Edit", "CK5", new {@id = model.Ck5Id});
                         }
                         else
                         {
@@ -643,13 +781,50 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject) 
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
                
                 //gov approval purpose
-                if (model.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
-                    model.KppBcCity = model.KppBcCityName;
+                //if (model.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
+                //    model.KppBcCity = model.KppBcCityName;
 
                 model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
+                
+                var outputHistory = _workflowHistoryBll.GetStatusGovHistory(ck5Details.Ck5Dto.SUBMISSION_NUMBER);
+                model.GovStatusDesc = outputHistory.StatusGov;
+                model.CommentGov = outputHistory.Comment;
+
+                if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId))
+                {
+
+                }
+                else
+                {
+                    if (model.Ck5Type != Enums.CK5Type.Export &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter)
+                    {
+                        var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
+                        model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
+                        //decimal currentCk5 = outputQuota.QtyCk5 - model.GrandTotalEx;
+                        model.Ck5TotalExciseable = (outputQuota.QtyCk5 - model.GrandTotalEx).ToString();
+                        model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
+                    }
+                }
+
+                model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
+                model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
+
+                model.AllowCancelSAP = _workflowBll.AllowCancelSAP(input);
+
+                if (model.AllowGovApproveAndReject)
+                    model.ActionType = "GovApproveDocument";
+                else if (model.AllowGiCreated)
+                    model.ActionType = "CK5GICreated";
+                else if (model.AllowGrCreated)
+                    model.ActionType = "CK5GRCreated";
+
+                
+
             }
             catch (Exception ex)
             {
@@ -902,9 +1077,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         if (item != null)
                         {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+                           
                             var ck5UploadFile = new CK5FileUploadViewModel
                             {
-                                FILE_NAME = item.FileName,
+                                FILE_NAME = filenameCk5Check,
                                 FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
                                 CREATED_DATE = DateTime.Now,
                                 CREATED_BY = currentUserId
@@ -920,8 +1099,118 @@ namespace Sampoerna.EMS.Website.Controllers
                     RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
                 }
 
-                if (CK5WorkflowGovApproval(model))
-                    AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+                switch (model.GovStatus)
+                {
+                    case Enums.CK5GovStatus.GovApproved:
+                        if (CK5WorkflowGovApproval(model))
+                            AddMessageInfo("Success Gov Approve Document", Enums.MessageInfoType.Success);
+                        break;
+                    case Enums.CK5GovStatus.GovReject:
+                        CK5Workflow(model.Ck5Id, Enums.ActionType.GovReject, model.Comment);
+                        AddMessageInfo("Success GovReject Document", Enums.MessageInfoType.Success);
+                        break;
+                    case Enums.CK5GovStatus.GovCancel:
+                        CK5Workflow(model.Ck5Id, Enums.ActionType.GovCancel, model.Comment);
+                        AddMessageInfo("Success GovCancel Document", Enums.MessageInfoType.Success);
+                        break;
+                    default:
+                        AddMessageInfo("Undefined Gov Status", Enums.MessageInfoType.Error);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
+        public ActionResult CK5GICreated(CK5FormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
+                // return View("Details", model);
+                return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+            }
+
+            try
+            {
+                //CK5Workflow(model.Ck5Id, Enums.ActionType.Submit, string.Empty);
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+
+                switch (model.DocumentStatus)
+                {
+                    case Enums.DocumentStatus.GICreated:
+                        input.ActionType = Enums.ActionType.GICreated;
+                        break;
+                    case Enums.DocumentStatus.GICompleted:
+                        input.ActionType = Enums.ActionType.GICompleted;
+                        break;
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
+                input.SealingNumber = model.SealingNotifNumber;
+                input.SealingDate = model.SealingNotifDate;
+
+                _ck5Bll.CK5Workflow(input);
+
+                AddMessageInfo("Success update Sealing Number and Date", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
+        public ActionResult CK5GRCreated(CK5FormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
+                // return View("Details", model);
+                return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+            }
+
+            try
+            {
+                //CK5Workflow(model.Ck5Id, Enums.ActionType.Submit, string.Empty);
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+
+                switch (model.DocumentStatus)
+                {
+                    case Enums.DocumentStatus.GRCreated:
+                        input.ActionType = Enums.ActionType.GRCreated;
+                        break;
+                    case Enums.DocumentStatus.GRCompleted:
+                        input.ActionType = Enums.ActionType.GRCompleted;
+                        break;
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
+
+                input.SealingNumber = model.SealingNotifNumber;
+                input.SealingDate = model.SealingNotifDate;
+
+                input.UnSealingNumber = model.UnSealingNotifNumber;
+                input.UnSealingDate = model.UnsealingNotifDate;
+
+                _ck5Bll.CK5Workflow(input);
+
+                AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {
@@ -952,18 +1241,20 @@ namespace Sampoerna.EMS.Website.Controllers
             };
             _ck5Bll.CK5Workflow(input);
 
+            if (model.Ck5Type == Enums.CK5Type.Manual) return true;
             try
             {
                 //create xml file
                 var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
-
-
-                //var fileName = Constans.CK5FolderPath + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
-                var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5Xml" +  DateTime.Now.ToString("yyyyMMddHHmmss") + ".xml";
-                //ck5XmlDto.Ck5PathXml = Server.MapPath(fileName);// @"C:\ck5_file_outbound.xml";
+              
+                var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                               model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                
                 ck5XmlDto.Ck5PathXml = fileName;
 
                 XmlCK5DataWriter rt = new XmlCK5DataWriter();
+                
+                //ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
                 rt.CreateCK5Xml(ck5XmlDto);
 
                 return true;
@@ -1040,6 +1331,71 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        public ActionResult CancelSAPDocument(long id)
+        {
+            try
+            {
+                var ck5 = _ck5Bll.GetById(id);
+
+                if (ck5.STATUS_ID == Enums.DocumentStatus.STOCreated && string.IsNullOrEmpty(ck5.DN_NUMBER))
+                {
+                    CK5Workflow(id, Enums.ActionType.CancelSTOCreated, string.Empty);
+
+                    try
+                    {
+                        //create xml file
+                        var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(id);
+                        ////todo check validation
+                        //var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                        //               ck5XmlDto.SUBMISSION_NUMBER + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
+                        var date = DateTime.Now.ToString("yyyyMMdd");
+                        var time = DateTime.Now.ToString("hhmmss");
+
+                        var fileName = string.Format("CK5CAN_{0}-{1}-{2}.xml", ck5.SUBMISSION_NUMBER, date, time);
+
+                        if (fileName.Contains("/"))
+                            throw  new Exception("You use Old CK5Number");
+
+                        ck5XmlDto.Ck5PathXml = Path.Combine(ConfigurationManager.AppSettings["CK5PathXml"], fileName);
+
+                        XmlCK5DataWriter rt = new XmlCK5DataWriter();
+
+                        rt.CreateCK5Xml(ck5XmlDto, "03");
+
+                        AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                    }
+                    catch (Exception ex)
+                    {
+                        //failed create xml...
+                        //rollaback the update
+                        var input = new CK5WorkflowDocumentInput();
+                        input.DocumentId = id;
+                        input.UserId = CurrentUser.USER_ID;
+                        input.UserRole = CurrentUser.UserRole;
+                        input.ActionType = Enums.ActionType.CancelSTOCreated;
+
+                        _ck5Bll.CancelSTOCreatedRollback(input);
+                        AddMessageInfo("Failed Create CK5  XMl 03 message : " + ex.Message, Enums.MessageInfoType.Error);
+                    
+                    }
+                 
+                }
+                else
+                {
+                    CK5Workflow(id, Enums.ActionType.CancelSAP, string.Empty);
+                    AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                }
+                
+                
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = id });
         }
 
         #endregion
@@ -1959,6 +2315,8 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.FinalPortName = ck5ReportDetails.FinalPortName;
             detailRow.FinalPortCode = ck5ReportDetails.FinalPortId;
 
+            detailRow.MonthYear = ck5ReportDetails.MonthYear;
+            detailRow.CK5Type = ck5ReportDetails.CK5Type;
 
             //todo remove
             if (!Utils.ConvertHelper.IsNumeric(detailRow.ExGoodType))
@@ -1995,6 +2353,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.ExciseValue = materialDto.ExciseValue;
                 detailRow.UsdValue = materialDto.UsdValue;
                 detailRow.Note = materialDto.Note;
+                detailRow.DescMaterial = materialDto.MaterialDescription;
 
                 dsCk5.dtCk5Material.AdddtCk5MaterialRow(detailRow);
 
@@ -2024,6 +2383,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.ExciseValue = materialDto.ExciseValue;
                     detailRow.UsdValue = materialDto.UsdValue;
                     detailRow.Note = materialDto.Note;
+                    detailRow.DescMaterial = materialDto.MaterialDescription;
 
                     dsCk5.dtCk5MaterialExtend.AdddtCk5MaterialExtendRow(detailRow);
                 }
@@ -2265,34 +2625,40 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region "Create XML"
 
-        private void CreateCk5XML()
-        {
-             XmlCK5DataWriter rt= new XmlCK5DataWriter();
-             var ck5 = new CK5();
-             ck5.REGISTRATION_NUMBER = "8100000011";
-             ck5.CK5_TYPE = Enums.CK5Type.Domestic;
-             ck5.SOURCE_PLANT_ID = "ID01";
-             ck5.DEST_PLANT_ID = "ID02";
-             ck5.GI_DATE = DateTime.Now;
-             ck5.GR_DATE = DateTime.Now.AddDays(-1);
-             ck5.CK5_MATERIAL = new List<CK5_MATERIAL>();
-               ck5.CK5_MATERIAL.Add(new CK5_MATERIAL()
-               {
-                   LINE_ITEM = 1,
-                   BRAND = "22.8011",
-                   CONVERTED_QTY = 1000,
-                   CONVERTED_UOM = "G"
-                   
-               });
-               ck5.CK5_MATERIAL.Add(new CK5_MATERIAL()
-               {
-                   LINE_ITEM = 10,
-                   BRAND = "22.8022",
-                   CONVERTED_QTY = 1,
-                   CONVERTED_UOM = "G"
+      
+        #endregion
 
-               });
-             rt.CreateXML(ck5, @"H:\ck5_file_outbound.xml");
+        #region "Input Materials"
+
+        public ActionResult InputMaterials()
+        {
+            var model = new CK5InputManualViewModel();
+            //model.MainMenu = Enums.MenuList.CK5;
+            //model.CurrentMenu = PageInfo;
+          
+            return View("CK5InputMaterial", model);
+        }
+
+        [HttpPost]
+        public JsonResult GetListMaterials(string plantId, Enums.CK5Type ck5Type)
+        {
+
+            var dbMaterial = _materialBll.GetMaterialByPlantIdAndGoodTypeNotNull(plantId);
+            var model = Mapper.Map<List<CK5InputManualViewModel>>(dbMaterial);
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetMaterialHjeAndTariff(string plantId, string materialNumber)
+        {
+
+            var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
+            var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
+
+            //model.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
+            //model.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
+            return Json(model);
         }
 
         #endregion

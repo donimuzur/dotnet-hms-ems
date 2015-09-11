@@ -11,6 +11,9 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.PrintHistory;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -26,10 +29,15 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICompanyBLL _companyBll;
         private IPBCK1BLL _pbck1Bll;
         private IPlantBLL _plantBll;
+        private IWorkflowBLL _workflowBll;
+        private IChangesHistoryBLL _changesHistoryBll;
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IPrintHistoryBLL _printHistoryBll;
 
         public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, ICompanyBLL companyBll,
             IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll,
-            IUnitOfMeasurementBLL uomBll, IPBCK1BLL pbck1Bll, IPlantBLL plantBll)
+            IUnitOfMeasurementBLL uomBll, IPBCK1BLL pbck1Bll, IPlantBLL plantBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll,
+            IChangesHistoryBLL changesHistoryBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
             _lack1Bll = lack1Bll;
@@ -42,6 +50,12 @@ namespace Sampoerna.EMS.Website.Controllers
             _companyBll = companyBll;
             _pbck1Bll = pbck1Bll;
             _plantBll = plantBll;
+
+            _workflowHistoryBll = workflowHistoryBll;
+            _workflowBll = workflowBll;
+            _changesHistoryBll = changesHistoryBll;
+            _printHistoryBll = printHistoryBll;
+
         }
 
 
@@ -92,11 +106,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Lack1IndexViewModel { Details = result };
 
             return PartialView("_Lack1Table", viewModel);
-
-
-            //model.Details = GetListByNppbkc(model);
-            //return PartialView("_Lack1Table", model);
-            return null;
         }
 
         #endregion
@@ -166,23 +175,58 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(data);
         }
 
+        /// <summary>
+        /// user for get received plant id
+        /// </summary>
+        /// <param name="nppbkcId"></param>
+        /// <returns></returns>
         public JsonResult GetPlantListByNppbkcId(string nppbkcId)
         {
             var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
-            var model = new Lack1CreateNppbkcViewModel() { PlantList = listPlant };
+            var model = new Lack1CreateViewModel() { ReceivePlantList = listPlant };
             return Json(model);
+        }
+
+        public JsonResult GetExcisableGoodsTypeByNppbkcId(string nppbkcId)
+        {
+            var data = GetExciseGoodsTypeList(nppbkcId);
+            var model = new Lack1CreateViewModel() { ExGoodTypeList = data };
+            return Json(model);
+        }
+
+        public JsonResult GetSupplierListByParam(string nppbkcId, string excisableGoodsType)
+        {
+            var data = GetSupplierPlantListByParam(nppbkcId, excisableGoodsType);
+            var model = new Lack1CreateViewModel() { SupplierList = data };
+            return Json(model);
+        }
+
+        public JsonResult Generate(Lack1GenerateInputModel param)
+        {
+            var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
+            var outGeneratedData = _lack1Bll.GenerateLack1DataByParam(input);
+            return Json(outGeneratedData);
         }
 
         #endregion
 
         #region ----- create -----
 
-        public ActionResult Create()
+        public ActionResult Create(Enums.Lack1Level? lack1Level)
         {
-            var model = new Lack1CreateNppbkcViewModel
+
+            if (!lack1Level.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new Lack1CreateViewModel
             {
                 MainMenu = _mainMenu,
-                CurrentMenu = PageInfo
+                CurrentMenu = PageInfo,
+                Lack1Level = lack1Level.Value,
+                MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
+                MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : ""
             };
 
             return CreateInitial(model);
@@ -190,38 +234,28 @@ namespace Sampoerna.EMS.Website.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Lack1CreateNppbkcViewModel model)
+        public ActionResult Create(Lack1CreateViewModel model)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Invalid input, please check the input.", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
 
-                //process save
-                var dataToSave = Mapper.Map<Lack1Dto>(model);
-                dataToSave.CreateBy = CurrentUser.USER_ID;
-
-                var input = new Lack1SaveInput()
+                var input = Mapper.Map<Lack1CreateParamInput>(model);
+                input.UserId = CurrentUser.USER_ID;
+                var saveOutput = _lack1Bll.Create(input);
+                if (saveOutput.Success)
                 {
-                    Lack1 = dataToSave,
-                    UserId = CurrentUser.USER_ID,
-                    WorkflowActionType = Enums.ActionType.Created
-                };
-
-                //only add this information from gov approval,
-                //when save create/edit 
-                input.Lack1.DecreeDate = null;
-
-                var saveResult = _lack1Bll.Save(input);
-
-                if (saveResult.Success)
-                {
-                    return RedirectToAction("Edit", new { id = saveResult.Id });
+                    AddMessageInfo("Save successfull", Enums.MessageInfoType.Info);
+                    if (model.Lack1Level == Enums.Lack1Level.Nppbkc)
+                    {
+                        return RedirectToAction("Index");    
+                    }
+                    return RedirectToAction("ListByPlant");
                 }
-
             }
             catch (DbEntityValidationException ex)
             {
@@ -248,12 +282,36 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        public ActionResult CreateInitial(Lack1CreateNppbkcViewModel model)
+        public ActionResult CreateInitial(Lack1CreateViewModel model)
         {
             return View("Create", InitialModel(model));
         }
 
         #endregion
+
+        #region -------------- Private Method --------
+
+        private List<Lack1SummaryProductionItemModel> ProcessSummaryProductionDetails(
+            List<Lack1ProductionDetailItemModel> input)
+        {
+            if (input.Count > 0)
+            {
+                var groupedData = input.GroupBy(p => new
+                {
+                    p.UomId,
+                    p.UomDesc
+                }).Select(g => new Lack1SummaryProductionItemModel()
+                {
+                    UomId = g.Key.UomId,
+                    UomDesc = g.Key.UomDesc,
+                    Amount = g.Sum(p => p.Amount)
+                });
+
+                return groupedData.ToList();
+
+            }
+            return new List<Lack1SummaryProductionItemModel>();
+        }
 
         private SelectList GetNppbkcListOnPbck1ByCompanyCode(string companyCode)
         {
@@ -261,7 +319,23 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(data, "NPPBKC_ID", "NPPBKC_ID");
         }
 
-        private Lack1CreateNppbkcViewModel InitialModel(Lack1CreateNppbkcViewModel model)
+        private SelectList GetExciseGoodsTypeList(string nppbkcId)
+        {
+            var data = _pbck1Bll.GetGoodsTypeByNppbkcId(nppbkcId);
+            return new SelectList(data, "EXC_GOOD_TYP", "EXT_TYP_DESC");
+        }
+
+        private SelectList GetSupplierPlantListByParam(string nppbkcId, string excisableGoodsType)
+        {
+            var data = _pbck1Bll.GetSupplierPlantByParam(new Pbck1GetSupplierPlantByParamInput()
+            {
+                NppbkcId = nppbkcId,
+                ExciseableGoodsTypeId = excisableGoodsType
+            });
+            return new SelectList(data, "WERKS", "DROPDOWNTEXTFIELD");
+        }
+
+        private Lack1CreateViewModel InitialModel(Lack1CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
@@ -270,9 +344,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MontList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearsList = CreateYearList();
             model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
-            model.PlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
-            model.SupplierList = GlobalFunctions.GetSupplierPlantList();
-            model.ExGoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
+            model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
+            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
             model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
             model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
 
@@ -290,6 +364,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return new SelectList(years, "ValueField", "TextField");
         }
+
+        #endregion
 
         #region Completed Document
 
@@ -334,6 +410,204 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        #region -------------- Details -----------
+
+        public ActionResult Details(int? id, Enums.LACK1Type? lType)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            if (!lType.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = InitDetailModel(lack1Data, lType.Value);
+
+            return View(model);
+
+        }
+        
+        #endregion
+
+        #region ----------------PrintPreview-------------
+
+        public ActionResult PrintPreview(int? id, Enums.LACK1Type? lType)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            if (!lType.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetPrintOutData(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = Mapper.Map<Lack1PrintOutModel>(lack1Data);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            model.PrintOutTitle = "Preview LACK-1";
+            return View("PrintDocument", model);
+            //return PartialView("PrintDocument", model);
+            //return new RazorPDF.PdfResult(model, "PrintDocument");
+            //var fileName = "lack1-pdf-" + DateTime.Now.ToString("ddMMyyyyHHmmss");
+            //return Pdf(fileName, "PrintDocument", model);
+        }
+
+        #endregion
+
+        #region ------------- Workflow ------------
+
+        public ActionResult RejectDocument()
+        {
+            return View();
+        }
+
+        public ActionResult GovCancelDocument()
+        {
+            return View();
+        }
+
+        public ActionResult GovRejectDocument()
+        {
+            return View();
+        }
+
+        #endregion
+
+        #region ----------------- Edit -----------
+
+        public ActionResult Edit(int? id, Enums.LACK1Type? lType)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+            if (!lType.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = InitDetailModel(lack1Data, lType.Value);
+            model = InitDetailList(model);
+            return View(model);
+        }
+
+        #endregion
+
+        private Lack1ItemViewModel InitDetailModel(Lack1DetailsDto lack1Data, Enums.LACK1Type lType)
+        {
+            //workflow history
+            var workflowInput = new GetByFormNumberInput
+            {
+                FormNumber = lack1Data.Lack1Number,
+                DocumentStatus = lack1Data.Status,
+                NPPBKC_Id = lack1Data.NppbkcId
+            };
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            var changesHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1,
+                    lack1Data.Lack1Id.ToString()));
+
+            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack1Data.Lack1Number));
+
+            var model = Mapper.Map<Lack1ItemViewModel>(lack1Data);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.ChangesHistoryList = changesHistory;
+            model.WorkflowHistory = workflowHistory;
+            model.PrintHistoryList = printHistory;
+            model.Lack1Type = lType;
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            const string activeCss = "active";
+            switch (lType)
+            {
+                case Enums.LACK1Type.ListByNppbkc:
+                    model.MenuNppbkcAddClassCss = activeCss;
+                    break;
+                case Enums.LACK1Type.ComplatedDocument:
+                    model.MenuCompletedAddClassCss = activeCss;
+                    break;
+                case Enums.LACK1Type.ListByPlant:
+                    model.MenuPlantAddClassCss = activeCss;
+                    break;
+            }
+
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = lack1Data.CreateBy,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber = model.Lack1Number,
+                NppbkcId = model.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
+
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
+
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            
+            return model;
+        }
+
+        private Lack1ItemViewModel InitDetailList(Lack1ItemViewModel model)
+        {
+            model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.MontList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearsList = CreateYearList();
+            model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
+            model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
+            model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
+            model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsType);
+            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
+
+            return model;
+
+        }
 
     }
 }

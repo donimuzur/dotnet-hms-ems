@@ -88,6 +88,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.SupplierPhone, opt => opt.MapFrom(src => src.SUPPLIER_PHONE))
                 .ForMember(dest => dest.SupplierNppbkcId, opt => opt.MapFrom(src => src.SUPPLIER_NPPBKC_ID))
                 .ForMember(dest => dest.SupplierKppbcId, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_ID))
+                .ForMember(dest => dest.SupplierKppbcName, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_NAME))
+                .ForMember(dest => dest.SupplierCompany, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY))
+                .ForMember(dest => dest.IsNppbkcImport, opt => opt.MapFrom(src => src.IS_NPPBKC_IMPORT))
                 .ForMember(dest => dest.PlanProdFrom, opt => opt.MapFrom(src => src.PLAN_PROD_FROM))
                 .ForMember(dest => dest.PlanProdTo, opt => opt.MapFrom(src => src.PLAN_PROD_TO))
                 .ForMember(dest => dest.RequestQty, opt => opt.MapFrom(src => src.REQUEST_QTY))
@@ -160,6 +163,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.SUPPLIER_PORT_NAME, opt => opt.MapFrom(src => src.SupplierPortName))
                 .ForMember(dest => dest.SUPPLIER_NPPBKC_ID, opt => opt.MapFrom(src => src.SupplierNppbkcId))
                 .ForMember(dest => dest.SUPPLIER_KPPBC_ID, opt => opt.MapFrom(src => src.SupplierKppbcId))
+                .ForMember(dest => dest.SUPPLIER_KPPBC_NAME, opt => opt.MapFrom(src => src.SupplierKppbcName))
+                .ForMember(dest => dest.SUPPLIER_COMPANY, opt => opt.MapFrom(src => src.SupplierCompany))
+                .ForMember(dest => dest.IS_NPPBKC_IMPORT, opt => opt.MapFrom(src => src.IsNppbkcImport))
                 .ForMember(dest => dest.SUPPLIER_PLANT_WERKS, opt => opt.MapFrom(src => src.SupplierPlantWerks))
                 .ForMember(dest => dest.PBCK1_PROD_CONVERTER, opt => opt.MapFrom(src => Mapper.Map<List<PBCK1_PROD_CONVERTER>>(src.Pbck1ProdConverter)))
                 .ForMember(dest => dest.PBCK1_PROD_PLAN, opt => opt.MapFrom(src => Mapper.Map<List<PBCK1_PROD_PLAN>>(src.Pbck1ProdPlan)))
@@ -208,6 +214,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.SupplierPhone, opt => opt.MapFrom(src => src.SUPPLIER_PHONE))
                 .ForMember(dest => dest.SupplierNppbkcId, opt => opt.MapFrom(src => src.SUPPLIER_NPPBKC_ID))
                 .ForMember(dest => dest.SupplierKppbcId, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_ID))
+                .ForMember(dest => dest.SupplierKppbcName, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_NAME))
+                .ForMember(dest => dest.SupplierCompany, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY))
+                .ForMember(dest => dest.IsNppbkcImport, opt => opt.MapFrom(src => src.IS_NPPBKC_IMPORT))
                 .ForMember(dest => dest.PlanProdFrom, opt => opt.MapFrom(src => src.PLAN_PROD_FROM))
                 .ForMember(dest => dest.PlanProdTo, opt => opt.MapFrom(src => src.PLAN_PROD_TO))
                 .ForMember(dest => dest.RequestQty, opt => opt.MapFrom(src => src.REQUEST_QTY))
@@ -255,7 +264,8 @@ namespace Sampoerna.EMS.BLL
                     src.PBCK11.Where(c => c.STATUS == Enums.DocumentStatus.Completed 
                     && c.QTY_APPROVED.HasValue).Sum(s => s.QTY_APPROVED != null ? s.QTY_APPROVED.Value : 0) : 0))
                     //todo: ambil dari QTY_RECEIVED di CK5 yang sekarang belum ada
-                    .ForMember(dest => dest.Received, opt => opt.MapFrom(src => 0))
+                .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.CK5 != null ?
+                    src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX) : 0))
                 ;
 
             Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ReportProdPlanDto>().IgnoreAllNonExisting()
@@ -265,9 +275,21 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.AMOUNT))
                 .ForMember(dest => dest.BkcRequired, opt => opt.MapFrom(src => src.BKC_REQUIRED))
                 .ForMember(dest => dest.BkcRequiredUomId, opt => opt.MapFrom(src => src.BKC_REQUIRED_UOM_ID))
-                .ForMember(dest => dest.BkcRequiredUomName, opt => opt.MapFrom(src => src.BKC_REQUIRED_UOM_ID))
+                .ForMember(dest => dest.BkcRequiredUomName, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.MonthId, opt => opt.MapFrom(src => src.MONTH.Value))
                 .ForMember(dest => dest.MonthName, opt => opt.MapFrom(src => src.MONTH1 != null ? src.MONTH1.MONTH_NAME_IND : string.Empty))
+                ;
+
+            Mapper.CreateMap<LACK1_PRODUCTION_DETAIL, Pbck1RealisasiP3BkcDto>()
+                .ForMember(dest => dest.Bulan, opt => opt.MapFrom(src => src.LACK1.MONTH != null ? src.LACK1.MONTH.MONTH_NAME_IND : string.Empty))
+                .ForMember(dest => dest.SaldoAwal, opt => opt.MapFrom(src => src.LACK1.BEGINING_BALANCE))
+                .ForMember(dest => dest.Pemasukan, opt => opt.MapFrom(src => src.LACK1.TOTAL_INCOME))
+                .ForMember(dest => dest.Penggunaan, opt => opt.MapFrom(src => src.LACK1.USAGE))
+                .ForMember(dest => dest.SaldoAkhir, opt => opt.MapFrom(src => (src.LACK1.BEGINING_BALANCE + src.LACK1.TOTAL_INCOME - src.LACK1.USAGE)))
+                .ForMember(dest => dest.ProdAmount, opt => opt.MapFrom(src => src.AMOUNT))
+                .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.PROD_CODE))
+                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.PRODUCT_TYPE))
+                .ForMember(dest => dest.ProductAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
                 ;
 
             #endregion

@@ -50,6 +50,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         /// </summary>
         public string PoaTitle { get; set; }
         /// <summary>
+        /// get from POA Address on POA Master
+        /// </summary>
+        public string PoaAddress { get; set; }
+        /// <summary>
         /// “PT HM Sampoerna, Tbk” is taken from Company Name in PBCK-1 form
         /// </summary>
         public string CompanyName { get; set; }
@@ -107,6 +111,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         /// </summary>
         public string LatestSaldoUom { get; set; }
         public string SupplierCompanyName { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string SupplierPlantName { get; set; }
         public string SupplierNppbkcId { get; set; }
         public string SupplierPlantAddress { get; set; }
         public string SupplierPlantPhone { get; set; }
@@ -159,6 +165,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Jenis { get; set; }
         public decimal Jumlah { get; set; }
         public decimal SaldoAkhir { get; set; }
-        public string Uom { get; set; }
+        public string Lack1UomId { get; set; }
+        public string Lack1UomName { get; set; }
+        
+        //lack1 production detail
+        public decimal ProdAmount { get; set; }
+        public string ProductCode { get; set; }
+        public string ProductType { get; set; }
+        public string ProductAlias { get; set; }
     }
 }

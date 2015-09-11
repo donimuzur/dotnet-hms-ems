@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<T001W> _repository;
         private IGenericRepository<PLANT_RECEIVE_MATERIAL> _plantReceiveMaterialRepository;
         private IGenericRepository<T001W> _t001WRepository;
+        private IGenericRepository<T001K> _repositoryT001K;
 
         private IChangesHistoryBLL _changesHistoryBll;
         private ILogger _logger;
@@ -37,6 +38,7 @@ namespace Sampoerna.EMS.BLL
             _t001WRepository = _uow.GetGenericRepository<T001W>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
+            _repositoryT001K = _uow.GetGenericRepository<T001K>();
         }
 
         public T001W GetT001W(string NppbkcId, bool? IsPlant)
@@ -59,7 +61,9 @@ namespace Sampoerna.EMS.BLL
 
         public Plant GetId(string id)
         {
-            return Mapper.Map<Plant>(_repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault());
+            var data = _repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault();
+
+            return Mapper.Map<Plant>(data);
         }
 
         public List<Plant> GetAll()
@@ -125,6 +129,7 @@ namespace Sampoerna.EMS.BLL
             var changesData = new Dictionary<string, bool>();
 
             changesData.Add("NPPBKC_ID", origin.NPPBKC_ID == data.NPPBKC_ID);
+            changesData.Add("NPPBKC_IMPORT_ID", origin.NPPBKC_IMPORT_ID == data.NPPBKC_IMPORT_ID);
             changesData.Add("CITY", origin.ORT01 == data.ORT01);
             changesData.Add("ADDRESS", origin.ADDRESS == data.ADDRESS);
             changesData.Add("SKEPTIS", origin.SKEPTIS == data.SKEPTIS);
@@ -206,6 +211,10 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = originMaterialDesc;
                             changes.NEW_VALUE = editMaterialDesc;
                             break;
+                        case "NPPBKC_IMPORT_ID":
+                            changes.OLD_VALUE = origin.NPPBKC_IMPORT_ID;
+                            changes.NEW_VALUE = data.NPPBKC_IMPORT_ID;
+                            break;
                     }
                     _changesHistoryBll.AddHistory(changes);
                 }
@@ -232,7 +241,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<T001W> GetAllPlant()
         {
-            return _repository.Get().ToList();
+            return _repository.Get(null, null, includeTables).ToList();
         }
 
         public List<Plant> GetPlantByNppbkc(string nppbkcId)
@@ -298,6 +307,7 @@ namespace Sampoerna.EMS.BLL
                 c => c.IS_DELETED != true && c.ZAIDM_EX_NPPBKC.IS_DELETED != true;
             return Mapper.Map<List<Plant>>(_repository.Get(queryFilter, null, includeTables).ToList());
         }
-
+        
+      
     }
 }

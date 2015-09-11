@@ -35,16 +35,15 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //DETAIL INFORMATION
         public Enums.CK5Type Ck5Type { get; set; }
 
+       
+        //public SelectList KppBcCityList { get; set; }
         //[Required(ErrorMessage = "KPPBC City field is required")]
-        //public long? KppBcCityId { get; set; }
-        public SelectList KppBcCityList { get; set; }
-        [Required(ErrorMessage = "KPPBC City field is required")]
         public string KppBcCity { get; set; }
 
          [Display(Name = "KPPBC code")]
         public string CeOfficeCode { get; set; }
 
-        public string KppBcCityName { get; set; }
+        //public string KppBcCityName { get; set; }
         
         public string SubmissionNumber { get; set; }
 
@@ -81,7 +80,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string RequestTypeDesc { get; set; }
 
         //ORIGIN PLANT
-        [Required(ErrorMessage = "Origin Plant field is required")]
+        //[Required(ErrorMessage = "Origin Plant field is required")]
         public string SourcePlantId { get; set; }
         public SelectList SourcePlantList { get; set; }
         public string SourcePlantName { get; set; }
@@ -137,8 +136,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public DateTime? InvoiceDate { get; set; }
 
         public int? PbckDecreeId { get; set; }
+        //public string PbckDecreeId { get; set; }
         public SelectList PbckDecreeList { get; set; }
         public string PbckDecreeNumber { get; set; }
+        public string PbckUom { get; set; }
 
         [UIHint("DateTime")]
         public DateTime? PbckDecreeDate { get; set; }
@@ -198,6 +199,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public DateTime? UnsealingNotifDate { get; set; }
 
         public bool IsCk5Export { get; set; }
+        public bool IsCk5PortToImporter { get; set; }
         public bool IsCk5Manual { get; set; }
         public bool IsWaitingGovApproval { get; set; }
 
@@ -217,8 +219,26 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
          [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Status Gov")]
         public Enums.CK5GovStatus GovStatus { get; set; }
-
+        public string GovStatusDesc { get; set; }
         public Enums.CK5GovStatus GovStatusList { get; set; }
+        public string CommentGov { get; set; }
 
+        public string Pbck1QtyApproved { get; set; }
+        public string Ck5TotalExciseable { get; set; }
+        public string RemainQuota { get; set; }
+
+        public bool AllowManagerReject { get; set; }
+
+        public string Command { get; set; }
+
+        public bool AllowGiCreated { get; set; }
+
+        public bool AllowGrCreated { get; set; }
+
+        public string ActionType { get; set; }
+
+        public bool AllowCancelSAP { get; set; }
+
+        public decimal MaterialQty { get; set; }
     }
 }

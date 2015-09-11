@@ -14,14 +14,13 @@
             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="file" class="form-control" name="itemExcelFile" id="itemExcelFile">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
+                           
+                                <input type="file" class="file-inputs" data-filename-placement="inside" name="itemExcelFile" id="itemExcelFile">
+                           
+                       
                             <input type="button" id="CK5UploadSubmitBtn" class="btn btn-grey generate" value="Generate" disabled />
-                            <input type="button" class="btn btn-grey" id="CK5UploadSave" value="Save" disabled />
+                            <input type="button" class="btn btn-blue" id="CK5UploadSave" value="Save" disabled />
                         </div>
 
                     </div>
@@ -32,7 +31,8 @@
 
 
     </div>
-
+    
+    <input type="button" class="btn btn-blue" id="btnAddRow" value="New Input" />
     <div class="table-container" id="ProdConvContent">
         @Html.Partial("_CK5UploadList", Model.UploadItemModels)
     </div>

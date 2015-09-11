@@ -13,19 +13,5 @@ $(document).ready(function() {
 	});
   
 	$(".action a").tooltip();
-	$('#pbck-1').dataTable( {
-		"scrollY":        "220px",
-		"scrollCollapse": true,
-		"order": [[ 1, "asc" ]],
-		"paging":         true,
-		responsive: true
-	} );
-	$('#ck-5').dataTable( {
-		"scrollY":        "220px",
-		"scrollCollapse": true,
-		"bFilter": false,
-		"order": [[ 1, "asc" ]],
-		"paging":         true,
-		responsive: true
-	} );
+
 });

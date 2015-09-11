@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new PlantFormModel
             {
               
-                Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_ID),
+                Nppbkc = new SelectList(_nppbkcBll.GetAll().Where(x => x.IS_DELETED != true).ToList(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_ID),
                 Detail = detail
                 
             };
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_ID);
+            model.Nppbkc = new SelectList(_nppbkcBll.GetAll().Where(x => x.IS_DELETED != true).ToList(), "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_ID);
             model.IsMainPlantExist = IsMainPlantAlreadyExist(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant,
                 model.Detail.Werks);
             model.Detail.ReceiveMaterials = GetPlantReceiveMaterial(model.Detail);
@@ -102,6 +102,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (isAlreadyExistMainPlant)
             {
                 AddMessageInfo("Main Plant Already Set", Enums.MessageInfoType.Warning);
+                return InitialEdit(model);
+            }
+
+            if (model.Detail.NPPBKC_ID == model.Detail.NPPBKC_IMPORT_ID) {
+                AddMessageInfo("NPPBKC domestic cannot be the same as NPPBKC Import", Enums.MessageInfoType.Warning);
                 return InitialEdit(model);
             }
             try

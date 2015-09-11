@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
@@ -28,6 +29,17 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowEditDocument(WorkflowAllowEditAndSubmitInput input)
         {
+            if (input.DocumentStatus != Enums.DocumentStatus.Draft)
+                return false;
+
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return true;
+        }
+
+        public bool AllowEditDocumentPbck1(WorkflowAllowEditAndSubmitInput input)
+        {
             bool isEditable = false;
 
             if (input.DocumentStatus == Enums.DocumentStatus.Draft || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
@@ -52,8 +64,12 @@ namespace Sampoerna.EMS.BLL
         private bool IsOneNppbkc(string nppbkcId, string approvalUser)
         {
             var poaApprovalUserData = _poaMapBll.GetByUserLogin(approvalUser);
-            
-            return nppbkcId == poaApprovalUserData.NPPBKC_ID;
+
+            //return nppbkcId == poaApprovalUserData.NPPBKC_ID;
+            var data = poaApprovalUserData.Where(c => c.NPPBKC_ID == nppbkcId).ToList();
+
+            return data.Count > 0;
+
             //var poaCreatedUserData = _poaMapBll.GetByUserLogin(createdUser);
             //var poaApprovalUserData = _poaMapBll.GetByUserLogin(approvalUser);
             //return poaCreatedUserData != null && poaApprovalUserData != null &&
@@ -161,6 +177,48 @@ namespace Sampoerna.EMS.BLL
             return currentStatus >= iStatusAllow;
         }
 
+
+        public bool AllowManagerReject(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                if (input.UserRole == Enums.UserRole.Manager)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool AllowGiCreated(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GICreated ||
+                   input.DocumentStatus == Enums.DocumentStatus.GICompleted;
+        }
+
+        public bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GRCreated ||
+                    input.DocumentStatus == Enums.DocumentStatus.GRCompleted;
+        }
+
+        public bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.DocumentStatus < Enums.DocumentStatus.CreateSTO)
+                return false;
+            if (input.DocumentStatus == Enums.DocumentStatus.Cancelled ||
+                input.DocumentStatus == Enums.DocumentStatus.Completed)
+                return false;
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return true;
+        }
 
     }
 }

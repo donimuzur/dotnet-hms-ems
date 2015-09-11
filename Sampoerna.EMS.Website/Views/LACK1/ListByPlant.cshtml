@@ -9,9 +9,11 @@
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
-                <a href="#">
-                    <input type="button" class="btn btn-blue" value="NEW" />
-                </a>
+                <div class="action-button new">
+                    <a href="@Url.Action("Create", "LACK1", new { lack1Level = Sampoerna.EMS.Core.Enums.Lack1Level.Plant })">
+                        <input type="button" class="btn btn-blue" value="NEW" />
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -54,7 +56,7 @@
                                 <label class="col-md-4">Reported On</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control" name="ReportedOn">
+                                        <input type="text" class="form-control" id="ReportedOn" name="ReportedOn">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -114,6 +116,7 @@
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
+                $('#ReportedOn').val('');
             });
             // DataTable
             var table = null;

@@ -1,0 +1,87 @@
+﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
+@{
+    ViewBag.Title = "Ck4CCreateDocumentList";
+}
+
+@using (Html.BeginForm("Ck4CCreateDocumentList", "CK4C", FormMethod.Post, new { @id = "CreateForm"}))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>CK-4C Form</h3>
+                <label class="status">Draft</label>
+                <div class="action-button">
+                    <input type="button" class="btn btn-blue" value="Save" id="btnSaveCk4c" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeCreate", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts
+{
+    <script src="~/Scripts/ck4cscript.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function () {
+        $("#Details_CompanyId").change(function () {
+            ChangeCompany($(this).find("option:selected").val());
+        });
+
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("DocumentList", "CK4C")';
+        });
+
+        $("input[name='based-on']").click(function (e) {
+            ChangeBasedOn(this.value);
+        });
+
+        $('#btnGenerate').click(function (e) {
+            getProductionData('@Url.Action("GetProductionData", "CK4C")');
+        });
+
+        $("#btnSaveCk4c").click(function () {
+            if (ValidateGovInput()) {
+                $('#CreateForm').submit();
+            }
+        });
+    });
+
+    function ChangeCompany(comp) {
+        $('#Details_PlantId').html('');
+        $('#Details_PlantId').append('<option value="">select</option>');
+        $('#Details_NppbkcId').html('');
+        $('#Details_NppbkcId').append('<option value="">select</option>');
+        if ($("#Details_CompanyId").length) {
+            var cpy = comp;
+            if (cpy != '') {
+                ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy });
+                ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy);
+                }
+            }
+            $('#Details_PlantId').val('');
+            $('#Details_NppbkcId').val('');
+        }
+
+    </script>
+}

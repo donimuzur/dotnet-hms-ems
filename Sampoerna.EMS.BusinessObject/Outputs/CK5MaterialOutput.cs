@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Qty { get; set; }
         public string Uom { get; set; }
         public string Convertion { get; set; }
-        public int ConvertedQty { get; set; }
+        public decimal ConvertedQty { get; set; }
         public string ConvertedUom { get; set; }
         public decimal Hje { get; set; }
         public decimal Tariff { get; set; }
@@ -23,5 +23,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Message { get; set; }
         public string Total { get; set; }
         public bool IsValid { get; set; }
+
+        public string MaterialDesc { get; set; }
     }
 }

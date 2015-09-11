@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
@@ -11,7 +12,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
     {
         public Lack2IndexViewModel()
         {
-              Details = new List<LACK2NppbkcData>();
+              Details = new List<Lack2Dto>();
               SearchInput = new LACK2FilterViewModel();
         }
         public string NppbkcId { get; set; }
@@ -28,9 +29,13 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         //public Enums.LACK1Type Lack1Type { get; set; }
 
-        public List<LACK2NppbkcData> Details { get; set; }
+        public List<Lack2Dto> Details { get; set; }
 
         // for the completed documents
         public LACK2FilterViewModel SearchInput { get; set; }
+
+        public bool IsOpenDocList { get; set; }
+
+
     }
 }

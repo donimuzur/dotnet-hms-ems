@@ -64,6 +64,8 @@
               <xs:element name="FinalPortName" msprop:Generator_ColumnVarNameInTable="columnFinalPortName" msprop:Generator_ColumnPropNameInRow="FinalPortName" msprop:Generator_ColumnPropNameInTable="FinalPortNameColumn" msprop:Generator_UserColumnName="FinalPortName" type="xs:string" minOccurs="0" />
               <xs:element name="FinalPortCode" msprop:Generator_ColumnVarNameInTable="columnFinalPortCode" msprop:Generator_ColumnPropNameInRow="FinalPortCode" msprop:Generator_ColumnPropNameInTable="FinalPortCodeColumn" msprop:Generator_UserColumnName="FinalPortCode" type="xs:string" minOccurs="0" />
               <xs:element name="DocumentText" msprop:Generator_ColumnVarNameInTable="columnDocumentText" msprop:Generator_ColumnPropNameInRow="DocumentText" msprop:Generator_ColumnPropNameInTable="DocumentTextColumn" msprop:Generator_UserColumnName="DocumentText" type="xs:string" minOccurs="0" />
+              <xs:element name="MonthYear" msprop:Generator_ColumnVarNameInTable="columnMonthYear" msprop:Generator_ColumnPropNameInRow="MonthYear" msprop:Generator_ColumnPropNameInTable="MonthYearColumn" msprop:Generator_UserColumnName="MonthYear" type="xs:string" minOccurs="0" />
+              <xs:element name="CK5Type" msprop:Generator_ColumnVarNameInTable="columnCK5Type" msprop:Generator_ColumnPropNameInRow="CK5Type" msprop:Generator_ColumnPropNameInTable="CK5TypeColumn" msprop:Generator_UserColumnName="CK5Type" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

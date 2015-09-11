@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_MAIN_PLANT { get; set; }
         public string CREATED_BY { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
+        public string NPPBKC_IMPORT_ID { get; set; }
     
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }

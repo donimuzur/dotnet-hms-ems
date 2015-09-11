@@ -31,6 +31,30 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlBrandDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("CK5"))
+            {
+                return new XmlCk5DataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("InvMovement"))
+            {
+                return new XmlMovementDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("BOMMAP"))
+            {
+                return new XmlBOMDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("BLOCKSTOCK"))
+            {
+                return new XmlBlockStockDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("PRDOUTPUT"))
+            {
+                return new XmlProdOutputDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("CK1"))
+            {
+                return new XmlCK1DataMapper(xmlfile);
+            }
             return null;
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)
@@ -96,6 +120,7 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlUserDataMapper(xmlfile);
             }
+
             return null;
         }
 
@@ -216,7 +241,11 @@ namespace Sampoerna.EMS.XMLReader
                         }
                         if (reader != null)
                         {
-                            filesMoved.Add(reader.InsertToDatabase());
+                            var fileIsMoved = reader.InsertToDatabase();
+                            if (!string.IsNullOrEmpty(fileIsMoved))
+                            {
+                                filesMoved.Add(fileIsMoved);
+                            }
                         }
                     }
                     catch (Exception ex)

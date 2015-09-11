@@ -31,8 +31,8 @@ namespace Sampoerna.EMS.BusinessObject
         public System.DateTime SUBMISSION_DATE { get; set; }
         public string EX_GOOD_TYP { get; set; }
         public string EX_TYP_DESC { get; set; }
-        public int GOV_STATUS { get; set; }
-        public int STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatusGov GOV_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
@@ -42,6 +42,10 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public string NPPBKC_ID { get; set; }
         public string LACK2_NUMBER { get; set; }
+        public string APPROVED_BY_MANAGER { get; set; }
+        public string REJECTED_BY { get; set; }
+        public Nullable<System.DateTime> REJECTED_DATE { get; set; }
+        public Nullable<System.DateTime> APPROVED_BY_MANAGER_DATE { get; set; }
     
         public virtual ICollection<LACK2_DOCUMENT> LACK2_DOCUMENT { get; set; }
         public virtual ICollection<LACK2_ITEM> LACK2_ITEM { get; set; }
