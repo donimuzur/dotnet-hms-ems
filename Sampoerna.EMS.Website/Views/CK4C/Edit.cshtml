@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <h3>CK-4C Form</h3>
-                <label class="status">Draft</label>
+                <label class="status">@Model.Details.StatusName</label>
                 <div class="action-button">
                     <input type="button" class="btn btn-blue" value="Save" id="btnSaveCk4c" />
                     <input type="button" class="btn btn-grey" value="Print Preview"/>
@@ -100,7 +100,7 @@
             });
 
             $("#btnSubmitConfirm").click(function () {
-                $('#Detail_IsSaveSubmit').val('submit');
+                $('#Details_IsSaveSubmit').val('submit');
                 $('#EditForm').submit();
             });
         });

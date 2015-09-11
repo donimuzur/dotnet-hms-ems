@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPOABLL _poabll;
         private IWorkflowBLL _workflowBll;
+        private ICK4CItemBLL _ck4cItemBll;
 
         private string includeTables = "POA, MONTH, CK4C_ITEM";
 
@@ -37,6 +38,8 @@ namespace Sampoerna.EMS.BLL
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _poabll = new POABLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
+            _ck4cItemBll = new CK4CItemBLL(_uow, _logger);
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -105,6 +108,13 @@ namespace Sampoerna.EMS.BLL
 
                     if (model == null)
                         throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                    _ck4cItemBll.DeleteByCk4cId(item.Ck4CId);
+
+                    Mapper.Map<Ck4CDto, CK4C>(item, model);
+                    model.CK4C_ITEM = null;
+
+                    model.CK4C_ITEM = Mapper.Map<List<CK4C_ITEM>>(item.Ck4cItem);
                 }
                 else
                 {
@@ -262,18 +272,25 @@ namespace Sampoerna.EMS.BLL
 
         private void WorkflowStatusAddChanges(Ck4cWorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
         {
-            //set changes log
-            var changes = new CHANGES_HISTORY
+            try
             {
-                FORM_TYPE_ID = Enums.MenuList.PBCK1,
-                FORM_ID = input.DocumentId.ToString(),
-                FIELD_NAME = "STATUS",
-                NEW_VALUE = EnumHelper.GetDescription(newStatus),
-                OLD_VALUE = EnumHelper.GetDescription(oldStatus),
-                MODIFIED_BY = input.UserId,
-                MODIFIED_DATE = DateTime.Now
-            };
-            _changesHistoryBll.AddHistory(changes);
+                //set changes log
+                var changes = new CHANGES_HISTORY
+                {
+                    FORM_TYPE_ID = Enums.MenuList.CK4C,
+                    FORM_ID = input.DocumentId.ToString(),
+                    FIELD_NAME = "STATUS",
+                    NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                    OLD_VALUE = EnumHelper.GetDescription(oldStatus),
+                    MODIFIED_BY = input.UserId,
+                    MODIFIED_DATE = DateTime.Now
+                };
+                _changesHistoryBll.AddHistory(changes);
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
         }
 
         private void AddWorkflowHistory(Ck4cWorkflowDocumentInput input)
@@ -281,7 +298,7 @@ namespace Sampoerna.EMS.BLL
             var dbData = Mapper.Map<WorkflowHistoryDto>(input);
 
             dbData.ACTION_DATE = DateTime.Now;
-            dbData.FORM_TYPE_ID = Enums.FormType.PBCK1;
+            dbData.FORM_TYPE_ID = Enums.FormType.CK4C;
 
             _workflowHistoryBll.Save(dbData);
 
