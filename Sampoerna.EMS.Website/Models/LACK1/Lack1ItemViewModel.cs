@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ReturnUomDesc { get; set; }
         public Enums.DocumentStatus Status { get; set; }
         public string StatusDescription { get; set; }
-        public Enums.DocumentStatus? GovStatus { get; set; }
+        public Enums.DocumentStatusGov? GovStatus { get; set; }
         public string GovStatusDescription { get; set; }
         public DateTime? DecreeDate { get; set; }
         public string NppbkcId { get; set; }
