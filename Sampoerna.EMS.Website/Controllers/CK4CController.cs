@@ -44,7 +44,6 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck4CBll = ck4Cbll;
             _plantBll = plantbll;
             _monthBll = monthBll;
-            _plantBll = plantbll;
             _poabll = poabll;
             _companyBll = companyBll;
             _mainMenu = Enums.MenuList.CK4C;
@@ -382,15 +381,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var plant = _plantBll.GetT001WById(model.Details.PlantId);
             var company = _companyBll.GetById(model.Details.CompanyId);
+            var nppbkcId = plant == null ? item.NppbkcId : plant.NPPBKC_ID;
 
-            item.PlantName = plant.NAME1;
+            item.PlantName = plant == null ? "" : plant.NAME1;
             item.CompanyName = company.BUTXT;
             item.CreatedBy = CurrentUser.USER_ID;
             item.CreatedDate = DateTime.Now;
             var inputDoc = new GenerateDocNumberInput();
             inputDoc.Month = item.ReportedMonth;
             inputDoc.Year = item.ReportedYears;
-            inputDoc.NppbkcId = item.NppbkcId;
+            inputDoc.NppbkcId = nppbkcId;
             item.Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
             item.Status = Enums.DocumentStatus.Draft;
 
@@ -460,12 +460,13 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+            var nppbkcId = plant == null ? ck4cData.NppbkcId : plant.NPPBKC_ID;
 
             //workflow history
             var workflowInput = new GetByFormNumberInput();
             workflowInput.FormNumber = ck4cData.Number;
             workflowInput.DocumentStatus = ck4cData.Status;
-            workflowInput.NPPBKC_Id = plant.NPPBKC_ID;
+            workflowInput.NPPBKC_Id = nppbkcId;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -531,11 +532,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
 
+                var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+                var nppbkcId = plant == null ? ck4cData.NppbkcId : plant.NPPBKC_ID;
+
                 //workflow history
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
-                workflowInput.NPPBKC_Id = ck4cData.NppbkcId;
+                workflowInput.NPPBKC_Id = nppbkcId;
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
