@@ -76,6 +76,7 @@
             //}
             if (plant == '') {
                 $("input[name='CompanyName']").val('');
+                $("input[name='CompanyId']").val('');
                 $("*[name='PlantDesc']").val('');
                 $("input[name='Poa']").val('');
                 $("input[name='NppbkcId']").val('');
@@ -83,7 +84,7 @@
 
             } else {
 
-                ajaxGetPlantDetails('@Url.Action("GetPlantDetails", "CK5")', { plantId: plant });
+                ajaxGetPlantDetails('@Url.Action("GetPlantDetails", "PBCK4")', { plantId: plant });
             }
         }
     });

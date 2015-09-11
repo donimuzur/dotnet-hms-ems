@@ -172,7 +172,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetails(string plantId)
+        public JsonResult GetPlantDetails(string plantId)
         {
             var dbPlant = _plantBll.GetT001ById(plantId);
             var model = Mapper.Map<Pbck4PlantModel>(dbPlant);

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -21,5 +23,13 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public bool IsCompletedDocument { get; set; }
+    }
+
+    public class Pbck4SaveInput
+    {
+        public Pbck4Dto Pbck4Dto { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public List<Pbck4ItemDto> Pbck4Items { get; set; }
     }
 }
