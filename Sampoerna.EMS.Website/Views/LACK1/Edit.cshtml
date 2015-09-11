@@ -69,7 +69,7 @@
                         @Html.HiddenFor(model => model.SupplierCompanyCode)
                         @Html.HiddenFor(model => model.SupplierCompanyName)
                         @Html.HiddenFor(model => model.Status)
-                        @*@Html.HiddenFor(model => model.GovStatus)*@
+                        @Html.HiddenFor(model => model.GovStatus)
                         @Html.Partial("_HomeEdit")
                         @if (Model.Status == Enums.DocumentStatus.Completed)
                         {

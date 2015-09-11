@@ -15,6 +15,7 @@ namespace Sampoerna.EMS.BLL.Services
         {
             _uow = uow;
             _logger = logger;
+            _repository = _uow.GetGenericRepository<LACK1_PLANT>();
         }
         public void DeleteByLack1Id(int lack1Id)
         {
