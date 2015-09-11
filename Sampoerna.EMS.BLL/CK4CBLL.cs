@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPOABLL _poabll;
         private IWorkflowBLL _workflowBll;
+        private ICK4CItemBLL _ck4cItemBll;
 
         private string includeTables = "POA, MONTH, CK4C_ITEM";
 
@@ -37,6 +38,7 @@ namespace Sampoerna.EMS.BLL
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _poabll = new POABLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
+            _ck4cItemBll = new CK4CItemBLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -105,6 +107,13 @@ namespace Sampoerna.EMS.BLL
 
                     if (model == null)
                         throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                    _ck4cItemBll.DeleteByCk4cId(item.Ck4CId);
+
+                    Mapper.Map<Ck4CDto, CK4C>(item, model);
+                    model.CK4C_ITEM = null;
+
+                    model.CK4C_ITEM = Mapper.Map<List<CK4C_ITEM>>(item.Ck4cItem);
                 }
                 else
                 {
