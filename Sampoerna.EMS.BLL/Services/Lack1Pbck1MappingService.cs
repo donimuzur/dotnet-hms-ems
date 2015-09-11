@@ -6,13 +6,13 @@ using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL.Services
 {
-    public class Lack1TrackingService : ILack1TrackingService
+    public class Lack1Pbck1MappingService : ILack1Pbck1MappingService
     {
+        private IGenericRepository<LACK1_PBCK1_MAPPING> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private IGenericRepository<LACK1_TRACKING> _repository;
 
-        public Lack1TrackingService(IUnitOfWork uow, ILogger logger)
+        public Lack1Pbck1MappingService(IUnitOfWork uow, ILogger logger)
         {
             _uow = uow;
             _logger = logger;
@@ -29,5 +29,6 @@ namespace Sampoerna.EMS.BLL.Services
                 }
             }
         }
+
     }
 }

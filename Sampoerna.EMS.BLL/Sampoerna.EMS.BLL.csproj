@@ -84,6 +84,10 @@
     <Compile Include="Services\CK5Service.cs" />
     <Compile Include="Services\ExGroupTypeService.cs" />
     <Compile Include="Services\InventoryMovementService.cs" />
+    <Compile Include="Services\Lack1IncomeDetailService.cs" />
+    <Compile Include="Services\Lack1Pbck1MappingService.cs" />
+    <Compile Include="Services\Lack1PlantService.cs" />
+    <Compile Include="Services\Lack1ProductionDetailService.cs" />
     <Compile Include="Services\LACK1Service.cs" />
     <Compile Include="Services\Lack1TrackingService.cs" />
     <Compile Include="Services\PBCK1Service.cs" />

@@ -214,7 +214,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private SelectList GetCorrespondingPlantList(string plantId, Enums.CK5Type ck5Type)
         {
             SelectList data;
-            T001WDto dataPlant = _plantBll.GetT001ById(plantId);
+            T001WDto dataPlant = _plantBll.GetT001WById(plantId);
             
             if (ck5Type == Enums.CK5Type.Domestic) {
                 
@@ -390,7 +390,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId, string sourceNppbkcId, string destPlantId, DateTime submissionDate, string goodTypeGroupId, Enums.CK5Type ck5Type)
         {
             //var dbPlantSource = _plantBll.GetT001ById(sourcePlantId);
-            var dbPlantDest = _plantBll.GetT001ById(destPlantId);
+            var dbPlantDest = _plantBll.GetT001WById(destPlantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlantDest);
 
             GetQuotaAndRemainOutput output;
@@ -431,7 +431,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5Type)
         {
-            var dbPlant = _plantBll.GetT001ById(plantId);
+            var dbPlant = _plantBll.GetT001WById(plantId);
             var model = Mapper.Map<CK5PlantModel>(dbPlant);
 
             if (ck5Type == Enums.CK5Type.ImporterToPlant)

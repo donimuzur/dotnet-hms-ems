@@ -1581,7 +1581,7 @@ namespace Sampoerna.EMS.BLL
                         messageList.Add("ExciseStatus not valid");
                 }
 
-                var sourcePlant = _plantBll.GetT001ById(ck5UploadFileDocuments.SourcePlantId);
+                var sourcePlant = _plantBll.GetT001WById(ck5UploadFileDocuments.SourcePlantId);
 
                 if (sourcePlant == null)
                     messageList.Add("Source Plant Not Exist");
@@ -1597,7 +1597,7 @@ namespace Sampoerna.EMS.BLL
                     output.SOURCE_PLANT_NAME = sourcePlant.NAME1;
                 }
 
-                var destPlant = _plantBll.GetT001ById(ck5UploadFileDocuments.DestPlantId);
+                var destPlant = _plantBll.GetT001WById(ck5UploadFileDocuments.DestPlantId);
 
                 if (destPlant == null)
                     messageList.Add("Destination Plant Not Exist");

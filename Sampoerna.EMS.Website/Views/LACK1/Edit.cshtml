@@ -9,7 +9,7 @@
     <link href="~/Content/css/print.css" rel="stylesheet" />
 }
 
-@using (Html.BeginForm(Model.ControllerAction, "LACK1", FormMethod.Post, new { @id = "DetailsLack1Form" }))
+@using (Html.BeginForm(Model.ControllerAction, "LACK1", FormMethod.Post, new { @id = "EditLack1Form" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -54,7 +54,22 @@
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
+                        @Html.HiddenFor(model => model.Lack1Id)
                         @Html.HiddenFor(model => model.Lack1Type)
+                        @Html.HiddenFor(model => model.IsSaveSubmit)
+                        @Html.HiddenFor(model => model.CreateBy)
+                        @Html.HiddenFor(model => model.CreateDate)
+                        @Html.HiddenFor(model => model.EndingBalance)
+                        @Html.HiddenFor(model => model.BeginingBalance)
+                        @Html.HiddenFor(model => model.Lack1Level)
+                        @Html.HiddenFor(model => model.Lack1UomId)
+                        @Html.HiddenFor(model => model.Lack1UomName)
+                        @Html.HiddenFor(model => model.SupplierPlant)
+                        @Html.HiddenFor(model => model.SupplierPlantAddress)
+                        @Html.HiddenFor(model => model.SupplierCompanyCode)
+                        @Html.HiddenFor(model => model.SupplierCompanyName)
+                        @Html.HiddenFor(model => model.Status)
+                        @*@Html.HiddenFor(model => model.GovStatus)*@
                         @Html.Partial("_HomeEdit")
                         @if (Model.Status == Enums.DocumentStatus.Completed)
                         {
@@ -67,6 +82,24 @@
         </div>
     </div>
 }
+
+<div id="Lack1Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Submit</h3>
+            </div>
+            <div class="modal-body">
+                Submit Documents  ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
 
 @Html.Partial("_FileUpload", Model)
 
@@ -81,17 +114,26 @@
         $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
         $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $('#btn-back-plant-list').click(function (e) {
+            $("#btnSubmitConfirm").click(function() {
+                $('#IsSaveSubmit').val('submit');
+                $('#EditLack1Form').submit();
+            });
+
+            $("#btnSubmitDocument").click(function() {
+                $('#Lack1Modal').modal('show');
+            });
+
+            $('#btn-back-plant-list').click(function(e) {
                 location.href = '@Url.Action("ListByPlant", "LACK1")';
             });
 
-            $('#btn-back-nppbkc-list').click(function (e) {
+            $('#btn-back-nppbkc-list').click(function(e) {
                 location.href = '@Url.Action("Index", "LACK1")';
             });
 
-            $('#btn-back-completed-list').click(function (e) {
+            $('#btn-back-completed-list').click(function(e) {
                 location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
             });
 
@@ -102,10 +144,22 @@
             var generateTableD = generateTable(jsonData);
             $('#generated-data-container').append(generateTableD);
 
+            $('#SupplierPlantId').on('change', function() {
+                onSupplierPlantChange();
+            });
+
         });
 
         function printPreview(url) {
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        }
+
+        function onSupplierPlantChange() {
+            if ($("#SupplierPlantId").length) {
+                var id = $('#SupplierPlantId').find("option:selected").val();
+                console.log(id);
+                ajaxLoadPlantDetail('@Url.Action("GetSupplierPlantDetail", "LACK1")', { werks: id });
+            }
         }
 
     </script>
