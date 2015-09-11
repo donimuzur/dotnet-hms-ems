@@ -1,0 +1,44 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
+
+<div role="tabpanel" class="tab-pane" id="upload">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Upload Excel File
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="file" class="file-inputs" data-filename-placement="inside" name="itemExcelFile" id="itemExcelFile">
+
+
+                            <input type="button" id="Pbck4UploadSubmitBtn" class="btn btn-grey" value="Generate" disabled />
+                            <input type="button" class="btn btn-blue" id="Pbck4UploadSave" value="Save" disabled />
+
+
+                           
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    
+    <div class="table-container" id="ProdConvContent">
+        @Html.Partial("_Pbck4UploadList", Model.UploadItemModels)
+    </div>
+
+</div>
+
+
+

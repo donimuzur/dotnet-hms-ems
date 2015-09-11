@@ -26,4 +26,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Ck4CDto Lack1 { get; set; }
     }
 
+    public class Ck4cWorkflowDocumentInput
+    {
+        public long DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public string Comment { get; set; }
+        public Enums.ActionType ActionType { get; set; }
+        public string DocumentNumber { get; set; }
+    }
+
 }

@@ -21,15 +21,15 @@ namespace Sampoerna.EMS.BusinessObject
         }
     
         public int PBCK4_ID { get; set; }
-        public string PBCK1_NUMBER { get; set; }
+        public string PBCK4_NUMBER { get; set; }
         public string PLANT_ID { get; set; }
         public string PLANT_NAME { get; set; }
         public string NPPBKC_ID { get; set; }
         public string NPPBKC_DESCRIPTION { get; set; }
         public string COMPANY_ID { get; set; }
         public string COMPANY_NAME { get; set; }
-        public int STATUS { get; set; }
-        public Nullable<int> GOV_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
         public Nullable<System.DateTime> REPORTED_ON { get; set; }
         public string BACK1_NO { get; set; }
         public Nullable<System.DateTime> BACK1_DATE { get; set; }
@@ -48,11 +48,11 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_BY_MANAGER_DATE { get; set; }
     
         public virtual ICollection<PBCK4_DOCUMENT> PBCK4_DOCUMENT { get; set; }
+        public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
         public virtual POA POA { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual USER USER3 { get; set; }
-        public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
     }
 }

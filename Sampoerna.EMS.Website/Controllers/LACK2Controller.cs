@@ -147,7 +147,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
 
-            var plant = _plantBll.GetT001ById(model.Lack2Model.LevelPlantId);
+            var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
@@ -303,7 +303,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
               }
            
-            var plant = _plantBll.GetT001ById(model.Lack2Model.LevelPlantId);
+            var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
@@ -763,6 +763,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+
+        public ActionResult Summary()
+        {
+            var model = new Lack2SummaryReportModel();
+            model.CompanyList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.PlantList = GlobalFunctions.GetPlantAll();
+
+            return View("Summary");
+        }
     }
 
 }

@@ -19,7 +19,7 @@ namespace Sampoerna.EMS.Contract
 
         ProductionDto GetById(string companyCode, string plantWerk, string faCode, DateTime productionDate );
 
-        List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc);
+        List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc, int period, int month, int year);
 
         PRODUCTION GetExistDto(string companyCode, string plantWerk, string faCode, DateTime productionDate);
     }
