@@ -1,0 +1,148 @@
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
+
+@using (Html.BeginForm("Edit", "PBCK4", FormMethod.Post, new { @id = "EditPbck4Forms" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>PBCK-4 Form</h3>
+                <label class="status">@Model.DocumentStatusDescription</label>
+                <div class="action-button">
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
+                    @*<input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK4", new { id = @Model.Pbck4Id })')" />*@
+                    <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.HiddenFor(model => model.CompanyName)
+                        @Html.HiddenFor(model => model.CompanyId)
+                        @Html.HiddenFor(model => model.PlantDesc)
+                        @Html.HiddenFor(model => model.NppbkcId)
+                        @Html.HiddenFor(model => model.NppbkcDesc)
+                        
+                        @Html.HiddenFor(model => model.CREATED_BY)
+                        @Html.HiddenFor(model => model.CREATED_DATE)
+                        @Html.HiddenFor(model => model.Command)
+                        
+                        @Html.HiddenFor(model => model.DocumentStatus)
+                        @Html.HiddenFor(model => model.Pbck4Id)
+                        @Html.HiddenFor(model => model.Pbck4Number)
+
+                        @Html.Partial("_Pbck4InformationEdit")
+                        @Html.Partial("_Pbck4Printout")
+                        @Html.Partial("_Pbck4ChangeLog")
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<div id="Pbck4Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Submit</h3>
+            </div>
+            <div class="modal-body">
+                Submit Documents  ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/Pbck4Script.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#btnBack').click(function(e) {
+                location.href = '@Url.Action("Index", "PBCK4")';
+            });
+
+            $('#btn-changelog-export-xls').click(function() {
+                location.href = '@Url.Action("ExportXls", "PBCK4", new {pbckId = Model.Pbck4Id})';
+            });
+
+            $("#btnSave").click(function() {
+
+                if (ValidatePbck4Form()) {
+                    $('#Command').val('Save');
+                    $('#EditPbck4Forms').submit();
+                }
+            });
+
+            $("#btnSubmitDocument").click(function() {
+                if (ValidatePbck4Form()) {
+                    $('#Pbck4Modal').modal('show');
+                }
+
+            });
+
+            $("#btnSubmitConfirm").click(function() {
+                if (ValidatePbck4Form()) {
+                    $('#Command').val('Submit');
+                    $('#EditPbck4Forms').submit();
+                }
+            });
+        });
+
+
+        $("#PlantId").change(function() {
+            if ($("#PlantId").length) {
+                var plant = $(this).find("option:selected").val();
+
+                ////remove table
+                //try {
+                //    RemoveTable();
+                //} catch (e) {
+
+                //}
+                if (plant == '') {
+                    $("input[name='CompanyName']").val('');
+                    $("input[name='CompanyId']").val('');
+                    $("*[name='PlantDesc']").val('');
+                    $("input[name='Poa']").val('');
+                    $("input[name='NppbkcId']").val('');
+                    $("input[name='NppbkcDesc']").val('');
+
+                } else {
+
+                    ajaxGetPlantDetails('@Url.Action("GetPlantDetails", "PBCK4")', { plantId: plant });
+                }
+            }
+        });
+
+    </script>
+
+}

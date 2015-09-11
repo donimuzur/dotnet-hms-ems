@@ -359,6 +359,7 @@
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4FileUploadViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4PlantModel.cs" />
@@ -1074,6 +1075,11 @@
     <Content Include="Views\PBCK4\_Pbck4Printout.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadCreate.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadList.cshtml" />
+    <Content Include="Views\PBCK4\Details.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4ChangeLog.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationDetails.cshtml" />
+    <Content Include="Views\PBCK4\Edit.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -405,6 +405,8 @@ namespace Sampoerna.EMS.BLL
 
 
             #endregion
+
+            Mapper.CreateMap<CK1, CK1Dto>().IgnoreAllNonExisting();
         }
     }
 }

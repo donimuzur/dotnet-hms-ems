@@ -46,6 +46,24 @@
 
 }
 
+<div id="ModalPbck4Items" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">PBCK-4 Items</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -62,6 +80,12 @@
                 $('#SavePbck4Forms').submit();
             }
         });
+        
+        $('#Pbck4UploadSubmitBtn').click(function () {
+            GenerateXlsPbck4Items('@Url.Action("UploadFile", "PBCK4")');
+        });
+
+        OnReadyFunction();
     });
 
     $("#PlantId").change(function () {
@@ -81,6 +105,9 @@
                 $("input[name='Poa']").val('');
                 $("input[name='NppbkcId']").val('');
                 $("input[name='NppbkcDesc']").val('');
+                
+                $('#btnUploadInfo').enable(false);
+                $('#Pbck4UploadSubmitBtn').enable(false);
 
             } else {
 

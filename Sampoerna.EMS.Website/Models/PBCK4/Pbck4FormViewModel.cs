@@ -39,11 +39,21 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string CompanyId { get; set; }
         public string Poa { get; set; }
 
-       
+
+        public string BACK1_NO { get; set; }
+        public DateTime? BACK1_DATE { get; set; }
+        public string CK3_NO { get; set; }
+        public DateTime? CK3_DATE { get; set; }
+        public string CK3_OFFICE_VALUE { get; set; }
+
+        public string CREATED_BY { get; set; }
+        public DateTime CREATED_DATE { get; set; }
+
         public DateTime ReportedOn { get; set; }
 
-
+        public string Command { get; set; }
         public bool IsAllowPrint { get; set; }
+        public string ActionType { get; set; }
     }
 
 

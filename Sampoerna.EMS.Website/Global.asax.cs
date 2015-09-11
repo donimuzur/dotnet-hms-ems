@@ -85,6 +85,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IBACK1BLL, BACK1BLL>();
             container.Register<IProductionBLL, ProductionBLL>();
             container.Register<IPBCK4BLL, PBCK4BLL>();
+            container.Register<ICK1BLL, CK1BLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();

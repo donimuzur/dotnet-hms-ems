@@ -7,6 +7,7 @@ using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
@@ -16,15 +17,19 @@ using Enums = Sampoerna.EMS.Core.Enums;
 namespace Sampoerna.EMS.BLL
 {
    public class PBCK4BLL : IPBCK4BLL
-    {
-        private ILogger _logger;
-        private IUnitOfWork _uow;
+   {
+       private ILogger _logger;
+       private IUnitOfWork _uow;
 
-        private IGenericRepository<PBCK4> _repository;
+       private IGenericRepository<PBCK4> _repository;
 
-        private IMonthBLL _monthBll;
-        private IDocumentSequenceNumberBLL _docSeqNumBll;
-        private IWorkflowHistoryBLL _workflowHistoryBll;
+       private IMonthBLL _monthBll;
+       private IDocumentSequenceNumberBLL _docSeqNumBll;
+       private IWorkflowHistoryBLL _workflowHistoryBll;
+       private IChangesHistoryBLL _changesHistoryBll;
+       private IPrintHistoryBLL _printHistoryBll;
+       private IBrandRegistrationBLL _brandRegistrationBll;
+       private ICK1BLL _ck1Bll;
 
        private string includeTables = "";// "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
 
@@ -38,7 +43,10 @@ namespace Sampoerna.EMS.BLL
            _monthBll = new MonthBLL(_uow, _logger);
            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
            _workflowHistoryBll = new WorkflowHistoryBLL(_uow,_logger);
-
+           _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
+           _printHistoryBll = new PrintHistoryBLL(_uow,_logger);
+           _brandRegistrationBll = new BrandRegistrationBLL(_uow,_logger);
+           _ck1Bll = new CK1BLL(_uow,_logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
@@ -61,7 +69,7 @@ namespace Sampoerna.EMS.BLL
            {
                queryFilter =
                    queryFilter.And(
-                       c => c.CREATED_DATE == input.ReportedOn.Value);
+                       c => c.REPORTED_ON == input.ReportedOn.Value);
            }
 
 
@@ -100,6 +108,46 @@ namespace Sampoerna.EMS.BLL
 
        }
 
+       public Pbck4Dto GetPbck4ById(int id)
+       {
+           var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
+           if (dtData == null)
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+           return Mapper.Map<Pbck4Dto>(dtData);
+
+       }
+
+       public Pbck4DetailsOutput GetDetailsPbck4(int id)
+       {
+           var output = new Pbck4DetailsOutput();
+
+           var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
+           if (dtData == null)
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+           output.Pbck4Dto = Mapper.Map<Pbck4Dto>(dtData);
+
+           ////details
+           //output.Ck5MaterialDto = Mapper.Map<List<CK5MaterialDto>>(dtData.CK5_MATERIAL);
+
+           //change history data
+           output.ListChangesHistorys = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK4, output.Pbck4Dto.PBCK4_ID.ToString());
+
+           //workflow history
+           var input = new GetByFormNumberInput();
+           input.FormNumber = dtData.PBCK4_NUMBER;
+           input.DocumentStatus = dtData.STATUS;
+           
+           
+           output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
+
+
+           output.ListPrintHistorys = _printHistoryBll.GetByFormTypeAndFormId(Enums.FormType.PBCK4, dtData.PBCK4_ID);
+           return output;
+       }
+
+
 
        public Pbck4Dto SavePbck4(Pbck4SaveInput input)
        {
@@ -122,7 +170,7 @@ namespace Sampoerna.EMS.BLL
                Mapper.Map<Pbck4Dto, PBCK4>(input.Pbck4Dto, dbData);
                
                dbData.MODIFIED_DATE = DateTime.Now;
-
+               dbData.MODIFIED_BY = input.UserId;
 
 
                ////delete child first
@@ -141,15 +189,6 @@ namespace Sampoerna.EMS.BLL
                //    dbData.CK5_MATERIAL.Add(ck5Material);
                //}
 
-               inputWorkflowHistory.DocumentId = dbData.PBCK4_ID;
-               inputWorkflowHistory.DocumentNumber = dbData.PBCK4_NUMBER;
-               inputWorkflowHistory.UserId = input.UserId;
-               inputWorkflowHistory.UserRole = input.UserRole;
-
-
-               AddWorkflowHistory(inputWorkflowHistory);
-
-
            }
            else
            {
@@ -162,16 +201,38 @@ namespace Sampoerna.EMS.BLL
                    FormType = Enums.FormType.PBCK4
                };
 
-               //input.Pbck4Dto.PBCK1_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
-               //if (!input.Ck5Dto.SUBMISSION_DATE.HasValue)
+               input.Pbck4Dto.PBCK4_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+              
+               input.Pbck4Dto.Status = Enums.DocumentStatus.Draft;
+               input.Pbck4Dto.CREATED_DATE = DateTime.Now;
+               input.Pbck4Dto.CREATED_BY = input.UserId;
+
+               dbData = new PBCK4();
+
+               Mapper.Map<Pbck4Dto, PBCK4>(input.Pbck4Dto, dbData);
+
+               inputWorkflowHistory.ActionType = Enums.ActionType.Created;
+
+               //foreach (var ck5Item in input.Ck5Material)
                //{
-               //    input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
+
+               //    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
+               //    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+               //    dbData.CK5_MATERIAL.Add(ck5Material);
                //}
 
-               //input.Ck5Dto.STATUS_ID = Enums.DocumentStatus.Draft;
-               //input.Ck5Dto.CREATED_DATE = DateTime.Now;
-               //input.Ck5Dto.CREATED_BY = input.UserId;
+               _repository.Insert(dbData);
+
+           
            }
+
+           inputWorkflowHistory.DocumentId = dbData.PBCK4_ID;
+           inputWorkflowHistory.DocumentNumber = dbData.PBCK4_NUMBER;
+           inputWorkflowHistory.UserId = input.UserId;
+           inputWorkflowHistory.UserRole = input.UserRole;
+
+
+           AddWorkflowHistory(inputWorkflowHistory);
 
            try
            {
@@ -218,120 +279,167 @@ namespace Sampoerna.EMS.BLL
 
            _workflowHistoryBll.Save(dbData);
        }
-
-
+       
        private void SetChangesHistory(Pbck4Dto origin, Pbck4Dto data, string userId)
        {
-           //todo check the new value
-           var changesData = new Dictionary<string, bool>();
+            var changesData = new Dictionary<string, bool>();
 
-           changesData.Add("KPPBC_CITY", origin.KPPBC_CITY == data.KPPBC_CITY);
-           changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER == data.REGISTRATION_NUMBER);
-
-           changesData.Add("EX_GOODS_TYPE", origin.EX_GOODS_TYPE == data.EX_GOODS_TYPE);
-
-           changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID == data.EX_SETTLEMENT_ID);
-           changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID == data.EX_STATUS_ID);
-           changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID == data.REQUEST_TYPE_ID);
-           changesData.Add("SOURCE_PLANT_ID", origin.SOURCE_PLANT_ID == (data.SOURCE_PLANT_ID));
-           changesData.Add("DEST_PLANT_ID", origin.DEST_PLANT_ID == (data.DEST_PLANT_ID));
-
-           changesData.Add("INVOICE_NUMBER", origin.INVOICE_NUMBER == data.INVOICE_NUMBER);
-           changesData.Add("INVOICE_DATE", origin.INVOICE_DATE == (data.INVOICE_DATE));
-
-           changesData.Add("PBCK1_DECREE_ID", origin.PBCK1_DECREE_ID == (data.PBCK1_DECREE_ID));
-           changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID == (data.CARRIAGE_METHOD_ID));
-
-           changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX == (data.GRAND_TOTAL_EX));
-
-           changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID == data.PACKAGE_UOM_ID);
-
-           changesData.Add("DESTINATION_COUNTRY", origin.DEST_COUNTRY_NAME == data.DEST_COUNTRY_NAME);
-
-           changesData.Add("SUBMISSION_DATE", origin.SUBMISSION_DATE == data.SUBMISSION_DATE);
+           changesData.Add("PLANT_ID", origin.PlantId == data.PlantId);
+           changesData.Add("REPORTED_ON", origin.ReportedOn == data.ReportedOn);
 
            foreach (var listChange in changesData)
            {
                if (listChange.Value) continue;
                var changes = new CHANGES_HISTORY();
-               changes.FORM_TYPE_ID = Enums.MenuList.CK5;
-               changes.FORM_ID = origin.CK5_ID.ToString();
+               changes.FORM_TYPE_ID = Enums.MenuList.PBCK4;
+               changes.FORM_ID = origin.PBCK4_ID.ToString();
                changes.FIELD_NAME = listChange.Key;
                changes.MODIFIED_BY = userId;
                changes.MODIFIED_DATE = DateTime.Now;
                switch (listChange.Key)
                {
-                   case "KPPBC_CITY":
-                       changes.OLD_VALUE = origin.KPPBC_CITY;
-                       changes.NEW_VALUE = data.KPPBC_CITY;
-                       break;
-                   case "REGISTRATION_NUMBER":
-                       changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
-                       changes.NEW_VALUE = data.REGISTRATION_NUMBER;
-                       break;
-                   case "EX_GOODS_TYPE":
-                       changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_GOODS_TYPE);
-                       changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_GOODS_TYPE);
-                       break;
-                   case "EX_SETTLEMENT_ID":
-                       changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_SETTLEMENT_ID);
-                       changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_SETTLEMENT_ID);
-                       break;
-                   case "EX_STATUS_ID":
-                       changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_STATUS_ID);
-                       changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_STATUS_ID);
-                       break;
-                   case "REQUEST_TYPE_ID":
-                       changes.OLD_VALUE = EnumHelper.GetDescription(origin.REQUEST_TYPE_ID);
-                       changes.NEW_VALUE = EnumHelper.GetDescription(data.REQUEST_TYPE_ID);
-                       break;
-                   case "SOURCE_PLANT_ID":
-                       changes.OLD_VALUE = origin.SOURCE_PLANT_ID;
-                       changes.NEW_VALUE = data.SOURCE_PLANT_ID;
-                       break;
-                   case "DEST_PLANT_ID":
-                       changes.OLD_VALUE = origin.DEST_PLANT_ID;
-                       changes.NEW_VALUE = data.DEST_PLANT_ID;
-                       break;
-                   case "INVOICE_NUMBER":
-                       changes.OLD_VALUE = origin.INVOICE_NUMBER;
-                       changes.NEW_VALUE = data.INVOICE_NUMBER;
-                       break;
-                   case "INVOICE_DATE":
-                       changes.OLD_VALUE = origin.INVOICE_DATE != null ? origin.INVOICE_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
-                       changes.NEW_VALUE = data.INVOICE_DATE != null ? data.INVOICE_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
-                       break;
-                   case "PBCK1_DECREE_ID":
-
-                       changes.OLD_VALUE = origin.PbckNumber;
-                       changes.NEW_VALUE = data.PbckNumber;
+                   case "PLANT_ID":
+                       changes.OLD_VALUE = origin.PlantId;
+                       changes.NEW_VALUE = data.PlantId;
                        break;
 
-                   case "CARRIAGE_METHOD_ID":
-                       changes.OLD_VALUE = origin.CARRIAGE_METHOD_ID.HasValue ? EnumHelper.GetDescription(origin.CARRIAGE_METHOD_ID) : "NULL";
-                       changes.NEW_VALUE = data.CARRIAGE_METHOD_ID.HasValue ? EnumHelper.GetDescription(data.CARRIAGE_METHOD_ID) : "NULL";
+                   case "REPORTED_ON":
+                       changes.OLD_VALUE = origin.ReportedOn.HasValue ? origin.ReportedOn.Value.ToString("dd MMM yyyy") : string.Empty;
+                       changes.NEW_VALUE = data.ReportedOn.HasValue ? data.ReportedOn.Value.ToString("dd MMM yyyy") : string.Empty;
                        break;
-
-                   case "GRAND_TOTAL_EX":
-                       changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
-                       changes.NEW_VALUE = data.GRAND_TOTAL_EX.ToString();
-                       break;
-
-                   case "PACKAGE_UOM_ID":
-                       changes.OLD_VALUE = origin.PackageUomName;
-                       changes.NEW_VALUE = data.PackageUomName;
-                       break;
-                   case "DESTINATION_COUNTRY":
-                       changes.OLD_VALUE = origin.DEST_COUNTRY_NAME;
-                       changes.NEW_VALUE = data.DEST_COUNTRY_NAME;
-                       break;
-                   case "SUBMISSION_DATE":
-                       changes.OLD_VALUE = origin.SUBMISSION_DATE != null ? origin.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
-                       changes.NEW_VALUE = data.SUBMISSION_DATE != null ? data.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
-                       break;
+                 
                }
                _changesHistoryBll.AddHistory(changes);
            }
+       }
+
+       private List<Pbck4ItemsOutput> ValidatePbck4Items(List<Pbck4ItemsInput> inputs)
+       {
+           var messageList = new List<string>();
+           var outputList = new List<Pbck4ItemsOutput>();
+
+           foreach (var pbck4ItemInput in inputs)
+           {
+               messageList.Clear();
+               
+               var output = Mapper.Map<Pbck4ItemsOutput>(pbck4ItemInput);
+
+               var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(pbck4ItemInput.Plant, pbck4ItemInput.FaCode);
+               if (dbBrand == null)
+                   messageList.Add("FA Code Not Exist");
+
+               var dbCk1 = _ck1Bll.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
+               if (dbCk1 == null)
+                   messageList.Add("CK-1 Number Not Exist");
+
+               if (!ConvertHelper.IsNumeric(pbck4ItemInput.ReqQty))
+                   messageList.Add("Req Qty not valid");
+
+               if (!ConvertHelper.IsNumeric(pbck4ItemInput.ApprovedQty))
+                   messageList.Add("Approved Qty not valid");
+               
+
+               if (messageList.Count > 0)
+               {
+                   output.IsValid = false;
+                   output.Message = "";
+                   foreach (var message in messageList)
+                   {
+                       output.Message += message + ";";
+                   }
+               }
+               else
+               {
+                   output.IsValid = true;
+               }
+
+               outputList.Add(output);
+           }
+
+         
+           return outputList;
+       }
+
+       private Pbck4ItemsOutput GetAdditionalValuePbck4Items(Pbck4ItemsOutput input)
+       {
+           var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(input.Plant, input.FaCode);
+           if (dbBrand == null)
+           {
+               input.StickerCode = "";
+               input.SeriesCode = "";
+               input.Content = "0";
+               input.Hje = "0";
+               input.Tariff = "0";
+               input.TotalHje = "0";
+
+           }
+           else
+           {
+               input.StickerCode = dbBrand.STICKER_CODE;
+               input.SeriesCode = dbBrand.SERIES_CODE;
+               input.BrandName = dbBrand.BRAND_CE;
+               input.ProductAlias = dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
+
+               input.Content = ConvertHelper.ConvertToDecimalOrZero(dbBrand.BRAND_CONTENT).ToString();
+
+               input.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value.ToString() : "0";
+               input.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value.ToString() : "0";
+               input.Colour = dbBrand.COLOUR;
+
+               input.TotalHje = (ConvertHelper.GetDecimal(input.Hje)*ConvertHelper.GetDecimal(input.ReqQty)).ToString("f2");
+
+               input.TotalStamps =
+                   (ConvertHelper.GetDecimal(input.Hje)*ConvertHelper.GetDecimal(input.ReqQty)*
+                    ConvertHelper.GetDecimal(input.Content)).ToString("f2");
+
+
+           }
+
+           var dbCk1 = _ck1Bll.GetCk1ByCk1Number(input.Ck1No);
+           if (dbCk1 == null)
+           {
+               input.Ck1Date = "";
+           }
+           else
+           {
+               input.Ck1Date = dbCk1.CK1_DATE.ToString("dd MMM yyyy");
+           }
+
+         
+
+           return input;
+       }
+
+       public List<Pbck4ItemsOutput> Pbck4ItemProcess(List<Pbck4ItemsInput> inputs)
+       {
+           var outputList = ValidatePbck4Items(inputs);
+
+           if (!outputList.All(c => c.IsValid))
+               return outputList;
+
+           foreach (var output in outputList)
+           {
+               var resultValue = GetAdditionalValuePbck4Items(output);
+
+
+               output.StickerCode = resultValue.StickerCode;
+               output.SeriesCode = resultValue.SeriesCode;
+               output.BrandName = resultValue.BrandName;
+               output.ProductAlias = resultValue.ProductAlias;
+
+               output.Content = resultValue.Content;
+
+               output.Hje = resultValue.Hje;
+               output.Tariff = resultValue.Tariff;
+               output.Colour = resultValue.Colour;
+
+               output.TotalHje = resultValue.TotalHje;
+
+               output.TotalStamps = resultValue.TotalStamps;
+
+           }
+
+           return outputList;
        }
     }
 }

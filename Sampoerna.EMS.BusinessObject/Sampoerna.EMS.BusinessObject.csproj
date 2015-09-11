@@ -108,6 +108,7 @@
     </Compile>
     <Compile Include="DTOs\Back1Dto.cs" />
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
+    <Compile Include="DTOs\CK1Dto.cs" />
     <Compile Include="DTOs\Ck4CDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
     <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck4ItemDto.cs" />
+    <Compile Include="DTOs\PBCK4_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
     <Compile Include="DTOs\POADto.cs" />
     <Compile Include="DTOs\POA_MAPDto.cs" />
@@ -202,6 +204,7 @@
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
     <Compile Include="Inputs\Pbck1ProdPlanInput.cs" />
     <Compile Include="Inputs\Pbck1QuotaInput.cs" />
+    <Compile Include="Inputs\Pbck4ItemsInput.cs" />
     <Compile Include="Inputs\Pbck7AndPbck3Input.cs" />
     <Compile Include="Inputs\Pbck4Inputs.cs" />
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
@@ -265,6 +268,8 @@
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\InventoryMovementOutputs.cs" />
+    <Compile Include="Outputs\Pbck4ItemsOutput.cs" />
+    <Compile Include="Outputs\Pbck4Ouputs.cs" />
     <Compile Include="Outputs\ProductionGetByIdOutput.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\Lack1GeneratedOutput.cs" />
