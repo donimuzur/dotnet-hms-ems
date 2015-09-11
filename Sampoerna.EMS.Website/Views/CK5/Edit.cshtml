@@ -87,6 +87,10 @@
                         @Html.HiddenFor(model => model.Pbck1QtyApproved)
                         @Html.HiddenFor(model => model.Ck5TotalExciseable)
                         @Html.HiddenFor(model => model.RemainQuota)
+                        
+                        <!-- ===Fixing Bug CK5 no. 109==== -->
+                        @Html.HiddenFor(model => model.PbckUom)     
+                        <!-- ============================= -->
 
                         @Html.HiddenFor(model => model.IsCk5Export)
                         @Html.HiddenFor(model => model.IsCk5PortToImporter)
