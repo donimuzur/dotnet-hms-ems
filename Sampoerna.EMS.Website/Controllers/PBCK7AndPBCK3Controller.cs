@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.EMMA;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -179,14 +180,17 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            return CreateInitial(model);
+            return View("Create", InitialModel(model));
         }
 
         #endregion
+       
 
-        public ActionResult CreateInitial(Pbck7Pbck3CreateViewModel model)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Pbck7Pbck3CreateViewModel model)
         {
-            return View("Create", InitialModel(model));
+            return RedirectToAction("Index");
         }
 
         private Pbck7Pbck3CreateViewModel InitialModel(Pbck7Pbck3CreateViewModel model)

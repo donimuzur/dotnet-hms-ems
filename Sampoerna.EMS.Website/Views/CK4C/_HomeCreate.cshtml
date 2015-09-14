@@ -2,7 +2,7 @@
 @using Sampoerna.EMS.Website.Helpers
 
 <div id="information" class="tab-pane active" role="tabpanel">
-    <div class="">
+    <div class="tab-wrapper">
         <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
             <div class="panel panel-default">
                 <div id="headingOne" role="tab" class="panel-heading">
@@ -118,91 +118,96 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div aria-multiselectable="true" role="tablist" id="accordion-6" class="panel-group not-upload">
-        <div class="panel panel-default">
-            <div id="heading6" role="tab" class="panel-heading">
-                <h4 class="panel-title">
-                    <a aria-controls="collapse6" aria-expanded="true" href="#collapse6" data-parent="#accordion-6" data-toggle="collapse">
-                        Table
-                        <i class="fa fa-caret-down"></i>
-                    </a>
-                </h4>
+        <div aria-multiselectable="true" role="tablist" id="accordion-2" class="panel-group not-upload">
+            <div class="panel panel-default">
+                <div id="heading6" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapse6" aria-expanded="true" href="#collapse6" data-parent="#accordion-6" data-toggle="collapse">
+                            Item
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="heading6" role="tabpanel" class="panel-collapse in" id="collapse6">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th>Production Date</th>
+                                        <th>FA Code</th>
+                                        <th>Brand Description</th>
+                                        <th>Plant</th>
+                                        <th>Tobacco Product Type</th>
+                                        <th>HJE</th>
+                                        <th>Tarif</th>
+                                        <th>Produced QTY</th>
+                                        <th>UoM Produced QTY</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tb-body-ck4c">
+                                    <tr>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div aria-labelledby="heading6" role="tabpanel" class="panel-collapse in" id="collapse6">
-                <div class="panel-body">
-                    <div class="table-container">
-                        <table class="table table-bordered table-striped js-options-table">
-                            <thead>
-                                <tr>
-                                    <th>Production Date</th>
-                                    <th>FA Code</th>
-                                    <th>Brand Description</th>
-                                    <th>Plant</th>
-                                    <th>Tobacco Product Type</th>
-                                    <th>HJE</th>
-                                    <th>Tarif</th>
-                                    <th>Produced QTY</th>
-                                    <th>UoM Produced QTY</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tb-body-ck4c">
-                                <tr>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                </tr>
-                            </tbody>
-                        </table>
+        </div>
+        <div aria-multiselectable="true" role="tablist" id="accordion-3" class="panel-group not-upload">
+            <div class="panel panel-default">
+                <div id="heading7" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapse7" aria-expanded="true" href="#collapse7" data-parent="#accordion-7" data-toggle="collapse">
+                            Workflow History
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="heading7" role="tabpanel" class="panel-collapse collapse" id="collapse7">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th>Account Name</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>Comment</th>
+                                        <th>Created by</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div aria-multiselectable="true" role="tablist" id="accordion-7" class="panel-group not-upload">
-        <div class="panel panel-default">
-            <div id="heading7" role="tab" class="panel-heading">
-                <h4 class="panel-title">
-                    <a aria-controls="collapse7" aria-expanded="true" href="#collapse7" data-parent="#accordion-7" data-toggle="collapse">
-                        Workflow History
-                        <i class="fa fa-caret-down"></i>
-                    </a>
-                </h4>
-            </div>
-            <div aria-labelledby="heading7" role="tabpanel" class="panel-collapse collapse" id="collapse7">
-                <div class="panel-body">
-                    <div class="table-container">
-                        <table class="table table-bordered table-striped js-options-table">
-                            <thead>
-                                <tr>
-                                    <th>Account Name</th>
-                                    <th>Role</th>
-                                    <th>Action</th>
-                                    <th>Date</th>
-                                    <th>Comment</th>
-                                    <th>Created by</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
         </div>
     </div>
 </div>

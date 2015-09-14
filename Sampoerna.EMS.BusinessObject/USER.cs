@@ -57,6 +57,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK41 = new HashSet<PBCK4>();
             this.PBCK42 = new HashSet<PBCK4>();
             this.PBCK43 = new HashSet<PBCK4>();
+            this.CK4C_DECREE_DOC = new HashSet<CK4C_DECREE_DOC>();
         }
     
         public string USER_ID { get; set; }
@@ -110,5 +111,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK4> PBCK41 { get; set; }
         public virtual ICollection<PBCK4> PBCK42 { get; set; }
         public virtual ICollection<PBCK4> PBCK43 { get; set; }
+        public virtual ICollection<CK4C_DECREE_DOC> CK4C_DECREE_DOC { get; set; }
     }
 }

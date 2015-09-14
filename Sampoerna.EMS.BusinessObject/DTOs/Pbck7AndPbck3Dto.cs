@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -16,7 +17,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int Pbck3Status { get; set; }
         public DateTime Pbck7Date { get; set; }
         public DateTime? Pbck3Date { get; set; }
-        public int DocumentType { get; set; }
+        public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
         public string PlantName { get; set; }

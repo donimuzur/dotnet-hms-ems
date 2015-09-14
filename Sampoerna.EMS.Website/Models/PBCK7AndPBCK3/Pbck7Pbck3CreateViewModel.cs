@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
@@ -32,6 +34,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentTypePbck7AndPbck3 DocumentTypeList { get; set; }
 
         public List<Pbck7ItemUpload> UploadItems { get; set; }
+        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
 
     }

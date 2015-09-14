@@ -228,8 +228,13 @@
 
         pbck1TypeOnchange();
 
+        $('#Detail_GoodType').change(function () {
+            goodTypeOnChange();
+        });
+
         $('#Detail_NppbkcId').change(function () {
             nppbkcIdOnChange();
+            ChangeLatestSaldo();
         });
 
         $("#btnSubmitDocument").click(function () {
@@ -242,7 +247,7 @@
             if ($("#Detail_IsNppbkcImport").is(':checked')) {
                 isNppbkcImport = true;
             }
-            supplierChange(isNppbkcImport,'@Url.Action("GetSupplierPlantDetail", "PBCK1")');
+            supplierChange(isNppbkcImport, '@Url.Action("GetSupplierPlantDetail", "PBCK1")');
         });
 
         $("#Detail_IsNppbkcImport").click(function () {
@@ -279,7 +284,7 @@
                 isNppbkcImport = true;
             }
             var htmlSelect = '';
-            htmlSelect += '<select class="form-control" id="Detail_SupplierPlant_ddl" name="Detail.SupplierPlant_ddl" onchange="supplierChange(' + isNppbkcImport + ',\'@Url.Action("GetSupplierPlantDetail", "PBCK1")\');">';
+            htmlSelect += '<select class="form-control" id="Detail_SupplierPlant_ddl" name="Detail.SupplierPlant_ddl" onchange="ChangeLatestSaldo();supplierChange(' + isNppbkcImport + ',\'@Url.Action("GetSupplierPlantDetail", "PBCK1")\');">';
             for (var i = 0; i < list.length; i++) {
                 htmlSelect += '<option value=' + list[i].Value + '>' + list[i].Text + '</option>';
             }
@@ -316,7 +321,7 @@
         }
     }
 
-    function ajaxLoadSupplierPlant(formData,url) {
+    function ajaxLoadSupplierPlant(formData, url) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -377,26 +382,40 @@
         ChangeLatestSaldo();
     });
 
+    $('#Detail_GoodType').change(function () {
+        ChangeLatestSaldo();
+    });
+
     function ChangeLatestSaldo() {
         var month = 0;
         var year = 0;
+        var plant = "";
+        var goodtype = "";
 
         var nppbkcid = "";
         if ($("#Detail_NppbkcId").length) {
-            nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+            nppbkcid = $('#Detail_NppbkcId').val();
         }
         if ($("#Detail_Lack1ToMonthId").length) {
-            month = $('#Detail_Lack1ToMonthId').find("option:selected").val();
+            month = $('#Detail_Lack1ToMonthId').val();
         }
         if ($('#Detail_Lack1ToYear').length) {
-            year = $('#Detail_Lack1ToYear').find("option:selected").val();
+            year = $('#Detail_Lack1ToYear').val();
         }
-        if (month != 0 && year != 0) {
-            setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid }, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
+        if ($('#Detail_SupplierPlant_ddl').length) {
+            plant = $('#Detail_SupplierPlant_ddl').val();
+        }
+        if ($('#Detail_GoodType').length) {
+            goodtype = $('#Detail_GoodType').val();
+        }
+
+        if (month != 0 && year != 0 && plant != "" && goodtype != "") {
+            setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid, plant: plant, goodtype: goodtype}, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
         } else {
             $('#Detail_LatestSaldoUomName').val('0');
         }
     }
+
 
     function setLatestSaldo(formData, url) {
         $.ajax({
@@ -465,7 +484,7 @@
             isChecked = false;
             isNppbkcImport = true;
         }
-        
+
         $("#Detail_IsExternalSupplier").prop('checked', isChecked);
         $('#Detail_IsExternalSupplier').prop('disabled', isDisabled);
 

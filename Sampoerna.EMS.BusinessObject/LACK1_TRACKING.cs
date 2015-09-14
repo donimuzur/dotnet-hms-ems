@@ -15,8 +15,8 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class LACK1_TRACKING
     {
         public long LACK1_TRACKING_ID { get; set; }
-        public int LACK1_ID { get; set; }
-        public long INVENTORY_MOVEMENT_ID { get; set; }
+        public Nullable<int> LACK1_ID { get; set; }
+        public Nullable<long> INVENTORY_MOVEMENT_ID { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
     
         public virtual INVENTORY_MOVEMENT INVENTORY_MOVEMENT { get; set; }

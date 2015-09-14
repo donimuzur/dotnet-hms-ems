@@ -130,7 +130,7 @@ function getProductionData(urlFunction) {
                         var dt = new Date(parseInt(data[i].ProductionDate.substr(6)));
                         var dtStr = dt.toString();
                         var date = dtStr.substr(8, 2) + " " + (dtStr.substr(4, 3)) + " " + dtStr.substr(11, 4);
-                        var str = dt.getDate() + '/' + (dt.getMonth() + 1) + '/' + dt.getFullYear();
+                        var str = (dt.getMonth() + 1) + '/' + dt.getDate() + '/' + dt.getFullYear();
 
                         var tableProdItem = '<tr><td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdDate" name="Details.Ck4cItemData[' + i + '].ProdDate" value=' + str + '></input>' + date + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_FaCode" name="Details.Ck4cItemData[' + i + '].FaCode" value=' + data[i].FaCode + '></input>' + data[i].FaCode + '</td>' +
