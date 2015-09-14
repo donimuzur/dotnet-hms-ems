@@ -6845,7 +6845,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EnumType Name="StatusGovCk4c">
+        <EnumType Name="StatusGovCk4c" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.StatusGovCk4c" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
           <Member Name="Approved" Value="1" />
           <Member Name="Rejected" Value="2" />
         </EnumType>
