@@ -65,10 +65,16 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
 
         public bool IsWaitingGovApproval { get; set; }
 
-        public Enums.CK5GovStatus GovStatus { get; set; }
+        public Enums.DocumentStatusGov GovStatus { get; set; }
         public string GovStatusDesc { get; set; }
-        public Enums.CK5GovStatus GovStatusList { get; set; }
+        public Enums.DocumentStatusGov GovStatusList { get; set; }
         public string CommentGov { get; set; }
+
+        public List<HttpPostedFileBase> Pbck4FileUploadFileList { get; set; }
+        public List<Pbck4FileUploadViewModel> Pbck4FileUploadModelList { get; set; }
+
+        public List<HttpPostedFileBase> Pbck4FileUploadFileList2 { get; set; }
+        public List<Pbck4FileUploadViewModel> Pbck4FileUploadModelList2 { get; set; }
     }
 
 

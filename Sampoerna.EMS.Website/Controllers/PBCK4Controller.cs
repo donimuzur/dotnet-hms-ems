@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
+using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -268,10 +269,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 //model.GovStatusDesc = outputHistory.StatusGov;
                 //model.CommentGov = outputHistory.Comment;
 
-            
-          
-                //if (model.AllowGovApproveAndReject)
-                //    model.ActionType = "GovApproveDocument";
+
+
+                if (model.AllowGovApproveAndReject)
+                    model.ActionType = "GovApproveDocument";
                 //else if (model.AllowGiCreated)
                 //    model.ActionType = "CK5GICreated";
                 //else if (model.AllowGrCreated)
@@ -544,6 +545,34 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck4Bll.PBCK4Workflow(input);
         }
 
+        private void PBCK4GovWorkflow(Pbck4FormViewModel model)
+        {
+           var actionType = Enums.ActionType.GovApprove;
+
+            if (model.GovStatus == Enums.DocumentStatusGov.PartialApproved)
+                actionType = Enums.ActionType.GovPartialApprove;
+            else if (model.GovStatus == Enums.DocumentStatusGov.Rejected)
+                actionType = Enums.ActionType.GovReject;
+
+            var input = new Pbck4WorkflowDocumentInput();
+            input.DocumentId = model.Pbck4Id;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            input.ActionType = actionType;
+            input.Comment = model.Comment;
+
+            input.AdditionalDocumentData = new Pbck4WorkflowDocumentData();
+            input.AdditionalDocumentData.Back1No = model.BACK1_NO;
+            input.AdditionalDocumentData.Back1Date = model.BACK1_DATE;
+
+            input.AdditionalDocumentData.Ck3No = model.CK3_NO;
+            input.AdditionalDocumentData.Ck3Date = model.CK3_DATE;
+            input.AdditionalDocumentData.Ck3OfficeValue = model.CK3_OFFICE_VALUE;
+
+
+            _pbck4Bll.PBCK4Workflow(input);
+        }
+
         public ActionResult ApproveDocument(int id)
         {
             try
@@ -578,6 +607,85 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 PBCK4Workflow(model.Pbck4Id, Enums.ActionType.Cancel, model.Comment);
                 AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+        }
+
+        private string SaveUploadedFile(HttpPostedFileBase file, int pbck4Id)
+        {
+            if (file == null || file.FileName == "")
+                return "";
+
+            string sFileName = "";
+
+            //initialize folders in case deleted by an test publish profile
+            if (!Directory.Exists(Server.MapPath(Constans.CK5FolderPath)))
+                Directory.CreateDirectory(Server.MapPath(Constans.CK5FolderPath));
+
+            sFileName = Constans.CK5FolderPath + Path.GetFileName(pbck4Id.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+
+
+        [HttpPost]
+        public ActionResult GovApproveDocument(Pbck4FormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
+                return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+            }
+
+            try
+            {
+                var currentUserId = CurrentUser.USER_ID;
+
+                model.Pbck4FileUploadModelList = new List<Pbck4FileUploadViewModel>();
+                if (model.Pbck4FileUploadFileList != null)
+                {
+                    foreach (var item in model.Pbck4FileUploadFileList)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new Pbck4FileUploadViewModel
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck4Id),
+                                DOC_TYPE = 1 //back1
+                            };
+                            model.Pbck4FileUploadModelList.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+                else
+                {
+                    AddMessageInfo("Empty File", Enums.MessageInfoType.Error);
+                    RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                }
+
+
+                PBCK4GovWorkflow(model);
+                if (model.GovStatus == Enums.DocumentStatusGov.FullApproved)
+                    AddMessageInfo("Success Gov FullApproved Document", Enums.MessageInfoType.Success);
+                else if (model.GovStatus == Enums.DocumentStatusGov.PartialApproved)
+                    AddMessageInfo("Success Gov PartialApproved Document", Enums.MessageInfoType.Success);
+                else if (model.GovStatus == Enums.DocumentStatusGov.Rejected)
+                    AddMessageInfo("Success Gov Reject Document", Enums.MessageInfoType.Success);
+
             }
             catch (Exception ex)
             {

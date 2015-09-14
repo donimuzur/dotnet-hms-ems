@@ -251,7 +251,7 @@ function GenerateXlsPbck4Items(url) {
          
             $('#GovStatus').focus();
         } else {
-            if ($('#GovStatus').val() == 'GovReject' || $('#GovStatus').val() == 'GovCancel') {
+            if ($('#GovStatus').val() == 'Rejected') {
                 if ($('#Comment').val() == '') {
                     AddValidationClass(false, 'Comment');
                     result = false;

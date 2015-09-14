@@ -59,6 +59,8 @@
 
                         @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
                         {
+                            @Html.HiddenFor(model => model.Pbck4Id)
+                            
                             @Html.Partial("_Pbck4GovApproval")
                         }
                         else
@@ -133,6 +135,7 @@
     {
 
         <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/Pbck4ScriptDocUpload.js"></script>
 
     }
 
@@ -211,7 +214,8 @@
 
             $('#divComment').hide();
 
-            if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
+            //if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
+            if (valueSelected == 'Rejected') {
                 $('#divComment').show();
 
             }
