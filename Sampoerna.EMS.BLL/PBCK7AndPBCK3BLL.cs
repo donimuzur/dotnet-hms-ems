@@ -80,6 +80,12 @@ namespace Sampoerna.EMS.BLL
 
             return mapResult;
         }
+
+        public void Insert(Pbck7AndPbck3Dto pbck7AndPbck3Dto)
+        {
+            var dataToAdd = Mapper.Map<PBCK3_PBCK7>(pbck7AndPbck3Dto);
+            _repository.InsertOrUpdate(dataToAdd);
+        }
     }
 
 

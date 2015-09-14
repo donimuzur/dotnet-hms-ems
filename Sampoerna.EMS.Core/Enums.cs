@@ -344,7 +344,7 @@ namespace Sampoerna.EMS.Core
             [Description("TF Partial")]
             TFPartial = 315,
 
-            [Description("STOCancelled")]
+            [Description("STO Cancelled")]
             STOCancelled = 320,
         }
 

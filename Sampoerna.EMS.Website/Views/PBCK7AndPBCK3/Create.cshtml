@@ -153,5 +153,60 @@
         }
 
         ;
+
+        function ajaxGetPoaByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function (data) {
+                    $('#displayPoaList').html('');
+                    var poalist = '';
+                    for (var i = 0; i < data.length; i++) {
+
+                        poalist += data[i].PRINTED_NAME;
+                        if (data.length - 1 != i) {
+                            poalist += ', ';
+                        }
+                    }
+                    $('#displayPoaList').html(poalist);
+                }
+            });
+
+        }
+        function ajaxGetPlantByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function (data) {
+                    $('#PlantId').html('');
+
+                    for (var i = 0; i < data.length; i++) {
+                        $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+
+                    }
+
+                }
+            }
+            );
+
+        }
+        
+        $('#NppbkcId').change(function () {
+
+            if ($(this).length) {
+                var nppbkc = $(this).find("option:selected").val();
+
+                $('#PlantId').html('');
+                if (nppbkc != '') {
+                    ajaxGetPlantByNppbkc(nppbkc);
+                    ajaxGetPoaByNppbkc(nppbkc);
+                }
+            }
+
+        });
     </script>
 }
