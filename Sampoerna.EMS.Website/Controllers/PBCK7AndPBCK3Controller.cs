@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IPlantBLL _plantBll;
         private IBrandRegistrationBLL _brandRegistration;
+        
         public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
             IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
@@ -184,13 +185,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-       
 
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Pbck7Pbck3CreateViewModel model)
         {
             var modelDto = Mapper.Map<Pbck7AndPbck3Dto>(model);
+            _pbck7AndPbck7And3Bll.Insert(modelDto);
             return RedirectToAction("Index");
         }
 

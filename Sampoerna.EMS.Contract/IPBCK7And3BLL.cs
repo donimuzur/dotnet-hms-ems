@@ -11,5 +11,7 @@ namespace Sampoerna.EMS.Contract
     public interface IPBCK7And3BLL
     {
         List<Pbck7AndPbck3Dto> GetAllByParam(Pbck7AndPbck3Input input);
+
+        void Insert(Pbck7AndPbck3Dto pbck7AndPbck3Dto);
     }
 }
