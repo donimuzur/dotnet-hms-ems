@@ -52,8 +52,10 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                     <div class="col-md-6">
-                                                       <label class="col-md-4">Plant<span class="red">*</span></label>
+                                                        <div class="row">
+                                                            <label class="col-md-4">Plant<span class="red">*</span></label>
                                                             <div class="col-md-8">
                                                                 @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control ", id = "SearchInput_PlantId" })
                                                             </div>
@@ -66,7 +68,7 @@
                                                             <label class="col-md-4"> Waste Production Date</label>
                                                             <div class="col-md-8">
                                                                 <div class="input-group date">
-                                                                  @Html.TextBox("waste-date", Model.WasteProductionDate == null ? null : Convert.ToDateTime(Model.WasteProductionDate).ToString("dd MMM yyyy"), new { @class = "form-control"})
+                                                                    @Html.TextBox("waste-date", Model.WasteProductionDate == null ? null : Convert.ToDateTime(Model.WasteProductionDate).ToString("dd MMM yyyy"), new { @class = "form-control" })
                                                                     <span class="input-group-addon">
                                                                         <i class="fa fa-calendar"></i>
                                                                     </span>
@@ -74,10 +76,29 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Finish Good<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.FaCode, Model.FacodeList, "All", new { @class = "form-control", id = "SearchInput_BrandCe" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Brand Description</label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextAreaFor(model => model.BrandDescription, new { @class = "form-control", disabled = "disabled", id = "test" })
 
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -88,16 +109,17 @@
             </div>
         </div>
     </div>
-</div>
 
 
 
 
-@section scripts
+
+
+    @section scripts
 {
-    <script src="~/Scripts/thousand-separator.js"></script>
+        <script src="~/Scripts/thousand-separator.js"></script>
 
-    <script type="text/javascript" language="javascript" class="init">
-        $('#MenuCk4cWasteProduction').addClass('active');
-    </script>
-}
+        <script type="text/javascript" language="javascript" class="init">
+            $('#MenuCk4cWasteProduction').addClass('active');
+        </script>
+    }
