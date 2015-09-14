@@ -209,7 +209,10 @@ namespace Sampoerna.EMS.Core
             TFReversed = 310,
 
             [Description("TF Partial")]
-            TFPartial = 315
+            TFPartial = 315,
+
+            [Description("TF Posting")]
+            TFPosting = 320
         }
         
 
