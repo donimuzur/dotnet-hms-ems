@@ -51,6 +51,7 @@ namespace Sampoerna.EMS.BLL
         private IUserBLL _userBll;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
+        private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -349,6 +350,13 @@ namespace Sampoerna.EMS.BLL
 
                 if (!_uomBll.IsUomIdExist(ck5MaterialInput.ConvertedUom))
                     messageList.Add("ConvertedUom not valid");
+                else
+                {
+                    var uom = _uomBll.GetById(ck5MaterialInput.ConvertedUom);
+                    if(!_allowedCk5Uom.Contains(uom.UOM_ID))
+                        messageList.Add("Selected UOM must be in KG / G / L");
+                    
+                }
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
                     messageList.Add("UsdValue not valid");
@@ -395,6 +403,22 @@ namespace Sampoerna.EMS.BLL
                 input.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
                 input.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
                 input.MaterialDesc = dbMaterial.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
+
+                switch (input.ConvertedUom)
+                {
+                    case "KG":
+                        input.ExciseQty = input.ConvertedQty * 1000;
+                        input.ExciseUom = "G";
+                        break;
+                    case "G":
+                        input.ExciseQty = input.ConvertedQty;
+                        input.ExciseUom = "G";
+                        break;
+                    case "L":
+                        input.ExciseQty = input.ExciseQty;
+                        input.ExciseUom = "L";
+                        break;
+                }
             }
 
             input.ExciseValue = input.ConvertedQty * input.Tariff;
@@ -413,6 +437,8 @@ namespace Sampoerna.EMS.BLL
             {
                 var resultValue = GetAdditionalValueCk5Material(output);
 
+                output.ExciseQty = resultValue.ExciseQty;
+                output.ExciseUom = resultValue.ExciseUom;
                 output.ConvertedQty = resultValue.ConvertedQty;
                 output.Hje = resultValue.Hje;
                 output.Tariff = resultValue.Tariff;
