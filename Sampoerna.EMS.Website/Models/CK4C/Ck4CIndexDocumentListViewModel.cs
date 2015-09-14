@@ -29,6 +29,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public SelectList CompanyNameList { get; set; }
         public SelectList NppbkcIdList { get; set; }
         public Enums.CK4CType Ck4CType { get; set; }
+        public Enums.StatusGovCk4c StatusGovList { get; set; }
         public List<DataDocumentList> Detail { get; set; }
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
         public DataDocumentList Details { get; set; }
@@ -59,10 +60,11 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public int? ReportedMonth { get; set; }
         public int? ReportedYears { get; set; }
         public Enums.DocumentStatus Status { get; set; }
-        public Enums.DocumentStatusGov? StatusGoverment { get; set; }
+        public Enums.StatusGovCk4c? StatusGoverment { get; set; }
         public string PoaList { get; set; }
         public string ReportedMonthName { get; set; }
         public string StatusName { get; set; }
+        public string StatusGovName { get; set; }
         public string BasedOn { get; set; }
         public List<Ck4cItemData> Ck4cItemData { get; set; }
         public string IsSaveSubmit { get; set; }
