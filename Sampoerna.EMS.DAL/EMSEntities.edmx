@@ -5723,18 +5723,18 @@ warning 6002: The table/view 'EMS.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a pri
           <Property Name="PBCK3_PBCK7_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PBCK7_NUMBER" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PBCK3_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="PBCK7_STATUS" Type="EMSModel.DocumentTypePbck7AndPbck3" Nullable="false" />
-          <Property Name="PBCK3_STATUS" Type="Int32" />
+          <Property Name="PBCK7_STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
+          <Property Name="PBCK3_STATUS" Type="EMSModel.DocumentStatus" />
           <Property Name="PBCK7_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="PBCK3_DATE" Type="DateTime" Precision="3" />
-          <Property Name="DOC_TYPE" Type="Int32" Nullable="false" />
+          <Property Name="DOC_TYPE" Type="EMSModel.DocumentTypePbck7AndPbck3" Nullable="false" />
           <Property Name="NPPBCK_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_CITY" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
           <Property Name="EXEC_DATE_FROM" Type="DateTime" Precision="3" />
           <Property Name="EXEC_DATE_TO" Type="DateTime" Precision="3" />
-          <Property Name="GOV_STATUS" Type="Int32" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" Nullable="false" />
           <Property Name="STATUS" Type="Int32" Nullable="false" />
           <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_DATE" Type="DateTime" Nullable="false" Precision="3" />

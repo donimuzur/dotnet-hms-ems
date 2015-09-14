@@ -22,18 +22,18 @@ namespace Sampoerna.EMS.BusinessObject
         public int PBCK3_PBCK7_ID { get; set; }
         public string PBCK7_NUMBER { get; set; }
         public string PBCK3_NUMBER { get; set; }
-        public Sampoerna.EMS.Core.Enums.DocumentTypePbck7AndPbck3 PBCK7_STATUS { get; set; }
-        public Nullable<int> PBCK3_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus PBCK7_STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatus> PBCK3_STATUS { get; set; }
         public System.DateTime PBCK7_DATE { get; set; }
         public Nullable<System.DateTime> PBCK3_DATE { get; set; }
-        public int DOC_TYPE { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentTypePbck7AndPbck3 DOC_TYPE { get; set; }
         public string NPPBCK_ID { get; set; }
         public string PLANT_ID { get; set; }
         public string PLANT_NAME { get; set; }
         public string PLANT_CITY { get; set; }
         public Nullable<System.DateTime> EXEC_DATE_FROM { get; set; }
         public Nullable<System.DateTime> EXEC_DATE_TO { get; set; }
-        public int GOV_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatusGov GOV_STATUS { get; set; }
         public int STATUS { get; set; }
         public string APPROVED_BY { get; set; }
         public System.DateTime APPROVED_DATE { get; set; }

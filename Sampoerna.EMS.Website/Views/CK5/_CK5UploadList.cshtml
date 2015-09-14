@@ -49,6 +49,10 @@
                         <td>@row.Message</td>
                         <td style="display: none">@row.Total</td>
                         <td style="display: none">@row.MaterialDesc</td>
+                        @{//===Fixing Bug CK5 no. 110====
+                        <td style="display: none">@row.Plant</td>
+                        //=============================
+                        }
                     </tr>
                     
                     counter = counter + 1;
