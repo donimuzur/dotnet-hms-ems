@@ -1,0 +1,27 @@
+﻿@model Sampoerna.EMS.Website.Models.Waste.WasteDetail
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Waste Production Form</h3>
+
+            <div class="action-button">
+                <button class="btn btn-blue">Save</button>
+                <a href="@Url.Action("Index", "Waste")" class="btn btn-grey">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/thousand-separator.js"></script>
+
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuCk4cWasteProduction').addClass('active');
+    </script>
+}

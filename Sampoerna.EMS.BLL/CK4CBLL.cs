@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poabll;
         private IWorkflowBLL _workflowBll;
         private ICK4CItemBLL _ck4cItemBll;
+        private IPlantBLL _plantBll;
 
         private string includeTables = "POA, MONTH, CK4C_ITEM";
 
@@ -39,6 +40,8 @@ namespace Sampoerna.EMS.BLL
             _poabll = new POABLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
             _ck4cItemBll = new CK4CItemBLL(_uow, _logger);
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
+            _plantBll = new PlantBLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -271,18 +274,25 @@ namespace Sampoerna.EMS.BLL
 
         private void WorkflowStatusAddChanges(Ck4cWorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
         {
-            //set changes log
-            var changes = new CHANGES_HISTORY
+            try
             {
-                FORM_TYPE_ID = Enums.MenuList.PBCK1,
-                FORM_ID = input.DocumentId.ToString(),
-                FIELD_NAME = "STATUS",
-                NEW_VALUE = EnumHelper.GetDescription(newStatus),
-                OLD_VALUE = EnumHelper.GetDescription(oldStatus),
-                MODIFIED_BY = input.UserId,
-                MODIFIED_DATE = DateTime.Now
-            };
-            _changesHistoryBll.AddHistory(changes);
+                //set changes log
+                var changes = new CHANGES_HISTORY
+                {
+                    FORM_TYPE_ID = Enums.MenuList.CK4C,
+                    FORM_ID = input.DocumentId.ToString(),
+                    FIELD_NAME = "STATUS",
+                    NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                    OLD_VALUE = EnumHelper.GetDescription(oldStatus),
+                    MODIFIED_BY = input.UserId,
+                    MODIFIED_DATE = DateTime.Now
+                };
+                _changesHistoryBll.AddHistory(changes);
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
         }
 
         private void AddWorkflowHistory(Ck4cWorkflowDocumentInput input)
@@ -290,7 +300,7 @@ namespace Sampoerna.EMS.BLL
             var dbData = Mapper.Map<WorkflowHistoryDto>(input);
 
             dbData.ACTION_DATE = DateTime.Now;
-            dbData.FORM_TYPE_ID = Enums.FormType.PBCK1;
+            dbData.FORM_TYPE_ID = Enums.FormType.CK4C;
 
             _workflowHistoryBll.Save(dbData);
 
@@ -303,13 +313,16 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
+            var plant = _plantBll.GetT001WById(dbData.PLANT_ID);
+            var nppbkcId = plant == null ? dbData.NPPBKC_ID : plant.NPPBKC_ID;
+
             var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
             {
                 CreatedUser = dbData.CREATED_BY,
                 CurrentUser = input.UserId,
                 DocumentStatus = dbData.STATUS,
                 UserRole = input.UserRole,
-                NppbkcId = dbData.NPPBKC_ID,
+                NppbkcId = nppbkcId,
                 DocumentNumber = dbData.NUMBER
             });
 

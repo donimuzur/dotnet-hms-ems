@@ -124,6 +124,7 @@
     <Compile Include="UserAuthorizationBLL.cs" />
     <Compile Include="UserBLL.cs" />
     <Compile Include="VirtualMappingPlantBLL.cs" />
+    <Compile Include="WasteBLL.cs" />
     <Compile Include="WorkflowBLL.cs" />
     <Compile Include="WorkflowHistoryBLL.cs" />
     <Compile Include="WorkflowSettingBLL.cs" />

@@ -107,13 +107,15 @@ namespace Sampoerna.EMS.BLL.Services
                     p.BEGINING_BALANCE,
                     p.TOTAL_INCOME,
                     p.USAGE,
+                    p.SUPPLIER_PLANT_WERKS,
+                    p.EX_GOODTYP,
                     //p.TOTAL_PRODUCTION,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).ToList();
 
             if (getData.Count == 0) return 0;
 
-            var selected = getData.Where(c => c.PERIODE <= dtTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
+            var selected = getData.Where(c => c.PERIODE <= dtTo &&  c.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && c.EX_GOODTYP == input.ExcisableGoodsType).OrderByDescending(o => o.PERIODE).FirstOrDefault();
 
             if (selected == null) return 0;
 

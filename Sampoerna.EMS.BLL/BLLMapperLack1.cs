@@ -114,6 +114,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<CK5, Lack1GeneratedIncomeDataDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
+                .ForMember(dest => dest.StoReceiverNumber, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
                 .ForMember(dest => dest.StringRegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty))
@@ -295,6 +296,15 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Lack1GeneratedTrackingDto, LACK1_TRACKING>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
+                ;
+
+            Mapper.CreateMap<Lack1WorkflowDocumentInput, WorkflowHistoryDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => src.ActionType))
+                .ForMember(dest => dest.FORM_NUMBER, opt => opt.MapFrom(src => src.DocumentNumber))
+                .ForMember(dest => dest.FORM_ID, opt => opt.MapFrom(src => src.DocumentId))
+                .ForMember(dest => dest.COMMENT, opt => opt.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.ACTION_BY, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.ROLE, opt => opt.MapFrom(src => src.UserRole))
                 ;
 
         }

@@ -32,6 +32,9 @@ function OnReadyFunction(ck5Type) {
         $('#ck5TableItem tbody').html('');
         total = 0;
         var isSamePbck1Uom = true;
+        //====fixing bug no. 111 CK5====
+        var isExistPbck1 = true;
+        //==============================
         
         var data = "";
         for (var i = 0; i < datarows.length; i++) {
@@ -62,6 +65,12 @@ function OnReadyFunction(ck5Type) {
                 }
             }
             data += '</tr>';
+            console.log($('#PbckDecreeId').val());
+            console.log($(datarows[i][4]));
+
+            if($('#PbckDecreeId').val() == '')
+                isExistPbck1 = false
+
             if (datarows[i][4] != ($('#PbckUom').val()))
                 isSamePbck1Uom = false;
 
@@ -91,13 +100,22 @@ function OnReadyFunction(ck5Type) {
             return;
         }
 
-        //if pbck1 uom not same not append the data
-        if (!isSamePbck1Uom) {
-            var pbck1Uom = $('#PbckUom').val();
-            $('#modalBodyMessage').text('Pbck1 Uom Not Same, pbck1 Uom : ' + pbck1Uom);
+        //if pbck is not exist
+        //====fixing bug no. 111 CK5====
+        if (!isExistPbck1) {
+            $('#modalBodyMessage').text('Pbck1 Not Found');
             $('#ModalCk5Material').modal('show');
             return;
+        //==============================
+        } else {
+            //if pbck1 uom not same not append the data
+            if (!isSamePbck1Uom) {
+                var pbck1Uom = $('#PbckUom').val();
+                $('#modalBodyMessage').text('Pbck1 Uom Not Same, pbck1 Uom : ' + pbck1Uom);
+                $('#ModalCk5Material').modal('show');
+                return;
 
+            }
         }
 
         $('#ck5TableItem tbody').append(data);
@@ -615,22 +633,6 @@ function ValidateCk5Form(ck5Type) {
     if (result) {
         var rowCount = $('#ck5TableItem tr').length;
 
-        if (rowCount <= 1) {
-            // alert('Missing CK5 Material');
-            $('#modalBodyMessage').text('Missing CK5 Materials');
-            $('#ModalCk5Material').modal('show');
-
-            $('#home-tab').removeClass('active');
-            $('#upload-tab').addClass('active');
-
-            $('#information').removeClass('active');
-            $('#upload').addClass('active');
-
-            result = false;
-        }
-        
-        rowCount = $('#Ck5UploadTable tr').length;
-        
         if (rowCount <= 1) {
             // alert('Missing CK5 Material');
             $('#modalBodyMessage').text('Missing CK5 Materials');
