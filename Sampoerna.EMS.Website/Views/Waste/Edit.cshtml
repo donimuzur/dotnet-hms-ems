@@ -8,7 +8,6 @@
     <div class="row">
         <div class="col-sm-12">
             <h3>Waste Production Form</h3>
-
             <div class="action-button">
                 <button class="btn btn-blue">Save</button>
                 <a href="@Url.Action("Index", "Waste")" class="btn btn-grey">Cancel</a>
@@ -16,6 +15,83 @@
         </div>
     </div>
 </div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+
+                <!-- Nav tabs -->
+                <ul role="tablist" class="nav nav-tabs">
+                    <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div id="information" class="tab-pane active" role="tabpanel">
+                        <div class="">
+                            <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
+                                <div class="panel panel-default">
+                                    <div id="headingOne" role="tab" class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse">
+                                                Waste Production Detail
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne">
+                                        <div class="panel-body">
+                                            <div role="form" class="form-excise">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Company<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = "form-control " })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                       <label class="col-md-4">Plant<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control ", id = "SearchInput_PlantId" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4"> Waste Production Date</label>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group date">
+                                                                  @Html.TextBox("waste-date", Model.WasteProductionDate == null ? null : Convert.ToDateTime(Model.WasteProductionDate).ToString("dd MMM yyyy"), new { @class = "form-control"})
+                                                                    <span class="input-group-addon">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 @section scripts
 {
