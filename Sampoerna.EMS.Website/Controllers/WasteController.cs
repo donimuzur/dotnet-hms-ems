@@ -202,13 +202,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
 
             model = Mapper.Map<WasteDetail>(dbWaste);
-
+            //Reject
             model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
             model.PackerStr = model.PackerRejectStickQty == null ? string.Empty : model.PackerRejectStickQty.ToString();
-
+            // Waste Gram
             model.DustGramStr = model.DustWasteGramQty == null ? string.Empty : model.DustWasteGramQty.ToString();
             model.FloorGramStr = model.FloorWasteGramQty == null ? string.Empty : model.FloorWasteGramQty.ToString();
-
+            //Waste Stick
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
             model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
 
