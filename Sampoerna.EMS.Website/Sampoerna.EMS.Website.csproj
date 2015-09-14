@@ -1076,6 +1076,8 @@
     <Content Include="Views\PBCK4\_Pbck4UploadList.cshtml" />
     <Content Include="Views\Waste\Index.cshtml" />
     <Content Include="Views\Waste\_WasteTableIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistory.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Back.cshtml" />
     <Content Include="Views\Waste\Create.cshtml" />
     <Content Include="Views\Waste\Edit.cshtml" />
     <Content Include="Views\CK4C\_HomeGovApproval.cshtml" />

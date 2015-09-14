@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 {
@@ -12,10 +14,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public DateTime Pbck7Date { get; set; }
         public string Pbck3Number { get; set; }
         public DateTime? Pbck3Date { get; set; }
-        public string DocumentType { get; set; }
+        public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
         public DateTime? ExecDateFrom { get; set; }
         public DateTime? ExecDateTo { get; set; }
         public string NppbkcId { get; set; }
+        public string PlantId { get; set; }
+        public string PlantName { get; set; }
         public string Lampiran { get; set; }
 
 
@@ -25,6 +29,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public SelectList DocumentTypeList { get; set; }
 
+        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
 
     }

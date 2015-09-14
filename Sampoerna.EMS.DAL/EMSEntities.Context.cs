@@ -103,5 +103,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<LACK1_TRACKING> LACK1_TRACKING { get; set; }
         public virtual DbSet<LACK1_PLANT> LACK1_PLANT { get; set; }
         public virtual DbSet<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
+        public virtual DbSet<CK4C_DECREE_DOC> CK4C_DECREE_DOC { get; set; }
     }
 }

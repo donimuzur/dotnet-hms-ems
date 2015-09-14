@@ -33,6 +33,11 @@ function EditRow(o) {
     //set value
     $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
     
+    $('#uploadMaterialNumber').find('option:not(:first)').remove();
+    //===Fixing Bug CK5 no. 110====
+    $('#uploadMaterialNumber').append('<option>' + nRow.find("td").eq(2).html() + '</option>');
+    //=============================
+
     $('#uploadMaterialNumber').val(nRow.find("td").eq(2).html());
     $('#uploadMaterialQty').val(nRow.find("td").eq(3).html());
 
@@ -49,6 +54,10 @@ function EditRow(o) {
     $('#uploadNote').val(nRow.find("td").eq(12).html());
     
     $('#uploadMaterialDesc').val(nRow.find("td").eq(15).html());
+
+    //===Fixing Bug CK5 no. 110====
+    $('#uploadMaterialPlant').val(nRow.find("td").eq(16).html());
+    //=============================
     
     ClearValidation();
     

@@ -63,6 +63,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.Pbck7Number))
                 .ForMember(dest => dest.Pbck7Date, opt => opt.MapFrom(src => src.Pbck7Date))
                 .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DocumentType));
+            Mapper.CreateMap<Pbck7Pbck3CreateViewModel, Pbck7AndPbck3Dto>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.Pbck7Number))
+               .ForMember(dest => dest.Pbck7Date, opt => opt.MapFrom(src => src.Pbck7Date))
+               .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DocumentType));
 
             #endregion
         }
