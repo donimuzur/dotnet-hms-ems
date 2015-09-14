@@ -298,7 +298,7 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
-            [Description("STO Cancelled")]
+            [Description("Cancelled")]
             Cancelled = 100,
             [Description("STOB Good Issue Completed")]
             StobGICompleted = 105,
@@ -342,7 +342,10 @@ namespace Sampoerna.EMS.Core
             TFReversed = 310,
 
             [Description("TF Partial")]
-            TFPartial = 315
+            TFPartial = 315,
+
+            [Description("STOCancelled")]
+            STOCancelled = 320,
         }
 
         /// <summary>

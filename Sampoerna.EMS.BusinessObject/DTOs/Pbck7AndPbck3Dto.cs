@@ -37,7 +37,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Back1Number { get; set; }
         public DateTime Back1Date { get; set; }
 
-
+        public List<Pbck7ItemUpload> UploadItems { get; set; }
+      
         
     }
 

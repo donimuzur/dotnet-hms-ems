@@ -17,7 +17,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string PlantId { get; set; }
 
         public string PlantName { get; set; }
-        public DateTime Pbck7Date { get; set; }
+        public DateTime? Pbck7Date { get; set; }
         public string Pbck3Number { get; set; }
         public DateTime? Pbck3Date { get; set; }
         public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }

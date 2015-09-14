@@ -138,7 +138,7 @@
                 </div>
                 <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
                     <div class="panel-body">
-                        <a href="javascript:void(0)"  class="btn btn-blue" aria-controls="printout" onclick="toUploadTab()">Upload</a>
+                        <a href="javascript:void(0)"  class="btn btn-blue" onclick="toUploadTab()">Upload</a>
                          <div class="table-container" id="table-upload">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -157,7 +157,7 @@
                                         <th>Excise Value</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="body-tb-upload">
                                     <tr>
                                         <td> &nbsp; </td>
                                         <td> &nbsp; </td>
@@ -202,70 +202,6 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div aria-multiselectable="true" role="tablist" id="accordionFour" class="panel-group">
-            <div class="panel panel-default">
-                <div id="headingFour" role="tab" class="panel-heading">
-                    <h4 class="panel-title">
-                        <a aria-controls="collapseFour" aria-expanded="true" href="#collapseFour" data-parent="#accordionFour" data-toggle="collapse" class="collapsed">
-                            BACK-1
-                            <i class="fa fa-caret-down"></i>
-                        </a>
-                    </h4>
-                </div>
-                <div aria-labelledby="headingFour" role="tabpanel" class="panel-collapse collapse" id="collapseFour" style="height: 0px;">
-                    <div class="panel-body">
-                        <div role="form" class="form-excise">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Goverment Status</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBox("back1_gov_status", null, new { @class="form-class", @disabled="disabled" }) 
-                                             })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">BACK-1 No</label>
-                                        <div class="col-md-8">
-                                             @Html.TextBox("back1_no", null, new { @class = "form-class", @disabled = "disabled" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">BACK-1 Date</label>
-                                        <div class="col-md-8">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">BACK-1 Doc</label>
-                                        <div class="col-md-8">
-                                            <input type="file" multiple="" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

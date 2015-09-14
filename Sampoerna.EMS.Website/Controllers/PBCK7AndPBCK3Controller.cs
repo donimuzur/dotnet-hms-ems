@@ -190,6 +190,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Pbck7Pbck3CreateViewModel model)
         {
+            var modelDto = Mapper.Map<Pbck7AndPbck3Dto>(model);
             return RedirectToAction("Index");
         }
 
@@ -205,11 +206,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
         [HttpPost]
-        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
+        public JsonResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
-            var model = new Pbck7Pbck3CreateViewModel();
-            model.UploadItems = new List<Pbck7ItemUpload>();
+            var model = new List<Pbck7ItemUpload>();
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
@@ -240,13 +240,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                     finally
                     {
-                        model.UploadItems.Add(item);
+                        model.Add(item);
                     }
 
                    
                 }
             }
-            return PartialView("_UploadList", model);
+            return Json(model);
         }
     }
 

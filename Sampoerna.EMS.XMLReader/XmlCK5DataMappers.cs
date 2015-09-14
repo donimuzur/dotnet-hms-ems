@@ -205,12 +205,16 @@ namespace Sampoerna.EMS.XMLReader
                                 }
                                 else if (statusCk5 == Enums.CK5XmlStatus.GIReversal)
                                 {
+                                    CreateCk5XmlCancel(item);
                                     workflowHistory.ACTION = Enums.ActionType.GIReversal;
                                     item.STATUS_ID = Enums.DocumentStatus.GIReversal;
                                    
                                }
                                else if (statusCk5 == Enums.CK5XmlStatus.StoCancel)
                                {
+                                   workflowHistory.ACTION = Enums.ActionType.STOCancelled;
+                                   AddWorkflowHistory(workflowHistory, null, null, null, null);
+
                                    CreateCk5XmlCancel(item);
 
                                    item.STATUS_ID = Enums.DocumentStatus.Cancelled;
