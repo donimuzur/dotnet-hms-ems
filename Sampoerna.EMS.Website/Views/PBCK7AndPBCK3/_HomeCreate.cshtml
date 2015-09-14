@@ -76,7 +76,6 @@
                                         <div class="col-md-8">
                                             <div class="input-group date">
                                                 @Html.TextBoxFor(model => model.ExecDateFrom, new {@class = "form-control"})
-                                                <input type="text" class="form-control">
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -101,7 +100,7 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(x => x.NppbkcId, Model.NppbkIdList, "select", new {@class = "form-model"})
+                                            @Html.DropDownListFor(x => x.NppbkcId, Model.NppbkIdList, "select", new {@class = "form-control"})
                                         </div>
                                     </div>
                                 </div>
@@ -117,7 +116,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Plant ID</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(x => x.PlantId, Model.PlantList, "select", new {@class = "form-model"})
+                                            @Html.DropDownListFor(x => x.PlantId, Model.PlantList, "select", new {@class = "form-control"})
                                         </div>
                                     </div>
                                 </div>
