@@ -915,9 +915,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetLatestSaldoLack(int month, int year, string nppbkcid)
+        public JsonResult GetLatestSaldoLack(int month, int year, string nppbkcid, string plant, string goodtype)
         {
-            var latestSaldo = _lackBll.GetLatestSaldoPerPeriod(new Lack1GetLatestSaldoPerPeriodInput() { MonthTo = month, YearTo = year, NppbkcId = nppbkcid });
+            var latestSaldo = _lackBll.GetLatestSaldoPerPeriod(new Lack1GetLatestSaldoPerPeriodInput() { MonthTo = month, YearTo = year, NppbkcId = nppbkcid, SupplierPlantWerks = plant, ExcisableGoodsType = goodtype });
             return Json(new { latestSaldo });
         }
 

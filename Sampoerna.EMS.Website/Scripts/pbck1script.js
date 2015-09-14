@@ -62,6 +62,7 @@ function supplierChange(isNppbkcImport, url) {
 function goodTypeOnChange() {
     if ($("#Detail_Pbck1Type").length) {
         var goodTypeName = $("#Detail_GoodType").find("option:selected").text();
+        goodTypeName = goodTypeName.substr(3);
         $('#Detail_GoodTypeDesc').val(goodTypeName);
     }
 

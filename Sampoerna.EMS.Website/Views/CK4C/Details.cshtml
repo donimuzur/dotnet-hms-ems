@@ -111,12 +111,12 @@
     <script src="~/Scripts/ck4cscript.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
+            SetBasedOn();
+
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("DocumentList", "CK4C")';
             });
-
-            SetBasedOn();
-
+            
             $("#btnApprove").click(function () {
 
                 $('#btnConfirm').show();

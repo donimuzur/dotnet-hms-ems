@@ -209,7 +209,10 @@ namespace Sampoerna.EMS.Core
             TFReversed = 310,
 
             [Description("TF Partial")]
-            TFPartial = 315
+            TFPartial = 315,
+
+            [Description("TF Posting")]
+            TFPosting = 320
         }
         
 
@@ -517,5 +520,12 @@ namespace Sampoerna.EMS.Core
             Receiving = 101,
         }
 
+        public enum StatusGovCk4c
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 2
+        }
     }
 }

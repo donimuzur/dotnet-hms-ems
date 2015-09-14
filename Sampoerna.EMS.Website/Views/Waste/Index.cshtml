@@ -1,13 +1,11 @@
-﻿@model Sampoerna.EMS.Website.Models.PRODUCTION.ProductionViewModel
-@using Sampoerna.EMS.Helpers
-
+﻿@model Sampoerna.EMS.Website.Models.Waste.WasteViewModel
 
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>Daily Production List</h3>
+            <h3>Waste Production List</h3>
             <div class="action-button new">
-                <a href="@Url.Action("Create", "Production")"><button class="btn btn-blue">NEW</button></a>
+                <a href=@Url.Action("Create", "Waste")"><button class="btn btn-blue">NEW</button></a>
                 <a href="#7.0-pbck3-pbck7-list-edit.html"><button class="btn btn-blue">UPLOAD</button></a>
             </div>
         </div>
@@ -18,7 +16,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterProductionIndex", "Production",
+                @using (Ajax.BeginForm("FilterWasteIndex", "Waste",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -34,7 +32,7 @@
                                 <label class="col-md-3 long">Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control" name="ProductionDate">
+                                        <input type="text" class="form-control" name="WasteProductionDate">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -54,7 +52,7 @@
                             <div class="row">
                                 <label class="col-md-4">Plant ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
+                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerksList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
                                 </div>
                             </div>
                         </div>
@@ -76,7 +74,7 @@
                 }
             </div>
             <div id="contenttable" class="table-container">
-                @Html.Partial("_ProductionTableIndex")
+                @Html.Partial("_WasteTableIndex")
             </div>
         </div>
 
@@ -87,8 +85,7 @@
 {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript">
-
-        $('#MenuCk4cDailyProduction').addClass('active');
+        $('#MenuCk4cWasteProduction').addClass('active');
 
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {
@@ -97,12 +94,12 @@
 
             // DataTable
             var table = null;
-            if ($.fn.dataTable.isDataTable('#DailyProduction')) {
-                table = $('#DailyProduction').DataTable();
+            if ($.fn.dataTable.isDataTable('#WasteProduction')) {
+                table = $('#WasteProduction').DataTable();
                 table.destroy();
             }
 
-            table = $('#DailyProduction').DataTable(
+            table = $('#WasteProduction').DataTable(
                 {
                     "sDom": "Rlfrtip",
                     "language": {
@@ -112,7 +109,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#DailyProduction .filters th').each(function () {
+            $('#WasteProduction .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -146,7 +143,7 @@
         $(document).ready(function () {
             setupDataTables();
         });
-
+        
         function ajaxSelectCompany(url, formData) {
             if (formData.companyId) {
                 $.ajax({
@@ -166,7 +163,7 @@
                 });
             }
         }
-
+        
         function ReloadDataTables() {
             $('.toggle-row').click(function () {
 
@@ -177,6 +174,6 @@
             });
             setupDataTables();
         }
-
     </script>
 }
+

@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.StatusGoverment))
                 .ForMember(dest => dest.ReportedMonthName, opt => opt.MapFrom(src => src.MonthNameEng))
                 .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+                .ForMember(dest => dest.StatusGovName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.StatusGoverment)))
                 .ForMember(dest => dest.BasedOn, opt => opt.MapFrom(src => src.PlantId != null ? "PLANT" : "NPPBKC"))
                 .ForMember(dest => dest.Ck4cItemData, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItemData>>(src.Ck4cItem)));
 
