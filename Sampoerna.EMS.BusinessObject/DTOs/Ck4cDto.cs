@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int ReportedMonth { get; set; }
         public int ReportedYears { get; set; }
         public Enums.DocumentStatus Status { get; set; }
-        public Enums.DocumentStatusGov? StatusGoverment { get; set; }
+        public Enums.StatusGovCk4c? StatusGoverment { get; set; }
         public string Comment { get; set; }
 
         //Month

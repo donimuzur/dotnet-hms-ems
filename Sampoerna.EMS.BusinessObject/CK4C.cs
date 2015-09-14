@@ -36,11 +36,12 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> REPORTED_MONTH { get; set; }
         public Nullable<int> REPORTED_YEAR { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.StatusGovCk4c> GOV_STATUS { get; set; }
         public string APPROVED_BY_POA { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE_POA { get; set; }
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
+        public Nullable<System.DateTime> DECREE_DATE { get; set; }
     
         public virtual USER USER { get; set; }
         public virtual MONTH MONTH { get; set; }
