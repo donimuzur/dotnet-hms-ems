@@ -131,7 +131,7 @@ function generateSummaryJumlahProduksi(data) {
 
 function generatePlant(data) {
     var rc = "";
-    if (data.length > 0) {
+    if (data) {
         rc = '<div id="lack1-plant">';
         for (var i = 0; i < data.length; i++) {
             rc += '<input name="Lack1Plant[' + i + '].Lack1PlantId" type="hidden" value = "' + data[i].Lack1PlantId + '" />';
@@ -149,7 +149,7 @@ function generatePlant(data) {
 
 function generatePbck1Mapping(data) {
     var rc = "";
-    if (data.length > 0) {
+    if (data) {
         rc = '<div id="lack1-pbck1-mapping">';
         for (var i = 0; i < data.length; i++) {
             rc += '<input name="Lack1Pbck1Mapping[' + i + '].LACK1_PBCK1_MAPPING_ID" type="hidden" value = "' + data[i].LACK1_PBCK1_MAPPING_ID + '" />';
