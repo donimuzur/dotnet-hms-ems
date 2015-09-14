@@ -6079,7 +6079,7 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="REPORTED_MONTH" Type="Int32" />
           <Property Name="REPORTED_YEAR" Type="Int32" />
           <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
-          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" Nullable="true" />
+          <Property Name="GOV_STATUS" Type="EMSModel.StatusGovCk4c" Nullable="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CK4C_MODIFIED_BY" FromRole="CK4C" ToRole="USER" />
           <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_CK4C_MONTH" FromRole="CK4C" ToRole="MONTH" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_CK4C_USER" FromRole="CK4C" ToRole="USER" />
@@ -6845,6 +6845,10 @@ warning 6002: The table/view 'EMS_DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="StatusGovCk4c">
+          <Member Name="Approved" Value="1" />
+          <Member Name="Rejected" Value="2" />
+        </EnumType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
