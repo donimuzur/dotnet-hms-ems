@@ -1,6 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
 
-<div id="upload" class="tab-pane active" role="tabpanel">
+<div id="upload" class="tab-pane" role="tabpanel">
     <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
         <div class="panel panel-default">
             <div id="headingOne" role="tab" class="panel-heading">
@@ -15,14 +15,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="text" class="form-control">
-                                <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                    Browse <input type="file" multiple="">
-                                </span>
-                            </div>
+                                <input type="file" name="itemExcelFile" id="itemExcelFile">
+                           </div>
                         </div>
                         <div class="col-md-6">
-                            <button class="btn btn-grey generate">Generate</button>
+                            <input type="button" class="btn btn-grey" id="btn-generate-upload" value="Generate">
+                            <input type="button" class="btn btn-blue" id="btn-save-upload" value="Save" disabled />
+
+
                         </div>
                     </div>
                 </div>

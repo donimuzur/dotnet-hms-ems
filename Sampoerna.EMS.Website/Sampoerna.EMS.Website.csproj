@@ -1081,6 +1081,7 @@
     <Content Include="Views\Waste\Create.cshtml" />
     <Content Include="Views\Waste\Edit.cshtml" />
     <Content Include="Views\CK4C\_HomeGovApproval.cshtml" />
+    <Content Include="Views\Waste\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
