@@ -233,7 +233,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 // model = GetInitDetailsData(model);
-                //model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(pbck4Details.Pbck4ItemsDto);
+               // model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(pbck4Details.Pbck4ItemsDto);
+               
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(pbck4Details.ListChangesHistorys);
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(pbck4Details.ListWorkflowHistorys);
 

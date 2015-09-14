@@ -37,6 +37,9 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<Pbck4ItemsInput, Pbck4ItemsOutput>().IgnoreAllNonExisting()
                 ;
+
+            Mapper.CreateMap<PBCK4_ITEM, Pbck4ItemDto>().IgnoreAllNonExisting()
+               ;
         }
     }
 }

@@ -129,7 +129,7 @@ namespace Sampoerna.EMS.BLL
            output.Pbck4Dto = Mapper.Map<Pbck4Dto>(dtData);
 
            ////details
-           //output.Ck5MaterialDto = Mapper.Map<List<CK5MaterialDto>>(dtData.CK5_MATERIAL);
+          // output.Pbck4ItemsDto = Mapper.Map<List<Pbck4ItemDto>>(dtData.PBCK4_ITEM);
 
            //change history data
            output.ListChangesHistorys = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK4, output.Pbck4Dto.PBCK4_ID.ToString());

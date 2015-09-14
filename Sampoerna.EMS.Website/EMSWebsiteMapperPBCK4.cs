@@ -69,6 +69,8 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck4UploadViewModel, Pbck4ItemsInput>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<Pbck4ItemsOutput, Pbck4UploadViewModel>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck4ItemDto, Pbck4UploadViewModel>().IgnoreAllNonExisting();
         }
     }
 }
