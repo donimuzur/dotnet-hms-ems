@@ -52,6 +52,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Ck4CType = Enums.CK4CType.DailyProduction,
                 Details = Mapper.Map<List<ProductionDetail>>(_productionBll.GetAllByParam(new ProductionGetByParamInput()))
             });
+
             return View("Index", data);
         }
 

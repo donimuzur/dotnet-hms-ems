@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string PlantId { get; set; }
         public bool AllowApproveAndReject { get; set; }
         public bool AllowManagerReject { get; set; }
+        public bool AllowGovApproveAndReject { get; set; }
 
         //selectlist
         public SelectList DocumentNumberList { get; set; }

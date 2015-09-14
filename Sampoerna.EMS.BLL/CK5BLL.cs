@@ -944,7 +944,11 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
+
+            string newValue = dbData.CK5_TYPE == Enums.CK5Type.PortToImporter ? 
+                EnumHelper.GetDescription(Enums.DocumentStatus.TFPosting) : 
+                EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
+            
             if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
                 newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
 
@@ -952,9 +956,17 @@ namespace Sampoerna.EMS.BLL
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
-            dbData.STATUS_ID = dbData.CK5_TYPE == Enums.CK5Type.Manual
+            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            {
+                dbData.STATUS_ID = Enums.DocumentStatus.TFPosting;
+            }
+            else
+            {
+                dbData.STATUS_ID = dbData.CK5_TYPE == Enums.CK5Type.Manual
                 ? Enums.DocumentStatus.Completed
                 : Enums.DocumentStatus.CreateSTO;
+            }
+            
 
             
             oldValue = dbData.REGISTRATION_NUMBER;
@@ -1949,6 +1961,7 @@ namespace Sampoerna.EMS.BLL
                 var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
 
                 dataXmlDto.SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+                dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
             }
             
             return dataXmlDto;

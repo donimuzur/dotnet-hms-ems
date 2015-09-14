@@ -147,10 +147,6 @@
     </div>
 </div>
 
-@*<div id="print-out-block" class="print-out">
-
-    </div>*@
-
 @section scripts {
 
     <script src="~/Scripts/thousand-separator.js"></script>
@@ -194,13 +190,13 @@
             $("#btnReject").click(function () {
                 $('#btnConfirmReject').attr('disabled', 'disabled');
 
-                $('#Detail_Comment').val('');
+                $('#Comment').val('');
 
-                $('#Pbck1ModalReject').modal('show');
+                $('#Lack1ModalReject').modal('show');
 
             });
 
-            $('#Detail_Comment').bind('input propertychange', function () {
+            $('#Comment').bind('input propertychange', function () {
 
                 $('#btnConfirmReject').attr('disabled', 'disabled');
                 $('#btnConfirmGovReject').attr('disabled', 'disabled');
@@ -226,17 +222,6 @@
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
             //ajaxPrintViewSet(url);
         }
-
-        function ajaxPrintViewSet(url) {
-            $.ajax({
-                type: 'GET',
-                url: url,
-                success: function (response) {
-                    if (response) {
-                        $('#print-out-block').html('');
-                    }
-                }
-            });
-        }
+        
     </script>
 }

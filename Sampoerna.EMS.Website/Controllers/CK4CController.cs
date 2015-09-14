@@ -44,7 +44,6 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck4CBll = ck4Cbll;
             _plantBll = plantbll;
             _monthBll = monthBll;
-            _plantBll = plantbll;
             _poabll = poabll;
             _companyBll = companyBll;
             _mainMenu = Enums.MenuList.CK4C;
@@ -382,15 +381,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var plant = _plantBll.GetT001WById(model.Details.PlantId);
             var company = _companyBll.GetById(model.Details.CompanyId);
+            var nppbkcId = plant == null ? item.NppbkcId : plant.NPPBKC_ID;
 
-            item.PlantName = plant.NAME1;
+            item.PlantName = plant == null ? "" : plant.NAME1;
             item.CompanyName = company.BUTXT;
             item.CreatedBy = CurrentUser.USER_ID;
             item.CreatedDate = DateTime.Now;
             var inputDoc = new GenerateDocNumberInput();
             inputDoc.Month = item.ReportedMonth;
             inputDoc.Year = item.ReportedYears;
-            inputDoc.NppbkcId = item.NppbkcId;
+            inputDoc.NppbkcId = nppbkcId;
             item.Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
             item.Status = Enums.DocumentStatus.Draft;
 
@@ -460,12 +460,13 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+            var nppbkcId = plant == null ? ck4cData.NppbkcId : plant.NPPBKC_ID;
 
             //workflow history
             var workflowInput = new GetByFormNumberInput();
             workflowInput.FormNumber = ck4cData.Number;
             workflowInput.DocumentStatus = ck4cData.Status;
-            workflowInput.NPPBKC_Id = plant.NPPBKC_ID;
+            workflowInput.NPPBKC_Id = nppbkcId;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -489,7 +490,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                 DocumentNumber = model.Details.Number,
-                NppbkcId = plant.NPPBKC_ID
+                NppbkcId = nppbkcId
             };
 
             ////workflow
@@ -525,21 +526,57 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Ck4CIndexDocumentListViewModel();
             model = InitialModel(model);
 
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //redirect to details for approval/rejected
+                return RedirectToAction("Details", new { id });
+            }
+
             try
             {
                 model.Details = Mapper.Map<DataDocumentList>(ck4cData);
 
+                if (!ValidateEditDocument(model))
+                {
+                    return RedirectToAction("DocumentList");
+                }
+
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+
+                var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+                var nppbkcId = plant == null ? ck4cData.NppbkcId : plant.NPPBKC_ID;
 
                 //workflow history
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
-                workflowInput.NPPBKC_Id = ck4cData.NppbkcId;
+                workflowInput.NPPBKC_Id = nppbkcId;
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
                 model.WorkflowHistory = workflowHistory;
+
+                //validate approve and reject
+                var input = new WorkflowAllowApproveAndRejectInput
+                {
+                    DocumentStatus = model.Details.Status,
+                    FormView = Enums.FormViewType.Detail,
+                    UserRole = CurrentUser.UserRole,
+                    CreatedUser = ck4cData.CreatedBy,
+                    CurrentUser = CurrentUser.USER_ID,
+                    CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                    DocumentNumber = model.Details.Number,
+                    NppbkcId = nppbkcId
+                };
+
+                ////workflow
+                var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+                model.AllowApproveAndReject = allowApproveAndReject;
+
+                if (!allowApproveAndReject)
+                {
+                    model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                }
             }
             catch (Exception exception)
             {
@@ -575,7 +612,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);
 
-                dataToSave.PlantName = plant.NAME1;
+                dataToSave.PlantName = plant == null ? "" : plant.NAME1;
                 dataToSave.CompanyName = company.BUTXT;
                 dataToSave.ModifiedBy = CurrentUser.USER_ID;
                 dataToSave.ModifiedDate = DateTime.Now;
@@ -667,6 +704,29 @@ namespace Sampoerna.EMS.Website.Controllers
             };
 
             _ck4CBll.Ck4cWorkflow(input);
+        }
+
+        private bool ValidateEditDocument(Ck4CIndexDocumentListViewModel model)
+        {
+
+            //check is Allow Edit Document
+            var isAllowEditDocument = _workflowBll.AllowEditDocumentPbck1(new WorkflowAllowEditAndSubmitInput()
+            {
+                DocumentStatus = model.Details.Status,
+                CreatedUser = model.Details.CreatedBy,
+                CurrentUser = CurrentUser.USER_ID
+            });
+
+            if (!isAllowEditDocument)
+            {
+                AddMessageInfo(
+                    "Operation not allowed.",
+                    Enums.MessageInfoType.Error);
+                return false;
+            }
+
+            return true;
+
         }
 
         #endregion
