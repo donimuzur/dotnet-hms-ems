@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -17,7 +18,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public string PlantWerks { get; set; }
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
-        
+
         //waste Reject
         public decimal? RejectCigaretteStick { get; set; }
         public decimal? MarkerRejectStickQty { get; set; }
@@ -33,7 +34,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public decimal? FloorWasteGramQty { get; set; }
 
         //WasteStick
-        public decimal WasteQtyStick{get;set;}
+        public decimal WasteQtyStick { get; set; }
         public decimal? DustWasteStickQty { get; set; }
         public decimal? FloorWasteStickQty { get; set; }
 
@@ -49,8 +50,16 @@ namespace Sampoerna.EMS.Website.Models.Waste
 
     public class WasteDetail : BaseModel
     {
+        public string CompanyCodeX { get; set; }
+        public string PlantWerksX { get; set; }
+        public string FaCodeX { get; set; }
+        public DateTime? WasteProductionDateX { get; set; }
+
+        [Required]
         public string CompanyCode { get; set; }
+        [Required]
         public string PlantWerks { get; set; }
+        [Required]
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
 
@@ -59,7 +68,8 @@ namespace Sampoerna.EMS.Website.Models.Waste
 
         public string MarkerStr
         {
-            get; set;
+            get;
+            set;
         }
         public decimal? MarkerRejectStickQty { get; set; }
         public string PackerStr
@@ -69,6 +79,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
         }
         public decimal? PackerRejectStickQty { get; set; }
 
+        [Required]
         public DateTime? WasteProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
@@ -111,6 +122,6 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public SelectList CompanyCodeList { get; set; }
         public SelectList PlantWerkList { get; set; }
         public SelectList FacodeList { get; set; }
-        
+
     }
 }

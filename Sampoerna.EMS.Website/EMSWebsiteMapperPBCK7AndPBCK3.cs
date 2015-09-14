@@ -59,10 +59,11 @@ namespace Sampoerna.EMS.Website
 
             #region PBCK7adPBCK3 Create
 
-            Mapper.CreateMap<Pbck7AndPbck3Dto, Pbck7Pbck3CreateViewModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.Pbck7Number))
-                .ForMember(dest => dest.Pbck7Date, opt => opt.MapFrom(src => src.Pbck7Date))
-                .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DocumentType));
+            Mapper.CreateMap<Pbck7AndPbck3Dto, Pbck7Pbck3CreateViewModel>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck7Pbck3CreateViewModel, Pbck7AndPbck3Dto>().IgnoreAllNonExisting();
+
+
 
             #endregion
         }

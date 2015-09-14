@@ -73,6 +73,7 @@ namespace Sampoerna.EMS.Core
 
             StoCreated = 10,
             StoFailed = 11,
+            StoCancel = 12,
             StobGIPartial = 30,
             StobGICompleted = 31,
             StobGRPartial = 35,
@@ -95,10 +96,11 @@ namespace Sampoerna.EMS.Core
 
             GRCompleted = 21,
 
-            StoCancel = 03,
+            StoCancelSAP = 03,
 
             GRReversal = 22,
             GIReversal = 17,
+            
             STOBGIReversal = 32,
             STOBGRReversal = 37,
 
@@ -296,7 +298,7 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
-            [Description("STO Cancelled")]
+            [Description("Cancelled")]
             Cancelled = 100,
             [Description("STOB Good Issue Completed")]
             StobGICompleted = 105,
@@ -340,7 +342,10 @@ namespace Sampoerna.EMS.Core
             TFReversed = 310,
 
             [Description("TF Partial")]
-            TFPartial = 315
+            TFPartial = 315,
+
+            [Description("STO Cancelled")]
+            STOCancelled = 320,
         }
 
         /// <summary>
@@ -520,5 +525,12 @@ namespace Sampoerna.EMS.Core
             Receiving = 101,
         }
 
+        public enum StatusGovCk4c
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 2
+        }
     }
 }
