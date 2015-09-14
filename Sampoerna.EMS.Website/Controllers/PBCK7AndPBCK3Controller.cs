@@ -192,6 +192,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create(Pbck7Pbck3CreateViewModel model)
         {
             var modelDto = Mapper.Map<Pbck7AndPbck3Dto>(model);
+            modelDto.CreatedBy = CurrentUser.USER_ID;
+            modelDto.CreateDate = DateTime.Now;
+            modelDto.Pbck7Status = Enums.DocumentStatus.Draft;
             _pbck7AndPbck7And3Bll.Insert(modelDto);
             return RedirectToAction("Index");
         }

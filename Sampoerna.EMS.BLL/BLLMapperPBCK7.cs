@@ -40,7 +40,12 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE));
-
+            Mapper.CreateMap<Pbck7AndPbck3Dto, PBCK3_PBCK7>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreateDate));
+              
+                
+                ;
             Mapper.CreateMap<BACK1, Pbck7AndPbck3Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck3Pbck7Id, opt => opt.MapFrom(src => src.PBCK3_PBCK7_ID));
 

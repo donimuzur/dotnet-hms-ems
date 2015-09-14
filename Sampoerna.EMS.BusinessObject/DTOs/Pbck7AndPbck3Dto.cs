@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int Pbck3Pbck7Id { get; set; }
         public string Pbck7Number { get; set; }
         public string Pbck3Number { get; set; }
-        public int Pbck7Status { get; set; }
+        public Enums.DocumentStatus Pbck7Status { get; set; }
         public int Pbck3Status { get; set; }
         public DateTime Pbck7Date { get; set; }
         public DateTime? Pbck3Date { get; set; }
