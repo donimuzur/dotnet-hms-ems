@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.BLL.Services
 
             if (input.IsExcludeSameNppbkcId)
             {
-                queryFilterCk5 = queryFilterCk5.And(c => c.SOURCE_PLANT_ID != c.DEST_PLANT_NPPBKC_ID);
+                queryFilterCk5 = queryFilterCk5.And(c => c.SOURCE_PLANT_NPPBKC_ID != c.DEST_PLANT_NPPBKC_ID);
             }
 
             return _repository.Get(queryFilterCk5).ToList();

@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ReturnUom { get; set; }
         public SelectList ReturnUomList { get; set; }
         public Enums.DocumentStatus Status { get; set; }
-        public Enums.DocumentStatusGov GovStatus { get; set; }
+        public Enums.DocumentStatusGov? GovStatus { get; set; }
         public DateTime? DecreeDate { get; set; }
         public long DecreeDoc { get; set; }
         public DateTime CreateDate { get; set; }
@@ -67,6 +67,9 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string Noted { get; set; }
 
         public int IncomeListCount { get; set; }
+
+        public Enums.DocumentStatusGov DocGovStatusList { get; set; }
+
 
     }
 }

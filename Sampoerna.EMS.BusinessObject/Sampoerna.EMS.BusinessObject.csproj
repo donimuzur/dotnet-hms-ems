@@ -193,6 +193,7 @@
     <Compile Include="Inputs\InventoryMovementInput.cs" />
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
+    <Compile Include="Inputs\Lack1Input.cs" />
     <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
@@ -206,6 +207,7 @@
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
+    <Compile Include="Inputs\WasteGetByParamInput.cs" />
     <Compile Include="Inputs\WorkflowHistoryInput.cs" />
     <Compile Include="Inputs\WorkflowInput.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />

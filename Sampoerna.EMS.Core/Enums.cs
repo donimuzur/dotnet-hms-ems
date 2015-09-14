@@ -209,7 +209,10 @@ namespace Sampoerna.EMS.Core
             TFReversed = 310,
 
             [Description("TF Partial")]
-            TFPartial = 315
+            TFPartial = 315,
+
+            [Description("TF Posting")]
+            TFPosting = 320
         }
         
 
@@ -514,7 +517,7 @@ namespace Sampoerna.EMS.Core
             [Description("262")]
             UsageMin = 262,
             [Description("101")]
-            Ck5Receiving = 101,
+            Receiving = 101,
         }
 
     }

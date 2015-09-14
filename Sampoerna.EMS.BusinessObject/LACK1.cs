@@ -18,10 +18,10 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.LACK1_DOCUMENT = new HashSet<LACK1_DOCUMENT>();
             this.LACK1_INCOME_DETAIL = new HashSet<LACK1_INCOME_DETAIL>();
-            this.LACK1_PLANT = new HashSet<LACK1_PLANT>();
-            this.LACK1_PRODUCTION_DETAIL = new HashSet<LACK1_PRODUCTION_DETAIL>();
             this.LACK1_PBCK1_MAPPING = new HashSet<LACK1_PBCK1_MAPPING>();
             this.LACK1_TRACKING = new HashSet<LACK1_TRACKING>();
+            this.LACK1_PLANT = new HashSet<LACK1_PLANT>();
+            this.LACK1_PRODUCTION_DETAIL = new HashSet<LACK1_PRODUCTION_DETAIL>();
         }
     
         public int LACK1_ID { get; set; }
@@ -59,17 +59,17 @@ namespace Sampoerna.EMS.BusinessObject
         public string SUPPLIER_COMPANY_NAME { get; set; }
         public string SUPPLIER_COMPANY_CODE { get; set; }
     
-        public virtual ICollection<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
-        public virtual ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
         public virtual MONTH MONTH { get; set; }
-        public virtual ICollection<LACK1_PLANT> LACK1_PLANT { get; set; }
-        public virtual ICollection<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual UOM UOM1 { get; set; }
         public virtual UOM UOM11 { get; set; }
+        public virtual ICollection<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
+        public virtual ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
         public virtual ICollection<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
         public virtual ICollection<LACK1_TRACKING> LACK1_TRACKING { get; set; }
+        public virtual ICollection<LACK1_PLANT> LACK1_PLANT { get; set; }
+        public virtual ICollection<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
     }
 }

@@ -234,3 +234,21 @@ function ajaxLoadSupplier(url, formData) {
         $('#SupplierPlantId').append('<option value="">Select</option>');
     }
 }
+
+function ajaxLoadPlantDetail(url, formData) {
+    if (formData.werks) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                if (data) {
+                    $('#SupplierPlant').val(data.NAME1);
+                    $('#SupplierPlantAddress').val(data.ADDRESS);
+                    $('#SupplierCompanyCode').val(data.CompanyCode);
+                    $('#SupplierCompanyName').val(data.CompanyName);
+                }
+            }
+        });
+    }
+}

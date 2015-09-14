@@ -114,6 +114,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<CK5, Lack1GeneratedIncomeDataDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
+                .ForMember(dest => dest.StoReceiverNumber, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
                 .ForMember(dest => dest.StringRegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty))
@@ -142,6 +143,48 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.LACK1_PBCK1_MAPPING, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PBCK1_MAPPING>>(src.Pbck1List)))
                 ;
 
+            Mapper.CreateMap<Lack1IncomeDetailDto, LACK1_INCOME_DETAIL>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack1Pbck1MappingDto, LACK1_PBCK1_MAPPING>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack1PlantDto, LACK1_PLANT>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack1ProductionDetailDto, LACK1_PRODUCTION_DETAIL>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1DetailsDto, LACK1>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.LACK1_ID, opt => opt.MapFrom(src => src.Lack1Id))
+                .ForMember(dest => dest.LACK1_NUMBER, opt => opt.MapFrom(src => src.Lack1Number))
+                .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.Bukrs))
+                .ForMember(dest => dest.BUTXT, opt => opt.MapFrom(src => src.Butxt))
+                .ForMember(dest => dest.PERIOD_MONTH, opt => opt.MapFrom(src => src.PeriodMonth))
+                .ForMember(dest => dest.PERIOD_YEAR, opt => opt.MapFrom(src => src.PeriodYears))
+                .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SubmissionDate))
+                .ForMember(dest => dest.SUPPLIER_PLANT, opt => opt.MapFrom(src => src.SupplierPlant))
+                .ForMember(dest => dest.SUPPLIER_PLANT_WERKS, opt => opt.MapFrom(src => src.SupplierPlantId))
+                .ForMember(dest => dest.SUPPLIER_PLANT_ADDRESS, opt => opt.MapFrom(src => src.SupplierPlantAddress))
+                .ForMember(dest => dest.SUPPLIER_COMPANY_CODE, opt => opt.MapFrom(src => src.SupplierCompanyCode))
+                .ForMember(dest => dest.SUPPLIER_COMPANY_NAME, opt => opt.MapFrom(src => src.SupplierCompanyName))
+                .ForMember(dest => dest.EX_GOODTYP, opt => opt.MapFrom(src => src.ExGoodsType))
+                .ForMember(dest => dest.EX_TYP_DESC, opt => opt.MapFrom(src => src.ExGoodsTypeDesc))
+                .ForMember(dest => dest.WASTE_QTY, opt => opt.MapFrom(src => src.WasteQty))
+                .ForMember(dest => dest.WASTE_UOM, opt => opt.MapFrom(src => src.WasteUom))
+                .ForMember(dest => dest.RETURN_QTY, opt => opt.MapFrom(src => src.ReturnQty))
+                .ForMember(dest => dest.RETURN_UOM, opt => opt.MapFrom(src => src.ReturnUom))
+                .ForMember(dest => dest.STATUS, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.GOV_STATUS, opt => opt.MapFrom(src => src.GovStatus))
+                .ForMember(dest => dest.DECREE_DATE, opt => opt.MapFrom(src => src.DecreeDate))
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.BEGINING_BALANCE, opt => opt.MapFrom(src => src.BeginingBalance))
+                .ForMember(dest => dest.TOTAL_INCOME, opt => opt.MapFrom(src => src.TotalIncome))
+                .ForMember(dest => dest.USAGE, opt => opt.MapFrom(src => src.Usage))
+                .ForMember(dest => dest.LACK1_LEVEL, opt => opt.MapFrom(src => src.Lack1Level))
+                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreateBy))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreateDate))
+                .ForMember(dest => dest.LACK1_UOM_ID, opt => opt.MapFrom(src => src.Lack1UomId))
+                .ForMember(dest => dest.NOTED, opt => opt.MapFrom(src => src.Noted))
+                .ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.Lack1IncomeDetail)))
+                .ForMember(dest => dest.LACK1_PLANT, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PLANT>>(src.Lack1Plant))) 
+                .ForMember(dest => dest.LACK1_PRODUCTION_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(src.Lack1ProductionDetail)))
+                .ForMember(dest => dest.LACK1_PBCK1_MAPPING, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PBCK1_MAPPING>>(src.Lack1Pbck1Mapping)))
+                ;
+
             Mapper.CreateMap<T001W, LACK1_PLANT>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.WERKS))
                 .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.NAME1))
@@ -163,6 +206,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PeriodYears, opt => opt.MapFrom(src => src.PERIOD_YEAR))
                 .ForMember(dest => dest.LevelPlantId, opt => opt.MapFrom(src => src.LACK1_PLANT != null && src.LACK1_LEVEL == Enums.Lack1Level.Plant && src.LACK1_PLANT.FirstOrDefault() != null ? src.LACK1_PLANT.FirstOrDefault().PLANT_ID : string.Empty))
                 .ForMember(dest => dest.LevelPlantName, opt => opt.MapFrom(src => src.LACK1_PLANT != null && src.LACK1_LEVEL == Enums.Lack1Level.Plant && src.LACK1_PLANT.FirstOrDefault() != null ? src.LACK1_PLANT.FirstOrDefault().PLANT_NAME : string.Empty))
+                .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => src.LACK1_LEVEL))
                 .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
                 .ForMember(dest => dest.SupplierPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
                 .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS))
@@ -252,6 +296,15 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Lack1GeneratedTrackingDto, LACK1_TRACKING>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
+                ;
+
+            Mapper.CreateMap<Lack1WorkflowDocumentInput, WorkflowHistoryDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => src.ActionType))
+                .ForMember(dest => dest.FORM_NUMBER, opt => opt.MapFrom(src => src.DocumentNumber))
+                .ForMember(dest => dest.FORM_ID, opt => opt.MapFrom(src => src.DocumentId))
+                .ForMember(dest => dest.COMMENT, opt => opt.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.ACTION_BY, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.ROLE, opt => opt.MapFrom(src => src.UserRole))
                 ;
 
         }
