@@ -520,5 +520,12 @@ namespace Sampoerna.EMS.Core
             Receiving = 101,
         }
 
+        public enum StatusGovCk4c
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 2
+        }
     }
 }
