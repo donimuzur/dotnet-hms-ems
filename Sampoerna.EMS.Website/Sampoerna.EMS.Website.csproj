@@ -1072,6 +1072,8 @@
     <Content Include="Views\PBCK4\_Pbck4Printout.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadCreate.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadList.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistory.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Back.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
