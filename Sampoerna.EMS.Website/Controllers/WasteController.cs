@@ -134,12 +134,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (existingData != null)
                 {
                     AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
-                    return RedirectToAction("Edit", "Production", new
+                    return RedirectToAction("Edit", "Waste", new
                     {
                         companyCode = model.CompanyCode,
                         plantWerk = model.PlantWerks,
                         faCode = model.FaCode,
-                        productionDate = model.WasteProductionDate
+                        wasteProductionDate = model.WasteProductionDate
                     });
                 }
 
@@ -214,10 +214,115 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model = IniEdit(model);
 
+            model.CompanyCodeX = model.CompanyCode;
+            model.PlantWerksX = model.PlantWerks;
+            model.WasteProductionDateX = model.WasteProductionDate;
+            model.FaCodeX = model.FaCode;
+
             return View(model);
         }
 
+        //
+        // POST: /Production/Edit
+        [HttpPost]
+        public ActionResult Edit(WasteDetail model)
+        {
+
+            var dbProduction = _wasteBll.GetById(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
+               Convert.ToDateTime(model.WasteProductionDateX));
+
+            if (dbProduction == null)
+            {
+                ModelState.AddModelError("Waste", "Data is not Found");
+                model = IniEdit(model);
+
+                return View("Edit, model");
+
+            }
+
+            var dbWasteNew = Mapper.Map<WasteDto>(model);
+            var company = _companyBll.GetById(model.CompanyCode);
+            var plant = _plantBll.GetT001WById(model.PlantWerks);
+            var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
+
+            model.CompanyName = company.BUTXT;
+            model.PlantName = plant.NAME1;
+            model.BrandDescription = brandDesc.BRAND_CE;
+
+            //reject
+            dbWasteNew.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
+            dbWasteNew.PackerRejectStickQty = model.PackerStr == null ? 0 : Convert.ToDecimal(model.PackerStr);
+            //waste gram
+            dbWasteNew.DustWasteGramQty = model.DustGramStr == null ? 0 : Convert.ToDecimal(model.DustGramStr);
+            dbWasteNew.FloorWasteGramQty = model.FloorGramStr == null ? 0 : Convert.ToDecimal(model.FloorGramStr);
+            //waste stick
+            dbWasteNew.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
+            dbWasteNew.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
+
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var error = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+                    if (error.Count > 0)
+                    {
+                        //
+                    }
+                }
+
+                _wasteBll.Save(dbWasteNew);
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                    );
+
+
+                return RedirectToAction("Index");
+
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
+                    );
+            }
+
+            model = IniEdit(model);
+
+            return View("Edit", model);
+
+        }
+
+
+
+
         #endregion
+
+        #region Detail
+
+        public ActionResult Detail(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
+        {
+            var model = new WasteDetail();
+            var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
+
+            model = Mapper.Map<WasteDetail>(dbWaste);
+
+            //reject
+            model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
+            model.PackerStr = model.PackerRejectStickQty == null ? string.Empty : model.PackerRejectStickQty.ToString();
+
+            //Waste Gram
+            model.DustGramStr = model.DustWasteGramQty == null ? string.Empty : model.DustWasteGramQty.ToString();
+            model.FloorGramStr = model.FloorWasteGramQty == null ? string.Empty : model.FloorWasteGramQty.ToString();
+
+            //Waste Stick
+            model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
+            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
+
+            model = IniEdit(model);
+            return View(model);
+
+        }
+        #endregion
+
+
 
         #region Json
         [HttpPost]
