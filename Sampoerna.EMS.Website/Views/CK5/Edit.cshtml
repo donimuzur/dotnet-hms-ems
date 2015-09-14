@@ -479,6 +479,7 @@
         $("#btnSubmitConfirm").click(function() {
                     @*window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";*@
             if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+                console.log('masuk');
                 $('#Command').val('Submit');
                 $('#EditCk5Forms').submit();
             }
