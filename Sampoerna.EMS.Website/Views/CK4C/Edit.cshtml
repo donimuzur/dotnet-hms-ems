@@ -39,7 +39,15 @@
 
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        @Html.Partial("_HomeEdit")
+                        @if (Model.Details.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+                        {
+                             @Html.Partial("_HomeGovApproval")
+                        }
+                        else
+                        {
+                            @Html.Partial("_HomeEdit")
+                        }
+                        
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ChangeLog")
                     </div>
@@ -73,6 +81,8 @@
     <script src="~/Scripts/ck4cscript.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
+            SetBasedOn();
+
             $("#Details_CompanyId").change(function () {
                 ChangeCompany($(this).find("option:selected").val());
             });
@@ -119,6 +129,22 @@
             }
             $('#Details_PlantId').val('');
             $('#Details_NppbkcId').val('');
+        }
+
+        function SetBasedOn() {
+            var nppbkc = '@Model.Details.NppbkcId';
+            var plantId = $('#Details_PlantId').val();
+            var plantName = $('#Details_PlantName').val();
+            var docStatus = '@Model.Details.Status.ToString()';
+            var isAllow = '@Model.AllowGovApproveAndReject';
+
+            if (nppbkc != '') {
+                $('#basedNppbkc').prop('checked', true);
+                if (docStatus != '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() != 'true') {
+                    $('#Details_NppbkcId').prop('disabled', false);
+                    $('#Details_PlantId').prop('disabled', true);
+                }
+            }
         }
     </script>
 }

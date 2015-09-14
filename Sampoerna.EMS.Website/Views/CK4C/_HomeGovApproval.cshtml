@@ -21,6 +21,12 @@
                                     <div class="row">
                                         <label class="col-md-4">CK-4C No</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Details.Ck4CId)
+                                            @Html.HiddenFor(model => model.Details.Number)
+                                            @Html.HiddenFor(model => model.Details.Status)
+                                            @Html.HiddenFor(model => model.Details.IsSaveSubmit)
+                                            @Html.HiddenFor(model => model.Details.CreatedBy)
+                                            @Html.HiddenFor(model => model.Details.CreatedDate)
                                             @Html.TextBoxFor(model => model.Details.Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
@@ -42,17 +48,17 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Company Code<span class="red">*</span></label>
+                                        <label class="col-md-4">Company Code</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Details.CompanyId, Model.CompanyNameList, "select", new { @class = "form-control " })
+                                            @Html.DropDownListFor(model => model.Details.CompanyId, Model.CompanyNameList, "select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Reported Period<span class="red">*</span></label>
+                                        <label class="col-md-4">Reported Period</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Details.ReportedPeriod, Model.PeriodList, "select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.Details.ReportedPeriod, Model.PeriodList, "select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -62,23 +68,23 @@
                                     <div class="row">
                                         <label class="col-md-4">POA</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Details.PoaList, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
+                                            @Html.TextBoxFor(model => model.Details.ApprovedByPoa, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Reported Month<span class="red">*</span></label>
+                                        <label class="col-md-4">Reported Month</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Details.ReportedMonth, Model.MonthList, "select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.Details.ReportedMonth, Model.MonthList, "select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-md-offset-6">
                                     <div class="row">
-                                        <label class="col-md-4">Reported Year<span class="red">*</span></label>
+                                        <label class="col-md-4">Reported Year</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Details.ReportedYears, Model.YearList, "select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.Details.ReportedYears, Model.YearList, "select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -86,16 +92,16 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Based on<span class="red">*</span></label>
+                                        <label class="col-md-4">Based on</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4"><input name="based-on" type="radio" checked value="1"> Plant Id</label>
+                                        <label class="col-md-4"><input name="based-on" type="radio" id="basedPlant" checked value="1" disabled> Plant Id</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Details.PlantId, Model.PlanList, "select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.Details.PlantId, Model.PlanList, "select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -103,14 +109,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4"><input name="based-on" type="radio" value="2"> NPPBKC</label>
+                                        <label class="col-md-4"><input name="based-on" type="radio" id="basedNppbkc" value="2" disabled> NPPBKC</label>
                                         <div class="col-md-8">
                                             @Html.DropDownListFor(model => model.Details.NppbkcId, Model.NppbkcIdList, "select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="button" value="Generate" class="btn btn-blue full" id="btnGenerate" />
                                 </div>
                             </div>
                         </div>
@@ -128,7 +131,7 @@
                         </a>
                     </h4>
                 </div>
-                <div aria-labelledby="heading6" role="tabpanel" class="panel-collapse in" id="collapse6">
+                <div aria-labelledby="heading6" role="tabpanel" class="panel-collapse collapse" id="collapse6">
                     <div class="panel-body">
                         <div class="table-container">
                             <table class="table table-bordered table-striped js-options-table">
@@ -146,19 +149,79 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tb-body-ck4c">
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
+                                    @for (var i = 0; i < Model.Details.Ck4cItemData.Count; i++)
+                                    {
+                                        var item = Model.Details.Ck4cItemData[i];
+                                        <tr>
+                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CItemId" type="hidden" value="@item.Ck4CItemId" /></td>
+                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CId" type="hidden" value="@item.Ck4CId" /></td>
+                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" /></td>
+                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" /></td>
+                                            <td><input name="Details.Ck4cItemData[@i].ProdDate" type="hidden" value="@item.ProdDate" />@item.ProdDateName</td>
+                                            <td><input name="Details.Ck4cItemData[@i].FaCode" type="hidden" value="@item.FaCode" />@item.FaCode</td>
+                                            <td><input name="Details.Ck4cItemData[@i].BrandDescription" type="hidden" value="@item.BrandDescription" />@item.BrandDescription</td>
+                                            <td><input name="Details.Ck4cItemData[@i].Werks" type="hidden" value="@item.Werks" />@item.PlantName</td>
+                                            <td><input name="Details.Ck4cItemData[@i].ProdCode" type="hidden" value="@item.ProdCode" />@item.ProdType</td>
+                                            <td><input name="Details.Ck4cItemData[@i].HjeIdr" type="hidden" value="@item.HjeIdr" />@item.HjeIdr</td>
+                                            <td><input name="Details.Ck4cItemData[@i].Tarif" type="hidden" value="@item.Tarif" />@item.Tarif</td>
+                                            <td><input name="Details.Ck4cItemData[@i].ProdQty" type="hidden" value="@item.ProdQty" />@item.ProdQty</td>
+                                            <td><input name="Details.Ck4cItemData[@i].ProdQtyUom" type="hidden" value="@item.ProdQtyUom" />@item.ProdQtyUom</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group" id="accordion-4" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-4" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                            Other
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Status Gov<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Decree Date<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="divComment">
+                                    <div class="row">
+                                        <label class="col-md-4">Add Comment<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Decree Doc<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            <div class="file-upload" id="poa-files">
+
+                                            </div>
+                                            <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -177,37 +240,11 @@
                 <div aria-labelledby="heading7" role="tabpanel" class="panel-collapse collapse" id="collapse7">
                     <div class="panel-body">
                         <div class="table-container">
-                            <table class="table table-bordered table-striped js-options-table">
-                                <thead>
-                                    <tr>
-                                        <th>Account Name</th>
-                                        <th>Role</th>
-                                        <th>Action</th>
-                                        <th>Date</th>
-                                        <th>Comment</th>
-                                        <th>Created by</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                        <td> </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <span class="red">*</span> ) This Field Required
-        </div>
+        </div>     
     </div>
 </div>
