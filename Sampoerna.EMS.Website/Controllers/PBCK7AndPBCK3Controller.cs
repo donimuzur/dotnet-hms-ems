@@ -27,9 +27,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IPlantBLL _plantBll;
         private IBrandRegistrationBLL _brandRegistration;
-        
+        private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
+      
         public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
-            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
+            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7AndPbck7And3Bll = pbck7AndPbck3Bll;
@@ -39,6 +40,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _nppbkcBll = nppbkcBll;
             _plantBll = plantBll;
             _brandRegistration = brandRegistrationBll;
+            _documentSequenceNumberBll = documentSequenceNumberBll;
         }
 
         #region Index PBCK7
@@ -195,6 +197,14 @@ namespace Sampoerna.EMS.Website.Controllers
             modelDto.CreatedBy = CurrentUser.USER_ID;
             modelDto.CreateDate = DateTime.Now;
             modelDto.Pbck7Status = Enums.DocumentStatus.Draft;
+            var plant = _plantBll.GetId(model.PlantId);
+            modelDto.PlantName = plant.NAME1;
+            modelDto.PlantCity = plant.ORT01;
+            var inputDoc = new GenerateDocNumberInput();
+            inputDoc.Month = modelDto.Pbck7Date.Month;
+            inputDoc.Year = modelDto.Pbck7Date.Year;
+            inputDoc.NppbkcId = modelDto.NppbkcId;
+            modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
             _pbck7AndPbck7And3Bll.Insert(modelDto);
             return RedirectToAction("Index");
         }

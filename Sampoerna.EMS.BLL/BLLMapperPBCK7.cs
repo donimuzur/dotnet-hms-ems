@@ -41,8 +41,15 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE));
             Mapper.CreateMap<Pbck7AndPbck3Dto, PBCK3_PBCK7>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.EXEC_DATE_FROM, opt => opt.MapFrom(src => src.ExecDateFrom))
+                .ForMember(dest => dest.EXEC_DATE_TO, opt => opt.MapFrom(src => src.ExecDateTo))
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.PLANT_CITY, opt => opt.MapFrom(src => src.PlantCity))
+                .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName))
+                .ForMember(dest => dest.DOC_TYPE, opt => opt.MapFrom(src => src.DocumentType))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreateDate));
+              
               
                 
                 ;
@@ -55,3 +62,4 @@ namespace Sampoerna.EMS.BLL
         }
     }
 }
+

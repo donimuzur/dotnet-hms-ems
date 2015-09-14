@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Pbck7Number { get; set; }
         public string Pbck3Number { get; set; }
         public Enums.DocumentStatus Pbck7Status { get; set; }
-        public int Pbck3Status { get; set; }
+        public Enums.DocumentStatus Pbck3Status { get; set; }
         public DateTime Pbck7Date { get; set; }
         public DateTime? Pbck3Date { get; set; }
         public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
@@ -24,8 +24,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PlantCity { get; set; }
         public DateTime? ExecDateFrom { get; set; }
         public DateTime? ExecDateTo { get; set; }
-        public int GovStatus { get; set; }
-        public int Status { get; set; }
+        public Enums.DocumentStatusGov? GovStatus { get; set; }
+        public Enums.DocumentStatus Status { get; set; }
         public string ApprovedBy { get; set; }
         public DateTime ApprovedDate { get; set; }
         public string CreatedBy { get; set; }
