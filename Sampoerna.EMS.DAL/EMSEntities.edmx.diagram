@@ -208,6 +208,9 @@
         <AssociationConnector Association="EMSModel.FK_LACK1_PLANT_LACK1" />
         <AssociationConnector Association="EMSModel.FK_LACK1_PRODUCTION_DETAIL_LACK1" />
         <AssociationConnector Association="EMSModel.FK_LACK1_PRODUCTION_DETAIL_UOM" />
+        <EntityTypeShape EntityType="EMSModel.CK4C_DECREE_DOC" Width="1.5" PointX="15.75" PointY="44.625" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_DECREE_DOC_CK4C" />
+        <AssociationConnector Association="EMSModel.FK_CK4C_DECREE_DOC_USER" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
