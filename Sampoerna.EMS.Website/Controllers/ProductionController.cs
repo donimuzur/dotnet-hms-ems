@@ -358,8 +358,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetFaCodeDescription(string plantWerk, string faCode)
         {
-            var fa = _brandRegistrationBll.GetByFaCode(plantWerk);
-            return Json(fa.BRAND_CE, fa.WERKS);
+            var fa = _brandRegistrationBll.GetByFaCode(plantWerk, faCode);
+            return Json(fa.BRAND_CE);
         }
 
         [HttpPost]

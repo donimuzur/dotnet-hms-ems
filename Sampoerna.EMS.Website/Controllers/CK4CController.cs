@@ -233,9 +233,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetFaCodeDescription(string faCode)
+        public JsonResult GetFaCodeDescription(string plantWerk, string faCode)
         {
-            var fa = _brandRegistrationBll.GetByFaCode(faCode);
+            var fa = _brandRegistrationBll.GetByFaCode(plantWerk, faCode);
             return Json(fa.BRAND_CE);
         }
 
@@ -428,7 +428,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             foreach(var item in listData)
             {
-                var brand = _brandRegistrationBll.GetByFaCode(item.FaCode);
+                var brand = _brandRegistrationBll.GetByFaCode(item.Werks, item.FaCode);
                 var plant = _plantBll.GetT001WById(item.Werks);
                 var prodType = _prodTypeBll.GetByCode(item.ProdCode);
 
