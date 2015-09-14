@@ -87,6 +87,10 @@
                         @Html.HiddenFor(model => model.Pbck1QtyApproved)
                         @Html.HiddenFor(model => model.Ck5TotalExciseable)
                         @Html.HiddenFor(model => model.RemainQuota)
+                        
+                        <!-- ===Fixing Bug CK5 no. 109==== -->
+                        @Html.HiddenFor(model => model.PbckUom)     
+                        <!-- ============================= -->
 
                         @Html.HiddenFor(model => model.IsCk5Export)
                         @Html.HiddenFor(model => model.IsCk5PortToImporter)
@@ -475,6 +479,7 @@
         $("#btnSubmitConfirm").click(function() {
                     @*window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";*@
             if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+                console.log('masuk');
                 $('#Command').val('Submit');
                 $('#EditCk5Forms').submit();
             }
