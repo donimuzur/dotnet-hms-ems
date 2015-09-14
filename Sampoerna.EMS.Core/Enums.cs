@@ -254,7 +254,7 @@ namespace Sampoerna.EMS.Core
             Cancel = 2,
             [Description("CancelSAP")]
             CancelSAP = 3,
-            [Description("CancelSTOCreated")]
+            [Description("CK5 Cancel")]
             CancelSTOCreated = 4,
             [Description("Modified")]
             Modified = 5,
