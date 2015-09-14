@@ -38,5 +38,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ReportedOn { get; set; }
         public string Poa { get; set; }
         public Enums.DocumentStatus Status { get; set; }
+
+        public bool IsWaitingGovApproval { get; set; }
     }
 }

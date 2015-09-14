@@ -14,7 +14,6 @@
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
-                    @*<input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK4", new { id = @Model.Pbck4Id })')" />*@
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
 
                 </div>
@@ -29,6 +28,7 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
                         <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
 
                     </ul>
@@ -50,6 +50,7 @@
 
                         @Html.Partial("_Pbck4InformationEdit")
                         @Html.Partial("_Pbck4Printout")
+                        @Html.Partial("_Pbck4UploadCreate")
                         @Html.Partial("_Pbck4ChangeLog")
 
                     </div>
@@ -78,10 +79,59 @@
     </div>
 </div>
 
+<div id="Pbck4ModalCancel" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Cancel document</h4>
+            </div>
+            @using (Html.BeginForm("CancelDocument", "PBCK4"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Pbck4Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovCancel" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Cancel" disabled id="btnConfirmCancel" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div id="ModalPbck4Items" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">PBCK-4 Items</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/Pbck4Script.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
 
     <script type="text/javascript">
 
@@ -115,6 +165,31 @@
                     $('#EditPbck4Forms').submit();
                 }
             });
+            
+            $('#Pbck4UploadSubmitBtn').click(function () {
+                GenerateXlsPbck4Items('@Url.Action("UploadFile", "PBCK4")');
+            });
+            
+            OnReadyFunction();
+            
+            $("#btnCancelDocument").click(function () {
+                $('#btnConfirmCancel').attr('disabled', 'disabled');
+
+                $('#Comment').val('');
+
+                $('#Pbck4ModalCancel').modal('show');
+
+            });
+
+            $('#Comment').bind('input propertychange', function () {
+
+                $('#btnConfirmCancel').attr('disabled', 'disabled');
+
+                if (this.value.length) {
+                    $('#btnConfirmCancel').removeAttr('disabled');
+                }
+            });
+            
         });
 
 
@@ -122,12 +197,12 @@
             if ($("#PlantId").length) {
                 var plant = $(this).find("option:selected").val();
 
-                ////remove table
-                //try {
-                //    RemoveTable();
-                //} catch (e) {
+                //remove table
+                try {
+                    RemovePbck4ItemsTable();
+                } catch (e) {
 
-                //}
+                }
                 if (plant == '') {
                     $("input[name='CompanyName']").val('');
                     $("input[name='CompanyId']").val('');

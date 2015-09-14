@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
 
         public string Message { get; set; }
         public string Plant { get; set; }
+        public Nullable<long> CK1_ID { get; set; }
 
        
     }

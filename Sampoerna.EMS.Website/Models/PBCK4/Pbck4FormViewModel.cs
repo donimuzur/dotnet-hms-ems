@@ -51,9 +51,24 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
 
         public DateTime ReportedOn { get; set; }
 
+        public string Comment { get; set; }
+
         public string Command { get; set; }
         public bool IsAllowPrint { get; set; }
         public string ActionType { get; set; }
+
+        public bool AllowApproveAndReject { get; set; }
+
+        public bool AllowGovApproveAndReject { get; set; }
+
+        public bool AllowManagerReject { get; set; }
+
+        public bool IsWaitingGovApproval { get; set; }
+
+        public Enums.CK5GovStatus GovStatus { get; set; }
+        public string GovStatusDesc { get; set; }
+        public Enums.CK5GovStatus GovStatusList { get; set; }
+        public string CommentGov { get; set; }
     }
 
 

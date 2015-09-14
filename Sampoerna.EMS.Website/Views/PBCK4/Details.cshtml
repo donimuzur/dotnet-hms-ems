@@ -13,6 +13,27 @@
                 <div class="action-button">
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     @*<input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK4", new { id = @Model.Pbck4Id })')" />*@
+
+                    @if (Model.AllowApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
+                        <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                    }
+                    else
+                    {
+                        if (Model.AllowGovApproveAndReject)
+                        {
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                        }
+
+
+                        if (Model.AllowManagerReject)
+                        {
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                        }
+
+                    }
+
                 </div>
             </div>
         </div>
@@ -36,7 +57,15 @@
                         @Html.HiddenFor(model => model.NppbkcId)
                         @Html.HiddenFor(model => model.NppbkcDesc)
 
-                        @Html.Partial("_Pbck4InformationDetails")
+                        @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+                        {
+                            @Html.Partial("_Pbck4GovApproval")
+                        }
+                        else
+                        {
+                            @Html.Partial("_Pbck4InformationDetails")
+                        }
+
                         @Html.Partial("_Pbck4Printout")
                         @Html.Partial("_Pbck4ChangeLog")
 
@@ -48,27 +77,146 @@
 
 }
 
+<div id="Pbck4Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3><span id="lblTitleModal">Approval</span> </h3>
+            </div>
+            <div class="modal-body">
+                <span id="lblMessageModal">Approve Documents ?</span>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Pbck4ModalReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Reject document</h4>
+            </div>
+            @using (Html.BeginForm("RejectDocument", "PBCK4"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Pbck4Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9" })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmReject" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/Pbck4Script.js"></script>
+    @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+    {
+
+        <script src="~/Scripts/UploadExcel.js"></script>
+
+    }
 
     <script type="text/javascript">
 
-    $(document).ready(function () {
-        $('#btnBack').click(function (e) {
-             location.href = '@Url.Action("Index", "PBCK4")';
+        $(document).ready(function () {
+            $('#btnBack').click(function (e) {
+                location.href = '@Url.Action("Index", "PBCK4")';
+            });
+
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportXls", "PBCK4", new { pbckId = Model.Pbck4Id })';
+            });
+
+            openGovStatusBlock();
         });
-      
-        $('#btn-changelog-export-xls').click(function () {
-            location.href = '@Url.Action("ExportXls", "PBCK4", new { pbckId = Model.Pbck4Id })';
+
+
+        $("#btnApprove").click(function () {
+            $('#btnConfirm').show();
+            $("#lblTitleModal").text('Approval');
+            $("#lblMessageModal").text('Approve Documents ?');
+            $('#Pbck4Modal').modal('show');
+
         });
-    });
 
-  
+        $("#btnConfirm").click(function () {
+
+            window.location = "@Url.Action("ApproveDocument", "PBCK4", new {id = @Model.Pbck4Id})";
+        });
+
+        $("#btnReject").click(function () {
+            $('#btnConfirmReject').attr('disabled', 'disabled');
+
+            $('#Comment').val('');
+
+            $('#Pbck4ModalReject').modal('show');
+
+        });
+
+        $('#Comment').bind('input propertychange', function () {
+
+            $('#btnConfirmReject').attr('disabled', 'disabled');
+
+            if (this.value.length) {
+                $('#btnConfirmReject').removeAttr('disabled');
+
+            }
+        });
 
 
+        function openGovStatusBlock() {
+            var docStatus = '@Model.IsWaitingGovApproval';
+            var isAllow = '@Model.AllowGovApproveAndReject';
+            if (docStatus.toLowerCase() == 'true' && isAllow.toLowerCase() == 'true') {
+                $('#home').addClass('active');
+                $('#home-tab').addClass('active');
+                $('#collapseFour').addClass("in");
+                
+                $('#collapseOne').removeClass("in");
+                $('#collapseOne').addClass("collapsed");
+              
+            }
+        }
+        
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateGovInput()) {
+                $('#GovApproveForm').submit();
+            }
+        });
+        
+        $('#divComment').hide();
+        
+        $('#GovStatus').on('change', function (e) {
+            var valueSelected = this.value;
+
+            $('#divComment').hide();
+
+            if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
+                $('#divComment').show();
+
+            }
+
+        });
     </script>
 
 }

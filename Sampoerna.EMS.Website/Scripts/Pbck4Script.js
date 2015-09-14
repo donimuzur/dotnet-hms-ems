@@ -38,8 +38,8 @@
                 data += '<td> <input name="UploadItemModels[' + i + '].ApprovedQty" type="hidden" value = "' + datarows[i][15] + '">' + datarows[i][15] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Remark" type="hidden" value = "' + datarows[i][16] + '">' + datarows[i][16] + '</td>';
                 //data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][17] + '">' + datarows[i][17] + '</td>';
+                data += '<input name="UploadItemModels[' + i + '].CK1_ID" type="hidden" value = "' + datarows[i][18] + '">';
                 
-               
             }
             data += '</tr>';
           
@@ -205,3 +205,86 @@ function GenerateXlsPbck4Items(url) {
         return true;
     }
 
+
+    function RemovePbck4ItemsTable() {
+
+        $('#pbck4TableItem tbody').html('');
+        $('#Ck5UploadTable tbody').html('');
+
+    }
+
+
+    function ValidateGovInput() {
+        var result = true;
+
+        if ($('#BACK1_NO').val() == '') {
+            AddValidationClass(false, 'BACK1_NO');
+            result = false;
+           
+        }
+
+        if ($('#BACK1_DATE').val() == '') {
+            AddValidationClass(false, 'BACK1_DATE');
+            result = false;
+        }
+        
+        if ($('#CK3_NO').val() == '') {
+            AddValidationClass(false, 'CK3_NO');
+            result = false;
+        }
+        
+        if ($('#CK3_DATE').val() == '') {
+            AddValidationClass(false, 'CK3_DATE');
+            result = false;
+        }
+        
+        if ($('#CK3_OFFICE_VALUE').val() == '') {
+            AddValidationClass(false, 'CK3_OFFICE_VALUE');
+            result = false;
+        }
+        
+        // alert($('#GovStatus').val());
+
+        if ($('#GovStatus').val() == '') {
+            AddValidationClass(false, 'GovStatus');
+            result = false;
+         
+            $('#GovStatus').focus();
+        } else {
+            if ($('#GovStatus').val() == 'GovReject' || $('#GovStatus').val() == 'GovCancel') {
+                if ($('#Comment').val() == '') {
+                    AddValidationClass(false, 'Comment');
+                    result = false;
+                   
+                    $('#Comment').focus();
+                }
+            }
+
+        }
+
+        if (result == false) {
+            $('#collapseFour').removeClass('collapse');
+            $('#collapseFour').addClass('in');
+            $("#collapseFour").css({ height: "auto" });
+
+        }
+        
+        //if ($('#poa_sk0').length == 0) {
+        //    AddValidationClass(false, 'poa-files');
+
+        //    if (result) {
+        //        $('#modalBodyMessage').text('Missing attach files');
+        //        $('#ModalCk5ValidateGov').modal('show');
+
+        //        $('#collapseFour').removeClass('collapse');
+        //        $('#collapseFour').addClass('in');
+        //        $("#collapseFour").css({ height: "auto" });
+
+        //    }
+        //    result = false;
+        //}
+
+       
+
+        return result;
+    }

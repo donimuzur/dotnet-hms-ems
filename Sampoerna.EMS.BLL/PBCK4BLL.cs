@@ -4,11 +4,13 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using AutoMapper;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -22,16 +24,17 @@ namespace Sampoerna.EMS.BLL
        private IUnitOfWork _uow;
 
        private IGenericRepository<PBCK4> _repository;
+       private IGenericRepository<PBCK4_ITEM> _repositoryPbck4Items;
 
        private IMonthBLL _monthBll;
        private IDocumentSequenceNumberBLL _docSeqNumBll;
        private IWorkflowHistoryBLL _workflowHistoryBll;
        private IChangesHistoryBLL _changesHistoryBll;
        private IPrintHistoryBLL _printHistoryBll;
-       private IBrandRegistrationBLL _brandRegistrationBll;
+       private IBrandRegistrationService _brandRegistrationServices;
        private ICK1BLL _ck1Bll;
 
-       private string includeTables = "";// "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
+       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT";
 
        public PBCK4BLL(IUnitOfWork uow, ILogger logger)
        {
@@ -39,13 +42,14 @@ namespace Sampoerna.EMS.BLL
            _uow = uow;
 
            _repository = _uow.GetGenericRepository<PBCK4>();
+           _repositoryPbck4Items = _uow.GetGenericRepository<PBCK4_ITEM>();
 
            _monthBll = new MonthBLL(_uow, _logger);
            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
            _workflowHistoryBll = new WorkflowHistoryBLL(_uow,_logger);
            _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
            _printHistoryBll = new PrintHistoryBLL(_uow,_logger);
-           _brandRegistrationBll = new BrandRegistrationBLL(_uow,_logger);
+           _brandRegistrationServices = new BrandRegistrationService(_uow, _logger);
            _ck1Bll = new CK1BLL(_uow,_logger);
        }
 
@@ -128,8 +132,8 @@ namespace Sampoerna.EMS.BLL
 
            output.Pbck4Dto = Mapper.Map<Pbck4Dto>(dtData);
 
-           ////details
-          // output.Pbck4ItemsDto = Mapper.Map<List<Pbck4ItemDto>>(dtData.PBCK4_ITEM);
+           //details
+           output.Pbck4ItemsDto = Mapper.Map<List<Pbck4ItemDto>>(dtData.PBCK4_ITEM);
 
            //change history data
            output.ListChangesHistorys = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK4, output.Pbck4Dto.PBCK4_ID.ToString());
@@ -138,7 +142,7 @@ namespace Sampoerna.EMS.BLL
            var input = new GetByFormNumberInput();
            input.FormNumber = dtData.PBCK4_NUMBER;
            input.DocumentStatus = dtData.STATUS;
-           
+           input.NPPBKC_Id = dtData.NPPBKC_ID;
            
            output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
 
@@ -152,7 +156,7 @@ namespace Sampoerna.EMS.BLL
        public Pbck4Dto SavePbck4(Pbck4SaveInput input)
        {
            //workflowhistory
-           var inputWorkflowHistory = new CK5WorkflowHistoryInput();
+           var inputWorkflowHistory = new Pbck4WorkflowHistoryInput();
 
            PBCK4 dbData = null;
            if (input.Pbck4Dto.PBCK4_ID > 0)
@@ -173,21 +177,21 @@ namespace Sampoerna.EMS.BLL
                dbData.MODIFIED_BY = input.UserId;
 
 
-               ////delete child first
-               //foreach (var ck5Material in dbData.CK5_MATERIAL.ToList())
-               //{
-               //    _repositoryCK5Material.Delete(ck5Material);
-               //}
+               //delete child first
+               foreach (var pbck4Item in dbData.PBCK4_ITEM.ToList())
+               {
+                   _repositoryPbck4Items.Delete(pbck4Item);
+               }
 
                inputWorkflowHistory.ActionType = Enums.ActionType.Modified;
 
-               ////insert new data
-               //foreach (var ck5Item in input.Ck5Material)
-               //{
-               //    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
-               //    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
-               //    dbData.CK5_MATERIAL.Add(ck5Material);
-               //}
+               //insert new data
+               foreach (var pbck4Material in input.Pbck4Items)
+               {
+                   var pbck4Item = Mapper.Map<PBCK4_ITEM>(pbck4Material);
+                   pbck4Item.PLANT_ID = dbData.PLANT_ID;
+                   dbData.PBCK4_ITEM.Add(pbck4Item);
+               }
 
            }
            else
@@ -213,13 +217,14 @@ namespace Sampoerna.EMS.BLL
 
                inputWorkflowHistory.ActionType = Enums.ActionType.Created;
 
-               //foreach (var ck5Item in input.Ck5Material)
-               //{
-
-               //    var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
-               //    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
-               //    dbData.CK5_MATERIAL.Add(ck5Material);
-               //}
+               //insert new data
+               foreach (var pbck4Material in input.Pbck4Items)
+               {
+                   
+                   var pbck4Item = Mapper.Map<PBCK4_ITEM>(pbck4Material);
+                   pbck4Item.PLANT_ID = dbData.PLANT_ID;
+                   dbData.PBCK4_ITEM.Add(pbck4Item);
+               }
 
                _repository.Insert(dbData);
 
@@ -257,7 +262,7 @@ namespace Sampoerna.EMS.BLL
            return Mapper.Map<Pbck4Dto>(dbData);
        }
 
-       private void AddWorkflowHistory(CK5WorkflowHistoryInput input)
+       private void AddWorkflowHistory(Pbck4WorkflowHistoryInput input)
        {
            var inputWorkflowHistory = new GetByActionAndFormNumberInput();
            inputWorkflowHistory.ActionType = input.ActionType;
@@ -278,6 +283,20 @@ namespace Sampoerna.EMS.BLL
            dbData.ACTION_DATE = DateTime.Now;
 
            _workflowHistoryBll.Save(dbData);
+       }
+
+       private void AddWorkflowHistory(Pbck4WorkflowDocumentInput input)
+       {
+           var inputWorkflowHistory = new Pbck4WorkflowHistoryInput();
+
+           inputWorkflowHistory.DocumentId = input.DocumentId;
+           inputWorkflowHistory.DocumentNumber = input.DocumentNumber;
+           inputWorkflowHistory.UserId = input.UserId;
+           inputWorkflowHistory.UserRole = input.UserRole;
+           inputWorkflowHistory.ActionType = input.ActionType;
+           inputWorkflowHistory.Comment = input.Comment;
+
+           AddWorkflowHistory(inputWorkflowHistory);
        }
        
        private void SetChangesHistory(Pbck4Dto origin, Pbck4Dto data, string userId)
@@ -313,6 +332,22 @@ namespace Sampoerna.EMS.BLL
            }
        }
 
+       private void SetChangeHistory(string oldValue, string newValue, string fieldName, string userId, string ck5Id)
+       {
+           var changes = new CHANGES_HISTORY();
+           changes.FORM_TYPE_ID = Enums.MenuList.CK5;
+           changes.FORM_ID = ck5Id;
+           changes.FIELD_NAME = fieldName;
+           changes.MODIFIED_BY = userId;
+           changes.MODIFIED_DATE = DateTime.Now;
+
+           changes.OLD_VALUE = oldValue;
+           changes.NEW_VALUE = newValue;
+
+           _changesHistoryBll.AddHistory(changes);
+
+       }
+
        private List<Pbck4ItemsOutput> ValidatePbck4Items(List<Pbck4ItemsInput> inputs)
        {
            var messageList = new List<string>();
@@ -324,7 +359,7 @@ namespace Sampoerna.EMS.BLL
                
                var output = Mapper.Map<Pbck4ItemsOutput>(pbck4ItemInput);
 
-               var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(pbck4ItemInput.Plant, pbck4ItemInput.FaCode);
+               var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(pbck4ItemInput.Plant, pbck4ItemInput.FaCode);
                if (dbBrand == null)
                    messageList.Add("FA Code Not Exist");
 
@@ -337,7 +372,12 @@ namespace Sampoerna.EMS.BLL
 
                if (!ConvertHelper.IsNumeric(pbck4ItemInput.ApprovedQty))
                    messageList.Add("Approved Qty not valid");
-               
+
+               if (!string.IsNullOrEmpty(pbck4ItemInput.NoPengawas))
+               {
+                   if (pbck4ItemInput.NoPengawas.Length > 10)
+                       messageList.Add("No Pengawas Max Length 10");
+               }
 
                if (messageList.Count > 0)
                {
@@ -362,7 +402,7 @@ namespace Sampoerna.EMS.BLL
 
        private Pbck4ItemsOutput GetAdditionalValuePbck4Items(Pbck4ItemsOutput input)
        {
-           var dbBrand = _brandRegistrationBll.GetByPlantIdAndFaCode(input.Plant, input.FaCode);
+           var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(input.Plant, input.FaCode);
            if (dbBrand == null)
            {
                input.StickerCode = "";
@@ -402,6 +442,7 @@ namespace Sampoerna.EMS.BLL
            }
            else
            {
+               input.CK1_ID = dbCk1.CK1_ID;
                input.Ck1Date = dbCk1.CK1_DATE.ToString("dd MMM yyyy");
            }
 
@@ -436,10 +477,199 @@ namespace Sampoerna.EMS.BLL
                output.TotalHje = resultValue.TotalHje;
 
                output.TotalStamps = resultValue.TotalStamps;
-
+               output.CK1_ID = resultValue.CK1_ID;
            }
 
            return outputList;
+       }
+
+       public void PBCK4Workflow(Pbck4WorkflowDocumentInput input)
+       {
+           var isNeedSendNotif = false;
+
+           switch (input.ActionType)
+           {
+               case Enums.ActionType.Submit:
+                   SubmitDocument(input);
+                   isNeedSendNotif = true;
+                   break;
+               case Enums.ActionType.Approve:
+                   ApproveDocument(input);
+                   isNeedSendNotif = true;
+                   break;
+               case Enums.ActionType.Reject:
+                   RejectDocument(input);
+                   isNeedSendNotif = true;
+                   break;
+               //case Enums.ActionType.GovApprove:
+               //    GovApproveDocument(input);
+               //    break;
+               //case Enums.ActionType.GovReject:
+               //    GovRejectedDocument(input);
+               //    break;
+               //case Enums.ActionType.GovCancel:
+               //    GovCancelledDocument(input);
+               //    break;
+               case Enums.ActionType.Cancel:
+                   CancelledDocument(input);
+                   break;
+              
+           }
+
+           //todo sent mail
+           if (isNeedSendNotif)
+               SendEmailWorkflow(input);
+
+
+           _uow.SaveChanges();
+       }
+
+       private void SendEmailWorkflow(Pbck4WorkflowDocumentInput input)
+       {
+           //todo: body message from email template
+           //todo: to = ?
+           //todo: subject = from email template
+           //var to = "irmansulaeman41@gmail.com";
+           //var subject = "this is subject for " + input.DocumentNumber;
+           //var body = "this is body message for " + input.DocumentNumber;
+           //var from = "a@gmail.com";
+
+           //var ck5Dto = Mapper.Map<CK5Dto>(_repository.Get(c => c.CK5_ID == input.DocumentId).FirstOrDefault());
+
+           //var mailProcess = ProsesMailNotificationBody(ck5Dto, input.ActionType);
+
+           //_messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+
+       }
+
+       private void SubmitDocument(Pbck4WorkflowDocumentInput input)
+       {
+           var dbData = _repository.GetByID(input.DocumentId);
+
+           if (dbData == null)
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+           if (dbData.STATUS != Enums.DocumentStatus.Draft)
+               throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+           string newValue = "";
+           string oldValue = EnumHelper.GetDescription(dbData.STATUS);
+
+           dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
+
+           input.DocumentNumber = dbData.PBCK4_NUMBER;
+
+           AddWorkflowHistory(input);
+
+           switch (input.UserRole)
+           {
+               case Enums.UserRole.User:
+                   dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
+                   newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval);
+                   break;
+               case Enums.UserRole.POA:
+                   dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                   newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                   break;
+               default:
+                   throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+           }
+
+           //set change history
+           SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK4_ID.ToString());
+
+
+       }
+
+       private void ApproveDocument(Pbck4WorkflowDocumentInput input)
+       {
+           var dbData = _repository.GetByID(input.DocumentId);
+
+           if (dbData == null)
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+           if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+               dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+               throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+           string oldValue = EnumHelper.GetDescription(dbData.STATUS);
+           string newValue = "";
+
+           if (input.UserRole == Enums.UserRole.POA)
+           {
+               dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+               dbData.APPROVED_BY_POA = input.UserId;
+               dbData.APPROVED_BY_POA_DATE = DateTime.Now;
+               newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+           }
+           else if (input.UserRole == Enums.UserRole.Manager)
+           {
+               dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+               dbData.APPROVED_BY_MANAGER = input.UserId;
+               dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+               newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+           }
+
+
+           input.DocumentNumber = dbData.PBCK4_NUMBER;
+
+           AddWorkflowHistory(input);
+
+           //set change history
+           SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK4_ID.ToString());
+
+       }
+
+       private void RejectDocument(Pbck4WorkflowDocumentInput input)
+       {
+           var dbData = _repository.GetByID(input.DocumentId);
+
+           if (dbData == null)
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+           if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+               dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
+               dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+               throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+           string oldValue = EnumHelper.GetDescription(dbData.STATUS);
+           string newValue = "";
+
+           //change back to draft
+           dbData.STATUS = Enums.DocumentStatus.Draft;
+           newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Draft);
+
+           input.DocumentNumber = dbData.PBCK4_NUMBER;
+
+           AddWorkflowHistory(input);
+
+           //set change history
+           SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK4_ID.ToString());
+       }
+
+       private void CancelledDocument(Pbck4WorkflowDocumentInput input)
+       {
+           var dbData = _repository.GetByID(input.DocumentId);
+
+           if (dbData == null)
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+           if (dbData.STATUS != Enums.DocumentStatus.Draft)
+               throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+           string oldValue = EnumHelper.GetDescription(dbData.STATUS);
+           string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Cancelled); ;
+           //set change history
+           if (oldValue != newValue)
+               SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK4_ID.ToString());
+
+
+           dbData.STATUS = Enums.DocumentStatus.Cancelled;
+
+
+           input.DocumentNumber = dbData.PBCK4_NUMBER;
+
+           AddWorkflowHistory(input);
        }
     }
 }

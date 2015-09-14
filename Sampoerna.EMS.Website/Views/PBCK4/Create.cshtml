@@ -93,12 +93,12 @@
         if ($("#PlantId").length) {
             var plant = $(this).find("option:selected").val();
 
-            ////remove table
-            //try {
-            //    RemoveTable();
-            //} catch (e) {
+            //remove table
+            try {
+                RemovePbck4ItemsTable();
+            } catch (e) {
 
-            //}
+            }
             if (plant == '') {
                 $("input[name='CompanyName']").val('');
                 $("input[name='CompanyId']").val('');

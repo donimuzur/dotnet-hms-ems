@@ -16,5 +16,7 @@ namespace Sampoerna.EMS.Contract
        Pbck4Dto SavePbck4(Pbck4SaveInput input);
 
        List<Pbck4ItemsOutput> Pbck4ItemProcess(List<Pbck4ItemsInput> inputs);
+
+       void PBCK4Workflow(Pbck4WorkflowDocumentInput input);
    }
 }

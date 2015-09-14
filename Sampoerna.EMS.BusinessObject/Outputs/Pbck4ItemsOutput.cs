@@ -30,5 +30,6 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Plant { get; set; }
 
         public bool IsValid { get; set; }
+        public Nullable<long> CK1_ID { get; set; }
     }
 }

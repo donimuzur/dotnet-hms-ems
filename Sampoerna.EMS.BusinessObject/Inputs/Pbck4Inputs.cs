@@ -32,4 +32,34 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
         public List<Pbck4ItemDto> Pbck4Items { get; set; }
     }
+
+    public class Pbck4WorkflowHistoryInput
+    {
+        public long DocumentId { get; set; }
+        public string DocumentNumber { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public Enums.ActionType ActionType { get; set; }
+        public string Comment { get; set; }
+    }
+
+    public class Pbck4WorkflowDocumentInput
+    {
+        public long DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public string Comment { get; set; }
+        public Enums.ActionType ActionType { get; set; }
+        public string DocumentNumber { get; set; }
+
+        public Pbck4WorkflowDocumentData AdditionalDocumentData { get; set; }
+        
+    }
+
+    public class Pbck4WorkflowDocumentData
+    {
+        //public string RegistrationNumber { get; set; }
+        //public DateTime RegistrationDate { get; set; }
+        //public List<CK5_FILE_UPLOADDto> Ck5FileUploadList { get; set; }
+    }
 }

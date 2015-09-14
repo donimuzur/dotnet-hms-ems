@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -24,6 +25,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.REPORTED_ON))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS))
+                .ForMember(dest => dest.IsWaitingGovApproval, opt => opt.MapFrom(src => src.STATUS == Enums.DocumentStatus.WaitingGovApproval))
                 ;
 
             Mapper.CreateMap<Pbck4Dto, PBCK4>().IgnoreAllNonExisting()
@@ -39,7 +41,11 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             Mapper.CreateMap<PBCK4_ITEM, Pbck4ItemDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CK1_NUMBER, opt => opt.MapFrom(src => src.CK1.CK1_NUMBER))
+                .ForMember(dest => dest.CK1_DATE, opt => opt.MapFrom(src => src.CK1.CK1_DATE))
                ;
+
+            Mapper.CreateMap<Pbck4ItemDto, PBCK4_ITEM>().IgnoreAllNonExisting();
         }
     }
 }
