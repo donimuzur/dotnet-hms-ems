@@ -7,21 +7,28 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
 {
     public class Pbck4UploadViewModel
     {
-        public string Plant { get; set; }
-        public string Brand { get; set; }
-        public string Qty { get; set; }
-        public string Uom { get; set; }
-        public string Convertion { get; set; }
-        public string ConvertedQty { get; set; }
-        public string ConvertedUom { get; set; }
+        public string FaCode { get; set; }
+        public string StickerCode { get; set; }
+        public string Ck1No { get; set; }
+        public string Ck1Date { get; set; }
+        public string SeriesCode { get; set; }
+        public string BrandName { get; set; }
+        public string ProductAlias { get; set; }
+        public string Content { get; set; }
         public string Hje { get; set; }
         public string Tariff { get; set; }
-        public string ExciseValue { get; set; }
-        public string UsdValue { get; set; }
-        public string Note { get; set; }
-        public string Message { get; set; }
-        public string Total { get; set; }
+        public string Colour { get; set; }
+        public string ReqQty { get; set; }
+        public string TotalHje { get; set; }
+        public string TotalStamps { get; set; }
+        public string NoPengawas { get; set; }
+        public string ApprovedQty { get; set; }
+        public string Remark { get; set; }
 
-        public string MaterialDesc { get; set; }
+        public string Message { get; set; }
+        public string Plant { get; set; }
+        public Nullable<long> CK1_ID { get; set; }
+
+       
     }
 }

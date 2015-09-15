@@ -8,6 +8,7 @@ using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models.PBCK7AndPBCK3;
 
 
@@ -20,11 +21,12 @@ namespace Sampoerna.EMS.Website
             #region PBCK7
 
             Mapper.CreateMap<Pbck7AndPbck3Dto, DataListIndexPbck7>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Pbck3Pbck7Id))
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
-                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck7Date))
-                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck7Date.ToString("dd MMM yyyy")))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId + "-" + src.PlantName))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.ApprovedBy))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Pbck7Status))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck7Status)))
                 .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.Pbck7Number));
 
             Mapper.CreateMap<Pbck7IndexViewModel, Pbck7AndPbck3Input>().IgnoreAllNonExisting()
@@ -59,7 +61,10 @@ namespace Sampoerna.EMS.Website
 
             #region PBCK7adPBCK3 Create
 
-            Mapper.CreateMap<Pbck7AndPbck3Dto, Pbck7Pbck3CreateViewModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Pbck7AndPbck3Dto, Pbck7Pbck3CreateViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck7StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck7Status)))
+                  .ForMember(dest => dest.Pbck3StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck3Status)))
+                ;
 
             Mapper.CreateMap<Pbck7Pbck3CreateViewModel, Pbck7AndPbck3Dto>().IgnoreAllNonExisting();
 

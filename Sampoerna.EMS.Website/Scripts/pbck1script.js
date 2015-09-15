@@ -162,7 +162,7 @@ function prodPlanSaveClick() {
         $('#Detail_Pbck1ProdPlan tbody').append(data);
     }
     $("input[name='Detail.RequestQty']:hidden").val(total);
-    $("input[name='Detail.RequestQty']:text").val(ThausandSeperator(total, 2));
+    $("input[name='Detail.RequestQty']:text").val(ThausandSeperator(total, 2) + ".00");
     $("select[name='Detail.RequestQtyUomId']").val(uom);
     $("select[name='Detail.LatestSaldoUomId']").val(uom);
     $("input[name='Detail.RequestQtyUomId']").val(uom);

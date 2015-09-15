@@ -240,5 +240,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowCancelSAP { get; set; }
 
         public decimal MaterialQty { get; set; }
+
+        public SelectList PackageConvertedUomList { get; set; }
     }
 }
