@@ -28,22 +28,20 @@
         {
             <tr>
                 <td class="action">
-                    <a href="#"><i class="fa fa-eye"></i></a>
-                    <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                    <a href="@Url.Action("Detail", "PBCK7AndPBCK3", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "PBCK7AndPBCK3", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Pbck7Number)
+                    @item.Pbck7Number
                 </td>
                 <td>
-                    @*@Html.DisplayFor(model => item.ReportedOn)*@
-                    @Html.TextBox("start-date", item.ReportedOn == null ? null : Convert.ToDateTime(Model.ReportedOn).ToString("dd MMM yyyy"), new { @class = "form-control", disabled = "disabled" })
-                   
+                   @item.ReportedOn  
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.NppbkcId)
+                    @item.NppbkcId
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.PlantId)
+                    @item.PlantId
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.Poa)

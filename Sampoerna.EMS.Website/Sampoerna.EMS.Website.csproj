@@ -1100,6 +1100,8 @@
     <Content Include="Views\Production\_HomeCreate.cshtml" />
     <Content Include="Views\Production\_Upload.cshtml" />
     <Content Include="Views\Production\_UploadList.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeEdit.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
