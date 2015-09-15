@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="71" >
+      <Diagram DiagramId="661fffd5e84c42dfa4cce2970fcda751" Name="Diagram1" DisplayType="true" ZoomLevel="55" >
         <EntityTypeShape EntityType="EMSModel.CHANGES_HISTORY" Width="1.5" PointX="5.25" PointY="64" />
         <EntityTypeShape EntityType="EMSModel.EMAIL_TEMPLATE" Width="1.5" PointX="0.75" PointY="3.75" />
         <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.75" PointX="11.25" PointY="70.625" />
@@ -216,11 +216,6 @@
         <EntityTypeShape EntityType="EMSModel.CK2" Width="1.5" PointX="5.875" PointY="67.5" />
         <EntityTypeShape EntityType="EMSModel.CK2_DOCUMENT" Width="1.5" PointX="8.125" PointY="67.75" />
         <EntityTypeShape EntityType="EMSModel.PBCK3_PBCK7_ITEM" Width="1.5" PointX="5.875" PointY="50" />
-        <AssociationConnector Association="EMSModel.FK_BACK3_DOCUMENT_BACK3" />
-        <AssociationConnector Association="EMSModel.FK_BACK3_PBCK3_PBCK7" />
-        <AssociationConnector Association="EMSModel.FK_CK2_DOCUMENT_CK2" />
-        <AssociationConnector Association="EMSModel.FK_CK2_PBCK3_PBCK7" />
-        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_ITEM_PBCK3_PBCK7" />
         <AssociationConnector Association="EMSModel.FK_BACK3_DOCUMENT_BACK3" />
         <AssociationConnector Association="EMSModel.FK_BACK3_PBCK3_PBCK7" />
         <AssociationConnector Association="EMSModel.FK_CK2_DOCUMENT_CK2" />

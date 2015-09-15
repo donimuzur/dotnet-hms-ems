@@ -50,7 +50,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string Brand { get; set; }
 
-        public int? Content { get; set; }
+        public Decimal? Content { get; set; }
 
         public Decimal? Pbck7Qty { get; set; }
 

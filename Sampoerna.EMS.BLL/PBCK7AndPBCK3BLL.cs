@@ -85,6 +85,7 @@ namespace Sampoerna.EMS.BLL
         {
             var dataToAdd = Mapper.Map<PBCK3_PBCK7>(pbck7AndPbck3Dto);
             _repository.InsertOrUpdate(dataToAdd);
+            _uow.SaveChanges();
         }
     }
 

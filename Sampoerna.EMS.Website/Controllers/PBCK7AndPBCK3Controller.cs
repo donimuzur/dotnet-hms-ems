@@ -205,7 +205,15 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.Year = modelDto.Pbck7Date.Year;
             inputDoc.NppbkcId = modelDto.NppbkcId;
             modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
-            _pbck7AndPbck7And3Bll.Insert(modelDto);
+            try
+            {
+                _pbck7AndPbck7And3Bll.Insert(modelDto);
+            }
+            catch (Exception ex)
+            {
+               AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);
+            }
+          
             return RedirectToAction("Index");
         }
 
