@@ -615,7 +615,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
         }
 
-        private string SaveUploadedFile(HttpPostedFileBase file, int pbck4Id)
+        private string SaveUploadedFile(HttpPostedFileBase file, int pbck4Id, string type)
         {
             if (file == null || file.FileName == "")
                 return "";
@@ -626,7 +626,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!Directory.Exists(Server.MapPath(Constans.CK5FolderPath)))
                 Directory.CreateDirectory(Server.MapPath(Constans.CK5FolderPath));
 
-            sFileName = Constans.CK5FolderPath + Path.GetFileName(pbck4Id.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.CK5FolderPath + Path.GetFileName(pbck4Id.ToString("'ID'-##") + type + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
@@ -663,7 +663,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck4UploadFile = new Pbck4FileUploadViewModel
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck4Id),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck4Id, "B"),
                                 DOC_TYPE = 1 //back1
                             };
                             model.Pbck4FileUploadModelList.Add(pbck4UploadFile);
@@ -673,10 +673,37 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else
                 {
-                    AddMessageInfo("Empty File", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
                     RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
                 }
 
+                model.Pbck4FileUploadModelList2 = new List<Pbck4FileUploadViewModel>();
+                if (model.Pbck4FileUploadFileList2 != null)
+                {
+                    foreach (var item in model.Pbck4FileUploadFileList2)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new Pbck4FileUploadViewModel
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck4Id,"C"),
+                                DOC_TYPE = 2 //ck-3
+                            };
+                            model.Pbck4FileUploadModelList2.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+                else
+                {
+                    AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
+                    RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                }
 
                 PBCK4GovWorkflow(model);
                 if (model.GovStatus == Enums.DocumentStatusGov.FullApproved)
