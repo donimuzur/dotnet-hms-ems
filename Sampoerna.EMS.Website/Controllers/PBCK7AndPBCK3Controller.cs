@@ -243,8 +243,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.Status = Enums.DocumentStatus.WaitingForApproval;
                 }
 
-               
+
             }
+            item.ModifiedBy = CurrentUser.USER_ID;
+            item.ModifiedDate = DateTime.Now;
+            var plant = _plantBll.GetId(item.PlantId);
+            item.PlantCity = plant.ORT01;
+            item.PlantName = plant.NAME1;
             _pbck7AndPbck7And3Bll.Insert(item);
             AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
