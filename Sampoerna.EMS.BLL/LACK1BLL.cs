@@ -197,15 +197,19 @@ namespace Sampoerna.EMS.BLL
 
             SetChangesHistory(origin, input.Detail, input.UserId);
 
+            //delete first
+            //_lack1IncomeDetailService.DeleteByLack1Id(input.Detail.Lack1Id);
+            //_lack1Pbck1MappingService.DeleteByLack1Id(input.Detail.Lack1Id);
+            //_lack1PlantService.DeleteByLack1Id(input.Detail.Lack1Id);
+            //_lack1ProductionDetailService.DeleteByLack1Id(input.Detail.Lack1Id);
+            _lack1IncomeDetailService.DeleteDataList(dbData.LACK1_INCOME_DETAIL);
+            _lack1Pbck1MappingService.DeleteDataList(dbData.LACK1_PBCK1_MAPPING);
+            _lack1PlantService.DeleteDataList(dbData.LACK1_PLANT);
+            _lack1ProductionDetailService.DeleteDataList(dbData.LACK1_PRODUCTION_DETAIL);
+
             //doing map
             //Mapper.Map(input.Detail, dbData);
             Mapper.Map<Lack1DetailsDto, LACK1>(input.Detail, dbData);
-
-            //delete first
-            _lack1IncomeDetailService.DeleteByLack1Id(input.Detail.Lack1Id);
-            _lack1Pbck1MappingService.DeleteByLack1Id(input.Detail.Lack1Id);
-            _lack1PlantService.DeleteByLack1Id(input.Detail.Lack1Id);
-            _lack1ProductionDetailService.DeleteByLack1Id(input.Detail.Lack1Id);
 
             //set to null
             dbData.LACK1_INCOME_DETAIL = null;
