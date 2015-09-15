@@ -1,53 +1,60 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
-
-<table id="pbckTable" class="display" cellspacing="0" width="100%">
-    <thead>
-        <tr>
-            <th class="toggle-row"> Filter </th>
-            <th>Type</th>
-            <th>Year</th>
-            <th>NPPBKC ID</th>
-            <th>PBCK-1 Number</th>
-            <th>Proposed Amount</th>
-            <th>Last Update</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <thead class="filters">
-        <tr>
-            <th>Action</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Details)
-        {
+@using Sampoerna.EMS.Core
+    <table id="pbckTable" class="display" cellspacing="0" width="100%">
+        <thead>
             <tr>
-                <td class="action">
-                    <a href="@Url.Action("Details", "PBCK1", new { id = item.Pbck1Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("Edit", "PBCK1", new { id = item.Pbck1Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
-                </td>
-                <td>@Html.DisplayFor(model => item.PbckTypeName)</td>
-                <td>@Html.DisplayFor(model => item.Year)
-                <td>
-                    @Html.DisplayFor(model => item.NppbkcId)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Pbck1Number)
-            </td>
-                <td class="number">@Html.DisplayFor(model => item.RequestQty)</td>
-            <td>
-                @item.ApprovedByPoaId
-            </td>
-            <td class="last">@Html.DisplayFor(model => item.StatusName)</td>
-        </tr>
-        }
-    </tbody>
-</table>
+                <th class="toggle-row"> Filter </th>
+                <th>Type</th>
+                <th>Year</th>
+                <th>NPPBKC ID</th>
+                <th>PBCK-1 Number</th>
+                <th>Proposed Amount</th>
+                <th>Last Update</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <thead class="filters">
+            <tr>
+                <th>Action</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Details)
+            {
+                <tr>
+                    <td class="action">
+                        <a href="@Url.Action("Details", "PBCK1", new { id = item.Pbck1Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                        <a href="@Url.Action("Edit", "PBCK1", new { id = item.Pbck1Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    </td>
+                    <td>@Html.DisplayFor(model => item.PbckTypeName)</td>
+                    <td>@Html.DisplayFor(model => item.Year)
+                    <td>
+                        @Html.DisplayFor(model => item.NppbkcId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Pbck1Number)
+                    </td>
+                    <td class="number">@Html.DisplayFor(model => item.RequestQty)</td>
+                    <td>
+                        @if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                        {
+                            @item.ApprovedByPoaId
+                        }
+                        else
+                        {
+                            @item.CreatedById
+                        }
+                    </td>
+                    <td class="last">@Html.DisplayFor(model => item.StatusName)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 

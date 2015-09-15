@@ -10,6 +10,18 @@ namespace Sampoerna.EMS.Utils
     public static class ConvertHelper
     {
 
+        public static decimal ConvertToDecimalOrZero(string value)
+        {
+            try
+            {
+                return GetDecimal(value);
+               }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
         public static bool IsNumeric(string value)
         {
             try

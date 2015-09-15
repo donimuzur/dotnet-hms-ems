@@ -6,9 +6,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class Pbck4Dto
     {
         public int PBCK4_ID { get; set; }
-        public string PBCK1_NUMBER { get; set; }
+        public string PBCK4_NUMBER { get; set; }
         //public string PLANT_ID { get; set; }
-        public string PLANT_NAME { get; set; }
+        //public string PLANT_NAME { get; set; }
         //public string NPPBKC_ID { get; set; }
         public string NPPBKC_DESCRIPTION { get; set; }
         public string COMPANY_ID { get; set; }
@@ -38,5 +38,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ReportedOn { get; set; }
         public string Poa { get; set; }
         public Enums.DocumentStatus Status { get; set; }
+
+        public bool IsWaitingGovApproval { get; set; }
     }
 }
