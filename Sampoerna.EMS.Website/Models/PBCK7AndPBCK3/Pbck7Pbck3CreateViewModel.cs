@@ -12,10 +12,18 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 {
     public class Pbck7Pbck3CreateViewModel : BaseModel
     {
+
+        public int Id { get; set; }
         public string Pbck7Number { get; set; }
 
         public string PlantId { get; set; }
 
+        public Enums.DocumentStatus Pbck7Status { get; set; }
+        public string Pbck7StatusName { get; set; }
+        public Enums.DocumentStatus Pbck3Status { get; set; }
+
+        public string Pbck3StatusName { get; set; }
+       
         public string PlantName { get; set; }
         public DateTime? Pbck7Date { get; set; }
         public string Pbck3Number { get; set; }
@@ -25,6 +33,25 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public DateTime? ExecDateTo { get; set; }
         public string NppbkcId { get; set; }
         public string Lampiran { get; set; }
+
+        public string CreatedBy { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public string ModifiedBy { get; set; }
+
+        public DateTime? ModifiedDate { get; set; }
+
+        public string RejectedBy { get; set; }
+
+        public DateTime? RejectedDate { get; set; }
+
+        public string ApprovedBy { get; set; }
+        public DateTime? ApprovedDate { get; set; }
+
+        public string ApprovedByManager { get; set; }
+
+        public DateTime? ApprovedDateManager { get; set; }
 
 
         //selectList
@@ -36,6 +63,16 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public List<Pbck7ItemUpload> UploadItems { get; set; }
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
+        public bool AllowApproveAndReject { get; set; }
 
+        public bool AllowEditAndSubmit { get; set; }
+
+        public bool AllowGovApproveAndReject { get; set; }
+
+        public bool AllowManagerReject { get; set; }
+
+        public bool AllowPrintDocument { get; set; }
+
+        public bool IsSaveSubmit { get; set; }
     }
 }

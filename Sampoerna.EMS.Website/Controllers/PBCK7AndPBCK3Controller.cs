@@ -14,6 +14,7 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PBCK7AndPBCK3;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -28,9 +29,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPlantBLL _plantBll;
         private IBrandRegistrationBLL _brandRegistration;
         private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
-      
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IWorkflowBLL _workflowBll;
         public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
-            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
+            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7AndPbck7And3Bll = pbck7AndPbck3Bll;
@@ -41,6 +43,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _plantBll = plantBll;
             _brandRegistration = brandRegistrationBll;
             _documentSequenceNumberBll = documentSequenceNumberBll;
+            _workflowHistoryBll = workflowHistoryBll;
+            _workflowBll = workflowBll;
         }
 
         #region Index PBCK7
@@ -188,7 +192,64 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
-       
+
+        public ActionResult Edit(int? id)
+        {
+            if (!id.HasValue)
+                return HttpNotFound();
+            var existingData = _pbck7AndPbck7And3Bll.GetById(id);
+            var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
+            return View("Edit", InitialModel(model));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Pbck7Pbck3CreateViewModel model)
+        {
+
+            var item = AutoMapper.Mapper.Map<Pbck7AndPbck3Dto>(model);
+            if (item.CreatedBy != CurrentUser.USER_ID)
+            {
+                return RedirectToAction("Detail", new {id = item.Pbck3Pbck7Id});
+            }
+            var exItems = new Pbck7ItemUpload[item.UploadItems.Count];
+            item.UploadItems.CopyTo(exItems);
+            item.UploadItems = new List<Pbck7ItemUpload>();
+            foreach (var items in exItems)
+            {
+                if (items.Id == 0)
+                {
+                    item.UploadItems.Add(items);
+                }
+            }
+
+            
+            if (item.GovStatus == Enums.DocumentStatusGov.PartialApproved)
+            {
+                item.Status = Enums.DocumentStatus.GovApproved;
+            }
+            if (item.GovStatus == Enums.DocumentStatusGov.FullApproved)
+            {
+                item.Status = Enums.DocumentStatus.Completed;
+            }
+            if (item.GovStatus == Enums.DocumentStatusGov.Rejected)
+            {
+                item.Status = Enums.DocumentStatus.GovRejected;
+            }
+            if (model.IsSaveSubmit)
+            {
+                if (item.Status == Enums.DocumentStatus.Draft)
+                {
+                    item.Status = Enums.DocumentStatus.WaitingForApproval;
+                }
+
+               
+            }
+            _pbck7AndPbck7And3Bll.Insert(item);
+            AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Pbck7Pbck3CreateViewModel model)
@@ -205,7 +266,15 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.Year = modelDto.Pbck7Date.Year;
             inputDoc.NppbkcId = modelDto.NppbkcId;
             modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
-            _pbck7AndPbck7And3Bll.Insert(modelDto);
+            try
+            {
+                _pbck7AndPbck7And3Bll.Insert(modelDto);
+            }
+            catch (Exception ex)
+            {
+               AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);
+            }
+          
             return RedirectToAction("Index");
         }
 
@@ -215,7 +284,41 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
-            // model.DocumentTypeList = 
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = model.Pbck7Number;
+            workflowInput.DocumentStatus = model.Pbck7Status;
+            workflowInput.NPPBKC_Id = model.NppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            model.WorkflowHistory = workflowHistory;
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Pbck7Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = model.CreatedBy,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber = model.Pbck7Number,
+                NppbkcId = model.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+            model.AllowEditAndSubmit = CurrentUser.USER_ID == model.CreatedBy;
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
+            if (model.Pbck7Status == Enums.DocumentStatus.Completed)
+            {
+                model.AllowPrintDocument = true;
+            }
             return (model);
         }
 
