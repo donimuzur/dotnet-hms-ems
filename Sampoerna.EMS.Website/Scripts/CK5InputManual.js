@@ -56,7 +56,7 @@ function EditRow(o) {
     $('#uploadMaterialDesc').val(nRow.find("td").eq(15).html());
 
     //===Fixing Bug CK5 no. 110====
-    $('#uploadMaterialPlant').val(nRow.find("td").eq(16).html());
+    $('#uploadMaterialPlant').val(nRow.find("td").eq(18).html());
     //=============================
     
     ClearValidation();
