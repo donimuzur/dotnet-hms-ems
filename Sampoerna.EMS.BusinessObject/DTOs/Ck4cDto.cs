@@ -31,6 +31,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Enums.DocumentStatus Status { get; set; }
         public Enums.StatusGovCk4c? StatusGoverment { get; set; }
         public string Comment { get; set; }
+        public DateTime? DecreeDate { get; set; }
 
         //Month
         public int MonthId { get; set; }
