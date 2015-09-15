@@ -776,6 +776,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.SubmissionNumber;
                 input.NppbkcId = model.SourceNppbkcId;
+                if (model.Ck5Type == Enums.CK5Type.PortToImporter)
+                    input.NppbkcId = model.DestNppbkcId;
+                
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
