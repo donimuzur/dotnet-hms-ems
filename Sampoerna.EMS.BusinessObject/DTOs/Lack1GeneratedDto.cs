@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -74,6 +75,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public long Ck5Id { get; set; }
         public decimal Amount { get; set; }
         public string StoReceiverNumber { get; set; }
+        public string StoSenderNumber { get; set; }
+        public Enums.CK5Type Ck5Type { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
         public string StringRegistrationDate { get; set; }

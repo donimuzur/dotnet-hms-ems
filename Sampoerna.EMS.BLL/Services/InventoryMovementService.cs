@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
@@ -53,17 +54,34 @@ namespace Sampoerna.EMS.BLL.Services
             //get 100% usage from INVENTORY_MOVEMENT
             var movementUsageAll = _repository.Get(queryFilter);
             var inventoryMovements = movementUsageAll.ToList();
-            
+
+            queryFilterReceiving = queryFilterReceiving.And(c => input.StoReceiverNumberList.Contains(c.PURCH_DOC));
+
+            var receivingDataIn = _repository.Get(queryFilterReceiving).ToList();
+
+            if (receivingDataIn.Count == 0)
+            {
+                //no records, that mean 100% usage is in own NPPBKC ID, not in CK5 list
+
+                return new InvMovementGetForLack1UsageMovementByParamOutput()
+                {
+                    IncludeInCk5List = new List<INVENTORY_MOVEMENT>(),
+                    ExcludeFromCk5List = inventoryMovements,
+                    ReceivingList = new List<INVENTORY_MOVEMENT>(),
+                    AllUsageList = inventoryMovements
+                };
+            }
+
+            //there is records on receiving Data
+
             //get usage in receiving data
-            var usageReceivingData = (from rec in _repository.Get(queryFilterReceiving)
+            var usageReceivingData = (from rec in receivingDataIn
                 join a in inventoryMovements on rec.MATERIAL_ID equals a.MATERIAL_ID
-                where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
                 select  a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             //get receiving data
-            var receivingData = (from rec in _repository.Get(queryFilterReceiving)
+            var receivingData = (from rec in receivingDataIn
                                  join a in inventoryMovements on rec.MATERIAL_ID equals a.MATERIAL_ID
-                                 where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
             
             //get exclude in receiving data
