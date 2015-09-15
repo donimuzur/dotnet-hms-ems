@@ -34,6 +34,27 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Comment { get; set; }
         public Enums.ActionType ActionType { get; set; }
         public string DocumentNumber { get; set; }
+        public Ck4cWorkflowDocumentData AdditionalDocumentData { get; set; }
+    }
+
+    public class Ck4cUpdateReportedOn
+    {
+        public long Id { get; set; }
+        public DateTime? ReportedOn { get; set; }
+    }
+
+    public class Ck4cWorkflowDocumentData
+    {
+        public DateTime DecreeDate { get; set; }
+        public List<Ck4cDecreeDocDto> Ck4cDecreeDoc { get; set; }
+    }
+
+    public class Ck4cGetOpenDocumentByParamInput : Ck4CGetByParamInput
+    {
+    }
+
+    public class Ck4cGetCompletedDocumentByParamInput : Ck4CGetByParamInput
+    {
     }
 
 }

@@ -3,10 +3,7 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>CK-4C Document List</h3>
-            <div class="action-button new">
-                <a href="@Url.Action("Ck4CCreateDocumentList", "CK4C")"><button class="btn btn-blue">NEW</button></a>
-            </div>
+            <h3>CK-4C Completed Document</h3>
         </div>
     </div>
 </div>
@@ -15,7 +12,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterOpenDocument", "CK4C",
+                @using (Ajax.BeginForm("FilterCompletedDocument", "CK4C",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -68,7 +65,7 @@
                 }
             </div>
             <div id="contenttable" class="table-container">
-                @Html.Partial("_CK4CTableDocumentList")
+                @Html.Partial("_CK4CTableCompletedDocument")
             </div>
         </div>
 
@@ -82,7 +79,7 @@
             setupDataTables();
         });
 
-        $('#MenuCk4cDocumentList').addClass("active");
+        $('#MenuCk4cCompleted').addClass("active");
 
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {
@@ -200,4 +197,3 @@
 
     </script>
 }
-

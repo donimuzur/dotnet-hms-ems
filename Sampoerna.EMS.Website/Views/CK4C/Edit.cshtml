@@ -4,7 +4,7 @@
     ViewBag.Title = "Edit";
 }
 
-@using (Html.BeginForm("Edit", "CK4C", FormMethod.Post, new { @id = "EditForm" }))
+@using (Html.BeginForm(Model.ActionType, "CK4C", FormMethod.Post, new { @id = "EditForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
@@ -13,7 +13,15 @@
                 <h3>CK-4C Form</h3>
                 <label class="status">@Model.Details.StatusName</label>
                 <div class="action-button">
-                    <input type="button" class="btn btn-blue" value="Save" id="btnSaveCk4c" />
+                    @if (Model.AllowGovApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                    }
+                    else
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveCk4c" />
+                    }
+                    
                     <input type="button" class="btn btn-grey" value="Print Preview"/>
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                     @if (Model.Details.Status == Enums.DocumentStatus.Draft)
@@ -58,7 +66,7 @@
 
 }
 
-<div id="Pbck1Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div id="Ck4cModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -79,9 +87,29 @@
 @section scripts
 {
     <script src="~/Scripts/ck4cscript.js"></script>
+    @if (Model.Details.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+    {
+        <script src="~/Scripts/ck4c/docupload.js"></script>
+    }
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
             SetBasedOn();
+
+            $('#divComment').hide();
+
+            $('#Details_StatusGoverment').on('change', function (e) {
+                var valueSelected = this.value;
+
+                $('#divComment').hide();
+
+                if (valueSelected == 'Rejected') {
+                    $('#divComment').show();
+                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                }
+                else if (valueSelected == 'Approved') {
+                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }
+            });
 
             $("#Details_CompanyId").change(function () {
                 ChangeCompany($(this).find("option:selected").val());
@@ -100,13 +128,19 @@
             });
 
             $("#btnSaveCk4c").click(function () {
+                if (ValidateInput()) {
+                    $('#EditForm').submit();
+                }
+            });
+
+            $("#btnSaveGovStatus").click(function () {
                 if (ValidateGovInput()) {
                     $('#EditForm').submit();
                 }
             });
 
             $("#btnSubmitDocument").click(function () {
-                $('#Pbck1Modal').modal('show');
+                $('#Ck4cModal').modal('show');
             });
 
             $("#btnSubmitConfirm").click(function () {

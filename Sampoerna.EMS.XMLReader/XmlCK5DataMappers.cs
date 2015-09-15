@@ -212,13 +212,11 @@ namespace Sampoerna.EMS.XMLReader
                                }
                                else if (statusCk5 == Enums.CK5XmlStatus.StoCancel)
                                {
-                                   workflowHistory.ACTION = Enums.ActionType.STOCancelled;
-                                   AddWorkflowHistory(workflowHistory, null, null, null, null);
-
-                                   CreateCk5XmlCancel(item);
-
+                                  
                                    item.STATUS_ID = Enums.DocumentStatus.Cancelled;
-                                   workflowHistory.ACTION = Enums.ActionType.Cancelled;
+                                   workflowHistory.ACTION = Enums.ActionType.STOCancelled;
+                                
+                                   
                                }
                                else if (statusCk5 == Enums.CK5XmlStatus.StoFailed)
                                {
@@ -336,7 +334,13 @@ namespace Sampoerna.EMS.XMLReader
 
                                    workflowHistory.ACTION = Enums.ActionType.STOBGIReversal;
                                    AddWorkflowHistory(workflowHistory, null, null, null, null);
-
+                                   workflowHistory = new WORKFLOW_HISTORY();
+                                   workflowHistory.FORM_ID = existingCk5.CK5_ID;
+                                   workflowHistory.ACTION_BY = Constans.PI;
+                                   workflowHistory.ROLE = Enums.UserRole.System;
+                                   workflowHistory.FORM_NUMBER = existingCk5.SUBMISSION_NUMBER;
+                                   workflowHistory.FORM_TYPE_ID = Enums.FormType.CK5;
+                                   workflowHistory.ACTION_DATE = DateTime.Now;
                                    CreateCk5XmlCancel(item);
 
                                    item.STATUS_ID = Enums.DocumentStatus.Cancelled;
