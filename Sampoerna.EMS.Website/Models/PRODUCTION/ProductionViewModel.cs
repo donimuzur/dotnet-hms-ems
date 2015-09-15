@@ -37,12 +37,6 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
 
     }
 
-    public class ProductionFormModel : BaseModel
-    {
-
-        public ProductionDetail Detail { get; set; }
-    }
-
     public class ProductionDetail : BaseModel
     {
         public string CompanyCodeX { get; set; }

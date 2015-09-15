@@ -817,9 +817,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ProoductionDate, opt => opt.MapFrom(src => src.ProductionDate));
 
             Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
-                
 
-            #endregion
+           #endregion
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.FA_CODE))

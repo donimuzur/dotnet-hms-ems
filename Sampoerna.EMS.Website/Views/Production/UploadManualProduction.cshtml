@@ -1,0 +1,45 @@
+﻿@model Sampoerna.EMS.Website.Models.PRODUCTION.ProductionUploadViewModel
+
+@{
+    ViewBag.Title = "UploadManualProduction";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Upload Document Manual</h3>
+            <div class="action-button">
+                <button class="btn btn-blue">Save</button>
+                <a href="@Url.Action("Index", "Production")" class="btn btn-grey">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul role="tablist" class="nav nav-tabs">
+                    <li class="active" id="tab-upload" role="presentation"><a data-toggle="tab" role="tab" aria-controls="Upload" href="#Upload">Upload</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  @Html.Partial("_Upload")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script type="text/javascript">
+        $('#MenuCk4cDailyProduction').addClass('active');
+
+    </script>
+}
+

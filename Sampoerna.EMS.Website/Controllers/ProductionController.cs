@@ -290,6 +290,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Upload file
 
+        public ActionResult UploadManualProduction()
+        {
+            var model = new ProductionUploadViewModel();
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            return View(model);
+        }
+
 
         [HttpPost]
         public JsonResult UploadFile(HttpPostedFileBase itemExcelFile)
@@ -317,6 +326,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
             }
+            
             return Json(model);
 
 
