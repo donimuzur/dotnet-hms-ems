@@ -340,8 +340,6 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.Status = Enums.DocumentStatus.WaitingForApproval;
                 }
 
-                item.ApprovedBy = CurrentUser.USER_ID;
-                item.ApprovedDate = DateTime.Now;
             }
 
             if (model.Documents != null)

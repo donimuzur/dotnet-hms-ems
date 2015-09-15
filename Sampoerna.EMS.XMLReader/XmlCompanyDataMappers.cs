@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.XMLReader
                         var bukrs = xElement.Element("BUKRS").Value;
                         item.BUTXT = _xmlMapper.GetElementValue(xElement.Element("BUTXT"));
                         item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
-                        item.SPRAS = _xmlMapper.GetElementValue(xElement.Element("SPRAS"));
+                        //item.SPRAS = _xmlMapper.GetElementValue(xElement.Element("SPRAS"));
                        // item.NPWP = _xmlMapper.GetElementValue(xElement.Element("STCEG"));
                         item.CREATED_BY = Constans.PI;
                         var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T001>()
