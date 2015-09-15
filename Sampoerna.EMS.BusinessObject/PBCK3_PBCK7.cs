@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> EXEC_DATE_FROM { get; set; }
         public Nullable<System.DateTime> EXEC_DATE_TO { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatusGov GOV_STATUS { get; set; }
-        public int STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatus> STATUS { get; set; }
         public string APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public string CREATED_BY { get; set; }
