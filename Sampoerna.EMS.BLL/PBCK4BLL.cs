@@ -736,14 +736,10 @@ namespace Sampoerna.EMS.BLL
            dbData.MODIFIED_DATE = DateTime.Now;
            dbData.MODIFIED_BY = input.UserId;
 
-           var pbckDocument = new List<Pbck4DocumentsDto>();
+           var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
+           pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
 
-           //foreach (var pbck4DocumentDto in input.AdditionalDocumentData.Back1FileUploadList)
-           //{
-               
-           //}
-
-           //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(input.AdditionalDocumentData.Ck5FileUploadList);
+           dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
 
            input.DocumentNumber = dbData.PBCK4_NUMBER;
 
@@ -778,6 +774,11 @@ namespace Sampoerna.EMS.BLL
 
            dbData.MODIFIED_DATE = DateTime.Now;
            dbData.MODIFIED_BY = input.UserId;
+
+           var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
+           pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
+
+           dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
 
            input.DocumentNumber = dbData.PBCK4_NUMBER;
 

@@ -158,7 +158,6 @@
     <Compile Include="DTOs\Pbck1QuotaDto.cs" />
     <Compile Include="DTOs\Pbck1ReportDto.cs" />
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
-    <Compile Include="DTOs\Pbck4DocumentsDto.cs" />
     <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck4ItemDto.cs" />
     <Compile Include="DTOs\PBCK4_DOCUMENTDto.cs" />

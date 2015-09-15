@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.Website.Controllers
             Pbck4IndexViewModel model;
             try
             {
-                model = CreateInitModelView();
+                model = CreateInitModelView(false);
 
 
             }
@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        private Pbck4IndexViewModel CreateInitModelView()
+        private Pbck4IndexViewModel CreateInitModelView(bool isCompleted)
         {
             var model = new Pbck4IndexViewModel();
 
@@ -87,12 +87,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             
             //list table
-            model.DetailsList = GetPbck4Items();
+            model.DetailsList = GetPbck4Items(isCompleted);
 
             return model;
         }
 
-        private List<Pbck4Item> GetPbck4Items(Pbck4SearchViewModel filter = null)
+        private List<Pbck4Item> GetPbck4Items(bool isCompletedDocument, Pbck4SearchViewModel filter = null)
         {
             Pbck4GetByParamInput input;
             List<Pbck4Dto> dbData;
@@ -108,6 +108,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //getbyparams
 
             input = Mapper.Map<Pbck4GetByParamInput>(filter);
+            input.IsCompletedDocument = isCompletedDocument;
 
             dbData = _pbck4Bll.GetPbck4ByParam(input);
             return Mapper.Map<List<Pbck4Item>>(dbData);
@@ -116,9 +117,30 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult Filter(Pbck4IndexViewModel model)
         {
-            model.DetailsList = GetPbck4Items(model.SearchView);
+            model.DetailsList = GetPbck4Items(model.IsCompletedType,model.SearchView);
             return PartialView("_Pbck4OpenListDocuments", model);
         }
+
+        public ActionResult Pbck4Completed()
+        {
+            Pbck4IndexViewModel model;
+            try
+            {
+                model = CreateInitModelView(true);
+                model.IsCompletedType = true;
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck4IndexViewModel();
+            }
+
+            return View("Pbck4CompletedDocuments", model);
+           
+           
+        }
+
 
         public ActionResult Create()
         {
@@ -240,6 +262,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(pbck4Details.ListWorkflowHistorys);
 
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(pbck4Details.ListPrintHistorys);
+
+                model.Pbck4FileUploadModelList = Mapper.Map<List<Pbck4FileUploadViewModel>>(pbck4Details.Pbck4Dto.Pbck4DocumentDtos.Where(c=>c.DOC_TYPE == 1));
+                model.Pbck4FileUploadModelList2 = Mapper.Map<List<Pbck4FileUploadViewModel>>(pbck4Details.Pbck4Dto.Pbck4DocumentDtos.Where(c=>c.DOC_TYPE == 2));
+
 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput();
