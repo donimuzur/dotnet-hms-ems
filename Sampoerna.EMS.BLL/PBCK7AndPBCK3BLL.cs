@@ -13,24 +13,27 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
 
     public class PBCK7AndPBCK3BLL : IPBCK7And3BLL
     {
-        private ILogger _looger;
+        private ILogger _logger;
         private IGenericRepository<PBCK3_PBCK7> _repository;
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
-
+        private IPOABLL _poabll;
         private string includeTable = "PBCK3_PBCK7_ITEM";
-
+        private WorkflowHistoryBLL _workflowHistoryBll;
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
-            _looger = logger;
+            _logger = logger;
             _uow = uow;
-            _back1Bll = new BACK1BLL(_uow, _looger);
+            _back1Bll = new BACK1BLL(_uow, _logger);
+            _poabll = new POABLL(_uow, _logger);
+            _workflowHistoryBll = new WorkflowHistoryBLL(_uow, logger);
             _repository = _uow.GetGenericRepository<PBCK3_PBCK7>();
 
         }
@@ -92,7 +95,99 @@ namespace Sampoerna.EMS.BLL
             var dataToAdd = Mapper.Map<PBCK3_PBCK7>(pbck7AndPbck3Dto);
             _repository.InsertOrUpdate(dataToAdd);
             _uow.SaveChanges();
+
+            var history = new WorkflowHistoryDto();
+            history.FORM_ID = dataToAdd.PBCK3_PBCK7_ID;
+            history.ACTION = GetActionType(pbck7AndPbck3Dto, pbck7AndPbck3Dto.ModifiedBy);
+            history.ACTION_BY = GetActionBy(pbck7AndPbck3Dto);
+            history.ACTION_DATE = DateTime.Now;
+            history.FORM_NUMBER = pbck7AndPbck3Dto.Pbck7Number;
+            history.FORM_TYPE_ID = Enums.FormType.PBCK7;
+            history.COMMENT = pbck7AndPbck3Dto.Comment;
+            //set workflow history
+            var getUserRole = _poabll.GetUserRole(history.ACTION_BY);
+            history.ROLE = getUserRole;
+            _workflowHistoryBll.AddHistory(history);
+            _uow.SaveChanges();
         }
+
+        private Core.Enums.ActionType GetActionType(Pbck7AndPbck3Dto pbck7pbck3, string modifiedBy)
+        {
+            var docStatus = pbck7pbck3.Status;
+            if (docStatus == Core.Enums.DocumentStatus.Draft)
+            {
+                if (pbck7pbck3.IsRejected)
+                {
+                    return Core.Enums.ActionType.Reject;
+                }
+                if (modifiedBy != null)
+                {
+                    return Core.Enums.ActionType.Modified;
+                }
+                return Core.Enums.ActionType.Created;
+            }
+            if (docStatus == Core.Enums.DocumentStatus.WaitingForApproval)
+            {
+                return Core.Enums.ActionType.Submit;
+            }
+
+            if (docStatus == Core.Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return Core.Enums.ActionType.Approve;
+            }
+
+            if (docStatus == Core.Enums.DocumentStatus.WaitingGovApproval)
+            {
+                return Core.Enums.ActionType.Approve;
+            }
+            if (docStatus == Core.Enums.DocumentStatus.GovApproved)
+            {
+                return Core.Enums.ActionType.GovPartialApprove;
+            }
+            if (docStatus == Core.Enums.DocumentStatus.Completed)
+            {
+                return Core.Enums.ActionType.GovApprove;
+            }
+            return Core.Enums.ActionType.Reject;
+        }
+
+        private string GetActionBy(Pbck7AndPbck3Dto pbck3pbkc7)
+        {
+            if (pbck3pbkc7.Status == Core.Enums.DocumentStatus.Draft)
+            {
+                if (pbck3pbkc7.IsRejected)
+                {
+                    return pbck3pbkc7.RejectedBy;
+                }
+                if (pbck3pbkc7.ModifiedBy != null)
+                {
+                    return pbck3pbkc7.ModifiedBy;
+                }
+                return pbck3pbkc7.CreatedBy;
+            }
+            if (pbck3pbkc7.Status == Core.Enums.DocumentStatus.WaitingForApproval)
+            {
+                return pbck3pbkc7.CreatedBy;
+            }
+            if (pbck3pbkc7.Status == Core.Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return pbck3pbkc7.ApprovedBy;
+            }
+            if (pbck3pbkc7.Status == Core.Enums.DocumentStatus.WaitingGovApproval)
+            {
+                return pbck3pbkc7.ApprovedByManager;
+            }
+            if (pbck3pbkc7.Status == Core.Enums.DocumentStatus.Rejected)
+            {
+                return pbck3pbkc7.RejectedBy;
+            }
+
+
+
+            return pbck3pbkc7.CreatedBy;
+        }
+
+      
     }
 
 

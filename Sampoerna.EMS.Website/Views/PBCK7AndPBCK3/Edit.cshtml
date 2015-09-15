@@ -102,11 +102,13 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script type="text/javascript">
         var uploaditems = [];
-        $("#btnSubmitConfirm").click(function () {
+        
+
+        $("#btnSubmitConfirm").click(function() {
             $('#IsSaveSubmit').val('true');
             $('#form-pbck7-edit').submit();
         });
-        $('#btnSubmitDocument').click(function () {
+        $('#btnSubmitDocument').click(function() {
 
             $('#pbck7Modal').modal('show');
         });
@@ -123,7 +125,7 @@
             for (var i = 0; i < uploaditems.length; i++) {
                 var tr = '<tr>' +
                     createColumn(i + 1) +
-                    createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems['+i+'].FaCode') +
+                    createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems[' + i + '].FaCode') +
                     createColumnWithHiddenField(uploaditems[i].ProdTypeAlias, 'UploadItems[' + i + '].ProdTypeAlias') +
                     createColumnWithHiddenField(uploaditems[i].Brand, 'UploadItems[' + i + '].Brand') +
                     createColumnWithHiddenField(uploaditems[i].Content, 'UploadItems[' + i + '].Content') +
@@ -150,11 +152,13 @@
         }
 
         function createColumn(text) {
-            return '<td>'+text+'</td>';
+            return '<td>' + text + '</td>';
         }
+
         function createColumnWithHiddenField(text, name) {
-            return '<td><input type="hidden" name="'+name+'" value="'+text+'">' + text + '</td>';
+            return '<td><input type="hidden" name="' + name + '" value="' + text + '">' + text + '</td>';
         }
+
         function uploadXmlFile() {
 
             var postUrl = '@Url.Action("UploadFile", "PBCK7AndPBCK3")';
@@ -187,7 +191,7 @@
 
                     $('#tb-upload-excel').html('');
                     uploaditems = JSON.parse(response);
-                   
+
                     for (var i = 0; i < uploaditems.length; i++) {
                         var tr = '<tr>' +
                             createColumn(i + 1) +
@@ -198,7 +202,7 @@
                             createColumn(uploaditems[i].Pbck7Qty) +
                             createColumn(uploaditems[i].Back1Qty) +
                             createColumn(uploaditems[i].SeriesValue) +
-                             createColumn(uploaditems[i].Hje) +
+                            createColumn(uploaditems[i].Hje) +
                             createColumn(uploaditems[i].Tariff) +
                             createColumn(uploaditems[i].FiscalYear) +
                             createColumn(uploaditems[i].ExciseValue) + '</tr>';
@@ -217,7 +221,7 @@
                 type: 'POST',
                 url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
                 data: { nppbkcid: nppbkc },
-                success: function (data) {
+                success: function(data) {
                     $('#displayPoaList').html('');
                     var poalist = '';
                     for (var i = 0; i < data.length; i++) {
@@ -232,27 +236,28 @@
             });
 
         }
+
         function ajaxGetPlantByNppbkc(nppbkc) {
 
             $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
-                data: { nppbkcid: nppbkc },
-                success: function (data) {
-                    $('#PlantId').html('');
+                    type: 'POST',
+                    url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
+                    data: { nppbkcid: nppbkc },
+                    success: function(data) {
+                        $('#PlantId').html('');
 
-                    for (var i = 0; i < data.length; i++) {
-                        $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+                        for (var i = 0; i < data.length; i++) {
+                            $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+
+                        }
 
                     }
-
                 }
-            }
             );
 
         }
-        
-        $('#NppbkcId').change(function () {
+
+        $('#NppbkcId').change(function() {
 
             if ($(this).length) {
                 var nppbkc = $(this).find("option:selected").val();

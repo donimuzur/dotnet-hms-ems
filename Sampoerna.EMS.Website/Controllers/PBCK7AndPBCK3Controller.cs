@@ -291,11 +291,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetPlantAll();
             //workflow history
             var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormId = model.Id;
             workflowInput.FormNumber = model.Pbck7Number;
             workflowInput.DocumentStatus = model.Pbck7Status;
             workflowInput.NPPBKC_Id = model.NppbkcId;
-
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+            workflowInput.FormType = Enums.FormType.PBCK7;
+            ;
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormId(workflowInput));
 
             model.WorkflowHistory = workflowHistory;
             //validate approve and reject

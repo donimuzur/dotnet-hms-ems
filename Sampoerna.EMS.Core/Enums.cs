@@ -244,6 +244,8 @@ namespace Sampoerna.EMS.Core
             LACK2 = 6,
             [Description("CK-4C")]
             CK4C = 7,
+            [Description("PBCK-7")]
+            PBCK7 = 8,
         }
 
         public enum ActionType
