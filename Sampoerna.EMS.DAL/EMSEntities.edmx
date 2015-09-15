@@ -737,8 +737,8 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PLANT_CITY" Type="nvarchar" MaxLength="25" />
           <Property Name="EXEC_DATE_FROM" Type="datetime" />
           <Property Name="EXEC_DATE_TO" Type="datetime" />
-          <Property Name="GOV_STATUS" Type="int" Nullable="false" />
-          <Property Name="STATUS" Type="int" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="int" />
+          <Property Name="STATUS" Type="int" />
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -5978,7 +5978,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="EXEC_DATE_FROM" Type="DateTime" Precision="3" />
           <Property Name="EXEC_DATE_TO" Type="DateTime" Precision="3" />
           <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" Nullable="false" />
-          <Property Name="STATUS" Type="Int32" Nullable="false" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" />
           <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
