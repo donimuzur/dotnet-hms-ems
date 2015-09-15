@@ -1092,8 +1092,9 @@ namespace Sampoerna.EMS.BLL
                 ProductAlias = g.ProductAlias,
                 UomId = g.UomId,
                 UomDesc = g.UomDesc,
-                Amount = (g.Amount / totalAmount) * ((totalUsageInCk5 / totalUsage) * totalUsage)
+                //Amount = (g.Amount / totalAmount) * ((totalUsageInCk5 / totalUsage) * totalUsage)
                 //Amount = (g.Amount) //just for testing
+                Amount = (totalUsageInCk5 / totalUsage) * g.Amount
             });
 
             return dToReturn.ToList();
