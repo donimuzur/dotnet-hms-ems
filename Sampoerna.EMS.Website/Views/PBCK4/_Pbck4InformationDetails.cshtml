@@ -1,4 +1,5 @@
-﻿@using Sampoerna.EMS.Website.Helpers
+﻿
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
 
 <div role="tabpanel" class="tab-pane active" id="information">
@@ -37,10 +38,10 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Plant<span class="red">*</span></label>
+                                        <label class="col-md-4">Plant</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "form-control" })
-                                           
+                                            @Html.TextBoxFor(model => model.PlantId, new { @disabled = "disabled", @class = "form-control" })
+
                                         </div>
                                     </div>
                                 </div>
@@ -67,12 +68,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Reported On<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                            @Html.TextBoxFor(model => model.ReportedOn, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +108,7 @@
                 </div>
                 <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                     <div class="panel-body">
-                        
+
                         <input type="button" class="btn btn-blue" id="btnUploadInfo" value="Upload" disabled />
 
                         <div class="table-container">
@@ -156,12 +152,13 @@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].ReqQty)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].TotalHje)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].TotalStamps)
-                                         @Html.HiddenFor(model => model.UploadItemModels[i].NoPengawas)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].NoPengawas)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].ApprovedQty)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Remark)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].CK1_ID)
+                                         @Html.HiddenFor(model => model.UploadItemModels[i].CK1_ID)
+
                                         <tr>
-                                            
+
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].FaCode)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].StickerCode)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Ck1No)</td>
@@ -179,7 +176,7 @@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].NoPengawas)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].ApprovedQty)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Remark)</td>
-                                            
+
                                         </tr>
                                     }
 
@@ -193,11 +190,109 @@
             </div>
         </div>
 
-      
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <span class="red">*</span> ) This Field Required
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFour">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordionFour" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                        Feedback
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                <div class="panel-body">
+                    <div class="form-excise" role="form">
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">BACK-1 No</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.BACK1_NO, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">CK-3 No</label>
+                                    <div class="col-md-8">
+                                       @Html.TextBoxFor(model => model.CK3_NO, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">BACK-1 Date</label>
+                                    <div class="col-md-8">
+                                      @Html.TextBoxFor(model => model.BACK1_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">CK-3 Date</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.CK3_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">BACK-1 Doc</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">CK-3 Doc</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">CK-3 Office Value</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.CK3_OFFICE_VALUE, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        
+        <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                            Workflow History
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+   
 </div>

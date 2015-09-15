@@ -423,6 +423,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.FLOOR_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.FloorWasteStickQty));
 
             #endregion
+
+            Mapper.CreateMap<CK1, CK1Dto>().IgnoreAllNonExisting();
         }
     }
 }
