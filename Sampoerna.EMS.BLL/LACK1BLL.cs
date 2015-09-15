@@ -138,6 +138,11 @@ namespace Sampoerna.EMS.BLL
             data.RETURN_QTY = input.ReturnAmount;
             data.RETURN_UOM = input.ReturnAmountUom;
 
+            //set LACK1_TRACKING
+            var allTrackingList = generatedData.Data.InvMovementAllList;
+            allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
+            data.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
+
             //generate new Document Number get from Sequence Number BLL
             var generateNumberInput = new GenerateDocNumberInput()
             {
