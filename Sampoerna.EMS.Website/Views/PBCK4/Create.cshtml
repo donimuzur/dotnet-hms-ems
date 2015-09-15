@@ -1,6 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
 
-@using (Html.BeginForm("SaveCK5", "PBCK4", FormMethod.Post, new { @id = "SavePbck4Forms" }))
+@using (Html.BeginForm("SavePbck4", "PBCK4", FormMethod.Post, new { @id = "SavePbck4Forms" }))
 {
     @Html.AntiForgeryToken()
 
@@ -22,14 +22,20 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        @*<li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>*@
                         <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
 
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
+                        @Html.HiddenFor(model => model.CompanyName)
+                        @Html.HiddenFor(model => model.CompanyId)
+                        @Html.HiddenFor(model => model.PlantDesc)
+                        @Html.HiddenFor(model => model.NppbkcId)
+                        @Html.HiddenFor(model => model.NppbkcDesc)
+
                         @Html.Partial("_Pbck4InformationCreate")
-                        @Html.Partial("_Pbck4Printout")
+                        @*@Html.Partial("_Pbck4Printout")*@
                         @Html.Partial("_Pbck4UploadCreate")
 
                     </div>
@@ -40,18 +46,77 @@
 
 }
 
+<div id="ModalPbck4Items" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">PBCK-4 Items</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/Pbck4Script.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
 
   <script type="text/javascript">
 
     $(document).ready(function () {
         
+        $("#btnSave").click(function () {
 
+            if (ValidatePbck4Form()) {
+                $('#SavePbck4Forms').submit();
+            }
+        });
+        
+        $('#Pbck4UploadSubmitBtn').click(function () {
+            GenerateXlsPbck4Items('@Url.Action("UploadFile", "PBCK4")');
+        });
+
+        OnReadyFunction();
     });
+
+    $("#PlantId").change(function () {
+        if ($("#PlantId").length) {
+            var plant = $(this).find("option:selected").val();
+
+            //remove table
+            try {
+                RemovePbck4ItemsTable();
+            } catch (e) {
+
+            }
+            if (plant == '') {
+                $("input[name='CompanyName']").val('');
+                $("input[name='CompanyId']").val('');
+                $("*[name='PlantDesc']").val('');
+                $("input[name='Poa']").val('');
+                $("input[name='NppbkcId']").val('');
+                $("input[name='NppbkcDesc']").val('');
+                
+                $('#btnUploadInfo').enable(false);
+                $('#Pbck4UploadSubmitBtn').enable(false);
+
+            } else {
+
+                ajaxGetPlantDetails('@Url.Action("GetPlantDetails", "PBCK4")', { plantId: plant });
+            }
+        }
+    });
+
 
     </script>
 

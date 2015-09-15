@@ -254,7 +254,7 @@ namespace Sampoerna.EMS.Core
             Cancel = 2,
             [Description("CancelSAP")]
             CancelSAP = 3,
-            [Description("CancelSTOCreated")]
+            [Description("CK5 Cancel")]
             CancelSTOCreated = 4,
             [Description("Modified")]
             Modified = 5,
@@ -511,8 +511,9 @@ namespace Sampoerna.EMS.Core
             [Description("WasteProduction")]
             WasteProduction = 2,
             [Description("CK4CDocument")]
-            Ck4CDocument = 3
-
+            Ck4CDocument = 3,
+            [Description("CompletedDocument")]
+            CompletedDocument = 4
         }
 
         public enum MovementTypeCode

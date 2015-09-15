@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
@@ -11,6 +12,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.CK4C;
@@ -58,100 +60,15 @@ namespace Sampoerna.EMS.Website.Controllers
             _prodTypeBll = prodTypeBll;
         }
 
-
-        #region Index Daily Production
-        //
-        // GET: /CK4C/
-        public ActionResult Index()
-        {
-            var data = InitCk4ViewModel(new Ck4CIndexViewModel
-            {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-                Ck4CType = Enums.CK4CType.DailyProduction,
-                Detail = Mapper.Map<List<DataIndecCk4C>>(_ck4CBll.GetAllByParam(new Ck4CGetByParamInput()))
-
-            });
-
-            return View("Index", data);
-        }
-
-        private Ck4CIndexViewModel InitCk4ViewModel(Ck4CIndexViewModel model)
-        {
-            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlanIdList = GlobalFunctions.GetPlantAll();
-            return model;
-        }
-
-        [HttpPost]
-        public PartialViewResult FilterCk4CDailyProductionIndex(Ck4CIndexViewModel model)
-        {
-            var input = Mapper.Map<Ck4CGetByParamInput>(model);
-            input.Ck4CType = Enums.CK4CType.DailyProduction;
-            if (input.DateProduction != null)
-            {
-                input.DateProduction = Convert.ToDateTime(input.DateProduction).ToString();
-            }
-
-            var dbData = _ck4CBll.GetAllByParam(input);
-            var result = Mapper.Map<List<DataIndecCk4C>>(dbData);
-            var viewModel = new Ck4CIndexViewModel();
-            viewModel.Detail = result;
-            return PartialView("_Ck4CTableIndex", viewModel);
-        }
-
-        #endregion
-
-        #region Index Waste Production
-
-        public ActionResult WasteProductionIndex()
-        {
-            var data =
-            InitIndexWasteProductionViewModel(new Ck4CIndexWasteProductionViewModel
-            {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-                Ck4CType = Enums.CK4CType.WasteProduction,
-                Detail = Mapper.Map<List<DataWasteProduction>>(_ck4CBll.GetAllByParam(new Ck4CGetByParamInput()))
-            });
-
-            return View("WasteProductionIndex", data);
-        }
-
-        private Ck4CIndexWasteProductionViewModel InitIndexWasteProductionViewModel(
-            Ck4CIndexWasteProductionViewModel model)
-        {
-            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlanIdList = GlobalFunctions.GetPlantAll();
-            return model;
-        }
-
-        [HttpPost]
-        public PartialViewResult FilterWasteProductionIndex(Ck4CIndexWasteProductionViewModel model)
-        {
-            var input = Mapper.Map<Ck4CGetByParamInput>(model);
-            input.Ck4CType = Enums.CK4CType.WasteProduction;
-
-            var dbData = _ck4CBll.GetAllByParam(input);
-            var result = Mapper.Map<List<DataWasteProduction>>(dbData);
-            var viewModel = new Ck4CIndexWasteProductionViewModel();
-            viewModel.Detail = result;
-
-            return PartialView("_CK4CTableWasteProduction", viewModel);
-        }
-        #endregion
-
         #region Index Document List
 
         public ActionResult DocumentList()
         {
-            var data =
-            InitIndexDocumentListViewModel(new Ck4CIndexDocumentListViewModel
+            var data = InitIndexDocumentListViewModel(new Ck4CIndexDocumentListViewModel
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Ck4CType = Enums.CK4CType.Ck4CDocument,
-                Detail = Mapper.Map<List<DataDocumentList>>(_ck4CBll.GetAllByParam(new Ck4CGetByParamInput()))
+                Ck4CType = Enums.CK4CType.Ck4CDocument
             });
 
             return View("DocumentList", data);
@@ -160,25 +77,83 @@ namespace Sampoerna.EMS.Website.Controllers
         private Ck4CIndexDocumentListViewModel InitIndexDocumentListViewModel(
             Ck4CIndexDocumentListViewModel model)
         {
-            var listCk4cData = _ck4CBll.GetAll();
-            model.DocumentNumberList = new SelectList(listCk4cData, "NUMBER", "NUMBER");
             model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
             model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            switch (model.Ck4CType)
+            {
+                case Enums.CK4CType.CompletedDocument:
+                    model.Detail = GetCompletedDocument(model);
+                    var listCk4cCompleted = _ck4CBll.GetCompletedDocument();
+                    model.DocumentNumberList = new SelectList(listCk4cCompleted, "NUMBER", "NUMBER");
+                    break;
+                case Enums.CK4CType.Ck4CDocument:
+                    model.Detail = GetOpenDocument(model);
+                    var listCk4cData = _ck4CBll.GetOpenDocument();
+                    model.DocumentNumberList = new SelectList(listCk4cData, "NUMBER", "NUMBER");
+                    break;
+            }
+
             return model;
         }
 
-        [HttpPost]
-        public PartialViewResult FilterDocumentListIndex(Ck4CIndexDocumentListViewModel model)
+        private List<DataDocumentList> GetOpenDocument(Ck4CIndexDocumentListViewModel filter = null)
         {
-            var input = Mapper.Map<Ck4CGetByParamInput>(model);
-            input.Ck4CType = Enums.CK4CType.Ck4CDocument;
+            if (filter == null)
+            {
+                //Get All
+                var ck4cData = _ck4CBll.GetOpenDocumentByParam(new Ck4cGetOpenDocumentByParamInput()).OrderByDescending(d => d.Number);
+                return Mapper.Map<List<DataDocumentList>>(ck4cData);
+            }
 
-            var dbData = _ck4CBll.GetAllByParam(input);
-            var result = Mapper.Map<List<DataDocumentList>>(dbData);
-            var viewModel = new Ck4CIndexDocumentListViewModel();
-            viewModel.Detail = result;
+            //getbyparams
+            var input = Mapper.Map<Ck4cGetOpenDocumentByParamInput>(filter);
+            var dbData = _ck4CBll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Number);
+            return Mapper.Map<List<DataDocumentList>>(dbData);
+        }
 
-            return PartialView("_CK4CTableDocumentList", viewModel);
+        private List<DataDocumentList> GetCompletedDocument(Ck4CIndexDocumentListViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                //Get All
+                var ck4cData = _ck4CBll.GetCompletedDocumentByParam(new Ck4cGetCompletedDocumentByParamInput());
+                return Mapper.Map<List<DataDocumentList>>(ck4cData);
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Ck4cGetCompletedDocumentByParamInput>(filter);
+            var dbData = _ck4CBll.GetCompletedDocumentByParam(input);
+            return Mapper.Map<List<DataDocumentList>>(dbData);
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterOpenDocument(Ck4CIndexDocumentListViewModel model)
+        {
+            model.Detail = GetOpenDocument(model);
+            return PartialView("_CK4CTableDocumentList", model);
+        }
+
+        #endregion
+
+        #region Completed Document
+
+        public ActionResult CompletedDocument()
+        {
+            var data = InitIndexDocumentListViewModel(new Ck4CIndexDocumentListViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Ck4CType = Enums.CK4CType.CompletedDocument
+            });
+            return View("CompletedDocument", data);
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterCompletedDocument(Ck4CIndexDocumentListViewModel model)
+        {
+            model.Detail = GetCompletedDocument(model);
+            return PartialView("_CK4CTableCompletedDocument", model);
         }
 
         #endregion
@@ -233,9 +208,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetFaCodeDescription(string faCode)
+        public JsonResult GetFaCodeDescription(string plantWerk, string faCode)
         {
-            var fa = _brandRegistrationBll.GetByFaCode(faCode);
+            var fa = _brandRegistrationBll.GetByFaCode(plantWerk, faCode);
             return Json(fa.BRAND_CE);
         }
 
@@ -244,98 +219,6 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).Select(d => Mapper.Map<ProductionDto>(d)).ToList();
             return Json(data);
-        }
-
-        #endregion
-
-        #region create daily Production
-
-        public ActionResult Ck4CCreateDailyProduction()
-        {
-            var model = new Ck4cCreateViewModel
-            {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-
-            };
-
-            return CreateInitial(model);
-        }
-
-        public ActionResult CreateInitial(Ck4cCreateViewModel model)
-        {
-            return View("Ck4CCreateDailyProduction", InitialModel(model));
-        }
-
-        private Ck4cCreateViewModel InitialModel(Ck4cCreateViewModel model)
-        {
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-            model.CompanyList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantList = GlobalFunctions.GetPlantAll();
-            model.FinishGoodList = GlobalFunctions.GetBrandList();
-            model.UomList = GlobalFunctions.GetUomList(_uomBll);
-
-            return (model);
-
-        }
-
-        #endregion
-
-        #region create Waste Production
-
-        public ActionResult Ck4CCreateWasteProduction()
-        {
-            var model = new Ck4CCreateWasteProductionViewModel
-            {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-            };
-
-            return CreateInitial(model);
-        }
-
-        public ActionResult CreateInitial(Ck4CCreateWasteProductionViewModel model)
-        {
-            return View("Ck4CCreateWasteProduction", InitialModel(model));
-        }
-
-        private Ck4CCreateWasteProductionViewModel InitialModel(Ck4CCreateWasteProductionViewModel model)
-        {
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-            model.CompanyList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantList = GlobalFunctions.GetPlantAll();
-            model.FinishGoodsList = GlobalFunctions.GetBrandList();
-            model.UomList = GlobalFunctions.GetUomList(_uomBll);
-
-            return (model);
-
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Ck4CCreateWasteProduction(Ck4cCreateViewModel model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    AddMessageInfo("Invalid input, please check the input.", Enums.MessageInfoType.Error);
-                    return CreateInitial(model);
-                }
-
-                var dataToSave = Mapper.Map<Ck4CDto>(model);
-                dataToSave.CreatedBy = CurrentUser.USER_ID;
-
-            }
-            catch (Exception exception)
-            {
-
-                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
-            }
-
-            return CreateInitial(model);
         }
 
         #endregion
@@ -394,6 +277,13 @@ namespace Sampoerna.EMS.Website.Controllers
             item.Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
             item.Status = Enums.DocumentStatus.Draft;
 
+            if(item.Ck4cItem.Count == 0)
+            {
+                AddMessageInfo("No item found", Enums.MessageInfoType.Warning);
+                model = InitialModel(model);
+                return View(model);
+            }
+
             _ck4CBll.Save(item);
             AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
             return RedirectToAction("DocumentList");
@@ -428,7 +318,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             foreach(var item in listData)
             {
-                var brand = _brandRegistrationBll.GetByFaCode(item.FaCode);
+                var brand = _brandRegistrationBll.GetByFaCode(item.Werks, item.FaCode);
                 var plant = _plantBll.GetT001WById(item.Werks);
                 var prodType = _prodTypeBll.GetByCode(item.ProdCode);
 
@@ -576,6 +466,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject)
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                }
+
+                if (model.Details.Status == Enums.DocumentStatus.WaitingGovApproval)
+                {
+                    model.ActionType = "GovApproveDocument";
                 }
             }
             catch (Exception exception)
@@ -727,6 +622,111 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return true;
 
+        }
+
+        [HttpPost]
+        public ActionResult GovApproveDocument(Ck4CIndexDocumentListViewModel model)
+        {
+            if (model.Details.Ck4cDecreeFiles == null)
+            {
+                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
+                return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
+            }
+
+            bool isSuccess = false;
+            var currentUserId = CurrentUser;
+            try
+            {
+                model.Details.Ck4cDecreeDoc = new List<Ck4cDecreeDocModel>();
+                if (model.Details.Ck4cDecreeFiles != null)
+                {
+                    foreach (var item in model.Details.Ck4cDecreeFiles)
+                    {
+                        if (item != null)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var decreeDoc = new Ck4cDecreeDocModel()
+                            {
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId),
+                                CREATED_BY = currentUserId.USER_ID,
+                                CREATED_DATE = DateTime.Now
+                            };
+                            model.Details.Ck4cDecreeDoc.Add(decreeDoc);
+                        }
+                        else
+                        {
+                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
+                        }
+                    }
+                }
+
+
+                var input = new Ck4cUpdateReportedOn()
+                {
+                    Id = model.Details.Ck4CId,
+                    ReportedOn = model.Details.ReportedOn
+                };
+
+                _ck4CBll.UpdateReportedOn(input);
+
+                Ck4cWorkflowGovApprove(model.Details, model.Details.GovApprovalActionType, model.Details.Comment);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
+            AddMessageInfo("Document " + EnumHelper.GetDescription(model.Details.StatusGoverment), Enums.MessageInfoType.Success);
+            return RedirectToAction("DocumentList");
+        }
+
+        private string SaveUploadedFile(HttpPostedFileBase file, int ck4cId)
+        {
+            if (file == null || file.FileName == "")
+                return "";
+
+            string sFileName = "";
+
+            //initialize folders in case deleted by an test publish profile
+            if (!Directory.Exists(Server.MapPath(Constans.Ck4cDecreeDocFolderPath)))
+                Directory.CreateDirectory(Server.MapPath(Constans.Ck4cDecreeDocFolderPath));
+
+            sFileName = Constans.Ck4cDecreeDocFolderPath + Path.GetFileName(ck4cId.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+
+        private void Ck4cWorkflowGovApprove(DataDocumentList ck4cData, Enums.ActionType actionType, string comment)
+        {
+            var input = new Ck4cWorkflowDocumentInput()
+            {
+                DocumentId = ck4cData.Ck4CId,
+                ActionType = actionType,
+                UserRole = CurrentUser.UserRole,
+                UserId = CurrentUser.USER_ID,
+                DocumentNumber = ck4cData.Number,
+                Comment = comment,
+                AdditionalDocumentData = new Ck4cWorkflowDocumentData()
+                {
+                    DecreeDate = ck4cData.DecreeDate.Value,
+                    Ck4cDecreeDoc = Mapper.Map<List<Ck4cDecreeDocDto>>(ck4cData.Ck4cDecreeDoc)
+                }
+            };
+            _ck4CBll.Ck4cWorkflow(input);
         }
 
         #endregion

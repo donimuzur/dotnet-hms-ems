@@ -38,6 +38,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.REPORTED_ON))
+                .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DECREE_DATE))
                 .ForMember(dest => dest.ReportedPeriod, opt => opt.MapFrom(src => src.REPORTED_PERIOD))
                 .ForMember(dest => dest.ReportedMonth, opt => opt.MapFrom(src => src.REPORTED_MONTH))
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.REPORTED_YEAR))
@@ -76,6 +77,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
                 .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
                 .ForMember(dest => dest.REPORTED_ON, opt => opt.MapFrom(src => src.ReportedOn))
+                .ForMember(dest => dest.DECREE_DATE, opt => opt.MapFrom(src => src.DecreeDate))
                 .ForMember(dest => dest.REPORTED_PERIOD, opt => opt.MapFrom(src => src.ReportedPeriod))
                 .ForMember(dest => dest.REPORTED_MONTH, opt => opt.MapFrom(src => src.ReportedMonth))
                 .ForMember(dest => dest.REPORTED_YEAR, opt => opt.MapFrom(src => src.ReportedYears))
@@ -119,6 +121,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ACTION_BY, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.ROLE, opt => opt.MapFrom(src => src.UserRole))
                 ;
+
+            Mapper.CreateMap<CK4C_DECREE_DOC, Ck4cDecreeDocDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Ck4cDecreeDocDto, CK4C_DECREE_DOC>().IgnoreAllNonExisting();
 
             #endregion
         }

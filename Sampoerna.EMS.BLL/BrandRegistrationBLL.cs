@@ -101,19 +101,14 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public ZAIDM_EX_BRAND GetByFaCode(string faCode)
+        public ZAIDM_EX_BRAND GetByFaCode(string plantWerk, string faCode)
         {
-            var dbData = _repository.Get(b => b.FA_CODE.Equals(faCode)).FirstOrDefault();
-
-            return dbData;
-        }
-
-        public ZAIDM_EX_BRAND GetByPlantIdAndFaCode(string plantId, string faCode)
-        {
-            var dbData = _repository.Get(b => b.WERKS == plantId && b.FA_CODE == faCode).FirstOrDefault();
             //var dbData = _repository.Get(b => b.FA_CODE.Equals(faCode)).FirstOrDefault();
+            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.FA_CODE == faCode).FirstOrDefault();
             return dbData;
         }
+
+        
 
         public List<ZAIDM_EX_BRAND> GetByPlantId(string plantId)
         {

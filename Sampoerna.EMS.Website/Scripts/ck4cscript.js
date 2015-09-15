@@ -1,6 +1,6 @@
 ﻿$('#MenuCk4cDocumentList').addClass('active');
 
-function ValidateGovInput() {
+function ValidateInput() {
     var result = true;
     AddValidationClass(true, 'Details_PlantId');
     AddValidationClass(true, 'Details_NppbkcId');
@@ -41,6 +41,36 @@ function ValidateGovInput() {
     if ($('#Details_NppbkcId').is(":disabled")) {
         if ($('#Details_PlantId').val() == '') {
             AddValidationClass(false, 'Details_PlantId');
+            result = false;
+        }
+    }
+
+    return result;
+}
+
+function ValidateGovInput() {
+    var result = true;
+    var govStatus = $('#Details_StatusGoverment').find("option:selected").val();
+    AddValidationClass(true, 'Details_ReportedOn');
+
+    if ($('#Details_ReportedOn').val() == '') {
+        AddValidationClass(false, 'Details_ReportedOn');
+        result = false;
+    }
+
+    if (govStatus == '') {
+        AddValidationClass(false, 'Details_StatusGoverment');
+        result = false;
+    }
+
+    if ($('#Details_DecreeDate').val() == '') {
+        AddValidationClass(false, 'Details_DecreeDate');
+        result = false;
+    }
+
+    if ($('#Details_StatusGoverment').val() == 'Rejected') {
+        if ($('#Details_Comment').val() == '') {
+            AddValidationClass(false, 'Details_Comment');
             result = false;
         }
     }

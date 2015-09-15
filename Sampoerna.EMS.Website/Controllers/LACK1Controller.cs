@@ -578,13 +578,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         //get error details
                     }
-
-                    AddMessageInfo("Model error", Enums.MessageInfoType.Error);
+                    
                     model = InitDetailList(model);
                     model = SetHistory(model);
                     model.MainMenu = _mainMenu;
                     model.CurrentMenu = PageInfo;
                     model = SetActiveMenu(model, model.Lack1Type);
+                    AddMessageInfo("Invalid input", Enums.MessageInfoType.Error);
                     return View(model);
                 }
 
@@ -620,12 +620,12 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch (Exception)
             {
-                AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
                 model = InitDetailList(model);
                 model = SetHistory(model);
                 model.MainMenu = _mainMenu;
                 model.CurrentMenu = PageInfo;
                 model = SetActiveMenu(model, model.Lack1Type);
+                AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
                 return View(model);
             }
             model = InitDetailList(model);

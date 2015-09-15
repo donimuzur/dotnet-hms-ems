@@ -211,6 +211,18 @@
         <EntityTypeShape EntityType="EMSModel.CK4C_DECREE_DOC" Width="1.5" PointX="15.75" PointY="44.625" />
         <AssociationConnector Association="EMSModel.FK_CK4C_DECREE_DOC_CK4C" />
         <AssociationConnector Association="EMSModel.FK_CK4C_DECREE_DOC_USER" />
+        <EntityTypeShape EntityType="EMSModel.BACK3" Width="1.5" PointX="5.875" PointY="70.625" />
+        <EntityTypeShape EntityType="EMSModel.BACK3_DOCUMENT" Width="1.5" PointX="8.125" PointY="70.75" />
+        <EntityTypeShape EntityType="EMSModel.CK2" Width="1.5" PointX="5.875" PointY="67.5" />
+        <EntityTypeShape EntityType="EMSModel.CK2_DOCUMENT" Width="1.5" PointX="8.125" PointY="67.75" />
+        <EntityTypeShape EntityType="EMSModel.PBCK3_PBCK7_ITEM" Width="1.5" PointX="5.875" PointY="50" />
+        <AssociationConnector Association="EMSModel.FK_BACK3_DOCUMENT_BACK3" />
+        <AssociationConnector Association="EMSModel.FK_BACK3_PBCK3_PBCK7" />
+        <AssociationConnector Association="EMSModel.FK_CK2_DOCUMENT_CK2" />
+        <AssociationConnector Association="EMSModel.FK_CK2_PBCK3_PBCK7" />
+        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_ITEM_PBCK3_PBCK7" />
+        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_USER" />
+        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_USER1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
