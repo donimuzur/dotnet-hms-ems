@@ -731,7 +731,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //process save
                 var dataToSave = Mapper.Map<Pbck1Dto>(model.Detail);
                 dataToSave.CreatedById = CurrentUser.USER_ID;
-                dataToSave.GoodTypeDesc = !string.IsNullOrEmpty(dataToSave.GoodTypeDesc) ? dataToSave.GoodTypeDesc.Split('-')[1] : string.Empty;
+                dataToSave.GoodTypeDesc = !string.IsNullOrEmpty(dataToSave.GoodTypeDesc) ? dataToSave.GoodTypeDesc : string.Empty;
 
                 var input = new Pbck1SaveInput()
                 {
