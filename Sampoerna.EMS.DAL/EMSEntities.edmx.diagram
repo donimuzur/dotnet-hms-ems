@@ -221,11 +221,8 @@
         <AssociationConnector Association="EMSModel.FK_CK2_DOCUMENT_CK2" />
         <AssociationConnector Association="EMSModel.FK_CK2_PBCK3_PBCK7" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_ITEM_PBCK3_PBCK7" />
-        <AssociationConnector Association="EMSModel.FK_BACK3_DOCUMENT_BACK3" />
-        <AssociationConnector Association="EMSModel.FK_BACK3_PBCK3_PBCK7" />
-        <AssociationConnector Association="EMSModel.FK_CK2_DOCUMENT_CK2" />
-        <AssociationConnector Association="EMSModel.FK_CK2_PBCK3_PBCK7" />
-        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_ITEM_PBCK3_PBCK7" />
+        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_USER" />
+        <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_USER1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

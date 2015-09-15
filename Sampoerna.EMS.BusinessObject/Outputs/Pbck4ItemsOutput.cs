@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Sampoerna.EMS.Website.Models.PBCK4
+namespace Sampoerna.EMS.BusinessObject.Outputs
 {
-    public class Pbck4UploadViewModel
+    public class Pbck4ItemsOutput
     {
         public string FaCode { get; set; }
         public string StickerCode { get; set; }
@@ -27,8 +28,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
 
         public string Message { get; set; }
         public string Plant { get; set; }
-        public Nullable<long> CK1_ID { get; set; }
 
-       
+        public bool IsValid { get; set; }
+        public Nullable<long> CK1_ID { get; set; }
     }
 }

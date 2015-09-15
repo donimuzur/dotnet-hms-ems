@@ -361,8 +361,10 @@
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4FileUploadViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4PlantModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4SearchViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
@@ -836,6 +838,8 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\pbck1\docupload.js" />
+    <Content Include="Scripts\Pbck4Script.js" />
+    <Content Include="Scripts\Pbck4ScriptDocUpload.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -1076,6 +1080,11 @@
     <Content Include="Views\PBCK4\_Pbck4Printout.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadCreate.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadList.cshtml" />
+    <Content Include="Views\PBCK4\Details.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4ChangeLog.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationDetails.cshtml" />
+    <Content Include="Views\PBCK4\Edit.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationEdit.cshtml" />
     <Content Include="Views\Waste\Index.cshtml" />
     <Content Include="Views\Waste\_WasteTableIndex.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistory.cshtml" />
@@ -1083,6 +1092,7 @@
     <Content Include="Views\Waste\Create.cshtml" />
     <Content Include="Views\Waste\Edit.cshtml" />
     <Content Include="Views\CK4C\_HomeGovApproval.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4GovApproval.cshtml" />
     <Content Include="Views\CK4C\_DecreeDocUpload.cshtml" />
     <Content Include="Views\CK4C\CompletedDocument.cshtml" />
     <Content Include="Views\CK4C\_CK4CTableCompletedDocument.cshtml" />

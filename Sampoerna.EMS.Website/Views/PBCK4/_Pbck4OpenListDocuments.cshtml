@@ -29,10 +29,10 @@
         {
             <tr>
                 <td class="action">
-                    <a href="@Url.Action("Details", "CK5", new { id = item.PbckId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Details", "PBCK4", new { id = item.PbckId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
                     @if (!Model.IsCompletedType)
                     {
-                        <a href="@Url.Action("Edit", "CK5", new {id = item.PbckId})" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                        <a href="@Url.Action("Edit", "PBCK4", new { id = item.PbckId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
                     }
                 </td>
                 <td>@Html.DisplayFor(model => item.PlantId)</td>
