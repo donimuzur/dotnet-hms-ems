@@ -50,7 +50,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Company<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyList, null, new { @class = "form-control " })
+                                                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyList,"All", new { @class = "form-control " })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -58,7 +58,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Plant<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.PlantId, Model.PlantList, null, new { @class = "form-control ", id = "SearchInput_PlantId" })
+                                                                    @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "All", new { @class = "form-control ", id = "SearchInput_PlantId" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -82,12 +82,20 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Finish Good<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.FinishGoods, Model.FinishGoodList, null, new { @class = "form-control" })
+                                                                    @Html.DropDownListFor(model => model.FinishGoods, Model.FinishGoodList, "All", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Description</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4">Qty Packed<span class="red">*</span></label>
@@ -110,18 +118,11 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Uom<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.Uom, Model.UomList, null, new { @class = "form-control" })
+                                                                    @Html.DropDownListFor(model => model.Uom, Model.UomList, "All", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="col-md-4">Description</label>
-                                                                <div class="col-md-8">
-                                                                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", disabled = "disabled" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                     
                                                     </div>
                                                 </div>
                                             </div>
@@ -224,13 +225,13 @@
                 if (FaDesc == '') {
                     $('#Description').val('');
                 } else {
-                    ajaxGetGoodTypeDescription('@Url.Action("GetFaCodeDescription", "CK4C")', { faCode: FaDesc });
+                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "CK4C")', { faCode: FaDesc });
                 }
             }
 
         });
 
-        function ajaxGetGoodTypeDescription(url, formData) {
+        function ajaxFaCodeDescription(url, formData) {
             if (formData.faCode) {
                 $.ajax({
                     type: 'POST',
@@ -241,6 +242,8 @@
                     }
                 });
             }
+            
+
 
         }
 

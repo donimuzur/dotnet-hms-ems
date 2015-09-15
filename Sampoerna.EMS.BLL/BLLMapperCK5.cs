@@ -26,7 +26,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
                 .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
                 .ForMember(dest => dest.PbckDecreeDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
-                .ForMember(dest => dest.IsCk5Export,opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Export))
+                .ForMember(dest => dest.IsCk5Export, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Export))
+                .ForMember(dest => dest.IsCk5PortToImporter, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.PortToImporter))
                 .ForMember(dest => dest.IsCk5Manual, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Manual))
                 .ForMember(dest => dest.IsWaitingGovApproval, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval))
                 .ForMember(dest => dest.Ck5FileUploadDtos, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.CK5_FILE_UPLOAD)))
@@ -54,7 +55,7 @@ namespace Sampoerna.EMS.BLL
                 //.ForMember(dest => dest.OfficeCode, opt => opt.MapFrom(src => src.CE_OFFICE_CODE))
                 .ForMember(dest => dest.SubmissionNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
                 //.ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue?src.SUBMISSION_DATE.Value.ToString("dd MMMM yyyy") : ""))
-                .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
+                //.ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 //.ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : ""))
                 //.ForMember(dest => dest.ExGoodType, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))//todo add 1 field to get id
                 .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => (Convert.ToInt32(src.EX_SETTLEMENT_ID)).ToString()))
@@ -76,12 +77,12 @@ namespace Sampoerna.EMS.BLL
                 //.ForMember(dest => dest.DestOfficeCode, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_CODE))
 
                 .ForMember(dest => dest.FacilityNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
-                .ForMember(dest => dest.FacilityDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE.HasValue ? src.PBCK1.DECREE_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+               // .ForMember(dest => dest.FacilityDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE.HasValue ? src.PBCK1.DECREE_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
 
                 .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => (Convert.ToInt32(src.CARRIAGE_METHOD_ID)).ToString()))
 
-                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.HasValue ? src.GRAND_TOTAL_EX.Value.ToString() : "0"))
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.HasValue ? src.GRAND_TOTAL_EX.Value.ToString("#,##0.#0") : "0"))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
 
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
@@ -91,19 +92,20 @@ namespace Sampoerna.EMS.BLL
 
 
             Mapper.CreateMap<CK5_MATERIAL, CK5ReportMaterialDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY.HasValue ? src.QTY.Value.ToString() : "0"))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY.HasValue ? src.QTY.Value.ToString("#,##0.#0") : "0"))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
                
                 //.ForMember(dest => dest.UomConverted, opt => opt.MapFrom(src => src.CONVERTED_UOM))
                 //.ForMember(dest => dest.ExGoodTypeDesc, opt => opt.MapFrom(src => src.BRAND))
-                .ForMember(dest => dest.Convertion, opt => opt.MapFrom(src => src.CONVERTION.HasValue ? src.CONVERTION.Value.ToString() : "0"))
-                .ForMember(dest => dest.ConvertedQty, opt => opt.MapFrom(src => src.CONVERTED_QTY.HasValue ? src.CONVERTED_QTY.Value.ToString() : "0"))
+                .ForMember(dest => dest.Convertion, opt => opt.MapFrom(src => src.CONVERTION.HasValue ? src.CONVERTION.Value.ToString("#,##0.#0") : "0"))
+                .ForMember(dest => dest.ConvertedQty, opt => opt.MapFrom(src => src.CONVERTED_QTY.HasValue ? src.CONVERTED_QTY.Value.ToString("#,##0.#0") : "0"))
                 .ForMember(dest => dest.ConvertedUom, opt => opt.MapFrom(src => src.CONVERTED_UOM))
-                .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE.HasValue ? src.HJE.Value.ToString() : "0"))
-                .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF.HasValue ? src.TARIFF.Value.ToString() : "0"))
-                .ForMember(dest => dest.ExciseValue, opt => opt.MapFrom(src => src.EXCISE_VALUE.HasValue ? src.EXCISE_VALUE.Value.ToString() : "0"))
-                .ForMember(dest => dest.UsdValue, opt => opt.MapFrom(src => src.USD_VALUE.HasValue ? src.USD_VALUE.Value.ToString() : "0"))
+                .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE.HasValue ? src.HJE.Value.ToString("#,##0.#0") : "0"))
+                .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF.HasValue ? src.TARIFF.Value.ToString("#,##0.#0") : "0"))
+                .ForMember(dest => dest.ExciseValue, opt => opt.MapFrom(src => src.EXCISE_VALUE.HasValue ? src.EXCISE_VALUE.Value.ToString("#,##0.#0") : "0"))
+                .ForMember(dest => dest.UsdValue, opt => opt.MapFrom(src => src.USD_VALUE.HasValue ? src.USD_VALUE.Value.ToString("#,##0.#0") : "0"))
                 .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.NOTE))
+                .ForMember(dest => dest.MaterialDescription, opt => opt.MapFrom(src => src.MATERIAL_DESC))
                 ;
 
             #endregion

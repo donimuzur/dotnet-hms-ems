@@ -1,0 +1,256 @@
+﻿@model Sampoerna.EMS.Website.Models.PRODUCTION.ProductionDetail
+@{
+    ViewBag.Title = "Create";
+}
+
+@using (Html.BeginForm("Create", "Production"))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Daily Production Create</h3>
+                <div class="action-button">
+                    <button class="btn btn-blue">Save</button>
+                    <a href="@Url.Action("Index", "Production")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                        <li role="presentation" id="tab-upload"><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeCreate")
+                        @Html.Partial("_Upload")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
+
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuCk4cDailyProduction').addClass('active');
+
+        var uploaditems = [];
+
+        $('#btn-generate-upload').click(function () {
+            uploadXmlFile();
+        });
+
+        $('#btn-save-upload').click(function () {
+
+            $('#tab-information').addClass('active');
+            $('#information').addClass('active');
+            $('#tab-upload').removeClass("active");
+            $('#upload').removeClass("active");
+            $('#body-tb-upload').html('');
+            for (var i = 0; i < uploaditems.length; i++) {
+                var tr = '<tr>' +
+                    createColumn(i + 1) +
+                    createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems[' + i + '].CompanyCode') +
+                    createColumnWithHiddenField(uploaditems[i].ProdTypeAlias, 'UploadItems[' + i + '].PlantWerks') +
+                    createColumnWithHiddenField(uploaditems[i].Brand, 'UploadItems[' + i + '].FaCode') +
+                    createColumnWithHiddenField(uploaditems[i].Content, 'UploadItems[' + i + '].BrandDescription') +
+                    createColumnWithHiddenField(uploaditems[i].Pbck7Qty, 'UploadItems[' + i + '].QtyUnpacked') +
+                    createColumnWithHiddenField(uploaditems[i].Back1Qty, 'UploadItems[' + i + '].QtyPacked') +
+                    createColumnWithHiddenField(uploaditems[i].SeriesValue, 'UploadItems[' + i + '].Uom') +
+                    createColumnWithHiddenField(uploaditems[i].Hje, 'UploadItems[' + i + '].ProductionDate') +
+                   $('#body-tb-upload').append(tr);
+            }
+        });
+
+        function toUploadTab() {
+
+            $('#tab-information').removeClass('active');
+            $('#information').removeClass('active');
+            $('#tab-upload').addClass("active");
+            $('#upload').addClass("active");
+
+        }
+        function createColumn(text) {
+            return '<td>' + text + '</td>';
+        }
+
+        function createColumnWithHiddenField(text, name) {
+            return '<td><input type="hidden" name="' + name + '" value="' + text + '">' + text + '</td>';
+        }
+        function uploadXmlFile() {
+
+            var postUrl = '@Url.Action("UploadFile", "Waste")';
+            var fileName = $('[name="itemExcelFile"]').val().trim();
+            var pos = fileName.lastIndexOf('.');
+            var extension = (pos <= 0) ? '' : fileName.substring(pos);
+            if (extension != '.xlsx') {
+                alert('Please browse a correct excel file to upload');
+                return false;
+            }
+
+            var formData = new FormData();
+            var totalFiles = document.getElementById("itemExcelFile").files.length;
+            var plantId = $('#PlantId').val();
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("itemExcelFile").files[i];
+                formData.append("itemExcelFile", file);
+                formData.append("plantId", plantId);
+
+            }
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data: formData,
+                dataType: 'html',
+                contentType: false,
+                processData: false,
+
+                success: function (response) {
+
+                    $('#tb-upload-excel').html('');
+                    uploaditems = JSON.parse(response);
+
+                    for (var i = 0; i < uploaditems.length; i++) {
+                        var tr = '<tr>' +
+                            createColumn(i + 1) +
+                            createColumn(uploaditems[i].CompanyCode) +
+                            createColumn(uploaditems[i].PlantWerks) +
+                            createColumn(uploaditems[i].FaCode) +
+                            createColumn(uploaditems[i].BrandDescription) +
+                            createColumn(uploaditems[i].QtyUnpacked) +
+                            createColumn(uploaditems[i].QtyPacked) +
+                            createColumn(uploaditems[i].Uom) +
+                            createColumn(uploaditems[i].ProductionDate) +
+                            '</tr>';
+                        $('#tb-upload-excel').append(tr);
+                    }
+                    $('#btn-save-upload').enable();
+                }
+            });
+        };
+        
+
+        $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
+        $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
+
+        $("#CompanyCode").change(function () {
+            if ($("#CompanyCode").length) {
+                var cpy = $(this).find("option:selected").val();
+                $('#SearchInput_PlantId option').remove();
+                if (cpy == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+
+                } else {
+                    ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
+                }
+            }
+        });
+
+        function ajaxSelectCompany(url, formData) {
+            if (formData.companyId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var listPlant = data.PlantWerkList;
+                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
+
+        $("#SearchInput_BrandCe").change(function () {
+            if ($("#SearchInput_BrandCe").length) {
+
+                var FaDesc = $(this).find("option:selected").val();
+                var Plant = $('#SearchInput_PlantId').val();
+                console.log(FaDesc);
+                if (FaDesc == '') {
+                    $('#test').val('');
+                } else {
+                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { plantWerk: Plant, faCode: FaDesc });
+                }
+            }
+
+        });
+
+        function ajaxFaCodeDescription(url, formData) {
+            if (formData.plantWerk, formData.faCode) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $('#test').val(data);
+                    }
+                });
+            }
+
+        }
+
+        $("#SearchInput_PlantId").change(function () {
+            if ($("#SearchInput_PlantId").length) {
+                var ce = $(this).find("option:selected").val();
+                $('#SearchInput_BrandCe option').remove();
+                if (ce == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_BrandCe option').append('<option value="">All</option>');
+
+                } else {
+                    ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: ce });
+                }
+            }
+        });
+
+        function ajaxSelectPlantWerks(url, formData) {
+            if (formData.plantWerk) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var facodeList = data.FacodeList;
+                        $('#SearchInput_BrandCe').append('<option value="">All</option>');
+                        if (facodeList.length > 0) {
+                            for (var i = 0; i < facodeList.length; i++) {
+                                $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
+
+
+
+
+
+    </script>
+}
+
+
+
+

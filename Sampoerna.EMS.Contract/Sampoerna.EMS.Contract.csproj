@@ -46,6 +46,7 @@
     <Compile Include="IBrandRegistrationBLL.cs" />
     <Compile Include="IChangesHistoryBLL.cs" />
     <Compile Include="ICK4CBLL.cs" />
+    <Compile Include="ICK4CItemBLL.cs" />
     <Compile Include="ICK5BLL.cs" />
     <Compile Include="ICountryBLL.cs" />
     <Compile Include="ILFA1BLL.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="IPbck1ProdConverterBLL.cs" />
     <Compile Include="IPbck1ProdPlanBLL.cs" />
     <Compile Include="IPbck1QuotaBLL.cs" />
+    <Compile Include="IPBCK4BLL.cs" />
     <Compile Include="IPBCK7And3BLL.cs" />
     <Compile Include="IPOASKBLL.cs" />
     <Compile Include="ICompanyBLL.cs" />
@@ -73,6 +75,8 @@
     <Compile Include="IPBCK1BLL.cs" />
     <Compile Include="IPlantBLL.cs" />
     <Compile Include="IPrintHistoryBLL.cs" />
+    <Compile Include="IProductionBLL.cs" />
+    <Compile Include="ISqlSPRepository.cs" />
     <Compile Include="ISupplierPortBLL.cs" />
     <Compile Include="IPOAMapBL.cs" />
     <Compile Include="IUserPlantMapBLL.cs" />
@@ -82,6 +86,7 @@
     <Compile Include="IUserAuthorizationBLL.cs" />
     <Compile Include="IUserBLL.cs" />
     <Compile Include="IVirtualMappingPlantBLL.cs" />
+    <Compile Include="IWasteBLL.cs" />
     <Compile Include="IWorkflowBLL.cs" />
     <Compile Include="IWorkflowHistoryBLL.cs" />
     <Compile Include="IWorkflowSettingBLL.cs" />
@@ -96,11 +101,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IBrandRegistrationService.cs" />
     <Compile Include="Services\ICK4CItemService.cs" />
+    <Compile Include="Services\ICK5MaterialService.cs" />
     <Compile Include="Services\ICK5Service.cs" />
     <Compile Include="Services\IExGroupTypeService.cs" />
+    <Compile Include="Services\IInventoryMovementService.cs" />
+    <Compile Include="Services\ILack1IncomeDetailService.cs" />
+    <Compile Include="Services\ILack1Pbck1MappingService.cs" />
+    <Compile Include="Services\ILack1PlantService.cs" />
+    <Compile Include="Services\ILack1ProductionDetailService.cs" />
     <Compile Include="Services\ILACK1Service.cs" />
+    <Compile Include="Services\ILack1TrackingService.cs" />
     <Compile Include="Services\IPBCK1Service.cs" />
     <Compile Include="Services\IT001KService.cs" />
+    <Compile Include="Services\IT001WService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">

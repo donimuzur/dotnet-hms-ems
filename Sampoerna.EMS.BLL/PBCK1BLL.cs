@@ -147,6 +147,7 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(orderColumn));
             }
 
+            includeTables += ", CK5";
             var dbData = _repository.Get(queryFilter, orderBy, includeTables);
 
             return dbData.ToList();
@@ -171,6 +172,7 @@ namespace Sampoerna.EMS.BLL
 
             if (input.Pbck1.Pbck1Id > 0)
             {
+                includeTables += ", PBCK12";
 
                 //update
                 dbData = _repository.Get(c => c.PBCK1_ID == input.Pbck1.Pbck1Id, null, includeTables).FirstOrDefault();
@@ -185,6 +187,10 @@ namespace Sampoerna.EMS.BLL
 
                 //set changes history
                 var origin = Mapper.Map<Pbck1Dto>(dbData);
+                origin.Pbck1Parent = Mapper.Map<Pbck1Dto>(dbData.PBCK12);
+                if (input.Pbck1.Pbck1Reference != null)
+                    input.Pbck1.Pbck1Parent = GetById((long) input.Pbck1.Pbck1Reference);
+
                 SetChangesHistory(origin, input.Pbck1, input.UserId);
 
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
@@ -270,6 +276,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("PERIOD_TO", origin.PeriodTo == data.PeriodTo);
             changesData.Add("REPORTED_ON", origin.ReportedOn == data.ReportedOn);
             changesData.Add("NPPBKC_ID", origin.NppbkcId == data.NppbkcId);
+            changesData.Add("IS_NPPBKC_IMPORT", origin.IsNppbkcImport == data.IsNppbkcImport);
             changesData.Add("EXC_GOOD_TYP", origin.GoodType == data.GoodType);
             changesData.Add("SUPPLIER_PLANT", origin.SupplierPlant == data.SupplierPlant);
             changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId == data.SupplierPortId);
@@ -340,7 +347,11 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.NppbkcId;
                             changes.NEW_VALUE = data.NppbkcId;
                             break;
-                        case "GOODTYPE_ID":
+                        case "IS_NPPBKC_IMPORT":
+                            changes.OLD_VALUE = origin.IsNppbkcImport != null ? origin.IsNppbkcImport ? "TRUE":"FALSE" : "FALSE";
+                            changes.NEW_VALUE = data.IsNppbkcImport != null ? data.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
+                            break;
+                        case "EXC_GOOD_TYP":
                             changes.OLD_VALUE = origin.GoodTypeDesc;
                             changes.NEW_VALUE = data.GoodTypeDesc;
                             break;
@@ -1583,14 +1594,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }
 
-        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantNppbkcId)
-        {
-            var dbData =
-                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId
-                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId).OrderByDescending(p => p.CREATED_DATE);
-
-            return Mapper.Map<List<Pbck1Dto>>(dbData);
-        }
+        
 
         public List<ZAIDM_EX_GOODTYPCompositeDto> GetGoodsTypeByNppbkcId(string nppbkcId)
         {
@@ -1619,6 +1623,18 @@ namespace Sampoerna.EMS.BLL
             var nppbkcList = Mapper.Map<List<T001WCompositeDto>>(dbData.ToList());
 
             return nppbkcList.DistinctBy(c => c.WERKS).ToList();
+        }
+
+
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, string plantNppbkcId, DateTime? submissionDate, string destPlantNppbkcId, List<string> goodtypes)
+        {
+            
+            var dbData =
+                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT_WERKS == plantId && p.SUPPLIER_NPPBKC_ID == plantNppbkcId
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId && goodtypes.Contains(p.EXC_GOOD_TYP)).OrderByDescending(p => p.CREATED_DATE);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
+        
         }
     }
 }

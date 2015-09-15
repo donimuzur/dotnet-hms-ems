@@ -6,6 +6,7 @@
         public const string UploadPath = "~/files_upload/";
         public const string Pbck1DecreeDocFolderPath = "~/Content/upload/pbck1decreedoc/";
         public const string CK5FolderPath = "~/Content/upload/CK5/";
+        public const string Ck4cDecreeDocFolderPath = "~/Content/upload/ck4cdecreedoc/";
 
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";

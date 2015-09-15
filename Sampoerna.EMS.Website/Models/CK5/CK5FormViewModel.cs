@@ -80,7 +80,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string RequestTypeDesc { get; set; }
 
         //ORIGIN PLANT
-        [Required(ErrorMessage = "Origin Plant field is required")]
+        //[Required(ErrorMessage = "Origin Plant field is required")]
         public string SourcePlantId { get; set; }
         public SelectList SourcePlantList { get; set; }
         public string SourcePlantName { get; set; }
@@ -139,6 +139,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //public string PbckDecreeId { get; set; }
         public SelectList PbckDecreeList { get; set; }
         public string PbckDecreeNumber { get; set; }
+        public string PbckUom { get; set; }
 
         [UIHint("DateTime")]
         public DateTime? PbckDecreeDate { get; set; }
@@ -198,6 +199,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public DateTime? UnsealingNotifDate { get; set; }
 
         public bool IsCk5Export { get; set; }
+        public bool IsCk5PortToImporter { get; set; }
         public bool IsCk5Manual { get; set; }
         public bool IsWaitingGovApproval { get; set; }
 
@@ -236,6 +238,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string ActionType { get; set; }
 
         public bool AllowCancelSAP { get; set; }
-        
+
+        public decimal MaterialQty { get; set; }
     }
 }

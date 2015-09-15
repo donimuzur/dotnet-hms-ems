@@ -1,0 +1,264 @@
+﻿@model Sampoerna.EMS.Website.Models.PRODUCTION.ProductionDetail
+@{
+    ViewBag.Title = "Detail";
+}
+
+@using (Html.BeginForm("Detail", "Production", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Dialy Production Form</h3>
+
+                <div class="action-button">
+                    <button class="btn btn-blue">Save</button>
+                    <a href="@Url.Action("Index", "Production")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div id="information" class="tab-pane active" role="tabpanel">
+                            <div class="">
+                                <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
+                                    <div class="panel panel-default">
+                                        <div id="headingOne" role="tab" class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse">
+                                                    CK-4C Daily Production Edit
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne">
+                                            <div class="panel-body">
+                                                <div role="form" class="form-excise">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Company<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.HiddenFor(model => model.CompanyCodeX)
+                                                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = "form-control ", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Plant<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.HiddenFor(model => model.PlantWerksX)
+                                                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control ", id = "SearchInput_PlantId", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Date<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    <div class="input-group date">
+                                                                        @Html.HiddenFor(model => model.ProductionDateX)
+                                                                        @Html.TextBoxFor(model => model.ProductionDate, new { @class = "form-control", disabled = "disabled" })
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Finish Good<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.HiddenFor(model => model.FaCodeX)
+                                                                    @Html.DropDownListFor(model => model.FaCode, Model.FacodeList,null, new { @class = "form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Description</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextAreaFor(model => model.BrandDescription, new { @class = "form-control", disabled = "disabled" })
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Qty Packed<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Qty Unpacked<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.QtyUnpackedStr, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Uom<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(model => model.Uom, Model.UomList, "All", new { @class = "form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Product Qty Stick</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.ProdQtyStickStr, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> Quantity</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.QtyStr, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> Bundle </label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.Bundle, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> Market </label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.Market, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> Material Document Number </label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.MatDoc, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts
+{
+    <script src="~/Scripts/thousand-separator.js"></script>
+
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuCk4cDailyProduction').addClass('active');
+
+
+        $("#CompanyCode").change(function () {
+            if ($("#CompanyCode").length) {
+                var cpy = $(this).find("option:selected").val();
+                $('#SearchInput_PlantId option').remove();
+                if (cpy == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+
+                } else {
+                    ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
+                }
+            }
+        });
+
+        $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
+        $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
+        $('#ProdQtyStickStr').val(ThausandSeperator($('#ProdQtyStickStr').val(), 2));
+        $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
+
+        function ajaxSelectCompany(url, formData) {
+            if (formData.companyId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var listPlant = data.PlanIdList;
+                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
+
+        $("#FaCode").change(function () {
+            if ($("#FaCode").length) {
+                var FaDesc = $(this).find("option:selected").val();
+                if (FaDesc == '') {
+                    $('#BrandDescription').val('');
+                } else {
+                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { faCode: FaDesc });
+                }
+            }
+
+        });
+
+        function ajaxFaCodeDescription(url, formData) {
+            if (formData.faCode) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $('#BrandDescription').val(data);
+                    }
+                });
+            }
+
+
+        }
+
+    </script>
+}
+
+
+
+

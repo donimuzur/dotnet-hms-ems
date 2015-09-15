@@ -73,13 +73,20 @@ namespace Sampoerna.EMS.Core
 
             StoCreated = 10,
             StoFailed = 11,
+            StoCancel = 12,
             StobGIPartial = 30,
             StobGICompleted = 31,
+            StobGRPartial = 35,
+            StobGRCompleted = 36,
             StoRecCreated = 40,
             StoRecGIPartial = 41,
             StoRecGICompleted = 42,
             StoRecGRPartial = 45,
             StoRecGRCompleted = 46,
+            TFPosted = 50,
+            TFReversed = 51,
+            TFPartial = 52,
+
 
             GIPartial = 15,
 
@@ -89,10 +96,11 @@ namespace Sampoerna.EMS.Core
 
             GRCompleted = 21,
 
-            StoCancel = 03,
+            StoCancelSAP = 03,
 
             GRReversal = 22,
             GIReversal = 17,
+            
             STOBGIReversal = 32,
             STOBGRReversal = 37,
 
@@ -189,7 +197,26 @@ namespace Sampoerna.EMS.Core
 
             [Description("STOB Good Receive Reversal")]
             STOBGRReversal = 240,
+
+            [Description("STOB Good Issue Partial")]
+            STOBGIPartial = 245,
+            
+            [Description("STOB Good Receive Partial")]
+            STOBGRPartial = 250,
+
+            [Description("TF Posted")]
+            TFPosted = 300,
+
+            [Description("TF Reversal")]
+            TFReversed = 310,
+
+            [Description("TF Partial")]
+            TFPartial = 315,
+
+            [Description("TF Posting")]
+            TFPosting = 320
         }
+        
 
         public enum DocumentStatusGov
         {
@@ -214,7 +241,9 @@ namespace Sampoerna.EMS.Core
             [Description("LACK-1")]
             LACK1 = 5,
             [Description("LACK-2")]
-            LACK2 = 6
+            LACK2 = 6,
+            [Description("CK-4C")]
+            CK4C = 7,
         }
 
         public enum ActionType
@@ -225,7 +254,7 @@ namespace Sampoerna.EMS.Core
             Cancel = 2,
             [Description("CancelSAP")]
             CancelSAP = 3,
-            [Description("CancelSTOCreated")]
+            [Description("CK5 Cancel")]
             CancelSTOCreated = 4,
             [Description("Modified")]
             Modified = 5,
@@ -269,7 +298,7 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
-            [Description("STO Cancelled")]
+            [Description("Cancelled")]
             Cancelled = 100,
             [Description("STOB Good Issue Completed")]
             StobGICompleted = 105,
@@ -300,6 +329,23 @@ namespace Sampoerna.EMS.Core
 
             [Description("STOB Good Receive Reversal")]
             STOBGRReversal = 240,
+
+            [Description("STOB Good Issue Partial")]
+            STOBGIPartial = 245,
+            
+            [Description("STOB Good Receive Partial")]
+            STOBGRPartial = 250,
+            [Description("TF Posted")]
+            TFPosted = 300,
+
+            [Description("TF Reversal")]
+            TFReversed = 310,
+
+            [Description("TF Partial")]
+            TFPartial = 315,
+
+            [Description("STO Cancelled")]
+            STOCancelled = 320,
         }
 
         /// <summary>
@@ -465,8 +511,27 @@ namespace Sampoerna.EMS.Core
             [Description("WasteProduction")]
             WasteProduction = 2,
             [Description("CK4CDocument")]
-            Ck4CDocument = 3
+            Ck4CDocument = 3,
+            [Description("CompletedDocument")]
+            CompletedDocument = 4
+        }
 
+        public enum MovementTypeCode
+        {
+            [Description("261")]
+            UsageAdd = 261,
+            [Description("262")]
+            UsageMin = 262,
+            [Description("101")]
+            Receiving = 101,
+        }
+
+        public enum StatusGovCk4c
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 2
         }
     }
 }

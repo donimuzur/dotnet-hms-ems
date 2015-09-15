@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         //public int? PeriodMonth { get; set; }
         //public int? PeriodYear { get; set; }
         public string Creator { get; set; }
-        public string SubmissionDate { get; set; }
+        public DateTime? SubmissionDate { get; set; }
 
         public Enums.DocumentStatus Status { get; set; }
 
@@ -23,5 +23,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
+
+        public bool IsOpenDocList { get; set; }
     }
 }

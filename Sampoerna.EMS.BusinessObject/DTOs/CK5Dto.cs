@@ -81,6 +81,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string FINAL_PORT_NAME { get; set; }
 
+        public bool IsCk5PortToImporter { get; set; }
         public bool IsCk5Export { get; set; }
         public bool IsCk5Manual { get; set; }
         public bool IsWaitingGovApproval { get; set; }
@@ -101,5 +102,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
       
         public string GIDateStr { get; set; }
+        public string PbckUom { get; set; }
+
     }
 }
