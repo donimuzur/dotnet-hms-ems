@@ -95,7 +95,7 @@
         }
         function uploadXmlFile() {
 
-            var postUrl = '@Url.Action("UploadFile", "PBCK7AndPBCK3")';
+            var postUrl = '@Url.Action("UploadFile", "Waste")';
             var fileName = $('[name="itemExcelFile"]').val().trim();
             var pos = fileName.lastIndexOf('.');
             var extension = (pos <= 0) ? '' : fileName.substring(pos);
