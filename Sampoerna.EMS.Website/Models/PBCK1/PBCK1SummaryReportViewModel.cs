@@ -40,6 +40,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string SupplierPhone { get; set; }
         public string SupplierNppbkcId { get; set; }
         public string SupplierKppbcId { get; set; }
+        //=== Fixing Bug PBCK1 No. 168 ===
+        public string SupplierKppbcName { get; set; }
+        //================================
         public string SupplierPlantWerks { get; set; }
         public DateTime? PlanProdFrom { get; set; }
         public DateTime? PlanProdTo { get; set; }
