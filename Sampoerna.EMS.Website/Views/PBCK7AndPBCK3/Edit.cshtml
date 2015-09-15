@@ -1,20 +1,53 @@
-﻿@{
-    ViewBag.Title = "Create";
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+
+@{
+    ViewBag.Title = "Edit";
 }
 
-@using (Html.BeginForm("Edit", "PBCK7AndPBCK3"))
+@using (@Html.BeginForm("Edit", "PBCK7AndPBCK3", FormMethod.Post, new { @id = "form-pbck7-edit", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
 {
- 
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.IsSaveSubmit)
+    @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.CreatedBy)
+    @Html.HiddenFor(x => x.CreatedDate)
+    @Html.HiddenFor(x => x.ModifiedBy)
+    @Html.HiddenFor(x => x.ModifiedDate)
+    @Html.HiddenFor(x => x.ApprovedBy)
+    @Html.HiddenFor(x => x.ApprovedDate)
+    @Html.HiddenFor(x => x.ApprovedByManager)
+    @Html.HiddenFor(x => x.ApprovedDateManager)
+    @Html.HiddenFor(x => x.RejectedBy)
+    @Html.HiddenFor(x => x.RejectedDate)
+    @Html.HiddenFor(x => x.Pbck7Status)
+    @Html.HiddenFor(x => x.Pbck3Status)
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 <h3>PBCK-3</h3>
                 <label class="status">Draft</label>
                 <h3>PBCK-7</h3>
-                <label class="status">Draft</label>
+                <label class="status">@Model.Pbck7StatusName</label>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
-                    <button class="btn btn-grey">Cancel</button>
+                    @if (Model.AllowGovApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                    }
+                    else if (Model.AllowEditAndSubmit)
+                    {
+                        <input type="submit" class="btn btn-blue" value="Save" />
+                    }
+
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7Pbck3", new { id = @Model.Id })')" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+
+                    @if (Model.Pbck7Status == Enums.DocumentStatus.Draft
+                        && Model.AllowEditAndSubmit)
+                    {
+                        <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                    }
                 </div>
             </div>
         </div>
@@ -52,7 +85,10 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script type="text/javascript">
         var uploaditems = [];
-
+        $("#btnSubmitConfirm").click(function () {
+            $('#IsSaveSubmit').val('true');
+            $('#form-pbck7-edit').submit();
+        });
         $('#btn-generate-upload').click(function() {
             uploadXmlFile();
         });
