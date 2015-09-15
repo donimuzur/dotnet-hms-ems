@@ -112,6 +112,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.NoPengawas, opt => opt.MapFrom(src => src.NO_PENGAWAS))
                 
                 ;
+
+            Mapper.CreateMap<Pbck4FileUploadViewModel, PBCK4_DOCUMENTDto>().IgnoreAllNonExisting();
         }
     }
 }

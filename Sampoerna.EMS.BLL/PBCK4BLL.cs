@@ -735,7 +735,16 @@ namespace Sampoerna.EMS.BLL
 
            dbData.MODIFIED_DATE = DateTime.Now;
            dbData.MODIFIED_BY = input.UserId;
-          
+
+           var pbckDocument = new List<Pbck4DocumentsDto>();
+
+           //foreach (var pbck4DocumentDto in input.AdditionalDocumentData.Back1FileUploadList)
+           //{
+               
+           //}
+
+           //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(input.AdditionalDocumentData.Ck5FileUploadList);
+
            input.DocumentNumber = dbData.PBCK4_NUMBER;
 
            AddWorkflowHistory(input);

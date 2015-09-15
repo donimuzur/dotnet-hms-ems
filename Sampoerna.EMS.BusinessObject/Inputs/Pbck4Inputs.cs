@@ -66,6 +66,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? Ck3Date { get; set; }
         public string Ck3OfficeValue { get; set; }
 
+        public List<PBCK4_DOCUMENTDto> Back1FileUploadList { get; set; }
+        public List<PBCK4_DOCUMENTDto> Ck3FileUploadList { get; set; }
         //public string RegistrationNumber { get; set; }
         //public DateTime RegistrationDate { get; set; }
         //public List<CK5_FILE_UPLOADDto> Ck5FileUploadList { get; set; }

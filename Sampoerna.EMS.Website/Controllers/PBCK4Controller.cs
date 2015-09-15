@@ -569,6 +569,9 @@ namespace Sampoerna.EMS.Website.Controllers
             input.AdditionalDocumentData.Ck3Date = model.CK3_DATE;
             input.AdditionalDocumentData.Ck3OfficeValue = model.CK3_OFFICE_VALUE;
 
+            input.AdditionalDocumentData.Back1FileUploadList = Mapper.Map<List<PBCK4_DOCUMENTDto>>(model.Pbck4FileUploadModelList);
+            input.AdditionalDocumentData.Ck3FileUploadList = Mapper.Map<List<PBCK4_DOCUMENTDto>>(model.Pbck4FileUploadModelList2);
+
 
             _pbck4Bll.PBCK4Workflow(input);
         }
