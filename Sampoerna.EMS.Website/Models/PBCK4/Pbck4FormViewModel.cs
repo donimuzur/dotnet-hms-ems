@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -35,12 +36,45 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string NppbkcDesc { get; set; }
 
         public string CompanyName { get; set; }
+        public string CompanyId { get; set; }
         public string Poa { get; set; }
+
+
+        public string BACK1_NO { get; set; }
+        public DateTime? BACK1_DATE { get; set; }
+        public string CK3_NO { get; set; }
+        public DateTime? CK3_DATE { get; set; }
+        public string CK3_OFFICE_VALUE { get; set; }
+
+        public string CREATED_BY { get; set; }
+        public DateTime CREATED_DATE { get; set; }
 
         public DateTime ReportedOn { get; set; }
 
+        public string Comment { get; set; }
 
+        public string Command { get; set; }
         public bool IsAllowPrint { get; set; }
+        public string ActionType { get; set; }
+
+        public bool AllowApproveAndReject { get; set; }
+
+        public bool AllowGovApproveAndReject { get; set; }
+
+        public bool AllowManagerReject { get; set; }
+
+        public bool IsWaitingGovApproval { get; set; }
+
+        public Enums.DocumentStatusGov GovStatus { get; set; }
+        public string GovStatusDesc { get; set; }
+        public Enums.DocumentStatusGov GovStatusList { get; set; }
+        public string CommentGov { get; set; }
+
+        public List<HttpPostedFileBase> Pbck4FileUploadFileList { get; set; }
+        public List<Pbck4FileUploadViewModel> Pbck4FileUploadModelList { get; set; }
+
+        public List<HttpPostedFileBase> Pbck4FileUploadFileList2 { get; set; }
+        public List<Pbck4FileUploadViewModel> Pbck4FileUploadModelList2 { get; set; }
     }
 
 

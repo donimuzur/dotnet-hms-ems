@@ -109,7 +109,7 @@ function prodConvSaveClick() {
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ProdTypeName" type="hidden" value = "' + datarows[i][3] + '" />' + datarows[i][3] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
-                + '].ConverterOutput" type="hidden" value = "' + datarows[i][4] + '" />' + datarows[i][4] + '</td>';
+                + '].ConverterOutput" type="hidden" value = "' + changeToNumber(datarows[i][4]) + '" />' + datarows[i][4] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ConverterUomId" type="hidden" value = "' + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
 
@@ -147,22 +147,25 @@ function prodPlanSaveClick() {
             data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].ProdTypeAlias" type="hidden" value = "'
                 + datarows[i][4] + '" />' + datarows[i][4] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].Amount" type="hidden" value = "'
-                + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
+                + changeToNumber(datarows[i][5]) + '" />' + datarows[i][5] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequired" type="hidden" value = "'
-                + datarows[i][6] + '" />' + datarows[i][6] + '</td>';
+                + changeToNumber(datarows[i][6]) + '" />' + datarows[i][6] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequiredUomId" type="hidden" value = "'
                 + datarows[i][7] + '" />' + datarows[i][7] + '</td>';
             data += '<td style="display:none"><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequiredUomName" type="hidden" value = "'
                 + datarows[i][8] + '" />' + datarows[i][8] + '</td>';
             
-            total += parseFloat(datarows[i][6]);
+            total += changeToNumber(datarows[i][6]);
             uom = datarows[i][7];
         }
         data += '</tr>';
         $('#Detail_Pbck1ProdPlan tbody').append(data);
     }
     $("input[name='Detail.RequestQty']:hidden").val(total);
-    $("input[name='Detail.RequestQty']:text").val(ThausandSeperator(total, 2));
+
+    var request = parseFloat(Math.round(total * 100) / 100).toFixed(2);
+    $("input[name='Detail.RequestQty']:text").val(ThausandSeperator(request, 2));
+
     $("select[name='Detail.RequestQtyUomId']").val(uom);
     $("select[name='Detail.LatestSaldoUomId']").val(uom);
     $("input[name='Detail.RequestQtyUomId']").val(uom);
@@ -207,6 +210,7 @@ function prodConvGenerateClick(url) {
                 //invalid generated
                 $('#prod-conv-save').attr('disabled', 'disabled');
             }
+            changeToDecimal('#ProdConvContent .decimal', 'html');
         },
         error: function (error) {
             // Handle errors here
@@ -251,6 +255,7 @@ function prodPlanGenerateClick(url) {
                 //invalid generated
                 $('#prod-plan-save').attr('disabled', 'disabled');
             }
+            changeToDecimal('#ProdPlanContent .decimal', 'html');
         },
         error: function (error) {
             // Handle errors here
@@ -374,4 +379,28 @@ function AddValidationClass(isValid, objName) {
         $('#' + objName).removeClass('valid');
         $('#' + objName).addClass('input-validation-error');
     }
+}
+
+function changeToDecimal(selector, type) {
+    $(selector).each(function () {
+        if (type == "val") {
+            var val = $(this).val();
+            val = parseFloat(Math.round(val * 100) / 100).toFixed(2);
+            $(this).val(ThausandSeperator(val, 2));
+
+        } else {
+            var val = $(this).html();
+            val = parseFloat(Math.round(val * 100) / 100).toFixed(2);
+            $(this).html(ThausandSeperator(val, 2));
+        }
+    });
+}
+
+function changeToNumber(dec) {
+    var find = ',';
+    var re = new RegExp(find, 'g');
+
+    dec = dec.replace(re, '');
+    dec = parseFloat(dec);
+    return dec;
 }

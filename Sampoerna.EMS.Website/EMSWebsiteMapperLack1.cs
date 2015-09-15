@@ -108,6 +108,8 @@ namespace Sampoerna.EMS.Website
                 ;
 
             Mapper.CreateMap<Lack1DetailsDto, Lack1ItemViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.DisplayLevelPlantName, opt => opt.MapFrom(src => src.LevelPlantId + '-' + src.LevelPlantName))
+                .ForMember(dest => dest.DisplaySupplierPlant, opt => opt.MapFrom(src => src.SupplierPlantId + '-' + src.SupplierPlant))
                 .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
                 .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => (src.BeginingBalance - src.Usage + src.TotalIncome)))

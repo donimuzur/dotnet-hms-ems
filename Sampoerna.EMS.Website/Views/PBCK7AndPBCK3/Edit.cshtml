@@ -1,0 +1,248 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (@Html.BeginForm("Edit", "PBCK7AndPBCK3", FormMethod.Post, new { @id = "form-pbck7-edit", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.IsSaveSubmit)
+    @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.CreatedBy)
+    @Html.HiddenFor(x => x.CreatedDate)
+    @Html.HiddenFor(x => x.ModifiedBy)
+    @Html.HiddenFor(x => x.ModifiedDate)
+    @Html.HiddenFor(x => x.ApprovedBy)
+    @Html.HiddenFor(x => x.ApprovedDate)
+    @Html.HiddenFor(x => x.ApprovedByManager)
+    @Html.HiddenFor(x => x.ApprovedDateManager)
+    @Html.HiddenFor(x => x.RejectedBy)
+    @Html.HiddenFor(x => x.RejectedDate)
+    @Html.HiddenFor(x => x.Pbck7Status)
+    @Html.HiddenFor(x => x.Pbck3Status)
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>PBCK-3</h3>
+                <label class="status">Draft</label>
+                <h3>PBCK-7</h3>
+                <label class="status">@Model.Pbck7StatusName</label>
+                <div class="action-button">
+                    @if (Model.AllowGovApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                    }
+                    else if (Model.AllowEditAndSubmit)
+                    {
+                        <input type="submit" class="btn btn-blue" value="Save" />
+                    }
+
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7Pbck3", new { id = @Model.Id })')" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+
+                    @if (Model.Pbck7Status == Enums.DocumentStatus.Draft
+                        && Model.AllowEditAndSubmit)
+                    {
+                        <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                        <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printout" href="#printout">Print Out</a></li>
+                        <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
+                        @*<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="changes" href="#changes">Changes Log</a></li>*@
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeEdit")
+                        @Html.Partial("_PrintOut")
+                        @Html.Partial("_Upload")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script type="text/javascript">
+        var uploaditems = [];
+        $("#btnSubmitConfirm").click(function () {
+            $('#IsSaveSubmit').val('true');
+            $('#form-pbck7-edit').submit();
+        });
+        $('#btn-generate-upload').click(function() {
+            uploadXmlFile();
+        });
+        $('#btn-save-upload').click(function() {
+
+            $('#tab-information').addClass('active');
+            $('#information').addClass('active');
+            $('#tab-upload').removeClass("active");
+            $('#upload').removeClass("active");
+            $('#body-tb-upload').html('');
+            for (var i = 0; i < uploaditems.length; i++) {
+                var tr = '<tr>' +
+                    createColumn(i + 1) +
+                    createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems['+i+'].FaCode') +
+                    createColumnWithHiddenField(uploaditems[i].ProdTypeAlias, 'UploadItems[' + i + '].ProdTypeAlias') +
+                    createColumnWithHiddenField(uploaditems[i].Brand, 'UploadItems[' + i + '].Brand') +
+                    createColumnWithHiddenField(uploaditems[i].Content, 'UploadItems[' + i + '].Content') +
+                    createColumnWithHiddenField(uploaditems[i].Pbck7Qty, 'UploadItems[' + i + '].Pbck7Qty') +
+                    createColumnWithHiddenField(uploaditems[i].Back1Qty, 'UploadItems[' + i + '].Back1Qty') +
+                    createColumnWithHiddenField(uploaditems[i].SeriesValue, 'UploadItems[' + i + '].SeriesValue') +
+                    createColumnWithHiddenField(uploaditems[i].Hje, 'UploadItems[' + i + '].Hje') +
+                    createColumnWithHiddenField(uploaditems[i].Tariff, 'UploadItems[' + i + '].Tariff') +
+                    createColumnWithHiddenField(uploaditems[i].FiscalYear, 'UploadItems[' + i + '].FiscalYear') +
+                    createColumnWithHiddenField(uploaditems[i].ExciseValue, 'UploadItems[' + i + '].ExciseValue') + '</tr>';
+                $('#body-tb-upload').append(tr);
+            }
+        });
+
+        function toUploadTab() {
+
+            $('#tab-information').removeClass('active');
+            $('#information').removeClass('active');
+            $('#tab-upload').addClass("active");
+            $('#upload').addClass("active");
+            //$('#tab-upload').click();
+            //$('#tab-upload').children()[0].click();
+
+        }
+
+        function createColumn(text) {
+            return '<td>'+text+'</td>';
+        }
+        function createColumnWithHiddenField(text, name) {
+            return '<td><input type="hidden" name="'+name+'" value="'+text+'">' + text + '</td>';
+        }
+        function uploadXmlFile() {
+
+            var postUrl = '@Url.Action("UploadFile", "PBCK7AndPBCK3")';
+            var fileName = $('[name="itemExcelFile"]').val().trim();
+            var pos = fileName.lastIndexOf('.');
+            var extension = (pos <= 0) ? '' : fileName.substring(pos);
+            if (extension != '.xlsx') {
+                alert('Please browse a correct excel file to upload');
+                return false;
+            }
+
+            var formData = new FormData();
+            var totalFiles = document.getElementById("itemExcelFile").files.length;
+            var plantId = $('#PlantId').val();
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("itemExcelFile").files[i];
+                formData.append("itemExcelFile", file);
+                formData.append("plantId", plantId);
+
+            }
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data: formData,
+                dataType: 'html',
+                contentType: false,
+                processData: false,
+
+                success: function(response) {
+
+                    $('#tb-upload-excel').html('');
+                    uploaditems = JSON.parse(response);
+                   
+                    for (var i = 0; i < uploaditems.length; i++) {
+                        var tr = '<tr>' +
+                            createColumn(i + 1) +
+                            createColumn(uploaditems[i].FaCode) +
+                            createColumn(uploaditems[i].ProdTypeAlias) +
+                            createColumn(uploaditems[i].Brand) +
+                            createColumn(uploaditems[i].Content) +
+                            createColumn(uploaditems[i].Pbck7Qty) +
+                            createColumn(uploaditems[i].Back1Qty) +
+                            createColumn(uploaditems[i].SeriesValue) +
+                             createColumn(uploaditems[i].Hje) +
+                            createColumn(uploaditems[i].Tariff) +
+                            createColumn(uploaditems[i].FiscalYear) +
+                            createColumn(uploaditems[i].ExciseValue) + '</tr>';
+                        $('#tb-upload-excel').append(tr);
+                    }
+                    $('#btn-save-upload').enable();
+                }
+            });
+        }
+
+        ;
+
+        function ajaxGetPoaByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function (data) {
+                    $('#displayPoaList').html('');
+                    var poalist = '';
+                    for (var i = 0; i < data.length; i++) {
+
+                        poalist += data[i].PRINTED_NAME;
+                        if (data.length - 1 != i) {
+                            poalist += ', ';
+                        }
+                    }
+                    $('#displayPoaList').html(poalist);
+                }
+            });
+
+        }
+        function ajaxGetPlantByNppbkc(nppbkc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
+                data: { nppbkcid: nppbkc },
+                success: function (data) {
+                    $('#PlantId').html('');
+
+                    for (var i = 0; i < data.length; i++) {
+                        $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+
+                    }
+
+                }
+            }
+            );
+
+        }
+        
+        $('#NppbkcId').change(function () {
+
+            if ($(this).length) {
+                var nppbkc = $(this).find("option:selected").val();
+
+                $('#PlantId').html('');
+                if (nppbkc != '') {
+                    ajaxGetPlantByNppbkc(nppbkc);
+                    ajaxGetPoaByNppbkc(nppbkc);
+                }
+            }
+
+        });
+    </script>
+}

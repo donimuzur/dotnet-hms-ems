@@ -281,6 +281,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
 
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.PackageConvertedUomList = GlobalFunctions.GetCk5AllowedUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
@@ -568,6 +569,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
+
+            model.PackageConvertedUomList = GlobalFunctions.GetCk5AllowedUomList(_uomBll);
+            
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
             return model;
@@ -772,6 +776,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.SubmissionNumber;
                 input.NppbkcId = model.SourceNppbkcId;
+                if (model.Ck5Type == Enums.CK5Type.PortToImporter)
+                    input.NppbkcId = model.DestNppbkcId;
+                
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);

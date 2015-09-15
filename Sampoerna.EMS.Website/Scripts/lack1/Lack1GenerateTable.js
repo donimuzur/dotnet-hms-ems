@@ -10,7 +10,7 @@ function generateTable(data) {
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
 
-    if (data.IncomeList.length > 0) {
+    if (data.IncomeList) {
         var rowIndex = 1;
         var rowCount = data.IncomeList.length;
         rc = rc +
@@ -27,7 +27,7 @@ function generateTable(data) {
         '<td>' +
             '<input name="IncomeList[0].Amount" type="hidden" value = "' + data.IncomeList[0].Amount + '" />'
             + ThausandSeperator(data.IncomeList[0].Amount, 2) + '</td>' +
-        '<td rowspan="' + rowCount + '">' + '<input name="TotalUsage" type="hidden" value = "' + data.TotalUsage + '" />' + (data.TotalUsage < 0 ? '-' : '') + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
+        '<td rowspan="' + rowCount + '">' + '<input name="TotalUsage" type="hidden" value = "' + parseFloat(data.TotalUsage) + '" />' + (data.TotalUsage < 0 ? '-' : '') + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
@@ -41,8 +41,9 @@ function generateTable(data) {
                 '<input name="IncomeList[' + i + '].RegistrationDate" type="hidden" value = "' + data.IncomeList[i].RegistrationDate + '" />'
                 + '<input name="IncomeList[' + i + '].RegistrationNumber" type="hidden" value = "' + data.IncomeList[i].RegistrationNumber + '" />'
                 + rowIndex + '</td><td>' + data.IncomeList[i].RegistrationNumber + ' - ' + data.IncomeList[i].StringRegistrationDate + '</td>' +
-                        '<td>' + '<input name="IncomeList[' + i + '].Amount" type="hidden" value = "' + data.IncomeList[i].Amount + '" />' + data.IncomeList[i].Amount + '</td></tr>';
-            rc.append(item);
+                        '<td>' + '<input name="IncomeList[' + i + '].Amount" type="hidden" value = "' + data.IncomeList[i].Amount + '" />' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
+            /*rc.append(item);*/
+            rc = rc + item;
         }
         /*end loop record*/
         
@@ -74,7 +75,7 @@ function generateTable(data) {
 
 function generateJenisHasilProduksi(data) {
     var rc = "";
-    if (data.length > 0) {
+    if (data) {
         rc = '<div id="jumlah-hasil-produksi-data">';
         for (var i = 0; i < data.length; i++) {
             rc += '<input name="ProductionList[' + i + '].Lack1ProductionDetailId" type="hidden" value = "' + data[i].Lack1ProductionDetailId + '" />';
@@ -97,7 +98,7 @@ function generateJenisHasilProduksi(data) {
 
 function generateJumlahHasilProduksi(data) {
     var rc = "";
-    if (data.length > 0) {
+    if (data) {
         for (var i = 0; i < data.length; i++) {
             rc += '<input name="ProductionList[' + i + '].Amount" type="hidden" value = "' + data[i].Amount + '" />';
             rc += '<input name="ProductionList[' + i + '].UomId" type="hidden" value = "' + data[i].UomId + '" />';
@@ -116,10 +117,10 @@ function generateJumlahHasilProduksi(data) {
 
 function generateSummaryJumlahProduksi(data) {
     var loopData = '-';
-    if (data.length > 0) {
+    if (data) {
         var tb = '<table border="0">';
         for (var i = 0; i < data.length; i++) {
-            var item = '<tr><td>' + (data[i].Amount < 0 ? '-' : '') + data[i].Amount + '</td><td>' + data[i].UomDesc + '</td></tr>';
+            var item = '<tr><td>' + (data[i].Amount < 0 ? '-' : '') + ThausandSeperator(data[i].Amount, 2) + '</td><td>' + data[i].UomDesc + '</td></tr>';
             tb = tb + item;
         }
         tb = tb + '</table>';
@@ -131,7 +132,7 @@ function generateSummaryJumlahProduksi(data) {
 
 function generatePlant(data) {
     var rc = "";
-    if (data.length > 0) {
+    if (data) {
         rc = '<div id="lack1-plant">';
         for (var i = 0; i < data.length; i++) {
             rc += '<input name="Lack1Plant[' + i + '].Lack1PlantId" type="hidden" value = "' + data[i].Lack1PlantId + '" />';
@@ -149,7 +150,7 @@ function generatePlant(data) {
 
 function generatePbck1Mapping(data) {
     var rc = "";
-    if (data.length > 0) {
+    if (data) {
         rc = '<div id="lack1-pbck1-mapping">';
         for (var i = 0; i < data.length; i++) {
             rc += '<input name="Lack1Pbck1Mapping[' + i + '].LACK1_PBCK1_MAPPING_ID" type="hidden" value = "' + data[i].LACK1_PBCK1_MAPPING_ID + '" />';

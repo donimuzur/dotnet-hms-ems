@@ -37,13 +37,17 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> EXEC_DATE_FROM { get; set; }
         public Nullable<System.DateTime> EXEC_DATE_TO { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatusGov GOV_STATUS { get; set; }
-        public int STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatus> STATUS { get; set; }
         public string APPROVED_BY { get; set; }
-        public System.DateTime APPROVED_DATE { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string APPROVED_BY_MANAGER { get; set; }
+        public Nullable<System.DateTime> APPROVED_BY_MANAGER_DATE { get; set; }
+        public string REJECTED_BY { get; set; }
+        public Nullable<System.DateTime> REJECTED_DATE { get; set; }
     
         public virtual ICollection<BACK1> BACK1 { get; set; }
         public virtual USER USER { get; set; }
@@ -52,5 +56,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<BACK3> BACK3 { get; set; }
         public virtual ICollection<CK2> CK2 { get; set; }
         public virtual ICollection<PBCK3_PBCK7_ITEM> PBCK3_PBCK7_ITEM { get; set; }
+        public virtual USER USER3 { get; set; }
+        public virtual USER USER4 { get; set; }
     }
 }

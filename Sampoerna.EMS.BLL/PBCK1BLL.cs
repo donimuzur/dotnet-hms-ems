@@ -318,14 +318,17 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.Pbck1Reference.HasValue && data.Pbck1Parent != null
                                 ? data.Pbck1Parent.Pbck1Number
                                 : "NULL";
+                            changes.FIELD_NAME = "References";
                             break;
                         case "PBCK1_TYPE":
                             changes.OLD_VALUE = EnumHelper.GetDescription(origin.Pbck1Type);
                             changes.NEW_VALUE = EnumHelper.GetDescription(data.Pbck1Type);
+                            changes.FIELD_NAME = "PBCK Type";
                             break;
                         case "PERIOD_FROM":
                             changes.OLD_VALUE = origin.PeriodFrom.ToString("dd MMM yyyy");
                             changes.NEW_VALUE = data.PeriodFrom.ToString("dd MMM yyyy");
+                            changes.FIELD_NAME = "Period From";
                             break;
                         case "PERIOD_TO":
                             changes.OLD_VALUE = origin.PeriodTo.HasValue
@@ -334,6 +337,7 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.PeriodTo.HasValue
                                 ? data.PeriodTo.Value.ToString("dd MMM yyyy")
                                 : "NULL";
+                            changes.FIELD_NAME = "Period To";
                             break;
                         case "REPORTED_ON":
                             changes.OLD_VALUE = origin.ReportedOn.HasValue
@@ -342,80 +346,99 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.ReportedOn.HasValue
                                 ? data.ReportedOn.Value.ToString("dd MMM yyyy")
                                 : "NULL";
+                            changes.FIELD_NAME = "Reported On";
                             break;
                         case "NPPBKC_ID":
                             changes.OLD_VALUE = origin.NppbkcId;
                             changes.NEW_VALUE = data.NppbkcId;
+                            changes.FIELD_NAME = "NPPBKC ID";
                             break;
                         case "IS_NPPBKC_IMPORT":
                             changes.OLD_VALUE = origin.IsNppbkcImport != null ? origin.IsNppbkcImport ? "TRUE":"FALSE" : "FALSE";
                             changes.NEW_VALUE = data.IsNppbkcImport != null ? data.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
+                            changes.FIELD_NAME = "PBCK for Import";
                             break;
                         case "EXC_GOOD_TYP":
                             changes.OLD_VALUE = origin.GoodTypeDesc;
                             changes.NEW_VALUE = data.GoodTypeDesc;
+                            changes.FIELD_NAME = "Exciseable Goods Description";
                             break;
                         case "SUPPLIER_PLANT":
                             changes.OLD_VALUE = origin.SupplierPlant;
                             changes.NEW_VALUE = data.SupplierPlant;
+                            changes.FIELD_NAME = "Supplier Plant";
                             break;
                         case "SUPPLIER_PORT_ID":
                             changes.OLD_VALUE = origin.SupplierPortName;
                             changes.NEW_VALUE = data.SupplierPortName;
+                            changes.FIELD_NAME = "Supplier Port";
                             break;
                         case "SUPPLIER_ADDRESS":
                             changes.OLD_VALUE = origin.SupplierAddress;
                             changes.NEW_VALUE = data.SupplierAddress;
+                            changes.FIELD_NAME = "Supplier Address";
                             break;
                         case "SUPPLIER_PHONE":
                             changes.OLD_VALUE = origin.SupplierPhone;
                             changes.NEW_VALUE = data.SupplierPhone;
+                            changes.FIELD_NAME = "Supplier Phone";
                             break;
                         case "PLAN_PROD_FROM":
                             changes.OLD_VALUE = origin.PlanProdFrom.HasValue ? origin.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
                             changes.NEW_VALUE = data.PlanProdFrom.HasValue ? data.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
+                            changes.FIELD_NAME = "Plan Produtcion From";
                             break;
                         case "PLAN_PROD_TO":
                             changes.OLD_VALUE = origin.PlanProdTo.HasValue ? origin.PlanProdTo.Value.ToString("dd MMM yyyy") : "NULL";
                             changes.NEW_VALUE = data.PlanProdTo.HasValue ? data.PlanProdTo.Value.ToString("dd MMM yyyy") : "NULL";
+                            changes.FIELD_NAME = "Plan Production to";
                             break;
                         case "REQUEST_QTY":
                             changes.OLD_VALUE = origin.RequestQty.HasValue ? origin.RequestQty.Value.ToString("N0") : "NULL";
                             changes.NEW_VALUE = data.RequestQty.HasValue ? data.RequestQty.Value.ToString("N0") : "NULL";
+                            changes.FIELD_NAME = "Request Qty";
                             break;
                         case "REQUEST_QTY_UOM":
                             changes.OLD_VALUE = !string.IsNullOrEmpty(origin.RequestQtyUomId) ? origin.RequestQtyUomName : "NULL";
                             changes.NEW_VALUE = data.RequestQtyUomName;
+                            changes.FIELD_NAME = "Request Qty UOM";
                             break;
                         case "LACK1_FROM_MONTH":
                             changes.OLD_VALUE = origin.Lack1FromMonthId.HasValue ? origin.Lack1FromMonthName : "NULL";
                             changes.NEW_VALUE = data.Lack1FromMonthName;
+                            changes.FIELD_NAME = "LACK-1 From Month";
                             break;
                         case "LACK1_FROM_YEAR":
                             changes.OLD_VALUE = origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Value.ToString("N0") : "NULL";
                             changes.NEW_VALUE = data.Lack1FormYear.Value.ToString("N0");
+                            changes.FIELD_NAME = "LACK-1 From Month Year";
                             break;
                         case "LACK1_TO_MONTH":
                             changes.OLD_VALUE = origin.Lack1ToMonthId.HasValue ? origin.Lack1ToMonthName : "NULL";
                             changes.NEW_VALUE = data.Lack1ToMonthName;
+                            changes.FIELD_NAME = "LACK-1 To Month";
                             break;
                         case "LACK1_TO_YEAR":
                             changes.OLD_VALUE = origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Value.ToString("N0") : "NULL";
                             changes.NEW_VALUE = data.Lack1ToYear.Value.ToString("N0");
+                            changes.FIELD_NAME = "LACK-1 From Year";
                             break;
                         case "STATUS":
                             changes.OLD_VALUE = EnumHelper.GetDescription(origin.Status);
                             changes.NEW_VALUE = EnumHelper.GetDescription(data.Status);
+                            changes.FIELD_NAME = "Status";
                             break;
                         case "STATUS_GOV":
                             changes.OLD_VALUE = EnumHelper.GetDescription(origin.StatusGov);
                             changes.NEW_VALUE = EnumHelper.GetDescription(data.StatusGov);
+                            changes.FIELD_NAME = "Status Goverment";
                             break;
                         case "QTY_APPROVED":
                             changes.OLD_VALUE = origin.QtyApproved.HasValue
                                 ? origin.QtyApproved.Value.ToString("N0")
                                 : "NULL";
                             changes.NEW_VALUE = data.QtyApproved.HasValue ? data.QtyApproved.Value.ToString("N0") : "NULL";
+                            changes.FIELD_NAME = "Qty Approved";
                             break;
                         case "DECREE_DATE":
                             changes.OLD_VALUE = origin.DecreeDate.HasValue
@@ -424,6 +447,7 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.DecreeDate.HasValue
                                 ? data.DecreeDate.Value.ToString("dd MMM yyyy")
                                 : "NULL";
+                            changes.FIELD_NAME = "Decree Date";
                             break;
                         case "LATEST_SALDO":
                             changes.OLD_VALUE = origin.LatestSaldo.HasValue
@@ -432,12 +456,14 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.LatestSaldo.HasValue
                                 ? data.LatestSaldo.Value.ToString("N0")
                                 : "NULL";
+                            changes.FIELD_NAME = "Latest Saldo";
                             break;
                         case "LATEST_SALDO_UOM":
                             changes.OLD_VALUE = !string.IsNullOrEmpty(origin.LatestSaldoUomId)
                                 ? origin.LatestSaldoUomName
                                 : "NULL";
                             changes.NEW_VALUE = data.LatestSaldoUomName;
+                            changes.FIELD_NAME = "Latest Saldo UOM";
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);
@@ -1164,7 +1190,9 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
-            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            //===== Fixing Bug PBCK1 No.164 ============
+            //queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            //==========================================
 
             if (input.YearFrom.HasValue)
                 queryFilter =

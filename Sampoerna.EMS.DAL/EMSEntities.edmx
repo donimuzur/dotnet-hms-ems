@@ -737,14 +737,18 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="PLANT_CITY" Type="nvarchar" MaxLength="25" />
           <Property Name="EXEC_DATE_FROM" Type="datetime" />
           <Property Name="EXEC_DATE_TO" Type="datetime" />
-          <Property Name="GOV_STATUS" Type="int" Nullable="false" />
-          <Property Name="STATUS" Type="int" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="int" />
+          <Property Name="STATUS" Type="int" />
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="APPROVED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
+          <Property Name="REJECTED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="REJECTED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="PBCK3_PBCK7_ITEM">
           <Key>
@@ -2231,6 +2235,30 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK3_PBCK7_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK3_PBCK7" Type="Self.PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="APPROVED_BY_MANAGER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_PBCK7_USER1">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK3_PBCK7" Type="Self.PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="REJECTED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PBCK4_DOCUMENT_PBCK4">
           <End Role="PBCK4" Type="Self.PBCK4" Multiplicity="1" />
           <End Role="PBCK4_DOCUMENT" Type="Self.PBCK4_DOCUMENT" Multiplicity="*" />
@@ -3211,6 +3239,14 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_USER" Association="Self.FK_PBCK3_PBCK7_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_USER1" Association="Self.FK_PBCK3_PBCK7_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          </AssociationSet>
           <AssociationSet Name="FK_PBCK4_DOCUMENT_PBCK4" Association="Self.FK_PBCK4_DOCUMENT_PBCK4">
             <End Role="PBCK4" EntitySet="PBCK4" />
             <End Role="PBCK4_DOCUMENT" EntitySet="PBCK4_DOCUMENT" />
@@ -4019,6 +4055,14 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <AssociationSet Name="FK_PBCK3_PBCK7_ITEM_PBCK3_PBCK7" Association="EMSModel.FK_PBCK3_PBCK7_ITEM_PBCK3_PBCK7">
             <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
             <End Role="PBCK3_PBCK7_ITEM" EntitySet="PBCK3_PBCK7_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_USER" Association="EMSModel.FK_PBCK3_PBCK7_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7_USER1" Association="EMSModel.FK_PBCK3_PBCK7_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -4892,6 +4936,8 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="PBCK42" Relationship="EMSModel.FK_PBCK4_USER_REJECT" FromRole="USER" ToRole="PBCK4" />
           <NavigationProperty Name="PBCK43" Relationship="EMSModel.FK_PBCK4_USER1" FromRole="USER" ToRole="PBCK4" />
           <NavigationProperty Name="CK4C_DECREE_DOC" Relationship="EMSModel.FK_CK4C_DECREE_DOC_USER" FromRole="USER" ToRole="CK4C_DECREE_DOC" />
+          <NavigationProperty Name="PBCK3_PBCK73" Relationship="EMSModel.FK_PBCK3_PBCK7_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
+          <NavigationProperty Name="PBCK3_PBCK74" Relationship="EMSModel.FK_PBCK3_PBCK7_USER1" FromRole="USER" ToRole="PBCK3_PBCK7" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -5932,9 +5978,9 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="EXEC_DATE_FROM" Type="DateTime" Precision="3" />
           <Property Name="EXEC_DATE_TO" Type="DateTime" Precision="3" />
           <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" Nullable="false" />
-          <Property Name="STATUS" Type="Int32" Nullable="false" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" />
           <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="APPROVED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5946,6 +5992,12 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="BACK3" Relationship="EMSModel.FK_BACK3_PBCK3_PBCK7" FromRole="PBCK3_PBCK7" ToRole="BACK3" />
           <NavigationProperty Name="CK2" Relationship="EMSModel.FK_CK2_PBCK3_PBCK7" FromRole="PBCK3_PBCK7" ToRole="CK2" />
           <NavigationProperty Name="PBCK3_PBCK7_ITEM" Relationship="EMSModel.FK_PBCK3_PBCK7_ITEM_PBCK3_PBCK7" FromRole="PBCK3_PBCK7" ToRole="PBCK3_PBCK7_ITEM" />
+          <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REJECTED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_PBCK3_PBCK7_USER" FromRole="PBCK3_PBCK7" ToRole="USER" />
+          <NavigationProperty Name="USER4" Relationship="EMSModel.FK_PBCK3_PBCK7_USER1" FromRole="PBCK3_PBCK7" ToRole="USER" />
         </EntityType>
         <Association Name="FK_BACK1_PBCK3_PBCK7">
           <End Type="EMSModel.PBCK3_PBCK7" Role="PBCK3_PBCK7" Multiplicity="1" />
@@ -7141,6 +7193,30 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK3_PBCK7_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK3_PBCK7" Role="PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="APPROVED_BY_MANAGER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_PBCK7_USER1">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK3_PBCK7" Role="PBCK3_PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3_PBCK7">
+              <PropertyRef Name="REJECTED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7969,6 +8045,10 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySetMapping Name="PBCK3_PBCK7">
             <EntityTypeMapping TypeName="EMSModel.PBCK3_PBCK7">
               <MappingFragment StoreEntitySet="PBCK3_PBCK7">
+                <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />
+                <ScalarProperty Name="REJECTED_BY" ColumnName="REJECTED_BY" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />

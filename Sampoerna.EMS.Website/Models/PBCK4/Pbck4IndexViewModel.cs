@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
 
     public class Pbck4Item
     {
-        public long PbckId { get; set; }
+        public int PbckId { get; set; }
 
         public string PlantId { get; set; }
 

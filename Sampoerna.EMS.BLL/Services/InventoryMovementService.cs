@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
@@ -6,6 +7,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.LinqExtensions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
@@ -27,9 +29,12 @@ namespace Sampoerna.EMS.BLL.Services
 
         public InvMovementGetForLack1UsageMovementByParamOutput GetForLack1UsageMovementByParam(InvMovementGetForLack1UsageMovementByParamInput input)
         {
+
+            var receivingMvtType = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving);
+
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
                 && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
-
+            
             if (input.PlantIdList.Count > 0)
             {
                 queryFilter = queryFilter.And(c => input.PlantIdList.Contains(c.PLANT_ID));
@@ -43,32 +48,29 @@ namespace Sampoerna.EMS.BLL.Services
             //get 100% usage from INVENTORY_MOVEMENT
             var movementUsageAll = _repository.Get(queryFilter);
             var inventoryMovements = movementUsageAll.ToList();
-
-            var receivingMvtType = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving);
-
-            //get usage in receiving data
-            var usageReceivingData = (from rec in _repository.Get(c => !string.IsNullOrEmpty(c.MVT) && c.MVT == receivingMvtType)
-                join a in inventoryMovements on rec.MATERIAL_ID equals a.MATERIAL_ID
-                where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
-                select  a).ToList();
-
-            //get receiving data
-            var receivingData = (from rec in _repository.Get(c => !string.IsNullOrEmpty(c.MVT) && c.MVT == receivingMvtType)
-                                 join a in inventoryMovements on rec.MATERIAL_ID equals a.MATERIAL_ID
-                                 where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
-                                 select rec).ToList();
             
+            //there is records on receiving Data
+            var receivingList = (from rec in _repository.Get(c => c.MVT == receivingMvtType)
+                                  join a in inventoryMovements on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                  where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
+                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
+            var usageReceivingList = (from rec in _repository.Get(c => c.MVT == receivingMvtType)
+                                      join a in inventoryMovements on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                      where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
+                                      select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
             //get exclude in receiving data
             var movementExclueInCk5List = (inventoryMovements.Where(
-                all => !usageReceivingData.Select(d => d.INVENTORY_MOVEMENT_ID)
+                all => !usageReceivingList.Select(d => d.INVENTORY_MOVEMENT_ID)
                     .ToList()
-                    .Contains(all.INVENTORY_MOVEMENT_ID))).ToList();
+                    .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput()
             {
-                IncludeInCk5List = usageReceivingData,
+                IncludeInCk5List = usageReceivingList,
                 ExcludeFromCk5List = movementExclueInCk5List,
-                ReceivingList = receivingData,
+                ReceivingList = receivingList,
                 AllUsageList = inventoryMovements
             };
             

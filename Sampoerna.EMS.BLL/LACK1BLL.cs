@@ -138,6 +138,11 @@ namespace Sampoerna.EMS.BLL
             data.RETURN_QTY = input.ReturnAmount;
             data.RETURN_UOM = input.ReturnAmountUom;
 
+            //set LACK1_TRACKING
+            var allTrackingList = generatedData.Data.InvMovementAllList;
+            allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
+            data.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
+
             //generate new Document Number get from Sequence Number BLL
             var generateNumberInput = new GenerateDocNumberInput()
             {
@@ -822,7 +827,7 @@ namespace Sampoerna.EMS.BLL
                     Data = null
                 };
 
-            var stoReceiverNumberList = rc.IncomeList.Select(d => d.StoReceiverNumber).ToList();
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).ToList();
 
             //Get Data from Inventory_Movement
             var mvtTypeForUsage = new List<string>
@@ -1087,8 +1092,9 @@ namespace Sampoerna.EMS.BLL
                 ProductAlias = g.ProductAlias,
                 UomId = g.UomId,
                 UomDesc = g.UomDesc,
-                Amount = (g.Amount / totalAmount) * ((totalUsageInCk5 / totalUsage) * totalUsage)
+                //Amount = (g.Amount / totalAmount) * ((totalUsageInCk5 / totalUsage) * totalUsage)
                 //Amount = (g.Amount) //just for testing
+                Amount = Math.Round(((totalUsageInCk5 / totalUsage) * g.Amount), 2)
             });
 
             return dToReturn.ToList();

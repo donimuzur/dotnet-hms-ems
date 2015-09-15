@@ -72,7 +72,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         #endregion
 
         #region --------------- View Purpose --------------
-
+        public string DisplayLevelPlantName { get; set; }
+        public string DisplaySupplierPlant { get; set; }
         public string ControllerAction { get; set; }
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowApproveAndReject { get; set; }

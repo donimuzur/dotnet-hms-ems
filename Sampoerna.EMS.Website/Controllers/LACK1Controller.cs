@@ -531,17 +531,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Details", new { id });
             }
 
+            var model = InitDetailModel(lack1Data);
+            model = InitDetailList(model);
+            
             if (!IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status))
             {
                 AddMessageInfo(
                     "Operation not allowed.",
                     Enums.MessageInfoType.Error);
-                return null;
+                return View(model);
             }
-
-            var model = InitDetailModel(lack1Data);
-            model = InitDetailList(model);
-
+            
             if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
                 model.ControllerAction = "GovApproveDocument";
@@ -549,7 +549,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model = SetActiveMenu(model, model.Lack1Type);
+            
             return View(model);
         }
 
@@ -578,13 +578,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         //get error details
                     }
-
-                    AddMessageInfo("Model error", Enums.MessageInfoType.Error);
+                    
                     model = InitDetailList(model);
                     model = SetHistory(model);
                     model.MainMenu = _mainMenu;
                     model.CurrentMenu = PageInfo;
-                    model = SetActiveMenu(model, model.Lack1Type);
+                    AddMessageInfo("Invalid input", Enums.MessageInfoType.Error);
                     return View(model);
                 }
 
@@ -620,19 +619,18 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch (Exception)
             {
-                AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
                 model = InitDetailList(model);
                 model = SetHistory(model);
                 model.MainMenu = _mainMenu;
                 model.CurrentMenu = PageInfo;
                 model = SetActiveMenu(model, model.Lack1Type);
+                AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
                 return View(model);
             }
             model = InitDetailList(model);
             model = SetHistory(model);
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model = SetActiveMenu(model, model.Lack1Type);
             return View(model);
 
         }
