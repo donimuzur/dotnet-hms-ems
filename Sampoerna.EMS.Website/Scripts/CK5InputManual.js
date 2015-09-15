@@ -128,8 +128,16 @@ function UpdateRow() {
         var row = $('#uploadMaterialRow').val();
 
         var convertedQty = parseFloat($('#uploadMaterialQty').val()) * parseFloat($('#uploadMaterialConvertion').val());
-        var total = parseFloat($('#uploadMaterialQty').val()) * convertedQty;
+        var total = parseFloat($('#uploadMaterialTariff').val()) * convertedQty;
+        var exciseQty = convertedQty;
+        var exciseUOM = $('#uploadConvertedUom').val();
 
+        
+
+        if (exciseUOM == "KG") {
+            exciseUOM = "G";
+            exciseQty = convertedQty * 1000;
+        } 
 
         $('#Ck5UploadTable tr').each(function() {
 
@@ -147,6 +155,10 @@ function UpdateRow() {
                 $(this).find('td').eq(11).text($('#uploadUsdValue').val());
                 $(this).find('td').eq(12).text($('#uploadNote').val());
                 $(this).find('td').eq(15).text($('#uploadMaterialDesc').val());
+                
+                
+                $(this).find('td').eq(16).text(exciseQty);
+                $(this).find('td').eq(17).text(exciseUOM);
                
             }
         });
@@ -162,8 +174,18 @@ function AddRow() {
         $('#Ck5UploadModal').modal('hide');
 
         var convertedQty = parseFloat($('#uploadMaterialQty').val()) * parseFloat($('#uploadMaterialConvertion').val());
-        var total = parseFloat($('#uploadMaterialQty').val()) * convertedQty;
+        var total = parseFloat($('#uploadMaterialTariff').val()) * convertedQty;
         var rowCount = $('#Ck5UploadTable tr').length;
+        
+        var exciseQty = convertedQty;
+        var exciseUOM = $('#uploadConvertedUom').val();
+
+
+
+        if (exciseUOM == "KG") {
+            exciseUOM = "G";
+            exciseQty = convertedQty * 1000;
+        }
 
         var classAction = '<td class="action">' +
             '<a href="#" onclick=" RemoveRow($(this)); "data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i></a>' +
@@ -188,6 +210,8 @@ function AddRow() {
                 "<td></td>" +
                 "<td style='display: none'></td>" +
                 "<td style='display: none'>" + $('#uploadMaterialDesc').val() + "</td>" +
+                "<td style='display: none'>" + exciseQty + "</td>" +
+                "<td style='display: none'>" + exciseUOM + "</td>" +
                 "</tr>");
         
         $('#CK5UploadSave').enable();

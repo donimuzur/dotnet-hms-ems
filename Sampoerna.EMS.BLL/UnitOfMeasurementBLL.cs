@@ -4,6 +4,8 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 using System;
+using System.Linq.Expressions;
+using Sampoerna.EMS.Utils;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -123,8 +125,10 @@ namespace Sampoerna.EMS.BLL
 
         public List<UOM> GetCK5ConvertedUoms()
         {
-            var allowedConvertedUoms =  new List<string>(new string[] { "KG", "G", "L" });
-            return _repository.Get(x => allowedConvertedUoms.Contains(x.UOM_ID), null, null).ToList();
+            Expression<Func<UOM, bool>> queryFilter = PredicateHelper.True<UOM>();
+            var allowedConvertedUoms =  new List<string>(new[] { "KG", "G", "L" });
+            queryFilter = queryFilter.And(c => allowedConvertedUoms.Contains(c.UOM_ID));
+            return _repository.Get(queryFilter, null, "").ToList();
         }
     }
 }

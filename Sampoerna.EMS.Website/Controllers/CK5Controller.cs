@@ -281,6 +281,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
 
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.PackageConvertedUomList = GlobalFunctions.GetCk5AllowedUomList(_uomBll);
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
