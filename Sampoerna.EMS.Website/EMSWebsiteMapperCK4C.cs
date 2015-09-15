@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.ModifiedDate))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn))
+                .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DecreeDate))
                 .ForMember(dest => dest.ReportedPeriod, opt => opt.MapFrom(src => src.ReportedPeriod))
                 .ForMember(dest => dest.ReportedMonth, opt => opt.MapFrom(src => src.ReportedMonth))
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.ReportedYears))
@@ -64,6 +65,18 @@ namespace Sampoerna.EMS.Website
                 .ForMember(src => src.PackedQty, opt => opt.MapFrom(dest => dest.PackedQty))
                 .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty));
 
+            Mapper.CreateMap<Ck4CIndexDocumentListViewModel, Ck4cGetOpenDocumentByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Ck4cNumber))
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyCode));
+
+            Mapper.CreateMap<Ck4CIndexDocumentListViewModel, Ck4cGetCompletedDocumentByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Ck4cNumber))
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyCode));
+
             #endregion
 
             #region Create Document List
@@ -85,6 +98,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.ModifiedDate))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn))
+                .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DecreeDate))
                 .ForMember(dest => dest.ReportedPeriod, opt => opt.MapFrom(src => src.ReportedPeriod))
                 .ForMember(dest => dest.ReportedMonth, opt => opt.MapFrom(src => src.ReportedMonth))
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.ReportedYears))
@@ -103,6 +117,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(src => src.ProdCode, opt => opt.MapFrom(dest => dest.ProdCode))
                 .ForMember(src => src.PackedQty, opt => opt.MapFrom(dest => dest.PackedQty))
                 .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty));
+
+            Mapper.CreateMap<Ck4cDecreeDocDto, Ck4cDecreeDocModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Ck4cDecreeDocModel, Ck4cDecreeDocDto>().IgnoreAllNonExisting();
 
             #endregion
         }

@@ -1,0 +1,72 @@
+﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
+
+<table id="WasteProduction" class="table table-striped table-hover" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Action </th>
+            <th> CK-4C No </th>
+            <th> Company </th>
+            <th> Based On </th>
+            <th> NPPBKC </th>
+            <th> Plant Id </th>
+            <th> Period </th>
+            <th> Month </th>
+            <th> Year </th>
+            <th> Status </th>
+        </tr>
+
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th> Filter </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.Detail)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Details", "CK4C", new { id = item.Ck4CId })" data-tooggle="tooltip" data-placement="top" title="Detail"><i class=" fa fa-eye"></i></a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BasedOn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NppbkcId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlantId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReportedPeriod)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReportedMonthName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReportedYears)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StatusName)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

@@ -14,6 +14,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         {
             Detail = new List<DataDocumentList>();
             WorkflowHistory = new List<WorkflowHistoryViewModel>();
+            ActionType = "Edit";
         }
         public string Ck4cNumber { get; set; }
         public string CompanyCode { get; set; }
@@ -23,6 +24,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool AllowApproveAndReject { get; set; }
         public bool AllowManagerReject { get; set; }
         public bool AllowGovApproveAndReject { get; set; }
+        public string ActionType { get; set; }
 
         //selectlist
         public SelectList DocumentNumberList { get; set; }
@@ -56,17 +58,21 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string ModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public DateTime? ReportedOn { get; set; }
+        public DateTime? DecreeDate { get; set; }
         public int? ReportedPeriod { get; set; }
         public int? ReportedMonth { get; set; }
         public int? ReportedYears { get; set; }
         public Enums.DocumentStatus Status { get; set; }
         public Enums.StatusGovCk4c? StatusGoverment { get; set; }
+        public Enums.ActionType GovApprovalActionType { get; set; }
         public string PoaList { get; set; }
         public string ReportedMonthName { get; set; }
         public string StatusName { get; set; }
         public string StatusGovName { get; set; }
         public string BasedOn { get; set; }
         public List<Ck4cItemData> Ck4cItemData { get; set; }
+        public List<HttpPostedFileBase> Ck4cDecreeFiles { get; set; }
+        public List<Ck4cDecreeDocModel> Ck4cDecreeDoc { get; set; }
         public string IsSaveSubmit { get; set; }
         public string Comment { get; set; }
     }

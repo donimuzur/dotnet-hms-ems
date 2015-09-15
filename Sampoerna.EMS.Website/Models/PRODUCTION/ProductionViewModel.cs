@@ -100,7 +100,10 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public SelectList PlantWerkList { get; set; }
         public SelectList FacodeList { get; set; }
         public SelectList UomList { get; set; }
+
+        //domain model
         public ProductionDto ProductionDtos { get; set; }
+        public List<ProductionUploadItems> UploadItems { get; set; }
     }
 
 }

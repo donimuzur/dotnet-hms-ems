@@ -237,6 +237,7 @@
         $("#FaCode").change(function() {
             if ($("#FaCode").length) {
                 var FaDesc = $(this).find("option:selected").val();
+              
                 if (FaDesc == '') {
                     $('#BrandDescription').val('');
                 } else {
@@ -247,7 +248,7 @@
         });
 
         function ajaxFaCodeDescription(url, formData) {
-            if (formData.faCode) {
+            if ( formData.faCode) {
                 $.ajax({
                     type: 'POST',
                     url: url,
@@ -297,17 +298,18 @@
             if ($("#SearchInput_BrandCe").length) {
 
                 var FaDesc = $(this).find("option:selected").val();
+                var Plant = $('#SearchInput_PlantId').val();
                 if (FaDesc == '') {
                     $('#test').val('');
                 } else {
-                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { faCode: FaDesc });
+                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { plantWerk: Plant, faCode: FaDesc });
                 }
             }
 
         });
 
         function ajaxFaCodeDescription(url, formData) {
-            if (formData.faCode) {
+            if (formData.plantWerk, formData.faCode) {
                 $.ajax({
                     type: 'POST',
                     url: url,
