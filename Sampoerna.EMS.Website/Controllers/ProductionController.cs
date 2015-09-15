@@ -16,6 +16,7 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.CK4C;
 using Sampoerna.EMS.Website.Models.PRODUCTION;
+using Sampoerna.EMS.Website.Utility;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -117,8 +118,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (existingData != null)
                 {
                     AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
-                    return RedirectToAction("Edit", "Production",new {companyCode = model.CompanyCode, 
-                      plantWerk = model.PlantWerks,faCode = model.FaCode, productionDate = model.ProductionDate });
+                    return RedirectToAction("Edit", "Production", new
+                    {
+                        companyCode = model.CompanyCode,
+                        plantWerk = model.PlantWerks,
+                        faCode = model.FaCode,
+                        productionDate = model.ProductionDate
+                    });
                 }
 
                 var data = Mapper.Map<ProductionDto>(model);
@@ -166,7 +172,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model = Mapper.Map<ProductionDetail>(dbProduction);
 
-            
+
 
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
@@ -282,6 +288,62 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        #region Upload file
+
+
+        [HttpPost]
+        public JsonResult ProductionUploadFile(HttpPostedFileBase itemExcelFile)
+        {
+            var data = (new ExcelReader()).ReadExcel(itemExcelFile);
+            var model = new List<ProductionUploadItems>();
+            if (data != null)
+            {
+                foreach (var dataRow in data.DataRows)
+                {
+                    var item = new ProductionUploadItems();
+
+                    item.CompanyCode = dataRow[0];
+                    item.PlantWerks = dataRow[1];
+                    item.FaCode = dataRow[2];
+                    item.BrandDescription = dataRow[3];
+                    item.QtyPacked = Convert.ToDecimal(dataRow[4]);
+                    item.QtyUnpacked = Convert.ToDecimal(dataRow[5]);
+                    item.Uom = dataRow[6];
+                    item.ProductionDate = Convert.ToDateTime(dataRow[7]);
+
+                    try
+                    {
+                        var exisstingProduct = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
+                            item.ProductionDate);
+                        if (exisstingProduct != null)
+                        {
+                            item.BrandDescription = exisstingProduct.BRAND_DESC;
+                            item.QtyPacked = exisstingProduct.QTY_PACKED;
+                            item.QtyUnpacked = exisstingProduct.QTY_UNPACKED;
+                        }
+
+
+                    }
+                    catch (Exception exception)
+                    {
+
+
+                    }
+                    finally
+                    {
+                        model.Add(item);
+                    }
+
+                }
+            }
+            return Json(model);
+
+
+        }
+
+
+        #endregion
+
         #region Json
         [HttpPost]
         public JsonResult CompanyListPartialProduction(string companyId)
@@ -294,9 +356,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetFaCodeDescription(string faCode)
+        public JsonResult GetFaCodeDescription(string plantWerk, string faCode)
         {
-            var fa = _brandRegistrationBll.GetByFaCode(faCode);
+            var fa = _brandRegistrationBll.GetByFaCode(plantWerk, faCode);
             return Json(fa.BRAND_CE);
         }
 
@@ -310,6 +372,10 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
+
+
         #endregion
+
+
     }
 }

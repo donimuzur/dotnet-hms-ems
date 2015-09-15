@@ -294,6 +294,7 @@
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CCreateWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cDecreeDocModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
@@ -590,6 +591,7 @@
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\chosen.jquery.min.js" />
     <Content Include="Scripts\ck4cscript.js" />
+    <Content Include="Scripts\ck4c\docupload.js" />
     <Content Include="Scripts\CK5InputManual.js" />
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
@@ -1091,6 +1093,13 @@
     <Content Include="Views\Waste\Edit.cshtml" />
     <Content Include="Views\CK4C\_HomeGovApproval.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4GovApproval.cshtml" />
+    <Content Include="Views\CK4C\_DecreeDocUpload.cshtml" />
+    <Content Include="Views\CK4C\CompletedDocument.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableCompletedDocument.cshtml" />
+    <Content Include="Views\Waste\Detail.cshtml" />
+    <Content Include="Views\Production\_HomeCreate.cshtml" />
+    <Content Include="Views\Production\_Upload.cshtml" />
+    <Content Include="Views\Production\_UploadList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

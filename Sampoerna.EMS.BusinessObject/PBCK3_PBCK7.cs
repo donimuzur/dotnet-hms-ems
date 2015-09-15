@@ -17,23 +17,26 @@ namespace Sampoerna.EMS.BusinessObject
         public PBCK3_PBCK7()
         {
             this.BACK1 = new HashSet<BACK1>();
+            this.BACK3 = new HashSet<BACK3>();
+            this.CK2 = new HashSet<CK2>();
+            this.PBCK3_PBCK7_ITEM = new HashSet<PBCK3_PBCK7_ITEM>();
         }
     
         public int PBCK3_PBCK7_ID { get; set; }
         public string PBCK7_NUMBER { get; set; }
         public string PBCK3_NUMBER { get; set; }
-        public Sampoerna.EMS.Core.Enums.DocumentTypePbck7AndPbck3 PBCK7_STATUS { get; set; }
-        public Nullable<int> PBCK3_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus PBCK7_STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatus> PBCK3_STATUS { get; set; }
         public System.DateTime PBCK7_DATE { get; set; }
         public Nullable<System.DateTime> PBCK3_DATE { get; set; }
-        public int DOC_TYPE { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentTypePbck7AndPbck3 DOC_TYPE { get; set; }
         public string NPPBCK_ID { get; set; }
         public string PLANT_ID { get; set; }
         public string PLANT_NAME { get; set; }
         public string PLANT_CITY { get; set; }
         public Nullable<System.DateTime> EXEC_DATE_FROM { get; set; }
         public Nullable<System.DateTime> EXEC_DATE_TO { get; set; }
-        public int GOV_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatusGov GOV_STATUS { get; set; }
         public int STATUS { get; set; }
         public string APPROVED_BY { get; set; }
         public System.DateTime APPROVED_DATE { get; set; }
@@ -46,5 +49,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual USER USER2 { get; set; }
+        public virtual ICollection<BACK3> BACK3 { get; set; }
+        public virtual ICollection<CK2> CK2 { get; set; }
+        public virtual ICollection<PBCK3_PBCK7_ITEM> PBCK3_PBCK7_ITEM { get; set; }
     }
 }

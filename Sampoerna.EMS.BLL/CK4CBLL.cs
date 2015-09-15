@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BLL
         private ICK4CItemBLL _ck4cItemBll;
         private IPlantBLL _plantBll;
 
-        private string includeTables = "POA, MONTH, CK4C_ITEM";
+        private string includeTables = "MONTH, CK4C_ITEM";
 
         public CK4CBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -46,49 +46,14 @@ namespace Sampoerna.EMS.BLL
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
         {
-            Expression<Func<CK4C, bool>> queryFilter = PredicateHelper.True<CK4C>();
-            if (!string.IsNullOrEmpty(input.DateProduction))
-            {
-                var dt = Convert.ToDateTime(input.DateProduction);
-                queryFilter = queryFilter.And(c => c.REPORTED_ON == dt);
-            }
-            
-            if (!string.IsNullOrEmpty(input.Company))
-            {
-                queryFilter = queryFilter.And(c => c.COMPANY_ID == input.Company);
-            }
-            if (!string.IsNullOrEmpty(input.PlantId))
-            {
-                queryFilter = queryFilter.And(c => c.PLANT_ID == input.PlantId);
-            }
-            if (!string.IsNullOrEmpty(input.DocumentNumber))
-            {
-                queryFilter = queryFilter.And(c => c.NUMBER == input.DocumentNumber);
-            }
-            if (!string.IsNullOrEmpty(input.NppbkcId))
-            {
-                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
-            }
+            var queryFilter = ProcessQueryFilter(input);
 
-            Func<IQueryable<CK4C>, IOrderedQueryable<CK4C>> orderBy = null;
-            if (!string.IsNullOrEmpty(input.ShortOrderColumn))
-            {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<CK4C>(input.ShortOrderColumn));
-            }
-
-            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
-            if (dbData == null)
-            {
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            }
-            var mapResult = Mapper.Map<List<Ck4CDto>>(dbData.ToList());
-
-            return mapResult;
+            return Mapper.Map<List<Ck4CDto>>(GetCk4cData(queryFilter, input.ShortOrderColumn));
         }
 
-        public List<Ck4CDto> GetAll()
+        public List<Ck4CDto> GetOpenDocument()
         {
-            var dtData = _repository.Get(null, null, includeTables).ToList();
+            var dtData = _repository.Get(x => x.STATUS != Enums.DocumentStatus.Completed, null, includeTables).ToList();
 
             return Mapper.Map<List<Ck4CDto>>(dtData);
         }
@@ -230,11 +195,19 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     RejectDocument(input);
                     break;
+                case Enums.ActionType.GovApprove:
+                    GovApproveDocument(input);
+                    isNeedSendNotif = false;
+                    break;
+                case Enums.ActionType.GovReject:
+                    GovRejectedDocument(input);
+                    isNeedSendNotif = false;
+                    break;
             }
 
             //todo sent mail
-            if (isNeedSendNotif)
-                //SendEmailWorkflow(input);
+            //if (isNeedSendNotif) //SendEmailWorkflow(input);
+                
             _uow.SaveChanges();
         }
 
@@ -380,6 +353,150 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(input);
 
+        }
+
+        private void GovApproveDocument(Ck4cWorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.StatusGovCk4c.Approved);
+
+            dbData.STATUS = Enums.DocumentStatus.Completed;
+
+            //todo: update remaining quota and necessary data
+            dbData.CK4C_DECREE_DOC = null;
+            dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+            dbData.CK4C_DECREE_DOC = Mapper.Map<List<CK4C_DECREE_DOC>>(input.AdditionalDocumentData.Ck4cDecreeDoc);
+            dbData.GOV_STATUS = Enums.StatusGovCk4c.Approved;
+
+            //input.ActionType = Enums.ActionType.Completed;
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void GovRejectedDocument(Ck4cWorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
+            WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.StatusGovCk4c.Rejected);
+
+            dbData.STATUS = Enums.DocumentStatus.GovRejected;
+            dbData.GOV_STATUS = Enums.StatusGovCk4c.Rejected;
+
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void WorkflowStatusGovAddChanges(Ck4cWorkflowDocumentInput input, Enums.StatusGovCk4c? oldStatus, Enums.StatusGovCk4c newStatus)
+        {
+            //set changes log
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Enums.MenuList.CK4C,
+                FORM_ID = input.DocumentId.ToString(),
+                FIELD_NAME = "STATUS_GOV",
+                NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                OLD_VALUE = oldStatus.HasValue ? EnumHelper.GetDescription(oldStatus) : "NULL",
+                MODIFIED_BY = input.UserId,
+                MODIFIED_DATE = DateTime.Now
+            };
+
+            _changesHistoryBll.AddHistory(changes);
+        }
+
+        public void UpdateReportedOn(Ck4cUpdateReportedOn input)
+        {
+            CK4C dbData = _repository.Get(c => c.CK4C_ID == input.Id, null, includeTables).FirstOrDefault();
+            dbData.REPORTED_ON = input.ReportedOn;
+            _uow.SaveChanges();
+        }
+
+        public List<Ck4CDto> GetCompletedDocumentByParam(Ck4cGetCompletedDocumentByParamInput input)
+        {
+            var queryFilter = ProcessQueryFilter(input);
+
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+
+            return Mapper.Map<List<Ck4CDto>>(GetCk4cData(queryFilter, input.ShortOrderColumn));
+        }
+
+        public List<Ck4CDto> GetOpenDocumentByParam(Ck4cGetOpenDocumentByParamInput input)
+        {
+            var queryFilter = ProcessQueryFilter(input);
+
+            queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+
+            return Mapper.Map<List<Ck4CDto>>(GetCk4cData(queryFilter, input.ShortOrderColumn));
+        }
+
+        private Expression<Func<CK4C, bool>> ProcessQueryFilter(Ck4CGetByParamInput input)
+        {
+            Expression<Func<CK4C, bool>> queryFilter = PredicateHelper.True<CK4C>();
+
+            if (!string.IsNullOrEmpty(input.DateProduction))
+            {
+                var dt = Convert.ToDateTime(input.DateProduction);
+                queryFilter = queryFilter.And(c => c.REPORTED_ON == dt);
+            }
+
+            if (!string.IsNullOrEmpty(input.Company))
+            {
+                queryFilter = queryFilter.And(c => c.COMPANY_ID == input.Company);
+            }
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter = queryFilter.And(c => c.PLANT_ID == input.PlantId);
+            }
+            if (!string.IsNullOrEmpty(input.DocumentNumber))
+            {
+                queryFilter = queryFilter.And(c => c.NUMBER == input.DocumentNumber);
+            }
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+            }
+
+            return queryFilter;
+        }
+
+        private List<CK4C> GetCk4cData(Expression<Func<CK4C, bool>> queryFilter, string orderColumn)
+        {
+            Func<IQueryable<CK4C>, IOrderedQueryable<CK4C>> orderBy = null;
+            if (!string.IsNullOrEmpty(orderColumn))
+            {
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<CK4C>(orderColumn));
+            }
+
+            var dbData = _repository.Get(queryFilter, orderBy, includeTables);
+
+            return dbData.ToList();
+        }
+        
+        public List<Ck4CDto> GetCompletedDocument()
+        {
+            var dtData = _repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables).ToList();
+
+            return Mapper.Map<List<Ck4CDto>>(dtData);
         }
     }
 }

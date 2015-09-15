@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -22,5 +23,6 @@ namespace Sampoerna.EMS.Contract
         List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc, int period, int month, int year);
 
         PRODUCTION GetExistDto(string companyCode, string plantWerk, string faCode, DateTime productionDate);
+        
     }
 }
