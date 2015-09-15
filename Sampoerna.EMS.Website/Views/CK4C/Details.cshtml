@@ -1,4 +1,6 @@
-﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
 @{
     ViewBag.Title = "Details";
 }
@@ -26,7 +28,17 @@
                         }
                     }
 
-                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
+
+                    @if (Model.Details.Status == Enums.DocumentStatus.Completed)
+                    {
+                        <input type="button" value="Back" class="btn btn-grey" id="btnCancelCompleted" />
+                    }
+                    else
+                    {
+                        <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    }
+                    
                 </div>
             </div>
         </div>
@@ -116,6 +128,10 @@
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("DocumentList", "CK4C")';
             });
+
+            $('#btnCancelCompleted').click(function (e) {
+                location.href = '@Url.Action("CompletedDocument", "CK4C")';
+            });
             
             $("#btnApprove").click(function () {
 
@@ -142,8 +158,6 @@
             });
         });
 
-        $('#MenuCk4cDocumentList').addClass('active');
-
         function SetBasedOn() {
             var nppbkc = '@Model.Details.NppbkcId';
             var plantId = $('#Details_PlantId').val();
@@ -158,6 +172,10 @@
             {
                 $('#Details_PlantName').val(plantId + '-' + plantName);
             }
+        }
+
+        function printPreview(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
         }
 
     </script>

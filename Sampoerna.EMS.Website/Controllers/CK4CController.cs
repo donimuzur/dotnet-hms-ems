@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.EMMA;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.CK4C;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
+using System.Configuration;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -37,10 +42,12 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IZaidmExProdTypeBLL _prodTypeBll;
+        private IHeaderFooterBLL _headerFooterBll;
 
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
             IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll,
-            IDocumentSequenceNumberBLL documentSequenceNumberBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IZaidmExProdTypeBLL prodTypeBll)
+            IDocumentSequenceNumberBLL documentSequenceNumberBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IZaidmExProdTypeBLL prodTypeBll,
+            IHeaderFooterBLL headerFooterBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -58,6 +65,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
             _prodTypeBll = prodTypeBll;
+            _headerFooterBll = headerFooterBll;
         }
 
         #region Index Document List
@@ -230,6 +238,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
+                Details = new DataDocumentList()
             };
 
             return CreateInitial(model);
@@ -250,6 +259,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.YearList = Ck4cYearList();
             model.PlanList = GlobalFunctions.GetPlantAll();
             model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            if(model.Details != null) model.Details.ReportedOn = DateTime.Now;
 
             return (model);
         }
@@ -727,6 +737,156 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             };
             _ck4CBll.Ck4cWorkflow(input);
+        }
+
+        #endregion
+
+        #region Print Preview
+
+        [EncryptedParameter]
+        public FileResult PrintPreview(int id)
+        {
+            var ck4c = _ck4CBll.GetById(id);
+
+            var dsCk4c = CreateCk4cDs();
+            var dt = dsCk4c.Tables[0];
+            DataRow drow;
+            drow = dt.NewRow();
+            drow[0] = ck4c.CompanyName;
+            drow[1] = ck4c.NppbkcId;
+            drow[2] = ck4c.PlantId + ", " + ck4c.PlantName;
+            
+            var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
+            {
+                CompanyCode = ck4c.CompanyId,
+                FormTypeId = Enums.FormType.CK4C
+            });
+            if (headerFooter != null)
+            {
+                drow[3] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
+                drow[4] = headerFooter.FOOTER_CONTENT;
+            }
+            drow[5] = ck4c.PlantName;
+            drow[6] = ck4c.PlantName + " " + ck4c.PlantName;
+            drow[7] = ck4c.PlantName;
+            drow[8] = ck4c.ReportedOn == null ? null : ck4c.ReportedOn.ToString();
+            if (ck4c.ApprovedByPoa != null)
+            {
+                var poa = _poabll.GetDetailsById(ck4c.ApprovedByPoa);
+                if (poa != null)
+                {
+                    drow[9] = poa.PRINTED_NAME;
+                }
+            }
+            if (ck4c.Status != Enums.DocumentStatus.WaitingGovApproval || ck4c.Status != Enums.DocumentStatus.GovApproved
+                || ck4c.Status != Enums.DocumentStatus.Completed)
+            {
+                drow[10] = "PREVIEW CK-4C";
+            }
+            else
+            {
+                drow[10] = "CK-4C";
+                if (ck4c.DecreeDate != null)
+                {
+                    var lack2DecreeDate = ck4c.DecreeDate.Value;
+                    var lack2Month = _monthBll.GetMonth(lack2DecreeDate.Month).MONTH_NAME_IND;
+
+                    drow[11] = string.Format("{0} {1} {2}", lack2DecreeDate.Day, lack2Month, lack2DecreeDate.Year);
+                }
+            }
+            dt.Rows.Add(drow);
+
+            var dtDetail = dsCk4c.Tables[1];
+            foreach (var item in ck4c.Ck4cItem)
+            {
+                DataRow drowDetail;
+                drowDetail = dtDetail.NewRow();
+                drowDetail[0] = item.Ck4CItemId;
+                drowDetail[1] = item.Ck4CItemId;
+                drowDetail[2] = item.Ck4CItemId;
+                drowDetail[3] = item.Ck4CItemId;
+                drowDetail[4] = item.Ck4CItemId;
+                drowDetail[5] = item.Ck4CItemId;
+                dtDetail.Rows.Add(drowDetail);
+            }
+            // object of data row 
+
+            ReportClass rpt = new ReportClass();
+            string report_path = ConfigurationManager.AppSettings["Report_Path"];
+            rpt.FileName = report_path + "CK4C\\Preview.rpt";
+            rpt.Load();
+            rpt.SetDataSource(dsCk4c);
+
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return File(stream, "application/pdf");
+        }
+
+        private DataSet CreateCk4cDs()
+        {
+            DataSet ds = new DataSet("dsCk4c");
+
+            DataTable dt = new DataTable("Lack2");
+            dt.Columns.Add("CompanyName", System.Type.GetType("System.String"));
+            dt.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dt.Columns.Add("Alamat", System.Type.GetType("System.String"));
+            dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
+            dt.Columns.Add("Footer", System.Type.GetType("System.String"));
+            dt.Columns.Add("BKC", System.Type.GetType("System.String"));
+            dt.Columns.Add("Period", System.Type.GetType("System.String"));
+            dt.Columns.Add("City", System.Type.GetType("System.String"));
+            dt.Columns.Add("CreatedDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("PoaPrintedName", System.Type.GetType("System.String"));
+            dt.Columns.Add("Preview", System.Type.GetType("System.String"));
+            dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
+
+            //item
+            DataTable dtDetail = new DataTable("Lack2Item");
+            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
+
+            ds.Tables.Add(dt);
+            ds.Tables.Add(dtDetail);
+            return ds;
+        }
+
+        private byte[] GetHeader(string imagePath)
+        {
+            byte[] imgbyte = null;
+            try
+            {
+                FileStream fs;
+                BinaryReader br;
+
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                else
+                {
+                    // if photo does not exist show the nophoto.jpg file 
+                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                // initialise the binary reader from file streamobject 
+                br = new BinaryReader(fs);
+                // define the byte array of filelength 
+                imgbyte = new byte[fs.Length + 1];
+                // read the bytes from the binary reader 
+                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+                br.Close();
+                // close the binary reader 
+                fs.Close();
+                // close the file stream
+            }
+            catch (Exception ex)
+            {
+            }
+            return imgbyte;
+            // Return Datatable After Image Row Insertion
         }
 
         #endregion
