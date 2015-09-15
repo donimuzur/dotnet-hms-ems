@@ -4,7 +4,6 @@
     <thead>
         <tr>
             <th class="toggle-row"> Action </th>
-            <th> Date </th>
             <th> Company </th>
             <th> Plant</th>
             <th> Finish Goods </th>
@@ -12,6 +11,7 @@
             <th> QtyPacked </th>
             <th> QtyUnpacked </th>
             <th> Uom </th>
+            <th> Date </th>
         </tr>
 
     </thead>
@@ -38,10 +38,7 @@
                     <a href="@Url.Action("Detail", "production", new { companyCode = item.CompanyCode, plantWerk = item.PlantWerks, faCode = item.FaCode, productionDate = item.ProductionDate })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                     <a href="@Url.Action("Edit", "production", new { companyCode = item.CompanyCode, plantWerk = item.PlantWerks, faCode = item.FaCode, productionDate = item.ProductionDate })" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
                 </td>
-                <td>
 
-                    @Html.DisplayFor(modelItem => item.ProductionDate)
-                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CompanyName)
                 </td>
@@ -49,7 +46,6 @@
                     @Html.DisplayFor(modelItem => item.PlantName)
                 </td>
                 <td>
-
                     @Html.DisplayFor(modelItem => item.FaCode)
                 </td>
                 <td>
@@ -63,6 +59,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Uom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductionDate)
                 </td>
 
             </tr>

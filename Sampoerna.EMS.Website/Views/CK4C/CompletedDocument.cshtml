@@ -1,14 +1,9 @@
-﻿@model Sampoerna.EMS.Website.Models.PRODUCTION.ProductionViewModel
-@using Sampoerna.EMS.Helpers
-
+﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
 
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>Daily Production List</h3>
-            <div class="action-button new">
-                <a href="@Url.Action("Create", "Production")"><button class="btn btn-blue">NEW</button></a>
-            </div>
+            <h3>CK-4C Completed Document</h3>
         </div>
     </div>
 </div>
@@ -17,7 +12,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterProductionIndex", "Production",
+                @using (Ajax.BeginForm("FilterCompletedDocument", "CK4C",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -30,14 +25,9 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="row">
-                                <label class="col-md-3 long">Date</label>
+                                <label class="col-md-4">CK-4C No</label>
                                 <div class="col-md-8">
-                                    <div class="input-group date">
-                                        <input type="text" class="form-control" name="ProductionDate">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                    </div>
+                                    @Html.DropDownListFor(model => model.Ck4cNumber, Model.DocumentNumberList, "All", new { @class = " form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -45,15 +35,15 @@
                             <div class="row">
                                 <label class="col-md-4">Company</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = " form-control selectreset" })
+                                    @Html.DropDownListFor(model => model.CompanyName, Model.CompanyNameList, "All", new { @class = " form-control selectreset" })
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="row">
-                                <label class="col-md-4">Plant ID</label>
+                                <label class="col-md-4">NPPBKC</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
+                                    @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcIdList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
                                 </div>
                             </div>
                         </div>
@@ -75,19 +65,21 @@
                 }
             </div>
             <div id="contenttable" class="table-container">
-                @Html.Partial("_ProductionTableIndex")
+                @Html.Partial("_CK4CTableCompletedDocument")
             </div>
         </div>
 
     </div>
 </div>
-
 @section scripts
 {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript">
+        $(document).ready(function () {
+            setupDataTables();
+        });
 
-        $('#MenuCk4cDailyProduction').addClass('active');
+        $('#MenuCk4cCompleted').addClass("active");
 
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {
@@ -101,7 +93,7 @@
                 table.destroy();
             }
 
-            table = $('#DailyProduction').DataTable(
+            table = $('#WasteProduction').DataTable(
                 {
                     "sDom": "Rlfrtip",
                     "language": {
@@ -111,7 +103,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#DailyProduction .filters th').each(function () {
+            $('#WasteProduction .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -127,24 +119,8 @@
                         .draw();
                 });
             });
+
         }
-
-        $("#CompanyCode").change(function () {
-            if ($("#CompanyCode").length) {
-                var cpy = $(this).find("option:selected").val();
-                $('#SearchInput_PlantId option').remove();
-                if (cpy == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
-
-                } else {
-                    ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
-                }
-            }
-        });
-
-        $(document).ready(function () {
-            setupDataTables();
-        });
 
         function ajaxSelectCompany(url, formData) {
             if (formData.companyId) {
@@ -153,14 +129,13 @@
                     url: url,
                     data: formData,
                     success: function (data) {
-                        var listPlant = data.PlantWerkList;
+                        var listPlant = data.PlanIdList;
                         $('#SearchInput_PlantId').append('<option value="">All</option>');
                         if (listPlant.length > 0) {
                             for (var i = 0; i < listPlant.length; i++) {
                                 $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
                             }
                         }
-
                     }
                 });
             }
@@ -175,6 +150,49 @@
                 });
             });
             setupDataTables();
+        }
+
+        $("#CompanyName").change(function () {
+            $('#SearchInput_PlantId').html('');
+            $('#SearchInput_PlantId').append('<option value="">All</option>');
+            if ($("#CompanyName").length) {
+                var cpy = $(this).find("option:selected").val();
+                if (cpy != '') {
+                    ajaxGetNppbkcByCompany(cpy);
+                }
+                else {
+                    ajaxGetAllNppbkc();
+                }
+            }
+            $('#SearchInput_PlantId').val('');
+        });
+
+        function ajaxGetNppbkcByCompany(company) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetNppbkcByCompanyId", "CK4C")',
+                data: { companyId: company },
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#SearchInput_PlantId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
+                    }
+                }
+            });
+        }
+
+        function ajaxGetAllNppbkc() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetAllNppbkc", "CK4C")',
+                success: function (data) {
+                    var listPlant = data.NppbkcIdList;
+                    if (listPlant.length > 0) {
+                        for (var i = 0; i < listPlant.length; i++) {
+                            $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                        }
+                    }
+                }
+            });
         }
 
     </script>

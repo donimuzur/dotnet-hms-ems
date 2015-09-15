@@ -1,0 +1,36 @@
+﻿@model Sampoerna.EMS.Website.Models.PRODUCTION.ProductionDetail
+
+<div id="upload" class="tab-pane" role="tabpanel">
+    <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
+        <div class="panel panel-default">
+            <div id="headingOne" role="tab" class="panel-heading">
+                <h4 class="panel-title">
+                    <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse">
+                        Upload Excel File
+                    </a>
+                </h4>
+            </div>
+            <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="file" name="itemExcelFile" id="itemExcelFile">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="button" class="btn btn-grey" id="btn-generate-upload" value="Generate">
+                            <input type="button" class="btn btn-blue" id="btn-save-upload" value="Save" disabled />
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-container" id="UploadLIst">
+        @Html.Partial("_UploadList")
+    </div>
+</div>
+

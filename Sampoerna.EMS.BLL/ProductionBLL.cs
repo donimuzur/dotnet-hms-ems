@@ -117,7 +117,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             var dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && p.WERKS == plant && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
-                         join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
+                         join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on p.FA_CODE equals b.FA_CODE
                          join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
                          select new ProductionDto() { 
                             ProductionDate = p.PRODUCTION_DATE,
@@ -139,7 +139,7 @@ namespace Sampoerna.EMS.BLL
             {
                 dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
                          join n in _repositoryPlant.Get(n => n.NPPBKC_ID == nppbkc) on p.WERKS equals n.WERKS
-                         join b in _repositoryBrand.GetQuery() on p.FA_CODE equals b.FA_CODE
+                         join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on p.FA_CODE equals b.FA_CODE
                          join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
                          select new ProductionDto()
                          {
@@ -177,5 +177,7 @@ namespace Sampoerna.EMS.BLL
                             p.PRODUCTION_DATE == productionDate)
                     .FirstOrDefault();
         }
+
+        
     }
 }

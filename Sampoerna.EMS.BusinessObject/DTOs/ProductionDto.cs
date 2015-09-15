@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class ProductionDto
-    
     {
         public string CompanyCodeX { get; set; }
         public string PlantWerksX { get; set; }
@@ -35,5 +34,21 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Docgmvter { get; set; }
         public string MatDoc { get; set; }
         public string Ordr { get; set; }
+
+        public List<ProductionUploadItems> UploadItems { get; set; }
+
     }
+
+    public class ProductionUploadItems
+    {
+        public string CompanyCode { get; set; }
+        public string PlantWerks { get; set; }
+        public string FaCode { get; set; }
+        public string BrandDescription { get; set; }
+        public decimal? QtyUnpacked { get; set; }
+        public decimal? QtyPacked { get; set; }
+        public string Uom { get; set; }
+        public DateTime ProductionDate { get; set; }
+    }
+
 }
