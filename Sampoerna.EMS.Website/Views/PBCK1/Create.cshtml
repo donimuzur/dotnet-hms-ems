@@ -256,10 +256,10 @@
                 success: function (data) {
                     if (data != null) {
                         $("input[name='Detail.LatestSaldo']:hidden").val(data.latestSaldo);
-                        $("input[name='Detail.LatestSaldo']:text").val(ThausandSeperator(data.latestSaldo));
+                        $("input[name='Detail.LatestSaldo']:text").val(ThausandSeperator(data.latestSaldo) + ".00");
                     } else {
                         $("input[name='Detail.LatestSaldo']:hidden").val('0');
-                        $("input[name='Detail.LatestSaldo']:text").val('0');
+                        $("input[name='Detail.LatestSaldo']:text").val('0' + ".00");
                     }
                     
                 }
