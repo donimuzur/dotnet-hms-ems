@@ -256,7 +256,7 @@
                 success: function (data) {
                     if (data != null) {
                         $("input[name='Detail.LatestSaldo']:hidden").val(data.latestSaldo);
-                        $("input[name='Detail.LatestSaldo']:text").val(data.latestSaldo);
+                        $("input[name='Detail.LatestSaldo']:text").val(ThausandSeperator(data.latestSaldo));
                     } else {
                         $("input[name='Detail.LatestSaldo']:hidden").val('0');
                         $("input[name='Detail.LatestSaldo']:text").val('0');

@@ -43,9 +43,13 @@
                     </td>
                     <td class="number">@Html.DisplayFor(model => item.RequestQty)</td>
                     <td>
-                        @if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                        @if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager && item.ApprovedByPoaId != null)
                         {
                             @item.ApprovedByPoaId
+                        }
+                        else if (item.Status == Enums.DocumentStatus.WaitingGovApproval)
+                        {
+                            @item.ApprovedByManagerId                            
                         }
                         else
                         {

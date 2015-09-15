@@ -66,7 +66,7 @@ function ThausandSeperator(value, digit) {
         len -= 3;
     }
     result = tempValue.substr(0, len) + result;
-    return result + devValue;
+    return result + devValue + decimalSepCh + "00";
 }
 
 
