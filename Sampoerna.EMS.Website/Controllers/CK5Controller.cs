@@ -568,6 +568,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);
 
+
+            model.PackageConvertedUomList = GlobalFunctions.GetCk5AllowedUomList(_uomBll);
+            
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
             return model;

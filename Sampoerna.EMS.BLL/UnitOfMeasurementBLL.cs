@@ -121,5 +121,10 @@ namespace Sampoerna.EMS.BLL
             return dbData != null && (dbData.IS_EMS.HasValue && dbData.IS_EMS.Value);
         }
 
+        public List<UOM> GetCK5ConvertedUoms()
+        {
+            var allowedConvertedUoms =  new List<string>(new string[] { "KG", "G", "L" });
+            return _repository.Get(x => allowedConvertedUoms.Contains(x.UOM_ID), null, null).ToList();
+        }
     }
 }

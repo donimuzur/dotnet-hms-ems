@@ -13,7 +13,10 @@ function OnReadyFunction(ck5Type) {
     else {
         $('#MenuCK5Domestic').addClass('active');
     }
-
+    
+    //$('#GrandTotalEx').prop("readonly", true);
+    
+    
     
     $('#btnUploadInfo').click(function () {
 
@@ -27,6 +30,7 @@ function OnReadyFunction(ck5Type) {
 
     var total = 0;
     $('#CK5UploadSave').click(function () {
+        //debugger;
         var datarows = GetTableData($('#Ck5UploadTable'));
         var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
         $('#ck5TableItem tbody').html('');
@@ -54,14 +58,15 @@ function OnReadyFunction(ck5Type) {
                 data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
                 data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][15] + '">';
                 //alert(datarows[i][13]);
-                total += parseFloat(datarows[i][3]); //Qty
+                total += parseFloat(datarows[i][16]); //Qty
                 if (i == 0) {
                     //alert(datarows[i][2]);
-                    $("#PackageUomName option").each(function () {
-                        if ($(this).val().toLowerCase() == datarows[i][4].toLowerCase()) {
-                            $(this).attr('selected', 'selected');
-                        }
-                    });
+                    //$("#PackageUomName option").each(function () {
+                    //    if ($(this).val().toLowerCase() == datarows[i][17].toLowerCase()) {
+                    //        $(this).attr('selected', 'selected');
+                    //    }
+                    //});
+                    $("#PackageUomName").val(datarows[i][17]);
                 }
             }
             data += '</tr>';
@@ -71,7 +76,7 @@ function OnReadyFunction(ck5Type) {
             if($('#PbckDecreeId').val() == '')
                 isExistPbck1 = false
 
-            if (datarows[i][4] != ($('#PbckUom').val()))
+            if (datarows[i][17] != ($('#PbckUom').val()))
                 isSamePbck1Uom = false;
 
             //$('#ck5TableItem tbody').append(data);
