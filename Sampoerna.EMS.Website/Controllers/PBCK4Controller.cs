@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Spreadsheet;
 using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Filters;
+using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PBCK4;
@@ -32,10 +38,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowBLL _workflowBll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IPrintHistoryBLL _printHistoryBll;
 
         public PBCK4Controller(IPageBLL pageBLL, IPOABLL poabll, IZaidmExNPPBKCBLL nppbkcBll,
             IPBCK4BLL pbck4Bll, IPlantBLL plantBll, IWorkflowBLL workflowBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll)
+            IWorkflowHistoryBLL workflowHistoryBll, IPrintHistoryBLL printHistoryBll)
             : base(pageBLL, Enums.MenuList.PBCK4)
         {
             _poaBll = poabll;
@@ -45,6 +52,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowBll = workflowBll;
             _changesHistoryBll = changesHistoryBll;
             _workflowHistoryBll = workflowHistoryBll;
+            _printHistoryBll = printHistoryBll;
         }
 
         //
@@ -750,5 +758,160 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
         }
+
+        #region print
+
+
+        private dsPbck4 AddDataPbck4Row(dsPbck4 dsPbck4, Pbck4ReportDetailsDto pbck4ReportDetails, string printTitle)
+        {
+            var detailRow = dsPbck4.Pbck4.NewPbck4Row();
+
+            detailRow.Pbck4Number = pbck4ReportDetails.Pbck4Number;
+            detailRow.Pbck4Lampiran = pbck4ReportDetails.Pbck4Lampiran;
+            detailRow.TextTo = pbck4ReportDetails.TextTo;
+            detailRow.CityTo = pbck4ReportDetails.CityTo;
+            detailRow.PoaName = pbck4ReportDetails.PoaName;
+            detailRow.PoaTitle = pbck4ReportDetails.PoaTitle;
+            detailRow.CompanyName = pbck4ReportDetails.CompanyName;
+            detailRow.CompanyAddress = pbck4ReportDetails.CompanyAddress;
+            detailRow.NppbkcId = pbck4ReportDetails.NppbkcId;
+            detailRow.NppbkcDate = pbck4ReportDetails.NppbkcDate;
+            detailRow.PlantCity = pbck4ReportDetails.PlantCity;
+            detailRow.PrintDate = pbck4ReportDetails.PrintDate;
+            detailRow.RegionOffice = pbck4ReportDetails.RegionOffice;
+            detailRow.DocumentTitle = printTitle;
+
+            dsPbck4.Pbck4.AddPbck4Row(detailRow);
+
+            return dsPbck4;
+        }
+
+        private dsPbck4 AddDataPbck4ItemsRow(dsPbck4 dsPbck4, List<Pbck4ItemReportDto> listPbck4ItemsDto)
+        {
+           foreach (var materialDto in listPbck4ItemsDto)
+            {
+                
+                var detailRow = dsPbck4.Pbck4Items.NewPbck4ItemsRow();
+
+                detailRow.Seri = materialDto.Seri;
+                detailRow.RequestedQty = materialDto.ReqQty;
+                detailRow.Hje = materialDto.Hje;
+                detailRow.Content = materialDto.Content;
+                detailRow.Tariff = materialDto.Tariff;
+                detailRow.JumlahHje = materialDto.TotalHje;
+
+                detailRow.JumlahCukai = materialDto.TotalCukai;
+                detailRow.NoPengawas = materialDto.NoPengawas;
+
+                dsPbck4.Pbck4Items.AddPbck4ItemsRow(detailRow);
+                
+
+                
+            }
+           return dsPbck4;
+        }
+
+       
+
+
+        private DataSet SetDataSetReport(Pbck4ReportDto pbck4ReportDto, string printTitle)
+        {
+
+            var dsPbck4 = new dsPbck4();
+
+        
+            var listPbck4 = new List<Pbck4ReportDetailsDto>();
+            listPbck4.Add(pbck4ReportDto.ReportDetails);
+
+            dsPbck4 = AddDataPbck4Row(dsPbck4, pbck4ReportDto.ReportDetails,  printTitle);
+            dsPbck4 = AddDataPbck4ItemsRow(dsPbck4, pbck4ReportDto.ListPbck4Items);
+           
+
+            return dsPbck4;
+
+        }
+
+        private Stream GetReport(Pbck4ReportDto pbck4Report, string printTitle)
+        {
+            var dataSet = SetDataSetReport(pbck4Report, printTitle);
+
+            ReportClass rpt = new ReportClass
+            {
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "PBCK4\\Pbck4PrintOut.rpt"
+               
+            };
+            rpt.Load();
+            rpt.SetDataSource(dataSet);
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return stream;
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintPreview(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            var pbck4Data = _pbck4Bll.GetPbck4ReportDataById(id.Value);
+            if (pbck4Data == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(pbck4Data, "PBCK-4 PREVIEW");
+
+            return File(stream, "application/pdf");
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintOut(int? id)
+        {
+            try
+            {
+
+                if (!id.HasValue)
+                    HttpNotFound();
+
+                var pbck4Data = _pbck4Bll.GetPbck4ReportDataById(id.Value);
+                if (pbck4Data == null)
+                    HttpNotFound();
+
+                Stream stream = GetReport(pbck4Data, "PBCK-4");
+
+                return File(stream, "application/pdf");
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo("Error : " + ex.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
+        }
+
+        [HttpPost]
+        public ActionResult AddPrintHistory(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbck4Data = _pbck4Bll.GetPbck4ById(id.Value);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.CK5,
+                FORM_ID = pbck4Data.PBCK4_ID,
+                FORM_NUMBER = pbck4Data.PBCK4_NUMBER,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel();
+            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(pbck4Data.PBCK4_NUMBER));
+            return PartialView("_PrintHistoryTable", model);
+
+        }
+        #endregion
 	}
 }

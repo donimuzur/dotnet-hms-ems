@@ -40,8 +40,10 @@ namespace Sampoerna.EMS.BLL
        private IMessageService _messageService;
        private IPOABLL _poaBll;
        private IUserBLL _userBll;
+       private IZaidmExNPPBKCBLL _nppbkcBll;
+       private IPlantBLL _plantBll;
 
-       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT";
+       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
 
        public PBCK4BLL(IUnitOfWork uow, ILogger logger)
        {
@@ -61,6 +63,8 @@ namespace Sampoerna.EMS.BLL
            _messageService = new MessageService(_logger);
            _poaBll = new POABLL(_uow,_logger);
            _userBll = new UserBLL(_uow,_logger);
+           _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
+           _plantBll = new PlantBLL(_uow, _logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
@@ -903,5 +907,94 @@ namespace Sampoerna.EMS.BLL
            AddWorkflowHistory(input);
 
        }
+
+       private string DateReportDisplayString(DateTime dt, bool isMonthYear)
+       {
+           var monthPeriodFrom = _monthBll.GetMonth(dt.Month);
+           if (isMonthYear) return monthPeriodFrom.MONTH_NAME_IND + " " + dt.ToString("yyyy");
+           return dt.ToString("dd") + " " + monthPeriodFrom.MONTH_NAME_IND +
+                                  " " + dt.ToString("yyyy");
+       }
+
+       public Pbck4ReportDto GetPbck4ReportDataById(int id)
+        {
+            var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
+            if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+           var nppbkcData = _nppbkcBll.GetById(dtData.NPPBKC_ID);
+
+           var plantData = _plantBll.GetT001WById(dtData.PLANT_ID);
+
+            var result = new Pbck4ReportDto();
+             result.ReportDetails.Pbck4Number = dtData.PBCK4_NUMBER;
+             result.ReportDetails.Pbck4Lampiran = "";
+             result.ReportDetails.TextTo = nppbkcData != null ? nppbkcData.TEXT_TO : string.Empty;
+             result.ReportDetails.CityTo = nppbkcData != null ? nppbkcData.CITY : string.Empty;
+             result.ReportDetails.PoaName = dtData.POA != null ? dtData.POA.PRINTED_NAME : string.Empty;
+             result.ReportDetails.PoaTitle = dtData.POA != null ? dtData.POA.TITLE : string.Empty;
+             result.ReportDetails.CompanyName = dtData.COMPANY_NAME;
+             result.ReportDetails.CompanyAddress = plantData!=null ? plantData.CompanyAddress : string.Empty;
+             result.ReportDetails.NppbkcId = dtData.NPPBKC_ID;
+           result.ReportDetails.NppbkcDate =
+               DateReportDisplayString(dtData.REPORTED_ON.HasValue ? dtData.REPORTED_ON.Value : DateTime.Now, false);
+
+           result.ReportDetails.PlantCity = result.ReportDetails.CityTo;
+           result.ReportDetails.PrintDate = DateReportDisplayString(DateTime.Now, false);
+           result.ReportDetails.RegionOffice = nppbkcData != null ? nppbkcData.REGION_DGCE : string.Empty;
+           int i = 0;
+
+           foreach (var pbck4Item in dtData.PBCK4_ITEM)
+           {
+               var pbckItemsDto = new Pbck4ItemReportDto();
+               pbckItemsDto.Seri = pbck4Item.SERIES_CODE;
+               pbckItemsDto.ReqQty = pbck4Item.REQUESTED_QTY.HasValue?pbck4Item.REQUESTED_QTY.Value : 0;
+               pbckItemsDto.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
+               pbckItemsDto.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
+               pbckItemsDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
+               pbckItemsDto.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
+               pbckItemsDto.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
+               pbckItemsDto.NoPengawas = pbck4Item.NO_PENGAWAS;
+
+               result.ListPbck4Items.Add(pbckItemsDto);
+
+                var pbck4Matrikck1 = new Pbck4IMatrikCk1ReportDto();
+               pbck4Matrikck1.Number = i + 1;
+               pbck4Matrikck1.SeriesCode = pbck4Item.SERIES_CODE;
+               pbck4Matrikck1.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
+               pbck4Matrikck1.JenisHt = pbck4Item.PRODUCT_ALIAS;
+               pbck4Matrikck1.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
+               pbck4Matrikck1.BrandName = "";//todo ask
+               if (pbck4Item.CK1 == null)
+               {
+                   pbck4Matrikck1.Ck1No = "";
+                   pbck4Matrikck1.Ck1Date = "";
+                   pbck4Matrikck1.Ck1OrderQty = 0;
+                   pbck4Matrikck1.Ck1RequestedQty = 0;
+               }
+               else
+               {
+                   pbck4Matrikck1.Ck1No = pbck4Item.CK1.CK1_NUMBER;
+                   pbck4Matrikck1.Ck1Date = DateReportDisplayString(pbck4Item.CK1.CK1_DATE, false);
+                   pbck4Matrikck1.Ck1OrderQty = 0;//todo ask
+                   pbck4Matrikck1.Ck1RequestedQty = 0;//todo ask
+               }
+
+               pbck4Matrikck1.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
+               pbck4Matrikck1.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
+               pbck4Matrikck1.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
+               pbck4Matrikck1.NoPengawas = "Tidak Dipakai";//todo ask
+               pbck4Matrikck1.PoaName = result.ReportDetails.PoaName;
+
+
+               result.ListPbck4MatrikCk1.Add(pbck4Matrikck1);
+               i = i + 1;
+
+
+           }
+         
+
+             return result;
+        }
     }
 }
