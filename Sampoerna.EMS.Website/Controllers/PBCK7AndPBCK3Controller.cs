@@ -188,7 +188,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
-       
+
+        public ActionResult Edit(int? id)
+        {
+            if (!id.HasValue)
+                return HttpNotFound();
+            var existingData = _pbck7AndPbck7And3Bll.GetById(id);
+            var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
+            return View("Edit", InitialModel(model));
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Pbck7Pbck3CreateViewModel model)

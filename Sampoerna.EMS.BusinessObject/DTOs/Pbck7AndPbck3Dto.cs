@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     public class Pbck7ItemUpload
     {
+        public long Id { get; set; }
         public string FaCode { get; set; }
 
         public string ProdTypeAlias { get; set; }

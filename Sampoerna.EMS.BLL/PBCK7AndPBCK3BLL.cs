@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
 
-        private string includeTable = "BACK1";
+        private string includeTable = "PBCK3_PBCK7_ITEM";
 
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -79,6 +79,12 @@ namespace Sampoerna.EMS.BLL
             var mapResult = Mapper.Map<List<Pbck7AndPbck3Dto>>(dbData.ToList());
 
             return mapResult;
+        }
+
+        public Pbck7AndPbck3Dto GetById(int? id)
+        {
+            var result = _repository.Get(x => x.PBCK3_PBCK7_ID == id, null, includeTable).FirstOrDefault();
+            return Mapper.Map<Pbck7AndPbck3Dto>(result);
         }
 
         public void Insert(Pbck7AndPbck3Dto pbck7AndPbck3Dto)
