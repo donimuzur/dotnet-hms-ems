@@ -298,7 +298,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View(model);
         }
+        [HttpPost]
+        public ActionResult UploadManualProduction(ProductionUploadViewModel model)
+        {
+            var modelDto = Mapper.Map<ProductionDto>(model);
+            try
+            {
+                _productionBll.Save(modelDto);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);
+            }
 
+            return RedirectToAction("Index");
+                       
+        }
 
         [HttpPost]
         public JsonResult UploadFile(HttpPostedFileBase itemExcelFile)
