@@ -88,7 +88,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new ProductionDetail();
             model = InitCreate(model);
-            model.ProductionDate = DateTime.Today;
+            model.ProductionDate = DateTime.Today.ToString("dd MMM yyyy");
 
             return View(model);
 
@@ -292,7 +292,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
         [HttpPost]
-        public JsonResult ProductionUploadFile(HttpPostedFileBase itemExcelFile)
+        public JsonResult UploadFile(HttpPostedFileBase itemExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new List<ProductionUploadItems>();
@@ -309,27 +309,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.QtyPacked = Convert.ToDecimal(dataRow[4]);
                     item.QtyUnpacked = Convert.ToDecimal(dataRow[5]);
                     item.Uom = dataRow[6];
-                    item.ProductionDate = Convert.ToDateTime(dataRow[7]);
+                    item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(data.DataRows[0][7])).ToString("dd MMM yyyy");
 
-                    try
-                    {
-                        var exisstingProduct = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
-                            item.ProductionDate);
-                        if (exisstingProduct != null)
-                        {
-                            item.BrandDescription = exisstingProduct.BRAND_DESC;
-                            item.QtyPacked = exisstingProduct.QTY_PACKED;
-                            item.QtyUnpacked = exisstingProduct.QTY_UNPACKED;
-                        }
-
-
-                    }
-                    catch (Exception exception)
-                    {
-
-
-                    }
-                    finally
                     {
                         model.Add(item);
                     }

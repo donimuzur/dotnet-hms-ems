@@ -66,14 +66,14 @@
             for (var i = 0; i < uploaditems.length; i++) {
                 var tr = '<tr>' +
                     createColumn(i + 1) +
-                    createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems[' + i + '].CompanyCode') +
-                    createColumnWithHiddenField(uploaditems[i].ProdTypeAlias, 'UploadItems[' + i + '].PlantWerks') +
-                    createColumnWithHiddenField(uploaditems[i].Brand, 'UploadItems[' + i + '].FaCode') +
-                    createColumnWithHiddenField(uploaditems[i].Content, 'UploadItems[' + i + '].BrandDescription') +
-                    createColumnWithHiddenField(uploaditems[i].Pbck7Qty, 'UploadItems[' + i + '].QtyUnpacked') +
-                    createColumnWithHiddenField(uploaditems[i].Back1Qty, 'UploadItems[' + i + '].QtyPacked') +
-                    createColumnWithHiddenField(uploaditems[i].SeriesValue, 'UploadItems[' + i + '].Uom') +
-                    createColumnWithHiddenField(uploaditems[i].Hje, 'UploadItems[' + i + '].ProductionDate') +
+                    createColumnWithHiddenField(uploaditems[i].CompanyCode, 'UploadItems[' + i + '].CompanyCode') +
+                    createColumnWithHiddenField(uploaditems[i].PlantWerks, 'UploadItems[' + i + '].PlantWerks') +
+                    createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems[' + i + '].FaCode') +
+                    createColumnWithHiddenField(uploaditems[i].BrandDescription, 'UploadItems[' + i + '].BrandDescription') +
+                    createColumnWithHiddenField(uploaditems[i].QtyUnpacked, 'UploadItems[' + i + '].QtyUnpacked') +
+                    createColumnWithHiddenField(uploaditems[i].QtyPacked, 'UploadItems[' + i + '].QtyPacked') +
+                    createColumnWithHiddenField(uploaditems[i].Uom, 'UploadItems[' + i + '].Uom') +
+                    createColumnWithHiddenField(uploaditems[i].ProductionDate, 'UploadItems[' + i + '].ProductionDate') + + '</tr>';
                    $('#body-tb-upload').append(tr);
             }
         });
@@ -95,7 +95,7 @@
         }
         function uploadXmlFile() {
 
-            var postUrl = '@Url.Action("UploadFile", "Waste")';
+            var postUrl = '@Url.Action("UploadFile", "Production")';
             var fileName = $('[name="itemExcelFile"]').val().trim();
             var pos = fileName.lastIndexOf('.');
             var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -106,11 +106,11 @@
 
             var formData = new FormData();
             var totalFiles = document.getElementById("itemExcelFile").files.length;
-            var plantId = $('#PlantId').val();
+            //var plantId = $('#PlantId').val();
             for (var i = 0; i < totalFiles; i++) {
                 var file = document.getElementById("itemExcelFile").files[i];
                 formData.append("itemExcelFile", file);
-                formData.append("plantId", plantId);
+                //formData.append("plantId", plantId);
 
             }
             $.ajax({

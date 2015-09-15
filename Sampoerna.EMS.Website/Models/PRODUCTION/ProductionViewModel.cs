@@ -48,7 +48,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string CompanyCodeX { get; set; }
         public string PlantWerksX { get; set; }
         public string FaCodeX { get; set; }
-        public DateTime? ProductionDateX { get; set; }
+        public string ProductionDateX { get; set; }
 
         [Required]
         public string CompanyCode { get; set; }
@@ -76,7 +76,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         [Required]
         public string Uom { get; set; }
         [Required]
-        public DateTime? ProductionDate { get; set; }
+        public string ProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
         public string ProdQtyStickStr { get; set; }

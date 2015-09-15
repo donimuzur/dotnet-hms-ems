@@ -808,7 +808,8 @@ namespace Sampoerna.EMS.Website
 
             #region Production For Ck4c
 
-            Mapper.CreateMap<ProductionDto, ProductionDetail>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ProductionDto, ProductionDetail>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductionDate, opt=> opt.MapFrom(src => src.ProductionDate.ToString("dd MMM yyyy")));
 
             Mapper.CreateMap<ProductionViewModel, ProductionGetByParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantWerks))
