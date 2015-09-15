@@ -1086,6 +1086,7 @@
     <Content Include="Views\CK4C\_DecreeDocUpload.cshtml" />
     <Content Include="Views\CK4C\CompletedDocument.cshtml" />
     <Content Include="Views\CK4C\_CK4CTableCompletedDocument.cshtml" />
+    <Content Include="Views\Waste\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

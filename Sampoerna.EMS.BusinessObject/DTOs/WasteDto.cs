@@ -8,6 +8,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class WasteDto
     {
+        public string CompanyCodeX { get; set; }
+        public string PlantWerksX { get; set; }
+        public string FaCodeX { get; set; }
         public string CompanyCode { get; set; }
         public string PlantWerks { get; set; }
         public string FaCode { get; set; }
