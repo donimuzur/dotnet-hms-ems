@@ -100,7 +100,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //Get All
                 input = new Pbck4GetByParamInput();
-                
+                input.IsCompletedDocument = isCompletedDocument;
+
                 dbData = _pbck4Bll.GetPbck4ByParam(input);
                 return Mapper.Map<List<Pbck4Item>>(dbData);
             }
