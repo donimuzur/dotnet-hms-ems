@@ -39,10 +39,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dsCk4c.cs">
-      <DependentUpon>dsCk4c.xsd</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="dsCk4c.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -89,7 +85,7 @@
     <None Include="dsCk4c.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>dsCk4c.Designer.cs</LastGenOutput>
+      <LastGenOutput>dsCk4c1.Designer.cs</LastGenOutput>
     </None>
     <None Include="dsCk4c.xss">
       <DependentUpon>dsCk4c.xsd</DependentUpon>

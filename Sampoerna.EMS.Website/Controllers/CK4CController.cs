@@ -752,10 +752,52 @@ namespace Sampoerna.EMS.Website.Controllers
             var dt = dsCk4c.Tables[0];
             DataRow drow;
             drow = dt.NewRow();
-            drow[0] = ck4c.CompanyName;
-            drow[1] = ck4c.NppbkcId;
-            drow[2] = ck4c.PlantId + ", " + ck4c.PlantName;
+            drow[0] = ck4c.Ck4CId;
+            drow[1] = ck4c.Number;
+
+            if (ck4c.ReportedOn != null)
+            {
+                var ck4cReportedOn = ck4c.ReportedOn.Value;
+                var ck4cMonth = _monthBll.GetMonth(ck4cReportedOn.Month).MONTH_NAME_IND;
+
+                drow[2] = string.Format("{0} {1} {2}", ck4cReportedOn.Day, ck4cMonth, ck4cReportedOn.Year);
+                drow[14] = ck4cReportedOn.Day;
+                drow[15] = ck4cMonth;
+                drow[16] = ck4cReportedOn.Year;
+            }
+
+            if(ck4c.ReportedPeriod == 1)
+            {
+                drow[3] = "1";
+                drow[4] = "14";
+            }
+            else if (ck4c.ReportedPeriod == 2)
+            {
+                var endDate = new DateTime(ck4c.ReportedYears, ck4c.ReportedMonth, 1).AddMonths(1).AddDays(-1).Day.ToString();
+                drow[3] = "15";
+                drow[4] = endDate;
+            }
+
+            if (ck4c.ReportedMonth != null)
+            {
+                var ck4cPeriodMonth = _monthBll.GetMonth(ck4c.ReportedMonth).MONTH_NAME_IND;
+                drow[5] = ck4cPeriodMonth;
+            }
             
+            drow[6] = ck4c.ReportedYears;
+            drow[7] = ck4c.CompanyName;
+            drow[8] = ck4c.CompanyName;
+            drow[9] = ck4c.NppbkcId;
+
+            if (ck4c.ApprovedByPoa != null)
+            {
+                var poa = _poabll.GetDetailsById(ck4c.ApprovedByPoa);
+                if (poa != null)
+                {
+                    drow[10] = poa.PRINTED_NAME;
+                }
+            }
+
             var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
             {
                 CompanyCode = ck4c.CompanyId,
@@ -763,37 +805,20 @@ namespace Sampoerna.EMS.Website.Controllers
             });
             if (headerFooter != null)
             {
-                drow[3] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
-                drow[4] = headerFooter.FOOTER_CONTENT;
+                drow[11] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
+                drow[12] = headerFooter.FOOTER_CONTENT;
             }
-            drow[5] = ck4c.PlantName;
-            drow[6] = ck4c.PlantName + " " + ck4c.PlantName;
-            drow[7] = ck4c.PlantName;
-            drow[8] = ck4c.ReportedOn == null ? null : ck4c.ReportedOn.ToString();
-            if (ck4c.ApprovedByPoa != null)
-            {
-                var poa = _poabll.GetDetailsById(ck4c.ApprovedByPoa);
-                if (poa != null)
-                {
-                    drow[9] = poa.PRINTED_NAME;
-                }
-            }
+
             if (ck4c.Status != Enums.DocumentStatus.WaitingGovApproval || ck4c.Status != Enums.DocumentStatus.GovApproved
                 || ck4c.Status != Enums.DocumentStatus.Completed)
             {
-                drow[10] = "PREVIEW CK-4C";
+                drow[13] = "PREVIEW CK-4C";
             }
             else
             {
-                drow[10] = "CK-4C";
-                if (ck4c.DecreeDate != null)
-                {
-                    var lack2DecreeDate = ck4c.DecreeDate.Value;
-                    var lack2Month = _monthBll.GetMonth(lack2DecreeDate.Month).MONTH_NAME_IND;
-
-                    drow[11] = string.Format("{0} {1} {2}", lack2DecreeDate.Day, lack2Month, lack2DecreeDate.Year);
-                }
+                drow[13] = "CK-4C";
             }
+            
             dt.Rows.Add(drow);
 
             var dtDetail = dsCk4c.Tables[1];
@@ -802,11 +827,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 DataRow drowDetail;
                 drowDetail = dtDetail.NewRow();
                 drowDetail[0] = item.Ck4CItemId;
-                drowDetail[1] = item.Ck4CItemId;
-                drowDetail[2] = item.Ck4CItemId;
-                drowDetail[3] = item.Ck4CItemId;
-                drowDetail[4] = item.Ck4CItemId;
-                drowDetail[5] = item.Ck4CItemId;
+                drowDetail[1] = item.ProdQty;
+                drowDetail[2] = item.ProdQtyUom;
                 dtDetail.Rows.Add(drowDetail);
             }
             // object of data row 
@@ -825,28 +847,30 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             DataSet ds = new DataSet("dsCk4c");
 
-            DataTable dt = new DataTable("Lack2");
+            DataTable dt = new DataTable("Ck4c");
+            dt.Columns.Add("Ck4cId", System.Type.GetType("System.String"));
+            dt.Columns.Add("Number", System.Type.GetType("System.String"));
+            dt.Columns.Add("ReportedOn", System.Type.GetType("System.String"));
+            dt.Columns.Add("ReportedPeriodStart", System.Type.GetType("System.String"));
+            dt.Columns.Add("ReportedPeriodEnd", System.Type.GetType("System.String"));
+            dt.Columns.Add("ReportedMonth", System.Type.GetType("System.String"));
+            dt.Columns.Add("ReportedYear", System.Type.GetType("System.String"));
             dt.Columns.Add("CompanyName", System.Type.GetType("System.String"));
+            dt.Columns.Add("CompanyAddress", System.Type.GetType("System.String"));
             dt.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
-            dt.Columns.Add("Alamat", System.Type.GetType("System.String"));
+            dt.Columns.Add("Poa", System.Type.GetType("System.String"));
             dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
             dt.Columns.Add("Footer", System.Type.GetType("System.String"));
-            dt.Columns.Add("BKC", System.Type.GetType("System.String"));
-            dt.Columns.Add("Period", System.Type.GetType("System.String"));
-            dt.Columns.Add("City", System.Type.GetType("System.String"));
-            dt.Columns.Add("CreatedDate", System.Type.GetType("System.String"));
-            dt.Columns.Add("PoaPrintedName", System.Type.GetType("System.String"));
             dt.Columns.Add("Preview", System.Type.GetType("System.String"));
-            dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("ReportedOnDay", System.Type.GetType("System.String"));
+            dt.Columns.Add("ReportedOnMonth", System.Type.GetType("System.String"));
+            dt.Columns.Add("ReportedOnYear", System.Type.GetType("System.String"));
 
             //item
-            DataTable dtDetail = new DataTable("Lack2Item");
-            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
+            DataTable dtDetail = new DataTable("Ck4cItem");
+            dtDetail.Columns.Add("Ck4cItemId", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("ProdQty", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Uom", System.Type.GetType("System.String"));
 
             ds.Tables.Add(dt);
             ds.Tables.Add(dtDetail);
