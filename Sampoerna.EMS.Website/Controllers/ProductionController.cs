@@ -103,8 +103,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantWerkList = GlobalFunctions.GetPlantAll();
-            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
+            model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
             model.UomList = GlobalFunctions.GetUomList(_uomBll);
 
             return model;
@@ -199,8 +199,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantWerkList = GlobalFunctions.GetPlantAll();
-            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId(model.PlantWerks);
+            model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
             model.UomList = GlobalFunctions.GetUomList(_uomBll);
 
             return model;
