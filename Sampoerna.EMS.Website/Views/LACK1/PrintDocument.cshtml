@@ -18,6 +18,7 @@
 
     <!-- Load the site CSS after Boostrap's to override -->
     <link rel="stylesheet" type="text/css" href="~/Content/css/main.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="~/Content/css/lack1preview.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="~/Content/css/print.css" media="print" />
 
     <!-- Load Font Awesome CSS -->
@@ -35,8 +36,7 @@
     <script src="~/Scripts/js/vendors/jquery.fixedheadertable.min.js"></script>
     <script>
         $(document).ready(function () {
-            window.print();
-            window.onfocus = function () { window.close(); };
+
         });
     </script>
 </head>
@@ -201,8 +201,9 @@
                     for (var i = 1; i < @Model.IncomeList.Count; i++)
                     {
                         <tr>
-                            <td>(@i + 1)</td>
-                            <td>@Model.IncomeList[i].RegistrationNumber - @Model.IncomeList[0].StringRegistrationDate</td>
+                            @{ var rowNumber = i + 1;}
+                            <td>@rowNumber</td>
+                            <td>@Model.IncomeList[i].RegistrationNumber - @Model.IncomeList[i].StringRegistrationDate</td>
                             <td>@Model.IncomeList[i].Amount</td>
                         </tr>
                     }
@@ -276,18 +277,13 @@
                     <td></td>
                     <td></td>
                     <td>
-                        Total:
+                        Total : 
                         @if (@Model.SummaryProductionList.Count > 0)
                         {
-                            <table border="0">
-                                @foreach (var t in @Model.SummaryProductionList)
-                                {
-                                    <tr>
-                                        <td>@t.Amount</td>
-                                        <td>@t.UomDesc</td>
-                                    </tr>
-                                }
-                            </table>
+                            foreach (var t in @Model.SummaryProductionList) 
+                            {
+                                @t.Amount <span> </span> @t.UomDesc <br />
+                            }
                         }
                     </td>
                     <td colspan="2"></td>
