@@ -395,6 +395,20 @@
                                     </div>
                                 </div>
                             </div>
+                            @if (Model.IsCk5Manual)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-5 Manual Type</label>
+                                            <div class="col-md-8">
+                                                @Html.EnumDropDownListFor(model => model.Ck5ManualType, Model.Ck5ManualTypeList, "Select", new { @class = "form-control" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
 
                     </div>
@@ -438,7 +452,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter)
+                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsCk5Manual)
                             {
                                 <div class="row">
                                     <div class="col-md-6">

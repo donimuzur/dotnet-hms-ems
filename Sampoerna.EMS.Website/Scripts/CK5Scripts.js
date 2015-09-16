@@ -72,8 +72,8 @@ function OnReadyFunction(ck5Type) {
             console.log($('#PbckDecreeId').val());
             console.log($(datarows[i][4]));
 
-            if($('#PbckDecreeId').val() == '')
-                isExistPbck1 = false
+            if ($('#PbckDecreeId').val() == '')
+                isExistPbck1 = false;
 
             if (datarows[i][17] != ($('#PbckUom').val()))
                 isSamePbck1Uom = false;
@@ -95,7 +95,7 @@ function OnReadyFunction(ck5Type) {
         $('#collapse5').addClass('in');        
 
 
-        if (ck5Type == 'Export' || ck5Type == 'PortToImporter') {
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter' || ck5Type == 'Manual') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
@@ -141,7 +141,9 @@ function ValidatePbck1Uom() {
 function ValidateRemainQuota(total) {
     // var total = parseFloat($('#GrandTotalEx').val());
     
-    var remainQuota = parseFloat($('#RemainQuota').val());
+    var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val());
+    var totalCk5 = parseFloat($('#Ck5TotalExciseable').val());
+    var remainQuota = pbck1QtyApproved - totalCk5;
     if (total > remainQuota) {
         $('#collapseThree').removeClass('collapse');
         $('#collapseThree').addClass('in');

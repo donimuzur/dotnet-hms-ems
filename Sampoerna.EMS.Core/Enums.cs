@@ -539,13 +539,13 @@ namespace Sampoerna.EMS.Core
         public enum Ck5ManualType
         {
             [Description("Trial")]
-            Trial = 0,
+            Trial = 1,
             [Description("Non Plant (Plant to Exhibition)")]
-            NonPlantPlantToEx = 1,
+            NonPlantPlantToEx = 2,
             [Description("Non Plant (Exhibition to Plant)")]
-            NonPlantExToPlant = 2,
+            NonPlantExToPlant = 3,
             [Description("Market Return")]
-            MarketReturn = 3
+            MarketReturn = 4
         }
     }
 }

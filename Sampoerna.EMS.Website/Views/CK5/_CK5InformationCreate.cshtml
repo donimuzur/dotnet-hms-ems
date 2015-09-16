@@ -370,17 +370,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">CK-5 Manual Type</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Ck5Type, new { @class = "form-control" })
+                            @if (Model.IsCk5Manual)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-5 Manual Type</label>
+                                            <div class="col-md-8">
+                                                @Html.EnumDropDownListFor(model => model.Ck5ManualType, Model.Ck5ManualTypeList, "Select", new { @class = "form-control" })
 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
+                            
                         </div>
 
                     </div>
