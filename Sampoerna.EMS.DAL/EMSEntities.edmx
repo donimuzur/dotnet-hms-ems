@@ -12,7 +12,7 @@
           <Property Name="BACK1_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BACK1_NUMBER" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="BACK1_DATE" Type="datetime" Nullable="false" />
-          <Property Name="PBCK3_PBCK7_ID" Type="int" Nullable="false" />
+          <Property Name="PBCK7_ID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="BACK1_DOCUMENT">
           <Key>
@@ -31,14 +31,6 @@
           <Property Name="BACK3_NUMBER" Type="nvarchar" MaxLength="35" />
           <Property Name="BACK3_DATE" Type="date" />
           <Property Name="PBCK3_PBCK7_ID" Type="int" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="BACK3_CK2_PBCK3_PBCK7">
-          <Key>
-            <PropertyRef Name="BACK3_CK2_PBCK3_PBCK7_ID" />
-          </Key>
-          <Property Name="BACK3_CK2_PBCK3_PBCK7_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="BACK3_DOCUMENT">
           <Key>
@@ -96,7 +88,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CHANGES_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="FORM_ID" Type="nvarchar" MaxLength="50" />
-          <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
+          <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
@@ -719,6 +711,27 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="PBCK3">
+          <Key>
+            <PropertyRef Name="PBCK3_ID" />
+          </Key>
+          <Property Name="PBCK3_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PBCK3_NUMBER" Type="nvarchar" MaxLength="35" Nullable="false" />
+          <Property Name="PBCK3_DATE" Type="date" Nullable="false" />
+          <Property Name="PBCK7_ID" Type="int" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="int" />
+          <Property Name="STATUS" Type="int" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
+          <Property Name="REJECTED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="REJECTED_DATE" Type="datetime" />
+        </EntityType>
         <EntityType Name="PBCK3_PBCK7">
           <Key>
             <PropertyRef Name="PBCK3_PBCK7_ID" />
@@ -832,6 +845,52 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="COLOUR" Type="nvarchar" MaxLength="70" />
           <Property Name="REQUESTED_QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="NO_PENGAWAS" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="PBCK7">
+          <Key>
+            <PropertyRef Name="PBCK7_ID" />
+          </Key>
+          <Property Name="PBCK7_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PBCK7_NUMBER" Type="nvarchar" MaxLength="35" Nullable="false" />
+          <Property Name="PBCK7_DATE" Type="date" Nullable="false" />
+          <Property Name="DOCUMENT_TYPE" Type="int" Nullable="false" />
+          <Property Name="NPPBKC" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="EXEC_DATE_FROM" Type="date" Nullable="false" />
+          <Property Name="EXEC_DATE_TO" Type="date" Nullable="false" />
+          <Property Name="LAMPIRAN" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
+          <Property Name="REJECTED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="REJECTED_DATE" Type="datetime" />
+          <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="PLANT_CITY" Type="nvarchar" MaxLength="35" />
+          <Property Name="GOV_STATUS" Type="int" />
+          <Property Name="STATUS" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PBCK7_ITEM">
+          <Key>
+            <PropertyRef Name="PBCK7_ITEM_ID" />
+          </Key>
+          <Property Name="PBCK7_ITEM_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PBCK7_ID" Type="int" Nullable="false" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" />
+          <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="50" />
+          <Property Name="BRAND_CE" Type="nvarchar" MaxLength="65" />
+          <Property Name="BRAND_CONTENT" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="PBCK7_QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="BACK1_QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="SERIES_VALUE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="HJE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="FISCAL_YEAR" Type="int" />
+          <Property Name="EXCISE_VALUE" Type="decimal" Precision="15" Scale="2" />
         </EntityType>
         <EntityType Name="PLANT_RECEIVE_MATERIAL">
           <Key>
@@ -1255,15 +1314,15 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_BACK1_PBCK3_PBCK7">
-          <End Role="PBCK3_PBCK7" Type="Self.PBCK3_PBCK7" Multiplicity="1" />
+        <Association Name="FK_BACK1_PBCK7">
+          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="1" />
           <End Role="BACK1" Type="Self.BACK1" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="PBCK3_PBCK7">
-              <PropertyRef Name="PBCK3_PBCK7_ID" />
+            <Principal Role="PBCK7">
+              <PropertyRef Name="PBCK7_ID" />
             </Principal>
             <Dependent Role="BACK1">
-              <PropertyRef Name="PBCK3_PBCK7_ID" />
+              <PropertyRef Name="PBCK7_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2187,6 +2246,42 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK3_MANAGER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK3" Type="Self.PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="APPROVED_BY_MANAGER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_MODIFIED_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK3" Type="Self.PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_PBCK7">
+          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="1" />
+          <End Role="PBCK3" Type="Self.PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK7">
+              <PropertyRef Name="PBCK7_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="PBCK7_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PBCK3_PBCK7_APPROVED_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="PBCK3_PBCK7" Type="Self.PBCK3_PBCK7" Multiplicity="*" />
@@ -2256,6 +2351,42 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="PBCK3_PBCK7">
               <PropertyRef Name="REJECTED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_POA">
+          <End Role="POA" Type="Self.POA" Multiplicity="0..1" />
+          <End Role="PBCK3" Type="Self.PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_REJECT">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK3" Type="Self.PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="REJECTED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="PBCK3" Type="Self.PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="CREATED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2352,6 +2483,78 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Principal>
             <Dependent Role="PBCK4">
               <PropertyRef Name="APPROVED_BY_MANAGER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_ITEM_PBCK7">
+          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="1" />
+          <End Role="PBCK7_ITEM" Type="Self.PBCK7_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK7">
+              <PropertyRef Name="PBCK7_ID" />
+            </Principal>
+            <Dependent Role="PBCK7_ITEM">
+              <PropertyRef Name="PBCK7_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_MANAGER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="APPROVED_BY_MANAGER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_MODIFIED_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_POA">
+          <End Role="POA" Type="Self.POA" Multiplicity="0..1" />
+          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_REJECTED_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="REJECTED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="CREATED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2873,11 +3076,14 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySet Name="PBCK1_PROD_CONVERTER" EntityType="Self.PBCK1_PROD_CONVERTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1_PROD_PLAN" EntityType="Self.PBCK1_PROD_PLAN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK1_QUOTA" EntityType="Self.PBCK1_QUOTA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PBCK3" EntityType="Self.PBCK3" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK3_PBCK7" EntityType="Self.PBCK3_PBCK7" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK3_PBCK7_ITEM" EntityType="Self.PBCK3_PBCK7_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK4" EntityType="Self.PBCK4" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK4_DOCUMENT" EntityType="Self.PBCK4_DOCUMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PBCK4_ITEM" EntityType="Self.PBCK4_ITEM" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PBCK7" EntityType="Self.PBCK7" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PBCK7_ITEM" EntityType="Self.PBCK7_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="Self.PLANT_RECEIVE_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA" EntityType="Self.POA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_MAP" EntityType="Self.POA_MAP" Schema="dbo" store:Type="Tables" />
@@ -2906,17 +3112,12 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BACK3_CK2_PBCK3_PBCK7" EntityType="Self.BACK3_CK2_PBCK3_PBCK7" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [BACK3_CK2_PBCK3_PBCK7].[BACK3_CK2_PBCK3_PBCK7_ID] AS [BACK3_CK2_PBCK3_PBCK7_ID]
-    FROM [dbo].[BACK3_CK2_PBCK3_PBCK7] AS [BACK3_CK2_PBCK3_PBCK7]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_BACK1_DOCUMENT_BACK1" Association="Self.FK_BACK1_DOCUMENT_BACK1">
             <End Role="BACK1" EntitySet="BACK1" />
             <End Role="BACK1_DOCUMENT" EntitySet="BACK1_DOCUMENT" />
           </AssociationSet>
-          <AssociationSet Name="FK_BACK1_PBCK3_PBCK7" Association="Self.FK_BACK1_PBCK3_PBCK7">
-            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          <AssociationSet Name="FK_BACK1_PBCK7" Association="Self.FK_BACK1_PBCK7">
+            <End Role="PBCK7" EntitySet="PBCK7" />
             <End Role="BACK1" EntitySet="BACK1" />
           </AssociationSet>
           <AssociationSet Name="FK_BACK3_DOCUMENT_BACK3" Association="Self.FK_BACK3_DOCUMENT_BACK3">
@@ -3223,6 +3424,18 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK1" EntitySet="PBCK1" />
           </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_MANAGER" Association="Self.FK_PBCK3_MANAGER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_MODIFIED_USER" Association="Self.FK_PBCK3_MODIFIED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7" Association="Self.FK_PBCK3_PBCK7">
+            <End Role="PBCK7" EntitySet="PBCK7" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
           <AssociationSet Name="FK_PBCK3_PBCK7_APPROVED_USER" Association="Self.FK_PBCK3_PBCK7_APPROVED_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
@@ -3246,6 +3459,18 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <AssociationSet Name="FK_PBCK3_PBCK7_USER1" Association="Self.FK_PBCK3_PBCK7_USER1">
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_POA" Association="Self.FK_PBCK3_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_REJECT" Association="Self.FK_PBCK3_REJECT">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_USER" Association="Self.FK_PBCK3_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK4_DOCUMENT_PBCK4" Association="Self.FK_PBCK4_DOCUMENT_PBCK4">
             <End Role="PBCK4" EntitySet="PBCK4" />
@@ -3278,6 +3503,30 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <AssociationSet Name="FK_PBCK4_USER1" Association="Self.FK_PBCK4_USER1">
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK4" EntitySet="PBCK4" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_ITEM_PBCK7" Association="Self.FK_PBCK7_ITEM_PBCK7">
+            <End Role="PBCK7" EntitySet="PBCK7" />
+            <End Role="PBCK7_ITEM" EntitySet="PBCK7_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_MANAGER" Association="Self.FK_PBCK7_MANAGER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_MODIFIED_USER" Association="Self.FK_PBCK7_MODIFIED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_POA" Association="Self.FK_PBCK7_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_REJECTED_USER" Association="Self.FK_PBCK7_REJECTED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_USER" Association="Self.FK_PBCK7_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
           </AssociationSet>
           <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_T001W" Association="Self.FK_PLANT_RECEIVE_MATERIAL_T001W">
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
@@ -3797,18 +4046,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="USER" EntitySet="USER" />
             <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
           </AssociationSet>
-          <EntitySet Name="BACK1" EntityType="EMSModel.BACK1" />
-          <EntitySet Name="BACK1_DOCUMENT" EntityType="EMSModel.BACK1_DOCUMENT" />
-          <EntitySet Name="BACK3_CK2_PBCK3_PBCK7" EntityType="EMSModel.BACK3_CK2_PBCK3_PBCK7" />
-          <AssociationSet Name="FK_BACK1_DOCUMENT_BACK1" Association="EMSModel.FK_BACK1_DOCUMENT_BACK1">
-            <End Role="BACK1" EntitySet="BACK1" />
-            <End Role="BACK1_DOCUMENT" EntitySet="BACK1_DOCUMENT" />
-          </AssociationSet>
           <EntitySet Name="PBCK3_PBCK7" EntityType="EMSModel.PBCK3_PBCK7" />
-          <AssociationSet Name="FK_BACK1_PBCK3_PBCK7" Association="EMSModel.FK_BACK1_PBCK3_PBCK7">
-            <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
-            <End Role="BACK1" EntitySet="BACK1" />
-          </AssociationSet>
           <AssociationSet Name="FK_PBCK3_PBCK7_APPROVED_USER" Association="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
@@ -4064,6 +4302,67 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK3_PBCK7" EntitySet="PBCK3_PBCK7" />
           </AssociationSet>
+          <EntitySet Name="BACK1" EntityType="EMSModel.BACK1" />
+          <EntitySet Name="BACK1_DOCUMENT" EntityType="EMSModel.BACK1_DOCUMENT" />
+          <EntitySet Name="PBCK3" EntityType="EMSModel.PBCK3" />
+          <EntitySet Name="PBCK7" EntityType="EMSModel.PBCK7" />
+          <EntitySet Name="PBCK7_ITEM" EntityType="EMSModel.PBCK7_ITEM" />
+          <AssociationSet Name="FK_BACK1_DOCUMENT_BACK1" Association="EMSModel.FK_BACK1_DOCUMENT_BACK1">
+            <End Role="BACK1" EntitySet="BACK1" />
+            <End Role="BACK1_DOCUMENT" EntitySet="BACK1_DOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BACK1_PBCK7" Association="EMSModel.FK_BACK1_PBCK7">
+            <End Role="PBCK7" EntitySet="PBCK7" />
+            <End Role="BACK1" EntitySet="BACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_MANAGER" Association="EMSModel.FK_PBCK3_MANAGER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_MODIFIED_USER" Association="EMSModel.FK_PBCK3_MODIFIED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_PBCK7" Association="EMSModel.FK_PBCK3_PBCK7">
+            <End Role="PBCK7" EntitySet="PBCK7" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_POA" Association="EMSModel.FK_PBCK3_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_REJECT" Association="EMSModel.FK_PBCK3_REJECT">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK3_USER" Association="EMSModel.FK_PBCK3_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK3" EntitySet="PBCK3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_ITEM_PBCK7" Association="EMSModel.FK_PBCK7_ITEM_PBCK7">
+            <End Role="PBCK7" EntitySet="PBCK7" />
+            <End Role="PBCK7_ITEM" EntitySet="PBCK7_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_MANAGER" Association="EMSModel.FK_PBCK7_MANAGER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_MODIFIED_USER" Association="EMSModel.FK_PBCK7_MODIFIED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_POA" Association="EMSModel.FK_PBCK7_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_REJECTED_USER" Association="EMSModel.FK_PBCK7_REJECTED_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK7_USER" Association="EMSModel.FK_PBCK7_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK7" EntitySet="PBCK7" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -4078,7 +4377,7 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CHANGES_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
           <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="FIELD_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="FIELD_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="OLD_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="NEW_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
@@ -4938,6 +5237,14 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="CK4C_DECREE_DOC" Relationship="EMSModel.FK_CK4C_DECREE_DOC_USER" FromRole="USER" ToRole="CK4C_DECREE_DOC" />
           <NavigationProperty Name="PBCK3_PBCK73" Relationship="EMSModel.FK_PBCK3_PBCK7_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
           <NavigationProperty Name="PBCK3_PBCK74" Relationship="EMSModel.FK_PBCK3_PBCK7_USER1" FromRole="USER" ToRole="PBCK3_PBCK7" />
+          <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_MANAGER" FromRole="USER" ToRole="PBCK3" />
+          <NavigationProperty Name="PBCK31" Relationship="EMSModel.FK_PBCK3_MODIFIED_USER" FromRole="USER" ToRole="PBCK3" />
+          <NavigationProperty Name="PBCK32" Relationship="EMSModel.FK_PBCK3_REJECT" FromRole="USER" ToRole="PBCK3" />
+          <NavigationProperty Name="PBCK33" Relationship="EMSModel.FK_PBCK3_USER" FromRole="USER" ToRole="PBCK3" />
+          <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_MANAGER" FromRole="USER" ToRole="PBCK7" />
+          <NavigationProperty Name="PBCK71" Relationship="EMSModel.FK_PBCK7_MODIFIED_USER" FromRole="USER" ToRole="PBCK7" />
+          <NavigationProperty Name="PBCK72" Relationship="EMSModel.FK_PBCK7_REJECTED_USER" FromRole="USER" ToRole="PBCK7" />
+          <NavigationProperty Name="PBCK73" Relationship="EMSModel.FK_PBCK7_USER" FromRole="USER" ToRole="PBCK7" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -5303,6 +5610,8 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA" ToRole="POA_MAP" />
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_POA" FromRole="POA" ToRole="CK4C" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_POA" FromRole="POA" ToRole="PBCK4" />
+          <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_POA" FromRole="POA" ToRole="PBCK3" />
+          <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_POA" FromRole="POA" ToRole="PBCK7" />
         </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
@@ -5920,45 +6229,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="BACK1">
-          <Key>
-            <PropertyRef Name="BACK1_ID" />
-          </Key>
-          <Property Name="BACK1_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BACK1_NUMBER" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="BACK1_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="PBCK3_PBCK7_ID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="BACK1_DOCUMENT" Relationship="EMSModel.FK_BACK1_DOCUMENT_BACK1" FromRole="BACK1" ToRole="BACK1_DOCUMENT" />
-          <NavigationProperty Name="PBCK3_PBCK7" Relationship="EMSModel.FK_BACK1_PBCK3_PBCK7" FromRole="BACK1" ToRole="PBCK3_PBCK7" />
-        </EntityType>
-        <EntityType Name="BACK1_DOCUMENT">
-          <Key>
-            <PropertyRef Name="BACK1_DOCUMENT_ID" />
-          </Key>
-          <Property Name="BACK1_DOCUMENT_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BACK1" Type="Int32" Nullable="false" />
-          <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="BACK11" Relationship="EMSModel.FK_BACK1_DOCUMENT_BACK1" FromRole="BACK1_DOCUMENT" ToRole="BACK1" />
-        </EntityType>
-        <EntityType Name="BACK3_CK2_PBCK3_PBCK7">
-          <Key>
-            <PropertyRef Name="BACK3_CK2_PBCK3_PBCK7_ID" />
-          </Key>
-          <Property Name="BACK3_CK2_PBCK3_PBCK7_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-        </EntityType>
-        <Association Name="FK_BACK1_DOCUMENT_BACK1">
-          <End Type="EMSModel.BACK1" Role="BACK1" Multiplicity="1" />
-          <End Type="EMSModel.BACK1_DOCUMENT" Role="BACK1_DOCUMENT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BACK1">
-              <PropertyRef Name="BACK1_ID" />
-            </Principal>
-            <Dependent Role="BACK1_DOCUMENT">
-              <PropertyRef Name="BACK1" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="PBCK3_PBCK7">
           <Key>
             <PropertyRef Name="PBCK3_PBCK7_ID" />
@@ -5985,7 +6255,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="BACK1" Relationship="EMSModel.FK_BACK1_PBCK3_PBCK7" FromRole="PBCK3_PBCK7" ToRole="BACK1" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER" FromRole="PBCK3_PBCK7" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK3_PBCK7_CREATED_USER" FromRole="PBCK3_PBCK7" ToRole="USER" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK3_PBCK7_MODIFIED_USER" FromRole="PBCK3_PBCK7" ToRole="USER" />
@@ -5999,18 +6268,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
           <NavigationProperty Name="USER3" Relationship="EMSModel.FK_PBCK3_PBCK7_USER" FromRole="PBCK3_PBCK7" ToRole="USER" />
           <NavigationProperty Name="USER4" Relationship="EMSModel.FK_PBCK3_PBCK7_USER1" FromRole="PBCK3_PBCK7" ToRole="USER" />
         </EntityType>
-        <Association Name="FK_BACK1_PBCK3_PBCK7">
-          <End Type="EMSModel.PBCK3_PBCK7" Role="PBCK3_PBCK7" Multiplicity="1" />
-          <End Type="EMSModel.BACK1" Role="BACK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PBCK3_PBCK7">
-              <PropertyRef Name="PBCK3_PBCK7_ID" />
-            </Principal>
-            <Dependent Role="BACK1">
-              <PropertyRef Name="PBCK3_PBCK7_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PBCK3_PBCK7_APPROVED_USER">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.PBCK3_PBCK7" Role="PBCK3_PBCK7" Multiplicity="*" />
@@ -7217,6 +7474,277 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="BACK1">
+          <Key>
+            <PropertyRef Name="BACK1_ID" />
+          </Key>
+          <Property Name="BACK1_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BACK1_NUMBER" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="BACK1_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PBCK7_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="BACK1_DOCUMENT" Relationship="EMSModel.FK_BACK1_DOCUMENT_BACK1" FromRole="BACK1" ToRole="BACK1_DOCUMENT" />
+          <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_BACK1_PBCK7" FromRole="BACK1" ToRole="PBCK7" />
+        </EntityType>
+        <EntityType Name="BACK1_DOCUMENT">
+          <Key>
+            <PropertyRef Name="BACK1_DOCUMENT_ID" />
+          </Key>
+          <Property Name="BACK1_DOCUMENT_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BACK1" Type="Int32" Nullable="false" />
+          <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BACK11" Relationship="EMSModel.FK_BACK1_DOCUMENT_BACK1" FromRole="BACK1_DOCUMENT" ToRole="BACK1" />
+        </EntityType>
+        <EntityType Name="PBCK3">
+          <Key>
+            <PropertyRef Name="PBCK3_ID" />
+          </Key>
+          <Property Name="PBCK3_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PBCK3_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PBCK3_DATE" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PBCK7_ID" Type="Int32" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REJECTED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK3_MANAGER" FromRole="PBCK3" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK3_MODIFIED_USER" FromRole="PBCK3" ToRole="USER" />
+          <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK3_PBCK7" FromRole="PBCK3" ToRole="PBCK7" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_PBCK3_POA" FromRole="PBCK3" ToRole="POA" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK3_REJECT" FromRole="PBCK3" ToRole="USER" />
+          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_PBCK3_USER" FromRole="PBCK3" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="PBCK7">
+          <Key>
+            <PropertyRef Name="PBCK7_ID" />
+          </Key>
+          <Property Name="PBCK7_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PBCK7_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PBCK7_DATE" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="DOCUMENT_TYPE" Type="EMSModel.DocumentTypePbck7AndPbck3" Nullable="false" />
+          <Property Name="NPPBKC" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="EXEC_DATE_FROM" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EXEC_DATE_TO" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="LAMPIRAN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REJECTED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="BACK1" Relationship="EMSModel.FK_BACK1_PBCK7" FromRole="PBCK7" ToRole="BACK1" />
+          <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_PBCK7" FromRole="PBCK7" ToRole="PBCK3" />
+          <NavigationProperty Name="PBCK7_ITEM" Relationship="EMSModel.FK_PBCK7_ITEM_PBCK7" FromRole="PBCK7" ToRole="PBCK7_ITEM" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK7_MANAGER" FromRole="PBCK7" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK7_MODIFIED_USER" FromRole="PBCK7" ToRole="USER" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_PBCK7_POA" FromRole="PBCK7" ToRole="POA" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK7_REJECTED_USER" FromRole="PBCK7" ToRole="USER" />
+          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_PBCK7_USER" FromRole="PBCK7" ToRole="USER" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_CITY" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PBCK7_ITEM">
+          <Key>
+            <PropertyRef Name="PBCK7_ITEM_ID" />
+          </Key>
+          <Property Name="PBCK7_ITEM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PBCK7_ID" Type="Int32" Nullable="false" />
+          <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CE" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CONTENT" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="PBCK7_QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BACK1_QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="SERIES_VALUE" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="HJE" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="FISCAL_YEAR" Type="Int32" />
+          <Property Name="EXCISE_VALUE" Type="Decimal" Precision="15" Scale="2" />
+          <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_ITEM_PBCK7" FromRole="PBCK7_ITEM" ToRole="PBCK7" />
+        </EntityType>
+        <Association Name="FK_BACK1_DOCUMENT_BACK1">
+          <End Type="EMSModel.BACK1" Role="BACK1" Multiplicity="1" />
+          <End Type="EMSModel.BACK1_DOCUMENT" Role="BACK1_DOCUMENT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BACK1">
+              <PropertyRef Name="BACK1_ID" />
+            </Principal>
+            <Dependent Role="BACK1_DOCUMENT">
+              <PropertyRef Name="BACK1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BACK1_PBCK7">
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="1" />
+          <End Type="EMSModel.BACK1" Role="BACK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK7">
+              <PropertyRef Name="PBCK7_ID" />
+            </Principal>
+            <Dependent Role="BACK1">
+              <PropertyRef Name="PBCK7_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_MANAGER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK3" Role="PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="APPROVED_BY_MANAGER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_MODIFIED_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK3" Role="PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_PBCK7">
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="1" />
+          <End Type="EMSModel.PBCK3" Role="PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK7">
+              <PropertyRef Name="PBCK7_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="PBCK7_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_POA">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK3" Role="PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_REJECT">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK3" Role="PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="REJECTED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK3_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.PBCK3" Role="PBCK3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK3">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_ITEM_PBCK7">
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="1" />
+          <End Type="EMSModel.PBCK7_ITEM" Role="PBCK7_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK7">
+              <PropertyRef Name="PBCK7_ID" />
+            </Principal>
+            <Dependent Role="PBCK7_ITEM">
+              <PropertyRef Name="PBCK7_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_MANAGER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="APPROVED_BY_MANAGER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_MODIFIED_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_POA">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_REJECTED_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="REJECTED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK7_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK7">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8015,33 +8543,6 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BACK1">
-            <EntityTypeMapping TypeName="EMSModel.BACK1">
-              <MappingFragment StoreEntitySet="BACK1">
-                <ScalarProperty Name="PBCK3_PBCK7_ID" ColumnName="PBCK3_PBCK7_ID" />
-                <ScalarProperty Name="BACK1_DATE" ColumnName="BACK1_DATE" />
-                <ScalarProperty Name="BACK1_NUMBER" ColumnName="BACK1_NUMBER" />
-                <ScalarProperty Name="BACK1_ID" ColumnName="BACK1_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="BACK1_DOCUMENT">
-            <EntityTypeMapping TypeName="EMSModel.BACK1_DOCUMENT">
-              <MappingFragment StoreEntitySet="BACK1_DOCUMENT">
-                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
-                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
-                <ScalarProperty Name="BACK1" ColumnName="BACK1" />
-                <ScalarProperty Name="BACK1_DOCUMENT_ID" ColumnName="BACK1_DOCUMENT_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="BACK3_CK2_PBCK3_PBCK7">
-            <EntityTypeMapping TypeName="EMSModel.BACK3_CK2_PBCK3_PBCK7">
-              <MappingFragment StoreEntitySet="BACK3_CK2_PBCK3_PBCK7">
-                <ScalarProperty Name="BACK3_CK2_PBCK3_PBCK7_ID" ColumnName="BACK3_CK2_PBCK3_PBCK7_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PBCK3_PBCK7">
             <EntityTypeMapping TypeName="EMSModel.PBCK3_PBCK7">
               <MappingFragment StoreEntitySet="PBCK3_PBCK7">
@@ -8531,6 +9032,96 @@ warning 6002: The table/view 'EMS-DEV2.dbo.BACK3_CK2_PBCK3_PBCK7' does not have 
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="PBCK3_PBCK7_ID" ColumnName="PBCK3_PBCK7_ID" />
                 <ScalarProperty Name="PBCK3_PBCK7_ITEM_ID" ColumnName="PBCK3_PBCK7_ITEM_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BACK1">
+            <EntityTypeMapping TypeName="EMSModel.BACK1">
+              <MappingFragment StoreEntitySet="BACK1">
+                <ScalarProperty Name="PBCK7_ID" ColumnName="PBCK7_ID" />
+                <ScalarProperty Name="BACK1_DATE" ColumnName="BACK1_DATE" />
+                <ScalarProperty Name="BACK1_NUMBER" ColumnName="BACK1_NUMBER" />
+                <ScalarProperty Name="BACK1_ID" ColumnName="BACK1_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BACK1_DOCUMENT">
+            <EntityTypeMapping TypeName="EMSModel.BACK1_DOCUMENT">
+              <MappingFragment StoreEntitySet="BACK1_DOCUMENT">
+                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+                <ScalarProperty Name="BACK1" ColumnName="BACK1" />
+                <ScalarProperty Name="BACK1_DOCUMENT_ID" ColumnName="BACK1_DOCUMENT_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PBCK3">
+            <EntityTypeMapping TypeName="EMSModel.PBCK3">
+              <MappingFragment StoreEntitySet="PBCK3">
+                <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />
+                <ScalarProperty Name="REJECTED_BY" ColumnName="REJECTED_BY" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
+                <ScalarProperty Name="PBCK7_ID" ColumnName="PBCK7_ID" />
+                <ScalarProperty Name="PBCK3_DATE" ColumnName="PBCK3_DATE" />
+                <ScalarProperty Name="PBCK3_NUMBER" ColumnName="PBCK3_NUMBER" />
+                <ScalarProperty Name="PBCK3_ID" ColumnName="PBCK3_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PBCK7">
+            <EntityTypeMapping TypeName="EMSModel.PBCK7">
+              <MappingFragment StoreEntitySet="PBCK7">
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
+                <ScalarProperty Name="PLANT_CITY" ColumnName="PLANT_CITY" />
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />
+                <ScalarProperty Name="REJECTED_BY" ColumnName="REJECTED_BY" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="LAMPIRAN" ColumnName="LAMPIRAN" />
+                <ScalarProperty Name="EXEC_DATE_TO" ColumnName="EXEC_DATE_TO" />
+                <ScalarProperty Name="EXEC_DATE_FROM" ColumnName="EXEC_DATE_FROM" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="NPPBKC" ColumnName="NPPBKC" />
+                <ScalarProperty Name="DOCUMENT_TYPE" ColumnName="DOCUMENT_TYPE" />
+                <ScalarProperty Name="PBCK7_DATE" ColumnName="PBCK7_DATE" />
+                <ScalarProperty Name="PBCK7_NUMBER" ColumnName="PBCK7_NUMBER" />
+                <ScalarProperty Name="PBCK7_ID" ColumnName="PBCK7_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PBCK7_ITEM">
+            <EntityTypeMapping TypeName="EMSModel.PBCK7_ITEM">
+              <MappingFragment StoreEntitySet="PBCK7_ITEM">
+                <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
+                <ScalarProperty Name="FISCAL_YEAR" ColumnName="FISCAL_YEAR" />
+                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
+                <ScalarProperty Name="HJE" ColumnName="HJE" />
+                <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
+                <ScalarProperty Name="BACK1_QTY" ColumnName="BACK1_QTY" />
+                <ScalarProperty Name="PBCK7_QTY" ColumnName="PBCK7_QTY" />
+                <ScalarProperty Name="BRAND_CONTENT" ColumnName="BRAND_CONTENT" />
+                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
+                <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="PBCK7_ID" ColumnName="PBCK7_ID" />
+                <ScalarProperty Name="PBCK7_ITEM_ID" ColumnName="PBCK7_ITEM_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

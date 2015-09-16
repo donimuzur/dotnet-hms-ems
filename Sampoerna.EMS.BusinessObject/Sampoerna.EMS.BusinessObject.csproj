@@ -57,9 +57,6 @@
     <Compile Include="BACK3.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="BACK3_CK2_PBCK3_PBCK7.cs">
-      <DependentUpon>EMSEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="BACK3_DOCUMENT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -158,9 +155,9 @@
     <Compile Include="DTOs\Pbck1QuotaDto.cs" />
     <Compile Include="DTOs\Pbck1ReportDto.cs" />
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
-    <Compile Include="DTOs\Pbck4DocumentsDto.cs" />
     <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck4ItemDto.cs" />
+    <Compile Include="DTOs\Pbck4ReportDto.cs" />
     <Compile Include="DTOs\PBCK4_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
     <Compile Include="DTOs\POADto.cs" />
@@ -326,6 +323,9 @@
     <Compile Include="PBCK1_QUOTA.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="PBCK3.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="PBCK3_PBCK7.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -339,6 +339,12 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PBCK4_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK7.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PBCK7_ITEM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="PLANT_RECEIVE_MATERIAL.cs">
