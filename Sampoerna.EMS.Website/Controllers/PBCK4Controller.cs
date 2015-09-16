@@ -224,6 +224,8 @@ namespace Sampoerna.EMS.Website.Controllers
           
             var dataToSave = Mapper.Map<Pbck4Dto>(model);
 
+            dataToSave.APPROVED_BY_POA = null;
+
             var input = new Pbck4SaveInput()
             {
                 Pbck4Dto = dataToSave,

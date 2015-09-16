@@ -23,7 +23,6 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.PLANT_NAME))
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.REPORTED_ON))
-                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS))
                 .ForMember(dest => dest.IsWaitingGovApproval, opt => opt.MapFrom(src => src.STATUS == Enums.DocumentStatus.WaitingGovApproval))
                 .ForMember(dest => dest.Pbck4DocumentDtos, opt => opt.MapFrom(src => Mapper.Map<List<PBCK4_DOCUMENTDto>>(src.PBCK4_DOCUMENT)))
