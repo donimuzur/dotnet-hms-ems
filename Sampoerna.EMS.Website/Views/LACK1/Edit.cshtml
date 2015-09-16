@@ -182,6 +182,10 @@
             $('#GovStatus').on('change', function() {
                 onGovStatusChange();
             });
+            
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportClientsListToExcel", "Lack1", new { id = Model.Lack1Id })';
+            });
 
         });
 

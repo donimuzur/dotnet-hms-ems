@@ -81,7 +81,6 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowApproveAndReject { get; set; }
         public bool AllowManagerReject { get; set; }
-        public bool AllowPrintDocument { get; set; }
         public string Comment { get; set; }
         public Enums.LACK1Type Lack1Type { get; set; }
         public string MenuPlantAddClassCss { get; set; }

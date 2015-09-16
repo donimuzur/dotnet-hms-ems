@@ -4,6 +4,8 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -11,6 +13,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.LACK1;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.PrintHistory;
@@ -466,14 +469,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region ----------------PrintPreview-------------
 
-        public ActionResult PrintPreview(int? id, Enums.LACK1Type? lType)
+        [EncryptedParameter]
+        public ActionResult PrintPreview(int? id)
         {
             if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
-
-            if (!lType.HasValue)
             {
                 return HttpNotFound();
             }
@@ -491,10 +490,29 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
             model.PrintOutTitle = "Preview LACK-1";
             return View("PrintDocument", model);
-            //return PartialView("PrintDocument", model);
-            //return new RazorPDF.PdfResult(model, "PrintDocument");
-            //var fileName = "lack1-pdf-" + DateTime.Now.ToString("ddMMyyyyHHmmss");
-            //return Pdf(fileName, "PrintDocument", model);
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintOut(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetPrintOutData(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = Mapper.Map<Lack1PrintOutModel>(lack1Data);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            model.PrintOutTitle = "LACK-1";
+            return View("PrintDocument", model);
         }
 
         #endregion
@@ -900,7 +918,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //add to print history
             var input = new PrintHistoryDto()
             {
-                FORM_TYPE_ID = Enums.FormType.PBCK1,
+                FORM_TYPE_ID = Enums.FormType.LACK1,
                 FORM_ID = lack1Data.Lack1Id,
                 FORM_NUMBER = lack1Data.Lack1Number,
                 PRINT_DATE = DateTime.Now,
@@ -914,6 +932,51 @@ namespace Sampoerna.EMS.Website.Controllers
                     Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack1Data.Lack1Number))
             };
             return PartialView("_PrintHistoryTable", model);
+
+        }
+
+        public void ExportClientsListToExcel(int id)
+        {
+
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.LACK1, id.ToString());
+
+            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+
+            var grid = new GridView
+            {
+                DataSource = from d in model
+                             select new
+                             {
+                                 Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty,
+                                 FieldName = d.FIELD_NAME,
+                                 OldValue = d.OLD_VALUE,
+                                 NewValue = d.NEW_VALUE,
+                                 User = d.USERNAME
+
+                             }
+            };
+
+            grid.DataBind();
+
+            var fileName = "PBCK1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
 
         }
 
