@@ -487,13 +487,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = Mapper.Map<Lack1PrintOutModel>(lack1Data);
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
-            model.SummaryProductionList.Add(new Lack1SummaryProductionItemModel()
-            {
-                Amount = 90000,
-                UomId = "Test",
-                UomDesc = "Test Desc"
-            });
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);            
             model.PrintOutTitle = "Preview LACK-1";
             return View("PrintDocument", model);
         }
