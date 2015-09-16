@@ -10,6 +10,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class Pbck7AndPbck3Dto
     {
+        public Pbck7AndPbck3Dto()
+        {
+            Pbck3Status = Enums.DocumentStatus.Draft;
+        }
+
         public int Pbck7Id { get; set; }
         public string Pbck7Number { get; set; }
         public string Pbck3Number { get; set; }
@@ -31,7 +36,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ApprovedByManager { get; set; }
         public DateTime? ApprovedDateManager { get; set; }
 
-        public string RejectedBy { get; set; }
+        public string RejectedBy { get; set; } 
         public DateTime? RejectedDate { get; set; }
        
        
