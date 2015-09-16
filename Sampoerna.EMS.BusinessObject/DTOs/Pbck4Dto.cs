@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
@@ -40,5 +41,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Enums.DocumentStatus Status { get; set; }
 
         public bool IsWaitingGovApproval { get; set; }
+
+        public List<PBCK4_DOCUMENTDto> Pbck4DocumentDtos { get; set; }
     }
 }

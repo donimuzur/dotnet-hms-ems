@@ -71,9 +71,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string CommentGov { get; set; }
 
         public List<HttpPostedFileBase> Pbck4FileUploadFileList { get; set; }
+
+        //back-1
         public List<Pbck4FileUploadViewModel> Pbck4FileUploadModelList { get; set; }
 
         public List<HttpPostedFileBase> Pbck4FileUploadFileList2 { get; set; }
+        //ck-3
         public List<Pbck4FileUploadViewModel> Pbck4FileUploadModelList2 { get; set; }
     }
 

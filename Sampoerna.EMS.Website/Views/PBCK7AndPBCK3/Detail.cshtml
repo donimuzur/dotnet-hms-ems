@@ -6,9 +6,9 @@
     ViewBag.Title = "Edit";
 }
 
-@using (@Html.BeginForm("Edit", "PBCK7AndPBCK3", FormMethod.Post, new { @id = "form-pbck7-edit", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Detail", "PBCK7AndPBCK3", FormMethod.Post, new {@id = "form-pbck7-detail", @class = "form-excise", role = "form", enctype = "multipart/form-data"}))
 {
-  
+    @Html.HiddenFor(x=>x.ActionType)
     @Html.HiddenFor(x => x.IsSaveSubmit)
     @Html.HiddenFor(x => x.Id)
     @Html.HiddenFor(x => x.CreatedBy)
@@ -31,23 +31,30 @@
                 <h3>PBCK-7</h3>
                 <label class="status">@Model.Pbck7StatusName</label>
                 <div class="action-button">
-                    @if (Model.AllowGovApproveAndReject)
+                    @if (Model.AllowApproveAndReject)
                     {
-                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                        <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
+
+                        <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                     }
-                    else if (Model.AllowEditAndSubmit)
+                    else
                     {
-                        <input type="submit" class="btn btn-blue" value="Save" />
+                        if (Model.AllowManagerReject)
+                        {
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                        }
                     }
 
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7Pbck3", new { id = @Model.Id })')" />
-                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick=" printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new {id = @Model.Id})') " />
 
-                    @if (Model.Pbck7Status == Enums.DocumentStatus.Draft
-                        && Model.AllowEditAndSubmit)
+                    @*@if (Model.do == Enums.DocumentStatus.Completed)
                     {
-                        <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
                     }
+                    else
+                    {
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-doc" />
+                    }*@
                 </div>
             </div>
         </div>
@@ -69,7 +76,7 @@
 
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        @Html.Partial("_HomeEdit")
+                        @Html.Partial("_HomeDetail")
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_Upload")
                     </div>
@@ -77,24 +84,24 @@
             </div>
         </div>
     </div>
-    <div id="pbck7Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+}
+    <div id="pbck7ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h3>Submit</h3>
+                    <h3>Approve</h3>
                 </div>
                 <div class="modal-body">
-                    Submit Documents  ?
+                    Approve Documents  ?
                 </div>
                 <div class="modal-footer">
-                    <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                    <input type="button" id="btnApproveConfirm" class="btn btn-blue" value="Yes" />
                     <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
                 </div>
             </div>
         </div>
     </div>
-}
 
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -102,8 +109,14 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script type="text/javascript">
         var uploaditems = [];
-        
+        $("#btnApproveConfirm").click(function () {
+            $('#ActionType').val('Approve');
+            $('#form-pbck7-detail').submit();
+        });
+        $('#btnApprove').click(function () {
 
+            $('#pbck7ApproveModal').modal('show');
+        });
         $("#btnSubmitConfirm").click(function() {
             $('#IsSaveSubmit').val('true');
             $('#form-pbck7-edit').submit();
