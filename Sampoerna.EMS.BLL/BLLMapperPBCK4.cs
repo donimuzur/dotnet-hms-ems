@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS))
                 .ForMember(dest => dest.IsWaitingGovApproval, opt => opt.MapFrom(src => src.STATUS == Enums.DocumentStatus.WaitingGovApproval))
+                .ForMember(dest => dest.Pbck4DocumentDtos, opt => opt.MapFrom(src => Mapper.Map<List<PBCK4_DOCUMENTDto>>(src.PBCK4_DOCUMENT)))
                 ;
 
             Mapper.CreateMap<Pbck4Dto, PBCK4>().IgnoreAllNonExisting()
@@ -46,6 +47,10 @@ namespace Sampoerna.EMS.BLL
                ;
 
             Mapper.CreateMap<Pbck4ItemDto, PBCK4_ITEM>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<PBCK4_DOCUMENTDto, PBCK4_DOCUMENT>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<PBCK4_DOCUMENT, PBCK4_DOCUMENTDto>().IgnoreAllNonExisting();
         }
     }
 }

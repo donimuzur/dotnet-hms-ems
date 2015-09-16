@@ -15,5 +15,7 @@ namespace Sampoerna.EMS.Contract
         Pbck7AndPbck3Dto GetById(int? id);
 
         void Insert(Pbck7AndPbck3Dto pbck7AndPbck3Dto);
+
+        void InsertPbck7(Pbck7AndPbck3Dto pbck7AndPbck3Dto);
     }
 }

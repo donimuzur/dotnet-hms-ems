@@ -1,4 +1,12 @@
-﻿$('#MenuCk4cDocumentList').addClass('active');
+﻿$(document).ready(function () {
+    if ($('#btnCancelCompleted').length)
+    {
+        $('#MenuCk4cCompleted').addClass('active');
+    }
+    else {
+        $('#MenuCk4cDocumentList').addClass('active');
+    }
+});
 
 function ValidateInput() {
     var result = true;

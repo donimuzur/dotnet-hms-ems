@@ -68,20 +68,20 @@ var file_sk2 = 0;
 
 $('#upload-file-sk2').click(function () {
 
-    var poa_sk = [];
-    for (var i = 0; i <= file_sk ; i++) {
+    var poa_sk2 = [];
+    for (var i = 0; i <= file_sk2 ; i++) {
         var fileName = $('#Pbck4FileUploadFileList2_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        poa_sk.push(name);
+        poa_sk2.push(name);
     }
 
 
 
     $('#poa-files2').html("");
-    for (var j = 0; j < poa_sk.length; j++) {
+    for (var j = 0; j < poa_sk2.length; j++) {
         var attachmentDiv = '<div class="row">' +
        '<div class="col-xs-8 col-sm-10 col-md-8 col-lg-10"> ' +
-       '<a href="#" id="poa_sk' + j + '">' + poa_sk[j] + '</a>' +
+       '<a href="#" id="poa_sk2' + j + '">' + poa_sk2[j] + '</a>' +
        '</div>' +
        '<div class="col-xs-4 col-sm-2 col-md-4 col-lg-2">' +
        '<button type="button" class="btn btn-danger full" onclick="removeUploadButton2(' + j + ')" ><i class="fa fa-times"></i></button>	' +

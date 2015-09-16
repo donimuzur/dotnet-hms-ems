@@ -114,6 +114,8 @@ namespace Sampoerna.EMS.Website
                 ;
 
             Mapper.CreateMap<Pbck4FileUploadViewModel, PBCK4_DOCUMENTDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<PBCK4_DOCUMENTDto, Pbck4FileUploadViewModel>().IgnoreAllNonExisting();
         }
     }
 }

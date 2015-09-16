@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.BusinessObject
         public int PBCK7_ID { get; set; }
         public string PBCK7_NUMBER { get; set; }
         public System.DateTime PBCK7_DATE { get; set; }
-        public int DOCUMENT_TYPE { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentTypePbck7AndPbck3 DOCUMENT_TYPE { get; set; }
         public string NPPBKC { get; set; }
         public string PLANT_ID { get; set; }
         public System.DateTime EXEC_DATE_FROM { get; set; }
@@ -40,6 +40,10 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_BY_MANAGER_DATE { get; set; }
         public string REJECTED_BY { get; set; }
         public Nullable<System.DateTime> REJECTED_DATE { get; set; }
+        public string PLANT_NAME { get; set; }
+        public string PLANT_CITY { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
     
         public virtual ICollection<BACK1> BACK1 { get; set; }
         public virtual ICollection<PBCK3> PBCK3 { get; set; }
