@@ -76,5 +76,16 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public bool IsSaveSubmit { get; set; }
 
         public string ActionType { get; set; }
+
+        public string Back1Number { get; set; }
+
+        public DateTime? Back1Date { get; set; }
+
+        public string Back1Lampiran { get; set; }
+
+        public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
+
+        public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
+
     }
 }

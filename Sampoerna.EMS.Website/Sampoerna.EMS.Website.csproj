@@ -1104,6 +1104,7 @@
     <Content Include="Views\PBCK7AndPBCK3\Edit.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_HomeDetail.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Detail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Back1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
