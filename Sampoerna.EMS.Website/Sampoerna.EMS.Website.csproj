@@ -862,6 +862,7 @@
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
+    <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
     <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Web.config">
@@ -1071,8 +1072,6 @@
     <Content Include="Views\LACK2\_PrintOut.cshtml" />
     <Content Include="Views\LACK2\_ChangesLog.cshtml" />
     <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
-    <Content Include="Views\LACK1\PrintDocument.cshtml" />
-    <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
     <Content Include="Views\Production\Create.cshtml" />
