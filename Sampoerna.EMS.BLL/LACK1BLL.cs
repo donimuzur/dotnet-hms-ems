@@ -827,7 +827,7 @@ namespace Sampoerna.EMS.BLL
                     Data = null
                 };
 
-            var stoReceiverNumberList = rc.IncomeList.Select(d => d.StoReceiverNumber).ToList();
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).ToList();
 
             //Get Data from Inventory_Movement
             var mvtTypeForUsage = new List<string>
@@ -1092,8 +1092,9 @@ namespace Sampoerna.EMS.BLL
                 ProductAlias = g.ProductAlias,
                 UomId = g.UomId,
                 UomDesc = g.UomDesc,
-                Amount = (g.Amount / totalAmount) * ((totalUsageInCk5 / totalUsage) * totalUsage)
+                //Amount = (g.Amount / totalAmount) * ((totalUsageInCk5 / totalUsage) * totalUsage)
                 //Amount = (g.Amount) //just for testing
+                Amount = Math.Round(((totalUsageInCk5 / totalUsage) * g.Amount), 2)
             });
 
             return dToReturn.ToList();

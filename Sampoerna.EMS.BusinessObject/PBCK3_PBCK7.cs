@@ -16,7 +16,6 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public PBCK3_PBCK7()
         {
-            this.BACK1 = new HashSet<BACK1>();
             this.BACK3 = new HashSet<BACK3>();
             this.CK2 = new HashSet<CK2>();
             this.PBCK3_PBCK7_ITEM = new HashSet<PBCK3_PBCK7_ITEM>();
@@ -37,7 +36,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> EXEC_DATE_FROM { get; set; }
         public Nullable<System.DateTime> EXEC_DATE_TO { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatusGov GOV_STATUS { get; set; }
-        public int STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatus> STATUS { get; set; }
         public string APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public string CREATED_BY { get; set; }
@@ -49,7 +48,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string REJECTED_BY { get; set; }
         public Nullable<System.DateTime> REJECTED_DATE { get; set; }
     
-        public virtual ICollection<BACK1> BACK1 { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual USER USER2 { get; set; }

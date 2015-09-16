@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.NPPBKC_ID = exisitingPlant.NPPBKC_ID;
                             item.PHONE = exisitingPlant.PHONE;
                             item.SKEPTIS = exisitingPlant.SKEPTIS;
+                            item.NPPBKC_IMPORT_ID = exisitingPlant.NPPBKC_IMPORT_ID;
                             item.IS_MAIN_PLANT = exisitingPlant.IS_MAIN_PLANT;
                             item.CREATED_BY = exisitingPlant.CREATED_BY;
                             item.CREATED_DATE = exisitingPlant.CREATED_DATE;
