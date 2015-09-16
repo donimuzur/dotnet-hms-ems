@@ -215,8 +215,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             SelectList data;
             T001WDto dataPlant = _plantBll.GetT001WById(plantId);
-            
-            if (ck5Type == Enums.CK5Type.Domestic) {
+
+            if (ck5Type == Enums.CK5Type.Domestic || ck5Type == Enums.CK5Type.Manual)
+            {
                 
                 data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode);
             }
@@ -463,7 +464,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         else
                         {
                             if (model.Ck5Type != Enums.CK5Type.Export &&
-                                model.Ck5Type != Enums.CK5Type.PortToImporter)
+                                model.Ck5Type != Enums.CK5Type.PortToImporter && 
+                                model.Ck5Type != Enums.CK5Type.Manual)
                             {
                                 //double check
                                 GetQuotaAndRemainOutput output;
