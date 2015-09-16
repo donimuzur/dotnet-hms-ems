@@ -429,6 +429,7 @@ namespace Sampoerna.EMS.BLL
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
 
             dbData.LACK1_DOCUMENT = null;
+            dbData.STATUS = Enums.DocumentStatus.Completed;
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
             dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
@@ -459,6 +460,7 @@ namespace Sampoerna.EMS.BLL
             input.DocumentNumber = dbData.LACK1_NUMBER;
 
             dbData.LACK1_DOCUMENT = null;
+            dbData.STATUS = Enums.DocumentStatus.Completed;
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
             dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
@@ -487,7 +489,7 @@ namespace Sampoerna.EMS.BLL
 
             dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
-
+            dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
             dbData.APPROVED_BY_POA = input.UserId;
             dbData.APPROVED_DATE_POA = DateTime.Now;
 
@@ -502,7 +504,7 @@ namespace Sampoerna.EMS.BLL
             //set changes log
             var changes = new CHANGES_HISTORY
             {
-                FORM_TYPE_ID = Enums.MenuList.PBCK1,
+                FORM_TYPE_ID = Enums.MenuList.LACK1,
                 FORM_ID = input.DocumentId.ToString(),
                 FIELD_NAME = "STATUS",
                 NEW_VALUE = EnumHelper.GetDescription(newStatus),
@@ -518,7 +520,7 @@ namespace Sampoerna.EMS.BLL
             //set changes log
             var changes = new CHANGES_HISTORY
             {
-                FORM_TYPE_ID = Enums.MenuList.PBCK1,
+                FORM_TYPE_ID = Enums.MenuList.LACK1,
                 FORM_ID = input.DocumentId.ToString(),
                 FIELD_NAME = "GOV_STATUS",
                 NEW_VALUE = EnumHelper.GetDescription(newStatus),

@@ -28,23 +28,24 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Company<span class="red">*</span></label>
+                                        <label class="col-md-4">Company</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Butxt)
-                                            @Html.DropDownListFor(model => model.Bukrs, Model.BukrList, "", new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Bukrs)
+                                            @Html.TextBoxFor(model => model.Butxt, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Period<span class="red">*</span></label>
+                                        <label class="col-md-4">Period</label>
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    @Html.DropDownListFor(model => model.PeriodMonth, Model.MontList, "", new { @class = "form-control" })
+                                                    @Html.HiddenFor(model => model.PeriodMonth)
+                                                    @Html.TextBoxFor(model => model.PerionNameEng, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    @Html.DropDownListFor(model => model.PeriodYears, Model.YearsList, new { @class = "form-control" })
+                                                    @Html.TextBoxFor(model => model.PeriodYears, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -72,7 +73,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Level<span class="red">*</span></label>
+                                        <label class="col-md-4">Level</label>
                                         @Html.HiddenFor(model => model.Lack1Level)
                                         <div class="col-md-8">
                                             @if (Model.Lack1Level == Enums.Lack1Level.Nppbkc)
@@ -110,20 +111,15 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, "Select", new { @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.NppbkcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Submission Date<span class="red">*</span></label>
+                                        <label class="col-md-4">Submission Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                            @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -133,14 +129,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Received Plant ID</label>
                                         <div class="col-md-8">
-                                            @if (Model.Lack1Level == Enums.Lack1Level.Plant)
-                                            {
-                                                @Html.DropDownListFor(model => model.LevelPlantId, Model.ReceivePlantList, "Select", new { @class = "form-control" })
-                                            }
-                                            else
-                                            {
-                                                @Html.DropDownListFor(model => model.LevelPlantId, Model.ReceivePlantList, "Select", new { @class = "form-control", @disabled = "disabled" })
-                                            }
+                                            @Html.HiddenFor(model => model.LevelPlantId)
+                                            @Html.HiddenFor(model => model.LevelPlantName)
+                                            @Html.TextBoxFor(model => model.DisplayLevelPlantName, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -148,18 +139,23 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4 long">Excisable Goods Type<span class="red">*</span></label>
+                                        <label class="col-md-4">Supplier</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.ExGoodsTypeDesc)
-                                            @Html.DropDownListFor(model => model.ExGoodsType, Model.ExGoodTypeList, "Select", new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.SupplierPlant)
+                                            @Html.HiddenFor(model => model.SupplierPlantId)
+                                            @Html.HiddenFor(model => model.SupplierPlantAddress)
+                                            @Html.HiddenFor(model => model.SupplierCompanyCode)
+                                            @Html.HiddenFor(model => model.SupplierCompanyName)
+                                            @Html.TextBoxFor(model => model.DisplaySupplierPlant, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Supplier<span class="red">*</span></label>
+                                        <label class="col-md-4 long">Excisable Goods Type</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.SupplierPlantId, Model.SupplierList, "Select", new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.ExGoodsType)
+                                            @Html.TextBoxFor(model => model.ExGoodsTypeDesc, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -171,10 +167,11 @@
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    @Html.TextBoxFor(model => model.WasteQty, new { @class = "form-control", maxlength = "12" })
+                                                    @Html.TextBoxFor(model => model.WasteQty, "{0:N0}", new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    @Html.DropDownListFor(model => model.WasteUom, Model.WasteUomList, "Select", new { @class = "form-control" })
+                                                    @Html.HiddenFor(model => model.WasteUom)
+                                                    @Html.TextBoxFor(model => model.WasteUomDesc, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -186,10 +183,11 @@
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    @Html.TextBoxFor(model => model.ReturnQty, new { @class = "form-control", maxlength = "12" })
+                                                    @Html.TextBoxFor(model => model.ReturnQty, "{0:N0}", new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    @Html.DropDownListFor(model => model.ReturnUom, Model.ReturnUomList, "Select", new { @class = "form-control" })
+                                                    @Html.HiddenFor(model => model.ReturnUom)
+                                                    @Html.TextBoxFor(model => model.ReturnUomDesc, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                             </div>
                                         </div>
@@ -201,14 +199,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Note</label>
                                         <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.Noted, new { @class = "form-control" })
+                                            @Html.TextAreaFor(model => model.Noted, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4 col-md-offset-4">
-                                    <input type="button" id="btn-generate-data" class="btn btn-blue full" value="Generate" onclick="generateDataClick(@Convert.ToInt32(Model.Lack1Level),'@Url.Action("Generate", "LACK1")');" />
                                 </div>
                             </div>
                         </div>
@@ -251,18 +244,28 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Status</label>
+                                        <label class="col-md-4">Status<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.GovStatus, Model.DocGovStatusList, "Select", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.EnumDropDownListFor(model => model.GovStatus, Model.DocGovStatusList, "Select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6" id="divComment">
+                                    <div class="row">
+                                        <label class="col-md-4">Add Comment<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date disabled">
-                                                @Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -270,19 +273,14 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Decree Doc</label>
+                                        <label class="col-md-4">Decree Doc<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            <div class="input-group disabled">
-                                                <input type="text" class="form-control" disabled="disabled">
-                                                <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                                    Browse <input type="file" multiple disabled="disabled">
-                                                </span>
+                                            <div class="file-upload" id="poa-files">
+
                                             </div>
+                                            <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
                                         </div>
                                     </div>
                                 </div>
@@ -310,12 +308,39 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <span class="red">*</span> ) This Field Required
+</div>
+
+<div class="modal fade in upload-file ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Decree Doc</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="file-decree-doc-container" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary full add-files">Add Files</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <input type="file" id="DecreeFiles_0_" name="DecreeFiles[0]" class="form-control">
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-danger full">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" id="upload-file-sk" data-dismiss="modal">Upload</button>
+            </div>
         </div>
     </div>
 </div>

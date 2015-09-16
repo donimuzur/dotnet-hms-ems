@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -16,6 +17,7 @@ using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using System.IO;
+using Sampoerna.EMS.Utils;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -300,14 +302,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region -------------- Private Method --------
 
-        private string SaveUploadedFile(HttpPostedFileBase file, string lack2Num)
+        private string SaveUploadedFile(HttpPostedFileBase file, int lack1Id)
         {
             if (file == null || file.FileName == "")
                 return "";
 
             string sFileName = "";
 
-            sFileName = Constans.UploadPath + Path.GetFileName("LACK1_" + lack2Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.UploadPath + Path.GetFileName("LACK1_" + lack1Id + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
@@ -497,11 +499,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
-        #region ------------- Workflow ------------
-
-
-        #endregion
-
         #region ----------------- Edit -----------
 
         public ActionResult Edit(int? id)
@@ -539,7 +536,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(
                     "Operation not allowed.",
                     Enums.MessageInfoType.Error);
-                return View(model);
+                if (lack1Data.Lack1Level == Enums.Lack1Level.Nppbkc)
+                {
+                    return RedirectToAction("Index");
+                }
+                else if (lack1Data.Lack1Level == Enums.Lack1Level.Plant)
+                {
+                    return RedirectToAction("ListByPlant");    
+                }
             }
             
             if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
@@ -802,6 +806,86 @@ namespace Sampoerna.EMS.Website.Controllers
             _lack1Bll.Lack1Workflow(input);
         }
 
+        private void Lack1WorkflowGovApprove(Lack1ItemViewModel lack1Data, Enums.ActionType actionType, string comment)
+        {
+            var input = new Lack1WorkflowDocumentInput()
+            {
+                DocumentId = lack1Data.Lack1Id,
+                ActionType = actionType,
+                UserRole = CurrentUser.UserRole,
+                UserId = CurrentUser.USER_ID,
+                DocumentNumber = lack1Data.Lack1Number,
+                Comment = comment,
+                AdditionalDocumentData = new Lack1WorkflowDocumentData()
+                {
+                    DecreeDate = lack1Data.DecreeDate,
+                    Lack1Document = Mapper.Map<List<Lack1DocumentDto>>(lack1Data.Lack1Document)
+                }
+            };
+            _lack1Bll.Lack1Workflow(input);
+        }
+
+        [HttpPost]
+        public ActionResult GovApproveDocument(Lack1ItemViewModel model)
+        {
+            
+            if (model.DecreeFiles == null)
+            {
+                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
+                return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
+            }
+
+            bool isSuccess = false;
+            string err = string.Empty;
+            try
+            {
+                model.Lack1Document = new List<Lack1DocumentItemModel>();
+                if (model.DecreeFiles != null)
+                {
+                    foreach (var item in model.DecreeFiles)
+                    {
+                        if (item != null)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var decreeDoc = new Lack1DocumentItemModel()
+                            {
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Lack1Id)
+                            };
+                            model.Lack1Document.Add(decreeDoc);
+                        }
+                        else
+                        {
+                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
+                        }
+                    }
+                }
+                
+                Lack1WorkflowGovApprove(model, model.GovApprovalActionType, model.Comment);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                err = ex.Message;
+            }
+
+            if (!isSuccess)
+            {
+                AddMessageInfo(err, Enums.MessageInfoType.Error);
+                return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
+            }
+
+            AddMessageInfo("Document " + EnumHelper.GetDescription(model.GovStatus), Enums.MessageInfoType.Success);
+            return RedirectToAction(model.Lack1Level == Enums.Lack1Level.Plant ? "ListByPlant" : "Index");
+        }
+        
         #endregion
 
         [HttpPost]

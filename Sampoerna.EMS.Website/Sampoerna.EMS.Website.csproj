@@ -831,6 +831,7 @@
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
     <Content Include="Scripts\lack1\Lack1GenerateTable.js" />
+    <Content Include="Scripts\lack1\Lack1Upload.js" />
     <Content Include="Scripts\lack2\form.js" />
     <Content Include="Scripts\lack1\Lack1Scripts.js" />
     <Content Include="Scripts\modernizr.min.js" />
@@ -1102,6 +1103,7 @@
     <Content Include="Views\Production\_UploadList.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_HomeEdit.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Edit.cshtml" />
+    <Content Include="Views\LACK1\_HomeGovApproval.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
