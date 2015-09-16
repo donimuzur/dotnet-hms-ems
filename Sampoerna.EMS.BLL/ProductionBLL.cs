@@ -83,9 +83,9 @@ namespace Sampoerna.EMS.BLL
 
         public void Save(ProductionDto productionDto)
         {
-            PRODUCTION dbProduction = new PRODUCTION();
-            dbProduction = Mapper.Map<PRODUCTION>(productionDto);
+           var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
 
+            
             _repository.InsertOrUpdate(dbProduction);
             _uow.SaveChanges();
         }
