@@ -488,6 +488,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            model.SummaryProductionList.Add(new Lack1SummaryProductionItemModel()
+            {
+                Amount = 90000,
+                UomId = "Test",
+                UomDesc = "Test Desc"
+            });
             model.PrintOutTitle = "Preview LACK-1";
             return View("PrintDocument", model);
         }
