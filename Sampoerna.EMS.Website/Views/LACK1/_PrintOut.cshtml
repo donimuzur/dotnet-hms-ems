@@ -45,6 +45,9 @@
                                 <div class="row">
                                     <label class="col-md-3"></label>
                                     <div class="col-md-9">
+                                        @if (Model.AllowPrintDocument) {
+                                            <a class="btn btn-blue full" onclick="PrintOutClick('@Url.EncryptedAction("PrintOut", "LACK1", new { id = @Model.Lack1Id})', '@Url.Action("AddPrintHistory", "LACK1")', @Model.Lack1Id)">Print</a>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -54,7 +57,6 @@
             </div>
         </div>
     </div>
-
     <div class="table-container" id="PrintOutHistoryTable">
         @Html.Partial("_PrintHistoryTable")
     </div>

@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class Lack1WorkflowDocumentData
     {
-        public DateTime DecreeDate { get; set; }
+        public DateTime? DecreeDate { get; set; }
         public List<Lack1DocumentDto> Lack1Document { get; set; }
     }
 

@@ -216,7 +216,7 @@ namespace Sampoerna.EMS.BLL.Services
 
             if (input.IsOpenDocumentOnly)
             {
-                queryFilter = queryFilter.And(c => (int)c.STATUS <= (int)Core.Enums.DocumentStatus.WaitingGovApproval);
+                queryFilter = queryFilter.And(c => c.STATUS <= Core.Enums.DocumentStatus.WaitingGovApproval || c.STATUS == Core.Enums.DocumentStatus.GovRejected);
             }
 
             return queryFilter;
