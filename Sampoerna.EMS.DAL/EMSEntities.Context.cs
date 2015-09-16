@@ -78,9 +78,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
         public virtual DbSet<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
-        public virtual DbSet<BACK1> BACK1 { get; set; }
-        public virtual DbSet<BACK1_DOCUMENT> BACK1_DOCUMENT { get; set; }
-        public virtual DbSet<BACK3_CK2_PBCK3_PBCK7> BACK3_CK2_PBCK3_PBCK7 { get; set; }
         public virtual DbSet<PBCK3_PBCK7> PBCK3_PBCK7 { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
         public virtual DbSet<UOM> UOM { get; set; }
@@ -109,5 +106,10 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<CK2> CK2 { get; set; }
         public virtual DbSet<CK2_DOCUMENT> CK2_DOCUMENT { get; set; }
         public virtual DbSet<PBCK3_PBCK7_ITEM> PBCK3_PBCK7_ITEM { get; set; }
+        public virtual DbSet<BACK1> BACK1 { get; set; }
+        public virtual DbSet<BACK1_DOCUMENT> BACK1_DOCUMENT { get; set; }
+        public virtual DbSet<PBCK3> PBCK3 { get; set; }
+        public virtual DbSet<PBCK7> PBCK7 { get; set; }
+        public virtual DbSet<PBCK7_ITEM> PBCK7_ITEM { get; set; }
     }
 }

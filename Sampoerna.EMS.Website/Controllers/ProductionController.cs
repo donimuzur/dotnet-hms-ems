@@ -48,11 +48,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = InitProductionViewModel(new ProductionViewModel()
             {
+
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
+                
                 Details = Mapper.Map<List<ProductionDetail>>(_productionBll.GetAllByParam(new ProductionGetByParamInput()))
             });
+           
 
             return View("Index", data);
         }
@@ -61,6 +64,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantAll();
+           
             return model;
         }
 
@@ -88,7 +92,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new ProductionDetail();
             model = InitCreate(model);
-            model.ProductionDate = DateTime.Today;
+            model.ProductionDate = DateTime.Today.ToString("dd MMM yyyy");
 
             return View(model);
 
@@ -290,9 +294,33 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Upload file
 
+        public ActionResult UploadManualProduction()
+        {
+            var model = new ProductionUploadViewModel();
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            return View(model);
+        }
+        [HttpPost]
+        public ActionResult UploadManualProduction(ProductionUploadViewModel model)
+        {
+            var modelDto = Mapper.Map<ProductionDto>(model);
+            try
+            {
+                _productionBll.Save(modelDto);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);
+            }
+
+            return RedirectToAction("Index");
+                       
+        }
 
         [HttpPost]
-        public JsonResult ProductionUploadFile(HttpPostedFileBase itemExcelFile)
+        public JsonResult UploadFile(HttpPostedFileBase itemExcelFile)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new List<ProductionUploadItems>();
@@ -309,33 +337,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.QtyPacked = Convert.ToDecimal(dataRow[4]);
                     item.QtyUnpacked = Convert.ToDecimal(dataRow[5]);
                     item.Uom = dataRow[6];
-                    item.ProductionDate = Convert.ToDateTime(dataRow[7]);
+                    item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(data.DataRows[0][7])).ToString("dd MMM yyyy");
 
-                    try
-                    {
-                        var exisstingProduct = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
-                            item.ProductionDate);
-                        if (exisstingProduct != null)
-                        {
-                            item.BrandDescription = exisstingProduct.BRAND_DESC;
-                            item.QtyPacked = exisstingProduct.QTY_PACKED;
-                            item.QtyUnpacked = exisstingProduct.QTY_UNPACKED;
-                        }
-
-
-                    }
-                    catch (Exception exception)
-                    {
-
-
-                    }
-                    finally
                     {
                         model.Add(item);
                     }
 
                 }
             }
+            
             return Json(model);
 
 

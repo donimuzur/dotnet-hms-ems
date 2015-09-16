@@ -53,7 +53,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public string CompanyCodeX { get; set; }
         public string PlantWerksX { get; set; }
         public string FaCodeX { get; set; }
-        public DateTime? WasteProductionDateX { get; set; }
+        public string WasteProductionDateX { get; set; }
 
         [Required]
         public string CompanyCode { get; set; }
@@ -80,7 +80,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public decimal? PackerRejectStickQty { get; set; }
 
         [Required]
-        public DateTime? WasteProductionDate { get; set; }
+        public string WasteProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
 

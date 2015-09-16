@@ -377,6 +377,7 @@
     <Compile Include="Models\POAMap\PoaMapDetailViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
+    <Compile Include="Models\PRODUCTION\ProductionUploadViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
@@ -479,6 +480,13 @@
       <DependentUpon>Pbck1RencanaProduksi.rpt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK4\Pbck4PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck4PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
@@ -1100,8 +1108,11 @@
     <Content Include="Views\Production\_HomeCreate.cshtml" />
     <Content Include="Views\Production\_Upload.cshtml" />
     <Content Include="Views\Production\_UploadList.cshtml" />
+    <Content Include="Views\PBCK4\Pbck4CompletedDocuments.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_HomeEdit.cshtml" />
+    <Content Include="Views\Waste\_HomeCreate.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Edit.cshtml" />
+    <Content Include="Views\Production\UploadManualProduction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1217,6 +1228,11 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="Reports\PBCK4\Pbck4PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck4PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
