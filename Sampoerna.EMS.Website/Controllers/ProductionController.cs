@@ -48,11 +48,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = InitProductionViewModel(new ProductionViewModel()
             {
+
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
+                
                 Details = Mapper.Map<List<ProductionDetail>>(_productionBll.GetAllByParam(new ProductionGetByParamInput()))
             });
+           
 
             return View("Index", data);
         }
@@ -61,6 +64,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantAll();
+           
             return model;
         }
 

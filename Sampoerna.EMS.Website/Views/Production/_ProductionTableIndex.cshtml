@@ -51,11 +51,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.BrandDescription)
                 </td>
-                <td class="number">
-                    @Html.DisplayFor(modelItem => item.QtyPacked)
+                <td class="number"> 
+                    @string.Format("{0:N2}", item.QtyPacked)
                 </td>
                 <td class="number">
-                    @Html.DisplayFor(modelItem => item.QtyUnpacked)
+                    @string.Format("{0:N2}", item.QtyUnpacked)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Uom)
