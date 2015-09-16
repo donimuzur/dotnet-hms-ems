@@ -1,0 +1,74 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+
+<div class="panel-group not-upload" id="accordion-7" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="heading7">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                    Workflow History
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+            <div class="panel-body">
+                <div class="table-container">
+                    <table class="table table-bordered table-striped js-options-table">
+                        <thead>
+                            <tr>
+                                <th>Account Name</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                                <th>Date</th>
+                                <th>Comment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.WorkflowHistoryPbck7 != null)
+                            {
+                                foreach (var history in Model.WorkflowHistoryPbck7)
+                                {
+                                    <tr>
+                                        <td>@history.USERNAME</td>
+                                        <td>@history.Role </td>
+                                        <td>@history.ACTION </td>
+                                        <td>@history.ACTION_DATE</td>
+                                        <td>@history.COMMENT</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

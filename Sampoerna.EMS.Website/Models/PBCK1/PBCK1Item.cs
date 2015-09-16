@@ -11,10 +11,16 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
     {
         public Pbck1Item()
         {
+            int nextyear = DateTime.Now.Year + 1;
+            int year = DateTime.Now.Year;
             Pbck1ProdConverter = new List<Pbck1ProdConvModel>();
             Pbck1ProdPlan = new List<Pbck1ProdPlanModel>();
-            //PeriodFrom = DateTime.Now;
-            //PeriodTo = DateTime.Now;
+            PeriodFrom = new DateTime(nextyear, 1, 1);
+            PeriodTo = new DateTime(nextyear, 12, 31);
+            //Lack1FromMonthId = 1;
+            Lack1FormYear = year;
+            Lack1ToYear = year;
+            //Lack1ToMonthId = 12;
             //ReportedOn = DateTime.Now;
             //PlanProdFrom = DateTime.Now;
             //PlanProdTo = DateTime.Now;

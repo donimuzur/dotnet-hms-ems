@@ -13,34 +13,39 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
 
     public class PBCK7AndPBCK3BLL : IPBCK7And3BLL
     {
-        private ILogger _looger;
+        private ILogger _logger;
         private IGenericRepository<PBCK3_PBCK7> _repository;
+        private IGenericRepository<PBCK7> _repositoryPbck7;
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
-
-        private string includeTable = "PBCK3_PBCK7_ITEM";
-
+        private IPOABLL _poabll;
+        private string includeTable = "PBCK7_ITEM";
+        private WorkflowHistoryBLL _workflowHistoryBll;
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
-            _looger = logger;
+            _logger = logger;
             _uow = uow;
-            _back1Bll = new BACK1BLL(_uow, _looger);
+            _back1Bll = new BACK1BLL(_uow, _logger);
+            _poabll = new POABLL(_uow, _logger);
+            _repositoryPbck7 = _uow.GetGenericRepository<PBCK7>();
+            _workflowHistoryBll = new WorkflowHistoryBLL(_uow, logger);
             _repository = _uow.GetGenericRepository<PBCK3_PBCK7>();
 
         }
 
         public List<Pbck7AndPbck3Dto> GetAllByParam(Pbck7AndPbck3Input input)
         {
-            Expression<Func<PBCK3_PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK3_PBCK7>();
+            Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
-                queryFilter = queryFilter.And(c => c.NPPBCK_ID == input.NppbkcId);
+                queryFilter = queryFilter.And(c => c.NPPBKC == input.NppbkcId);
             }
             if (!string.IsNullOrEmpty(input.PlantId))
             {
@@ -59,19 +64,15 @@ namespace Sampoerna.EMS.BLL
                 var dt = Convert.ToDateTime(input.Pbck7Date);
                 queryFilter = queryFilter.And(c => c.PBCK7_DATE == dt);
             }
-            if (!string.IsNullOrEmpty((input.Pbck3Date)))
-            {
-                var dt = Convert.ToDateTime(input.Pbck3Date);
-                queryFilter = queryFilter.And(c => c.PBCK3_DATE == dt);
-            }
+           
 
-            Func<IQueryable<PBCK3_PBCK7>, IOrderedQueryable<PBCK3_PBCK7>> orderBy = null;
+            Func<IQueryable<PBCK7>, IOrderedQueryable<PBCK7>> orderBy = null;
             if (!string.IsNullOrEmpty(input.ShortOrderColum))
             {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK3_PBCK7>(input.ShortOrderColum));
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK7>(input.ShortOrderColum));
             }
 
-            var dbData = _repository.Get(queryFilter, orderBy, includeTable);
+            var dbData = _repositoryPbck7.Get(queryFilter, orderBy, includeTable);
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -83,7 +84,7 @@ namespace Sampoerna.EMS.BLL
 
         public Pbck7AndPbck3Dto GetById(int? id)
         {
-            var result = _repository.Get(x => x.PBCK3_PBCK7_ID == id, null, includeTable).FirstOrDefault();
+            var result = _repositoryPbck7.Get(x => x.PBCK7_ID == id, null, includeTable).FirstOrDefault();
             return Mapper.Map<Pbck7AndPbck3Dto>(result);
         }
 
@@ -92,7 +93,123 @@ namespace Sampoerna.EMS.BLL
             var dataToAdd = Mapper.Map<PBCK3_PBCK7>(pbck7AndPbck3Dto);
             _repository.InsertOrUpdate(dataToAdd);
             _uow.SaveChanges();
+
+            var history = new WorkflowHistoryDto();
+            history.FORM_ID = dataToAdd.PBCK3_PBCK7_ID;
+            if (pbck7AndPbck3Dto.Pbck3Status == Enums.DocumentStatus.Draft)
+            {
+                history.ACTION = GetActionTypePbck7(pbck7AndPbck3Dto, pbck7AndPbck3Dto.ModifiedBy);
+                history.ACTION_BY = GetActionByPbck7(pbck7AndPbck3Dto);
+                history.ACTION_DATE = DateTime.Now;
+                history.FORM_NUMBER = pbck7AndPbck3Dto.Pbck7Number;
+            }
+            history.FORM_TYPE_ID = Enums.FormType.PBCK7;
+            history.COMMENT = pbck7AndPbck3Dto.Comment;
+            //set workflow history
+            var getUserRole = _poabll.GetUserRole(history.ACTION_BY);
+            history.ROLE = getUserRole;
+            _workflowHistoryBll.AddHistory(history);
+            _uow.SaveChanges();
         }
+
+        public void InsertPbck7(Pbck7AndPbck3Dto pbck7AndPbck3Dto)
+        {
+            var dataToAdd = Mapper.Map<PBCK7>(pbck7AndPbck3Dto);
+            _repositoryPbck7.InsertOrUpdate(dataToAdd);
+            _uow.SaveChanges();
+
+            var history = new WorkflowHistoryDto();
+            history.FORM_ID = dataToAdd.PBCK7_ID;
+            history.ACTION = GetActionTypePbck7(pbck7AndPbck3Dto, pbck7AndPbck3Dto.ModifiedBy);
+            history.ACTION_BY = GetActionByPbck7(pbck7AndPbck3Dto);
+            history.ACTION_DATE = DateTime.Now;
+            history.FORM_NUMBER = pbck7AndPbck3Dto.Pbck7Number;
+            history.FORM_TYPE_ID = Enums.FormType.PBCK7;
+            history.COMMENT = pbck7AndPbck3Dto.Comment;
+            //set workflow history
+            var getUserRole = _poabll.GetUserRole(history.ACTION_BY);
+            history.ROLE = getUserRole;
+            _workflowHistoryBll.AddHistory(history);
+            _uow.SaveChanges();
+        }
+
+        private Core.Enums.ActionType GetActionTypePbck7(Pbck7AndPbck3Dto pbck7pbck3, string modifiedBy)
+        {
+            var docStatus = pbck7pbck3.Pbck7Status;
+            if (docStatus == Core.Enums.DocumentStatus.Draft)
+            {
+                if (pbck7pbck3.IsRejected)
+                {
+                    return Core.Enums.ActionType.Reject;
+                }
+                if (modifiedBy != null)
+                {
+                    return Core.Enums.ActionType.Modified;
+                }
+                return Core.Enums.ActionType.Created;
+            }
+            if (docStatus == Core.Enums.DocumentStatus.WaitingForApproval)
+            {
+                return Core.Enums.ActionType.Submit;
+            }
+
+            if (docStatus == Core.Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return Core.Enums.ActionType.Approve;
+            }
+
+            if (docStatus == Core.Enums.DocumentStatus.WaitingGovApproval)
+            {
+                return Core.Enums.ActionType.Approve;
+            }
+            if (docStatus == Core.Enums.DocumentStatus.GovApproved)
+            {
+                return Core.Enums.ActionType.GovPartialApprove;
+            }
+            if (docStatus == Core.Enums.DocumentStatus.Completed)
+            {
+                return Core.Enums.ActionType.GovApprove;
+            }
+            return Core.Enums.ActionType.Reject;
+        }
+
+        private string GetActionByPbck7(Pbck7AndPbck3Dto pbck3pbkc7)
+        {
+            if (pbck3pbkc7.Pbck7Status == Core.Enums.DocumentStatus.Draft)
+            {
+                if (pbck3pbkc7.IsRejected)
+                {
+                    return pbck3pbkc7.RejectedBy;
+                }
+                if (pbck3pbkc7.ModifiedBy != null)
+                {
+                    return pbck3pbkc7.ModifiedBy;
+                }
+                return pbck3pbkc7.CreatedBy;
+            }
+            if (pbck3pbkc7.Pbck7Status == Core.Enums.DocumentStatus.WaitingForApproval)
+            {
+                return pbck3pbkc7.CreatedBy;
+            }
+            if (pbck3pbkc7.Pbck7Status == Core.Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return pbck3pbkc7.ApprovedBy;
+            }
+            if (pbck3pbkc7.Pbck7Status == Core.Enums.DocumentStatus.WaitingGovApproval)
+            {
+                return pbck3pbkc7.ApprovedByManager;
+            }
+            if (pbck3pbkc7.Pbck7Status == Core.Enums.DocumentStatus.Rejected)
+            {
+                return pbck3pbkc7.RejectedBy;
+            }
+
+
+
+            return pbck3pbkc7.CreatedBy;
+        }
+
+      
     }
 
 
