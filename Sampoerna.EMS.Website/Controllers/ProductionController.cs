@@ -52,6 +52,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
+                ProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
                 
                 Details = Mapper.Map<List<ProductionDetail>>(_productionBll.GetAllByParam(new ProductionGetByParamInput()))
             });
@@ -271,6 +272,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Detail
 
+        private ProductionDetail InitDetail(ProductionDetail model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlantWerkList = GlobalFunctions.GetPlantAll();
+            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+
+            return model;
+        }
+        
+
         //
         // GET: /Production/Detail
         public ActionResult Detail(string companyCode, string plantWerk, string faCode, DateTime productionDate)
@@ -285,7 +299,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ProdQtyStickStr = model.ProQtyStick == null ? string.Empty : model.ProQtyStick.ToString();
             model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
 
-            model = IniEdit(model);
+            model = InitDetail(model);
 
             return View(model);
         }

@@ -64,7 +64,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<BrandRegistrationOutput, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.FaCode))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.BrandCe));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.FaCode));
 
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.STICKER_CODE))
@@ -820,7 +820,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCode))
                 .ForMember(dest => dest.ProoductionDate, opt => opt.MapFrom(src => src.ProductionDate));
 
-            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantName));
 
             Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));

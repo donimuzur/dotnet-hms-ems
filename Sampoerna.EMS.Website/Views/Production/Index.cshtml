@@ -34,7 +34,8 @@
                                 <label class="col-md-3 long">Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control selectreset" name="ProductionDate">
+                                        @*<input type="text" class="form-control selectreset" name="ProductionDate">*@
+                                        @Html.TextBoxFor(model=> model.ProductionDate, new {@class="form-control selectreset"})
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>

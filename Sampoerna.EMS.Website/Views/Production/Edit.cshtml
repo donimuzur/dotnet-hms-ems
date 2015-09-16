@@ -194,119 +194,123 @@
     <script src="~/Scripts/thousand-separator.js"></script>
 
     <script type="text/javascript" language="javascript" class="init">
-        $('#MenuCk4cDailyProduction').addClass('active');
+    $('#MenuCk4cDailyProduction').addClass('active');
 
-        $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
-        $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
-        $('#ProdQtyStickStr').val(ThausandSeperator($('#ProdQtyStickStr').val(), 2));
-        $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
+    $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
+    $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
+    $('#ProdQtyStickStr').val(ThausandSeperator($('#ProdQtyStickStr').val(), 2));
+    $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
 
-        $(document).ready(function () {
-            var cpy = $("#CompanyCode").find("option:selected").val();
-            
-            var ce = $("#SearchInput_PlantId").find("option:selected").val();
-            
+    $(document).ready(function () {
+        var cpy = $("#CompanyCode").find("option:selected").val();
+        
+        $('#SearchInput_PlantId option').remove();
+        $('#SearchInput_BrandCe option').remove();
+
+        ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
+       
+    });
+
+
+    $("#CompanyCode").change(function () {
+        if ($("#CompanyCode").length) {
+            var cpy = $(this).find("option:selected").val();
             $('#SearchInput_PlantId option').remove();
-            ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
+            if (cpy == '' || $(this).find("option:selected").val() == '') {
+                $('#SearchInput_PlantId option').append('<option value="">All</option>');
 
-        });
+            } else {
+                ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
+            }
+        }
+    });
 
 
-        $("#CompanyCode").change(function () {
-            if ($("#CompanyCode").length) {
-                var cpy = $(this).find("option:selected").val();
-                $('#SearchInput_PlantId option').remove();
-                if (cpy == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+
+    function ajaxSelectCompany(url, formData) {
+        if (formData.companyId) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var listPlant = data.PlantWerkList;
+                    $('#SearchInput_PlantId').append('<option value="" selected>All</option>');
+                    if (listPlant.length > 0) {
+                        //alert("test");
+                        for (var i = 0; i < listPlant.length; i++) {
+                            $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                        }
+
+                    }
+                    var listPlantX = '@Model.PlantWerks';
+                    var exist = 0 != $('#SearchInput_PlantId option[value=' + listPlantX + ']').length;
+                    if (exist) $('#SearchInput_PlantId').val(listPlantX);
+
+                    ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: listPlantX });
+                    $('#SearchInput_BrandCe option').remove();
+                }
+            });
+        }
+    }
+
+    $("#FaCode").change(function () {
+        if ($("#FaCode").length) {
+            var FaDesc = $(this).find("option:selected").val();
+
+            if (FaDesc == '') {
+                $('#BrandDescription').val('');
+            } else {
+                ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { faCode: FaDesc });
+            }
+        }
+
+    });
+
+    function ajaxFaCodeDescription(url, formData) {
+        if (formData.faCode) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    $('#BrandDescription').val(data);
+                }
+            });
+        }
+
+    }
+
+    $("#SearchInput_PlantId").change(function () {
+        if ($("#SearchInput_PlantId").length) {
+            var ce = $(this).find("option:selected").val();
+            $('#SearchInput_BrandCe option').remove();
+            if (ce == '' || $(this).find("option:selected").val() == '') {
+                $('#SearchInput_BrandCe option').append('<option value="">All</option>');
+
+            } else {
+                ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: ce });
+            }
+        }
+    });
+
+    function ajaxSelectPlantWerks(url, formData) {
+        if (formData.plantWerk) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var facodeList = data.FacodeList;
+                    $('#SearchInput_BrandCe').append('<option value="">All</option>');
+                    if (facodeList.length > 0) {
+                        for (var i = 0; i < facodeList.length; i++) {
+                            $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
+                        }
+                    }
                     
-                } else {
-                    ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
-                }
-            }
-        });
-
-      
-
-        function ajaxSelectCompany(url, formData) {
-            if (formData.companyId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        var listPlant = data.PlantWerkList;
-                        $('#SearchInput_PlantId').append('<option value="" selected>All</option>');
-                        if (listPlant.length > 0) {
-                            //alert("test");
-                            for (var i = 0; i < listPlant.length; i++) {
-                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
-                            }
-                         
-                        }
-                        var listPlantX = '@Model.PlantWerks';
-                        var exist = 0 != $('#SearchInput_PlantId option[value=' + listPlantX + ']').length;
-                        if(exist) $('#SearchInput_PlantId').val('@Model.PlantWerks');
-
-                    }
-                });
-            }
-        }
-
-        $("#FaCode").change(function () {
-            if ($("#FaCode").length) {
-                var FaDesc = $(this).find("option:selected").val();
-
-                if (FaDesc == '') {
-                    $('#BrandDescription').val('');
-                } else {
-                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { faCode: FaDesc });
-                }
-            }
-
-        });
-
-        function ajaxFaCodeDescription(url, formData) {
-            if (formData.faCode) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#BrandDescription').val(data);
-                    }
-                });
-            }
-
-        }
-
-        $("#SearchInput_PlantId").change(function () {
-            if ($("#SearchInput_PlantId").length) {
-                var ce = $(this).find("option:selected").val();
-                $('#SearchInput_BrandCe option').remove();
-                if (ce == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_BrandCe option').append('<option value="">All</option>');
-
-                } else {
-                    ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: ce });
-                }
-            }
-        });
-
-        function ajaxSelectPlantWerks(url, formData) {
-            if (formData.plantWerk) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        var facodeList = data.FacodeList;
-                        $('#SearchInput_BrandCe').append('<option value="">All</option>');
-                        if (facodeList.length > 0) {
-                            for (var i = 0; i < facodeList.length; i++) {
-                                $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
-                            }
-                        }
-
+                    var facodeListX = '@Model.FaCode';
+                    $('#SearchInput_BrandCe').val(facodeListX);
                     }
                 });
             }
@@ -321,24 +325,24 @@
                     $('#test').val('');
                 } else {
                     ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { plantWerk: Plant, faCode: FaDesc });
-                }
             }
-
-        });
-
-        function ajaxFaCodeDescription(url, formData) {
-            if (formData.plantWerk, formData.faCode) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#test').val(data);
-                    }
-                });
-            }
-
         }
+
+    });
+
+    function ajaxFaCodeDescription(url, formData) {
+        if (formData.plantWerk, formData.faCode) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    $('#test').val(data);
+                }
+            });
+        }
+
+    }
 
     </script>
 
