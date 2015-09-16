@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <h3>Daily Production Edit</h3>
-               
+
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
                     <a href="@Url.Action("Index", "Production")" class="btn btn-grey">Cancel</a>
@@ -51,7 +51,7 @@
                                                                 <label class="col-md-4">Company<span class="red">*</span></label>
                                                                 <div class="col-md-8">
                                                                     @*@Html.HiddenFor(model => model.CompanyCode)
-                                                                    @Html.TextBox("companyCode", Model.CompanyCode, new { @class = "form-control"})*@
+                                                                        @Html.TextBox("companyCode", Model.CompanyCode, new { @class = "form-control"})*@
                                                                     @Html.HiddenFor(model => model.CompanyCodeX)
                                                                     @Html.HiddenFor(model => model.CompanyName)
                                                                     @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = "form-control " })
@@ -90,7 +90,7 @@
                                                                 <label class="col-md-4">Finish Good<span class="red">*</span></label>
                                                                 <div class="col-md-8">
                                                                     @Html.HiddenFor(model => model.FaCodeX)
-                                                                    @Html.DropDownListFor(model => model.FaCode, Model.FacodeList, null, new { @class = "form-control", id="SearchInput_BrandCe" })
+                                                                    @Html.DropDownListFor(model => model.FaCode, Model.FacodeList, null, new { @class = "form-control", id = "SearchInput_BrandCe" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -101,7 +101,7 @@
                                                                 <label class="col-md-4">Description</label>
                                                                 <div class="col-md-8">
                                                                     @Html.HiddenFor(model => model.BrandDescription)
-                                                                    @Html.TextAreaFor(model => model.BrandDescription, new { @class = "form-control", disabled = "disabled", id="test" })
+                                                                    @Html.TextAreaFor(model => model.BrandDescription, new { @class = "form-control", disabled = "disabled", id = "test" })
 
                                                                 </div>
                                                             </div>
@@ -110,7 +110,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Qty Packed<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                   @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "decimal form-control" })
+                                                                    @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "decimal form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -118,7 +118,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Qty Unpacked<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                   @Html.TextBoxFor(model => model.QtyUnpackedStr, new { @class = "decimal form-control" })
+                                                                    @Html.TextBoxFor(model => model.QtyUnpackedStr, new { @class = "decimal form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -195,11 +195,22 @@
 
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuCk4cDailyProduction').addClass('active');
-        
+
         $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
         $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
         $('#ProdQtyStickStr').val(ThausandSeperator($('#ProdQtyStickStr').val(), 2));
         $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
+
+        $(document).ready(function () {
+            var cpy = $("#CompanyCode").find("option:selected").val();
+            
+            var ce = $("#SearchInput_PlantId").find("option:selected").val();
+            
+            $('#SearchInput_PlantId option').remove();
+            ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
+
+        });
+
 
         $("#CompanyCode").change(function () {
             if ($("#CompanyCode").length) {
@@ -207,12 +218,14 @@
                 $('#SearchInput_PlantId option').remove();
                 if (cpy == '' || $(this).find("option:selected").val() == '') {
                     $('#SearchInput_PlantId option').append('<option value="">All</option>');
-
+                    
                 } else {
                     ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
                 }
             }
         });
+
+      
 
         function ajaxSelectCompany(url, formData) {
             if (formData.companyId) {
@@ -222,22 +235,27 @@
                     data: formData,
                     success: function (data) {
                         var listPlant = data.PlantWerkList;
-                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        $('#SearchInput_PlantId').append('<option value="" selected>All</option>');
                         if (listPlant.length > 0) {
+                            //alert("test");
                             for (var i = 0; i < listPlant.length; i++) {
                                 $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
                             }
+                         
                         }
+                        var listPlantX = '@Model.PlantWerks';
+                        var exist = 0 != $('#SearchInput_PlantId option[value=' + listPlantX + ']').length;
+                        if(exist) $('#SearchInput_PlantId').val('@Model.PlantWerks');
 
                     }
                 });
             }
         }
 
-        $("#FaCode").change(function() {
+        $("#FaCode").change(function () {
             if ($("#FaCode").length) {
                 var FaDesc = $(this).find("option:selected").val();
-              
+
                 if (FaDesc == '') {
                     $('#BrandDescription').val('');
                 } else {
@@ -248,17 +266,17 @@
         });
 
         function ajaxFaCodeDescription(url, formData) {
-            if ( formData.faCode) {
+            if (formData.faCode) {
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         $('#BrandDescription').val(data);
                     }
                 });
             }
-            
+
         }
 
         $("#SearchInput_PlantId").change(function () {
@@ -323,6 +341,6 @@
         }
 
     </script>
-    
+
 
 }
