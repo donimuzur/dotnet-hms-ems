@@ -811,7 +811,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ProductionDto, ProductionDetail>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ProductionDate,
                     opt => opt.MapFrom(src => src.ProductionDate.ToString("dd MMM yyyy")))
-                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + "-" + src.PlantName));
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName));
                 //.ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode));
                 
 
