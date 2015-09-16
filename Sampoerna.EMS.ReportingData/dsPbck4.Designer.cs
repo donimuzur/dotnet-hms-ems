@@ -1165,8 +1165,6 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnNoPengawas;
             
-            private global::System.Data.DataColumn columnPoaName;
-            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Pbck4MatrikCk1DataTable() {
@@ -1314,14 +1312,6 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn PoaNameColumn {
-                get {
-                    return this.columnPoaName;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1357,7 +1347,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Pbck4MatrikCk1Row AddPbck4MatrikCk1Row(int Number, string SeriesCode, decimal Hje, string JenisHt, decimal Content, string BrandName, string Ck1No, string Ck1Date, decimal Ck1OrderQty, decimal Ck1RequestedQty, decimal Tariff, decimal TotalHje, decimal TotalCukai, string NoPengawas, string PoaName) {
+            public Pbck4MatrikCk1Row AddPbck4MatrikCk1Row(int Number, string SeriesCode, decimal Hje, string JenisHt, decimal Content, string BrandName, string Ck1No, string Ck1Date, decimal Ck1OrderQty, decimal Ck1RequestedQty, decimal Tariff, decimal TotalHje, decimal TotalCukai, string NoPengawas) {
                 Pbck4MatrikCk1Row rowPbck4MatrikCk1Row = ((Pbck4MatrikCk1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Number,
@@ -1373,8 +1363,7 @@ namespace Sampoerna.EMS.ReportingData {
                         Tariff,
                         TotalHje,
                         TotalCukai,
-                        NoPengawas,
-                        PoaName};
+                        NoPengawas};
                 rowPbck4MatrikCk1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPbck4MatrikCk1Row);
                 return rowPbck4MatrikCk1Row;
@@ -1411,7 +1400,6 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnTotalHje = base.Columns["TotalHje"];
                 this.columnTotalCukai = base.Columns["TotalCukai"];
                 this.columnNoPengawas = base.Columns["NoPengawas"];
-                this.columnPoaName = base.Columns["PoaName"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1445,8 +1433,6 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnTotalCukai);
                 this.columnNoPengawas = new global::System.Data.DataColumn("NoPengawas", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnNoPengawas);
-                this.columnPoaName = new global::System.Data.DataColumn("PoaName", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnPoaName);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2487,22 +2473,6 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string PoaName {
-                get {
-                    try {
-                        return ((string)(this[this.tablePbck4MatrikCk1.PoaNameColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'PoaName\' in table \'Pbck4MatrikCk1\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tablePbck4MatrikCk1.PoaNameColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsNumberNull() {
                 return this.IsNull(this.tablePbck4MatrikCk1.NumberColumn);
             }
@@ -2667,18 +2637,6 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetNoPengawasNull() {
                 this[this.tablePbck4MatrikCk1.NoPengawasColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsPoaNameNull() {
-                return this.IsNull(this.tablePbck4MatrikCk1.PoaNameColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetPoaNameNull() {
-                this[this.tablePbck4MatrikCk1.PoaNameColumn] = global::System.Convert.DBNull;
             }
         }
         

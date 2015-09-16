@@ -984,9 +984,7 @@ namespace Sampoerna.EMS.BLL
                pbck4Matrikck1.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
                pbck4Matrikck1.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
                pbck4Matrikck1.NoPengawas = "Tidak Dipakai";//todo ask
-               pbck4Matrikck1.PoaName = result.ReportDetails.PoaName;
-
-
+              
                result.ListPbck4MatrikCk1.Add(pbck4Matrikck1);
                i = i + 1;
 

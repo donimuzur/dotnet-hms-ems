@@ -811,8 +811,37 @@ namespace Sampoerna.EMS.Website.Controllers
            return dsPbck4;
         }
 
-       
 
+        private dsPbck4 AddDataPbck4MatrikCk1Row(dsPbck4 dsPbck4, List<Pbck4IMatrikCk1ReportDto> listPbck4ItemsDto)
+        {
+            foreach (var materialDto in listPbck4ItemsDto)
+            {
+
+                var detailRow = dsPbck4.Pbck4MatrikCk1.NewPbck4MatrikCk1Row();
+
+                detailRow.Number = materialDto.Number;
+                detailRow.SeriesCode = materialDto.SeriesCode;
+                detailRow.Hje = materialDto.Hje;
+                detailRow.JenisHt = materialDto.JenisHt;
+                detailRow.Content = materialDto.Content;
+                detailRow.BrandName = materialDto.BrandName;
+
+                detailRow.Ck1No = materialDto.Ck1No;
+                detailRow.Ck1Date = materialDto.Ck1Date;
+                detailRow.Ck1OrderQty = materialDto.Ck1OrderQty;
+                detailRow.Ck1RequestedQty = materialDto.Ck1RequestedQty;
+                detailRow.Tariff = materialDto.Tariff;
+                detailRow.TotalHje = materialDto.TotalHje;
+                detailRow.TotalCukai = materialDto.TotalCukai;
+                detailRow.NoPengawas = materialDto.NoPengawas;
+
+                dsPbck4.Pbck4MatrikCk1.AddPbck4MatrikCk1Row(detailRow);
+
+
+
+            }
+            return dsPbck4;
+        }
 
         private DataSet SetDataSetReport(Pbck4ReportDto pbck4ReportDto, string printTitle)
         {
@@ -825,7 +854,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             dsPbck4 = AddDataPbck4Row(dsPbck4, pbck4ReportDto.ReportDetails,  printTitle);
             dsPbck4 = AddDataPbck4ItemsRow(dsPbck4, pbck4ReportDto.ListPbck4Items);
-           
+            dsPbck4 = AddDataPbck4MatrikCk1Row(dsPbck4, pbck4ReportDto.ListPbck4MatrikCk1);
 
             return dsPbck4;
 

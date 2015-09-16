@@ -51,6 +51,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
    public class Pbck4IMatrikCk1ReportDto
    {
+
        public int Number { get; set; }
        public string SeriesCode { get; set; }
        public decimal Hje { get; set; }
@@ -65,7 +66,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
        public decimal TotalHje { get; set; }
        public decimal TotalCukai { get; set; }
        public string NoPengawas { get; set; }
-       public string PoaName { get; set; }
-
+     
    }
 }
