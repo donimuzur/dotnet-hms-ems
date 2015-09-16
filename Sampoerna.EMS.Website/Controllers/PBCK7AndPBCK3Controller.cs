@@ -231,17 +231,17 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             
-            if (item.GovStatus == Enums.DocumentStatusGov.PartialApproved)
+            if (item.Pbck7GovStatus == Enums.DocumentStatusGov.PartialApproved)
             {
-                item.Status = Enums.DocumentStatus.GovApproved;
+                item.Pbck7Status = Enums.DocumentStatus.GovApproved;
             }
-            if (item.GovStatus == Enums.DocumentStatusGov.FullApproved)
+            if (item.Pbck7GovStatus == Enums.DocumentStatusGov.FullApproved)
             {
-                item.Status = Enums.DocumentStatus.Completed;
+                item.Pbck7Status = Enums.DocumentStatus.Completed;
             }
-            if (item.GovStatus == Enums.DocumentStatusGov.Rejected)
+            if (item.Pbck7GovStatus == Enums.DocumentStatusGov.Rejected)
             {
-                item.Status = Enums.DocumentStatus.GovRejected;
+                item.Pbck7Status = Enums.DocumentStatus.GovRejected;
             }
             if (model.IsSaveSubmit)
             {
@@ -373,27 +373,26 @@ namespace Sampoerna.EMS.Website.Controllers
             if (uri != Request.UrlReferrer)
                 return HttpNotFound();
             var item = _pbck7AndPbck7And3Bll.GetById(id);
-            if (item.Pbck3Status == Enums.DocumentStatus.Draft)
+            
+            var statusPbck7 = item.Pbck7Status;
+            if (statusPbck7 == Enums.DocumentStatus.WaitingForApproval)
             {
-                var statusPbck7 = item.Pbck7Status;
-                if (statusPbck7 == Enums.DocumentStatus.WaitingForApproval)
-                {
-                    item.Pbck7Status = Enums.DocumentStatus.WaitingForApprovalManager;
-                    item.ApprovedBy = CurrentUser.USER_ID;
-                    item.ApprovedDate = DateTime.Now;
-                }
-                else if (statusPbck7 == Enums.DocumentStatus.WaitingForApprovalManager)
-                {
-                    item.Pbck7Status = Enums.DocumentStatus.WaitingGovApproval;
-                    item.ApprovedByManager = CurrentUser.USER_ID;
-                    item.ApprovedDateManager = DateTime.Now;
-                }
-
-                else if (statusPbck7 == Enums.DocumentStatus.WaitingGovApproval)
-                {
-                    item.Pbck7Status = Enums.DocumentStatus.GovApproved;
-                }
+                item.Pbck7Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                item.ApprovedBy = CurrentUser.USER_ID;
+                item.ApprovedDate = DateTime.Now;
             }
+            else if (statusPbck7 == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                item.Pbck7Status = Enums.DocumentStatus.WaitingGovApproval;
+                item.ApprovedByManager = CurrentUser.USER_ID;
+                item.ApprovedDateManager = DateTime.Now;
+            }
+
+            else if (statusPbck7 == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                item.Pbck7Status = Enums.DocumentStatus.GovApproved;
+            }
+            
 
             item.UploadItems = null;
             _pbck7AndPbck7And3Bll.InsertPbck7(item);

@@ -20,7 +20,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public Enums.DocumentStatus Pbck7Status { get; set; }
         public string Pbck7StatusName { get; set; }
-        public Enums.DocumentStatus Pbck3Status { get; set; }
+
+        public Enums.DocumentStatus Pbck3Status
+        {
+            get;
+            set;
+        }
 
         public string Pbck3StatusName { get; set; }
        
@@ -85,6 +90,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string Back1Lampiran { get; set; }
 
         public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
+
+        public Enums.DocumentStatusGov Pbck7GovStatusList { get; set; }
 
         public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
 

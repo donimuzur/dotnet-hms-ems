@@ -70,6 +70,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsCreatedPbck7 { get; set; }
 
         public bool IsCreatedPbkc3 { get; set; }
+
+        public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
+
     }
 
     public class Pbck7ItemUpload

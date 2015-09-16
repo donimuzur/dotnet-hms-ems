@@ -102,7 +102,33 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script type="text/javascript">
         var uploaditems = [];
-        
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateGovInput()) {
+                $('#form-pbck7-edit').submit();
+            }
+        });
+
+        function ValidateGovInput() {
+            var result = true;
+            var govStatus = $('#Pbck7GovStatus').find("option:selected").val();
+
+
+            if (govStatus == '') {
+                AddValidationClass(false, 'Pbck7GovStatus');
+                result = false;
+            }
+
+            
+
+            if ($('#Pbck7GovStatus').val() == 'Rejected') {
+                if ($('#Comment').val() == '') {
+                    AddValidationClass(false, 'Comment');
+                    result = false;
+                }
+            }
+
+            return result;
+        }
 
         $("#btnSubmitConfirm").click(function() {
             $('#IsSaveSubmit').val('true');
