@@ -666,9 +666,11 @@ function ValidateCk5Form(ck5Type) {
         //alert($('#SourceNppbkcId').val() == $('#DestNppbkcId').val());
         if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
             return result;
-
+        
+        var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val());
+        var totalCk5 = parseFloat($('#Ck5TotalExciseable').val());
         var total = parseFloat($('#GrandTotalEx').val());
-        var remainQuota = parseFloat($('#RemainQuota').val());
+        var remainQuota = pbck1QtyApproved - totalCk5;
         if (total > remainQuota) {
             $('#collapseThree').removeClass('collapse');
             $('#collapseThree').addClass('in');
