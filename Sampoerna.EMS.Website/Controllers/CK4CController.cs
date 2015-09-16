@@ -76,7 +76,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Ck4CType = Enums.CK4CType.Ck4CDocument
+                Ck4CType = Enums.CK4CType.Ck4CDocument,
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
             });
 
             return View("DocumentList", data);
@@ -778,16 +779,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 drow[4] = endDate;
             }
 
-            if (ck4c.ReportedMonth != null)
-            {
-                var ck4cPeriodMonth = _monthBll.GetMonth(ck4c.ReportedMonth).MONTH_NAME_IND;
-                drow[5] = ck4cPeriodMonth;
-            }
+            var ck4cPeriodMonth = _monthBll.GetMonth(ck4c.ReportedMonth).MONTH_NAME_IND;
+            drow[5] = ck4cPeriodMonth;
             
             drow[6] = ck4c.ReportedYears;
             drow[7] = ck4c.CompanyName;
-            drow[8] = ck4c.CompanyName;
-            drow[9] = ck4c.NppbkcId;
+
+            var company = _companyBll.GetById(ck4c.CompanyId);
+            drow[8] = company.SPRAS;
+
+            var plant = _plantBll.GetT001WById(ck4c.PlantId);
+            var nppbkc = plant == null ? ck4c.NppbkcId : plant.NPPBKC_ID;
+            drow[9] = nppbkc;
 
             if (ck4c.ApprovedByPoa != null)
             {

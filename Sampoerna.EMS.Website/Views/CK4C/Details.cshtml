@@ -111,7 +111,7 @@
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmReject" />
+                    <input type="submit" class="btn btn-danger" value="Reject" id="btnConfirmReject" />
                 </div>
             }
         </div>
@@ -145,7 +145,6 @@
             });
 
             $("#btnReject").click(function () {
-                $('#btnConfirmReject').attr('disabled', 'disabled');
 
                 $('#Detail_Comment').val('');
 
