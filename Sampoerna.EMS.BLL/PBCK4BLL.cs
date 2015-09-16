@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.BLL
        private IUserBLL _userBll;
        private IZaidmExNPPBKCBLL _nppbkcBll;
        private IPlantBLL _plantBll;
+       private IBlockStockBLL _blockStockBll;
 
        private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
 
@@ -65,6 +66,7 @@ namespace Sampoerna.EMS.BLL
            _userBll = new UserBLL(_uow,_logger);
            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
            _plantBll = new PlantBLL(_uow, _logger);
+           _blockStockBll = new BlockStockBLL(_uow,_logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
@@ -393,6 +395,21 @@ namespace Sampoerna.EMS.BLL
                        messageList.Add("No Pengawas Max Length 10");
                }
 
+               //validate ReqQty to block stock
+
+               var blockStockData = _blockStockBll.GetBlockStockByPlantAndMaterialId(pbck4ItemInput.Plant,
+                   pbck4ItemInput.FaCode);
+               if (blockStockData.Count == 0)
+               {
+                   messageList.Add("Block Stock not available");
+               }
+               else
+               {
+                   var blockDecimal = blockStockData.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
+                   if (ConvertHelper.ConvertToDecimalOrZero(pbck4ItemInput.ReqQty) > blockDecimal)
+                       messageList.Add("Req Qty more than Block Stock");
+               }
+
                if (messageList.Count > 0)
                {
                    output.IsValid = false;
@@ -697,6 +714,15 @@ namespace Sampoerna.EMS.BLL
                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
                dbData.APPROVED_BY_POA = input.UserId;
                dbData.APPROVED_BY_POA_DATE = DateTime.Now;
+
+               //get poa printed name
+               string poaPrintedName = "";
+               var poaData = _poaBll.GetDetailsById(input.UserId);
+               if (poaData != null)
+                   poaPrintedName = poaData.PRINTED_NAME;
+
+               dbData.POA_PRINTED_NAME = poaPrintedName;
+
                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
            }
            else if (input.UserRole == Enums.UserRole.Manager)
@@ -953,7 +979,7 @@ namespace Sampoerna.EMS.BLL
              result.ReportDetails.Pbck4Lampiran = "";
              result.ReportDetails.TextTo = nppbkcData != null ? nppbkcData.TEXT_TO : string.Empty;
              result.ReportDetails.CityTo = nppbkcData != null ? nppbkcData.CITY : string.Empty;
-             result.ReportDetails.PoaName = dtData.POA != null ? dtData.POA.PRINTED_NAME : string.Empty;
+           result.ReportDetails.PoaName = dtData.POA_PRINTED_NAME;// dtData.POA != null ? dtData.POA.PRINTED_NAME : string.Empty;
              result.ReportDetails.PoaTitle = dtData.POA != null ? dtData.POA.TITLE : string.Empty;
              result.ReportDetails.CompanyName = dtData.COMPANY_NAME;
              result.ReportDetails.CompanyAddress = plantData!=null ? plantData.CompanyAddress : string.Empty;
