@@ -20,6 +20,8 @@ namespace Sampoerna.EMS.BusinessObject
             this.POA_MAP = new HashSet<POA_MAP>();
             this.CK4C = new HashSet<CK4C>();
             this.PBCK4 = new HashSet<PBCK4>();
+            this.PBCK3 = new HashSet<PBCK3>();
+            this.PBCK7 = new HashSet<PBCK7>();
         }
     
         public string POA_ID { get; set; }
@@ -45,5 +47,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual ICollection<CK4C> CK4C { get; set; }
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
+        public virtual ICollection<PBCK3> PBCK3 { get; set; }
+        public virtual ICollection<PBCK7> PBCK7 { get; set; }
     }
 }

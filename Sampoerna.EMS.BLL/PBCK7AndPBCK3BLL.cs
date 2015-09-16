@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BLL
     {
         private ILogger _logger;
         private IGenericRepository<PBCK3_PBCK7> _repository;
+        private IGenericRepository<PBCK7> _repositoryPbck7;
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
         private IPOABLL _poabll;
@@ -33,6 +34,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _back1Bll = new BACK1BLL(_uow, _logger);
             _poabll = new POABLL(_uow, _logger);
+            _repositoryPbck7 = _uow.GetGenericRepository<PBCK7>();
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, logger);
             _repository = _uow.GetGenericRepository<PBCK3_PBCK7>();
 
@@ -105,6 +107,27 @@ namespace Sampoerna.EMS.BLL
                 history.ACTION_DATE = DateTime.Now;
                 history.FORM_NUMBER = pbck7AndPbck3Dto.Pbck7Number;
             }
+            history.FORM_TYPE_ID = Enums.FormType.PBCK7;
+            history.COMMENT = pbck7AndPbck3Dto.Comment;
+            //set workflow history
+            var getUserRole = _poabll.GetUserRole(history.ACTION_BY);
+            history.ROLE = getUserRole;
+            _workflowHistoryBll.AddHistory(history);
+            _uow.SaveChanges();
+        }
+
+        public void InsertPbck7(Pbck7AndPbck3Dto pbck7AndPbck3Dto)
+        {
+            var dataToAdd = Mapper.Map<PBCK7>(pbck7AndPbck3Dto);
+            _repositoryPbck7.InsertOrUpdate(dataToAdd);
+            _uow.SaveChanges();
+
+            var history = new WorkflowHistoryDto();
+            history.FORM_ID = dataToAdd.PBCK7_ID;
+            history.ACTION = GetActionTypePbck7(pbck7AndPbck3Dto, pbck7AndPbck3Dto.ModifiedBy);
+            history.ACTION_BY = GetActionByPbck7(pbck7AndPbck3Dto);
+            history.ACTION_DATE = DateTime.Now;
+            history.FORM_NUMBER = pbck7AndPbck3Dto.Pbck7Number;
             history.FORM_TYPE_ID = Enums.FormType.PBCK7;
             history.COMMENT = pbck7AndPbck3Dto.Comment;
             //set workflow history

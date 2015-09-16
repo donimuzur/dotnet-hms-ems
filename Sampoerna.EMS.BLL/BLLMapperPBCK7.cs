@@ -99,9 +99,7 @@ namespace Sampoerna.EMS.BLL
                
                 ;
 
-            Mapper.CreateMap<BACK1, Pbck7AndPbck3Dto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Pbck3Pbck7Id, opt => opt.MapFrom(src => src.PBCK3_PBCK7_ID));
-
+         
 
             #endregion
 

@@ -107,7 +107,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new WasteDetail();
             model = InitCreate(model);
-            model.WasteProductionDate = DateTime.Today;
+            model.WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy");
 
             return View(model);
         }

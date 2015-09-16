@@ -255,8 +255,9 @@
                 data: formData,
                 success: function (data) {
                     if (data != null) {
+                        var saldo = parseFloat(Math.round(data.latestSaldo * 100) / 100).toFixed(2);
                         $("input[name='Detail.LatestSaldo']:hidden").val(data.latestSaldo);
-                        $("input[name='Detail.LatestSaldo']:text").val(ThausandSeperator(data.latestSaldo) + ".00");
+                        $("input[name='Detail.LatestSaldo']:text").val(ThausandSeperator(saldo, 2));
                     } else {
                         $("input[name='Detail.LatestSaldo']:hidden").val('0');
                         $("input[name='Detail.LatestSaldo']:text").val('0' + ".00");

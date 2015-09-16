@@ -120,7 +120,7 @@ function generateSummaryJumlahProduksi(data) {
     if (data) {
         var tb = '<table border="0">';
         for (var i = 0; i < data.length; i++) {
-            var item = '<tr><td>' + (data[i].Amount < 0 ? '-' : '') + data[i].Amount + '</td><td>' + data[i].UomDesc + '</td></tr>';
+            var item = '<tr><td>' + (data[i].Amount < 0 ? '-' : '') + ThausandSeperator(data[i].Amount, 2) + '</td><td>' + data[i].UomDesc + '</td></tr>';
             tb = tb + item;
         }
         tb = tb + '</table>';
