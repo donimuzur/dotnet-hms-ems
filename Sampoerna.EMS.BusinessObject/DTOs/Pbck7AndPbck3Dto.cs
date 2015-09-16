@@ -10,7 +10,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class Pbck7AndPbck3Dto
     {
-        public int Pbck3Pbck7Id { get; set; }
+        public int Pbck7Id { get; set; }
         public string Pbck7Number { get; set; }
         public string Pbck3Number { get; set; }
         public Enums.DocumentStatus Pbck7Status { get; set; }
@@ -40,6 +40,22 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime CreateDate { get; set; }
         public string ModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
+
+
+        public string ApprovedPbck3By { get; set; }
+        public DateTime? ApprovedPbck3Date { get; set; }
+        public string ApprovedPbck3ByManager { get; set; }
+        public DateTime? ApprovedPbck3DateManager { get; set; }
+
+        public string RejectedPbck3By { get; set; }
+        public DateTime? RejectedPbck3Date { get; set; }
+
+
+
+        public string CreatedPbck3By { get; set; }
+        public DateTime CreatePbck3Date { get; set; }
+        public string ModifiedPbck3By { get; set; }
+        public DateTime? ModifiedPbck3Date { get; set; }
 
         //from table BACK1
         public string Back1Number { get; set; }

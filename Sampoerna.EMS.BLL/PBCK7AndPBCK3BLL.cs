@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
         private IPOABLL _poabll;
-        private string includeTable = "PBCK3_PBCK7_ITEM";
+        private string includeTable = "PBCK7_ITEM";
         private WorkflowHistoryBLL _workflowHistoryBll;
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -42,10 +42,10 @@ namespace Sampoerna.EMS.BLL
 
         public List<Pbck7AndPbck3Dto> GetAllByParam(Pbck7AndPbck3Input input)
         {
-            Expression<Func<PBCK3_PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK3_PBCK7>();
+            Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
-                queryFilter = queryFilter.And(c => c.NPPBCK_ID == input.NppbkcId);
+                queryFilter = queryFilter.And(c => c.NPPBKC == input.NppbkcId);
             }
             if (!string.IsNullOrEmpty(input.PlantId))
             {
@@ -64,19 +64,15 @@ namespace Sampoerna.EMS.BLL
                 var dt = Convert.ToDateTime(input.Pbck7Date);
                 queryFilter = queryFilter.And(c => c.PBCK7_DATE == dt);
             }
-            if (!string.IsNullOrEmpty((input.Pbck3Date)))
-            {
-                var dt = Convert.ToDateTime(input.Pbck3Date);
-                queryFilter = queryFilter.And(c => c.PBCK3_DATE == dt);
-            }
+           
 
-            Func<IQueryable<PBCK3_PBCK7>, IOrderedQueryable<PBCK3_PBCK7>> orderBy = null;
+            Func<IQueryable<PBCK7>, IOrderedQueryable<PBCK7>> orderBy = null;
             if (!string.IsNullOrEmpty(input.ShortOrderColum))
             {
-                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK3_PBCK7>(input.ShortOrderColum));
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK7>(input.ShortOrderColum));
             }
 
-            var dbData = _repository.Get(queryFilter, orderBy, includeTable);
+            var dbData = _repositoryPbck7.Get(queryFilter, orderBy, includeTable);
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -88,7 +84,7 @@ namespace Sampoerna.EMS.BLL
 
         public Pbck7AndPbck3Dto GetById(int? id)
         {
-            var result = _repository.Get(x => x.PBCK3_PBCK7_ID == id, null, includeTable).FirstOrDefault();
+            var result = _repositoryPbck7.Get(x => x.PBCK7_ID == id, null, includeTable).FirstOrDefault();
             return Mapper.Map<Pbck7AndPbck3Dto>(result);
         }
 

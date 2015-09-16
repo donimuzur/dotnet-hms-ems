@@ -61,7 +61,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentTypePbck7AndPbck3 DocumentTypeList { get; set; }
 
         public List<Pbck7ItemUpload> UploadItems { get; set; }
-        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
+        public List<WorkflowHistoryViewModel> WorkflowHistoryPbck7 { get; set; }
+        public List<WorkflowHistoryViewModel> WorkflowHistoryPbck3 { get; set; }
 
         public bool AllowApproveAndReject { get; set; }
 

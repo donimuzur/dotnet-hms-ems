@@ -29,7 +29,8 @@
                             <div class="row">
                                 <label class="col-md-4">BACK-1 No</label>
                                 <div class="col-md-8">
-                                   @Html.TextBoxFor(x=>x.)
+                                    @Html.HiddenFor(x=>x.Back1Number)
+                                    @Html.TextBox("back1_number", Model.Back1Number, new  {@class = "form-control", @disabled="disabled"})
                                 </div>
                             </div>
                         </div>
@@ -40,7 +41,7 @@
                                 <label class="col-md-4">BACK-1 Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control">
+                                       @Html.TextBoxFor(x=>x.Back1Date, new  {@class = "form-control"})
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>

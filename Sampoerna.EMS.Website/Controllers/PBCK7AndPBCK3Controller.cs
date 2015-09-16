@@ -217,7 +217,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var item = AutoMapper.Mapper.Map<Pbck7AndPbck3Dto>(model);
             if (item.CreatedBy != CurrentUser.USER_ID)
             {
-                return RedirectToAction("Detail", new {id = item.Pbck3Pbck7Id});
+                return RedirectToAction("Detail", new {id = item.Pbck7Id});
             }
             var exItems = new Pbck7ItemUpload[item.UploadItems.Count];
             item.UploadItems.CopyTo(exItems);
@@ -259,7 +259,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var plant = _plantBll.GetId(item.PlantId);
             item.PlantCity = plant.ORT01;
             item.PlantName = plant.NAME1;
-            _pbck7AndPbck7And3Bll.Insert(item);
+            _pbck7AndPbck7And3Bll.InsertPbck7(item);
             if(model.IsSaveSubmit)
             {
                 AddMessageInfo("Submit Success", Enums.MessageInfoType.Success);
@@ -287,11 +287,11 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.Year = modelDto.Pbck7Date.Year;
             inputDoc.NppbkcId = modelDto.NppbkcId;
             modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
-            modelDto.Pbck3Status = Enums.DocumentStatus.Draft;
+         
 
             try
             {
-                _pbck7AndPbck7And3Bll.Insert(modelDto);
+                _pbck7AndPbck7And3Bll.InsertPbck7(modelDto);
             }
             catch (Exception ex)
             {
@@ -315,9 +315,9 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.NPPBKC_Id = model.NppbkcId;
             workflowInput.FormType = Enums.FormType.PBCK7;
             ;
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormId(workflowInput));
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
-            model.WorkflowHistory = workflowHistory;
+            model.WorkflowHistoryPbck7 = workflowHistory;
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
             {
@@ -396,7 +396,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             item.UploadItems = null;
-            _pbck7AndPbck7And3Bll.Insert(item);
+            _pbck7AndPbck7And3Bll.InsertPbck7(item);
             return RedirectToAction("Index");
         }
 

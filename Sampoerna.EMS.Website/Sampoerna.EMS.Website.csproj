@@ -1088,7 +1088,7 @@
     <Content Include="Views\PBCK4\_Pbck4InformationEdit.cshtml" />
     <Content Include="Views\Waste\Index.cshtml" />
     <Content Include="Views\Waste\_WasteTableIndex.cshtml" />
-    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistory.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck7.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Back.cshtml" />
     <Content Include="Views\Waste\Create.cshtml" />
     <Content Include="Views\Waste\Edit.cshtml" />
@@ -1108,6 +1108,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_HomeDetail.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Detail.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Back1.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
