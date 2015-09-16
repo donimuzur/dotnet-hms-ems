@@ -88,7 +88,7 @@
           <Property Name="CHANGES_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="FORM_ID" Type="nvarchar" MaxLength="50" />
-          <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="25" />
+          <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
@@ -869,6 +869,10 @@
           <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
           <Property Name="REJECTED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="REJECTED_DATE" Type="datetime" />
+          <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="PLANT_CITY" Type="nvarchar" MaxLength="35" />
+          <Property Name="GOV_STATUS" Type="int" />
+          <Property Name="STATUS" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="PBCK7_ITEM">
           <Key>
@@ -4374,8 +4378,8 @@
           <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
           <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="OLD_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="NEW_VALUE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OLD_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NEW_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
@@ -7499,8 +7503,8 @@
           <Property Name="PBCK3_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PBCK3_DATE" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="PBCK7_ID" Type="Int32" Nullable="false" />
-          <Property Name="GOV_STATUS" Type="Int32" />
-          <Property Name="STATUS" Type="Int32" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" />
           <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -7525,7 +7529,7 @@
           <Property Name="PBCK7_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PBCK7_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PBCK7_DATE" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="DOCUMENT_TYPE" Type="Int32" Nullable="false" />
+          <Property Name="DOCUMENT_TYPE" Type="EMSModel.DocumentTypePbck7AndPbck3" Nullable="false" />
           <Property Name="NPPBKC" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="EXEC_DATE_FROM" Type="DateTime" Nullable="false" Precision="0" />
@@ -7549,6 +7553,10 @@
           <NavigationProperty Name="POA" Relationship="EMSModel.FK_PBCK7_POA" FromRole="PBCK7" ToRole="POA" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK7_REJECTED_USER" FromRole="PBCK7" ToRole="USER" />
           <NavigationProperty Name="USER3" Relationship="EMSModel.FK_PBCK7_USER" FromRole="PBCK7" ToRole="USER" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_CITY" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
         </EntityType>
         <EntityType Name="PBCK7_ITEM">
           <Key>
@@ -9072,6 +9080,10 @@
           <EntitySetMapping Name="PBCK7">
             <EntityTypeMapping TypeName="EMSModel.PBCK7">
               <MappingFragment StoreEntitySet="PBCK7">
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
+                <ScalarProperty Name="PLANT_CITY" ColumnName="PLANT_CITY" />
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
                 <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />
                 <ScalarProperty Name="REJECTED_BY" ColumnName="REJECTED_BY" />
                 <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />

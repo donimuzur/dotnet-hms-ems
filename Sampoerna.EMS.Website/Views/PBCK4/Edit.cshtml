@@ -14,6 +14,7 @@
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK4", new { id = @Model.Pbck4Id })')" />
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
 
                 </div>
@@ -218,6 +219,7 @@
             }
         });
 
+      
     </script>
 
 }

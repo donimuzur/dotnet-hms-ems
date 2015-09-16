@@ -30,5 +30,8 @@ namespace Sampoerna.EMS.Contract
         void DeleteByActionAndFormNumber(GetByActionAndFormNumberInput input);
 
         GetStatusGovHistoryOutput GetStatusGovHistory(string formNumber);
+
+        List<WorkflowHistoryDto> GetByFormId(GetByFormNumberInput input);
+
     }
 }

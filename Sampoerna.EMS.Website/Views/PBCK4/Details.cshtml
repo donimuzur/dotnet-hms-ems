@@ -12,7 +12,7 @@
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
-                    @*<input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK4", new { id = @Model.Pbck4Id })')" />*@
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK4", new { id = @Model.Pbck4Id })')" />
 
                     @if (Model.AllowApproveAndReject)
                     {

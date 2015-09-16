@@ -274,7 +274,7 @@ namespace Sampoerna.EMS.BLL
 
         public T001WDto GetMainPlantByNppbkcId(string nppbkcId)
         {
-            includeTables = "T001K, T001K.T001";
+            includeTables = "T001K, T001K.T001, ZAIDM_EX_NPPBKC";
             Expression<Func<T001W, bool>> queryFilter =
                 c => c.NPPBKC_ID == nppbkcId && c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value;
             var dbData = _repository.Get(queryFilter, null, includeTables).FirstOrDefault();

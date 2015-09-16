@@ -28,7 +28,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Nullable<decimal> REQUESTED_QTY { get; set; }
         public string NO_PENGAWAS { get; set; }
 
-        public DateTime CK1_NUMBER { get; set; }
+        public string CK1_NUMBER { get; set; }
         public DateTime CK1_DATE { get; set; }
     }
 }

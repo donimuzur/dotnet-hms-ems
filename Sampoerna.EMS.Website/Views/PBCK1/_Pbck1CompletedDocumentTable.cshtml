@@ -40,7 +40,7 @@
                 <td>
                     @Html.DisplayFor(model => item.Pbck1Number)
                 </td>
-                <td class="number">@Html.DisplayFor(model => item.RequestQty)</td>
+                <td class="number">@string.Format("{0:N2}", item.RequestQty)</td>
                 <td>
                     @item.ApprovedByManagerId
                 </td>

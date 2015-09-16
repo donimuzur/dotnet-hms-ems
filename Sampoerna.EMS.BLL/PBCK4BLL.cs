@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using AutoMapper;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
@@ -33,8 +37,13 @@ namespace Sampoerna.EMS.BLL
        private IPrintHistoryBLL _printHistoryBll;
        private IBrandRegistrationService _brandRegistrationServices;
        private ICK1BLL _ck1Bll;
+       private IMessageService _messageService;
+       private IPOABLL _poaBll;
+       private IUserBLL _userBll;
+       private IZaidmExNPPBKCBLL _nppbkcBll;
+       private IPlantBLL _plantBll;
 
-       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT";
+       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
 
        public PBCK4BLL(IUnitOfWork uow, ILogger logger)
        {
@@ -51,6 +60,11 @@ namespace Sampoerna.EMS.BLL
            _printHistoryBll = new PrintHistoryBLL(_uow,_logger);
            _brandRegistrationServices = new BrandRegistrationService(_uow, _logger);
            _ck1Bll = new CK1BLL(_uow,_logger);
+           _messageService = new MessageService(_logger);
+           _poaBll = new POABLL(_uow,_logger);
+           _userBll = new UserBLL(_uow,_logger);
+           _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
+           _plantBll = new PlantBLL(_uow, _logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
@@ -534,13 +548,96 @@ namespace Sampoerna.EMS.BLL
            //var body = "this is body message for " + input.DocumentNumber;
            //var from = "a@gmail.com";
 
-           //var ck5Dto = Mapper.Map<CK5Dto>(_repository.Get(c => c.CK5_ID == input.DocumentId).FirstOrDefault());
+           var pbck4Dto = Mapper.Map<Pbck4Dto>(_repository.Get(c => c.PBCK4_ID == input.DocumentId).FirstOrDefault());
 
-           //var mailProcess = ProsesMailNotificationBody(ck5Dto, input.ActionType);
+           var mailProcess = ProsesMailNotificationBody(pbck4Dto, input.ActionType);
 
-           //_messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+           _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
 
        }
+
+       private MailNotification ProsesMailNotificationBody(Pbck4Dto pbck4Dto, Enums.ActionType actionType)
+       {
+           var bodyMail = new StringBuilder();
+           var rc = new MailNotification();
+
+           var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+
+           rc.Subject = "PBCK-4 " + pbck4Dto.PBCK4_NUMBER + " is " + EnumHelper.GetDescription(pbck4Dto.Status);
+           bodyMail.Append("Dear Team,<br />");
+           bodyMail.AppendLine();
+           bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
+           bodyMail.AppendLine();
+           bodyMail.Append("<table><tr><td>Company Code </td><td>: " + pbck4Dto.COMPANY_ID + "</td></tr>");
+           bodyMail.AppendLine();
+           bodyMail.Append("<tr><td>NPPBKC </td><td>: " + pbck4Dto.NppbkcId + "</td></tr>");
+           bodyMail.AppendLine();
+           bodyMail.Append("<tr><td>Document Number</td><td> : " + pbck4Dto.PBCK4_NUMBER + "</td></tr>");
+           bodyMail.AppendLine();
+           bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-4</td></tr>");
+           bodyMail.AppendLine();
+           bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/PBCK4/Details/" + pbck4Dto.PBCK4_ID + "'>link</a> to show detailed information</i></td></tr>");
+           bodyMail.AppendLine();
+           bodyMail.Append("</table>");
+           bodyMail.AppendLine();
+           bodyMail.Append("<br />Regards,<br />");
+           switch (actionType)
+           {
+               case Enums.ActionType.Submit:
+                   if (pbck4Dto.Status == Enums.DocumentStatus.WaitingForApproval)
+                   {
+                       var poaList = _poaBll.GetPoaByNppbkcId(pbck4Dto.NppbkcId);
+
+                       foreach (var poaDto in poaList)
+                       {
+                           rc.To.Add(poaDto.POA_EMAIL);
+                       }
+                   }
+                   else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                   {
+                       var managerId = _poaBll.GetManagerIdByPoaId(pbck4Dto.CREATED_BY);
+                       var managerDetail = _userBll.GetUserById(managerId);
+                       rc.To.Add(managerDetail.EMAIL);
+                   }
+                   break;
+               case Enums.ActionType.Approve:
+                   if (pbck4Dto.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                   {
+                       rc.To.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
+                   }
+                   else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingGovApproval)
+                   {
+                       var poaData = _poaBll.GetById(pbck4Dto.CREATED_BY);
+                       if (poaData != null)
+                       {
+                           //creator is poa user
+                           rc.To.Add(poaData.POA_EMAIL);
+                       }
+                       else
+                       {
+                           //creator is excise executive
+                           var userData = _userBll.GetUserById(pbck4Dto.CREATED_BY);
+                           rc.To.Add(userData.EMAIL);
+                       }
+                   }
+                   break;
+               case Enums.ActionType.Reject:
+                   //send notification to creator
+                   var userDetail = _userBll.GetUserById(pbck4Dto.CREATED_BY);
+                   rc.To.Add(userDetail.EMAIL);
+                   break;
+           }
+           rc.Body = bodyMail.ToString();
+           return rc;
+       }
+
+       private string GetManagerEmail(string poaId)
+       {
+           var managerId = _poaBll.GetManagerIdByPoaId(poaId);
+           var managerDetail = _userBll.GetUserById(managerId);
+           return managerDetail.EMAIL;
+       }
+
 
        private void SubmitDocument(Pbck4WorkflowDocumentInput input)
        {
@@ -736,14 +833,10 @@ namespace Sampoerna.EMS.BLL
            dbData.MODIFIED_DATE = DateTime.Now;
            dbData.MODIFIED_BY = input.UserId;
 
-           var pbckDocument = new List<Pbck4DocumentsDto>();
+           var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
+           pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
 
-           //foreach (var pbck4DocumentDto in input.AdditionalDocumentData.Back1FileUploadList)
-           //{
-               
-           //}
-
-           //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(input.AdditionalDocumentData.Ck5FileUploadList);
+           dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
 
            input.DocumentNumber = dbData.PBCK4_NUMBER;
 
@@ -779,6 +872,11 @@ namespace Sampoerna.EMS.BLL
            dbData.MODIFIED_DATE = DateTime.Now;
            dbData.MODIFIED_BY = input.UserId;
 
+           var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
+           pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
+
+           dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+
            input.DocumentNumber = dbData.PBCK4_NUMBER;
 
            AddWorkflowHistory(input);
@@ -809,5 +907,92 @@ namespace Sampoerna.EMS.BLL
            AddWorkflowHistory(input);
 
        }
+
+       private string DateReportDisplayString(DateTime dt, bool isMonthYear)
+       {
+           var monthPeriodFrom = _monthBll.GetMonth(dt.Month);
+           if (isMonthYear) return monthPeriodFrom.MONTH_NAME_IND + " " + dt.ToString("yyyy");
+           return dt.ToString("dd") + " " + monthPeriodFrom.MONTH_NAME_IND +
+                                  " " + dt.ToString("yyyy");
+       }
+
+       public Pbck4ReportDto GetPbck4ReportDataById(int id)
+        {
+            var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
+            if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+           var nppbkcData = _nppbkcBll.GetById(dtData.NPPBKC_ID);
+
+           var plantData = _plantBll.GetT001WById(dtData.PLANT_ID);
+
+            var result = new Pbck4ReportDto();
+             result.ReportDetails.Pbck4Number = dtData.PBCK4_NUMBER;
+             result.ReportDetails.Pbck4Lampiran = "";
+             result.ReportDetails.TextTo = nppbkcData != null ? nppbkcData.TEXT_TO : string.Empty;
+             result.ReportDetails.CityTo = nppbkcData != null ? nppbkcData.CITY : string.Empty;
+             result.ReportDetails.PoaName = dtData.POA != null ? dtData.POA.PRINTED_NAME : string.Empty;
+             result.ReportDetails.PoaTitle = dtData.POA != null ? dtData.POA.TITLE : string.Empty;
+             result.ReportDetails.CompanyName = dtData.COMPANY_NAME;
+             result.ReportDetails.CompanyAddress = plantData!=null ? plantData.CompanyAddress : string.Empty;
+             result.ReportDetails.NppbkcId = dtData.NPPBKC_ID;
+           result.ReportDetails.NppbkcDate =
+               DateReportDisplayString(dtData.REPORTED_ON.HasValue ? dtData.REPORTED_ON.Value : DateTime.Now, false);
+
+           result.ReportDetails.PlantCity = result.ReportDetails.CityTo;
+           result.ReportDetails.PrintDate = DateReportDisplayString(DateTime.Now, false);
+           result.ReportDetails.RegionOffice = nppbkcData != null ? nppbkcData.REGION_DGCE : string.Empty;
+           int i = 0;
+
+           foreach (var pbck4Item in dtData.PBCK4_ITEM)
+           {
+               var pbckItemsDto = new Pbck4ItemReportDto();
+               pbckItemsDto.Seri = pbck4Item.SERIES_CODE;
+               pbckItemsDto.ReqQty = pbck4Item.REQUESTED_QTY.HasValue?pbck4Item.REQUESTED_QTY.Value : 0;
+               pbckItemsDto.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
+               pbckItemsDto.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
+               pbckItemsDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
+               pbckItemsDto.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
+               pbckItemsDto.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
+               pbckItemsDto.NoPengawas = pbck4Item.NO_PENGAWAS;
+
+               result.ListPbck4Items.Add(pbckItemsDto);
+
+                var pbck4Matrikck1 = new Pbck4IMatrikCk1ReportDto();
+               pbck4Matrikck1.Number = i + 1;
+               pbck4Matrikck1.SeriesCode = pbck4Item.SERIES_CODE;
+               pbck4Matrikck1.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
+               pbck4Matrikck1.JenisHt = pbck4Item.PRODUCT_ALIAS;
+               pbck4Matrikck1.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
+               pbck4Matrikck1.BrandName = "";//todo ask
+               if (pbck4Item.CK1 == null)
+               {
+                   pbck4Matrikck1.Ck1No = "";
+                   pbck4Matrikck1.Ck1Date = "";
+                   pbck4Matrikck1.Ck1OrderQty = 0;
+                   pbck4Matrikck1.Ck1RequestedQty = 0;
+               }
+               else
+               {
+                   pbck4Matrikck1.Ck1No = pbck4Item.CK1.CK1_NUMBER;
+                   pbck4Matrikck1.Ck1Date = DateReportDisplayString(pbck4Item.CK1.CK1_DATE, false);
+                   pbck4Matrikck1.Ck1OrderQty = 0;//todo ask
+                   pbck4Matrikck1.Ck1RequestedQty = 0;//todo ask
+               }
+
+               pbck4Matrikck1.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
+               pbck4Matrikck1.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
+               pbck4Matrikck1.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
+               pbck4Matrikck1.NoPengawas = "Tidak Dipakai";//todo ask
+              
+               result.ListPbck4MatrikCk1.Add(pbck4Matrikck1);
+               i = i + 1;
+
+
+           }
+         
+
+             return result;
+        }
     }
 }
