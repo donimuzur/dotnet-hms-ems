@@ -39,6 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dsCk4c.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsCk4c.xsd</DependentUpon>
+    </Compile>
     <Compile Include="dsCK5Print.cs">
       <DependentUpon>dsCK5Print.xsd</DependentUpon>
       <SubType>Component</SubType>
@@ -83,6 +88,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dsCk4c.xsc">
+      <DependentUpon>dsCk4c.xsd</DependentUpon>
+    </None>
+    <None Include="dsCk4c.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsCk4c1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsCk4c.xss">
+      <DependentUpon>dsCk4c.xsd</DependentUpon>
+    </None>
     <None Include="dsCK5Print.xsc">
       <DependentUpon>dsCK5Print.xsd</DependentUpon>
     </None>

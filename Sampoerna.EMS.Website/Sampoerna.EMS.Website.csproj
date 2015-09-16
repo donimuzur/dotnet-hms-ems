@@ -400,6 +400,12 @@
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\CK4C\Preview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Preview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\CK5\CK5Materials.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1230,6 +1236,10 @@
       <LastGenOutput>Preview.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Reports\CK4C\Preview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Preview.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>
