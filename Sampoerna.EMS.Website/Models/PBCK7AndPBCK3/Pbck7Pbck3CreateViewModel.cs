@@ -61,7 +61,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentTypePbck7AndPbck3 DocumentTypeList { get; set; }
 
         public List<Pbck7ItemUpload> UploadItems { get; set; }
-        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
+        public List<WorkflowHistoryViewModel> WorkflowHistoryPbck7 { get; set; }
+        public List<WorkflowHistoryViewModel> WorkflowHistoryPbck3 { get; set; }
 
         public bool AllowApproveAndReject { get; set; }
 
@@ -74,5 +75,18 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public bool AllowPrintDocument { get; set; }
 
         public bool IsSaveSubmit { get; set; }
+
+        public string ActionType { get; set; }
+
+        public string Back1Number { get; set; }
+
+        public DateTime? Back1Date { get; set; }
+
+        public string Back1Lampiran { get; set; }
+
+        public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
+
+        public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
+
     }
 }

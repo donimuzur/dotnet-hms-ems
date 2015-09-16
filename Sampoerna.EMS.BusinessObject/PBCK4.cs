@@ -46,6 +46,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> REJECTED_DATE { get; set; }
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_BY_MANAGER_DATE { get; set; }
+        public string POA_PRINTED_NAME { get; set; }
     
         public virtual ICollection<PBCK4_DOCUMENT> PBCK4_DOCUMENT { get; set; }
         public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
