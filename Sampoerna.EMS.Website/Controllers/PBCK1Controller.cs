@@ -1147,10 +1147,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     Pbck1Number = "'" + d.Pbck1Number,
                     Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
                     OriginalNppbkc = "'" + d.SupplierNppbkcId,
-                    OriginalKppbc = "'" + d.SupplierKppbcId,
+                    OriginalKppbc = "'" + d.SupplierKppbcName,
                     OriginalAddress = d.SupplierAddress,
                     // ReSharper disable once PossibleInvalidOperationException
-                    ExcGoodsAmount = d.QtyApproved.Value.ToString("N0"),
+                    ExcGoodsAmount =  d.QtyApproved == null ? "0" : d.QtyApproved.Value.ToString("N0"),
                     Status = d.StatusName
                 }).ToList();
 
