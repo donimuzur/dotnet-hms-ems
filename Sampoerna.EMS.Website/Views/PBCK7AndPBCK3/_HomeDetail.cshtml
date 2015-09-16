@@ -24,7 +24,9 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-7 No</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Pbck7Number, new {@class = "form-control", @disabled = "disabled"})
+                                            @Html.HiddenFor(x => x.Id)
+                                            @Html.HiddenFor(x=>x.Pbck7Number)
+                                            @Html.TextBox("pbck7_no", Model.Pbck7Number, new {@class = "form-control", @disabled = "disabled"})
                                         </div>
                                     </div>
                                 </div>
@@ -33,7 +35,7 @@
                                         <label class="col-md-4">PBCK-7 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Pbck7Date, new {@class = "form-control"})
+                                                @Html.TextBox("pbck7_date",  Model.Pbck7Date, new {@class = "form-control", @disabled="disabled"})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -45,7 +47,7 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-3 No</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Pbck3Number, new {@class = "form-control", @disabled = "disabled"})
+                                            @Html.TextBox("pbck3_no", Model.Pbck3Number, new {@class = "form-control", @disabled = "disabled"})
                                         </div>
                                     </div>
                                 </div>
@@ -54,7 +56,7 @@
                                         <label class="col-md-4">PBCK-3 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Pbck3Date, new {@class = "form-control"})
+                                                @Html.TextBox("pbck3_date", Model.Pbck3Date, new {@class = "form-control",  @disabled="disabled"})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -66,7 +68,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Document Type</label>
                                         <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.DocumentType, Model.DocumentTypeList, "Select", new { @class = "form-control" })
+                                            @Html.EnumDropDownListFor(model => model.DocumentType, Model.DocumentTypeList, "Select", new { @class = "form-control", @disabled = "disabled" })
                                     </div>
                                     </div>
                                 </div>
@@ -75,7 +77,7 @@
                                         <label class="col-md-4">Exec Date From</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.ExecDateFrom, new {@class = "form-control"})
+                                                @Html.TextBox("exec_date_from", Model.ExecDateFrom, new {@class = "form-control", @disabled="disabled"})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -88,7 +90,7 @@
                                         <label class="col-md-4">Exec Date To</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.ExecDateTo, new {@class = "form-control"})
+                                                @Html.TextBox("exec_date_to", Model.ExecDateTo, new {@class = "form-control", @disabled="disabled"})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -100,7 +102,7 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(x => x.NppbkcId, Model.NppbkIdList, "select", new {@class = "form-control"})
+                                            @Html.DropDownListFor(x => x.NppbkcId, Model.NppbkIdList, "select", new {@class = "form-control", @disabled="disabled"})
                                         </div>
                                     </div>
                                 </div>
@@ -116,7 +118,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Plant ID</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(x => x.PlantId, Model.PlantList, "select", new {@class = "form-control"})
+                                            @Html.DropDownListFor(x => x.PlantId, Model.PlantList, "select", new {@class = "form-control", @disabled="disabled"})
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +148,7 @@
                 </div>
                 <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
                     <div class="panel-body">
-                        <a href="javascript:void(0)"  class="btn btn-blue" onclick="toUploadTab()">Upload</a>
+                        <a href="javascript:void(0)"  class="btn btn-blue">Upload</a>
                         <div class="table-container" id="table-upload">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -166,48 +168,60 @@
                                     </tr>
                                 </thead>
                                 <tbody id="body-tb-upload">
-                                    <tr>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                    </tr>
-                                    <tr>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                    </tr>
-                                    <tr>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                        <td> &nbsp; </td>
-                                    </tr>
+                                    @if (Model.UploadItems != null)
+                                    {
+                                        for (int i = 0; i < Model.UploadItems.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@Html.HiddenFor(x=>x.UploadItems[i].Id)
+                                                    @(i+1)</td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].FaCode)
+                                                    @Model.UploadItems[i].FaCode
+                                                </td> 
+                                                <td>@Html.HiddenFor(x => x.UploadItems[i].ProdTypeAlias)
+                                                    @Model.UploadItems[i].ProdTypeAlias 
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].Brand)
+                                                    @Model.UploadItems[i].Brand
+                                                </td> 
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].Content)
+                                                    @Model.UploadItems[i].Content
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].Pbck7Qty)
+                                                    @Model.UploadItems[i].Pbck7Qty
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].Back1Qty)
+                                                    @Model.UploadItems[i].Back1Qty
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].SeriesValue)
+                                                    @Model.UploadItems[i].SeriesValue
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].Hje)
+                                                    @Model.UploadItems[i].Hje
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].Tariff)
+                                                    @Model.UploadItems[i].Tariff
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].FiscalYear)
+                                                    @Model.UploadItems[i].FiscalYear
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].ExciseValue)
+                                                    @Model.UploadItems[i].ExciseValue
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                   
                                 </tbody>
                             </table>
                         </div>
@@ -215,7 +229,7 @@
                 </div>
             </div>
         </div>
-        
+        @Html.Partial("_Back1", Model)
         @Html.Partial("_Back", Model)
         @Html.Partial("_WorkflowHistoryPbck7", Model)
         @Html.Partial("_WorkflowHistoryPbck3", Model)

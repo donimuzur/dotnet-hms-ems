@@ -19,5 +19,9 @@
         public string NPPBKC_Id { get; set; }
         public bool IsRejected { get; set; }
         public string RejectedBy { get; set; }
+
+        public long FormId { get; set; }
+
+        public Sampoerna.EMS.Core.Enums.FormType FormType { get; set; }
     }
 }
