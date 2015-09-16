@@ -108,7 +108,7 @@ function prodConvSaveClick() {
                 + '].ProdTypeAlias" type="hidden" value = "' + datarows[i][2] + '" />' + datarows[i][2] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ProdTypeName" type="hidden" value = "' + datarows[i][3] + '" />' + datarows[i][3] + '</td>';
-            data += '<td><input name="Detail.Pbck1ProdConverter[' + i
+            data += '<td class="number"><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ConverterOutput" type="hidden" value = "' + changeToNumber(datarows[i][4]) + '" />' + datarows[i][4] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ConverterUomId" type="hidden" value = "' + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
@@ -146,9 +146,9 @@ function prodPlanSaveClick() {
                 + datarows[i][3] + '" />' + datarows[i][3] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].ProdTypeAlias" type="hidden" value = "'
                 + datarows[i][4] + '" />' + datarows[i][4] + '</td>';
-            data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].Amount" type="hidden" value = "'
+            data += '<td class="number"><input name="Detail.Pbck1ProdPlan[' + i + '].Amount" type="hidden" value = "'
                 + changeToNumber(datarows[i][5]) + '" />' + datarows[i][5] + '</td>';
-            data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequired" type="hidden" value = "'
+            data += '<td class="number"><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequired" type="hidden" value = "'
                 + changeToNumber(datarows[i][6]) + '" />' + datarows[i][6] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequiredUomId" type="hidden" value = "'
                 + datarows[i][7] + '" />' + datarows[i][7] + '</td>';
