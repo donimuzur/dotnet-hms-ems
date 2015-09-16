@@ -74,5 +74,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public bool AllowPrintDocument { get; set; }
 
         public bool IsSaveSubmit { get; set; }
+
+        public string ActionType { get; set; }
     }
 }

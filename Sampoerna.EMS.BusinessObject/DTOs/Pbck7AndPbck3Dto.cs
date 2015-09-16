@@ -50,6 +50,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Comment { get; set; }
 
         public bool IsRejected { get; set; }
+
+        public bool IsCreatedPbck7 { get; set; }
+
+        public bool IsCreatedPbkc3 { get; set; }
     }
 
     public class Pbck7ItemUpload

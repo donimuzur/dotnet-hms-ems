@@ -201,7 +201,14 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
             return View("Edit", InitialModel(model));
         }
-
+        public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+                return HttpNotFound();
+            var existingData = _pbck7AndPbck7And3Bll.GetById(id);
+            var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
+            return View("Detail", InitialModel(model));
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Pbck7Pbck3CreateViewModel model)
@@ -238,11 +245,13 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             if (model.IsSaveSubmit)
             {
-                if (item.Status == Enums.DocumentStatus.Draft)
+                if (item.Pbck7Status != Enums.DocumentStatus.Completed)
                 {
-                    item.Status = Enums.DocumentStatus.WaitingForApproval;
+                    if (item.Pbck7Status == Enums.DocumentStatus.Draft)
+                    {
+                        item.Pbck7Status = Enums.DocumentStatus.WaitingForApproval;
+                    }
                 }
-
 
             }
             item.ModifiedBy = CurrentUser.USER_ID;
@@ -251,7 +260,14 @@ namespace Sampoerna.EMS.Website.Controllers
             item.PlantCity = plant.ORT01;
             item.PlantName = plant.NAME1;
             _pbck7AndPbck7And3Bll.Insert(item);
-            AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
+            if(model.IsSaveSubmit)
+            {
+                AddMessageInfo("Submit Success", Enums.MessageInfoType.Success);
+            }
+            else
+            {
+                AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
+            }
             return RedirectToAction("Index");
         }
 
@@ -271,6 +287,8 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.Year = modelDto.Pbck7Date.Year;
             inputDoc.NppbkcId = modelDto.NppbkcId;
             modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
+            modelDto.Pbck3Status = Enums.DocumentStatus.Draft;
+
             try
             {
                 _pbck7AndPbck7And3Bll.Insert(modelDto);
@@ -329,6 +347,58 @@ namespace Sampoerna.EMS.Website.Controllers
             return (model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Detail(Pbck7Pbck3CreateViewModel model)
+        {
+
+            if (model.ActionType == "Approve")
+            {
+                return RedirectToAction("Approve", new { id = model.Id });
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Approve(int id)
+        {
+            var urlBuilder =
+                   new System.UriBuilder(Request.Url.AbsoluteUri)
+                   {
+                       Path = Url.Action("Detail", "PBCK7AndPBCK3", new { id = id }),
+                       Query = null,
+                   };
+
+            Uri uri = urlBuilder.Uri;
+            if (uri != Request.UrlReferrer)
+                return HttpNotFound();
+            var item = _pbck7AndPbck7And3Bll.GetById(id);
+            if (item.Pbck3Status == Enums.DocumentStatus.Draft)
+            {
+                var statusPbck7 = item.Pbck7Status;
+                if (statusPbck7 == Enums.DocumentStatus.WaitingForApproval)
+                {
+                    item.Pbck7Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                    item.ApprovedBy = CurrentUser.USER_ID;
+                    item.ApprovedDate = DateTime.Now;
+                }
+                else if (statusPbck7 == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    item.Pbck7Status = Enums.DocumentStatus.WaitingGovApproval;
+                    item.ApprovedByManager = CurrentUser.USER_ID;
+                    item.ApprovedDateManager = DateTime.Now;
+                }
+
+                else if (statusPbck7 == Enums.DocumentStatus.WaitingGovApproval)
+                {
+                    item.Pbck7Status = Enums.DocumentStatus.GovApproved;
+                }
+            }
+
+            item.UploadItems = null;
+            _pbck7AndPbck7And3Bll.Insert(item);
+            return RedirectToAction("Index");
+        }
 
         [HttpPost]
         public JsonResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
