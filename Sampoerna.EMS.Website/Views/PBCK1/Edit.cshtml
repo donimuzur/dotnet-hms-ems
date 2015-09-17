@@ -149,25 +149,28 @@
 
         $('#Detail_StatusGov').on('change', function (e) {
             var valueSelected = this.value;
+            var request = $("input[name='Detail.RequestQty']:hidden").val();
 
             $('#divComment').hide();
-            $('#Detail_QtyApproved').prop("readonly", true);
+            $("input[name='Detail.QtyApproved']:text").prop("readonly", true);
 
             if (valueSelected == 'Rejected') {
                 $('#divComment').show();
-                $('#Detail_QtyApproved').val(0);
+                $("input[name='Detail.QtyApproved']:hidden").val(0);
+                $("input[name='Detail.QtyApproved']:text").val(0);
                 $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
             }
             else if (valueSelected == 'PartialApproved') {
-                $("#Detail_QtyApproved").prop("readonly", false);
-                $('#Detail_QtyApproved').val($('#Detail_RequestQty').val());
+                $("input[name='Detail.QtyApproved']:text").prop("readonly", false);
+                $("input[name='Detail.QtyApproved']:hidden").val(request);
+                $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request,2));
                 $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
             }
             else if (valueSelected == 'FullApproved') {
-                $('#Detail_QtyApproved').val($('#Detail_RequestQty').val());
+                $("input[name='Detail.QtyApproved']:hidden").val(request);
+                $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request, 2));
                 $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
             }
-
         });
 
         $("#btnSaveGovStatus").click(function () {
@@ -256,10 +259,18 @@
 
         changeToDecimal("input[name='Detail.LatestSaldo']:text", "val");
         changeToDecimal("input[name='Detail.RequestQty']:text", "val");
+        changeToDecimal("input[name='Detail.QtyApproved']", "val");
         changeToDecimal("#ProdPlanContent .decimal", "html"); 
         changeToDecimal("#ProdConvContent .decimal", "html"); 
         changeToDecimal("#Detail_Pbck1ProdConverter .decimal", "html");
         changeToDecimal("#Detail_Pbck1ProdPlan .decimal", "html");
+
+        if ($("input[name='Detail.QtyApproved']:hidden").length) {
+            $("input[name='Detail.QtyApproved']:text").keyup(function () {
+                $(this).val(ThausandSeperator($(this).val(), 2));
+                $("input[name='Detail.QtyApproved']:hidden").val(changeToNumber($(this).val()));
+            });
+        }
     });
 
     function openGovStatusBlock() {

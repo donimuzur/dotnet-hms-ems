@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
@@ -61,6 +62,7 @@ namespace Sampoerna.EMS.BLL
             var result = from b in _repository.GetQuery()
                          join p in _repositoryPlantT001W.GetQuery() on b.WERKS equals p.WERKS
                          join s in _repositorySeries.GetQuery() on b.SERIES_CODE equals s.SERIES_CODE
+                         where b.IS_DELETED == false && b.STATUS == true
                          select new BrandRegistrationOutput()
                          {
                              StickerCode = b.STICKER_CODE,

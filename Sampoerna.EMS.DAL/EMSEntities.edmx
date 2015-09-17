@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="BACK1">
           <Key>
             <PropertyRef Name="BACK1_ID" />
@@ -87,10 +87,10 @@
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_ID" Type="nvarchar" MaxLength="50" />
+          <Property Name="FORM_ID" Type="varchar" MaxLength="50" />
           <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="30" />
-          <Property Name="OLD_VALUE" Type="nvarchar" MaxLength="255" />
-          <Property Name="NEW_VALUE" Type="nvarchar" MaxLength="255" />
+          <Property Name="OLD_VALUE" Type="text" />
+          <Property Name="NEW_VALUE" Type="text" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -252,6 +252,7 @@
           <Property Name="EX_GOODS_TYPE" Type="int" Nullable="false" />
           <Property Name="DEST_COUNTRY_CODE" Type="nvarchar" MaxLength="5" />
           <Property Name="DEST_COUNTRY_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="CK5_MANUAL_TYPE" Type="int" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -431,6 +432,8 @@
           <Property Name="NOTED" Type="nvarchar" MaxLength="255" />
           <Property Name="SUPPLIER_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
           <Property Name="SUPPLIER_COMPANY_CODE" Type="varchar" MaxLength="4" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -544,7 +547,7 @@
             <PropertyRef Name="LIFNR" />
           </Key>
           <Property Name="LIFNR" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="NAME1" Type="nvarchar" MaxLength="35" Nullable="false" />
+          <Property Name="NAME1" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="NAME2" Type="nvarchar" MaxLength="35" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
@@ -643,12 +646,12 @@
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="APPROVED_BY_POA" Type="nvarchar" MaxLength="50" />
-          <Property Name="APPROVED_DATE_POA" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="SUPPLIER_PORT_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="SUPPLIER_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="SUPPLIER_PLANT_WERKS" Type="nvarchar" MaxLength="4" />
+          <Property Name="APPROVED_BY_POA" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_DATE_POA" Type="datetime" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
           <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
@@ -786,7 +789,7 @@
             <PropertyRef Name="PBCK4_ID" />
           </Key>
           <Property Name="PBCK4_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PBCK4_NUMBER" Type="varchar" MaxLength="35" Nullable="false" />
+          <Property Name="PBCK4_NUMBER" Type="varchar" MaxLength="50" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
@@ -811,6 +814,7 @@
           <Property Name="REJECTED_DATE" Type="datetime" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
+          <Property Name="POA_PRINTED_NAME" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="PBCK4_DOCUMENT">
           <Key>
@@ -1041,8 +1045,8 @@
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_EMS" Type="bit" />
         </EntityType>
         <EntityType Name="USER">
@@ -1196,14 +1200,14 @@
           <Property Name="KPPBC_ID" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="KPPBC_TYPE" Type="nvarchar" MaxLength="30" />
           <Property Name="MENGETAHUI" Type="nvarchar" MaxLength="70" />
-          <Property Name="MENGETAHUI_DETAIL" Type="text" />
           <Property Name="CK1_KEP_HEADER" Type="nvarchar" MaxLength="100" />
           <Property Name="CK1_KEP_FOOTER" Type="nvarchar" MaxLength="100" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
-          <Property Name="IS_DELETED" Type="bit" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="MENGETAHUI_DETAIL" Type="text" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_MARKET">
           <Key>
@@ -1230,17 +1234,17 @@
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="ISSUE_STORANGE_LOC" Type="nvarchar" MaxLength="50" />
           <Property Name="BASE_UOM_ID" Type="nvarchar" MaxLength="5" />
-          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
-          <Property Name="TARIFF" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="IS_FROM_SAP" Type="bit" Nullable="false" />
-          <Property Name="CLIENT_DELETION" Type="bit" />
-          <Property Name="PLANT_DELETION" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="HJE" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="HJE_CURR" Type="nvarchar" MaxLength="5" />
+          <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
+          <Property Name="PLANT_DELETION" Type="bit" />
+          <Property Name="CLIENT_DELETION" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -1260,10 +1264,10 @@
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
-          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -1286,9 +1290,9 @@
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
-          <Property Name="IS_DELETED" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_SERIES">
           <Key>
@@ -2003,30 +2007,6 @@
             <Dependent Role="MATERIAL_UOM">
               <PropertyRef Name="STICKER_CODE" />
               <PropertyRef Name="WERKS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PAGE_MAP_PAGE">
-          <End Role="PAGE" Type="Self.PAGE" Multiplicity="1" />
-          <End Role="PAGE_MAP" Type="Self.PAGE_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PAGE">
-              <PropertyRef Name="PAGE_ID" />
-            </Principal>
-            <Dependent Role="PAGE_MAP">
-              <PropertyRef Name="PAGE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PAGE_MAP_USER_BROLE">
-          <End Role="USER_BROLE" Type="Self.USER_BROLE" Multiplicity="0..1" />
-          <End Role="PAGE_MAP" Type="Self.PAGE_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER_BROLE">
-              <PropertyRef Name="BROLE" />
-            </Principal>
-            <Dependent Role="PAGE_MAP">
-              <PropertyRef Name="BROLE" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3344,14 +3324,6 @@
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
             <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
           </AssociationSet>
-          <AssociationSet Name="FK_PAGE_MAP_PAGE" Association="Self.FK_PAGE_MAP_PAGE">
-            <End Role="PAGE" EntitySet="PAGE" />
-            <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PAGE_MAP_USER_BROLE" Association="Self.FK_PAGE_MAP_USER_BROLE">
-            <End Role="USER_BROLE" EntitySet="USER_BROLE" />
-            <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
-          </AssociationSet>
           <AssociationSet Name="FK_PAGE_PAGE" Association="Self.FK_PAGE_PAGE">
             <End Role="PAGE" EntitySet="PAGE" />
             <End Role="PAGE1" EntitySet="PAGE" />
@@ -4376,10 +4348,10 @@
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
-          <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="OLD_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="NEW_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OLD_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="NEW_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
@@ -4881,6 +4853,7 @@
           <Property Name="DEST_COUNTRY_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
           <NavigationProperty Name="LACK1_INCOME_DETAIL" Relationship="EMSModel.FK_LACK1_INCOME_DETAIL_CK5" FromRole="CK5" ToRole="LACK1_INCOME_DETAIL" />
+          <Property Name="CK5_MANUAL_TYPE" Type="EMSModel.Ck5ManualType" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -5751,7 +5724,7 @@
             <PropertyRef Name="LIFNR" />
           </Key>
           <Property Name="LIFNR" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="NAME1" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="NAME1" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="NAME2" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
@@ -6475,6 +6448,8 @@
           <NavigationProperty Name="LACK1_TRACKING" Relationship="EMSModel.FK_LACK1_TRACKING_LACK1" FromRole="LACK1" ToRole="LACK1_TRACKING" />
           <NavigationProperty Name="LACK1_PLANT" Relationship="EMSModel.FK_LACK1_PLANT_LACK1" FromRole="LACK1" ToRole="LACK1_PLANT" />
           <NavigationProperty Name="LACK1_PRODUCTION_DETAIL" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_LACK1" FromRole="LACK1" ToRole="LACK1_PRODUCTION_DETAIL" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -6979,7 +6954,7 @@
             <PropertyRef Name="PBCK4_ID" />
           </Key>
           <Property Name="PBCK4_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PBCK4_NUMBER" Type="String" MaxLength="35" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PBCK4_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
@@ -7011,6 +6986,7 @@
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK4_USER_MODIFIED" FromRole="PBCK4" ToRole="USER" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK4_USER_REJECT" FromRole="PBCK4" ToRole="USER" />
           <NavigationProperty Name="USER3" Relationship="EMSModel.FK_PBCK4_USER1" FromRole="PBCK4" ToRole="USER" />
+          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_PBCK4_DOCUMENT_PBCK4">
           <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="1" />
@@ -7745,6 +7721,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="Ck5ManualType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8080,7 +8057,8 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="DEST_COUNTRY_NAME" ColumnName="DEST_COUNTRY_NAME" />
+          <ScalarProperty Name="CK5_MANUAL_TYPE" ColumnName="CK5_MANUAL_TYPE" />
+                <ScalarProperty Name="DEST_COUNTRY_NAME" ColumnName="DEST_COUNTRY_NAME" />
                 <ScalarProperty Name="DEST_COUNTRY_CODE" ColumnName="DEST_COUNTRY_CODE" />
                 <ScalarProperty Name="EX_GOODS_TYPE" ColumnName="EX_GOODS_TYPE" />
                 <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
@@ -8605,6 +8583,8 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="SUPPLIER_COMPANY_CODE" ColumnName="SUPPLIER_COMPANY_CODE" />
                 <ScalarProperty Name="SUPPLIER_COMPANY_NAME" ColumnName="SUPPLIER_COMPANY_NAME" />
                 <ScalarProperty Name="NOTED" ColumnName="NOTED" />
@@ -8869,6 +8849,7 @@
           <EntitySetMapping Name="PBCK4">
             <EntityTypeMapping TypeName="EMSModel.PBCK4">
               <MappingFragment StoreEntitySet="PBCK4">
+                <ScalarProperty Name="POA_PRINTED_NAME" ColumnName="POA_PRINTED_NAME" />
                 <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />
                 <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
                 <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />

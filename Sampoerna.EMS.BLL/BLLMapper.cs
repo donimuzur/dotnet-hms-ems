@@ -450,6 +450,8 @@ namespace Sampoerna.EMS.BLL
             #endregion
 
             Mapper.CreateMap<CK1, CK1Dto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<BLOCK_STOCK, BLOCK_STOCKDto>().IgnoreAllNonExisting();
         }
     }
 }

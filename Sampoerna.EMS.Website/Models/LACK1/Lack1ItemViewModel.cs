@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
+using Sampoerna.EMS.Website.Validations;
 
 namespace Sampoerna.EMS.Website.Models.LACK1
 {
@@ -78,7 +81,6 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowApproveAndReject { get; set; }
         public bool AllowManagerReject { get; set; }
-        public bool AllowPrintDocument { get; set; }
         public string Comment { get; set; }
         public Enums.LACK1Type Lack1Type { get; set; }
         public string MenuPlantAddClassCss { get; set; }
@@ -97,6 +99,9 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public SelectList ReturnUomList { get; set; }
         public Enums.DocumentStatusGov DocGovStatusList { get; set; }
 
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Doc")]
+        public List<HttpPostedFileBase> DecreeFiles { get; set; }
+        public Enums.ActionType GovApprovalActionType { get; set; }
         public string IsSaveSubmit { get; set; }
 
         #endregion

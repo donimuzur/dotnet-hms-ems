@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.XMLReader
         {
 
             Service svc = new Service();
-            svc.Run(true);
+            //svc.Run(true);
             /*XmlCK5DataWriter rt= new XmlCK5DataWriter();
              var ck5 = new CK5XmlDto();
              ck5.REGISTRATION_NUMBER = "8100000011";
@@ -53,6 +53,19 @@ namespace Sampoerna.EMS.XMLReader
                });
              ck5.Ck5PathXml = @"H:\test-ck5.xml";
              rt.CreateCK5Xml(ck5);*/
+
+             var dto = new Pbck4XmlDto();
+             dto.PbckNo = "1004/PMID-E/KRA/VIII/2015";
+             dto.NppbckId = "0713.1.3.0234";
+             dto.DeleteFlag = "X";
+             dto.CompnValue = "14000000";
+             dto.CompnDate = DateTime.Now;
+             dto.CompNo = "130";
+             dto.CompType = "CK-3";
+             dto.GeneratedXmlPath = "H:/pbck4.xml";
+             XmlPBCK4DataWriter rt = new XmlPBCK4DataWriter();
+             rt.CreatePbck4Xml(dto);
+
              Console.ReadLine();
         }
     }
