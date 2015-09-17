@@ -621,7 +621,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     //create xml file
                     var pbck4XmlDto = _pbck4Bll.GetPbck4ForXmlById(model.Pbck4Id);
 
-                    var fileName = ConfigurationManager.AppSettings["Pbck4PathXml"] + "PBCK4APP_" +
+                    var fileName = ConfigurationManager.AppSettings["Pbck4PathXml"] + "PBCK4APP" +
                                    model.Pbck4Number + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
 
                     pbck4XmlDto.GeneratedXmlPath = fileName;
