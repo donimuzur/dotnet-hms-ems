@@ -58,6 +58,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string NOTED { get; set; }
         public string SUPPLIER_COMPANY_NAME { get; set; }
         public string SUPPLIER_COMPANY_CODE { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
     
         public virtual MONTH MONTH { get; set; }
         public virtual UOM UOM { get; set; }
