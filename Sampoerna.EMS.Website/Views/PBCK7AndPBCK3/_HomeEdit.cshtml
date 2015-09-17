@@ -157,7 +157,7 @@
                 <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
                     <div class="panel-body">
                         <a href="javascript:void(0)"  class="btn btn-blue" onclick="toUploadTab()">Upload</a>
-                         <div class="table-container" id="table-upload">
+                        <div class="table-container" id="table-upload">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
                                     <tr>
@@ -237,6 +237,7 @@
                 </div>
             </div>
         </div>
+        @Html.Partial("_Back1", Model)
         @Html.Partial("_Back", Model)
         @Html.Partial("_WorkflowHistoryPbck7", Model)
         @Html.Partial("_WorkflowHistoryPbck3", Model)

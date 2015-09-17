@@ -94,15 +94,18 @@
             </div>
         </div>
     </div>
+    
+    @Html.Partial("_FileUploadBack1")
 }
 
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/pbck7/form.js"></script>
     <script type="text/javascript">
         var uploaditems = [];
-        $("#btnSaveGovStatus").click(function () {
+        $("#btnSaveGovStatus").click(function() {
             if (ValidateGovInput()) {
                 $('#form-pbck7-edit').submit();
             }
@@ -118,7 +121,6 @@
                 result = false;
             }
 
-            
 
             if ($('#Pbck7GovStatus').val() == 'Rejected') {
                 if ($('#Comment').val() == '') {
@@ -295,6 +297,19 @@
                 }
             }
 
+        });
+
+
+        $('#Back1GovStatus').change(function() {
+            if ($(this).length) {
+                var back1govstatus = $(this).find("option:selected").val();
+                if (back1govstatus == 'FullApproved') {
+                    $('#Back1Number').enable();
+                } else {
+                    $('#Back1Number').disable();
+                }
+            }
+            $('#Back1Number').disable();
         });
     </script>
 }

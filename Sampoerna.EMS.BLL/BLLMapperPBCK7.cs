@@ -95,10 +95,12 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.APPROVED_BY_MANAGER_DATE, opt => opt.MapFrom(src => src.ApprovedDateManager))
                 .ForMember(dest => dest.REJECTED_BY, opt => opt.MapFrom(src => src.RejectedBy))
                  .ForMember(dest => dest.REJECTED_DATE, opt => opt.MapFrom(src => src.RejectedDate))
-               
+              
                 ;
 
-         
+            Mapper.CreateMap<Back1Dto, BACK1>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.BACK1_DATE, opt => opt.MapFrom(src => src.Back1Date));
+
 
             #endregion
 

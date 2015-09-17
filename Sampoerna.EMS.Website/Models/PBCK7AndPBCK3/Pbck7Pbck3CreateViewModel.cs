@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -18,6 +20,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string PlantId { get; set; }
 
+        
         public Enums.DocumentStatus Pbck7Status { get; set; }
         public string Pbck7StatusName { get; set; }
 
@@ -33,9 +36,15 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public DateTime? Pbck7Date { get; set; }
         public string Pbck3Number { get; set; }
         public DateTime? Pbck3Date { get; set; }
+         [Required]
         public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
+        
+        [Required]
         public DateTime? ExecDateFrom { get; set; }
+         [Required]
         public DateTime? ExecDateTo { get; set; }
+
+         [Required]
         public string NppbkcId { get; set; }
         public string Lampiran { get; set; }
 
@@ -94,6 +103,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentStatusGov Pbck7GovStatusList { get; set; }
 
         public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
+        public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
 
+        public List<BACK1_DOCUMENT> DocumentsBack1 { get; set; } 
     }
 }

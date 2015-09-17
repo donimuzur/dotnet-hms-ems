@@ -64,7 +64,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         //from table BACK1
         public string Back1Number { get; set; }
-        public DateTime Back1Date { get; set; }
+        public DateTime? Back1Date { get; set; }
 
         public List<Pbck7ItemUpload> UploadItems { get; set; }
 
@@ -77,6 +77,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsCreatedPbkc3 { get; set; }
 
         public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
+
+
+        public string Back1Lampiran { get; set; }
+        public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
+        public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
+
+        public List<BACK1_DOCUMENT> DocumentsBack1 { get; set; } 
+
 
     }
 
@@ -106,4 +114,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Decimal? SeriesValue { get; set; }
 
     }
+
+   
 }

@@ -855,6 +855,7 @@
     <Content Include="Scripts\pbck1\docupload.js" />
     <Content Include="Scripts\Pbck4Script.js" />
     <Content Include="Scripts\Pbck4ScriptDocUpload.js" />
+    <Content Include="Scripts\pbck7\form.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -1125,6 +1126,7 @@
     <Content Include="Views\PBCK7AndPBCK3\Detail.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Back1.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck3.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

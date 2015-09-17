@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.EMMA;
+using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -197,7 +198,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (!id.HasValue)
                 return HttpNotFound();
-            var existingData = _pbck7AndPbck7And3Bll.GetById(id);
+            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
             return View("Edit", InitialModel(model));
         }
@@ -205,16 +206,38 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (!id.HasValue)
                 return HttpNotFound();
-            var existingData = _pbck7AndPbck7And3Bll.GetById(id);
+            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
             return View("Detail", InitialModel(model));
         }
+
+        public void SaveBack1(Pbck7Pbck3CreateViewModel model)
+        {
+            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+            if (existingData != null)
+            {
+                existingData.Back1Number = model.Back1Number;
+                existingData.Back1Date = model.Back1Date;
+                existingData.DocumentsBack1 = model.DocumentsBack1;
+                existingData.Back1GovStatus = model.Back1GovStatus;
+                _pbck7AndPbck7And3Bll.Insert(existingData);
+
+            }
+
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Pbck7Pbck3CreateViewModel model)
         {
 
+            if (!string.IsNullOrEmpty(model.Back1Number) && model.Pbck3Status == Enums.DocumentStatus.Draft)
+            {
+                SaveBack1(model);
+                return RedirectToAction("Index");
+            }
             var item = AutoMapper.Mapper.Map<Pbck7AndPbck3Dto>(model);
+            
             if (item.CreatedBy != CurrentUser.USER_ID)
             {
                 return RedirectToAction("Detail", new {id = item.Pbck7Id});
@@ -372,7 +395,7 @@ namespace Sampoerna.EMS.Website.Controllers
             Uri uri = urlBuilder.Uri;
             if (uri != Request.UrlReferrer)
                 return HttpNotFound();
-            var item = _pbck7AndPbck7And3Bll.GetById(id);
+            var item = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
             
             var statusPbck7 = item.Pbck7Status;
             if (statusPbck7 == Enums.DocumentStatus.WaitingForApproval)
