@@ -301,15 +301,16 @@
 
 
         $('#Back1GovStatus').change(function() {
+          
             if ($(this).length) {
                 var back1govstatus = $(this).find("option:selected").val();
                 if (back1govstatus == 'FullApproved') {
-                    $('#Back1Number').enable();
+                    $('#Back1Number').removeAttr('disabled');
                 } else {
-                    $('#Back1Number').disable();
+                    $('#Back1Number').Attr('disabled', 'disabled');
                 }
             }
-            $('#Back1Number').disable();
+
         });
     </script>
 }

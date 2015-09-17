@@ -99,7 +99,12 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             Mapper.CreateMap<Back1Dto, BACK1>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.BACK1_DATE, opt => opt.MapFrom(src => src.Back1Date));
+                .ForMember(dest => dest.BACK1_NUMBER, opt => opt.MapFrom(src => src.Back1Number))
+                .ForMember(dest => dest.BACK1_DATE, opt => opt.MapFrom(src => src.Back1Date))
+                .ForMember(dest => dest.BACK1_DOCUMENT, opt => opt.MapFrom(src => src.Documents))
+                .ForMember(dest => dest.PBCK7_ID, opt => opt.MapFrom(src => src.Pbck7Id))
+
+                ;
 
 
             #endregion

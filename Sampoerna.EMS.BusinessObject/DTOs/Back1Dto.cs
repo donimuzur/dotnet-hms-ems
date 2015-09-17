@@ -10,9 +10,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public int Back1Id { get; set; }
         public string Back1Number { get; set; }
-        public DateTime Back1Date { get; set; }
+        public DateTime? Back1Date { get; set; }
 
-        public List<BACK1_DOCUMENT> Documents { get; set; } 
-        public int Pbck3Pbck7Id { get; set; }
+       public List<BACK1_DOCUMENT> Documents { get; set; } 
+        public int Pbck7Id { get; set; }
     }
 }

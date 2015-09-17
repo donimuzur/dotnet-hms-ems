@@ -105,6 +105,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
         public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
 
+        public List<HttpPostedFileBase> DocumentsPostBack1 { get; set; } 
+
         public List<BACK1_DOCUMENT> DocumentsBack1 { get; set; } 
     }
 }

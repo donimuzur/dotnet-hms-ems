@@ -11,14 +11,14 @@ $('#file-back1-container').on('click', '#add-files-back1', (function () {
     file_back1++;
    
     $('#file-back1-container').append(' <div class="row"><div class="col-sm-9"> ' +
-                                 '<input type="file" id="DocumentsBack1_' + file_back1 + '_" name="DocumentsBack1_[' + file_back1 + ']" class="form-control">' +
+                                 '<input type="file" id="DocumentsPostBack1_' + file_back1 + '_" name="DocumentsPostBack1[' + file_back1 + ']" class="form-control">' +
                              '</div><div class="col-sm-3"></div></div>');
 }));
 
 function uploadBack1() {
     var docsback1 = [];
     for (var i = 0; i <= file_back1 ; i++) {
-        var fileName = $('#DocumentsBack1_' + i + '_').val();
+        var fileName = $('#DocumentsPostBack1_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
         docsback1.push(name);
     }
@@ -53,7 +53,7 @@ function removeBack1UploadButton(index) {
         $('#file-back1-container').html('<div class="row"><div class="col-sm-4"><button type="button"  class="btn btn-primary full add-files">Add Files</button></div></div>');
         for (var i = 0; i <= file_back1; i++) {
             $('#file-back1-container').append('<div class="row"><div class="col-sm-9"> ' +
-                            '<input type="file" id="DocumentsBack1_' + i + '_" name="DocumentsBack1[' + i + ']" class="form-control">' +
+                            '<input type="file" id="DocumentsPostBack1_' + i + '_" name="DocumentsPostBack1[' + i + ']" class="form-control">' +
                         '</div><div class="col-sm-3"></div></div>');
 
         }

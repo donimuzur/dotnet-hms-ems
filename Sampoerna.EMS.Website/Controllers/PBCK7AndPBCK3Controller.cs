@@ -216,11 +216,37 @@ namespace Sampoerna.EMS.Website.Controllers
             var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
             if (existingData != null)
             {
-                existingData.Back1Number = model.Back1Number;
-                existingData.Back1Date = model.Back1Date;
-                existingData.DocumentsBack1 = model.DocumentsBack1;
-                existingData.Back1GovStatus = model.Back1GovStatus;
-                _pbck7AndPbck7And3Bll.Insert(existingData);
+                var back1Dto = new Back1Dto();
+                if (model.DocumentsPostBack1 != null)
+                {
+                    back1Dto.Documents = new List<BACK1_DOCUMENT>();
+                    foreach (var sk in model.DocumentsPostBack1)
+                    {
+                        if (sk != null)
+                        {
+                            var document = new BACK1_DOCUMENT();
+                            var filenamecheck = sk.FileName;
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                document.FILE_NAME = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+                            else
+                            {
+                                document.FILE_NAME = sk.FileName;
+                            }
+                           
+                            document.FILE_PATH = SaveUploadedFile(sk, model.Back1Number.Trim().Replace('/', '_'));
+                            back1Dto.Documents.Add(document);
+
+                        }
+                    }
+                }
+
+                back1Dto.Back1Number = model.Back1Number;
+                back1Dto.Back1Date = model.Back1Date;
+                back1Dto.Pbck7Id = existingData.Pbck7Id;
+               
+                _pbck7AndPbck7And3Bll.InsertBack1(back1Dto);
 
             }
 
@@ -465,6 +491,24 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return Json(model);
         }
+
+        private string SaveUploadedFile(HttpPostedFileBase file, string back1Num)
+        {
+            if (file == null || file.FileName == "")
+                return "";
+
+            string sFileName = "";
+
+
+            sFileName = Constans.UploadPath + System.IO.Path.GetFileName("BACK1_" + back1Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + System.IO.Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+
     }
 
 }
