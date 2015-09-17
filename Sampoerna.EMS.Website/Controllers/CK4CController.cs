@@ -20,6 +20,8 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.CK4C;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using System.Configuration;
 
@@ -43,11 +45,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowBLL _workflowBll;
         private IZaidmExProdTypeBLL _prodTypeBll;
         private IHeaderFooterBLL _headerFooterBll;
+        private IPrintHistoryBLL _printHistoryBll;
+        private IChangesHistoryBLL _changesHistoryBll;
 
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
             IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll,
             IDocumentSequenceNumberBLL documentSequenceNumberBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IZaidmExProdTypeBLL prodTypeBll,
-            IHeaderFooterBLL headerFooterBll)
+            IHeaderFooterBLL headerFooterBll, IPrintHistoryBLL printHistoryBll, IChangesHistoryBLL changesHistoryBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -66,6 +70,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowBll = workflowBll;
             _prodTypeBll = prodTypeBll;
             _headerFooterBll = headerFooterBll;
+            _printHistoryBll = printHistoryBll;
+            _changesHistoryBll = changesHistoryBll;
         }
 
         #region Index Document List
@@ -260,6 +266,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.YearList = Ck4cYearList();
             model.PlanList = GlobalFunctions.GetPlantAll();
             model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.AllowPrintDocument = false;
             if(model.Details != null) model.Details.ReportedOn = DateTime.Now;
 
             return (model);
@@ -371,12 +378,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
+            var changesHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                    id.Value.ToString()));
+
+            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
+
             var model = new Ck4CIndexDocumentListViewModel()
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Details = Mapper.Map<DataDocumentList>(ck4cData),
-                WorkflowHistory = workflowHistory
+                WorkflowHistory = workflowHistory,
+                ChangesHistoryList = changesHistory,
+                PrintHistoryList = printHistory
             };
 
             model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
@@ -402,6 +418,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
+
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
 
             return View(model);
         }
@@ -455,8 +473,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
-                model.WorkflowHistory = workflowHistory;
+                var changeHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C, id.Value.ToString()));
 
+                model.WorkflowHistory = workflowHistory;
+                model.ChangesHistoryList = changeHistory;
+                
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput
                 {
@@ -483,6 +506,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.ActionType = "GovApproveDocument";
                 }
+
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
             }
             catch (Exception exception)
             {
@@ -812,14 +837,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 drow[12] = headerFooter.FOOTER_CONTENT;
             }
 
-            if (ck4c.Status != Enums.DocumentStatus.WaitingGovApproval || ck4c.Status != Enums.DocumentStatus.GovApproved
-                || ck4c.Status != Enums.DocumentStatus.Completed)
+            if (ck4c.Status == Enums.DocumentStatus.WaitingGovApproval || ck4c.Status == Enums.DocumentStatus.Completed)
             {
-                drow[13] = "PREVIEW CK-4C";
+                drow[13] = "CK-4C";
             }
             else
             {
-                drow[13] = "CK-4C";
+                drow[13] = "PREVIEW CK-4C";
             }
             
             dt.Rows.Add(drow);
@@ -914,6 +938,32 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return imgbyte;
             // Return Datatable After Image Row Insertion
+        }
+
+        [HttpPost]
+        public ActionResult AddPrintHistory(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var ck4c = _ck4CBll.GetById(id.Value);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.CK4C,
+                FORM_ID = ck4c.Ck4CId,
+                FORM_NUMBER = ck4c.Number,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel();
+            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4c.Number));
+            return PartialView("_PrintHistoryTable", model);
+
         }
 
         #endregion

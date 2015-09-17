@@ -242,5 +242,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public decimal MaterialQty { get; set; }
 
         public SelectList PackageConvertedUomList { get; set; }
+
+        public Enums.Ck5ManualType Ck5ManualTypeList { get; set; }
+        public Enums.Ck5ManualType Ck5ManualType { get; set; }
+
+        public string Ck5ManualTypeString { get; set; }
     }
 }
