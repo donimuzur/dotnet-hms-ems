@@ -179,14 +179,6 @@
         <EntityTypeShape EntityType="EMSModel.PBCK4_ITEM" Width="1.5" PointX="28.75" PointY="41.875" />
         <AssociationConnector Association="EMSModel.FK_CK1_ZAIDM_EX_BRAND" />
         <AssociationConnector Association="EMSModel.FK_PBCK4_ITEM_CK1" />
-        <EntityTypeShape EntityType="EMSModel.PBCK4" Width="1.5" PointX="5.875" PointY="35.75" />
-        <AssociationConnector Association="EMSModel.FK_PBCK4_DOCUMENT_PBCK4" />
-        <AssociationConnector Association="EMSModel.FK_PBCK4_ITEM_PBCK4" />
-        <AssociationConnector Association="EMSModel.FK_PBCK4_POA" />
-        <AssociationConnector Association="EMSModel.FK_PBCK4_USER" />
-        <AssociationConnector Association="EMSModel.FK_PBCK4_USER_MODIFIED" />
-        <AssociationConnector Association="EMSModel.FK_PBCK4_USER_REJECT" />
-        <AssociationConnector Association="EMSModel.FK_PBCK4_USER1" />
         <EntityTypeShape EntityType="EMSModel.LACK1_DOCUMENT" Width="1.5" PointX="15.75" PointY="41.5" />
         <EntityTypeShape EntityType="EMSModel.LACK1_INCOME_DETAIL" Width="1.5" PointX="21" PointY="24.5" />
         <EntityTypeShape EntityType="EMSModel.LACK1_PBCK1_MAPPING" Width="1.5" PointX="21.75" PointY="27.875" />
@@ -237,6 +229,14 @@
         <AssociationConnector Association="EMSModel.FK_PBCK7_POA" />
         <AssociationConnector Association="EMSModel.FK_PBCK7_REJECTED_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK7_USER" />
+        <EntityTypeShape EntityType="EMSModel.PBCK4" Width="1.5" PointX="5.875" PointY="35.625" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_DOCUMENT_PBCK4" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_ITEM_PBCK4" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_POA" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_USER" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_USER_MODIFIED" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_USER_REJECT" />
+        <AssociationConnector Association="EMSModel.FK_PBCK4_USER1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

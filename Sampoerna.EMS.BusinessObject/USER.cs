@@ -53,10 +53,6 @@ namespace Sampoerna.EMS.BusinessObject
             this.LACK2 = new HashSet<LACK2>();
             this.LACK21 = new HashSet<LACK2>();
             this.LACK22 = new HashSet<LACK2>();
-            this.PBCK4 = new HashSet<PBCK4>();
-            this.PBCK41 = new HashSet<PBCK4>();
-            this.PBCK42 = new HashSet<PBCK4>();
-            this.PBCK43 = new HashSet<PBCK4>();
             this.CK4C_DECREE_DOC = new HashSet<CK4C_DECREE_DOC>();
             this.PBCK3_PBCK73 = new HashSet<PBCK3_PBCK7>();
             this.PBCK3_PBCK74 = new HashSet<PBCK3_PBCK7>();
@@ -68,6 +64,10 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK71 = new HashSet<PBCK7>();
             this.PBCK72 = new HashSet<PBCK7>();
             this.PBCK73 = new HashSet<PBCK7>();
+            this.PBCK4 = new HashSet<PBCK4>();
+            this.PBCK41 = new HashSet<PBCK4>();
+            this.PBCK42 = new HashSet<PBCK4>();
+            this.PBCK43 = new HashSet<PBCK4>();
         }
     
         public string USER_ID { get; set; }
@@ -117,10 +117,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<LACK2> LACK2 { get; set; }
         public virtual ICollection<LACK2> LACK21 { get; set; }
         public virtual ICollection<LACK2> LACK22 { get; set; }
-        public virtual ICollection<PBCK4> PBCK4 { get; set; }
-        public virtual ICollection<PBCK4> PBCK41 { get; set; }
-        public virtual ICollection<PBCK4> PBCK42 { get; set; }
-        public virtual ICollection<PBCK4> PBCK43 { get; set; }
         public virtual ICollection<CK4C_DECREE_DOC> CK4C_DECREE_DOC { get; set; }
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK73 { get; set; }
         public virtual ICollection<PBCK3_PBCK7> PBCK3_PBCK74 { get; set; }
@@ -132,5 +128,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK7> PBCK71 { get; set; }
         public virtual ICollection<PBCK7> PBCK72 { get; set; }
         public virtual ICollection<PBCK7> PBCK73 { get; set; }
+        public virtual ICollection<PBCK4> PBCK4 { get; set; }
+        public virtual ICollection<PBCK4> PBCK41 { get; set; }
+        public virtual ICollection<PBCK4> PBCK42 { get; set; }
+        public virtual ICollection<PBCK4> PBCK43 { get; set; }
     }
 }
