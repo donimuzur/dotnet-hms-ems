@@ -1156,8 +1156,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     SupplierPortName =  d.SupplierPortName,
                     SupplierPlant = d.SupplierPlant,
                     GoodTypeDesc = d.GoodTypeDesc,
-                    PlanProdFrom = d.PlanProdFrom,
-                    PlanProdTo = d.PlanProdTo,
+                    PlanProdFrom = d.PlanProdFrom.Value.ToString(),
+                    PlanProdTo = d.PlanProdTo.Value.ToString(),
                     SupplierPhone = d.SupplierPhone
                 }).ToList();
 
