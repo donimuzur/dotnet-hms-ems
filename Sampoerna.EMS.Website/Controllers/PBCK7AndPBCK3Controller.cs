@@ -221,6 +221,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
             if (existingData != null)
             {
+               
                 var back1Dto = new Back1Dto();
                 if (model.DocumentsPostBack1 != null)
                 {
@@ -252,7 +253,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 back1Dto.Pbck7Id = existingData.Pbck7Id;
                
                 _pbck7AndPbck7And3Bll.InsertBack1(back1Dto);
-
+                if (existingData.Pbck7Status == Enums.DocumentStatus.GovApproved)
+                {
+                    existingData.Pbck7Status = Enums.DocumentStatus.Completed;
+                    //prevent error when update pbck7
+                    existingData.UploadItems = null;
+                    _pbck7AndPbck7And3Bll.InsertPbck7(existingData);
+                }
             }
 
         }
@@ -291,7 +298,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             if (item.Pbck7GovStatus == Enums.DocumentStatusGov.FullApproved)
             {
-                item.Pbck7Status = Enums.DocumentStatus.Completed;
+                item.Pbck7Status = Enums.DocumentStatus.GovApproved;
             }
             if (item.Pbck7GovStatus == Enums.DocumentStatusGov.Rejected)
             {
