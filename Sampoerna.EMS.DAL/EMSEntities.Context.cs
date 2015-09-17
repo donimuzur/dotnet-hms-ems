@@ -93,7 +93,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK4_DOCUMENT> PBCK4_DOCUMENT { get; set; }
         public virtual DbSet<CK1> CK1 { get; set; }
         public virtual DbSet<PBCK4_ITEM> PBCK4_ITEM { get; set; }
-        public virtual DbSet<PBCK4> PBCK4 { get; set; }
         public virtual DbSet<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
         public virtual DbSet<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
         public virtual DbSet<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
@@ -111,5 +110,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK3> PBCK3 { get; set; }
         public virtual DbSet<PBCK7> PBCK7 { get; set; }
         public virtual DbSet<PBCK7_ITEM> PBCK7_ITEM { get; set; }
+        public virtual DbSet<PBCK4> PBCK4 { get; set; }
     }
 }
