@@ -200,7 +200,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId(model.PlantWerks);
+            model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
             model.UomList = GlobalFunctions.GetUomList(_uomBll);
 
@@ -230,9 +230,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var plant = _plantBll.GetT001WById(model.PlantWerks);
             var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
 
-            model.CompanyName = company.BUTXT;
-            model.PlantName = plant.NAME1;
-            model.BrandDescription = brandDesc.BRAND_CE;
+            dbPrductionNew.CompanyName = company.BUTXT;
+            dbPrductionNew.PlantName = plant.NAME1;
+            dbPrductionNew.BrandDescription = brandDesc.BRAND_CE;
 
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
