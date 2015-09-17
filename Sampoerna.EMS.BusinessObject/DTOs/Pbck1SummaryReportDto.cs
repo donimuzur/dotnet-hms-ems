@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ReportedOn { get; set; }
         public string NppbkcId { get; set; }
         public string NppbkcKppbcId { get; set; }
+        public string NppbkcKppbcName { get; set; }
         public string NppbkcCompanyCode { get; set; }
         public string NppbkcCompanyName { get; set; }
         public string GoodType { get; set; }
