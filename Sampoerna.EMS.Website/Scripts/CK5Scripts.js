@@ -636,6 +636,15 @@ function ValidateCk5Form(ck5Type) {
         }
     }
 
+    if (ck5Type == 'Manual') {
+        if ($('#Ck5ManualType').val() == '') {
+            AddValidationClass(false, 'Ck5ManualType');
+            result = false;
+            //isValidCk5Detail = false;
+        }
+        
+    }
+
     if (result) {
         var rowCount = $('#ck5TableItem tr').length;
 
