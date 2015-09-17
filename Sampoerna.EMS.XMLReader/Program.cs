@@ -61,6 +61,7 @@ namespace Sampoerna.EMS.XMLReader
              dto.CompnValue = "14000000";
              dto.CompnDate = DateTime.Now;
              dto.CompNo = "130";
+             dto.CompType = "CK-3";
              dto.GeneratedXmlPath = "H:/pbck4.xml";
              XmlPBCK4DataWriter rt = new XmlPBCK4DataWriter();
              rt.CreatePbck4Xml(dto);

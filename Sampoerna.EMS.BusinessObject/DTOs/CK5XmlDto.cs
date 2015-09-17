@@ -90,6 +90,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string CompNo { get; set; }
 
+        public string CompType { get; set; }
+
         public DateTime? CompnDate { get; set; }
 
         public string CompnValue { get; set; }
@@ -97,5 +99,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string DeleteFlag { get; set; }
 
         public string GeneratedXmlPath { get; set; }
+
+
     }
 }

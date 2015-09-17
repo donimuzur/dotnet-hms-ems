@@ -58,7 +58,7 @@ namespace Sampoerna.EMS.XMLReader
                 writer.WriteAttributeString("SEGMENT", "1");
                 writer.WriteElementString("PBCK_NO", pbck4XmlDto.PbckNo);
                 writer.WriteElementString("NPPBKC_ID", pbck4XmlDto.NppbckId);
-                writer.WriteElementString("COMPN_TYPE", "CK-3");
+                writer.WriteElementString("COMPN_TYPE", pbck4XmlDto.CompType);
                 writer.WriteElementString("COMPN_NO", pbck4XmlDto.CompNo);
                 writer.WriteElementString("COMPN_DATE", GetDateFormat(pbck4XmlDto.CompnDate));
                 writer.WriteElementString("COMPN_VALUE", pbck4XmlDto.CompnValue);
