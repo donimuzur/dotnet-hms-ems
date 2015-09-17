@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Globalization;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
@@ -773,6 +771,44 @@ namespace Sampoerna.EMS.BLL
             });
 
             dtToReturn.HeaderFooter = headerFooterData;
+
+            if (dtToReturn.SubmissionDate.HasValue)
+            {
+                int monthId = dtToReturn.SubmissionDate.Value.Month;
+                int year = dtToReturn.SubmissionDate.Value.Year;
+                var monthData = _monthBll.GetMonth(monthId);
+                if (monthData != null)
+                {
+                    dtToReturn.SubmissionDateDisplayString = dtToReturn.SubmissionDate.Value.Day + " " +
+                                                             monthData.MONTH_NAME_IND + " " + year;
+                }
+            }
+
+            var userCreator = _userBll.GetUserById(dtToReturn.CreateBy);
+            if (userCreator != null)
+            {
+                dtToReturn.ExcisableExecutiveCreator = userCreator.FIRST_NAME + " " + userCreator.LAST_NAME;
+            }
+
+            //set NppbkcCity
+            if (dtToReturn.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                //get main plant
+                var mainPlant = _t001WServices.GetMainPlantByNppbkcId(dtToReturn.NppbkcId);
+                if (mainPlant != null)
+                {
+                    dtToReturn.NppbkcCity = mainPlant.ORT01;
+                }
+            }
+            else
+            {
+                //get by plant id
+                var plant = _t001WServices.GetById(dtToReturn.LevelPlantId);
+                if (plant != null)
+                {
+                    dtToReturn.NppbkcCity = plant.ORT01;
+                }
+            }
 
             return dtToReturn;
         }

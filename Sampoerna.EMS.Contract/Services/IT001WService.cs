@@ -7,5 +7,6 @@ namespace Sampoerna.EMS.Contract.Services
     {
         T001W GetById(string werks);
         List<T001W> GetByNppbkcId(string nppbkcId);
+        T001W GetMainPlantByNppbkcId(string nppbkcId);
     }
 }
