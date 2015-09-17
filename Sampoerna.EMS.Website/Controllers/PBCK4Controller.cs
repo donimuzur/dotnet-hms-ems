@@ -144,6 +144,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
                 model = new Pbck4IndexViewModel();
+                model.MainMenu = Enums.MenuList.PBCK4;
+                model.CurrentMenu = PageInfo;
             }
 
             return View("Pbck4CompletedDocuments", model);

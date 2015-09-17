@@ -244,7 +244,11 @@ function GenerateXlsPbck4Items(url) {
             result = false;
         }
         
-        if ($('#CK3_OFFICE_VALUE').val() == '') {
+        //if ($('#CK3_OFFICE_VALUE').val() == '') {
+        //    AddValidationClass(false, 'CK3_OFFICE_VALUE');
+        //    result = false;
+        //}
+        if ($.isNumeric($('#CK3_OFFICE_VALUE').val()) == false) {
             AddValidationClass(false, 'CK3_OFFICE_VALUE');
             result = false;
         }
