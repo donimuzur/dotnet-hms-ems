@@ -1,4 +1,5 @@
 ﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
 @{
     ViewBag.Title = "Edit";
@@ -22,7 +23,7 @@
                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveCk4c" />
                     }
                     
-                    <input type="button" class="btn btn-grey" value="Print Preview"/>
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                     @if (Model.Details.Status == Enums.DocumentStatus.Draft)
                     {
@@ -179,6 +180,10 @@
                     $('#Details_PlantId').prop('disabled', true);
                 }
             }
+        }
+
+        function printPreview(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
         }
     </script>
 }
