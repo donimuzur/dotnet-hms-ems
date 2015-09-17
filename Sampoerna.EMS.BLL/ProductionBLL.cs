@@ -179,5 +179,11 @@ namespace Sampoerna.EMS.BLL
         }
 
         
+        public void SaveUpload(ProductionUploadItems uploadItems)
+        {
+            var dbUpload = Mapper.Map<PRODUCTION>(uploadItems);
+            _repository.InsertOrUpdate(dbUpload);
+            _uow.SaveChanges();
+        }
     }
 }

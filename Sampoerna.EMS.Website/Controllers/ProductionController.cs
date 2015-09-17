@@ -320,10 +320,24 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult UploadManualProduction(ProductionUploadViewModel model)
         {
             var modelDto = Mapper.Map<ProductionDto>(model);
+            
             try
             {
-                _productionBll.Save(modelDto);
+            foreach (var item in modelDto.UploadItems)
+            {
+                var company = _companyBll.GetById(item.CompanyCode);
+                var plant = _plantBll.GetT001WById(item.PlantWerks);
+               
+                item.CompanyName = company.BUTXT;
+                item.PlantName = plant.NAME1;
+               
+                _productionBll.SaveUpload(item);
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                   );
             }
+
+            }
+            
             catch (Exception ex)
             {
                 AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);
