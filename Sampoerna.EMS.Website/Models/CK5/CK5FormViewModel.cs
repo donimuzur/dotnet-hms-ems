@@ -245,5 +245,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public Enums.Ck5ManualType Ck5ManualTypeList { get; set; }
         public Enums.Ck5ManualType Ck5ManualType { get; set; }
+
+        public string Ck5ManualTypeString { get; set; }
     }
 }
