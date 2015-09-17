@@ -26,5 +26,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public decimal? PrintingPrice { get; set; }
         public string CutFilterCode { get; set; }
         public string IsDeleted { get; set; }
+        public string IsActive { get; set; }
     }
 }
