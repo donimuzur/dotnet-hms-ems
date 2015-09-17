@@ -50,7 +50,7 @@ function removeBack1UploadButton(index) {
         $('#DocumentsBack1_' + index + '_').remove();
        
         $('#file-back1-container').html("");
-        $('#file-back1-container').html('<div class="row"><div class="col-sm-4"><button type="button"  class="btn btn-primary full add-files">Add Files</button></div></div>');
+        $('#file-back1-container').html('<div class="row"><div class="col-sm-4"><button type="button"  class="btn btn-primary full add-files" id="add-files-back1">Add Files</button></div></div>');
         for (var i = 0; i <= file_back1; i++) {
             $('#file-back1-container').append('<div class="row"><div class="col-sm-9"> ' +
                             '<input type="file" id="DocumentsPostBack1_' + i + '_" name="DocumentsPostBack1[' + i + ']" class="form-control">' +
