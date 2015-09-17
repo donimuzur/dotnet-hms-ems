@@ -726,6 +726,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     return CreateInitial(model);
                 }
 
+                Pbck1ItemViewModel modelOld = model;
+
                 model = CleanSupplierInfo(model);
 
                 //process save
@@ -739,6 +741,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = CurrentUser.USER_ID,
                     WorkflowActionType = Enums.ActionType.Created
                 };
+
+                if (!_pbck1Bll.checkUniquePBCK1(input))
+                {
+                    AddMessageInfo("PBCK1 Cannot Duplicate", Enums.MessageInfoType.Error);
+                    return CreateInitial(modelOld);
+                }
+                
 
                 //only add this information from gov approval,
                 //when save create/edit 
