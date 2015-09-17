@@ -203,7 +203,8 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
                 return;
             //if domestic not check quota
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Domestic)
@@ -2223,7 +2224,7 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var ck5 in lisCk5)
             {
-                if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.PortToImporter || ck5.CK5_TYPE == Enums.CK5Type.Manual)
                     continue;
                 if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
                     continue;

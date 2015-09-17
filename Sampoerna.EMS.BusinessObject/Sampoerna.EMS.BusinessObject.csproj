@@ -119,6 +119,7 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="DTOs\Back1Dto.cs" />
+    <Compile Include="DTOs\BLOCK_STOCKDto.cs" />
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
     <Compile Include="DTOs\CK1Dto.cs" />
     <Compile Include="DTOs\Ck4cDecreeDocDto.cs" />

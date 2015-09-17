@@ -396,6 +396,20 @@
                                     </div>
                                 </div>
                             </div>
+                            @if (Model.IsCk5Manual)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-5 Manual Type</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck5ManualType, new { @class = "form-control", @disabled=false })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
 
                     </div>
@@ -435,7 +449,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter)
+                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsCk5Manual)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
