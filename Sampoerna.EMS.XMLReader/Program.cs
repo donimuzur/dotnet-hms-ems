@@ -57,12 +57,13 @@ namespace Sampoerna.EMS.XMLReader
              var dto = new Pbck4XmlDto();
              dto.PbckNo = "1004/PMID-E/KRA/VIII/2015";
              dto.NppbckId = "0713.1.3.0234";
-             dto.DeleteFlag = "X";
+             dto.DeleteFlag = null;
+
              dto.CompnValue = "14000000";
              dto.CompnDate = DateTime.Now;
              dto.CompNo = "130";
              dto.CompType = "CK-3";
-             dto.GeneratedXmlPath = "H:/pbck4.xml";
+             dto.GeneratedXmlPath = "H:/COMPENSATION-CK3-" + DateTime.Now.ToString("yyyyMMdd-HHmmss")+ ".xml";
              XmlPBCK4DataWriter rt = new XmlPBCK4DataWriter();
              rt.CreatePbck4Xml(dto);
 
