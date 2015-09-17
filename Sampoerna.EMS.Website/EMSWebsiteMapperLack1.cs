@@ -109,6 +109,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Lack1DetailsDto, Lack1ItemViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DisplayLevelPlantName, opt => opt.MapFrom(src => src.LevelPlantId + '-' + src.LevelPlantName))
+                .ForMember(dest => dest.ExGoodsTypeId, opt => opt.MapFrom(src => src.ExGoodsType))
                 .ForMember(dest => dest.DisplaySupplierPlant, opt => opt.MapFrom(src => src.SupplierPlantId + '-' + src.SupplierPlant))
                 .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
@@ -171,6 +172,8 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Lack1ItemViewModel, Lack1DetailsDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.TotalUsage))
+                .ForMember(dest => dest.ExGoodsType, opt => opt.MapFrom(src => src.ExGoodsTypeId))
+                .ForMember(dest => dest.ExGoodsTypeDesc, opt => opt.MapFrom(src => src.ExGoodsTypeDesc))
                 .ForMember(dest => dest.Lack1Document,
                     opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.Lack1Document)))
                 .ForMember(dest => dest.Lack1IncomeDetail,

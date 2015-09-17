@@ -71,7 +71,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Pbck7Pbck3CreateViewModel, Pbck7AndPbck3Dto>().IgnoreAllNonExisting()
                    .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.Id))
-                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreatedDate))
+                   .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreatedDate))
                   .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
                
                 ;

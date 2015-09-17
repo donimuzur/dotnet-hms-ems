@@ -241,7 +241,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public LACK1 GetDetailsById(int id)
         {
-            var incTables = includeTables + ", LACK1_DOCUMENT, LACK1_INCOME_DETAIL, LACK1_PLANT, LACK1_PRODUCTION_DETAIL, LACK1_PBCK1_MAPPING, LACK1_PBCK1_MAPPING.PBCK1";
+            var incTables = includeTables + ", LACK1_DOCUMENT, LACK1_INCOME_DETAIL, LACK1_PLANT, LACK1_PRODUCTION_DETAIL, LACK1_PRODUCTION_DETAIL.UOM, LACK1_PBCK1_MAPPING, LACK1_PBCK1_MAPPING.PBCK1, LACK1_TRACKING";
             return _repository.Get(c => c.LACK1_ID == id, null, incTables).FirstOrDefault();
         }
 
