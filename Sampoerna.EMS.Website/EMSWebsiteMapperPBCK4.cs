@@ -53,7 +53,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.DocumentStatus))
                 .ForMember(dest => dest.POA_PRINTED_NAME, opt => opt.MapFrom(src => src.Poa))
-                .ForMember(dest => dest.CK3_OFFICE_VALUE, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.CK3_OFFICE_VALUE))
+                .ForMember(dest => dest.CK3_OFFICE_VALUE, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.CK3_OFFICE_VALUE))
                 ;
 
             Mapper.CreateMap<Pbck4Dto, Pbck4FormViewModel>().IgnoreAllNonExisting()
@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => src.Status))
                .ForMember(dest => dest.DocumentStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
-               .ForMember(dest => dest.CK3_OFFICE_VALUE, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.CK3_OFFICE_VALUE))
+               .ForMember(dest => dest.CK3_OFFICE_VALUE, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.CK3_OFFICE_VALUE))
                ;
 
             Mapper.CreateMap<Pbck4UploadViewModel, Pbck4ItemsInput>().IgnoreAllNonExisting();
