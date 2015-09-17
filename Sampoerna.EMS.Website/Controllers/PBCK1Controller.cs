@@ -1151,7 +1151,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     OriginalAddress = d.SupplierAddress,
                     // ReSharper disable once PossibleInvalidOperationException
                     ExcGoodsAmount =  d.QtyApproved == null ? "0" : d.QtyApproved.Value.ToString("N0"),
-                    Status = d.StatusName
+                    Status = d.StatusName,
+                    Pbck1Type = d.Pbck1Type.ToString(),
+                    SupplierPortName =  d.SupplierPortName,
+                    SupplierPlant = d.SupplierPlant,
+                    GoodTypeDesc = d.GoodTypeDesc,
+                    PlanProdFrom = d.PlanProdFrom,
+                    PlanProdTo = d.PlanProdTo,
+                    SupplierPhone = d.SupplierPhone
                 }).ToList();
 
             var grid = new System.Web.UI.WebControls.GridView
@@ -1241,6 +1248,63 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Status"
                 });
             }
+            if (model.ExportModel.Pbck1Type)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Type",
+                    HeaderText = "Pbck1Type"
+                });
+            }
+            if (model.ExportModel.SupplierPortName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierPortName",
+                    HeaderText = "SupplierPortName"
+                });
+            }
+            if (model.ExportModel.SupplierPlant)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierPlant",
+                    HeaderText = "SupplierPlant"
+                });
+            }
+            if (model.ExportModel.GoodTypeDesc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "GoodTypeDesc",
+                    HeaderText = "GoodTypeDesc"
+                });
+            }
+            if (model.ExportModel.PlanProdFrom)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PlanProdFrom",
+                    HeaderText = "PlanProdFrom"
+                });
+            }
+            if (model.ExportModel.PlanProdTo)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PlanProdTo",
+                    HeaderText = "PlanProdTo"
+                });
+            }
+            if (model.ExportModel.SupplierPhone)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierPhone",
+                    HeaderText = "SupplierPhone"
+                });
+            }
+
 
             grid.DataBind();
 
