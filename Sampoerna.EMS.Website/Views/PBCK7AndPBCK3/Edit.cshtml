@@ -94,15 +94,43 @@
             </div>
         </div>
     </div>
+    
+    
 }
 
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/pbck7/form.js"></script>
     <script type="text/javascript">
         var uploaditems = [];
-        
+        $("#btnSaveGovStatus").click(function() {
+            if (ValidateGovInput()) {
+                $('#form-pbck7-edit').submit();
+            }
+        });
+
+        function ValidateGovInput() {
+            var result = true;
+            var govStatus = $('#Pbck7GovStatus').find("option:selected").val();
+
+
+            if (govStatus == '') {
+                AddValidationClass(false, 'Pbck7GovStatus');
+                result = false;
+            }
+
+
+            if ($('#Pbck7GovStatus').val() == 'Rejected') {
+                if ($('#Comment').val() == '') {
+                    AddValidationClass(false, 'Comment');
+                    result = false;
+                }
+            }
+
+            return result;
+        }
 
         $("#btnSubmitConfirm").click(function() {
             $('#IsSaveSubmit').val('true');
@@ -266,6 +294,20 @@
                 if (nppbkc != '') {
                     ajaxGetPlantByNppbkc(nppbkc);
                     ajaxGetPoaByNppbkc(nppbkc);
+                }
+            }
+
+        });
+
+
+        $('#Back1GovStatus').change(function() {
+          
+            if ($(this).length) {
+                var back1govstatus = $(this).find("option:selected").val();
+                if (back1govstatus == 'FullApproved') {
+                    $('#Back1Dto_Back1Number').removeAttr('disabled');
+                } else {
+                    $('#Back1Dto_Back1Number').Attr('disabled', 'disabled');
                 }
             }
 

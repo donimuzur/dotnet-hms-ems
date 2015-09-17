@@ -52,6 +52,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
+                ProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
                 
                 Details = Mapper.Map<List<ProductionDetail>>(_productionBll.GetAllByParam(new ProductionGetByParamInput()))
             });
@@ -103,8 +104,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantWerkList = GlobalFunctions.GetPlantAll();
-            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
+            model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
             model.UomList = GlobalFunctions.GetUomList(_uomBll);
 
             return model;
@@ -199,8 +200,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantWerkList = GlobalFunctions.GetPlantAll();
-            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
+            model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
             model.UomList = GlobalFunctions.GetUomList(_uomBll);
 
             return model;
@@ -229,9 +230,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var plant = _plantBll.GetT001WById(model.PlantWerks);
             var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
 
-            model.CompanyName = company.BUTXT;
-            model.PlantName = plant.NAME1;
-            model.BrandDescription = brandDesc.BRAND_CE;
+            dbPrductionNew.CompanyName = company.BUTXT;
+            dbPrductionNew.PlantName = plant.NAME1;
+            dbPrductionNew.BrandDescription = brandDesc.BRAND_CE;
 
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
@@ -271,6 +272,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Detail
 
+        private ProductionDetail InitDetail(ProductionDetail model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlantWerkList = GlobalFunctions.GetPlantAll();
+            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+
+            return model;
+        }
+        
+
         //
         // GET: /Production/Detail
         public ActionResult Detail(string companyCode, string plantWerk, string faCode, DateTime productionDate)
@@ -285,7 +299,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ProdQtyStickStr = model.ProQtyStick == null ? string.Empty : model.ProQtyStick.ToString();
             model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
 
-            model = IniEdit(model);
+            model = InitDetail(model);
 
             return View(model);
         }
@@ -306,10 +320,24 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult UploadManualProduction(ProductionUploadViewModel model)
         {
             var modelDto = Mapper.Map<ProductionDto>(model);
+            
             try
             {
-                _productionBll.Save(modelDto);
+            foreach (var item in modelDto.UploadItems)
+            {
+                var company = _companyBll.GetById(item.CompanyCode);
+                var plant = _plantBll.GetT001WById(item.PlantWerks);
+               
+                item.CompanyName = company.BUTXT;
+                item.PlantName = plant.NAME1;
+               
+                _productionBll.SaveUpload(item);
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                   );
             }
+
+            }
+            
             catch (Exception ex)
             {
                 AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);

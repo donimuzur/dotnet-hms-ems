@@ -397,7 +397,9 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.QTY_PACKED, opt => opt.MapFrom(src => src.QtyPacked))
                .ForMember(dest => dest.QTY_UNPACKED, opt => opt.MapFrom(src => src.QtyPacked))
                .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.Uom))
-               .ForMember(dest => dest.PRODUCTION_DATE, opt => opt.MapFrom(src => src.ProductionDate));
+               .ForMember(dest => dest.PRODUCTION_DATE, opt => opt.MapFrom(src => src.ProductionDate))
+               .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
+               .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName));
 
             Mapper.CreateMap<PRODUCTION, ProductionUploadItems>().IgnoreAllNonExisting()
             .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.COMPANY_CODE))
@@ -407,7 +409,9 @@ namespace Sampoerna.EMS.BLL
             .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
             .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_UNPACKED))
             .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
-            .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.PRODUCTION_DATE));
+            .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.PRODUCTION_DATE))
+            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
+            .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME));
 
             #endregion
 

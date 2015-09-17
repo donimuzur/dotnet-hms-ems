@@ -12,10 +12,15 @@ namespace Sampoerna.EMS.Contract
     {
         List<Pbck7AndPbck3Dto> GetAllByParam(Pbck7AndPbck3Input input);
 
-        Pbck7AndPbck3Dto GetById(int? id);
+        Pbck7AndPbck3Dto GetPbck7ById(int? id);
 
         void Insert(Pbck7AndPbck3Dto pbck7AndPbck3Dto);
 
         void InsertPbck7(Pbck7AndPbck3Dto pbck7AndPbck3Dto);
+
+
+        void InsertBack1(Back1Dto back1);
+
+        Back1Dto GetBack1ByPbck7(int pbck7Id);
     }
 }
