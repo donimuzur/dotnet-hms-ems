@@ -1050,5 +1050,60 @@ namespace Sampoerna.EMS.BLL
 
              return result;
         }
+
+       public List<Pbck4Dto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input)
+       {
+
+           Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
+
+           if (!string.IsNullOrEmpty(input.Pbck4No))
+           {
+               queryFilter = queryFilter.And(c => c.PBCK4_NUMBER.Contains(input.Pbck4No));
+           }
+
+           if (input.YearFrom.HasValue)
+               queryFilter =
+                   queryFilter.And(c => c.REPORTED_ON.HasValue && c.REPORTED_ON.Value.Year >= input.YearFrom.Value);
+           if (input.YearTo.HasValue)
+               queryFilter =
+                   queryFilter.And(c => c.REPORTED_ON.HasValue && c.REPORTED_ON.Value.Year >= input.YearTo.Value);
+
+           if (!string.IsNullOrEmpty(input.PlantId))
+           {
+               queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
+           }
+
+           
+           queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+
+
+           var rc = _repository.Get(queryFilter, null, includeTables);
+           if (rc == null)
+           {
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+           }
+
+           var mapResult = Mapper.Map<List<Pbck4Dto>>(rc.ToList());
+
+           return mapResult;
+
+
+       }
+
+       private List<Pbck4SummaryReportDto> SetDataSummaryReport(PBCK4 dtData)
+       {
+           var result = new List<Pbck4SummaryReportDto>();
+
+           foreach (var pbck4Item in dtData.PBCK4_ITEM)
+           {
+               var summaryDto = new Pbck4SummaryReportDto();
+
+               summaryDto.Pbck4No = dtData.PBCK4_NUMBER;
+               summaryDto.Pbck4Date = dtData.REPORTED_ON.HasValue
+                   ? dtData.REPORTED_ON.Value.ToString("dd MMM yyyy")
+                   : string.Empty;
+
+           }
+       }
     }
 }

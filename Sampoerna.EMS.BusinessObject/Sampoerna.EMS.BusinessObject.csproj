@@ -160,6 +160,7 @@
     <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck4ItemDto.cs" />
     <Compile Include="DTOs\Pbck4ReportDto.cs" />
+    <Compile Include="DTOs\Pbck4SummaryReportDto.cs" />
     <Compile Include="DTOs\PBCK4_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
     <Compile Include="DTOs\POADto.cs" />

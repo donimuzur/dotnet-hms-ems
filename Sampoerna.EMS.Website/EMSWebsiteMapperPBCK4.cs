@@ -118,6 +118,21 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck4FileUploadViewModel, PBCK4_DOCUMENTDto>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<PBCK4_DOCUMENTDto, Pbck4FileUploadViewModel>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck4Dto, Pbck4SummaryReportsItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck4Date, opt => opt.MapFrom(src => src.ReportedOn.HasValue ? src.ReportedOn.Value.ToString("dd MMM yyyy"): string.Empty))
+                .ForMember(dest => dest.Pbck4No, opt => opt.MapFrom(src => src.PBCK4_NUMBER))
+                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+                ;
+
+            Mapper.CreateMap<Pbck4SearchSummaryReportsViewModel, Pbck4GetSummaryReportByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck4No, opt => opt.MapFrom(src => src.Pbck4No))
+                .ForMember(dest => dest.YearFrom, opt => opt.MapFrom(src => src.YearFrom))
+                .ForMember(dest => dest.YearTo, opt => opt.MapFrom(src => src.YearTo))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+
+                ;
+
         }
     }
 }

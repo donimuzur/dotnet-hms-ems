@@ -20,5 +20,7 @@ namespace Sampoerna.EMS.Contract
        void PBCK4Workflow(Pbck4WorkflowDocumentInput input);
 
        Pbck4ReportDto GetPbck4ReportDataById(int id);
+
+       List<Pbck4Dto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input);
    }
 }
