@@ -267,7 +267,7 @@ function prodPlanGenerateClick(url) {
 }
 
 function pbck1TypeOnchange() {
-    if ($("#Detail_Pbck1Type").length) {
+    if ($("select#Detail_Pbck1Type").length) {
         var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();
         if (pbck1Type == '' || pbck1Type.toLowerCase() == 'new') {
             $('#Detail_Pbck1Reference').prop('disabled', true);
