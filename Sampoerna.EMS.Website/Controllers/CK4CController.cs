@@ -810,8 +810,15 @@ namespace Sampoerna.EMS.Website.Controllers
             drow[6] = ck4c.ReportedYears;
             drow[7] = ck4c.CompanyName;
 
-            var company = _companyBll.GetById(ck4c.CompanyId);
-            drow[8] = company.SPRAS;
+            var addressPlant = ck4c.Ck4cItem.Select(x => x.Werks).Distinct().ToArray();
+            var address = string.Empty;
+
+            foreach (var item in addressPlant)
+            {
+                address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
+            }
+
+            drow[8] = address;
 
             var plant = _plantBll.GetT001WById(ck4c.PlantId);
             var nppbkc = plant == null ? ck4c.NppbkcId : plant.NPPBKC_ID;
@@ -845,10 +852,33 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 drow[13] = "PREVIEW CK-4C";
             }
+
+            var nBatang = ck4c.Ck4cItem.Where(c => c.ProdQtyUom == "PC" || c.ProdQtyUom == "PCE").Sum(c => c.ProdQty);
+            var nGram = ck4c.Ck4cItem.Where(c => c.ProdQtyUom == "G").Sum(c => c.ProdQty);
+
+            drow[17] = nBatang;
+            drow[18] = nGram;
+
+            var prodTotal = string.Empty;
+            if(nBatang != 0 && nGram != 0)
+            {
+                prodTotal = nBatang + " batang dan " + nGram + " gram";
+            }
+            else if (nBatang == 0 && nGram != 0)
+            {
+                prodTotal = nGram + " gram";
+            }
+            else if (nBatang != 0 && nGram == 0)
+            {
+                prodTotal = nBatang + " batang";
+            }
+
+            drow[19] = prodTotal;
             
             dt.Rows.Add(drow);
 
             var dtDetail = dsCk4c.Tables[1];
+
             foreach (var item in ck4c.Ck4cItem)
             {
                 DataRow drowDetail;
@@ -856,9 +886,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 drowDetail[0] = item.Ck4CItemId;
                 drowDetail[1] = item.ProdQty;
                 drowDetail[2] = item.ProdQtyUom;
+
                 dtDetail.Rows.Add(drowDetail);
             }
-            // object of data row 
 
             ReportClass rpt = new ReportClass();
             string report_path = ConfigurationManager.AppSettings["Report_Path"];
@@ -892,6 +922,9 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("ReportedOnDay", System.Type.GetType("System.String"));
             dt.Columns.Add("ReportedOnMonth", System.Type.GetType("System.String"));
             dt.Columns.Add("ReportedOnYear", System.Type.GetType("System.String"));
+            dt.Columns.Add("NBatang", System.Type.GetType("System.String"));
+            dt.Columns.Add("NGram", System.Type.GetType("System.String"));
+            dt.Columns.Add("ProdTotal", System.Type.GetType("System.String"));
 
             //item
             DataTable dtDetail = new DataTable("Ck4cItem");
