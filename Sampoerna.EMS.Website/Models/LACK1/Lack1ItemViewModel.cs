@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string SupplierCompanyCode { get; set; }
         public string SupplierCompanyName { get; set; }
 
-        public string ExGoodsType { get; set; }
+        public string ExGoodsTypeId { get; set; }
         public string ExGoodsTypeDesc { get; set; }
         public decimal? WasteQty { get; set; }
         public string WasteUom { get; set; }
