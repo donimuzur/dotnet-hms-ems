@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBACK1BLL.cs" />
+    <Compile Include="IBlockStockBLL.cs" />
     <Compile Include="IBrandRegistrationBLL.cs" />
     <Compile Include="IChangesHistoryBLL.cs" />
     <Compile Include="ICK1BLL.cs" />

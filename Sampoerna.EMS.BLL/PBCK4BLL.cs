@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.BLL
        private IUserBLL _userBll;
        private IZaidmExNPPBKCBLL _nppbkcBll;
        private IPlantBLL _plantBll;
+       private IBlockStockBLL _blockStockBll;
 
        private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
 
@@ -65,6 +66,7 @@ namespace Sampoerna.EMS.BLL
            _userBll = new UserBLL(_uow,_logger);
            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
            _plantBll = new PlantBLL(_uow, _logger);
+           _blockStockBll = new BlockStockBLL(_uow,_logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
@@ -393,6 +395,21 @@ namespace Sampoerna.EMS.BLL
                        messageList.Add("No Pengawas Max Length 10");
                }
 
+               //validate ReqQty to block stock
+
+               var blockStockData = _blockStockBll.GetBlockStockByPlantAndMaterialId(pbck4ItemInput.Plant,
+                   pbck4ItemInput.FaCode);
+               if (blockStockData.Count == 0)
+               {
+                   messageList.Add("Block Stock not available");
+               }
+               else
+               {
+                   var blockDecimal = blockStockData.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
+                   if (ConvertHelper.ConvertToDecimalOrZero(pbck4ItemInput.ReqQty) > blockDecimal)
+                       messageList.Add("Req Qty more than Block Stock");
+               }
+
                if (messageList.Count > 0)
                {
                    output.IsValid = false;
@@ -697,6 +714,15 @@ namespace Sampoerna.EMS.BLL
                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
                dbData.APPROVED_BY_POA = input.UserId;
                dbData.APPROVED_BY_POA_DATE = DateTime.Now;
+
+               //get poa printed name
+               string poaPrintedName = "";
+               var poaData = _poaBll.GetDetailsById(input.UserId);
+               if (poaData != null)
+                   poaPrintedName = poaData.PRINTED_NAME;
+
+               dbData.POA_PRINTED_NAME = poaPrintedName;
+
                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
            }
            else if (input.UserRole == Enums.UserRole.Manager)
@@ -916,6 +942,28 @@ namespace Sampoerna.EMS.BLL
                                   " " + dt.ToString("yyyy");
        }
 
+       private Pbck4ReportDto SetPbck4Items(Pbck4ReportDto pbck4ReportDto, PBCK4 dtData)
+       {
+           var listGroupBy = dtData.PBCK4_ITEM.GroupBy(a => new {a.SERIES_CODE, a.BRAND_CONTENT, a.HJE, a.TARIFF, a.NO_PENGAWAS})
+               .Select(x => new Pbck4ItemReportDto
+               {
+                   Seri = x.Key.SERIES_CODE,
+                   Hje = x.Key.HJE.HasValue ? x.Key.HJE.Value:0,
+                   Content = ConvertHelper.ConvertToDecimalOrZero(x.Key.BRAND_CONTENT),
+                   Tariff = x.Key.TARIFF.HasValue ? x.Key.TARIFF.Value : 0,
+                   NoPengawas = x.Key.NO_PENGAWAS,
+                   ReqQty = x.Sum(c => c.REQUESTED_QTY.HasValue ? c.REQUESTED_QTY.Value : 0),
+                   TotalHje = x.Sum(c => c.TOTAL_HJE.HasValue ? c.TOTAL_HJE.Value : 0),
+                   TotalCukai = x.Sum(c => c.TOTAL_STAMPS.HasValue ? c.TOTAL_STAMPS.Value : 0)
+               }).ToList();
+
+           foreach (var pbck4ItemReportDto in listGroupBy)
+           {
+               pbck4ReportDto.ListPbck4Items.Add(pbck4ItemReportDto);
+           }
+
+           return pbck4ReportDto;
+       }
        public Pbck4ReportDto GetPbck4ReportDataById(int id)
         {
             var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
@@ -931,32 +979,40 @@ namespace Sampoerna.EMS.BLL
              result.ReportDetails.Pbck4Lampiran = "";
              result.ReportDetails.TextTo = nppbkcData != null ? nppbkcData.TEXT_TO : string.Empty;
              result.ReportDetails.CityTo = nppbkcData != null ? nppbkcData.CITY : string.Empty;
-             result.ReportDetails.PoaName = dtData.POA != null ? dtData.POA.PRINTED_NAME : string.Empty;
+           result.ReportDetails.PoaName = dtData.POA_PRINTED_NAME;// dtData.POA != null ? dtData.POA.PRINTED_NAME : string.Empty;
              result.ReportDetails.PoaTitle = dtData.POA != null ? dtData.POA.TITLE : string.Empty;
              result.ReportDetails.CompanyName = dtData.COMPANY_NAME;
              result.ReportDetails.CompanyAddress = plantData!=null ? plantData.CompanyAddress : string.Empty;
              result.ReportDetails.NppbkcId = dtData.NPPBKC_ID;
-           result.ReportDetails.NppbkcDate =
-               DateReportDisplayString(dtData.REPORTED_ON.HasValue ? dtData.REPORTED_ON.Value : DateTime.Now, false);
+
+           string nppbkcDate = "";
+           if (nppbkcData != null)
+           {
+               if (nppbkcData.START_DATE.HasValue)
+                   nppbkcDate = DateReportDisplayString(nppbkcData.START_DATE.Value, false);
+           }
+           result.ReportDetails.NppbkcDate = nppbkcDate;
 
            result.ReportDetails.PlantCity = result.ReportDetails.CityTo;
            result.ReportDetails.PrintDate = DateReportDisplayString(DateTime.Now, false);
            result.ReportDetails.RegionOffice = nppbkcData != null ? nppbkcData.REGION_DGCE : string.Empty;
            int i = 0;
 
+           result = SetPbck4Items(result, dtData);
+
            foreach (var pbck4Item in dtData.PBCK4_ITEM)
            {
-               var pbckItemsDto = new Pbck4ItemReportDto();
-               pbckItemsDto.Seri = pbck4Item.SERIES_CODE;
-               pbckItemsDto.ReqQty = pbck4Item.REQUESTED_QTY.HasValue?pbck4Item.REQUESTED_QTY.Value : 0;
-               pbckItemsDto.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
-               pbckItemsDto.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
-               pbckItemsDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
-               pbckItemsDto.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
-               pbckItemsDto.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
-               pbckItemsDto.NoPengawas = pbck4Item.NO_PENGAWAS;
+               //var pbckItemsDto = new Pbck4ItemReportDto();
+               //pbckItemsDto.Seri = pbck4Item.SERIES_CODE;
+               //pbckItemsDto.ReqQty = pbck4Item.REQUESTED_QTY.HasValue?pbck4Item.REQUESTED_QTY.Value : 0;
+               //pbckItemsDto.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
+               //pbckItemsDto.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
+               //pbckItemsDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
+               //pbckItemsDto.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
+               //pbckItemsDto.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
+               //pbckItemsDto.NoPengawas = pbck4Item.NO_PENGAWAS;
 
-               result.ListPbck4Items.Add(pbckItemsDto);
+               //result.ListPbck4Items.Add(pbckItemsDto);
 
                 var pbck4Matrikck1 = new Pbck4IMatrikCk1ReportDto();
                pbck4Matrikck1.Number = i + 1;
@@ -964,7 +1020,7 @@ namespace Sampoerna.EMS.BLL
                pbck4Matrikck1.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
                pbck4Matrikck1.JenisHt = pbck4Item.PRODUCT_ALIAS;
                pbck4Matrikck1.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
-               pbck4Matrikck1.BrandName = "";//todo ask
+               pbck4Matrikck1.BrandName = pbck4Item.BRAND_NAME;
                if (pbck4Item.CK1 == null)
                {
                    pbck4Matrikck1.Ck1No = "";
@@ -983,7 +1039,7 @@ namespace Sampoerna.EMS.BLL
                pbck4Matrikck1.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
                pbck4Matrikck1.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
                pbck4Matrikck1.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
-               pbck4Matrikck1.NoPengawas = "Tidak Dipakai";//todo ask
+               pbck4Matrikck1.NoPengawas = pbck4Item.REMARKS;// "Tidak Dipakai";
               
                result.ListPbck4MatrikCk1.Add(pbck4Matrikck1);
                i = i + 1;

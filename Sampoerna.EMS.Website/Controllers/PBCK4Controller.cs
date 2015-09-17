@@ -224,6 +224,8 @@ namespace Sampoerna.EMS.Website.Controllers
           
             var dataToSave = Mapper.Map<Pbck4Dto>(model);
 
+            dataToSave.APPROVED_BY_POA = null;
+
             var input = new Pbck4SaveInput()
             {
                 Pbck4Dto = dataToSave,
@@ -928,7 +930,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //add to print history
             var input = new PrintHistoryDto()
             {
-                FORM_TYPE_ID = Enums.FormType.CK5,
+                FORM_TYPE_ID = Enums.FormType.PBCK4,
                 FORM_ID = pbck4Data.PBCK4_ID,
                 FORM_NUMBER = pbck4Data.PBCK4_NUMBER,
                 PRINT_DATE = DateTime.Now,
