@@ -134,7 +134,7 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK7 Gov Status</label>
                                         <div class="col-md-8">
-                                            @*@Html.EnumDropDownListFor(x => x.Pbck7Status, Model.Pbck7GovStatus,  "select", new { @class = "form-control" })*@
+                                            @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList,  "select", new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +157,7 @@
                 <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
                     <div class="panel-body">
                         <a href="javascript:void(0)"  class="btn btn-blue" onclick="toUploadTab()">Upload</a>
-                         <div class="table-container" id="table-upload">
+                        <div class="table-container" id="table-upload">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
                                     <tr>
@@ -237,6 +237,7 @@
                 </div>
             </div>
         </div>
+        @Html.Partial("_Back1", Model)
         @Html.Partial("_Back", Model)
         @Html.Partial("_WorkflowHistoryPbck7", Model)
         @Html.Partial("_WorkflowHistoryPbck3", Model)

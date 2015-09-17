@@ -24,7 +24,7 @@
                     }
                     else
                     {
-                        <input type="submit" class="btn btn-blue" value="Save" />
+                        <input type="button" class="btn btn-blue" value="Save" onclick="saveEditClick()" />
                     }
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack1", new { id = @Model.Lack1Id })')" />
                     @if (Model.Lack1Type == Enums.LACK1Type.ListByPlant)
@@ -37,12 +37,7 @@
                         /* LACK-1 NPPBKC Level */
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-nppbkc-list" />
                     }
-                    else
-                    {
-                        /* Completed Document */
-                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-list" />
-                    }
-
+                    
                     @if (Model.Status == Enums.DocumentStatus.Draft)
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
@@ -126,11 +121,30 @@
     </div>
 </div>
 
+<div id="ModalValidation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Input selection criteria not valid</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
 
     <script src="~/Scripts/thousand-separator.js"></script>
     <script src="~/Scripts/lack1/Lack1GenerateTable.js"></script>
     <script src="~/Scripts/lack1/Lack1Upload.js"></script>
+    <script src="~/Scripts/lack1/Lack1Scripts.js"></script>
     <script type="text/javascript">
 
         $('#MenuLack1CompletedDocument').addClass('@Model.MenuCompletedAddClassCss');
@@ -157,17 +171,23 @@
             $('#btn-back-nppbkc-list').click(function(e) {
                 location.href = '@Url.Action("Index", "LACK1")';
             });
-
-            $('#btn-back-completed-list').click(function(e) {
-                location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
-            });
-
+            
             $('#generated-data-container').html('');
 
             var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
             console.log(jsonData);
             var generateTableD = generateTable(jsonData);
             $('#generated-data-container').append(generateTableD);
+
+            $('#Bukrs').on('change', function () {
+                BukrsOnChange();
+            });
+            $('#NppbkcId').on('change', function () {
+                NppbkcIdOnChange();
+            });
+            $('#ExGoodsTypeId').on('change', function () {
+                ExGoodsTypeOnChange();
+            });
 
             $('#SupplierPlantId').on('change', function() {
                 onSupplierPlantChange();
@@ -186,8 +206,67 @@
             $('#btn-changelog-export-xls').click(function () {
                 location.href = '@Url.Action("ExportClientsListToExcel", "Lack1", new { id = Model.Lack1Id })';
             });
-
+            
         });
+        
+        function BukrsOnChange() {
+            if ($("#Bukrs").length) {
+                var companyCode = $('#Bukrs').find("option:selected").val();
+                $('#NppbkcId option').remove();
+                console.log(companyCode);
+                if (companyCode == '' || $(this).find("option:selected").val() == '') {
+                    $('#NppbkcId').append('<option value="">Select</option>');
+                } else {
+                    $('#Butxt').val($('#Bukrs').find("option:selected").text());
+                    ajaxLoadNppbkcList('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { companyCode: companyCode });
+                }
+            }
+        }
+        
+        function ExGoodsTypeOnChange() {
+            if ($("#NppbkcId").length && $("#ExGoodsTypeId").length) {
+                var excisableGoodsType = $('#ExGoodsTypeId').find("option:selected").val();
+                var excisableGoodsTypeDesc = $('#ExGoodsTypeId').find("option:selected").text();
+                $('#ExGoodsTypeDesc').val(excisableGoodsTypeDesc);
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                console.log(excisableGoodsType + "," + nppbkcId);
+                /*load supplier list*/
+                $('#SupplierPlantId option').remove();
+                if (excisableGoodsType != '' && nppbkcId != '') {
+                    ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: excisableGoodsType });
+                } else {
+                    $('#SupplierPlantId').append('<option value="">Select</option>');
+                }
+            }
+        }
+
+        function NppbkcIdOnChange() {
+            if ($("#NppbkcId").length) {
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                var attr = $('#LevelPlantId').attr('disabled');
+                console.log(attr);
+                /* For some browsers, `attr` is undefined; for others,
+                 `attr` is false.  Check for both.
+                load plant if enable*/
+                if (!(typeof attr !== typeof undefined && attr !== false)) {
+                    // ...
+                    $('#LevelPlantId option').remove();
+                    console.log(nppbkcId);
+                    if (nppbkcId == '' || $(this).find("option:selected").val() == '') {
+                        $('#LevelPlantId').append('<option value="">Select</option>');
+                    } else {
+                        ajaxLoadPlantList('@Url.Action("GetPlantListByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+                    }
+                }
+
+                /*load excisablegoodstype*/
+                ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+
+                /*load supplier list*/
+                ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
+
+            }
+        }
 
         function printPreview(url) {
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
@@ -239,6 +318,21 @@
             }
 
             return result;
+        }
+        
+        function saveEditClick() {
+            var isValid = false;
+            if (generateInputValidation()) {
+                isValid = true;
+            }
+            if (isValid) {
+                isValid = saveInputValidation();
+            }
+            if (isValid) {
+                $('#EditLack1Form').submit();
+            } else {
+                $('#ModalValidation').modal('show');
+            }
         }
         
     </script>

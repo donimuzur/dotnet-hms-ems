@@ -193,36 +193,100 @@ namespace Sampoerna.EMS.BLL
             //origin
             var dbData = _lack1Service.GetDetailsById(input.Detail.Lack1Id);
 
-            var origin = Mapper.Map<Lack1DetailsDto>(dbData);
+            //check if need to re-generate LACK-1 data
+            var generateInput = Mapper.Map<Lack1GenerateDataParamInput>(input);
+            var isNeedToRegenerate = IsNeedToRegenerate(generateInput, dbData);
+            if (isNeedToRegenerate)
+            {
+                //do regenerate data
+                var generatedData = GenerateLack1Data(generateInput);
+                if (!generatedData.Success)
+                {
+                    return new SaveLack1Output()
+                    {
+                        Success = false,
+                        ErrorCode = generatedData.ErrorCode,
+                        ErrorMessage = generatedData.ErrorMessage
+                    };
+                }
 
-            SetChangesHistory(origin, input.Detail, input.UserId);
+                var origin = Mapper.Map<Lack1DetailsDto>(dbData);
+                var destination = Mapper.Map<Lack1DetailsDto>(generatedData.Data);
+                destination.Lack1Id = dbData.LACK1_ID;
+                destination.Lack1Number = dbData.LACK1_NUMBER;
+                destination.Lack1Level = dbData.LACK1_LEVEL;
+                destination.SubmissionDate = origin.SubmissionDate;
+                destination.SupplierCompanyName = origin.SupplierCompanyName;
+                destination.SupplierCompanyCode = origin.SupplierCompanyCode;
+                destination.WasteQty = input.Detail.WasteQty;
+                destination.WasteUom = input.Detail.WasteUom;
+                destination.WasteUomDesc = input.Detail.WasteUomDesc;
+                destination.ReturnQty = input.Detail.ReturnQty;
+                destination.ReturnUom = input.Detail.ReturnUom;
+                destination.ReturnUomDesc = input.Detail.ReturnUomDesc;
+                destination.Status = input.Detail.Status;
+                destination.GovStatus = input.Detail.GovStatus;
+                destination.DecreeDate = input.Detail.DecreeDate;
 
-            //delete first
-            //_lack1IncomeDetailService.DeleteByLack1Id(input.Detail.Lack1Id);
-            //_lack1Pbck1MappingService.DeleteByLack1Id(input.Detail.Lack1Id);
-            //_lack1PlantService.DeleteByLack1Id(input.Detail.Lack1Id);
-            //_lack1ProductionDetailService.DeleteByLack1Id(input.Detail.Lack1Id);
-            _lack1IncomeDetailService.DeleteDataList(dbData.LACK1_INCOME_DETAIL);
-            _lack1Pbck1MappingService.DeleteDataList(dbData.LACK1_PBCK1_MAPPING);
-            _lack1PlantService.DeleteDataList(dbData.LACK1_PLANT);
-            _lack1ProductionDetailService.DeleteDataList(dbData.LACK1_PRODUCTION_DETAIL);
+                SetChangesHistory(origin, destination, input.UserId);
 
-            //doing map
-            //Mapper.Map(input.Detail, dbData);
-            Mapper.Map<Lack1DetailsDto, LACK1>(input.Detail, dbData);
+                //delete first
+                _lack1IncomeDetailService.DeleteDataList(dbData.LACK1_INCOME_DETAIL);
+                _lack1Pbck1MappingService.DeleteDataList(dbData.LACK1_PBCK1_MAPPING);
+                _lack1PlantService.DeleteDataList(dbData.LACK1_PLANT);
+                _lack1ProductionDetailService.DeleteDataList(dbData.LACK1_PRODUCTION_DETAIL);
+                _lack1TrackingService.DeleteDataList(dbData.LACK1_TRACKING);
 
-            //set to null
-            dbData.LACK1_INCOME_DETAIL = null;
-            dbData.LACK1_PBCK1_MAPPING = null;
-            dbData.LACK1_PLANT = null;
-            dbData.LACK1_PRODUCTION_DETAIL = null;
+                //regenerate
+                Mapper.Map<Lack1GeneratedDto, LACK1>(generatedData.Data, dbData);
 
-            //set from input
-            dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(input.Detail.Lack1IncomeDetail);
-            dbData.LACK1_PBCK1_MAPPING = Mapper.Map<List<LACK1_PBCK1_MAPPING>>(input.Detail.Lack1Pbck1Mapping);
-            dbData.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(input.Detail.Lack1Plant);
-            dbData.LACK1_PRODUCTION_DETAIL = Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(input.Detail.Lack1ProductionDetail);
+                //set to null
+                dbData.LACK1_INCOME_DETAIL = null;
+                dbData.LACK1_PBCK1_MAPPING = null;
+                dbData.LACK1_PLANT = null;
+                dbData.LACK1_PRODUCTION_DETAIL = null;
+                dbData.LACK1_TRACKING = null;
 
+                //set from input
+                dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(generatedData.Data.IncomeList);
+                dbData.LACK1_PBCK1_MAPPING = Mapper.Map<List<LACK1_PBCK1_MAPPING>>(generatedData.Data.Pbck1List);
+                dbData.LACK1_PRODUCTION_DETAIL = Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(generatedData.Data.ProductionList);
+                
+                //set LACK1_TRACKING
+                var allTrackingList = generatedData.Data.InvMovementAllList;
+                allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
+                dbData.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
+
+                //set LACK1_PLANT table
+                if (input.Detail.Lack1Level == Enums.Lack1Level.Nppbkc)
+                {
+                    var plantListFromMaster = _t001WServices.GetByNppbkcId(input.Detail.NppbkcId);
+                    dbData.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(plantListFromMaster);
+                }
+                else
+                {
+                    var plantFromMaster = _t001WServices.GetById(input.Detail.LevelPlantId);
+                    dbData.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
+                }
+            }
+            else
+            {
+                var origin = Mapper.Map<Lack1DetailsDto>(dbData);
+
+                SetChangesHistory(origin, input.Detail, input.UserId);
+
+            }
+
+            dbData.SUBMISSION_DATE = input.Detail.SubmissionDate;
+            dbData.LACK1_LEVEL = input.Detail.Lack1Level;
+            dbData.WASTE_QTY = input.Detail.WasteQty;
+            dbData.WASTE_UOM = input.Detail.WasteUom;
+            dbData.RETURN_QTY = input.Detail.ReturnQty;
+            dbData.RETURN_UOM = input.Detail.ReturnUom;
+            dbData.NOTED = input.Detail.Noted;
+            dbData.MODIFIED_BY = input.UserId;
+            dbData.MODIFIED_DATE = DateTime.Now;
+            
             _uow.SaveChanges();
 
             rc.Success = true;
@@ -708,14 +772,97 @@ namespace Sampoerna.EMS.BLL
 
             dtToReturn.HeaderFooter = headerFooterData;
 
+            if (dtToReturn.SubmissionDate.HasValue)
+            {
+                int monthId = dtToReturn.SubmissionDate.Value.Month;
+                int year = dtToReturn.SubmissionDate.Value.Year;
+                var monthData = _monthBll.GetMonth(monthId);
+                if (monthData != null)
+                {
+                    dtToReturn.SubmissionDateDisplayString = dtToReturn.SubmissionDate.Value.Day + " " +
+                                                             monthData.MONTH_NAME_IND + " " + year;
+                }
+            }
+
+            var userCreator = _userBll.GetUserById(dtToReturn.CreateBy);
+            if (userCreator != null)
+            {
+                dtToReturn.ExcisableExecutiveCreator = userCreator.FIRST_NAME + " " + userCreator.LAST_NAME;
+            }
+
+            //set NppbkcCity
+            if (dtToReturn.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                //get main plant
+                var mainPlant = _t001WServices.GetMainPlantByNppbkcId(dtToReturn.NppbkcId);
+                if (mainPlant != null)
+                {
+                    dtToReturn.NppbkcCity = mainPlant.ORT01;
+                }
+            }
+            else
+            {
+                //get by plant id
+                var plant = _t001WServices.GetById(dtToReturn.LevelPlantId);
+                if (plant != null)
+                {
+                    dtToReturn.NppbkcCity = plant.ORT01;
+                }
+            }
+
             return dtToReturn;
         }
 
         #region ----------------Private Method-------------------
+
+        private bool IsNeedToRegenerate(Lack1GenerateDataParamInput input, LACK1 lack1Data)
+        {
+            if (input.CompanyCode == lack1Data.BUKRS && input.PeriodMonth == lack1Data.PERIOD_MONTH
+                && input.PeriodYear == lack1Data.PERIOD_YEAR && input.NppbkcId == lack1Data.NPPBKC_ID &&
+                input.ExcisableGoodsType == lack1Data.EX_GOODTYP
+                && input.SupplierPlantId == lack1Data.SUPPLIER_PLANT_WERKS)
+            {
+                //no need to regenerate
+                if (input.Lack1Level == Enums.Lack1Level.Plant)
+                {
+                    var plant = lack1Data.LACK1_PLANT.FirstOrDefault();
+                    if (plant != null && plant.PLANT_ID == input.ReceivedPlantId)
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        }
+
         private void SetChangesHistory(Lack1DetailsDto origin, Lack1DetailsDto data, string userId)
         {
-            var changesData = new Dictionary<string, bool>();
-            changesData.Add("BUKRS", origin.Bukrs == data.Bukrs);
+            var changesData = new Dictionary<string, bool>
+            {
+                { "BUKRS", origin.Bukrs == data.Bukrs },
+                { "BUTXT", origin.Butxt == data.Butxt },
+                { "PERIOD_MONTH", origin.PeriodMonth == data.PeriodMonth },
+                { "PERIOD_YEAR", origin.PeriodYears == data.PeriodYears },
+                { "SUBMISSION_DATE", origin.SubmissionDate == data.SubmissionDate },
+                { "SUPPLIER_PLANT", origin.SupplierPlant == data.SupplierPlant },
+                { "SUPPLIER_PLANT_WERKS", origin.SupplierPlantId == data.SupplierPlantId },
+                { "SUPPLIER_PLANT_ADDRESS", origin.SupplierPlantAddress == data.SupplierPlantAddress },
+                { "EX_GOODTYP", origin.ExGoodsType == data.ExGoodsType },
+                { "EX_TYP_DESC", origin.ExGoodsTypeDesc == data.ExGoodsTypeDesc },
+                { "WASTE_QTY", origin.WasteQty == data.WasteQty },
+                { "WASTE_UOM", origin.WasteUom == data.WasteUom },
+                { "RETURN_QTY", origin.ReturnQty == data.ReturnQty },
+                { "RETURN_UOM", origin.ReturnUom == data.ReturnUom },
+                { "NPPBKC_ID", origin.NppbkcId == data.NppbkcId },
+                { "BEGINING_BALANCE", origin.BeginingBalance == data.BeginingBalance },
+                { "TOTAL_INCOME", origin.TotalIncome == data.TotalIncome },
+                { "USAGE", origin.Usage == data.Usage },
+                { "NOTED", origin.Noted == data.Noted },
+                { "SUPPLIER_COMPANY_NAME", origin.SupplierCompanyName == data.SupplierCompanyName },
+                { "SUPPLIER_COMPANY_CODE", origin.SupplierCompanyCode == data.SupplierCompanyCode }
+            };
 
             foreach (var listChange in changesData)
             {
@@ -734,6 +881,86 @@ namespace Sampoerna.EMS.BLL
                         case "BUKRS":
                             changes.OLD_VALUE = origin.Bukrs;
                             changes.NEW_VALUE = data.Bukrs;
+                            break;
+                        case "BUTXT":
+                            changes.OLD_VALUE = origin.Butxt;
+                            changes.NEW_VALUE = data.Butxt;
+                            break;
+                        case "PERIOD_MONTH":
+                            changes.OLD_VALUE = origin.PeriodMonth.ToString();
+                            changes.NEW_VALUE = data.PeriodMonth.ToString();
+                            break;
+                        case "PERIOD_YEAR":
+                            changes.OLD_VALUE = origin.PeriodYears.ToString();
+                            changes.NEW_VALUE = data.PeriodYears.ToString();
+                            break;
+                        case "SUBMISSION_DATE":
+                            changes.OLD_VALUE = origin.SubmissionDate.ToString();
+                            changes.NEW_VALUE = data.SubmissionDate.ToString();
+                            break;
+                        case "SUPPLIER_PLANT":
+                            changes.OLD_VALUE = origin.SupplierPlant;
+                            changes.NEW_VALUE = data.SupplierPlant;
+                            break;
+                        case "SUPPLIER_PLANT_WERKS":
+                            changes.OLD_VALUE = origin.SupplierPlantId;
+                            changes.NEW_VALUE = data.SupplierPlantId;
+                            break;
+                        case "SUPPLIER_PLANT_ADDRESS":
+                            changes.OLD_VALUE = origin.SupplierPlantAddress;
+                            changes.NEW_VALUE = data.SupplierPlantAddress;
+                            break;
+                        case "EX_GOODTYP":
+                            changes.OLD_VALUE = origin.ExGoodsType;
+                            changes.NEW_VALUE = data.ExGoodsType;
+                            break;
+                        case "EX_TYP_DESC":
+                            changes.OLD_VALUE = origin.ExGoodsTypeDesc;
+                            changes.NEW_VALUE = data.ExGoodsTypeDesc;
+                            break;
+                        case "WASTE_QTY":
+                            changes.OLD_VALUE = origin.WasteQty.ToString();
+                            changes.NEW_VALUE = data.WasteQty.ToString();
+                            break;
+                        case "WASTE_UOM":
+                            changes.OLD_VALUE = origin.WasteUom;
+                            changes.NEW_VALUE = data.WasteUom;
+                            break;
+                        case "RETURN_QTY":
+                            changes.OLD_VALUE = origin.ReturnQty.ToString("N2");
+                            changes.NEW_VALUE = data.ReturnQty.ToString("N2");
+                            break;
+                        case "RETURN_UOM":
+                            changes.OLD_VALUE = origin.ReturnUom;
+                            changes.NEW_VALUE = data.ReturnUom;
+                            break;
+                        case "NPPBKC_ID":
+                            changes.OLD_VALUE = origin.NppbkcId;
+                            changes.NEW_VALUE = data.NppbkcId;
+                            break;
+                        case "BEGINING_BALANCE":
+                            changes.OLD_VALUE = origin.BeginingBalance.ToString("N2");
+                            changes.NEW_VALUE = data.BeginingBalance.ToString("N2");
+                            break;
+                        case "TOTAL_INCOME":
+                            changes.OLD_VALUE = origin.TotalIncome.ToString("N2");
+                            changes.NEW_VALUE = data.TotalIncome.ToString("N2");
+                            break;
+                        case "USAGE":
+                            changes.OLD_VALUE = origin.Usage.ToString("N2");
+                            changes.NEW_VALUE = data.Usage.ToString("N2");
+                            break;
+                        case "NOTED":
+                            changes.OLD_VALUE = origin.Noted;
+                            changes.NEW_VALUE = data.Noted;
+                            break;
+                        case "SUPPLIER_COMPANY_NAME":
+                            changes.OLD_VALUE = origin.SupplierCompanyName;
+                            changes.NEW_VALUE = data.SupplierCompanyName;
+                            break;
+                        case "SUPPLIER_COMPANY_CODE":
+                            changes.OLD_VALUE = origin.SupplierCompanyCode;
+                            changes.NEW_VALUE = data.SupplierCompanyCode;
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);

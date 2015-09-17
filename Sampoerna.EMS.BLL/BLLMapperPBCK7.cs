@@ -95,10 +95,22 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.APPROVED_BY_MANAGER_DATE, opt => opt.MapFrom(src => src.ApprovedDateManager))
                 .ForMember(dest => dest.REJECTED_BY, opt => opt.MapFrom(src => src.RejectedBy))
                  .ForMember(dest => dest.REJECTED_DATE, opt => opt.MapFrom(src => src.RejectedDate))
-               
+              
                 ;
 
-         
+            Mapper.CreateMap<Back1Dto, BACK1>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.BACK1_NUMBER, opt => opt.MapFrom(src => src.Back1Number))
+                .ForMember(dest => dest.BACK1_DATE, opt => opt.MapFrom(src => src.Back1Date))
+                .ForMember(dest => dest.BACK1_DOCUMENT, opt => opt.MapFrom(src => src.Documents))
+                .ForMember(dest => dest.PBCK7_ID, opt => opt.MapFrom(src => src.Pbck7Id))
+                ;
+
+            Mapper.CreateMap<BACK1, Back1Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Back1Id, opt => opt.MapFrom(src => src.BACK1_ID))
+                .ForMember(dest => dest.Back1Number, opt => opt.MapFrom(src => src.BACK1_NUMBER))
+                .ForMember(dest => dest.Back1Date, opt => opt.MapFrom(src => src.BACK1_DATE))
+                .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.BACK1_DOCUMENT))
+                .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID));
 
             #endregion
 
