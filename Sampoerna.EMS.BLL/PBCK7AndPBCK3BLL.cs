@@ -23,11 +23,13 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IGenericRepository<PBCK3_PBCK7> _repository;
         private IGenericRepository<PBCK7> _repositoryPbck7;
+        private IGenericRepository<BACK1> _repositoryBack1;
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
         private IPOABLL _poabll;
         private string includeTable = "PBCK7_ITEM";
         private WorkflowHistoryBLL _workflowHistoryBll;
+       
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -37,7 +39,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryPbck7 = _uow.GetGenericRepository<PBCK7>();
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, logger);
             _repository = _uow.GetGenericRepository<PBCK3_PBCK7>();
-
+            _repositoryBack1 = _uow.GetGenericRepository<BACK1>();
         }
 
         public List<Pbck7AndPbck3Dto> GetAllByParam(Pbck7AndPbck3Input input)
@@ -82,10 +84,14 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public Pbck7AndPbck3Dto GetById(int? id)
+        public Pbck7AndPbck3Dto GetPbck7ById(int? id)
         {
             var result = _repositoryPbck7.Get(x => x.PBCK7_ID == id, null, includeTable).FirstOrDefault();
-            return Mapper.Map<Pbck7AndPbck3Dto>(result);
+            if(result == null)
+                return  new Pbck7AndPbck3Dto();
+            var pbck7 = Mapper.Map<Pbck7AndPbck3Dto>(result);
+            pbck7.Back1Dto = Mapper.Map<Back1Dto>(result.BACK1.LastOrDefault());
+            return pbck7;
         }
 
         public void Insert(Pbck7AndPbck3Dto pbck7AndPbck3Dto)
@@ -131,6 +137,19 @@ namespace Sampoerna.EMS.BLL
             history.ROLE = getUserRole;
             _workflowHistoryBll.AddHistory(history);
             _uow.SaveChanges();
+        }
+
+        public void InsertBack1(Back1Dto back1)
+        {
+            var back1ToAdd = Mapper.Map<BACK1>(back1);
+            _repositoryBack1.InsertOrUpdate(back1ToAdd);
+            _uow.SaveChanges();
+        }
+
+        public Back1Dto GetBack1ByPbck7(int pbck7Id)
+        {
+            var data = _repositoryBack1.Get(x => x.PBCK7_ID == pbck7Id, null, "BACK1_DOCUMENT");
+            return Mapper.Map<Back1Dto>(data.LastOrDefault());
         }
 
         private Core.Enums.ActionType GetActionTypePbck7(Pbck7AndPbck3Dto pbck7pbck3, string modifiedBy)
