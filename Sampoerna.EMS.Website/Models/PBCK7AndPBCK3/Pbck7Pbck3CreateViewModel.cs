@@ -101,6 +101,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public Enums.DocumentStatusGov Pbck7GovStatusList { get; set; }
 
+        public Enums.DocumentStatusGov? Pbck3GovStatus { get; set; }
+
+        public Enums.DocumentStatusGov Pbck3GovStatusList { get; set; }
+
+
         public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
         public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
 

@@ -216,6 +216,23 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Detail", InitialModel(model));
         }
 
+
+        public void SavePbck3(Pbck7Pbck3CreateViewModel model)
+        {
+            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+            if (existingData != null)
+            {
+                var pbck3 = new Pbck3Dto();
+                pbck3.Pbck3Status = Enums.DocumentStatus.Draft;
+                pbck3.Pbck3Number = model.Pbck3Number;
+                pbck3.Pbck7Id = model.Id;
+                pbck3.CreateDate = DateTime.Now;
+                pbck3.CreatedBy = CurrentUser.USER_ID;
+                pbck3.Pbck3Date = model.Pbck3Date;
+                _pbck7AndPbck7And3Bll.InsertPbck3(pbck3);
+            }
+        }
+
         public void SaveBack1(Pbck7Pbck3CreateViewModel model)
         {
             var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
@@ -269,11 +286,20 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(Pbck7Pbck3CreateViewModel model)
         {
 
-            if (!string.IsNullOrEmpty(model.Back1Dto.Back1Number) && model.Pbck3Status == Enums.DocumentStatus.Draft)
+            if (model.Pbck7Status == Enums.DocumentStatus.GovApproved)
             {
-                SaveBack1(model);
+                if (!string.IsNullOrEmpty(model.Back1Dto.Back1Number) && model.Pbck3Status == Enums.DocumentStatus.Draft)
+                {
+                    SaveBack1(model);
+                    return RedirectToAction("Index");
+                }
+            }
+            if (model.Pbck7Status == Enums.DocumentStatus.Completed)
+            {
+                SavePbck3(model);
                 return RedirectToAction("Index");
             }
+
             var item = AutoMapper.Mapper.Map<Pbck7AndPbck3Dto>(model);
             
             if (item.CreatedBy != CurrentUser.USER_ID)
