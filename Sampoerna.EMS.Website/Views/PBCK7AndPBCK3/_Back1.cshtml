@@ -1,4 +1,6 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
 <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingFour">
@@ -11,15 +13,14 @@
         </div>
         <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
             <div class="panel-body">
-                <form class="form-excise" role="form">
+                <div class="form-excise" role="form">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="row">
                                 <label class="col-md-4">Goverment Status</label>
                                 <div class="col-md-8">
-                                    <select class="form-control">
-                                        <option>Approved</option>
-                                    </select>
+                                    @Html.EnumDropDownListFor(x=>x.Back1GovStatus, Model.Back1GovStatusList, "select", new { @class="form-control" })
+                                   
                                 </div>
                             </div>
                         </div>
@@ -29,8 +30,7 @@
                             <div class="row">
                                 <label class="col-md-4">BACK-1 No</label>
                                 <div class="col-md-8">
-                                    @Html.HiddenFor(x=>x.Back1Number)
-                                    @Html.TextBox("back1_number", Model.Back1Number, new  {@class = "form-control", @disabled="disabled"})
+                                    @Html.TextBoxFor(x=>x.Back1Dto.Back1Number, new  {@class = "form-control", @disabled="disabled"})
                                 </div>
                             </div>
                         </div>
@@ -41,7 +41,7 @@
                                 <label class="col-md-4">BACK-1 Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                       @Html.TextBoxFor(x=>x.Back1Date, new  {@class = "form-control"})
+                                       @Html.TextBoxFor(x=>x.Back1Dto.Back1Date, new  {@class = "form-control"})
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -53,14 +53,53 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="row">
-                                <label class="col-md-4">BACK-1 Doc</label>
+                                <label class="col-md-4">Back1 Document</label>
                                 <div class="col-md-8">
-                                    <input type="file" class="form-control" multiple="">
+                                    <div class="file-upload" id="back1-files">
+                                        @if (Model.Back1Dto != null)
+                                        {
+                                            if (Model.Back1Dto.Documents != null)
+                                            {
+
+                                                foreach (var file in Model.Back1Dto.Documents)
+                                                {
+
+                                                    <div class="row">
+                                                        <div class="col-sm-10">
+                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <button class="btn btn-danger full" type="button" onclick=" removeDocBack1(@file.BACK1_DOCUMENT_ID, '@Url.Action("RemoveDocBack1", "Pbck7AndPbck3")', this) "><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+
+                                                }
+                                            }
+                                        }
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            @if (Model.Pbck7Status == Enums.DocumentStatus.GovApproved)
+                                            {
+                                                <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file-back1">Add File</button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-primary full" type="button">Add File</button>
+
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
-                </form>
+                    @Html.Partial("_FileUploadBack1")
+
+                </div>
             </div>
         </div>
     </div>

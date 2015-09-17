@@ -841,7 +841,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AdditionalDocumentData = new Pbck1WorkflowDocumentData()
                 {
                     DecreeDate = pbck1Data.DecreeDate.Value,
-                    QtyApproved = pbck1Data.QtyApproved,
+                    QtyApproved = pbck1Data.QtyApproved == null ? 0 : Convert.ToDecimal(pbck1Data.QtyApproved),
                     Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
                 }
             };
@@ -1147,11 +1147,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     Pbck1Number = "'" + d.Pbck1Number,
                     Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
                     OriginalNppbkc = "'" + d.SupplierNppbkcId,
-                    OriginalKppbc = "'" + d.SupplierKppbcId,
+                    OriginalKppbc = "'" + d.SupplierKppbcName,
                     OriginalAddress = d.SupplierAddress,
                     // ReSharper disable once PossibleInvalidOperationException
-                    ExcGoodsAmount = d.QtyApproved.Value.ToString("N0"),
-                    Status = d.StatusName
+                    ExcGoodsAmount =  d.QtyApproved == null ? "0" : d.QtyApproved.Value.ToString("N0"),
+                    Status = d.StatusName,
+                    Pbck1Type = d.Pbck1Type.ToString(),
+                    SupplierPortName =  d.SupplierPortName,
+                    SupplierPlant = d.SupplierPlant,
+                    GoodTypeDesc = d.GoodTypeDesc,
+                    PlanProdFrom = d.PlanProdFrom.Value.ToString(),
+                    PlanProdTo = d.PlanProdTo.Value.ToString(),
+                    SupplierPhone = d.SupplierPhone
                 }).ToList();
 
             var grid = new System.Web.UI.WebControls.GridView
@@ -1241,6 +1248,63 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Status"
                 });
             }
+            if (model.ExportModel.Pbck1Type)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Type",
+                    HeaderText = "Pbck1Type"
+                });
+            }
+            if (model.ExportModel.SupplierPortName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierPortName",
+                    HeaderText = "SupplierPortName"
+                });
+            }
+            if (model.ExportModel.SupplierPlant)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierPlant",
+                    HeaderText = "SupplierPlant"
+                });
+            }
+            if (model.ExportModel.GoodTypeDesc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "GoodTypeDesc",
+                    HeaderText = "GoodTypeDesc"
+                });
+            }
+            if (model.ExportModel.PlanProdFrom)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PlanProdFrom",
+                    HeaderText = "PlanProdFrom"
+                });
+            }
+            if (model.ExportModel.PlanProdTo)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PlanProdTo",
+                    HeaderText = "PlanProdTo"
+                });
+            }
+            if (model.ExportModel.SupplierPhone)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierPhone",
+                    HeaderText = "SupplierPhone"
+                });
+            }
+
 
             grid.DataBind();
 

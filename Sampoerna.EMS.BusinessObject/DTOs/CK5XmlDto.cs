@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.SqlServer.Server;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -80,4 +81,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string Ck5PathXml { get; set; }
     }
+
+
+    
 }
