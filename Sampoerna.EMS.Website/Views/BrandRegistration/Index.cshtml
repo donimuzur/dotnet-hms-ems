@@ -89,6 +89,7 @@
                             <th>Conversion</th>
                             <th>Printing Price</th>
                             <th>Cut Filler Code</th>
+                            <th> Active </th>
                             <th> Deleted </th>
                         </tr>
 
@@ -104,6 +105,7 @@
                             <th>Conversion</th>
                             <th>Printing Price</th>
                             <th>Cut Filler Code</th>
+                            <th> Active </th>
                             <th> Deleted </th>
                         </tr>
                     </thead>
@@ -140,6 +142,9 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.CutFilterCode)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsActive)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.IsDeleted)

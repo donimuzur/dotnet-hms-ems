@@ -309,6 +309,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ROLE, opt => opt.MapFrom(src => src.UserRole))
                 ;
 
+
+            Mapper.CreateMap<Lack1DocumentDto, LACK1_DOCUMENT>().IgnoreAllNonExisting();
         }
 
     }

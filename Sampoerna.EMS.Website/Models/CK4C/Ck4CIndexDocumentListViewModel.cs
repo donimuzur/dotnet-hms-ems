@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool AllowApproveAndReject { get; set; }
         public bool AllowManagerReject { get; set; }
         public bool AllowGovApproveAndReject { get; set; }
+        public bool AllowPrintDocument { get; set; }
         public string ActionType { get; set; }
 
         //selectlist
