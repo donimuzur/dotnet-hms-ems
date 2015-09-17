@@ -106,7 +106,7 @@ namespace Sampoerna.EMS.BLL
         public ZAIDM_EX_BRAND GetByFaCode(string plantWerk, string faCode)
         {
             //var dbData = _repository.Get(b => b.FA_CODE.Equals(faCode)).FirstOrDefault();
-            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.FA_CODE == faCode).FirstOrDefault();
+            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.FA_CODE == faCode && b.IS_DELETED !=true).FirstOrDefault();
             return dbData;
         }
 
@@ -118,10 +118,11 @@ namespace Sampoerna.EMS.BLL
             return dbData;
         }
 
-        
+
         public List<ZAIDM_EX_BRAND> GetBrandCeBylant(string plantWerk)
         {
-            var dbData = _repository.Get(c => c.WERKS == plantWerk).ToList();
+            //var dbData = _repository.Get(c => c.WERKS == plantWerk).ToList();
+            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true).ToList();
 
             return dbData;
         }

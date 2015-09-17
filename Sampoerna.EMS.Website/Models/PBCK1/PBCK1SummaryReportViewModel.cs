@@ -91,6 +91,15 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
         public string NppbkcId { get; set; }
+
+        public bool Pbck1Type { get; set; }
+        public bool PoaList { get; set; }
+        public bool SupplierPortName { get; set; }
+        public bool SupplierPlant { get; set; }
+        public bool GoodTypeDesc { get; set; }
+        public bool PlanProdFrom { get; set; }
+        public bool PlanProdTo { get; set; }
+        public bool SupplierPhone { get; set; }
     }
 
     public class Pbck1FilterSummaryReportViewModel
@@ -121,6 +130,14 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string OriginalAddress { get; set; }
         public string ExcGoodsAmount { get; set; }
         public string Status { get; set; }
+        public string Pbck1Type { get; set; }
+        public string SupplierPortName { get; set; }
+        public string SupplierPlant { get; set; }
+        public string GoodTypeDesc { get; set; }
+        public string PlanProdFrom { get; set; }
+        public string PlanProdTo { get; set; }
+        public string SupplierPhone { get; set; }
+
     }
 
 }
