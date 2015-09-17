@@ -32,12 +32,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Nullable<System.DateTime> REJECTED_DATE { get; set; }
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_BY_MANAGER_DATE { get; set; }
+        public string POA_PRINTED_NAME { get; set; }
 
         public string PlantId { get; set; }
         public string PlantDescription { get; set; }
         public string NppbkcId { get; set; }
         public DateTime? ReportedOn { get; set; }
-        public string Poa { get; set; }
+      
         public Enums.DocumentStatus Status { get; set; }
 
         public bool IsWaitingGovApproval { get; set; }

@@ -215,8 +215,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             SelectList data;
             T001WDto dataPlant = _plantBll.GetT001WById(plantId);
-            
-            if (ck5Type == Enums.CK5Type.Domestic) {
+
+            if (ck5Type == Enums.CK5Type.Domestic || ck5Type == Enums.CK5Type.Manual)
+            {
                 
                 data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode);
             }
@@ -246,7 +247,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Ck5Type = Enums.CK5Type.Domestic;
             else if (ck5Type == Enums.CK5Type.Intercompany.ToString())
                 model.Ck5Type = Enums.CK5Type.Intercompany;
-
+            else if (ck5Type == Enums.CK5Type.Manual.ToString())
+                model.Ck5Type = Enums.CK5Type.Manual;
             return View(model);
         }
 
@@ -404,7 +406,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            if (sourceNppbkcId == dbPlantDest.NPPBKC_ID)
+            if (sourceNppbkcId == dbPlantDest.NPPBKC_ID || ck5Type == Enums.CK5Type.Manual)
             {
                 model.Pbck1Id = null;
                 model.Pbck1Number = null;
@@ -463,7 +465,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         else
                         {
                             if (model.Ck5Type != Enums.CK5Type.Export &&
-                                model.Ck5Type != Enums.CK5Type.PortToImporter)
+                                model.Ck5Type != Enums.CK5Type.PortToImporter && 
+                                model.Ck5Type != Enums.CK5Type.Manual)
                             {
                                 //double check
                                 GetQuotaAndRemainOutput output;
@@ -664,7 +667,8 @@ namespace Sampoerna.EMS.Website.Controllers
                             else
                             {
                                 if (model.Ck5Type != Enums.CK5Type.Export &&
-                                    model.Ck5Type != Enums.CK5Type.PortToImporter)
+                                    model.Ck5Type != Enums.CK5Type.PortToImporter && 
+                                    model.Ck5Type != Enums.CK5Type.Manual)
                                 {
 
                                    // var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);

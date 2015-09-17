@@ -47,6 +47,8 @@ namespace Sampoerna.EMS.XMLReader
                             item.MODIFIED_DATE = DateTime.Now;
                             item.MODIFIED_BY = Constans.PI;
                             item.BUTXT_ALIAS = exisitingCompany.BUTXT_ALIAS;
+                            item.NPWP = exisitingCompany.NPWP;
+                            item.SPRAS = exisitingCompany.SPRAS;
                             items.Add(item);
 
                         }
