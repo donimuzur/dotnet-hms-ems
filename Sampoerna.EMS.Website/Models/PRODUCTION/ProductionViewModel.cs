@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string PlantName { get; set; }
         public string FaCode { get; set; }
         public string Uom { get; set; }
-        public DateTime? ProductionDate { get; set; }
+        public string ProductionDate { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }

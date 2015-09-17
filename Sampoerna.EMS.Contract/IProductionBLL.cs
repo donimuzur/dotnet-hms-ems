@@ -17,12 +17,14 @@ namespace Sampoerna.EMS.Contract
         List<ProductionDto> GetAllProduction();
 
         void Save(ProductionDto productionDto);
-
+        
         ProductionDto GetById(string companyCode, string plantWerk, string faCode, DateTime productionDate );
 
         List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc, int period, int month, int year);
 
         PRODUCTION GetExistDto(string companyCode, string plantWerk, string faCode, DateTime productionDate);
-        
+
+        void SaveUpload(ProductionUploadItems uploadItems);
+
     }
 }

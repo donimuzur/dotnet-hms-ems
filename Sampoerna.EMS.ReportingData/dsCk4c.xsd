@@ -32,6 +32,9 @@
               <xs:element name="ReportedOnDay" msprop:Generator_ColumnVarNameInTable="columnReportedOnDay" msprop:Generator_ColumnPropNameInRow="ReportedOnDay" msprop:Generator_ColumnPropNameInTable="ReportedOnDayColumn" msprop:Generator_UserColumnName="ReportedOnDay" type="xs:string" minOccurs="0" />
               <xs:element name="ReportedOnMonth" msprop:Generator_ColumnVarNameInTable="columnReportedOnMonth" msprop:Generator_ColumnPropNameInRow="ReportedOnMonth" msprop:Generator_ColumnPropNameInTable="ReportedOnMonthColumn" msprop:Generator_UserColumnName="ReportedOnMonth" type="xs:string" minOccurs="0" />
               <xs:element name="ReportedOnYear" msprop:Generator_ColumnVarNameInTable="columnReportedOnYear" msprop:Generator_ColumnPropNameInRow="ReportedOnYear" msprop:Generator_ColumnPropNameInTable="ReportedOnYearColumn" msprop:Generator_UserColumnName="ReportedOnYear" type="xs:string" minOccurs="0" />
+              <xs:element name="NBatang" msprop:Generator_ColumnVarNameInTable="columnNBatang" msprop:Generator_ColumnPropNameInRow="NBatang" msprop:Generator_ColumnPropNameInTable="NBatangColumn" msprop:Generator_UserColumnName="NBatang" type="xs:string" minOccurs="0" />
+              <xs:element name="NGram" msprop:Generator_ColumnVarNameInTable="columnNGram" msprop:Generator_ColumnPropNameInRow="NGram" msprop:Generator_ColumnPropNameInTable="NGramColumn" msprop:Generator_UserColumnName="NGram" type="xs:string" minOccurs="0" />
+              <xs:element name="ProdTotal" msprop:Generator_ColumnVarNameInTable="columnProdTotal" msprop:Generator_ColumnPropNameInRow="ProdTotal" msprop:Generator_ColumnPropNameInTable="ProdTotalColumn" msprop:Generator_UserColumnName="ProdTotal" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
