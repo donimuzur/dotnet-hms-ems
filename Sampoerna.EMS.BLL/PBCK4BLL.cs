@@ -29,6 +29,7 @@ namespace Sampoerna.EMS.BLL
 
        private IGenericRepository<PBCK4> _repository;
        private IGenericRepository<PBCK4_ITEM> _repositoryPbck4Items;
+       private IGenericRepository<PBCK4_DOCUMENT> _repositoryPbck4Documents;
 
        private IMonthBLL _monthBll;
        private IDocumentSequenceNumberBLL _docSeqNumBll;
@@ -53,6 +54,7 @@ namespace Sampoerna.EMS.BLL
 
            _repository = _uow.GetGenericRepository<PBCK4>();
            _repositoryPbck4Items = _uow.GetGenericRepository<PBCK4_ITEM>();
+           _repositoryPbck4Documents = _uow.GetGenericRepository<PBCK4_DOCUMENT>();
 
            _monthBll = new MonthBLL(_uow, _logger);
            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
@@ -831,6 +833,40 @@ namespace Sampoerna.EMS.BLL
            _changesHistoryBll.AddHistory(changes);
        }
 
+       public void GovApproveDocumentRollback(Pbck4WorkflowDocumentInput input)
+       {
+           var dbData = _repository.GetByID(input.DocumentId);
+
+           var newValue = dbData.GOV_STATUS.HasValue ? EnumHelper.GetDescription(dbData.GOV_STATUS.Value) : string.Empty;
+
+
+           dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+           dbData.GOV_STATUS = null;
+           dbData.BACK1_NO = string.Empty;
+           dbData.BACK1_DATE = null;
+
+           dbData.CK3_NO = string.Empty;
+           dbData.CK3_DATE = null;
+           dbData.CK3_OFFICE_VALUE = string.Empty;
+         
+           foreach (var pbck4FileUpload in dbData.PBCK4_DOCUMENT.ToList())
+           {
+               _repositoryPbck4Documents.Delete(pbck4FileUpload);
+           }
+
+           var inputHistory = new GetByActionAndFormNumberInput();
+           inputHistory.FormNumber = dbData.PBCK4_NUMBER;
+           inputHistory.ActionType = input.ActionType;// Enums.ActionType.GovApprove;
+
+           _workflowHistoryBll.DeleteByActionAndFormNumber(inputHistory);
+
+           //todo delete changehistory
+           _changesHistoryBll.DeleteByFormIdAndNewValue(dbData.PBCK4_ID.ToString(), newValue);
+
+           _uow.SaveChanges();
+
+       }
+
        private void GovApproveDocument(Pbck4WorkflowDocumentInput input)
        {
            var dbData = _repository.GetByID(input.DocumentId);
@@ -1050,5 +1086,26 @@ namespace Sampoerna.EMS.BLL
 
              return result;
         }
+
+       public Pbck4XmlDto GetPbck4ForXmlById(int id)
+       {
+          
+           var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
+           if (dtData == null)
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+          
+           var dataXmlDto = new Pbck4XmlDto();
+           dataXmlDto.PbckNo = dtData.PBCK4_NUMBER;
+           dataXmlDto.NppbckId = dtData.NPPBKC_ID;
+           dataXmlDto.CompNo = dtData.CK3_NO;
+           dataXmlDto.CompType = "CK-3";
+           dataXmlDto.CompnDate = dtData.CK3_DATE;
+           dataXmlDto.CompnValue = dtData.CK3_OFFICE_VALUE;
+           dataXmlDto.DeleteFlag = "";
+           
+           return dataXmlDto;
+
+       }
     }
 }

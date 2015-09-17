@@ -20,5 +20,9 @@ namespace Sampoerna.EMS.Contract
        void PBCK4Workflow(Pbck4WorkflowDocumentInput input);
 
        Pbck4ReportDto GetPbck4ReportDataById(int id);
+
+       Pbck4XmlDto GetPbck4ForXmlById(int id);
+
+       void GovApproveDocumentRollback(Pbck4WorkflowDocumentInput input);
    }
 }

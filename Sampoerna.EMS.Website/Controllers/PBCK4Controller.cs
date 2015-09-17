@@ -25,6 +25,7 @@ using Sampoerna.EMS.Website.Models.PBCK4;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
+using Sampoerna.EMS.XMLReader;
 using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -582,7 +583,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck4Bll.PBCK4Workflow(input);
         }
 
-        private void PBCK4GovWorkflow(Pbck4FormViewModel model)
+        private bool PBCK4GovWorkflow(Pbck4FormViewModel model)
         {
            var actionType = Enums.ActionType.GovApprove;
 
@@ -611,6 +612,33 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             _pbck4Bll.PBCK4Workflow(input);
+
+            try
+            {
+                if (model.GovStatus == Enums.DocumentStatusGov.PartialApproved ||
+                    model.GovStatus == Enums.DocumentStatusGov.FullApproved)
+                {
+                    //create xml file
+                    var pbck4XmlDto = _pbck4Bll.GetPbck4ForXmlById(model.Pbck4Id);
+
+                    var fileName = ConfigurationManager.AppSettings["Pbck4PathXml"] + "PBCK4APP_" +
+                                   model.Pbck4Number + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
+                    pbck4XmlDto.GeneratedXmlPath = fileName;
+
+                    XmlPBCK4DataWriter rt = new XmlPBCK4DataWriter();
+                    rt.CreatePbck4Xml(pbck4XmlDto);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //failed create xml...
+                //rollaback the update
+                _pbck4Bll.GovApproveDocumentRollback(input);
+                AddMessageInfo("Failed Create PBCK4 XMl message : " + ex.Message, Enums.MessageInfoType.Error);
+                return false;
+            }
         }
 
         public ActionResult ApproveDocument(int id)
