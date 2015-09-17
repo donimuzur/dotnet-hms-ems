@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Back1Number { get; set; }
         public DateTime? Back1Date { get; set; }
 
-       public List<BACK1_DOCUMENT> Documents { get; set; } 
+        public List<BACK1_DOCUMENT> Documents { get; set; } 
         public int Pbck7Id { get; set; }
     }
 }

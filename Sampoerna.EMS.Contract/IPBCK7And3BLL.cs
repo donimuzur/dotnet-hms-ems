@@ -20,5 +20,7 @@ namespace Sampoerna.EMS.Contract
 
 
         void InsertBack1(Back1Dto back1);
+
+        Back1Dto GetBack1ByPbck7(int pbck7Id);
     }
 }

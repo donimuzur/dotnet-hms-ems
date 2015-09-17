@@ -13,6 +13,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Pbck7AndPbck3Dto()
         {
             Pbck3Status = Enums.DocumentStatus.Draft;
+            Back1Dto = new Back1Dto();
+            
         }
 
         public int Pbck7Id { get; set; }
@@ -62,10 +64,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ModifiedPbck3By { get; set; }
         public DateTime? ModifiedPbck3Date { get; set; }
 
-        //from table BACK1
-        public string Back1Number { get; set; }
-        public DateTime? Back1Date { get; set; }
-
+       
         public List<Pbck7ItemUpload> UploadItems { get; set; }
 
         public string Comment { get; set; }
@@ -79,11 +78,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
 
 
-        public string Back1Lampiran { get; set; }
+      
         public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
         public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
 
-        public List<BACK1_DOCUMENT> DocumentsBack1 { get; set; } 
+        public Back1Dto Back1Dto { get; set; }
 
 
     }

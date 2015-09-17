@@ -199,6 +199,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!id.HasValue)
                 return HttpNotFound();
             var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            
+            existingData.Back1Dto = _pbck7AndPbck7And3Bll.GetBack1ByPbck7(existingData.Pbck7Id);
+            if(existingData.Back1Dto == null)
+                existingData.Back1Dto = new Back1Dto();
+            ;
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
             return View("Edit", InitialModel(model));
         }
@@ -235,15 +240,15 @@ namespace Sampoerna.EMS.Website.Controllers
                                 document.FILE_NAME = sk.FileName;
                             }
                            
-                            document.FILE_PATH = SaveUploadedFile(sk, model.Back1Number.Trim().Replace('/', '_'));
+                            document.FILE_PATH = SaveUploadedFile(sk, model.Back1Dto.Back1Number.Trim().Replace('/', '_'));
                             back1Dto.Documents.Add(document);
 
                         }
                     }
                 }
 
-                back1Dto.Back1Number = model.Back1Number;
-                back1Dto.Back1Date = model.Back1Date;
+                back1Dto.Back1Number = model.Back1Dto.Back1Number;
+                back1Dto.Back1Date = model.Back1Dto.Back1Date;
                 back1Dto.Pbck7Id = existingData.Pbck7Id;
                
                 _pbck7AndPbck7And3Bll.InsertBack1(back1Dto);
@@ -257,7 +262,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(Pbck7Pbck3CreateViewModel model)
         {
 
-            if (!string.IsNullOrEmpty(model.Back1Number) && model.Pbck3Status == Enums.DocumentStatus.Draft)
+            if (!string.IsNullOrEmpty(model.Back1Dto.Back1Number) && model.Pbck3Status == Enums.DocumentStatus.Draft)
             {
                 SaveBack1(model);
                 return RedirectToAction("Index");
@@ -393,6 +398,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.AllowPrintDocument = true;
             }
+
+            //back1
+            model.Back1Dto = _pbck7AndPbck7And3Bll.GetBack1ByPbck7(model.Id);
+            
+             
             return (model);
         }
 

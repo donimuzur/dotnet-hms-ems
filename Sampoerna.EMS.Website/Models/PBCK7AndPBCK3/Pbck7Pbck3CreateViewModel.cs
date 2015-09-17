@@ -14,6 +14,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 {
     public class Pbck7Pbck3CreateViewModel : BaseModel
     {
+        public Pbck7Pbck3CreateViewModel()
+        {
+            Back1Dto = new Back1Dto();
+        }
 
         public int Id { get; set; }
         public string Pbck7Number { get; set; }
@@ -92,11 +96,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string ActionType { get; set; }
 
-        public string Back1Number { get; set; }
-
-        public DateTime? Back1Date { get; set; }
-
-        public string Back1Lampiran { get; set; }
 
         public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
 
@@ -105,8 +104,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
         public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
 
-        public List<HttpPostedFileBase> DocumentsPostBack1 { get; set; } 
+        public List<HttpPostedFileBase> DocumentsPostBack1 { get; set; }
 
-        public List<BACK1_DOCUMENT> DocumentsBack1 { get; set; } 
+        public Back1Dto Back1Dto { get; set; }
     }
 }

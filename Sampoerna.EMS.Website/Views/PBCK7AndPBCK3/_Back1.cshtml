@@ -30,7 +30,7 @@
                             <div class="row">
                                 <label class="col-md-4">BACK-1 No</label>
                                 <div class="col-md-8">
-                                    @Html.TextBoxFor(x=>x.Back1Number, new  {@class = "form-control", @disabled="disabled"})
+                                    @Html.TextBoxFor(x=>x.Back1Dto.Back1Number, new  {@class = "form-control", @disabled="disabled"})
                                 </div>
                             </div>
                         </div>
@@ -41,7 +41,7 @@
                                 <label class="col-md-4">BACK-1 Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                       @Html.TextBoxFor(x=>x.Back1Date, new  {@class = "form-control"})
+                                       @Html.TextBoxFor(x=>x.Back1Dto.Back1Date, new  {@class = "form-control"})
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -56,21 +56,24 @@
                                 <label class="col-md-4">Back1 Document</label>
                                 <div class="col-md-8">
                                     <div class="file-upload" id="back1-files">
-                                        @if (Model.DocumentsBack1 != null)
+                                        @if (Model.Back1Dto != null)
                                         {
-
-                                            foreach (var file in Model.DocumentsBack1)
+                                            if (Model.Back1Dto.Documents != null)
                                             {
 
-                                                <div class="row">
-                                                    <div class="col-sm-10">
-                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                    </div>
-                                                    <div class="col-sm-2">
-                                                        <button class="btn btn-danger full" type="button" onclick="removeDocBack1(@file.BACK1_DOCUMENT_ID, '@Url.Action("RemoveDocBack1", "Pbck7AndPbck3")', this) "><i class="fa fa-times"></i></button>
-                                                    </div>
-                                                </div>
+                                                foreach (var file in Model.Back1Dto.Documents)
+                                                {
 
+                                                    <div class="row">
+                                                        <div class="col-sm-10">
+                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <button class="btn btn-danger full" type="button" onclick=" removeDocBack1(@file.BACK1_DOCUMENT_ID, '@Url.Action("RemoveDocBack1", "Pbck7AndPbck3")', this) "><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+
+                                                }
                                             }
                                         }
 
