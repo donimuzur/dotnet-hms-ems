@@ -1,4 +1,5 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ViewModel
+@using Sampoerna.EMS.Core
 
 <table id="pbckTable" class="display" cellspacing="0" width="100%">
     <thead>
@@ -42,7 +43,18 @@
                 </td>
                 <td class="number">@string.Format("{0:N2}", item.RequestQty)</td>
                 <td>
-                    @item.ApprovedByManagerId
+                    @if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager && item.ApprovedByPoaId != null)
+                    {
+                        @item.ApprovedByPoaId
+                    }
+                    else if (item.Status == Enums.DocumentStatus.WaitingGovApproval)
+                    {
+                        @item.ApprovedByManagerId
+                    }
+                    else
+                    {
+                        @item.CreatedById
+                    }
                 </td>
                 <td class="last">@Html.DisplayFor(model => item.StatusName)</td>
             </tr>
