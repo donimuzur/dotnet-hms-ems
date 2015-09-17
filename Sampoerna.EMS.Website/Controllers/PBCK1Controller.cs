@@ -315,7 +315,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 DataSource = from d in model
                              select new
                              {
-                                 Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy") : string.Empty,
+                                 Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty,
                                  FieldName = d.FIELD_NAME,
                                  OldValue = d.OLD_VALUE,
                                  NewValue = d.NEW_VALUE,
@@ -841,7 +841,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AdditionalDocumentData = new Pbck1WorkflowDocumentData()
                 {
                     DecreeDate = pbck1Data.DecreeDate.Value,
-                    QtyApproved = pbck1Data.QtyApproved,
+                    QtyApproved = pbck1Data.QtyApproved == null ? 0 : Convert.ToDecimal(pbck1Data.QtyApproved),
                     Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
                 }
             };

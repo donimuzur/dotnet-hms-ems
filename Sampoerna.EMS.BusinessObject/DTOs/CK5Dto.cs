@@ -98,6 +98,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string APPROVED_BY_POA { get; set; }
         public string APPROVED_BY_MANAGER { get; set; }
 
+        public Sampoerna.EMS.Core.Enums.Ck5ManualType CK5_MANUAL_TYPE { get; set; }
+
         public string RemainQuota;
 
       

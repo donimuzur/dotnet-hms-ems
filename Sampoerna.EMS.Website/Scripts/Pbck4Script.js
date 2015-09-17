@@ -1,4 +1,10 @@
-﻿function OnReadyFunction() {
+﻿function printPreview(url) {
+
+    window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+}
+
+function OnReadyFunction() {
     
     $('#btnUploadInfo').click(function () {
 

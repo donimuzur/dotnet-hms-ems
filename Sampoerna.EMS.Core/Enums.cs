@@ -244,6 +244,8 @@ namespace Sampoerna.EMS.Core
             LACK2 = 6,
             [Description("CK-4C")]
             CK4C = 7,
+            [Description("PBCK-7")]
+            PBCK7 = 8,
         }
 
         public enum ActionType
@@ -532,6 +534,18 @@ namespace Sampoerna.EMS.Core
             Approved = 1,
             [Description("Rejected")]
             Rejected = 2
+        }
+
+        public enum Ck5ManualType
+        {
+            [Description("Trial")]
+            Trial = 1,
+            [Description("Non Plant (Plant to Exhibition)")]
+            NonPlantPlantToEx = 2,
+            [Description("Non Plant (Exhibition to Plant)")]
+            NonPlantExToPlant = 3,
+            [Description("Market Return")]
+            MarketReturn = 4
         }
     }
 }

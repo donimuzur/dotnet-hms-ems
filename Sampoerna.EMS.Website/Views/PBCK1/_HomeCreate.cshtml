@@ -300,11 +300,11 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Request Qty<span class="red">*</span></label>
-                                        <div class="col-md-4">
+                                        <div class="col-md-5">
                                             @Html.HiddenFor(model => model.Detail.RequestQty)
                                             @Html.TextBoxFor(model => model.Detail.RequestQty, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3" style="padding-left:0;">
                                             @Html.HiddenFor(model => model.Detail.RequestQtyUomId)
                                             @Html.DropDownListFor(model => model.Detail.RequestQtyUomId, Model.UomList, "Select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
@@ -313,11 +313,11 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Latest Saldo</label>
-                                        <div class="col-md-4">
+                                        <div class="col-md-5">
                                             @Html.HiddenFor(model => model.Detail.LatestSaldo)
                                             @Html.TextBoxFor(model => model.Detail.LatestSaldo, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3" style="padding-left:0;">
                                             @Html.HiddenFor(model => model.Detail.LatestSaldoUomId)
                                             @Html.DropDownListFor(model => model.Detail.LatestSaldoUomId, Model.UomList, "Select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
@@ -29,5 +30,18 @@ namespace Sampoerna.EMS.BLL.Services
                 }
             }
         }
+
+        public void DeleteDataList(IEnumerable<LACK1_INCOME_DETAIL> listToDelete)
+        {
+            if (listToDelete != null)
+            {
+                foreach (var item in listToDelete.ToList())
+                {
+                    _repository.Delete(item);
+                }
+            }
+
+        }
+
     }
 }

@@ -377,6 +377,7 @@
     <Compile Include="Models\POAMap\PoaMapDetailViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
+    <Compile Include="Models\PRODUCTION\ProductionUploadViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
@@ -399,6 +400,12 @@
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\CK4C\Preview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Preview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\CK5\CK5Materials.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -480,6 +487,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\PBCK4\Pbck4PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck4PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
     <Compile Include="Utility\ExcelReader.cs" />
@@ -514,6 +528,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\chosen.min.css" />
+    <Content Include="Content\css\lack1preview.css" />
     <Content Include="Content\css\main.min.css" />
     <Content Include="Content\css\print.css" />
     <Content Include="Content\css\vendors\font-awesome.min.css" />
@@ -831,6 +846,7 @@
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
     <Content Include="Scripts\lack1\Lack1GenerateTable.js" />
+    <Content Include="Scripts\lack1\Lack1Upload.js" />
     <Content Include="Scripts\lack2\form.js" />
     <Content Include="Scripts\lack1\Lack1Scripts.js" />
     <Content Include="Scripts\modernizr.min.js" />
@@ -847,6 +863,7 @@
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
+    <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
     <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Web.config">
@@ -1056,8 +1073,6 @@
     <Content Include="Views\LACK2\_PrintOut.cshtml" />
     <Content Include="Views\LACK2\_ChangesLog.cshtml" />
     <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
-    <Content Include="Views\LACK1\PrintDocument.cshtml" />
-    <Content Include="Views\LACK1\PrintDocument.cshtml" />
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
     <Content Include="Views\Production\Create.cshtml" />
@@ -1087,7 +1102,7 @@
     <Content Include="Views\PBCK4\_Pbck4InformationEdit.cshtml" />
     <Content Include="Views\Waste\Index.cshtml" />
     <Content Include="Views\Waste\_WasteTableIndex.cshtml" />
-    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistory.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck7.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Back.cshtml" />
     <Content Include="Views\Waste\Create.cshtml" />
     <Content Include="Views\Waste\Edit.cshtml" />
@@ -1100,8 +1115,16 @@
     <Content Include="Views\Production\_HomeCreate.cshtml" />
     <Content Include="Views\Production\_Upload.cshtml" />
     <Content Include="Views\Production\_UploadList.cshtml" />
+    <Content Include="Views\PBCK4\Pbck4CompletedDocuments.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_HomeEdit.cshtml" />
+    <Content Include="Views\Waste\_HomeCreate.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Edit.cshtml" />
+    <Content Include="Views\Production\UploadManualProduction.cshtml" />
+    <Content Include="Views\LACK1\_HomeGovApproval.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeDetail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Detail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Back1.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1213,10 +1236,19 @@
       <LastGenOutput>Preview.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Reports\CK4C\Preview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Preview.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="Reports\PBCK4\Pbck4PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck4PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

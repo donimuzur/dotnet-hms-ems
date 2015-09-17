@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.PlantDescription))
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn.HasValue ? src.ReportedOn.Value.ToString("dd MMM yyyy") : string.Empty))
-                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.Poa))
+                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.APPROVED_BY_POA) ? string.Empty: src.APPROVED_BY_POA))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 ;
 
@@ -52,6 +52,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.COMPANY_ID, opt => opt.MapFrom(src => src.CompanyId))
                 .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.DocumentStatus))
+                .ForMember(dest => dest.POA_PRINTED_NAME, opt => opt.MapFrom(src => src.Poa))
                 ;
 
             Mapper.CreateMap<Pbck4Dto, Pbck4FormViewModel>().IgnoreAllNonExisting()
@@ -65,6 +66,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
                .ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => src.Status))
                .ForMember(dest => dest.DocumentStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+               .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
                ;
 
             Mapper.CreateMap<Pbck4UploadViewModel, Pbck4ItemsInput>().IgnoreAllNonExisting();
@@ -114,6 +116,8 @@ namespace Sampoerna.EMS.Website
                 ;
 
             Mapper.CreateMap<Pbck4FileUploadViewModel, PBCK4_DOCUMENTDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<PBCK4_DOCUMENTDto, Pbck4FileUploadViewModel>().IgnoreAllNonExisting();
         }
     }
 }

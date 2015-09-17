@@ -329,7 +329,7 @@ namespace Sampoerna.EMS.BLL
 
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
 
-                .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.CK5.SUBMISSION_NUMBER + "-" + src.CK5.SUBMISSION_DATE.Value.ToString("dd.MM.yyyy")))
+                .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.CK5.REGISTRATION_NUMBER + "-" + src.CK5.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")))
                 .ForMember(dest => dest.Ck5GIDate, opt => opt.MapFrom(src => src.CK5.GI_DATE == null ? null : src.CK5.GI_DATE.Value.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_COMPANY_NAME))
                 .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_ADDRESS))
@@ -388,6 +388,27 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.DOCGMVTER, opt => opt.MapFrom(src => src.Docgmvter))
                .ForMember(dest => dest.MATDOC, opt => opt.MapFrom(src => src.MatDoc))
                .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr));
+
+            Mapper.CreateMap<ProductionUploadItems, PRODUCTION>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.CompanyCode))
+               .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantWerks))
+               .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+               .ForMember(dest => dest.BRAND_DESC, opt => opt.MapFrom(src => src.BrandDescription))
+               .ForMember(dest => dest.QTY_PACKED, opt => opt.MapFrom(src => src.QtyPacked))
+               .ForMember(dest => dest.QTY_UNPACKED, opt => opt.MapFrom(src => src.QtyPacked))
+               .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.Uom))
+               .ForMember(dest => dest.PRODUCTION_DATE, opt => opt.MapFrom(src => src.ProductionDate));
+
+            Mapper.CreateMap<PRODUCTION, ProductionUploadItems>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.COMPANY_CODE))
+            .ForMember(dest => dest.PlantWerks, opt => opt.MapFrom(src => src.WERKS))
+            .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.BRAND_DESC))
+            .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
+            .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
+            .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_UNPACKED))
+            .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
+            .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.PRODUCTION_DATE));
+
             #endregion
 
             #region Waste For CK4C
@@ -425,6 +446,8 @@ namespace Sampoerna.EMS.BLL
             #endregion
 
             Mapper.CreateMap<CK1, CK1Dto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<BLOCK_STOCK, BLOCK_STOCKDto>().IgnoreAllNonExisting();
         }
     }
 }
