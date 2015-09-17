@@ -400,6 +400,12 @@
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\CK4C\Preview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Preview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\CK5\CK5Materials.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -839,6 +845,7 @@
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
     <Content Include="Scripts\lack1\Lack1GenerateTable.js" />
+    <Content Include="Scripts\lack1\Lack1Upload.js" />
     <Content Include="Scripts\lack2\form.js" />
     <Content Include="Scripts\lack1\Lack1Scripts.js" />
     <Content Include="Scripts\modernizr.min.js" />
@@ -1113,6 +1120,7 @@
     <Content Include="Views\Waste\_HomeCreate.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Edit.cshtml" />
     <Content Include="Views\Production\UploadManualProduction.cshtml" />
+    <Content Include="Views\LACK1\_HomeGovApproval.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_HomeDetail.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Detail.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Back1.cshtml" />
@@ -1228,6 +1236,10 @@
       <LastGenOutput>Preview.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Reports\CK4C\Preview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Preview.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>

@@ -4,5 +4,6 @@
     {
         public int Lack1Id { get; set; }
         public string Lack1Number { get; set; }
+        public bool AllowPrintDocument { get; set; }
     }
 }
