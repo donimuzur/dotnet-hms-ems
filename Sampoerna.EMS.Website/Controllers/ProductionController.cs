@@ -106,7 +106,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
-            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+            model.UomList = GlobalFunctions.GetUomStickGram(_uomBll);
 
             return model;
 
@@ -202,7 +202,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
-            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+            model.UomList = GlobalFunctions.GetUomStickGram(_uomBll);
 
             return model;
         }
@@ -279,7 +279,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantAll();
             model.FacodeList = GlobalFunctions.GetBrandList();
-            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+            model.UomList = GlobalFunctions.GetUomStickGram(_uomBll);
 
             return model;
         }
@@ -322,6 +322,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var modelDto = Mapper.Map<ProductionDto>(model);
             
             try
+
             {
             foreach (var item in modelDto.UploadItems)
             {
@@ -330,12 +331,12 @@ namespace Sampoerna.EMS.Website.Controllers
                
                 item.CompanyName = company.BUTXT;
                 item.PlantName = plant.NAME1;
-               
+                
                 _productionBll.SaveUpload(item);
-                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                   );
-            }
-
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                       );
+                }
+                
             }
             
             catch (Exception ex)

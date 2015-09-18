@@ -24,5 +24,23 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? FloorWasteGramQty { get; set; }
         public decimal? DustWasteStickQty { get; set; }
         public decimal? FloorWasteStickQty { get; set; }
+        public List<WasteUploadItems> UploadItems { get; set; }
+    }
+
+    public class WasteUploadItems
+    {
+        public string CompanyCode { get; set; }
+        public string PlantWerks { get; set; }
+        public string FaCode { get; set; }
+        public string BrandDescription { get; set; }
+        public decimal? MarkerRejectStickQty { get; set; }
+        public decimal? PackerRejectStickQty { get; set; }
+        public string WasteProductionDate { get; set; }
+        public string CompanyName { get; set; }
+        public string PlantName { get; set; }
+        public decimal? DustWasteGramQty { get; set; }
+        public decimal? FloorWasteGramQty { get; set; }
+        public decimal? DustWasteStickQty { get; set; }
+        public decimal? FloorWasteStickQty { get; set; }
     }
 }
