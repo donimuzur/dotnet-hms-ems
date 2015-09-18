@@ -874,6 +874,9 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             drow[19] = prodTotal;
+
+            var city = plant == null ? _nppbkcbll.GetById(ck4c.NppbkcId).CITY : plant.ORT01;
+            drow[20] = city;
             
             dt.Rows.Add(drow);
 
@@ -925,6 +928,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("NBatang", System.Type.GetType("System.String"));
             dt.Columns.Add("NGram", System.Type.GetType("System.String"));
             dt.Columns.Add("ProdTotal", System.Type.GetType("System.String"));
+            dt.Columns.Add("City", System.Type.GetType("System.String"));
 
             //item
             DataTable dtDetail = new DataTable("Ck4cItem");
