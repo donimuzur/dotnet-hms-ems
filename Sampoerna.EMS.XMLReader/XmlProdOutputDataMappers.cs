@@ -58,10 +58,10 @@ namespace Sampoerna.EMS.XMLReader
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
                         var qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
                         var existingMaterialUom = GetMaterialUom(item.FA_CODE, item.WERKS);
-                        if( existingMaterialUom != null)
+                        if (existingMaterialUom != null)
                         {
-                            var prodQty = qty * existingMaterialUom.UMREN;
-                            var existingBrand = GetMaterialBrand(item.WERKS, item.FA_CODE);
+                            var prodQty = qty*existingMaterialUom.UMREN;
+                            var existingBrand = GetMaterialBrand(item.FA_CODE, item.WERKS);
                             if (existingBrand != null)
                             {
                                 item.UOM = bun;
@@ -69,8 +69,19 @@ namespace Sampoerna.EMS.XMLReader
                                 item.QTY_PACKED = prodQty/Convert.ToDecimal(existingBrand.BRAND_CONTENT);
                                 items.Add(item);
                             }
+                            else
+                            {
+                                _xmlMapper.Errors.Add(string.Format("no brand fa_code {0} - werks {1}", item.FA_CODE,
+                                item.WERKS));
+                            }
+                            
                         }
-                        
+                        else
+                        {
+                            _xmlMapper.Errors.Add(string.Format("no material uom fa_code {0} - werks {1}", item.FA_CODE,
+                                item.WERKS));
+                        }
+
                     }
                     catch (Exception ex)
                     {
@@ -104,14 +115,14 @@ namespace Sampoerna.EMS.XMLReader
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<MATERIAL_UOM>()
                 .Get(p => p.STICKER_CODE == materialNumber && p.WERKS == plant
-                          && p.MEINH == "ST", null).FirstOrDefault();
+                          && p.MEINH == "BTG", null).FirstOrDefault();
             return existingData;
         }
 
         public ZAIDM_EX_BRAND GetMaterialBrand(string materialNumber, string plant)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
-                .GetByID(materialNumber, plant);
+                .GetByID(plant,materialNumber);
             return existingData;
         }
 
