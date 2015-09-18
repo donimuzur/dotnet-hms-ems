@@ -30,8 +30,16 @@
                             <div class="row">
                                 <label class="col-md-4">BACK-1 No</label>
                                 <div class="col-md-8">
-                                    @Html.TextBoxFor(x=>x.Back1Dto.Back1Number, new  {@class = "form-control", @disabled="disabled"})
-                                </div>
+                                    @if(Model.Pbck7Status == Enums.DocumentStatus.GovApproved)
+                                    {
+                                        @Html.TextBoxFor(x => x.Back1Dto.Back1Number, new {@class = "form-control", @disabled = "disabled"})
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBox("back1_number", Model.Back1Dto.Back1Number, new { @class = "form-control", @disabled = "disabled" })
+
+                                    }
+                                 </div>
                             </div>
                         </div>
                     </div>
@@ -41,7 +49,15 @@
                                 <label class="col-md-4">BACK-1 Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                       @Html.TextBoxFor(x=>x.Back1Dto.Back1Date, new  {@class = "form-control"})
+                                        @if(Model.Pbck7Status == Enums.DocumentStatus.GovApproved)
+                                        {
+                                            @Html.TextBoxFor(x => x.Back1Dto.Back1Date, new {@class = "form-control"})
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBox("back1_date", Model.Back1Dto.Back1Date, new { @class = "form-control", @disabled="disabled" })
+
+                                        }
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
