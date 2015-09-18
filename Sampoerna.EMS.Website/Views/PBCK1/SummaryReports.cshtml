@@ -25,107 +25,108 @@
                 }))
                         {
                             <!--<div class="white-wrapper">-->
-                                <div class="form-excise" role="form">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="row">
-                                                <label class="col-md-5">Company Code</label>
-                                                <div class="col-md-7">
-                                                    @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
-                                                    @if (Model.SearchView.CompanyCodeList == null)
-                                                    {
-                                                        @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                                    }
-                                                    else
-                                                    {
-                                                        @Html.DropDownListFor(model => model.SearchView.CompanyCode, Model.SearchView.CompanyCodeList, "All", new { @class = "form-control selectreset" })
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="row">
-                                                <label class="col-md-4">From - To</label>
-                                                <div class="col-md-8 year-from">
-                                                    @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
-                                                    @if (Model.SearchView.YearFromList == null)
-                                                    {
-                                                        @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                                    }
-                                                    else
-                                                    {
-                                                        @Html.DropDownListFor(model => model.SearchView.YearFrom, Model.SearchView.YearFromList, "All", new { @class = "form-control selectreset" })
-                                                    }
-
-                                                    @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
-                                                    @if (Model.SearchView.YearToList == null)
-                                                    {
-                                                        @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                                    }
-                                                    else
-                                                    {
-                                                        @Html.DropDownListFor(model => model.SearchView.YearTo, Model.SearchView.YearToList, "All", new { @class = "form-control selectreset" })
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="row">
-                                                <label class="col-md-4">NPPBKC</label>
-                                                <div class="col-md-8">
-                                                    @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
-                                                    @if (Model.SearchView.NppbkcIdList == null)
-                                                    {
-                                                        @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                                    }
-                                                    else
-                                                    {
-                                                        @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--
-                                        <div class="last-form">
-                                            <div class="col-md-4">
-                                                <div>
-                                                    @* ReSharper disable UnknownCssClass *@
-                                                    Toggle column:
-                                                    <a class="toggle-vis" data-column="0">No</a> -
-                                                    <a class="toggle-vis" data-column="1">Company</a> -
-                                                    <a class="toggle-vis" data-column="2">NPPBKC</a> -
-                                                    <a class="toggle-vis" data-column="3">KPPBC</a> -
-                                                    <a class="toggle-vis" data-column="4">PBCK-1 Number</a> -
-                                                    <a class="toggle-vis" data-column="5">Address</a> -
-                                                    <a class="toggle-vis" data-column="6">Original NPPBKC</a> -
-                                                    <a class="toggle-vis" data-column="7">Original KPPBC</a> -
-                                                    <a class="toggle-vis" data-column="8">Original Address</a> -
-                                                    <a class="toggle-vis" data-column="9">Exc. Goods Amount</a> -
-                                                    <a class="toggle-vis" data-column="10">Status</a>
-                                                    @* ReSharper restore UnknownCssClass *@
-                                                </div>
-                                            </div>
-                                            -->
-                                        <div class="col-md-4 col-md-offset-8">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <button class="btn btn-blue full">FILTER</button>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
-                                                </div>
+                            @*<div class="form-excise" role="form">*@
+                                @*<div class="row">*@
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="col-md-5">Company Code</label>
+                                            <div class="col-md-7">
+                                                @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
+                                                @if (Model.SearchView.CompanyCodeList == null)
+                                                {
+                                                    @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownListFor(model => model.SearchView.CompanyCode, Model.SearchView.CompanyCodeList, "All", new { @class = "form-control selectreset" })
+                                                }
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="col-md-4">From - To</label>
+                                            <div class="col-md-8 year-from">
+                                                @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
+                                                @if (Model.SearchView.YearFromList == null)
+                                                {
+                                                    @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownListFor(model => model.SearchView.YearFrom, Model.SearchView.YearFromList, "All", new { @class = "form-control selectreset" })
+                                                }
+
+                                                @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
+                                                @if (Model.SearchView.YearToList == null)
+                                                {
+                                                    @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownListFor(model => model.SearchView.YearTo, Model.SearchView.YearToList, "All", new { @class = "form-control selectreset" })
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="col-md-4">NPPBKC</label>
+                                            <div class="col-md-8">
+                                                @* ReSharper disable once ConvertIfStatementToConditionalTernaryExpression *@
+                                                @if (Model.SearchView.NppbkcIdList == null)
+                                                {
+                                                    @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--
+                            <div class="last-form">
+                                <div class="col-md-4">
+                                    <div>
+                                        @* ReSharper disable UnknownCssClass *@
+                                        Toggle column:
+                                        <a class="toggle-vis" data-column="0">No</a> -
+                                        <a class="toggle-vis" data-column="1">Company</a> -
+                                        <a class="toggle-vis" data-column="2">NPPBKC</a> -
+                                        <a class="toggle-vis" data-column="3">KPPBC</a> -
+                                        <a class="toggle-vis" data-column="4">PBCK-1 Number</a> -
+                                        <a class="toggle-vis" data-column="5">Address</a> -
+                                        <a class="toggle-vis" data-column="6">Original NPPBKC</a> -
+                                        <a class="toggle-vis" data-column="7">Original KPPBC</a> -
+                                        <a class="toggle-vis" data-column="8">Original Address</a> -
+                                        <a class="toggle-vis" data-column="9">Exc. Goods Amount</a> -
+                                        <a class="toggle-vis" data-column="10">Status</a>
+                                        @* ReSharper restore UnknownCssClass *@
+                                    </div>
                                 </div>
+                                -->
+                                    <div class="col-md-4 col-md-offset-8">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <button id="btnFILTER" class="btn btn-blue full">FILTER</button>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                @*</div>*@
+                            @*</div>*@
                             <!--</div>-->
                         }
                     </div>
                 </div>
             </div>
+
             @using (Html.BeginForm("ExportSummaryReports", "Pbck1", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
 {
-    <div class="white-wrapper toggle-wrapper" style="padding:10px">
+    <div class="white-wrapper toggle-wrapper">
         <div class="form-excise" role="form">
             <div class="row">
 
@@ -150,27 +151,27 @@
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBoxFor(model => model.ExportModel.Company, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })Company
+                                            @Html.CheckBoxFor(model => model.ExportModel.Company, new { @id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })Company
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })NPPBKC
+                                            @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })NPPBKC
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })KPPBC
+                                            @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })KPPBC
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBoxFor(model => model.ExportModel.Pbck1Number, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })PBCK-1 Number
+                                            @Html.CheckBoxFor(model => model.ExportModel.Pbck1Number, new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })PBCK-1 Number
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBoxFor(model => model.ExportModel.Status, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Status
+                                            @Html.CheckBoxFor(model => model.ExportModel.Status, new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Status
                                         </label>
                                     </div>
                                     <div class="checkbox">
@@ -314,6 +315,7 @@
 
                     table = $('#pbckTable').DataTable(
                         {
+                            "order": [[2, "asc"]],
                             "sDom": "Rlfrtip",
                             "language": {
                                 "zeroRecords": "No records found",
@@ -330,6 +332,19 @@
                     //    // Toggle the visibility
                     //    column.visible(!column.visible());
                     //});
+                    
+
+                    $('#btnFILTER').on('click', function (e) {
+                        $('#selecctall').prop('checked', false);
+                        $('.checkexport').each(function () {
+                            this.checked = false;
+                        });
+                        $('#checkboxDefault1').prop('checked', true);
+                        $('#checkboxDefault2').prop('checked', true);
+                        $('#checkboxDefault3').prop('checked', true);
+                        $('#checkboxDefault4').prop('checked', true);
+                        $('#checkboxDefault5').prop('checked', true);
+                    });
 
                     $('.checkexport').on('click', function (e) {
                          //e.preventDefault();

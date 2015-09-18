@@ -114,4 +114,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
     }
 
+    public class Lack1RegenerateParamInput : Lack1GenerateDataParamInput
+    {
+        public string Lack1Number { get; set; }
+        public int Lack1Id { get; set; }
+        public string UserId { get; set; }
+        public Enums.ActionType WorkflowActionType { get; set; }
+    }
+
 }

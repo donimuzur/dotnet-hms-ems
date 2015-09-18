@@ -144,6 +144,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
                 model = new Pbck4IndexViewModel();
+                model.MainMenu = Enums.MenuList.PBCK4;
+                model.CurrentMenu = PageInfo;
             }
 
             return View("Pbck4CompletedDocuments", model);
@@ -621,8 +623,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     //create xml file
                     var pbck4XmlDto = _pbck4Bll.GetPbck4ForXmlById(model.Pbck4Id);
 
-                    var fileName = ConfigurationManager.AppSettings["Pbck4PathXml"] + "PBCK4APP" +
-                                   model.Pbck4Number + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                    //var fileName = ConfigurationManager.AppSettings["Pbck4PathXml"] + "PBCK4APP" +
+                    //               model.Pbck4Number + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
+
+                    var fileName = ConfigurationManager.AppSettings["Pbck4PathXml"] + "COMPENSATION-"  + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
 
                     pbck4XmlDto.GeneratedXmlPath = fileName;
 
