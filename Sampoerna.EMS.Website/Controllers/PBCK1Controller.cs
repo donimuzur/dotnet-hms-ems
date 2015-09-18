@@ -726,6 +726,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     return CreateInitial(model);
                 }
 
+                Pbck1ItemViewModel modelOld = model;
+
                 model = CleanSupplierInfo(model);
 
                 //process save
@@ -739,6 +741,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = CurrentUser.USER_ID,
                     WorkflowActionType = Enums.ActionType.Created
                 };
+
+                if (!_pbck1Bll.checkUniquePBCK1(input))
+                {
+                    AddMessageInfo("PBCK1 Cannot Duplicate", Enums.MessageInfoType.Error);
+                    return CreateInitial(modelOld);
+                }
+                
 
                 //only add this information from gov approval,
                 //when save create/edit 
@@ -1078,12 +1087,22 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //Get All
                 var pbck1Data = _pbck1Bll.GetSummaryReportByParam(new Pbck1GetSummaryReportByParamInput());
+                foreach (var item in pbck1Data)
+                {
+                    var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
+                    item.NppbkcKppbcName = Kppbc == null ? "" : Kppbc.NAME1;
+                }
                 return Mapper.Map<List<Pbck1SummaryReportsItem>>(pbck1Data);
             }
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetSummaryReportByParamInput>(filter);
             var dbData = _pbck1Bll.GetSummaryReportByParam(input);
+            foreach (var item in dbData)
+            {
+                var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
+                item.NppbkcKppbcName = Kppbc == null ? "" : Kppbc.NAME1;
+            }
             return Mapper.Map<List<Pbck1SummaryReportsItem>>(dbData);
         }
 

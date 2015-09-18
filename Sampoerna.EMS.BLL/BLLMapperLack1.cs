@@ -311,6 +311,46 @@ namespace Sampoerna.EMS.BLL
 
 
             Mapper.CreateMap<Lack1DocumentDto, LACK1_DOCUMENT>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1SaveEditInput, Lack1GenerateDataParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Detail.Bukrs))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Detail.Butxt))
+                .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.Detail.PeriodMonth))
+                .ForMember(dest => dest.PeriodYear, opt => opt.MapFrom(src => src.Detail.PeriodYears))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.Detail.NppbkcId))
+                .ForMember(dest => dest.ReceivedPlantId, opt => opt.MapFrom(src => src.Detail.LevelPlantId))
+                .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.Detail.SubmissionDate))
+                .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.Detail.SupplierPlantId))
+                .ForMember(dest => dest.ExcisableGoodsType, opt => opt.MapFrom(src => src.Detail.ExGoodsType))
+                .ForMember(dest => dest.ExcisableGoodsTypeDesc, opt => opt.MapFrom(src => src.Detail.ExGoodsTypeDesc))
+                .ForMember(dest => dest.WasteAmount, opt => opt.MapFrom(src => src.Detail.WasteQty))
+                .ForMember(dest => dest.WasteAmountUom, opt => opt.MapFrom(src => src.Detail.WasteUom))
+                .ForMember(dest => dest.ReturnAmount, opt => opt.MapFrom(src => src.Detail.ReturnQty))
+                .ForMember(dest => dest.ReturnAmountUom, opt => opt.MapFrom(src => src.Detail.ReturnUom))
+                .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => src.Detail.Lack1Level))
+                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Detail.Noted))
+                ;
+
+            Mapper.CreateMap<Lack1GeneratedDto, Lack1DetailsDto>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Bukrs, opt => opt.MapFrom(src => src.CompanyCode))
+               .ForMember(dest => dest.Butxt, opt => opt.MapFrom(src => src.CompanyName))
+               .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.PeriodMonthId))
+               .ForMember(dest => dest.PeriodNameInd, opt => opt.MapFrom(src => src.PeriodMonthName))
+               .ForMember(dest => dest.Periode, opt => opt.MapFrom(src => new DateTime(src.PeriodYear, src.PeriodMonthId, 1)))
+               .ForMember(dest => dest.PeriodYears, opt => opt.MapFrom(src => src.PeriodYear))
+               .ForMember(dest => dest.SupplierPlant, opt => opt.MapFrom(src => src.SupplierPlantName))
+               .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SupplierPlantId))
+               .ForMember(dest => dest.SupplierPlantAddress, opt => opt.MapFrom(src => src.SupplierPlantAddress))
+               .ForMember(dest => dest.ExGoodsType, opt => opt.MapFrom(src => src.ExcisableGoodsType))
+               .ForMember(dest => dest.ExGoodsTypeDesc, opt => opt.MapFrom(src => src.ExcisableGoodsTypeDesc))
+               .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
+               .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BeginingBalance))
+               .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TotalIncome))
+               .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.TotalUsage))
+               .ForMember(dest => dest.Lack1UomId, opt => opt.MapFrom(src => src.Lack1UomId))
+               .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Noted))
+               ;
+
         }
 
     }

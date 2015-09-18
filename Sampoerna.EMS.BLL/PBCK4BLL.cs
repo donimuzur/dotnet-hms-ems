@@ -847,7 +847,8 @@ namespace Sampoerna.EMS.BLL
 
            dbData.CK3_NO = string.Empty;
            dbData.CK3_DATE = null;
-           dbData.CK3_OFFICE_VALUE = string.Empty;
+        
+           dbData.CK3_OFFICE_VALUE = null;
          
            foreach (var pbck4FileUpload in dbData.PBCK4_DOCUMENT.ToList())
            {
@@ -860,7 +861,7 @@ namespace Sampoerna.EMS.BLL
 
            _workflowHistoryBll.DeleteByActionAndFormNumber(inputHistory);
 
-           //todo delete changehistory
+           
            _changesHistoryBll.DeleteByFormIdAndNewValue(dbData.PBCK4_ID.ToString(), newValue);
 
            _uow.SaveChanges();
@@ -888,7 +889,8 @@ namespace Sampoerna.EMS.BLL
            
            dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
            dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-           dbData.CK3_OFFICE_VALUE = input.AdditionalDocumentData.Ck3OfficeValue;
+           
+           dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
 
            dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
 
@@ -927,7 +929,8 @@ namespace Sampoerna.EMS.BLL
 
            dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
            dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-           dbData.CK3_OFFICE_VALUE = input.AdditionalDocumentData.Ck3OfficeValue;
+           
+           dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
 
            dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
 
@@ -1000,6 +1003,7 @@ namespace Sampoerna.EMS.BLL
 
            return pbck4ReportDto;
        }
+      
        public Pbck4ReportDto GetPbck4ReportDataById(int id)
         {
             var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
@@ -1101,7 +1105,10 @@ namespace Sampoerna.EMS.BLL
            dataXmlDto.CompNo = dtData.CK3_NO;
            dataXmlDto.CompType = "CK-3";
            dataXmlDto.CompnDate = dtData.CK3_DATE;
-           dataXmlDto.CompnValue = dtData.CK3_OFFICE_VALUE;
+         
+           dataXmlDto.CompnValue = dtData.CK3_OFFICE_VALUE.HasValue
+               ? dtData.CK3_OFFICE_VALUE.Value.ToString()
+               : string.Empty;
            dataXmlDto.DeleteFlag = "";
            
            return dataXmlDto;

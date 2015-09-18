@@ -14,6 +14,12 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class PBCK3
     {
+        public PBCK3()
+        {
+            this.CK2 = new HashSet<CK2>();
+            this.BACK3 = new HashSet<BACK3>();
+        }
+    
         public int PBCK3_ID { get; set; }
         public string PBCK3_NUMBER { get; set; }
         public System.DateTime PBCK3_DATE { get; set; }
@@ -37,5 +43,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual POA POA { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual USER USER3 { get; set; }
+        public virtual ICollection<CK2> CK2 { get; set; }
+        public virtual ICollection<BACK3> BACK3 { get; set; }
     }
 }
