@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -12,25 +14,36 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 {
     public class Pbck7Pbck3CreateViewModel : BaseModel
     {
+        public Pbck7Pbck3CreateViewModel()
+        {
+            Back1Dto = new Back1Dto();
+            Pbck3Dto =new Pbck3Dto();
+        }
 
         public int Id { get; set; }
         public string Pbck7Number { get; set; }
 
         public string PlantId { get; set; }
 
+        
         public Enums.DocumentStatus Pbck7Status { get; set; }
         public string Pbck7StatusName { get; set; }
-        public Enums.DocumentStatus Pbck3Status { get; set; }
+
+       
 
         public string Pbck3StatusName { get; set; }
        
         public string PlantName { get; set; }
         public DateTime? Pbck7Date { get; set; }
-        public string Pbck3Number { get; set; }
-        public DateTime? Pbck3Date { get; set; }
+        [Required]
         public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
+        
+        [Required]
         public DateTime? ExecDateFrom { get; set; }
+         [Required]
         public DateTime? ExecDateTo { get; set; }
+
+         [Required]
         public string NppbkcId { get; set; }
         public string Lampiran { get; set; }
 
@@ -78,15 +91,38 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string ActionType { get; set; }
 
-        public string Back1Number { get; set; }
 
-        public DateTime? Back1Date { get; set; }
 
-        public string Back1Lampiran { get; set; }
+        public bool AllowApproveAndRejectPbck3 { get; set; }
+
+        public bool AllowEditAndSubmitPbck3 { get; set; }
+
+        public bool AllowGovApproveAndRejectPbck3 { get; set; }
+
+        public bool AllowManagerRejectPbck3 { get; set; }
+
+        public bool AllowPrintDocumentPbck3 { get; set; }
+
+        public bool IsSaveSubmitPbck3 { get; set; }
+
+        public string ActionTypePbck3 { get; set; }
 
         public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
 
+        public Enums.DocumentStatusGov Pbck7GovStatusList { get; set; }
+
+        
+        public Enums.DocumentStatusGov Pbck3GovStatusList { get; set; }
+
+
         public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
+        public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
+
+        public List<HttpPostedFileBase> DocumentsPostBack1 { get; set; }
+
+        public Back1Dto Back1Dto { get; set; }
+
+        public Pbck3Dto Pbck3Dto { get; set; }
 
     }
 }

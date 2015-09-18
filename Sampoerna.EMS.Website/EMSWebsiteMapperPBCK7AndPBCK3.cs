@@ -46,8 +46,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck7Date))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.ApprovedBy))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Pbck7Status))
-                .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.Pbck3Number));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Pbck7Status));
+                
 
             Mapper.CreateMap<Pbck3IndexViewModel, Pbck7AndPbck3Input>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
@@ -66,12 +66,12 @@ namespace Sampoerna.EMS.Website
                  .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DocumentType))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreateDate))
                 .ForMember(dest => dest.Pbck7StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck7Status)))
-                  .ForMember(dest => dest.Pbck3StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck3Status)))
+                  .ForMember(dest => dest.Pbck3StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck3Dto.Pbck3Status)))
                 ;
 
             Mapper.CreateMap<Pbck7Pbck3CreateViewModel, Pbck7AndPbck3Dto>().IgnoreAllNonExisting()
                    .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.Id))
-                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreatedDate))
+                   .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreatedDate))
                   .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
                
                 ;

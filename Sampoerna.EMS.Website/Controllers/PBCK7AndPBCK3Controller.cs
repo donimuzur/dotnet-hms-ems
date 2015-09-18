@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.EMMA;
+using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -197,7 +198,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (!id.HasValue)
                 return HttpNotFound();
-            var existingData = _pbck7AndPbck7And3Bll.GetById(id);
+            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            
+            existingData.Back1Dto = _pbck7AndPbck7And3Bll.GetBack1ByPbck7(existingData.Pbck7Id);
+            existingData.Pbck3Dto = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(existingData.Pbck7Id);
+            if (existingData.Back1Dto == null)
+                  existingData.Back1Dto = new Back1Dto();
+            if(existingData.Pbck3Dto == null)
+                existingData.Pbck3Dto = new Pbck3Dto();
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
             return View("Edit", InitialModel(model));
         }
@@ -205,16 +213,132 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (!id.HasValue)
                 return HttpNotFound();
-            var existingData = _pbck7AndPbck7And3Bll.GetById(id);
+            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            existingData.Back1Dto = _pbck7AndPbck7And3Bll.GetBack1ByPbck7(existingData.Pbck7Id);
+            existingData.Pbck3Dto = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(existingData.Pbck7Id);
+            if (existingData.Back1Dto == null)
+                existingData.Back1Dto = new Back1Dto();
+            if (existingData.Pbck3Dto == null)
+                existingData.Pbck3Dto = new Pbck3Dto();
+           
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
             return View("Detail", InitialModel(model));
         }
+
+
+        public void SavePbck3(Pbck7Pbck3CreateViewModel model)
+        {
+            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+            if (existingData != null)
+            {
+               var pbck3 = new Pbck3Dto();
+              
+                if (model.IsSaveSubmitPbck3)
+                {
+                    if (model.Pbck3Dto.Pbck3Status != Enums.DocumentStatus.Completed)
+                    {
+                        if (model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Draft)
+                        {
+                            pbck3.Pbck3Status = Enums.DocumentStatus.WaitingForApproval;
+                           
+                        }
+                    }
+
+                }
+                else
+                {
+                     
+                    pbck3.Pbck3Status = Enums.DocumentStatus.Draft;
+
+                    var inputDoc = new GenerateDocNumberInput();
+                    inputDoc.Month = model.Pbck3Dto.Pbck3Date.Value.Month;
+                    inputDoc.Year = model.Pbck3Dto.Pbck3Date.Value.Year;
+                    inputDoc.NppbkcId = existingData.NppbkcId;
+
+                    pbck3.Pbck3Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc); ;
+                    
+                }
+                pbck3.Pbck7Id = existingData.Pbck7Id;
+                pbck3.CreateDate = model.Pbck3Dto.CreateDate;
+                pbck3.CreatedBy = model.Pbck3Dto.CreatedBy;
+                pbck3.Pbck3Date = model.Pbck3Dto.Pbck3Date;
+                pbck3.Pbck3Id = model.Pbck3Dto.Pbck3Id;
+                pbck3.Pbck3Number = model.Pbck3Dto.Pbck3Number;
+                _pbck7AndPbck7And3Bll.InsertPbck3(pbck3);
+
+                
+            }
+        }
+
+        public void SaveBack1(Pbck7Pbck3CreateViewModel model)
+        {
+            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+            if (existingData != null)
+            {
+               
+                var back1Dto = new Back1Dto();
+                if (model.DocumentsPostBack1 != null)
+                {
+                    back1Dto.Documents = new List<BACK1_DOCUMENT>();
+                    foreach (var sk in model.DocumentsPostBack1)
+                    {
+                        if (sk != null)
+                        {
+                            var document = new BACK1_DOCUMENT();
+                            var filenamecheck = sk.FileName;
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                document.FILE_NAME = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+                            else
+                            {
+                                document.FILE_NAME = sk.FileName;
+                            }
+                           
+                            document.FILE_PATH = SaveUploadedFile(sk, model.Back1Dto.Back1Number.Trim().Replace('/', '_'));
+                            back1Dto.Documents.Add(document);
+
+                        }
+                    }
+                }
+
+                back1Dto.Back1Number = model.Back1Dto.Back1Number;
+                back1Dto.Back1Date = model.Back1Dto.Back1Date;
+                back1Dto.Pbck7Id = existingData.Pbck7Id;
+               
+                _pbck7AndPbck7And3Bll.InsertBack1(back1Dto);
+                if (existingData.Pbck7Status == Enums.DocumentStatus.GovApproved)
+                {
+                    existingData.Pbck7Status = Enums.DocumentStatus.Completed;
+                    //prevent error when update pbck7
+                    existingData.UploadItems = null;
+                    _pbck7AndPbck7And3Bll.InsertPbck7(existingData);
+                }
+            }
+
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Pbck7Pbck3CreateViewModel model)
         {
 
+            if (model.Pbck7Status == Enums.DocumentStatus.GovApproved)
+            {
+                if (!string.IsNullOrEmpty(model.Back1Dto.Back1Number) && model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Draft)
+                {
+                    SaveBack1(model);
+                    return RedirectToAction("Index");
+                }
+            }
+            if (model.Pbck7Status == Enums.DocumentStatus.Completed)
+            {
+                SavePbck3(model);
+                return RedirectToAction("Index");
+            }
+
             var item = AutoMapper.Mapper.Map<Pbck7AndPbck3Dto>(model);
+            
             if (item.CreatedBy != CurrentUser.USER_ID)
             {
                 return RedirectToAction("Detail", new {id = item.Pbck7Id});
@@ -231,17 +355,17 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             
-            if (item.GovStatus == Enums.DocumentStatusGov.PartialApproved)
+            if (item.Pbck7GovStatus == Enums.DocumentStatusGov.PartialApproved)
             {
-                item.Status = Enums.DocumentStatus.GovApproved;
+                item.Pbck7Status = Enums.DocumentStatus.GovApproved;
             }
-            if (item.GovStatus == Enums.DocumentStatusGov.FullApproved)
+            if (item.Pbck7GovStatus == Enums.DocumentStatusGov.FullApproved)
             {
-                item.Status = Enums.DocumentStatus.Completed;
+                item.Pbck7Status = Enums.DocumentStatus.GovApproved;
             }
-            if (item.GovStatus == Enums.DocumentStatusGov.Rejected)
+            if (item.Pbck7GovStatus == Enums.DocumentStatusGov.Rejected)
             {
-                item.Status = Enums.DocumentStatus.GovRejected;
+                item.Pbck7Status = Enums.DocumentStatus.GovRejected;
             }
             if (model.IsSaveSubmit)
             {
@@ -315,9 +439,15 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.NPPBKC_Id = model.NppbkcId;
             workflowInput.FormType = Enums.FormType.PBCK7;
             ;
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+            model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
-            model.WorkflowHistoryPbck7 = workflowHistory;
+            workflowInput.FormId = model.Pbck3Dto.Pbck3Id;
+            workflowInput.FormNumber = model.Pbck3Dto.Pbck3Number;
+            workflowInput.DocumentStatus = model.Pbck3Dto.Pbck3Status;
+            workflowInput.NPPBKC_Id = model.NppbkcId;
+            workflowInput.FormType = Enums.FormType.PBCK3;
+
+            model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput)); ;
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
             {
@@ -344,6 +474,39 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.AllowPrintDocument = true;
             }
+
+            if (model.Pbck7Status == Enums.DocumentStatus.Completed)
+            {
+                //validate approve and reject
+                var inputPbck3 = new WorkflowAllowApproveAndRejectInput
+                {
+                    DocumentStatus = model.Pbck3Dto.Pbck3Status,
+                    FormView = Enums.FormViewType.Detail,
+                    UserRole = CurrentUser.UserRole,
+                    CreatedUser = model.CreatedBy,
+                    CurrentUser = CurrentUser.USER_ID,
+                    CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                    DocumentNumber = model.Pbck3Dto.Pbck3Number,
+                    NppbkcId = model.NppbkcId
+                };
+
+                ////workflow
+
+                model.AllowApproveAndRejectPbck3 = _workflowBll.AllowApproveAndReject(inputPbck3);
+                model.AllowEditAndSubmitPbck3 = CurrentUser.USER_ID == model.CreatedBy;
+                if (!model.AllowApproveAndRejectPbck3)
+                {
+                    model.AllowGovApproveAndRejectPbck3 = _workflowBll.AllowGovApproveAndReject(inputPbck3);
+                    model.AllowManagerRejectPbck3 = _workflowBll.AllowManagerReject(inputPbck3);
+                }
+                if (model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Completed)
+                {
+                    model.AllowPrintDocumentPbck3 = true;
+                }
+            }
+
+
+
             return (model);
         }
 
@@ -356,7 +519,10 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return RedirectToAction("Approve", new { id = model.Id });
             }
-
+            else if (model.ActionType == "ApprovePbck3")
+            {
+                return RedirectToAction("ApprovePbck3", new { id = model.Id });
+            }
             return RedirectToAction("Index");
         }
 
@@ -372,10 +538,11 @@ namespace Sampoerna.EMS.Website.Controllers
             Uri uri = urlBuilder.Uri;
             if (uri != Request.UrlReferrer)
                 return HttpNotFound();
-            var item = _pbck7AndPbck7And3Bll.GetById(id);
-            if (item.Pbck3Status == Enums.DocumentStatus.Draft)
+            var item = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            
+            var statusPbck7 = item.Pbck7Status;
+            if (statusPbck7 != Enums.DocumentStatus.Completed)
             {
-                var statusPbck7 = item.Pbck7Status;
                 if (statusPbck7 == Enums.DocumentStatus.WaitingForApproval)
                 {
                     item.Pbck7Status = Enums.DocumentStatus.WaitingForApprovalManager;
@@ -394,11 +561,56 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.Pbck7Status = Enums.DocumentStatus.GovApproved;
                 }
             }
+            
 
             item.UploadItems = null;
             _pbck7AndPbck7And3Bll.InsertPbck7(item);
             return RedirectToAction("Index");
         }
+
+
+        public ActionResult ApprovePbck3(int id)
+        {
+            var urlBuilder =
+                   new System.UriBuilder(Request.Url.AbsoluteUri)
+                   {
+                       Path = Url.Action("Detail", "PBCK7AndPBCK3", new { id = id }),
+                       Query = null,
+                   };
+
+            Uri uri = urlBuilder.Uri;
+            if (uri != Request.UrlReferrer)
+                return HttpNotFound();
+            var item = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(id);
+
+            var statusPbck3 = item.Pbck3Status;
+            if (statusPbck3 != Enums.DocumentStatus.Completed)
+            {
+                if (statusPbck3 == Enums.DocumentStatus.WaitingForApproval)
+                {
+                    item.Pbck3Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                    item.ApprovedBy = CurrentUser.USER_ID;
+                    item.ApprovedDate = DateTime.Now;
+                }
+                else if (statusPbck3 == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    item.Pbck3Status = Enums.DocumentStatus.WaitingGovApproval;
+                    item.ApprovedByManager = CurrentUser.USER_ID;
+                    item.ApprovedDateManager = DateTime.Now;
+                }
+
+                else if (statusPbck3 == Enums.DocumentStatus.WaitingGovApproval)
+                {
+                    item.Pbck3Status = Enums.DocumentStatus.GovApproved;
+                }
+            }
+            
+
+            
+            _pbck7AndPbck7And3Bll.InsertPbck3(item);
+            return RedirectToAction("Index");
+        }
+
 
         [HttpPost]
         public JsonResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
@@ -443,6 +655,24 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return Json(model);
         }
+
+        private string SaveUploadedFile(HttpPostedFileBase file, string back1Num)
+        {
+            if (file == null || file.FileName == "")
+                return "";
+
+            string sFileName = "";
+
+
+            sFileName = Constans.UploadPath + System.IO.Path.GetFileName("BACK1_" + back1Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + System.IO.Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+
     }
 
 }

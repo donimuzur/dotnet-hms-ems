@@ -10,6 +10,7 @@ using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Spreadsheet;
 using iTextSharp.text.pdf.qrcode;
+using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -25,6 +26,7 @@ using Sampoerna.EMS.Website.Models.PBCK4;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
+using Sampoerna.EMS.XMLReader;
 using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -143,6 +145,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
                 model = new Pbck4IndexViewModel();
+                model.MainMenu = Enums.MenuList.PBCK4;
+                model.CurrentMenu = PageInfo;
             }
 
             return View("Pbck4CompletedDocuments", model);
@@ -582,7 +586,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck4Bll.PBCK4Workflow(input);
         }
 
-        private void PBCK4GovWorkflow(Pbck4FormViewModel model)
+        private bool PBCK4GovWorkflow(Pbck4FormViewModel model)
         {
            var actionType = Enums.ActionType.GovApprove;
 
@@ -611,6 +615,37 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             _pbck4Bll.PBCK4Workflow(input);
+
+            try
+            {
+                if (model.GovStatus == Enums.DocumentStatusGov.PartialApproved ||
+                    model.GovStatus == Enums.DocumentStatusGov.FullApproved)
+                {
+                    //create xml file
+                    var pbck4XmlDto = _pbck4Bll.GetPbck4ForXmlById(model.Pbck4Id);
+
+                    //var fileName = ConfigurationManager.AppSettings["Pbck4PathXml"] + "PBCK4APP" +
+                    //               model.Pbck4Number + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
+
+                    var fileName = ConfigurationManager.AppSettings["Pbck4PathXml"] + "COMPENSATION-"  + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
+
+                    pbck4XmlDto.GeneratedXmlPath = fileName;
+
+                    XmlPBCK4DataWriter rt = new XmlPBCK4DataWriter();
+                    rt.CreatePbck4Xml(pbck4XmlDto);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //failed create xml...
+                //rollaback the update
+                _pbck4Bll.GovApproveDocumentRollback(input);
+                AddMessageInfo("Failed Create PBCK4 XMl message : " + ex.Message, Enums.MessageInfoType.Error);
+                return false;
+            }
         }
 
         public ActionResult ApproveDocument(int id)
@@ -944,5 +979,469 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
         #endregion
-	}
+
+        #region Summary Reports
+
+        private SelectList GetPbck4NumberList(List<Pbck4SummaryReportDto> listPbck4)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck4
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.Pbck4No,
+                        TextField = x.Pbck4No
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetYearListPbck4(bool isFrom, List<Pbck4SummaryReportDto> listPbck4)
+        {
+          
+            IEnumerable<SelectItemModel> query;
+            if (isFrom)
+                query = from x in listPbck4.OrderBy(c => c.ReportedOn)
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.ReportedOn,
+                            TextField = x.ReportedOn.ToString()
+                        };
+            else
+                query = from x in listPbck4.OrderByDescending(c => c.ReportedOn)
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.ReportedOn,
+                            TextField = x.ReportedOn.ToString()
+                        };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetPlantList(List<Pbck4SummaryReportDto> listPbck4)
+        {
+          
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck4
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.PlantId,
+                            TextField = x.PlantId + " - " + x.PlantDescription
+                        };
+            
+           
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+
+
+        private Pbck4SummaryReportsViewModel InitSummaryReports(Pbck4SummaryReportsViewModel model)
+        {
+            model.MainMenu = Enums.MenuList.PBCK4;
+            model.CurrentMenu = PageInfo;
+
+            var listPbck4 = _pbck4Bll.GetSummaryReportsByParam(new Pbck4GetSummaryReportByParamInput());
+
+            model.SearchView.Pbck4NoList = GetPbck4NumberList(listPbck4);
+            model.SearchView.YearFromList = GetYearListPbck4(true, listPbck4);
+            model.SearchView.YearToList = GetYearListPbck4(false, listPbck4);
+            model.SearchView.PlantIdList = GetPlantList(listPbck4);
+            
+
+            var filter = new Pbck4SearchSummaryReportsViewModel();
+        
+           model.DetailsList = SearchDataSummaryReports(filter);
+
+            return model;
+        }
+
+        private List<Pbck4SummaryReportsItem> SearchDataSummaryReports(Pbck4SearchSummaryReportsViewModel filter = null)
+        {
+            Pbck4GetSummaryReportByParamInput input;
+            List<Pbck4SummaryReportDto> dbData;
+            if (filter == null)
+            {
+                //Get All
+                input = new Pbck4GetSummaryReportByParamInput();
+
+                dbData = _pbck4Bll.GetSummaryReportsByParam(input);
+                return Mapper.Map<List<Pbck4SummaryReportsItem>>(dbData);
+            }
+
+            //getbyparams
+
+            input = Mapper.Map<Pbck4GetSummaryReportByParamInput>(filter);
+
+            dbData = _pbck4Bll.GetSummaryReportsByParam(input);
+            return Mapper.Map<List<Pbck4SummaryReportsItem>>(dbData);
+        }
+
+        public ActionResult SummaryReports()
+        {
+
+            Pbck4SummaryReportsViewModel model;
+            try
+            {
+
+                model = new Pbck4SummaryReportsViewModel();
+
+                
+                model = InitSummaryReports(model);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck4SummaryReportsViewModel();
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("Pbck4SummaryReport", model);
+        }
+
+        [HttpPost]
+        public PartialViewResult SearchSummaryReports(Pbck4SummaryReportsViewModel model)
+        {
+            model.DetailsList = SearchDataSummaryReports(model.SearchView);
+            return PartialView("_Pbck4ListSummaryReport", model);
+
+         
+        }
+
+        public void ExportXlsSummaryReports(Pbck4SummaryReportsViewModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsSummaryReports(model.ExportModel);
+
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsSummaryReports(Pbck4ExportSummaryReportsViewModel modelExport)
+        {
+            var dataSummaryReport = SearchDataSummaryReports(modelExport);
+
+            int iRow = 1;
+            var slDocument = new SLDocument();
+
+            //create header
+            slDocument = CreateHeaderExcel(slDocument, modelExport);
+
+            iRow++;
+            int iColumn = 1;
+            foreach (var data in dataSummaryReport)
+            {
+
+                iColumn = 1;
+                if (modelExport.Pbck4Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck4Date);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Pbck4Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck4No);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.CeOffice)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CeOffice);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Brand)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Brand);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Content)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Content);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Hje)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Hje);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Tariff)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Tariff);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.ProductType)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ProductType);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.FiscalYear)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.FiscalYear);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.SeriesCode)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.SeriesCode);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.RequestedQty)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.RequestedQty);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.ExciseValue)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ExciseValue);
+                    iColumn = iColumn + 1;
+                }
+
+                //start
+                if (modelExport.Remarks)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Remarks);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Back1Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Back1Date);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Back1Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Back1Number);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Ck3Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck3Date);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Ck3Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck3Number);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Ck3Value)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck3Value);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.PrintingCost)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PrintingCost);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.CompensatedCk1Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompensatedCk1Date);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.CompensatedCk1Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompensatedCk1Number);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.PaymentDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PaymentDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Status)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Status);
+                    iColumn = iColumn + 1;
+                }
+             
+                iRow++;
+            }
+
+            return CreateXlsFileSummaryReports(slDocument, iColumn, iRow);
+
+        }
+
+        private SLDocument CreateHeaderExcel(SLDocument slDocument, Pbck4ExportSummaryReportsViewModel modelExport)
+        {
+            int iColumn = 1;
+            int iRow = 1;
+
+            if (modelExport.Pbck4Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-4 Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Pbck4Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-4 Number");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CeOffice)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "KPPBC");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Brand)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Brand");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Content)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Content");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Hje)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "HJE");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Tariff)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Tariff");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.ProductType)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Product Type");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.FiscalYear)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Fiscal Year");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.SeriesCode)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Series Code");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.RequestedQty)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Requested Qty");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.ExciseValue)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Excise Value");
+                iColumn = iColumn + 1;
+            }
+
+            //start
+            if (modelExport.Remarks)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Remarks");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Back1Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "BACK-1 Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Back1Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "BACK-1 Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Ck3Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-3 Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Ck3Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-3 Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Ck3Value)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-3 Value");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.PrintingCost)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Printing Cost");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.CompensatedCk1Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Compensated CK-1 Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.CompensatedCk1Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Compensated CK-1 Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.PaymentDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Payment Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Status)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
+                iColumn = iColumn + 1;
+            }
+          
+            return slDocument;
+
+        }
+        
+        private string CreateXlsFileSummaryReports(SLDocument slDocument, int iColumn, int iRow)
+        {
+
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
+            slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
+
+            var fileName = "PBCK4" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+           
+            var path = Path.Combine(Server.MapPath(Constans.CK5FolderPath), fileName);
+
+           
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        #endregion
+    }
 }

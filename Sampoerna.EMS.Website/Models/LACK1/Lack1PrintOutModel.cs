@@ -73,6 +73,12 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public string PrintOutTitle { get; set; }
 
+        public string SubmissionDateDisplayString { get; set; }
+
+        public string ExcisableExecutiveCreator { get; set; }
+
+        public string NppbkcCity { get; set; }
+
     }
 
     public class Lack1HeaderFooter

@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> BACK1_DATE { get; set; }
         public string CK3_NO { get; set; }
         public Nullable<System.DateTime> CK3_DATE { get; set; }
-        public string CK3_OFFICE_VALUE { get; set; }
+        public Nullable<decimal> CK3_OFFICE_VALUE { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }

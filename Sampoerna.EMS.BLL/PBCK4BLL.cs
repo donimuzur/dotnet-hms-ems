@@ -29,6 +29,7 @@ namespace Sampoerna.EMS.BLL
 
        private IGenericRepository<PBCK4> _repository;
        private IGenericRepository<PBCK4_ITEM> _repositoryPbck4Items;
+       private IGenericRepository<PBCK4_DOCUMENT> _repositoryPbck4Documents;
 
        private IMonthBLL _monthBll;
        private IDocumentSequenceNumberBLL _docSeqNumBll;
@@ -53,6 +54,7 @@ namespace Sampoerna.EMS.BLL
 
            _repository = _uow.GetGenericRepository<PBCK4>();
            _repositoryPbck4Items = _uow.GetGenericRepository<PBCK4_ITEM>();
+           _repositoryPbck4Documents = _uow.GetGenericRepository<PBCK4_DOCUMENT>();
 
            _monthBll = new MonthBLL(_uow, _logger);
            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
@@ -831,6 +833,41 @@ namespace Sampoerna.EMS.BLL
            _changesHistoryBll.AddHistory(changes);
        }
 
+       public void GovApproveDocumentRollback(Pbck4WorkflowDocumentInput input)
+       {
+           var dbData = _repository.GetByID(input.DocumentId);
+
+           var newValue = dbData.GOV_STATUS.HasValue ? EnumHelper.GetDescription(dbData.GOV_STATUS.Value) : string.Empty;
+
+
+           dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+           dbData.GOV_STATUS = null;
+           dbData.BACK1_NO = string.Empty;
+           dbData.BACK1_DATE = null;
+
+           dbData.CK3_NO = string.Empty;
+           dbData.CK3_DATE = null;
+        
+           dbData.CK3_OFFICE_VALUE = null;
+         
+           foreach (var pbck4FileUpload in dbData.PBCK4_DOCUMENT.ToList())
+           {
+               _repositoryPbck4Documents.Delete(pbck4FileUpload);
+           }
+
+           var inputHistory = new GetByActionAndFormNumberInput();
+           inputHistory.FormNumber = dbData.PBCK4_NUMBER;
+           inputHistory.ActionType = input.ActionType;// Enums.ActionType.GovApprove;
+
+           _workflowHistoryBll.DeleteByActionAndFormNumber(inputHistory);
+
+           
+           _changesHistoryBll.DeleteByFormIdAndNewValue(dbData.PBCK4_ID.ToString(), newValue);
+
+           _uow.SaveChanges();
+
+       }
+
        private void GovApproveDocument(Pbck4WorkflowDocumentInput input)
        {
            var dbData = _repository.GetByID(input.DocumentId);
@@ -852,7 +889,8 @@ namespace Sampoerna.EMS.BLL
            
            dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
            dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-           dbData.CK3_OFFICE_VALUE = input.AdditionalDocumentData.Ck3OfficeValue;
+           
+           dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
 
            dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
 
@@ -891,7 +929,8 @@ namespace Sampoerna.EMS.BLL
 
            dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
            dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-           dbData.CK3_OFFICE_VALUE = input.AdditionalDocumentData.Ck3OfficeValue;
+           
+           dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
 
            dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
 
@@ -964,6 +1003,7 @@ namespace Sampoerna.EMS.BLL
 
            return pbck4ReportDto;
        }
+      
        public Pbck4ReportDto GetPbck4ReportDataById(int id)
         {
             var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
@@ -1050,5 +1090,160 @@ namespace Sampoerna.EMS.BLL
 
              return result;
         }
+
+       public List<Pbck4SummaryReportDto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input)
+       {
+
+           Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
+
+           if (!string.IsNullOrEmpty(input.Pbck4No))
+           {
+               queryFilter = queryFilter.And(c => c.PBCK4_NUMBER.Contains(input.Pbck4No));
+           }
+
+           if (input.YearFrom.HasValue)
+               queryFilter =
+                   queryFilter.And(c => c.REPORTED_ON.HasValue && c.REPORTED_ON.Value.Year >= input.YearFrom.Value);
+           if (input.YearTo.HasValue)
+               queryFilter =
+                   queryFilter.And(c => c.REPORTED_ON.HasValue && c.REPORTED_ON.Value.Year <= input.YearTo.Value);
+
+           if (!string.IsNullOrEmpty(input.PlantId))
+           {
+               queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
+           }
+
+           
+           queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+
+
+           var rc = _repository.Get(queryFilter, null, includeTables).ToList();
+           if (rc == null)
+           {
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+           }
+
+           //var mapResult = Mapper.Map<List<Pbck4Dto>>(rc.ToList());
+
+           //return mapResult;
+
+           return  SetDataSummaryReport(rc);
+
+           //return mapResult;
+
+       }
+
+       private List<Pbck4SummaryReportDto> SetDataSummaryReport(List<PBCK4> listPbck4)
+       {
+           var result = new List<Pbck4SummaryReportDto>();
+
+           foreach (var dtData in listPbck4)
+           {
+
+
+
+               foreach (var pbck4Item in dtData.PBCK4_ITEM)
+               {
+                   var summaryDto = new Pbck4SummaryReportDto();
+
+                   summaryDto.Pbck4No = dtData.PBCK4_NUMBER;
+                   summaryDto.Pbck4Date = dtData.REPORTED_ON.HasValue
+                       ? dtData.REPORTED_ON.Value.ToString("dd MMM yyyy")
+                       : string.Empty;
+                   //summaryDto.CeOffice = dtData.NPPBKC_ID;
+                   var nppbkcData = _nppbkcBll.GetById(dtData.NPPBKC_ID);
+                   summaryDto.CeOffice = nppbkcData != null ? nppbkcData.KPPBC_ID : string.Empty;
+                   summaryDto.Brand = pbck4Item.BRAND_NAME;
+                   summaryDto.Content = pbck4Item.BRAND_CONTENT;
+                   summaryDto.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value.ToString("f2") : string.Empty;
+                   summaryDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value.ToString("f2") : string.Empty;
+                   summaryDto.ProductType = pbck4Item.PRODUCT_ALIAS;
+
+
+                   summaryDto.SeriesCode = pbck4Item.SERIES_CODE;
+                   summaryDto.RequestedQty = ConvertHelper.ConvertDecimalToString(pbck4Item.REQUESTED_QTY);
+
+                   summaryDto.ExciseValue =
+                       (ConvertHelper.ConvertToDecimalOrZero(summaryDto.Content)*
+                        ConvertHelper.ConvertToDecimalOrZero(summaryDto.Tariff)*
+                        ConvertHelper.ConvertToDecimalOrZero(summaryDto.RequestedQty)).ToString();
+
+                   summaryDto.Remarks = pbck4Item.REMARKS;
+
+                   summaryDto.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.BACK1_DATE);
+                   summaryDto.Back1Number = dtData.BACK1_NO;
+                   summaryDto.Ck3Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.CK3_DATE);
+                   summaryDto.Ck3Number = dtData.CK3_NO;
+                   summaryDto.Ck3Value = ConvertHelper.ConvertDecimalToString(dtData.CK3_OFFICE_VALUE);
+
+                   var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(dtData.PLANT_ID, pbck4Item.FA_CODE);
+                   if (dbBrand == null)
+                   {
+                       summaryDto.FiscalYear = "";
+                       summaryDto.PrintingCost = "0";
+                   }
+                   else
+                   {
+                       summaryDto.FiscalYear = dbBrand.START_DATE.HasValue
+                           ? dbBrand.START_DATE.Value.ToString("yyyy")
+                           : string.Empty;
+
+                       summaryDto.PrintingCost =
+                           ConvertHelper.ConvertDecimalToString(
+                               ConvertHelper.ConvertToDecimalOrZero(
+                                   ConvertHelper.ConvertDecimalToString(dbBrand.PRINTING_PRICE))*
+                               ConvertHelper.ConvertToDecimalOrZero(summaryDto.RequestedQty));
+                   }
+
+                   //todo ask from where the value is
+                   summaryDto.CompensatedCk1Date = "";
+                   summaryDto.CompensatedCk1Number = "";
+                   summaryDto.PaymentDate = "";
+
+                   summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                   if (dtData.REPORTED_ON.HasValue)
+                       summaryDto.ReportedOn = Convert.ToInt32(dtData.REPORTED_ON.Value.ToString("yyyy"));
+
+
+                   //summaryDto.ReportedOn = dtData.REPORTED_ON.HasValue
+                   //    ? dtData.REPORTED_ON.Value.ToString("yyyy")
+                   //    : string.Empty;
+
+                   summaryDto.PlantId = dtData.PLANT_ID;
+                   summaryDto.PlantDescription = dtData.PLANT_NAME;
+
+                   result.Add(summaryDto);
+               }
+
+           }
+
+           return result;
+       }
+
+        public Pbck4XmlDto GetPbck4ForXmlById(int id)
+       {
+          
+           var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
+           if (dtData == null)
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+          
+           var dataXmlDto = new Pbck4XmlDto();
+           dataXmlDto.PbckNo = dtData.PBCK4_NUMBER;
+           dataXmlDto.NppbckId = dtData.NPPBKC_ID;
+           dataXmlDto.CompNo = dtData.CK3_NO;
+           dataXmlDto.CompType = "CK-3";
+           dataXmlDto.CompnDate = dtData.CK3_DATE;
+         
+           dataXmlDto.CompnValue = dtData.CK3_OFFICE_VALUE.HasValue
+               ? dtData.CK3_OFFICE_VALUE.Value.ToString()
+               : string.Empty;
+           dataXmlDto.DeleteFlag = "";
+           
+           return dataXmlDto;
+
+       }
+
+       
     }
 }

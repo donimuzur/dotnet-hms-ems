@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.DocumentStatus))
                 .ForMember(dest => dest.POA_PRINTED_NAME, opt => opt.MapFrom(src => src.Poa))
+                .ForMember(dest => dest.CK3_OFFICE_VALUE, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.CK3_OFFICE_VALUE))
                 ;
 
             Mapper.CreateMap<Pbck4Dto, Pbck4FormViewModel>().IgnoreAllNonExisting()
@@ -67,6 +68,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => src.Status))
                .ForMember(dest => dest.DocumentStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
+               .ForMember(dest => dest.CK3_OFFICE_VALUE, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.CK3_OFFICE_VALUE))
                ;
 
             Mapper.CreateMap<Pbck4UploadViewModel, Pbck4ItemsInput>().IgnoreAllNonExisting();
@@ -118,6 +120,22 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck4FileUploadViewModel, PBCK4_DOCUMENTDto>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<PBCK4_DOCUMENTDto, Pbck4FileUploadViewModel>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck4Dto, Pbck4SummaryReportsItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck4Date, opt => opt.MapFrom(src => src.ReportedOn.HasValue ? src.ReportedOn.Value.ToString("dd MMM yyyy"): string.Empty))
+                .ForMember(dest => dest.Pbck4No, opt => opt.MapFrom(src => src.PBCK4_NUMBER))
+                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+                ;
+
+            Mapper.CreateMap<Pbck4SearchSummaryReportsViewModel, Pbck4GetSummaryReportByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck4No, opt => opt.MapFrom(src => src.Pbck4No))
+                .ForMember(dest => dest.YearFrom, opt => opt.MapFrom(src => src.YearFrom))
+                .ForMember(dest => dest.YearTo, opt => opt.MapFrom(src => src.YearTo))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+
+                ;
+
+            Mapper.CreateMap<Pbck4SummaryReportDto, Pbck4SummaryReportsItem>().IgnoreAllNonExisting();
         }
     }
 }

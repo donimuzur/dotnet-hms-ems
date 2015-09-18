@@ -28,7 +28,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PlantCity, opt => opt.MapFrom(src => src.PLANT_CITY))
                 .ForMember(dest => dest.ExecDateFrom, opt => opt.MapFrom(src => src.EXEC_DATE_FROM))
                 .ForMember(dest => dest.ExecDateTo, opt => opt.MapFrom(src => src.EXEC_DATE_TO))
-                .ForMember(dest => dest.GovStatus, opt => opt.MapFrom(src => src.GOV_STATUS))
+                .ForMember(dest => dest.Pbck7GovStatus, opt => opt.MapFrom(src => src.GOV_STATUS))
                 .ForMember(dest => dest.Pbck7Status, opt => opt.MapFrom(src => src.STATUS))
                 .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.APPROVED_BY))
                 .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
@@ -83,7 +83,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.DOCUMENT_TYPE, opt => opt.MapFrom(src => src.DocumentType))
                 .ForMember(dest => dest.NPPBKC, opt => opt.MapFrom(src => src.NppbkcId))
                 .ForMember(dest => dest.STATUS, opt => opt.MapFrom(src => src.Pbck7Status))
-                .ForMember(dest => dest.GOV_STATUS, opt => opt.MapFrom(src => src.GovStatus))
+                .ForMember(dest => dest.GOV_STATUS, opt => opt.MapFrom(src => src.Pbck7GovStatus))
                 .ForMember(dest => dest.PBCK7_ITEM, opt => opt.MapFrom(src => src.UploadItems))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreateDate))
@@ -95,11 +95,51 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.APPROVED_BY_MANAGER_DATE, opt => opt.MapFrom(src => src.ApprovedDateManager))
                 .ForMember(dest => dest.REJECTED_BY, opt => opt.MapFrom(src => src.RejectedBy))
                  .ForMember(dest => dest.REJECTED_DATE, opt => opt.MapFrom(src => src.RejectedDate))
-               
+              
                 ;
 
-         
+            Mapper.CreateMap<Back1Dto, BACK1>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.BACK1_NUMBER, opt => opt.MapFrom(src => src.Back1Number))
+                .ForMember(dest => dest.BACK1_DATE, opt => opt.MapFrom(src => src.Back1Date))
+                .ForMember(dest => dest.BACK1_DOCUMENT, opt => opt.MapFrom(src => src.Documents))
+                .ForMember(dest => dest.PBCK7_ID, opt => opt.MapFrom(src => src.Pbck7Id))
+                ;
 
+            Mapper.CreateMap<BACK1, Back1Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Back1Id, opt => opt.MapFrom(src => src.BACK1_ID))
+                .ForMember(dest => dest.Back1Number, opt => opt.MapFrom(src => src.BACK1_NUMBER))
+                .ForMember(dest => dest.Back1Date, opt => opt.MapFrom(src => src.BACK1_DATE))
+                .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.BACK1_DOCUMENT))
+                .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID));
+
+
+
+            Mapper.CreateMap<Pbck3Dto, PBCK3>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PBCK3_ID, opt => opt.MapFrom(src => src.Pbck3Id))
+                .ForMember(dest => dest.PBCK3_NUMBER, opt => opt.MapFrom(src => src.Pbck3Number))
+                .ForMember(dest => dest.PBCK3_DATE, opt => opt.MapFrom(src => src.Pbck3Date))
+                .ForMember(dest => dest.PBCK7_ID, opt => opt.MapFrom(src => src.Pbck7Id))
+                .ForMember(dest => dest.STATUS, opt => opt.MapFrom(src => src.Pbck3Status))
+                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreateDate))
+                .ForMember(dest => dest.APPROVED_BY, opt => opt.MapFrom(src => src.ApprovedBy))
+                .ForMember(dest => dest.APPROVED_DATE, opt => opt.MapFrom(src => src.ApprovedDate))
+                .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
+                .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+                ;
+            Mapper.CreateMap<PBCK3, Pbck3Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck3Id, opt => opt.MapFrom(src => src.PBCK3_ID))
+               .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.PBCK3_NUMBER))
+               .ForMember(dest => dest.Pbck3Date, opt => opt.MapFrom(src => src.PBCK3_DATE))
+               .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID))
+               .ForMember(dest => dest.Pbck3Status, opt => opt.MapFrom(src => src.STATUS))
+               .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
+               .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+               .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
+               .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
+               .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.APPROVED_BY))
+               .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
+               ;
             #endregion
 
         }
