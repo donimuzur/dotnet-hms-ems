@@ -4656,7 +4656,7 @@
           <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="CUT_FILLER_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PRINTING_PRICE" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="Decimal" Precision="15" Scale="4" />
           <Property Name="START_DATE" Type="DateTime" Precision="3" />
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="STATUS" Type="Boolean" />
@@ -4744,8 +4744,8 @@
           <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="MEINH" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="UMREZ" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="UMREZ" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="UMREN" Type="Decimal" Precision="18" Scale="4" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" FromRole="MATERIAL_UOM" ToRole="ZAIDM_EX_MATERIAL" />
         </EntityType>
         <EntityType Name="CK5_MATERIAL">
