@@ -101,11 +101,26 @@
           <Property Name="CK1_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CK1_NUMBER" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="CK1_DATE" Type="date" Nullable="false" />
-          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" />
-          <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="COMPANY_ID" Type="nvarchar" MaxLength="4" />
+          <Property Name="COMPANY_NAME" Type="nvarchar" MaxLength="35" />
+          <Property Name="VENDOR_ID" Type="nvarchar" MaxLength="10" />
+          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="ORDER_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CK1_ITEM">
+          <Key>
+            <PropertyRef Name="CK1_ITEM_ID" />
+          </Key>
+          <Property Name="CK1_ITEM_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CK1_ID" Type="bigint" />
+          <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" />
+          <Property Name="MENGE" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="UOM" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="CK2">
           <Key>
@@ -1390,17 +1405,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CK1_ZAIDM_EX_BRAND">
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="0..1" />
-          <End Role="CK1" Type="Self.CK1" Multiplicity="*" />
+        <Association Name="FK_CK1_ITEM_CK1">
+          <End Role="CK1" Type="Self.CK1" Multiplicity="0..1" />
+          <End Role="CK1_ITEM" Type="Self.CK1_ITEM" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="WERKS" />
-              <PropertyRef Name="FA_CODE" />
+            <Principal Role="CK1">
+              <PropertyRef Name="CK1_ID" />
             </Principal>
-            <Dependent Role="CK1">
-              <PropertyRef Name="PLANT_ID" />
-              <PropertyRef Name="FA_CODE" />
+            <Dependent Role="CK1_ITEM">
+              <PropertyRef Name="CK1_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3040,6 +3053,7 @@
           <EntitySet Name="BROLE_MAP" EntityType="Self.BROLE_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHANGES_HISTORY" EntityType="Self.CHANGES_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK1" EntityType="Self.CK1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CK1_ITEM" EntityType="Self.CK1_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK2" EntityType="Self.CK2" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK2_DOCUMENT" EntityType="Self.CK2_DOCUMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK4C" EntityType="Self.CK4C" Schema="dbo" store:Type="Tables" />
@@ -3144,9 +3158,9 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
-          <AssociationSet Name="FK_CK1_ZAIDM_EX_BRAND" Association="Self.FK_CK1_ZAIDM_EX_BRAND">
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          <AssociationSet Name="FK_CK1_ITEM_CK1" Association="Self.FK_CK1_ITEM_CK1">
             <End Role="CK1" EntitySet="CK1" />
+            <End Role="CK1_ITEM" EntitySet="CK1_ITEM" />
           </AssociationSet>
           <AssociationSet Name="FK_CK2_DOCUMENT_CK2" Association="Self.FK_CK2_DOCUMENT_CK2">
             <End Role="CK2" EntitySet="CK2" />
@@ -4179,16 +4193,7 @@
           <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
           <EntitySet Name="WASTE" EntityType="EMSModel.WASTE" />
           <EntitySet Name="PBCK4_DOCUMENT" EntityType="EMSModel.PBCK4_DOCUMENT" />
-          <EntitySet Name="CK1" EntityType="EMSModel.CK1" />
           <EntitySet Name="PBCK4_ITEM" EntityType="EMSModel.PBCK4_ITEM" />
-          <AssociationSet Name="FK_CK1_ZAIDM_EX_BRAND" Association="EMSModel.FK_CK1_ZAIDM_EX_BRAND">
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-            <End Role="CK1" EntitySet="CK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK4_ITEM_CK1" Association="EMSModel.FK_PBCK4_ITEM_CK1">
-            <End Role="CK1" EntitySet="CK1" />
-            <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
-          </AssociationSet>
           <EntitySet Name="LACK1_DOCUMENT" EntityType="EMSModel.LACK1_DOCUMENT" />
           <EntitySet Name="LACK1_INCOME_DETAIL" EntityType="EMSModel.LACK1_INCOME_DETAIL" />
           <EntitySet Name="LACK1_PBCK1_MAPPING" EntityType="EMSModel.LACK1_PBCK1_MAPPING" />
@@ -4366,6 +4371,16 @@
           <AssociationSet Name="FK_BACK3_PBCK3" Association="EMSModel.FK_BACK3_PBCK3">
             <End Role="PBCK3" EntitySet="PBCK3" />
             <End Role="BACK3" EntitySet="BACK3" />
+          </AssociationSet>
+          <EntitySet Name="CK1_ITEM" EntityType="EMSModel.CK1_ITEM" />
+          <EntitySet Name="CK1" EntityType="EMSModel.CK1" />
+          <AssociationSet Name="FK_CK1_ITEM_CK1" Association="EMSModel.FK_CK1_ITEM_CK1">
+            <End Role="CK1" EntitySet="CK1" />
+            <End Role="CK1_ITEM" EntitySet="CK1_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK4_ITEM_CK1" Association="EMSModel.FK_PBCK4_ITEM_CK1">
+            <End Role="CK1" EntitySet="CK1" />
+            <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -4658,7 +4673,6 @@
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
           <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="CK4C_ITEM" />
-          <NavigationProperty Name="CK1" Relationship="EMSModel.FK_CK1_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="CK1" />
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
           <End Type="EMSModel.ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" Multiplicity="0..1" />
@@ -6912,21 +6926,6 @@
           <Property Name="PBCK4_ID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_DOCUMENT_PBCK4" FromRole="PBCK4_DOCUMENT" ToRole="PBCK4" />
         </EntityType>
-        <EntityType Name="CK1">
-          <Key>
-            <PropertyRef Name="CK1_ID" />
-          </Key>
-          <Property Name="CK1_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CK1_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="CK1_DATE" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="MATERIAL_ID" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_CK1_ZAIDM_EX_BRAND" FromRole="CK1" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="PBCK4_ITEM" Relationship="EMSModel.FK_PBCK4_ITEM_CK1" FromRole="CK1" ToRole="PBCK4_ITEM" />
-        </EntityType>
         <EntityType Name="PBCK4_ITEM">
           <Key>
             <PropertyRef Name="PBCK4_ITEM_ID" />
@@ -6938,7 +6937,6 @@
           <Property Name="TOTAL_STAMPS" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="APPROVED_QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="REMARKS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="CK1" Relationship="EMSModel.FK_PBCK4_ITEM_CK1" FromRole="PBCK4_ITEM" ToRole="CK1" />
           <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="STICKER_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
@@ -6952,33 +6950,8 @@
           <Property Name="REQUESTED_QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="NO_PENGAWAS" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_ITEM_PBCK4" FromRole="PBCK4_ITEM" ToRole="PBCK4" />
+          <NavigationProperty Name="CK1" Relationship="EMSModel.FK_PBCK4_ITEM_CK1" FromRole="PBCK4_ITEM" ToRole="CK1" />
         </EntityType>
-        <Association Name="FK_CK1_ZAIDM_EX_BRAND">
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="0..1" />
-          <End Type="EMSModel.CK1" Role="CK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="WERKS" />
-              <PropertyRef Name="FA_CODE" />
-            </Principal>
-            <Dependent Role="CK1">
-              <PropertyRef Name="PLANT_ID" />
-              <PropertyRef Name="FA_CODE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK4_ITEM_CK1">
-          <End Type="EMSModel.CK1" Role="CK1" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK4_ITEM" Role="PBCK4_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CK1">
-              <PropertyRef Name="CK1_ID" />
-            </Principal>
-            <Dependent Role="PBCK4_ITEM">
-              <PropertyRef Name="CK1_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
             <PropertyRef Name="LACK1_DOCUMENT_ID" />
@@ -7751,6 +7724,61 @@
             </Principal>
             <Dependent Role="BACK3">
               <PropertyRef Name="PBCK3_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CK1_ITEM">
+          <Key>
+            <PropertyRef Name="CK1_ITEM_ID" />
+          </Key>
+          <Property Name="CK1_ITEM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CK1_ID" Type="Int64" />
+          <Property Name="MATERIAL_ID" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="MENGE" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CK1" Relationship="EMSModel.FK_CK1_ITEM_CK1" FromRole="CK1_ITEM" ToRole="CK1" />
+        </EntityType>
+        <EntityType Name="CK1">
+          <Key>
+            <PropertyRef Name="CK1_ID" />
+          </Key>
+          <Property Name="CK1_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CK1_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="CK1_DATE" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="VENDOR_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ORDER_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="CK1_ITEM" Relationship="EMSModel.FK_CK1_ITEM_CK1" FromRole="CK1" ToRole="CK1_ITEM" />
+          <NavigationProperty Name="PBCK4_ITEM" Relationship="EMSModel.FK_PBCK4_ITEM_CK1" FromRole="CK1" ToRole="PBCK4_ITEM" />
+        </EntityType>
+        <Association Name="FK_CK1_ITEM_CK1">
+          <End Type="EMSModel.CK1" Role="CK1" Multiplicity="0..1" />
+          <End Type="EMSModel.CK1_ITEM" Role="CK1_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK1">
+              <PropertyRef Name="CK1_ID" />
+            </Principal>
+            <Dependent Role="CK1_ITEM">
+              <PropertyRef Name="CK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK4_ITEM_CK1">
+          <End Type="EMSModel.CK1" Role="CK1" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK4_ITEM" Role="PBCK4_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK1">
+              <PropertyRef Name="CK1_ID" />
+            </Principal>
+            <Dependent Role="PBCK4_ITEM">
+              <PropertyRef Name="CK1_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -8839,20 +8867,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CK1">
-            <EntityTypeMapping TypeName="EMSModel.CK1">
-              <MappingFragment StoreEntitySet="CK1">
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
-                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
-                <ScalarProperty Name="CK1_DATE" ColumnName="CK1_DATE" />
-                <ScalarProperty Name="CK1_NUMBER" ColumnName="CK1_NUMBER" />
-                <ScalarProperty Name="CK1_ID" ColumnName="CK1_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PBCK4_ITEM">
             <EntityTypeMapping TypeName="EMSModel.PBCK4_ITEM">
               <MappingFragment StoreEntitySet="PBCK4_ITEM">
@@ -9135,6 +9149,36 @@
                 <ScalarProperty Name="BACK3_DATE" ColumnName="BACK3_DATE" />
                 <ScalarProperty Name="BACK3_NUMBER" ColumnName="BACK3_NUMBER" />
                 <ScalarProperty Name="BACK3_ID" ColumnName="BACK3_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CK1_ITEM">
+            <EntityTypeMapping TypeName="EMSModel.CK1_ITEM">
+              <MappingFragment StoreEntitySet="CK1_ITEM">
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="MENGE" ColumnName="MENGE" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
+                <ScalarProperty Name="CK1_ID" ColumnName="CK1_ID" />
+                <ScalarProperty Name="CK1_ITEM_ID" ColumnName="CK1_ITEM_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CK1">
+            <EntityTypeMapping TypeName="EMSModel.CK1">
+              <MappingFragment StoreEntitySet="CK1">
+                <ScalarProperty Name="ORDER_DATE" ColumnName="ORDER_DATE" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="VENDOR_ID" ColumnName="VENDOR_ID" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="CK1_DATE" ColumnName="CK1_DATE" />
+                <ScalarProperty Name="CK1_NUMBER" ColumnName="CK1_NUMBER" />
+                <ScalarProperty Name="CK1_ID" ColumnName="CK1_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
