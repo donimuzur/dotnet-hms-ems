@@ -76,5 +76,20 @@ namespace Sampoerna.EMS.Utils
                 return true;
             return false;
         }
+
+        public static string ConvertDecimalToString(decimal? value, string formatDecimalValue = "f2")
+        {
+            return value.HasValue ? value.Value.ToString(formatDecimalValue) : string.Empty;
+        }
+
+        public static string ConvertDateToString(DateTime? value, string formatDate)
+        {
+            return value.HasValue ? value.Value.ToString(formatDate) : string.Empty;
+        }
+
+        public static string ConvertDateToStringddMMMyyyy(DateTime? value)
+        {
+            return value.HasValue ? value.Value.ToString("dd MMM yyyy") : string.Empty;
+        }
     }
 }
