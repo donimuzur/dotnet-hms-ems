@@ -8,9 +8,13 @@
 
 @using (@Html.BeginForm("Edit", "PBCK7AndPBCK3", FormMethod.Post, new { @id = "form-pbck7-edit", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
 {
-  
+
+    @Html.HiddenFor(x => x.ActionType)
     @Html.HiddenFor(x => x.IsSaveSubmit)
+    @Html.HiddenFor(x => x.ActionTypePbck3)
+    @Html.HiddenFor(x => x.IsSaveSubmitPbck3)
     @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.Pbck3Dto.Pbck3Id)
     @Html.HiddenFor(x => x.CreatedBy)
     @Html.HiddenFor(x => x.CreatedDate)
     @Html.HiddenFor(x => x.ModifiedBy)
@@ -22,7 +26,18 @@
     @Html.HiddenFor(x => x.RejectedBy)
     @Html.HiddenFor(x => x.RejectedDate)
     @Html.HiddenFor(x => x.Pbck7Status)
-    @Html.HiddenFor(x => x.Pbck3Status)
+    @Html.HiddenFor(x => x.Pbck3Dto.Pbck3Status)
+    @Html.HiddenFor(x => x.Pbck3Dto.CreatedBy)
+    @Html.HiddenFor(x => x.Pbck3Dto.CreateDate)
+    @Html.HiddenFor(x => x.Pbck3Dto.ModifiedBy)
+    @Html.HiddenFor(x => x.Pbck3Dto.ModifiedDate)
+    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedBy)
+    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedDate)
+    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedByManager)
+    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedDateManager)
+    @Html.HiddenFor(x => x.Pbck3Dto.RejectedBy)
+    @Html.HiddenFor(x => x.Pbck3Dto.RejectedDate)
+
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -31,22 +46,45 @@
                 <h3>PBCK-7</h3>
                 <label class="status">@Model.Pbck7StatusName</label>
                 <div class="action-button">
-                    @if (Model.AllowGovApproveAndReject)
+                    @if (Model.Pbck7Status != Enums.DocumentStatus.Completed)
                     {
-                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
-                    }
-                    else if (Model.AllowEditAndSubmit)
-                    {
-                        <input type="submit" class="btn btn-blue" value="Save" />
-                    }
+                        if (Model.AllowGovApproveAndReject)
+                        {
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                        }
+                        else if (Model.AllowEditAndSubmit)
+                        {
+                            <input type="submit" class="btn btn-blue" value="Save" />
+                        }
 
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7Pbck3", new { id = @Model.Id })')" />
-                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                        <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7Pbck3", new {id = @Model.Id})') " />
+                        <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
 
-                    @if (Model.Pbck7Status == Enums.DocumentStatus.Draft
-                        && Model.AllowEditAndSubmit)
+                        if (Model.Pbck7Status == Enums.DocumentStatus.Draft
+                            && Model.AllowEditAndSubmit)
+                        {
+                            <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                        }
+                    }
+                    else
                     {
-                        <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                        if (Model.AllowGovApproveAndRejectPbck3)
+                        {
+                            <input type="button" class="btn btn-blue" value="Save PBCK3" id="btnSaveGovStatusPbck3" />
+                        }
+                        else if (Model.AllowEditAndSubmitPbck3)
+                        {
+                            <input type="submit" class="btn btn-blue" value="Save PBCK3" />
+                        }
+
+                        <input type="button" class="btn btn-grey" value="Print Preview" onclick="printpreview('@Url.EncryptedAction("printpreview", "pbck7pbck3", new {id = @Model.Id})') " />
+                        <input type="button" value="Back" class="btn btn-grey" id="btnCancelPbck3" />
+
+                        if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Draft
+                            && Model.AllowEditAndSubmitPbck3)
+                        {
+                            <input type="button" id="btnSubmitDocumentPbck3" class="btn btn-blue" value="Submit PBCK3" />
+                        }
                     }
                 </div>
             </div>
@@ -82,7 +120,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h3>Submit</h3>
+                    <h3>Submit PBCK3</h3>
                 </div>
                 <div class="modal-body">
                     Submit Documents  ?
@@ -94,8 +132,27 @@
             </div>
         </div>
     </div>
-    
-    
+    if(Model.Pbck7Status == Enums.DocumentStatus.Completed)
+    {
+        <div id="pbck3Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h3>Submit PBCK3</h3>
+                    </div>
+                    <div class="modal-body">
+                        Submit Documents  ?
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" id="btnSubmitConfirmPbck3" class="btn btn-blue" value="Yes" />
+                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
 }
 
 @section Scripts{
@@ -136,10 +193,20 @@
             $('#IsSaveSubmit').val('true');
             $('#form-pbck7-edit').submit();
         });
+        
+        $("#btnSubmitConfirmPbck3").click(function() {
+            $('#IsSaveSubmitPbck3').val('true');
+            $('#form-pbck7-edit').submit();
+        });
         $('#btnSubmitDocument').click(function() {
 
             $('#pbck7Modal').modal('show');
         });
+        $('#btnSubmitDocumentPbck3').click(function() {
+
+            $('#pbck3Modal').modal('show');
+        });
+
         $('#btn-generate-upload').click(function() {
             uploadXmlFile();
         });

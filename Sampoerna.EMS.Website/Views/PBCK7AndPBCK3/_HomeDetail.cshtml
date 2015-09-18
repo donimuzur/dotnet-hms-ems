@@ -47,7 +47,7 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-3 No</label>
                                         <div class="col-md-8">
-                                            @Html.TextBox("pbck3_no", Model.Pbck3Number, new {@class = "form-control", @disabled = "disabled"})
+                                            @Html.TextBox("pbck3_no", Model.Pbck3Dto.Pbck3Number, new {@class = "form-control", @disabled = "disabled"})
                                         </div>
                                     </div>
                                 </div>
@@ -56,7 +56,7 @@
                                         <label class="col-md-4">PBCK-3 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBox("pbck3_date", Model.Pbck3Date, new {@class = "form-control",  @disabled="disabled"})
+                                                @Html.TextBox("pbck3_date", Model.Pbck3Dto.Pbck3Date, new {@class = "form-control",  @disabled="disabled"})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
