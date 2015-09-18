@@ -341,7 +341,9 @@ namespace Sampoerna.EMS.Website.Controllers
             
             catch (Exception ex)
             {
+                return RedirectToAction("UploadManualProduction");
                 AddMessageInfo("Error, Data is not Valid", Enums.MessageInfoType.Error);
+               
             }
 
             return RedirectToAction("Index");
