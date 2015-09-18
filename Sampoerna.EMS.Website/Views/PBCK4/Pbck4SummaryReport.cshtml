@@ -126,7 +126,7 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.CeOffice, new { @class = "checkbox checkexport", @datacolumn = "3" })CE Office
+                                                        @Html.CheckBoxFor(model => model.ExportModel.CeOffice, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })KPPBC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
@@ -266,7 +266,15 @@
         $(document).ready(function () {
 
             setupDataTables();
+            
+            $('#liPbck4OpenDocument').removeClass('active');
+          //  $('#menuPbck4OpenDocuments').removeClass('active');
+            $('#menuPbck4OpenDocuments').removeClass('open');
+
+            $('#menuPbck4Report').addClass('open');
             $('#MenuPbck4SummaryReports').addClass('active');
+           
+            
 
 
 
@@ -308,7 +316,7 @@
             
             table.column(1).visible(true);
             table.column(2).visible(true);
-            table.column(8).visible(true);
+            table.column(3).visible(true);
             table.column(23).visible(true);
           
         }

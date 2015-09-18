@@ -135,6 +135,7 @@ namespace Sampoerna.EMS.Website
 
                 ;
 
+            Mapper.CreateMap<Pbck4SummaryReportDto, Pbck4SummaryReportsItem>().IgnoreAllNonExisting();
         }
     }
 }

@@ -1091,7 +1091,7 @@ namespace Sampoerna.EMS.BLL
              return result;
         }
 
-       public List<Pbck4Dto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input)
+       public List<Pbck4SummaryReportDto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input)
        {
 
            Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
@@ -1106,7 +1106,7 @@ namespace Sampoerna.EMS.BLL
                    queryFilter.And(c => c.REPORTED_ON.HasValue && c.REPORTED_ON.Value.Year >= input.YearFrom.Value);
            if (input.YearTo.HasValue)
                queryFilter =
-                   queryFilter.And(c => c.REPORTED_ON.HasValue && c.REPORTED_ON.Value.Year >= input.YearTo.Value);
+                   queryFilter.And(c => c.REPORTED_ON.HasValue && c.REPORTED_ON.Value.Year <= input.YearTo.Value);
 
            if (!string.IsNullOrEmpty(input.PlantId))
            {
@@ -1117,34 +1117,109 @@ namespace Sampoerna.EMS.BLL
            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
 
 
-           var rc = _repository.Get(queryFilter, null, includeTables);
+           var rc = _repository.Get(queryFilter, null, includeTables).ToList();
            if (rc == null)
            {
                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
            }
 
-           var mapResult = Mapper.Map<List<Pbck4Dto>>(rc.ToList());
+           //var mapResult = Mapper.Map<List<Pbck4Dto>>(rc.ToList());
 
-           return mapResult;
+           //return mapResult;
 
+           return  SetDataSummaryReport(rc);
+
+           //return mapResult;
 
        }
 
-       private List<Pbck4SummaryReportDto> SetDataSummaryReport(PBCK4 dtData)
+       private List<Pbck4SummaryReportDto> SetDataSummaryReport(List<PBCK4> listPbck4)
        {
            var result = new List<Pbck4SummaryReportDto>();
 
-           foreach (var pbck4Item in dtData.PBCK4_ITEM)
+           foreach (var dtData in listPbck4)
            {
-               var summaryDto = new Pbck4SummaryReportDto();
 
-               summaryDto.Pbck4No = dtData.PBCK4_NUMBER;
-               summaryDto.Pbck4Date = dtData.REPORTED_ON.HasValue
-                   ? dtData.REPORTED_ON.Value.ToString("dd MMM yyyy")
-                   : string.Empty;
+
+
+               foreach (var pbck4Item in dtData.PBCK4_ITEM)
+               {
+                   var summaryDto = new Pbck4SummaryReportDto();
+
+                   summaryDto.Pbck4No = dtData.PBCK4_NUMBER;
+                   summaryDto.Pbck4Date = dtData.REPORTED_ON.HasValue
+                       ? dtData.REPORTED_ON.Value.ToString("dd MMM yyyy")
+                       : string.Empty;
+                   //summaryDto.CeOffice = dtData.NPPBKC_ID;
+                   var nppbkcData = _nppbkcBll.GetById(dtData.NPPBKC_ID);
+                   summaryDto.CeOffice = nppbkcData != null ? nppbkcData.KPPBC_ID : string.Empty;
+                   summaryDto.Brand = pbck4Item.BRAND_NAME;
+                   summaryDto.Content = pbck4Item.BRAND_CONTENT;
+                   summaryDto.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value.ToString("f2") : string.Empty;
+                   summaryDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value.ToString("f2") : string.Empty;
+                   summaryDto.ProductType = pbck4Item.PRODUCT_ALIAS;
+
+
+                   summaryDto.SeriesCode = pbck4Item.SERIES_CODE;
+                   summaryDto.RequestedQty = ConvertHelper.ConvertDecimalToString(pbck4Item.REQUESTED_QTY);
+
+                   summaryDto.ExciseValue =
+                       (ConvertHelper.ConvertToDecimalOrZero(summaryDto.Content)*
+                        ConvertHelper.ConvertToDecimalOrZero(summaryDto.Tariff)*
+                        ConvertHelper.ConvertToDecimalOrZero(summaryDto.RequestedQty)).ToString();
+
+                   summaryDto.Remarks = pbck4Item.REMARKS;
+
+                   summaryDto.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.BACK1_DATE);
+                   summaryDto.Back1Number = dtData.BACK1_NO;
+                   summaryDto.Ck3Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.CK3_DATE);
+                   summaryDto.Ck3Number = dtData.CK3_NO;
+                   summaryDto.Ck3Value = ConvertHelper.ConvertDecimalToString(dtData.CK3_OFFICE_VALUE);
+
+                   var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(dtData.PLANT_ID, pbck4Item.FA_CODE);
+                   if (dbBrand == null)
+                   {
+                       summaryDto.FiscalYear = "";
+                       summaryDto.PrintingCost = "0";
+                   }
+                   else
+                   {
+                       summaryDto.FiscalYear = dbBrand.START_DATE.HasValue
+                           ? dbBrand.START_DATE.Value.ToString("yyyy")
+                           : string.Empty;
+
+                       summaryDto.PrintingCost =
+                           ConvertHelper.ConvertDecimalToString(
+                               ConvertHelper.ConvertToDecimalOrZero(
+                                   ConvertHelper.ConvertDecimalToString(dbBrand.PRINTING_PRICE))*
+                               ConvertHelper.ConvertToDecimalOrZero(summaryDto.RequestedQty));
+                   }
+
+                   //todo ask from where the value is
+                   summaryDto.CompensatedCk1Date = "";
+                   summaryDto.CompensatedCk1Number = "";
+                   summaryDto.PaymentDate = "";
+
+                   summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                   if (dtData.REPORTED_ON.HasValue)
+                       summaryDto.ReportedOn = Convert.ToInt32(dtData.REPORTED_ON.Value.ToString("yyyy"));
+
+
+                   //summaryDto.ReportedOn = dtData.REPORTED_ON.HasValue
+                   //    ? dtData.REPORTED_ON.Value.ToString("yyyy")
+                   //    : string.Empty;
+
+                   summaryDto.PlantId = dtData.PLANT_ID;
+                   summaryDto.PlantDescription = dtData.PLANT_NAME;
+
+                   result.Add(summaryDto);
+               }
 
            }
+
+           return result;
        }
+
         public Pbck4XmlDto GetPbck4ForXmlById(int id)
        {
           

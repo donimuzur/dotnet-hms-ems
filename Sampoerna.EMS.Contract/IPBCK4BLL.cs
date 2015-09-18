@@ -22,7 +22,8 @@ namespace Sampoerna.EMS.Contract
        Pbck4ReportDto GetPbck4ReportDataById(int id);
 
        Pbck4XmlDto GetPbck4ForXmlById(int id);
-       List<Pbck4Dto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input);
+
+       List<Pbck4SummaryReportDto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input);
 
        void GovApproveDocumentRollback(Pbck4WorkflowDocumentInput input);
    }

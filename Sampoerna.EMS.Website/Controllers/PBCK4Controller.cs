@@ -982,22 +982,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Summary Reports
 
-        private SelectList GetPbck4NumberList(List<Pbck4Dto> listPbck4)
+        private SelectList GetPbck4NumberList(List<Pbck4SummaryReportDto> listPbck4)
         {
             IEnumerable<SelectItemModel> query;
 
             query = from x in listPbck4
                     select new SelectItemModel()
                     {
-                        ValueField = x.PBCK4_NUMBER,
-                        TextField = x.PBCK4_NUMBER
+                        ValueField = x.Pbck4No,
+                        TextField = x.Pbck4No
                     };
 
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
 
         }
 
-        private SelectList GetYearListPbck4(bool isFrom, List<Pbck4Dto> listPbck4)
+        private SelectList GetYearListPbck4(bool isFrom, List<Pbck4SummaryReportDto> listPbck4)
         {
           
             IEnumerable<SelectItemModel> query;
@@ -1005,22 +1005,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 query = from x in listPbck4.OrderBy(c => c.ReportedOn)
                         select new SelectItemModel()
                         {
-                            ValueField = x.ReportedOn.Value.Year,
-                            TextField = x.ReportedOn.Value.ToString("yyyy")
+                            ValueField = x.ReportedOn,
+                            TextField = x.ReportedOn.ToString()
                         };
             else
-                query = from x in listPbck4.Where(c => c.ReportedOn.HasValue).OrderBy(c => c.ReportedOn)
+                query = from x in listPbck4.OrderByDescending(c => c.ReportedOn)
                         select new SelectItemModel()
                         {
-                            ValueField = x.ReportedOn.Value.Year,
-                            TextField = x.ReportedOn.Value.ToString("yyyy")
+                            ValueField = x.ReportedOn,
+                            TextField = x.ReportedOn.ToString()
                         };
 
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
 
         }
 
-        private SelectList GetPlantList(List<Pbck4Dto> listPbck4)
+        private SelectList GetPlantList(List<Pbck4SummaryReportDto> listPbck4)
         {
           
             IEnumerable<SelectItemModel> query;
@@ -1062,7 +1062,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private List<Pbck4SummaryReportsItem> SearchDataSummaryReports(Pbck4SearchSummaryReportsViewModel filter = null)
         {
             Pbck4GetSummaryReportByParamInput input;
-            List<Pbck4Dto> dbData;
+            List<Pbck4SummaryReportDto> dbData;
             if (filter == null)
             {
                 //Get All
@@ -1301,7 +1301,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (modelExport.CeOffice)
             {
-                slDocument.SetCellValue(iRow, iColumn, "CE Office");
+                slDocument.SetCellValue(iRow, iColumn, "KPPBC");
                 iColumn = iColumn + 1;
             }
 
