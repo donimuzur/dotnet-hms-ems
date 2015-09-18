@@ -189,9 +189,16 @@ namespace Sampoerna.EMS.BLL
                 var origin = Mapper.Map<Pbck1Dto>(dbData);
                 origin.Pbck1Parent = Mapper.Map<Pbck1Dto>(dbData.PBCK12);
                 if (input.Pbck1.Pbck1Reference != null)
-                    input.Pbck1.Pbck1Parent = GetById((long) input.Pbck1.Pbck1Reference);
+                {
+                    input.Pbck1.Pbck1Parent = GetById((long)input.Pbck1.Pbck1Reference);
+                }
 
                 SetChangesHistory(origin, input.Pbck1, input.UserId);
+
+                if (input.Pbck1.Pbck1Reference == null)
+                {
+                    dbData.PBCK1_REF = null;
+                }
 
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
                 dbData.PBCK1_PROD_CONVERTER = null;
@@ -1669,14 +1676,14 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.Pbck1.Pbck1Type == Enums.PBCK1Type.Additional)
                 return true;
-
+            
             var dbData = _repository.Get(
-                    p => (p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId 
-                        && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodTo
-                        || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo) 
-                        && p.SUPPLIER_NPPBKC_ID == input.Pbck1.SupplierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType)
-                );
-
+                p => ((input.Pbck1.Pbck1Id == null || p.PBCK1_ID != input.Pbck1.Pbck1Id) && p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId 
+                    && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodTo
+                    || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo || (p.PERIOD_FROM > input.Pbck1.PeriodFrom && p.PERIOD_TO < input.Pbck1.PeriodTo)) 
+                    && p.SUPPLIER_NPPBKC_ID == input.Pbck1.SupplierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType)
+            );
+            
             var data = Mapper.Map<List<Pbck1Dto>>(dbData);
 
             if (data.Count > 0)
