@@ -115,7 +115,7 @@ namespace Sampoerna.EMS.XMLReader
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<MATERIAL_UOM>()
                 .Get(p => p.STICKER_CODE == materialNumber && p.WERKS == plant
-                          && p.MEINH == "BTG", null).FirstOrDefault();
+                          && p.MEINH == "BTG").FirstOrDefault();
             return existingData;
         }
 
