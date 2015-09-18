@@ -132,13 +132,13 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var ck4cData = _ck4CBll.GetCompletedDocumentByParam(new Ck4cGetCompletedDocumentByParamInput());
+                var ck4cData = _ck4CBll.GetCompletedDocumentByParam(new Ck4cGetCompletedDocumentByParamInput()).OrderByDescending(d => d.Number);
                 return Mapper.Map<List<DataDocumentList>>(ck4cData);
             }
 
             //getbyparams
             var input = Mapper.Map<Ck4cGetCompletedDocumentByParamInput>(filter);
-            var dbData = _ck4CBll.GetCompletedDocumentByParam(input);
+            var dbData = _ck4CBll.GetCompletedDocumentByParam(input).OrderByDescending(d => d.Number);
             return Mapper.Map<List<DataDocumentList>>(dbData);
         }
 
@@ -888,7 +888,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 drowDetail = dtDetail.NewRow();
                 drowDetail[0] = item.Ck4CItemId;
                 drowDetail[1] = item.ProdQty;
-                drowDetail[2] = item.ProdQtyUom;
+
+                var prodType = _prodTypeBll.GetById(item.ProdCode);
+                drowDetail[2] = prodType.PRODUCT_ALIAS;
+
+                var brand = _brandRegistrationBll.GetById(item.Werks, item.FaCode);
+                drowDetail[3] = brand.BRAND_CE;
+
+                drowDetail[4] = item.HjeIdr;
 
                 dtDetail.Rows.Add(drowDetail);
             }
@@ -934,7 +941,9 @@ namespace Sampoerna.EMS.Website.Controllers
             DataTable dtDetail = new DataTable("Ck4cItem");
             dtDetail.Columns.Add("Ck4cItemId", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("ProdQty", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Uom", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("ProdType", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Merk", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Hje", System.Type.GetType("System.String"));
 
             ds.Tables.Add(dt);
             ds.Tables.Add(dtDetail);

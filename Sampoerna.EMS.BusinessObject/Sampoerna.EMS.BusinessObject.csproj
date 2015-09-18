@@ -85,6 +85,9 @@
     <Compile Include="CK1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CK1_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CK2.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

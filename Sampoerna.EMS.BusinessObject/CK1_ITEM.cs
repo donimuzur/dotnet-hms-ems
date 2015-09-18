@@ -12,20 +12,16 @@ namespace Sampoerna.EMS.BusinessObject
     using System;
     using System.Collections.Generic;
     
-    public partial class CK2
+    public partial class CK1_ITEM
     {
-        public CK2()
-        {
-            this.CK2_DOCUMENT = new HashSet<CK2_DOCUMENT>();
-        }
+        public long CK1_ITEM_ID { get; set; }
+        public Nullable<long> CK1_ID { get; set; }
+        public string MATERIAL_ID { get; set; }
+        public string WERKS { get; set; }
+        public string FA_CODE { get; set; }
+        public Nullable<decimal> MENGE { get; set; }
+        public string UOM { get; set; }
     
-        public int CK2_ID { get; set; }
-        public string CK2_NUMBER { get; set; }
-        public Nullable<System.DateTime> CK2_DATE { get; set; }
-        public Nullable<decimal> CK2_VALUE { get; set; }
-        public int PBCK3_ID { get; set; }
-    
-        public virtual ICollection<CK2_DOCUMENT> CK2_DOCUMENT { get; set; }
-        public virtual PBCK3 PBCK3 { get; set; }
+        public virtual CK1 CK1 { get; set; }
     }
 }
