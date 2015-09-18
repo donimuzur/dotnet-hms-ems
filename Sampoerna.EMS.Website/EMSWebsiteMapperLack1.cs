@@ -186,6 +186,38 @@ namespace Sampoerna.EMS.Website
                     opt =>
                         opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.ProductionList)));
 
+
+            #region ----------- Summary Report -----------
+
+            Mapper.CreateMap<Lack1SearchSummaryReportViewModel, Lack1GetSummaryReportByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1SummaryReportDto, Lack1SummaryReportItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Lack1Number, opt => opt.MapFrom(src => src.Lack1Number))
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Bukrs))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Butxt))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.ReceivingPlantId, opt => opt.MapFrom(src => src.LevelPlantId))
+                .ForMember(dest => dest.ReceivingPlantName, opt => opt.MapFrom(src => src.LevelPlantName))
+                .ForMember(dest => dest.ExcisableGoodsTypeId, opt => opt.MapFrom(src => src.ExGoodsType))
+                .ForMember(dest => dest.ExcisableGoodsTypeDesc, opt => opt.MapFrom(src => src.ExTypDesc))
+                .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SupplierPlantId))
+                .ForMember(dest => dest.SupplierPlantName, opt => opt.MapFrom(src => src.SupplierPlant))
+                .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PerionNameEng + " " + src.PeriodYears))
+                .ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreateDate.ToString("dd MMM yyyy HH:mm:ss")))
+                .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.ApprovedDate.HasValue ? src.ApprovedDate.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreateBy))
+                .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.ApprovedBy))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CreateBy))
+                .ForMember(dest => dest.Approver, opt => opt.MapFrom(src => src.ApprovedBy))
+                ;
+
+            Mapper.CreateMap<Lack1SummaryReportItemModel, Lack1ExportSummaryDataModel>().IgnoreAllNonExisting();
+
+            #endregion
+
+
         }
     }
 }

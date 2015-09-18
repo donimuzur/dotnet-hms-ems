@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.LinqExtensions;
 using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -1353,6 +1354,32 @@ namespace Sampoerna.EMS.BLL
             });
 
             return groupedData.ToList();
+        }
+
+        #endregion
+
+        #region ------------------ Summary Report ----------------
+
+        public List<Lack1SummaryReportDto> GetSummaryReportByParam(Lack1GetSummaryReportByParamInput input)
+        {
+            var lack1Data = _lack1Service.GetSummaryReportByParam(input);
+            return Mapper.Map<List<Lack1SummaryReportDto>>(lack1Data);
+        }
+
+        public List<int> GetYearList()
+        {
+            return _lack1Service.GetYearList();
+        }
+
+        public List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbckListByCompanyCode(string companyCode)
+        {
+            var data = _lack1Service.GetByCompanyCode(companyCode);
+            if (data.Count > 0)
+            {
+                var nppbkcList = Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(data);
+                return nppbkcList.DistinctBy(c => c.NPPBKC_ID).ToList();
+            }
+            return new List<ZAIDM_EX_NPPBKCCompositeDto>();
         }
 
         #endregion

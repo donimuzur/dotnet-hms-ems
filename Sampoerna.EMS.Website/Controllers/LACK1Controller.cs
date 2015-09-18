@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using AutoMapper;
-using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -979,6 +979,299 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.End();
 
         }
+        
+        #region ----------- Summary Report -------------
+
+        public ActionResult SummaryReport()
+        {
+            Lack1SummaryReportViewModel model;
+            try
+            {
+                model = new Lack1SummaryReportViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo, 
+                    DetailsList = SearchSummaryReports()
+                };
+                model = InitSearchSummaryReportViewModel(model);
+            }
+            catch (Exception ex)
+            {
+                model = new Lack1SummaryReportViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return View("SummaryReport", model);
+        }
+
+        private Lack1SummaryReportViewModel InitSearchSummaryReportViewModel(Lack1SummaryReportViewModel model)
+        {
+            model.SearchView = new Lack1SearchSummaryReportViewModel
+            {
+                CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
+                PeriodMonthList = GlobalFunctions.GetMonthList(_monthBll),
+                PeriodYearList = GetYearListInLack1Data()
+            };
+            model.SearchView.NppbkcIdList = GetNppbkcIdListOnLack1Data(model.SearchView.CompanyCode);
+            model.SearchView.ReceivingPlantIdList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.SearchView.NppbkcId);
+            model.SearchView.ExcisableGoodsTypeList = GetExciseGoodsTypeList(model.SearchView.NppbkcId);
+            model.SearchView.SupplierPlantIdList = GetSupplierPlantListByParam(model.SearchView.NppbkcId, model.SearchView.ExcisableGoodsType);
+            model.SearchView.CreatedByList = GlobalFunctions.GetCreatorList();
+            model.SearchView.ApprovedByList = GlobalFunctions.GetPoaAll(_poabll);
+            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchView.ApproverList = GlobalFunctions.GetPoaAll(_poabll);
+            return model;
+        }
+
+        private SelectList GetYearListInLack1Data()
+        {
+            var lack1YearList = from x in _lack1Bll.GetYearList()
+                                orderby x descending 
+                select new SelectItemModel()
+                {
+                    ValueField = x, TextField = x.ToString(CultureInfo.InvariantCulture)
+                };
+
+            return new SelectList(lack1YearList, "ValueField", "TextField");
+        }
+
+        private SelectList GetNppbkcIdListOnLack1Data(string companyCode)
+        {
+            var data = _lack1Bll.GetNppbckListByCompanyCode(companyCode);
+            return new SelectList(data, "NPPBKC_ID", "NPPBKC_ID");
+        }
+
+        private List<Lack1SummaryReportItemModel> SearchSummaryReports(Lack1SearchSummaryReportViewModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var lack1Data = _lack1Bll.GetSummaryReportByParam(new Lack1GetSummaryReportByParamInput());
+                return Mapper.Map<List<Lack1SummaryReportItemModel>>(lack1Data);
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Lack1GetSummaryReportByParamInput>(filter);
+            var dbData = _lack1Bll.GetSummaryReportByParam(input);
+
+            return Mapper.Map<List<Lack1SummaryReportItemModel>>(dbData);
+        }
+
+        [HttpPost]
+        public PartialViewResult SearchSummaryReports(Lack1SummaryReportViewModel model)
+        {
+            model.DetailsList = SearchSummaryReports(model.SearchView);
+            return PartialView("_Lack1SummaryReport", model);
+        }
+
+        [HttpPost]
+        public ActionResult ExportSummaryReports(Lack1SummaryReportViewModel model)
+        {
+            try
+            {
+                ExportSummaryReportsToExcel(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("SummaryReports");
+        }
+
+        public void ExportSummaryReportsToExcel(Lack1SummaryReportViewModel model)
+        {
+            var dataSummaryReport = SearchSummaryReports(model.SearchView);
+
+            //todo: to automapper
+            var src = Mapper.Map<List<Lack1ExportSummaryDataModel>>(dataSummaryReport);
+
+            var grid = new GridView
+            {
+                DataSource = src,
+                AutoGenerateColumns = false
+            };
+
+            if (model.ExportModel.BLack1Number)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Lack1Number",
+                    HeaderText = "LACK-1 Number"
+                });
+            }
+
+            if (model.ExportModel.BCompanyCode)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "CompanyCode",
+                    HeaderText = "Company Code"
+                });
+            }
+
+            if (model.ExportModel.BCompanyName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "CompanyName",
+                    HeaderText = "Company Name"
+                });
+            }
+
+            if (model.ExportModel.BNppbkcId)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "NppbkcId",
+                    HeaderText = "Nppbkc ID"
+                });
+            }
+
+            if (model.ExportModel.BReceivingPlantId)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ReceivingPlantId",
+                    HeaderText = "Receiving Plant ID"
+                });
+            }
+
+            if (model.ExportModel.BExcisableGoodsTypeId)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExcisableGoodsTypeId",
+                    HeaderText = "Excisable Goods Type ID"
+                });
+            }
+
+            if (model.ExportModel.BExcisableGoodsTypeDesc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExcisableGoodsTypeDesc",
+                    HeaderText = "Excisable Goods Type Desc"
+                });
+            }
+
+            if (model.ExportModel.BSupplierPlantId)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierPlantId",
+                    HeaderText = "Supplier Plant Id"
+                });
+            }
+
+            if (model.ExportModel.BSupplierPlantName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierPlantName",
+                    HeaderText = "Supplier Plant Name"
+                });
+            }
+
+            if (model.ExportModel.BPeriod)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Period",
+                    HeaderText = "Period"
+                });
+            }
+
+            if (model.ExportModel.BDocumentStatus)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DocumentStatus",
+                    HeaderText = "Document Status"
+                });
+            }
+
+            if (model.ExportModel.BCreatedDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "CreatedDate",
+                    HeaderText = "Created Date"
+                });
+            }
+
+            if (model.ExportModel.BCreatedBy)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "CreatedBy",
+                    HeaderText = "Created By"
+                });
+            }
+
+            if (model.ExportModel.BApprovedDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ApprovedDate",
+                    HeaderText = "Approved Date"
+                });
+            }
+
+            if (model.ExportModel.BApprovedBy)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ApprovedBy",
+                    HeaderText = "Approved By"
+                });
+            }
+
+            if (model.ExportModel.BCreator)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Creator",
+                    HeaderText = "Creator"
+                });
+            }
+
+            if (model.ExportModel.BApprover)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Approver",
+                    HeaderText = "Approver"
+                });
+            }
+
+            grid.DataBind();
+
+            var fileName = "Lack1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
+
+        #endregion
 
     }
 }

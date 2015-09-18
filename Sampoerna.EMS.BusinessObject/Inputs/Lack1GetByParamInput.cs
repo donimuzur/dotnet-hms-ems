@@ -122,4 +122,23 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.ActionType WorkflowActionType { get; set; }
     }
 
+    public class Lack1GetSummaryReportByParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string ReceivingPlantId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string SupplierPlantId { get; set; }
+        public int? PeriodMonth { get; set; }
+        public int? PeriodYear { get; set; }
+
+        public Enums.DocumentStatus? DocumentStatus { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ApprovedDate { get; set; }
+        public string ApprovedBy { get; set; }
+        public string Creator { get; set; }
+        public string Approver { get; set; }
+    }
+
 }

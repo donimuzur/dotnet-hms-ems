@@ -245,5 +245,92 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(c => c.LACK1_ID == id, null, incTables).FirstOrDefault();
         }
 
+        public List<LACK1> GetSummaryReportByParam(Lack1GetSummaryReportByParamInput input)
+        {
+            const string incTables = "UOM, UOM1, MONTH, LACK1_PLANT";
+            //process QueryFilter
+            Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
+            if (!string.IsNullOrEmpty(input.CompanyCode))
+            {
+                queryFilter = queryFilter.And(c => c.BUKRS == input.CompanyCode);
+            }
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+            }
+            if (!string.IsNullOrEmpty(input.ReceivingPlantId))
+            {
+                queryFilter =
+                    queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.ReceivingPlantId));
+            }
+            if (input.PeriodMonth.HasValue)
+            {
+                queryFilter =
+                    queryFilter.And(
+                        c => c.PERIOD_MONTH.HasValue && c.PERIOD_MONTH.Value == input.PeriodMonth.Value);
+            }
+            if (input.PeriodYear.HasValue)
+            {
+                queryFilter =
+                    queryFilter.And(
+                        c => c.PERIOD_YEAR.HasValue && c.PERIOD_YEAR.Value == input.PeriodYear.Value);
+            }
+            if (input.DocumentStatus.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == input.DocumentStatus.Value);
+            }
+            if (input.CreatedDate.HasValue)
+            {
+                queryFilter =
+                    queryFilter.And(
+                        c =>
+                            c.CREATED_DATE.Year == input.CreatedDate.Value.Year &&
+                            c.CREATED_DATE.Month == input.CreatedDate.Value.Month &&
+                            c.CREATED_DATE.Day == input.CreatedDate.Value.Day);
+            }
+            if (!string.IsNullOrEmpty(input.CreatedBy))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.CreatedBy);
+            }
+            if (input.ApprovedDate.HasValue)
+            {
+                queryFilter =
+                    queryFilter.And(
+                        c =>
+                            c.APPROVED_DATE_POA.HasValue &&
+                            c.APPROVED_DATE_POA.Value.Year == input.ApprovedDate.Value.Year &&
+                            c.APPROVED_DATE_POA.Value.Month == input.ApprovedDate.Value.Month &&
+                            c.APPROVED_DATE_POA.Value.Day == input.ApprovedDate.Value.Day);
+            }
+            if (!string.IsNullOrEmpty(input.ApprovedBy))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.ApprovedBy);
+            }
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty(input.Approver))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_MANAGER == input.Approver);
+            }
+            return _repository.Get(queryFilter, null, incTables).ToList();
+        }
+
+        public List<int> GetYearList()
+        {
+            var lack1Data = _repository.Get(c => c.PERIOD_YEAR.HasValue).ToList();
+            if (lack1Data.Count > 0)
+            {
+                return lack1Data.Select(d => d.PERIOD_YEAR != null ? d.PERIOD_YEAR.Value : 0).Distinct().ToList();
+            }
+            return new List<int>();
+        }
+
+        public List<LACK1> GetByCompanyCode(string companyCode)
+        {
+            return _repository.Get(c => c.BUKRS == companyCode).ToList();
+        }
+
     }
 }

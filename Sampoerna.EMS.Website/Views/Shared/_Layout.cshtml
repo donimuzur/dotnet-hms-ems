@@ -353,7 +353,7 @@
                                 <i class="fa fa-tachometer"></i>
                                 <span>Dashboard</span>
                             </a>
-                            <div class="collapse-menu active open">
+                            <div id="MenuLack1OpenDocument" class="collapse-menu active open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
                                     <span>Document List</span>
@@ -365,15 +365,15 @@
                                     <li><a id="MenuLack1CompletedDocument" href="@Url.Action("ListCompletedDocument", "LACK1")"><i class="fa fa-angle-right"></i>Completed Document</a></li>
                                 </ul>
                             </div>
-                            <div class="collapse-menu">
+                            <div id="MenuLack1Report" class="collapse-menu">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-signal"></i>
                                     <span>Report</span>
                                     <i class="down fa fa-caret-down"></i>
                                 </a>
                                 <ul class="child list">
-                                    <li><a href="4.3-lack1-summary-report.html"><i class="fa fa-angle-right"></i>Summary</a></li>
-                                    <li><a href="4.4-lack1-detail-report.html"><i class="fa fa-angle-right"></i>Detail</a></li>
+                                    <li><a id="MenuLack1SummaryReport" href="@Url.Action("SummaryReport", "Lack1")"><i class="fa fa-angle-right"></i>Summary</a></li>
+                                    <li><a id="MenuLack1DetailReport" href="#"><i class="fa fa-angle-right"></i>Detail</a></li>
                                 </ul>
                             </div>
                             <div class="other">

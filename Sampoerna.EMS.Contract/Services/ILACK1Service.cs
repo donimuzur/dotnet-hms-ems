@@ -28,5 +28,11 @@ namespace Sampoerna.EMS.Contract.Services
 
         LACK1 GetDetailsById(int id);
 
+        List<LACK1> GetSummaryReportByParam(Lack1GetSummaryReportByParamInput input);
+
+        List<int> GetYearList();
+
+        List<LACK1> GetByCompanyCode(string companyCode);
+
     }
 }

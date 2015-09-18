@@ -1,0 +1,577 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1SummaryReportViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Summary Report</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        @using (Ajax.BeginForm("SearchSummaryReports", "Lack1",
+                            new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                InsertionMode = InsertionMode.Replace,
+                                UpdateTargetId = "contenttable",
+                                OnComplete = "ReloadDataTables"
+
+                            }))
+                        {
+                            <div class="row">
+                                
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Company Code</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.CompanyCode, Model.SearchView.CompanyCodeList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">NPPBKC ID</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+                            <div class="row">
+                                
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Receiving Plant Id</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.ReceivingPlantId, Model.SearchView.ReceivingPlantIdList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Excisable Goods Type</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.ExcisableGoodsType, Model.SearchView.ExcisableGoodsTypeList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="row">
+                                
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Supplier</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.SupplierPlantId, Model.SearchView.SupplierPlantIdList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">LACK-1 Period</label>
+                                        <div class="col-md-8">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @Html.DropDownListFor(model => model.SearchView.PeriodMonth, Model.SearchView.PeriodMonthList, "", new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @Html.DropDownListFor(model => model.SearchView.PeriodYear, Model.SearchView.PeriodYearList, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Document Status</label>
+                                        <div class="col-md-8">
+                                            @Html.EnumDropDownListFor(model => model.SearchView.DocumentStatus, Model.SearchView.DocumentStatusList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Created Date</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.SearchView.CreatedDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Created By</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.CreatedBy, Model.SearchView.CreatedByList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Approved Date</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.SearchView.ApprovedDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Approved By</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.ApprovedBy, Model.SearchView.ApprovedByList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Creator</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Approver</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.Approver, Model.SearchView.ApproverList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-md-offset-8">
+                                    <button class="btn btn-blue full">FILTER</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
+                                </div>
+                            </div>
+                            
+                        }
+                    </div>
+                </div>
+            </div>
+            @using (Html.BeginForm("ExportSummaryReportsToExcel", "Lack1", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+            {
+                <div class="white-wrapper toggle-wrapper">
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <div class="last-form">
+                                <div class="col-md-12">
+                                    <div>
+                                        @Html.HiddenFor(model => model.ExportModel.CompanyCode)
+                                        @Html.HiddenFor(model => model.ExportModel.NppbkcId)
+                                        @Html.HiddenFor(model => model.ExportModel.ReceivingPlantId)
+                                        @Html.HiddenFor(model => model.ExportModel.ExcisableGoodsType)
+                                        @Html.HiddenFor(model => model.ExportModel.SupplierPlantId)
+                                        @Html.HiddenFor(model => model.ExportModel.PeriodMonth)
+                                        @Html.HiddenFor(model => model.ExportModel.PeriodYear)
+                                        @Html.HiddenFor(model => model.ExportModel.DocumentStatus)
+                                        @Html.HiddenFor(model => model.ExportModel.CreatedDate)
+                                        @Html.HiddenFor(model => model.ExportModel.CreatedBy)
+                                        @Html.HiddenFor(model => model.ExportModel.ApprovedDate)
+                                        @Html.HiddenFor(model => model.ExportModel.ApprovedBy)
+                                        @Html.HiddenFor(model => model.ExportModel.Creator)
+                                        @Html.HiddenFor(model => model.ExportModel.Approver)
+                                        <div class="row toggle">
+                                            <div class="toggle-title">
+                                                Toggle column <i class="fa fa-chevron-down"></i>
+                                            </div>
+                                            <div class="toggle-component">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BLack1Number, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1"})Lack1 Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyCode, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Company Code
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyName, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Company Name
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BNppbkcId, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Nppbkc ID
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingPlantId, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Receiving Plant Id
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingPlantName, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })Receiving Plant Name
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BExcisableGoodsTypeId, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })Excisable Goods Type Id
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BExcisableGoodsTypeDesc, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "8" })Excisable Goods Type Desc
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BSupplierPlantId, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "9" })Supplier Plant Id
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BSupplierPlantName, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "10" })Supplier Plant Name
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BPeriod, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "11" })Period
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BDocumentStatus, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "12" })Document Status
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreatedDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "13" })Created Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreatedBy, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "14" })Created By
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprovedDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "15" })Approved Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprovedBy, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "16" })Approved By
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreator, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "17" })Creator
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprover, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "18" })Approver
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div id="contenttable" class="table-container">
+        @Html.Partial("_Lack1SummaryReport")
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function() {
+            setupDataTables();
+
+            //$('#MenuLack1OpenDocument').removeClass('open');
+            $('#MenuLack1Report').addClass('open');
+            $('#MenuLack1SummaryReport').addClass('active');
+
+            $('#SearchView_CompanyCode').on('change', function() {
+                OnCompanyCodeChange();
+            });
+
+            $('#SearchView_NppbkcId').on('change', function() {
+                OnNppbkcIdChange();
+            });
+
+            $('#SearchView_ExcisableGoodsType').on('change', function () {
+                OnExcisableGoodsTypeChange();
+            });
+
+        });
+
+        function OnCompanyCodeChange() {
+            if ($("#SearchView_CompanyCode").length) {
+                var companyCode = $('#SearchView_CompanyCode').find("option:selected").val();
+                $('#SearchView_NppbkcId option').remove();
+                console.log(companyCode);
+                if (companyCode == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchView_NppbkcId').append('<option value="">All</option>');
+                } else {
+                    ajaxLoadNppbkcList('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { companyCode: companyCode });
+                }
+            }
+        }
+
+        function OnNppbkcIdChange() {
+            if ($("#SearchView_NppbkcId").length) {
+                var nppbkcId = $('#SearchView_NppbkcId').find("option:selected").val();
+                $('#SearchView_ReceivingPlantId option').remove();
+                ajaxLoadPlantList('@Url.Action("GetPlantListByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+
+                /*load excisablegoodstype*/
+                ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+
+                /*load supplier list*/
+                ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
+
+            }
+        }
+        
+        function OnExcisableGoodsTypeChange() {
+            if ($("#SearchView_NppbkcId").length && $("#SearchView_ExcisableGoodsType").length) {
+                var excisableGoodsType = $('#SearchView_ExcisableGoodsType').find("option:selected").val();
+                var nppbkcId = $('#SearchView_NppbkcId').find("option:selected").val();
+                console.log(excisableGoodsType + "," + nppbkcId);
+                /*load supplier list*/
+                $('#SearchView_SupplierPlantId option').remove();
+                if (excisableGoodsType != '' && nppbkcId != '') {
+                    ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: excisableGoodsType });
+                } else {
+                    $('#SearchView_SupplierPlantId').append('<option value="">All</option>');
+                }
+            }
+        }
+        
+        function ajaxLoadSupplier(url, formData) {
+            if (formData.nppbkcId && formData.excisableGoodsType) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var list = data.SupplierList;
+                        $('#SearchView_SupplierPlantId').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchView_SupplierPlantId').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#SearchView_SupplierPlantId option').remove();
+                $('#SearchView_SupplierPlantId').append('<option value="">All</option>');
+            }
+        }
+
+        function ajaxLoadPlantList(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data.ReceivePlantList;
+                        $('#SearchView_ReceivingPlantId').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchView_ReceivingPlantId').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#SearchView_ReceivingPlantId').append('<option value="">All</option>');
+            }
+        }
+
+        function ajaxLoadExcisableGoodsType(url, formData) {
+            $('#SearchView_ExcisableGoodsType option').remove();
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data.ExGoodTypeList;
+                        $('#SearchView_ExcisableGoodsType').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchView_ExcisableGoodsType').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#SearchView_ExcisableGoodsType').append('<option value="">All</option>');
+            }
+        }
+
+        function ajaxLoadSupplier(url, formData) {
+            if (formData.nppbkcId && formData.excisableGoodsType) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data.SupplierList;
+                        $('#SearchView_SupplierPlantId').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchView_SupplierPlantId').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#SearchView_SupplierPlantId option').remove();
+                $('#SearchView_SupplierPlantId').append('<option value="">All</option>');
+            }
+        }
+
+        function ajaxLoadNppbkcList(url, formData) {
+            if (formData.companyCode) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data;
+                        $('#SearchView_NppbkcId').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchView_NppbkcId').append('<option value=' + list[i].NPPBKC_ID + '>' + list[i].NPPBKC_ID + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#SearchView_NppbkcId').append('<option value="">All</option>');
+            }
+        }
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#lack1Table')) {
+                table = $('#lack1Table').DataTable();
+                table.destroy();
+            }
+
+            table = $('#lack1Table').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+            $('.checkexport').on('click', function(e) {
+                // e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('datacolumn'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+        function OnReset() {
+
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
+
+        $("#btnExport").click(function() {
+            GetSearchSummaryReports();
+            $('#ExportSummaryReportsForms').submit();
+        });
+
+        function GetSearchSummaryReports() {
+            $('#ExportModel_CompanyCode').val($('#SearchView_CompanyCode').find("option:selected").val());
+            $('#ExportModel_NppbkcId').val($('#SearchView_NppbkcId').find("option:selected").val());
+            $('#ExportModel_ReceivingPlantId').val($('#SearchView_ReceivingPlantId').find("option:selected").val());
+            $('#ExportModel_ExcisableGoodsType').val($('#SearchView_ExcisableGoodsType').find("option:selected").val());
+            $('#ExportModel_SupplierPlantId').val($('#SearchView_SupplierPlantId').find("option:selected").val());
+            $('#ExportModel_PeriodMonth').val($('#SearchView_PeriodMonth').find("option:selected").val());
+            $('#ExportModel_PeriodYear').val($('#SearchView_PeriodYear').find("option:selected").val());
+            $('#ExportModel_DocumentStatus').val($('#SearchView_DocumentStatus').find("option:selected").val());
+            $('#ExportModel_CreatedBy').val($('#SearchView_CreatedBy').find("option:selected").val());
+            $('#ExportModel_ApprovedBy').val($('#SearchView_ApprovedBy').find("option:selected").val());
+            $('#ExportModel_Creator').val($('#SearchView_Creator').find("option:selected").val());
+            $('#ExportModel_Approver').val($('#SearchView_Approver').find("option:selected").val());
+            $('#ExportModel_CreatedDate').val($('#SearchView_CreatedDate').val());
+            $('#ExportModel_ApprovedDate').val($('#SearchView_ApprovedDate').val());
+        }
+
+        $("#btnConfirm").click(function() {
+            GetSearchSummaryReports();
+            $('#ExportSummaryReportsForms').submit();
+        });
+
+    </script>
+}
