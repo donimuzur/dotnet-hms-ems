@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sampoerna.EMS.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
@@ -22,6 +23,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
     {
         public int Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }
+        public Enums.PBCK1Type Pbck1Type { get; set; }
         public DateTime PeriodFrom { get; set; }
         public DateTime? PeriodTo { get; set; }
         public string Pbck1PeriodDisplay { get; set; }
