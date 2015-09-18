@@ -23,9 +23,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string CK2_NUMBER { get; set; }
         public Nullable<System.DateTime> CK2_DATE { get; set; }
         public Nullable<decimal> CK2_VALUE { get; set; }
-        public int PBCK3_PBCK7_ID { get; set; }
+        public int PBCK3_ID { get; set; }
     
         public virtual ICollection<CK2_DOCUMENT> CK2_DOCUMENT { get; set; }
-        public virtual PBCK3_PBCK7 PBCK3_PBCK7 { get; set; }
+        public virtual PBCK3 PBCK3 { get; set; }
     }
 }

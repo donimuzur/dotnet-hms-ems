@@ -16,8 +16,6 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public PBCK3_PBCK7()
         {
-            this.BACK3 = new HashSet<BACK3>();
-            this.CK2 = new HashSet<CK2>();
             this.PBCK3_PBCK7_ITEM = new HashSet<PBCK3_PBCK7_ITEM>();
         }
     
@@ -51,8 +49,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual USER USER2 { get; set; }
-        public virtual ICollection<BACK3> BACK3 { get; set; }
-        public virtual ICollection<CK2> CK2 { get; set; }
         public virtual ICollection<PBCK3_PBCK7_ITEM> PBCK3_PBCK7_ITEM { get; set; }
         public virtual USER USER3 { get; set; }
         public virtual USER USER4 { get; set; }
