@@ -1443,5 +1443,33 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        #region "Input Manual"
+
+        [HttpPost]
+        public JsonResult GetListFaCode(string plantId)
+        {
+
+            var brandOutput = _pbck4Bll.GetListBrandByPlant(plantId);
+            //var model = Mapper.Map<List<Pbck4InputManualViewModel>>(dbMaterial);
+
+            return Json(brandOutput);
+        }
+
+        [HttpPost]
+        public string GetStickerCode(string plantId, string faCode)
+        {
+
+            var stickerCode = _pbck4Bll.GetBrandStickerCodeByPlantAndFaCode(plantId, faCode);
+
+
+            return stickerCode;
+        }
+
+        #endregion
+
     }
+
+   
+
 }

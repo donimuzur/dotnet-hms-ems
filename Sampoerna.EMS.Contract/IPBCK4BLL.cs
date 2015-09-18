@@ -26,5 +26,9 @@ namespace Sampoerna.EMS.Contract
        List<Pbck4SummaryReportDto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input);
 
        void GovApproveDocumentRollback(Pbck4WorkflowDocumentInput input);
+
+       List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId);
+
+       string GetBrandStickerCodeByPlantAndFaCode(string plant, string faCode);
    }
 }

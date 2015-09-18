@@ -32,5 +32,10 @@ namespace Sampoerna.EMS.BLL.Services
             return dbData;
         }
 
+        public List<ZAIDM_EX_BRAND> GetBrandByPlant(string plant)
+        {
+            var dbData = _repository.Get(c => c.WERKS == plant);
+            return dbData.ToList();
+        }
     }
 }

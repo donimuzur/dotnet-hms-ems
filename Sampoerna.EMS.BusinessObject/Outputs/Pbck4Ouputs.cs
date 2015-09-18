@@ -23,4 +23,11 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public List<PrintHistoryDto> ListPrintHistorys { get; set; }
     }
 
+    public class GetListBrandByPlantOutput
+    {
+        public string PlantId { get; set; }
+        public string FaCode { get; set; }
+        public string StickerCode { get; set; }
+    }
+
 }

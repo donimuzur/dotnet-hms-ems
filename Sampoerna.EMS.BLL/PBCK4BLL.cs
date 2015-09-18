@@ -1244,6 +1244,18 @@ namespace Sampoerna.EMS.BLL
 
        }
 
-       
+
+        public List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId)
+       {
+           var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+
+            return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
+       }
+
+        public string GetBrandStickerCodeByPlantAndFaCode(string plant, string faCode)
+       {
+           var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+           return dbBrand == null ? string.Empty : dbBrand.STICKER_CODE;
+       }
     }
 }

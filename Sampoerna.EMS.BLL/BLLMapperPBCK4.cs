@@ -50,6 +50,12 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PBCK4_DOCUMENTDto, PBCK4_DOCUMENT>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<PBCK4_DOCUMENT, PBCK4_DOCUMENTDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, GetListBrandByPlantOutput>().IgnoreAllNonExisting()
+                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                  .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                   .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
+                ;
         }
     }
 }
