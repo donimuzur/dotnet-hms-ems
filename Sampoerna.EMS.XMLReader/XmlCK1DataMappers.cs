@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
@@ -35,9 +36,11 @@ namespace Sampoerna.EMS.XMLReader
                         item.CK1_NUMBER = _xmlMapper.GetElementValue(xElement.Element("EBELN"));
 
                         item.CK1_DATE = Convert.ToDateTime(_xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("AEDAT"))));
-                     
-                        item.FA_CODE = _xmlMapper.GetElementValue(xElement.Element("FA_CODE"));
-                        item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("MATNR"));
+                        //var detail = new CK1_ITEM();
+                        //detail.FA_CODE = _xmlMapper.GetElementValue(xElement.Element("FA_CODE"));
+                        //detail.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("MATNR"));
+                        //item.CK1_ITEM = new List<CK1_ITEM>();
+                        //item.CK1_ITEM.Add(detail);
                         item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("WERKS"));
                         item.CREATED_BY = Constans.PI;
                         var existingData = GetCk1(item.CK1_NUMBER);
