@@ -244,7 +244,11 @@ function GenerateXlsPbck4Items(url) {
             result = false;
         }
         
-        if ($('#CK3_OFFICE_VALUE').val() == '') {
+        //if ($('#CK3_OFFICE_VALUE').val() == '') {
+        //    AddValidationClass(false, 'CK3_OFFICE_VALUE');
+        //    result = false;
+        //}
+        if ($.isNumeric($('#CK3_OFFICE_VALUE').val()) == false) {
             AddValidationClass(false, 'CK3_OFFICE_VALUE');
             result = false;
         }
@@ -275,22 +279,36 @@ function GenerateXlsPbck4Items(url) {
 
         }
         
-        //if ($('#poa_sk0').length == 0) {
-        //    AddValidationClass(false, 'poa-files');
+        if ($('#poa_sk0').length == 0) {
+            AddValidationClass(false, 'poa-files');
 
-        //    if (result) {
-        //        $('#modalBodyMessage').text('Missing attach files');
-        //        $('#ModalCk5ValidateGov').modal('show');
+            if (result) {
+                $('#modalBodyMessage').text('Missing attach files BACK-1 Doc');
+                $('#ModalPbck4ValidateGov').modal('show');
 
-        //        $('#collapseFour').removeClass('collapse');
-        //        $('#collapseFour').addClass('in');
-        //        $("#collapseFour").css({ height: "auto" });
+                $('#collapseFour').removeClass('collapse');
+                $('#collapseFour').addClass('in');
+                $("#collapseFour").css({ height: "auto" });
 
-        //    }
-        //    result = false;
-        //}
+            }
+            result = false;
+        }
 
        
+        if ($('#poa_sk20').length == 0) {
+            AddValidationClass(false, 'poa-files2');
+
+            if (result) {
+                $('#modalBodyMessage').text('Missing attach files CK-3 Doc');
+                $('#ModalPbck4ValidateGov').modal('show');
+
+                $('#collapseFour').removeClass('collapse');
+                $('#collapseFour').addClass('in');
+                $("#collapseFour").css({ height: "auto" });
+
+            }
+            result = false;
+        }
 
         return result;
     }

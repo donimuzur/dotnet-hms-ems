@@ -106,6 +106,7 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.DEST_COUNTRY_NAME, opt => opt.MapFrom(src => src.CountryName))
 
               .ForMember(dest => dest.RemainQuota, opt => opt.MapFrom(src => src.RemainQuota))
+              .ForMember(dest => dest.CK5_MANUAL_TYPE, opt => opt.MapFrom(src => src.Ck5ManualType))
 
               ;
 
@@ -184,7 +185,8 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.DEST_COUNTRY_CODE))
             .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.DEST_COUNTRY_NAME))
             .ForMember(dest => dest.DisplayDetailsDestinationCountry, opt => opt.MapFrom(src => src.DEST_COUNTRY_CODE + " - " + src.DEST_COUNTRY_NAME))
-
+            .ForMember(dest => dest.Ck5ManualType, opt => opt.MapFrom(src => src.CK5_MANUAL_TYPE))
+            .ForMember(dest => dest.Ck5ManualTypeString, opt => opt.MapFrom(src => Utils.EnumHelper.GetDescription(src.CK5_MANUAL_TYPE)))
             .ForMember(dest => dest.Ck5FileUploadModelList, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.Ck5FileUploadDtos)));
 
             Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5FileUploadViewModel>().IgnoreAllNonExisting();

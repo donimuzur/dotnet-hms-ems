@@ -10,6 +10,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class Pbck7AndPbck3Dto
     {
+        public Pbck7AndPbck3Dto()
+        {
+            Pbck3Status = Enums.DocumentStatus.Draft;
+            Back1Dto = new Back1Dto();
+            
+        }
+
         public int Pbck7Id { get; set; }
         public string Pbck7Number { get; set; }
         public string Pbck3Number { get; set; }
@@ -31,7 +38,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ApprovedByManager { get; set; }
         public DateTime? ApprovedDateManager { get; set; }
 
-        public string RejectedBy { get; set; }
+        public string RejectedBy { get; set; } 
         public DateTime? RejectedDate { get; set; }
        
        
@@ -57,10 +64,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ModifiedPbck3By { get; set; }
         public DateTime? ModifiedPbck3Date { get; set; }
 
-        //from table BACK1
-        public string Back1Number { get; set; }
-        public DateTime Back1Date { get; set; }
-
+       
         public List<Pbck7ItemUpload> UploadItems { get; set; }
 
         public string Comment { get; set; }
@@ -70,6 +74,17 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsCreatedPbck7 { get; set; }
 
         public bool IsCreatedPbkc3 { get; set; }
+
+        public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
+
+
+      
+        public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
+        public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
+
+        public Back1Dto Back1Dto { get; set; }
+
+
     }
 
     public class Pbck7ItemUpload
@@ -98,4 +113,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Decimal? SeriesValue { get; set; }
 
     }
+
+   
 }

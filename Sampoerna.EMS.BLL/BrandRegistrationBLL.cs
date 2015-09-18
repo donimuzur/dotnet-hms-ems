@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
@@ -61,6 +62,7 @@ namespace Sampoerna.EMS.BLL
             var result = from b in _repository.GetQuery()
                          join p in _repositoryPlantT001W.GetQuery() on b.WERKS equals p.WERKS
                          join s in _repositorySeries.GetQuery() on b.SERIES_CODE equals s.SERIES_CODE
+                         where b.IS_DELETED == false && b.STATUS == true
                          select new BrandRegistrationOutput()
                          {
                              StickerCode = b.STICKER_CODE,
@@ -104,7 +106,7 @@ namespace Sampoerna.EMS.BLL
         public ZAIDM_EX_BRAND GetByFaCode(string plantWerk, string faCode)
         {
             //var dbData = _repository.Get(b => b.FA_CODE.Equals(faCode)).FirstOrDefault();
-            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.FA_CODE == faCode).FirstOrDefault();
+            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.FA_CODE == faCode && b.IS_DELETED !=true).FirstOrDefault();
             return dbData;
         }
 
@@ -116,10 +118,11 @@ namespace Sampoerna.EMS.BLL
             return dbData;
         }
 
-        
+
         public List<ZAIDM_EX_BRAND> GetBrandCeBylant(string plantWerk)
         {
-            var dbData = _repository.Get(c => c.WERKS == plantWerk).ToList();
+            //var dbData = _repository.Get(c => c.WERKS == plantWerk).ToList();
+            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true).ToList();
 
             return dbData;
         }

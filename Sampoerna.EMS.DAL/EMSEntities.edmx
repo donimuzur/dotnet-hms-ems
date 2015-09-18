@@ -89,8 +89,8 @@
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
           <Property Name="FORM_ID" Type="nvarchar" MaxLength="50" />
           <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="30" />
-          <Property Name="OLD_VALUE" Type="text" />
-          <Property Name="NEW_VALUE" Type="text" />
+          <Property Name="OLD_VALUE" Type="nvarchar(max)" />
+          <Property Name="NEW_VALUE" Type="nvarchar(max)" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -252,6 +252,7 @@
           <Property Name="EX_GOODS_TYPE" Type="int" Nullable="false" />
           <Property Name="DEST_COUNTRY_CODE" Type="nvarchar" MaxLength="5" />
           <Property Name="DEST_COUNTRY_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="CK5_MANUAL_TYPE" Type="int" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -431,6 +432,8 @@
           <Property Name="NOTED" Type="nvarchar" MaxLength="255" />
           <Property Name="SUPPLIER_COMPANY_NAME" Type="nvarchar" MaxLength="35" />
           <Property Name="SUPPLIER_COMPANY_CODE" Type="varchar" MaxLength="4" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -800,7 +803,7 @@
           <Property Name="BACK1_DATE" Type="datetime" />
           <Property Name="CK3_NO" Type="nvarchar" MaxLength="35" />
           <Property Name="CK3_DATE" Type="datetime" />
-          <Property Name="CK3_OFFICE_VALUE" Type="nvarchar" MaxLength="50" />
+          <Property Name="CK3_OFFICE_VALUE" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
@@ -4186,35 +4189,6 @@
             <End Role="CK1" EntitySet="CK1" />
             <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
           </AssociationSet>
-          <EntitySet Name="PBCK4" EntityType="EMSModel.PBCK4" />
-          <AssociationSet Name="FK_PBCK4_DOCUMENT_PBCK4" Association="EMSModel.FK_PBCK4_DOCUMENT_PBCK4">
-            <End Role="PBCK4" EntitySet="PBCK4" />
-            <End Role="PBCK4_DOCUMENT" EntitySet="PBCK4_DOCUMENT" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK4_ITEM_PBCK4" Association="EMSModel.FK_PBCK4_ITEM_PBCK4">
-            <End Role="PBCK4" EntitySet="PBCK4" />
-            <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK4_POA" Association="EMSModel.FK_PBCK4_POA">
-            <End Role="POA" EntitySet="POA" />
-            <End Role="PBCK4" EntitySet="PBCK4" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK4_USER" Association="EMSModel.FK_PBCK4_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK4" EntitySet="PBCK4" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK4_USER_MODIFIED" Association="EMSModel.FK_PBCK4_USER_MODIFIED">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK4" EntitySet="PBCK4" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK4_USER_REJECT" Association="EMSModel.FK_PBCK4_USER_REJECT">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK4" EntitySet="PBCK4" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK4_USER1" Association="EMSModel.FK_PBCK4_USER1">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="PBCK4" EntitySet="PBCK4" />
-          </AssociationSet>
           <EntitySet Name="LACK1_DOCUMENT" EntityType="EMSModel.LACK1_DOCUMENT" />
           <EntitySet Name="LACK1_INCOME_DETAIL" EntityType="EMSModel.LACK1_INCOME_DETAIL" />
           <EntitySet Name="LACK1_PBCK1_MAPPING" EntityType="EMSModel.LACK1_PBCK1_MAPPING" />
@@ -4364,6 +4338,35 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK7" EntitySet="PBCK7" />
           </AssociationSet>
+          <EntitySet Name="PBCK4" EntityType="EMSModel.PBCK4" />
+          <AssociationSet Name="FK_PBCK4_DOCUMENT_PBCK4" Association="EMSModel.FK_PBCK4_DOCUMENT_PBCK4">
+            <End Role="PBCK4" EntitySet="PBCK4" />
+            <End Role="PBCK4_DOCUMENT" EntitySet="PBCK4_DOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK4_ITEM_PBCK4" Association="EMSModel.FK_PBCK4_ITEM_PBCK4">
+            <End Role="PBCK4" EntitySet="PBCK4" />
+            <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK4_POA" Association="EMSModel.FK_PBCK4_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="PBCK4" EntitySet="PBCK4" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK4_USER" Association="EMSModel.FK_PBCK4_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK4" EntitySet="PBCK4" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK4_USER_MODIFIED" Association="EMSModel.FK_PBCK4_USER_MODIFIED">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK4" EntitySet="PBCK4" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK4_USER_REJECT" Association="EMSModel.FK_PBCK4_USER_REJECT">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK4" EntitySet="PBCK4" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK4_USER1" Association="EMSModel.FK_PBCK4_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PBCK4" EntitySet="PBCK4" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -4379,8 +4382,8 @@
           <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
           <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="OLD_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="NEW_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="OLD_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NEW_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_CHANGES_HISTORY_MODIFIED_BY_USER" FromRole="CHANGES_HISTORY" ToRole="USER" />
@@ -4882,6 +4885,7 @@
           <Property Name="DEST_COUNTRY_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK5_UOM" FromRole="CK5" ToRole="UOM" />
           <NavigationProperty Name="LACK1_INCOME_DETAIL" Relationship="EMSModel.FK_LACK1_INCOME_DETAIL_CK5" FromRole="CK5" ToRole="LACK1_INCOME_DETAIL" />
+          <Property Name="CK5_MANUAL_TYPE" Type="EMSModel.Ck5ManualType" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -5231,10 +5235,6 @@
           <NavigationProperty Name="LACK2" Relationship="EMSModel.FK_LACK2_USER_APPROVED_BY" FromRole="USER" ToRole="LACK2" />
           <NavigationProperty Name="LACK21" Relationship="EMSModel.FK_LACK2_USER_CREATED_BY" FromRole="USER" ToRole="LACK2" />
           <NavigationProperty Name="LACK22" Relationship="EMSModel.FK_LACK2_USER_MODIFIED_BY" FromRole="USER" ToRole="LACK2" />
-          <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_USER" FromRole="USER" ToRole="PBCK4" />
-          <NavigationProperty Name="PBCK41" Relationship="EMSModel.FK_PBCK4_USER_MODIFIED" FromRole="USER" ToRole="PBCK4" />
-          <NavigationProperty Name="PBCK42" Relationship="EMSModel.FK_PBCK4_USER_REJECT" FromRole="USER" ToRole="PBCK4" />
-          <NavigationProperty Name="PBCK43" Relationship="EMSModel.FK_PBCK4_USER1" FromRole="USER" ToRole="PBCK4" />
           <NavigationProperty Name="CK4C_DECREE_DOC" Relationship="EMSModel.FK_CK4C_DECREE_DOC_USER" FromRole="USER" ToRole="CK4C_DECREE_DOC" />
           <NavigationProperty Name="PBCK3_PBCK73" Relationship="EMSModel.FK_PBCK3_PBCK7_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
           <NavigationProperty Name="PBCK3_PBCK74" Relationship="EMSModel.FK_PBCK3_PBCK7_USER1" FromRole="USER" ToRole="PBCK3_PBCK7" />
@@ -5246,6 +5246,10 @@
           <NavigationProperty Name="PBCK71" Relationship="EMSModel.FK_PBCK7_MODIFIED_USER" FromRole="USER" ToRole="PBCK7" />
           <NavigationProperty Name="PBCK72" Relationship="EMSModel.FK_PBCK7_REJECTED_USER" FromRole="USER" ToRole="PBCK7" />
           <NavigationProperty Name="PBCK73" Relationship="EMSModel.FK_PBCK7_USER" FromRole="USER" ToRole="PBCK7" />
+          <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_USER" FromRole="USER" ToRole="PBCK4" />
+          <NavigationProperty Name="PBCK41" Relationship="EMSModel.FK_PBCK4_USER_MODIFIED" FromRole="USER" ToRole="PBCK4" />
+          <NavigationProperty Name="PBCK42" Relationship="EMSModel.FK_PBCK4_USER_REJECT" FromRole="USER" ToRole="PBCK4" />
+          <NavigationProperty Name="PBCK43" Relationship="EMSModel.FK_PBCK4_USER1" FromRole="USER" ToRole="PBCK4" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -5610,9 +5614,9 @@
           <NavigationProperty Name="USER3" Relationship="EMSModel.FK_POA_USER" FromRole="POA" ToRole="USER" />
           <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_POA" FromRole="POA" ToRole="POA_MAP" />
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_POA" FromRole="POA" ToRole="CK4C" />
-          <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_POA" FromRole="POA" ToRole="PBCK4" />
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_POA" FromRole="POA" ToRole="PBCK3" />
           <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_POA" FromRole="POA" ToRole="PBCK7" />
+          <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_POA" FromRole="POA" ToRole="PBCK4" />
         </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
@@ -6476,6 +6480,8 @@
           <NavigationProperty Name="LACK1_TRACKING" Relationship="EMSModel.FK_LACK1_TRACKING_LACK1" FromRole="LACK1" ToRole="LACK1_TRACKING" />
           <NavigationProperty Name="LACK1_PLANT" Relationship="EMSModel.FK_LACK1_PLANT_LACK1" FromRole="LACK1" ToRole="LACK1_PLANT" />
           <NavigationProperty Name="LACK1_PRODUCTION_DETAIL" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_LACK1" FromRole="LACK1" ToRole="LACK1_PRODUCTION_DETAIL" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -6935,7 +6941,6 @@
           <Property Name="APPROVED_QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="REMARKS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="CK1" Relationship="EMSModel.FK_PBCK4_ITEM_CK1" FromRole="PBCK4_ITEM" ToRole="CK1" />
-          <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_ITEM_PBCK4" FromRole="PBCK4_ITEM" ToRole="PBCK4" />
           <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="STICKER_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
@@ -6948,6 +6953,7 @@
           <Property Name="COLOUR" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="REQUESTED_QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="NO_PENGAWAS" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_ITEM_PBCK4" FromRole="PBCK4_ITEM" ToRole="PBCK4" />
         </EntityType>
         <Association Name="FK_CK1_ZAIDM_EX_BRAND">
           <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="0..1" />
@@ -6972,129 +6978,6 @@
             </Principal>
             <Dependent Role="PBCK4_ITEM">
               <PropertyRef Name="CK1_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="PBCK4">
-          <Key>
-            <PropertyRef Name="PBCK4_ID" />
-          </Key>
-          <Property Name="PBCK4_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PBCK4_NUMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="NPPBKC_DESCRIPTION" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="COMPANY_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
-          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
-          <Property Name="REPORTED_ON" Type="DateTime" Precision="0" />
-          <Property Name="BACK1_NO" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="BACK1_DATE" Type="DateTime" Precision="3" />
-          <Property Name="CK3_NO" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="CK3_DATE" Type="DateTime" Precision="3" />
-          <Property Name="CK3_OFFICE_VALUE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="APPROVED_BY_POA" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="APPROVED_BY_POA_DATE" Type="DateTime" Precision="3" />
-          <Property Name="REJECTED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="PBCK4_DOCUMENT" Relationship="EMSModel.FK_PBCK4_DOCUMENT_PBCK4" FromRole="PBCK4" ToRole="PBCK4_DOCUMENT" />
-          <NavigationProperty Name="PBCK4_ITEM" Relationship="EMSModel.FK_PBCK4_ITEM_PBCK4" FromRole="PBCK4" ToRole="PBCK4_ITEM" />
-          <NavigationProperty Name="POA" Relationship="EMSModel.FK_PBCK4_POA" FromRole="PBCK4" ToRole="POA" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK4_USER" FromRole="PBCK4" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK4_USER_MODIFIED" FromRole="PBCK4" ToRole="USER" />
-          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK4_USER_REJECT" FromRole="PBCK4" ToRole="USER" />
-          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_PBCK4_USER1" FromRole="PBCK4" ToRole="USER" />
-          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <Association Name="FK_PBCK4_DOCUMENT_PBCK4">
-          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="1" />
-          <End Type="EMSModel.PBCK4_DOCUMENT" Role="PBCK4_DOCUMENT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PBCK4">
-              <PropertyRef Name="PBCK4_ID" />
-            </Principal>
-            <Dependent Role="PBCK4_DOCUMENT">
-              <PropertyRef Name="PBCK4_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK4_ITEM_PBCK4">
-          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="1" />
-          <End Type="EMSModel.PBCK4_ITEM" Role="PBCK4_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PBCK4">
-              <PropertyRef Name="PBCK4_ID" />
-            </Principal>
-            <Dependent Role="PBCK4_ITEM">
-              <PropertyRef Name="PBCK4_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK4_POA">
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="POA">
-              <PropertyRef Name="POA_ID" />
-            </Principal>
-            <Dependent Role="PBCK4">
-              <PropertyRef Name="APPROVED_BY_POA" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK4_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="PBCK4">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK4_USER_MODIFIED">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="PBCK4">
-              <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK4_USER_REJECT">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="PBCK4">
-              <PropertyRef Name="REJECTED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK4_USER1">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="PBCK4">
-              <PropertyRef Name="APPROVED_BY_MANAGER" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7747,6 +7630,130 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="Ck5ManualType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EntityType Name="PBCK4">
+          <Key>
+            <PropertyRef Name="PBCK4_ID" />
+          </Key>
+          <Property Name="PBCK4_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PBCK4_NUMBER" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="NPPBKC_DESCRIPTION" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
+          <Property Name="REPORTED_ON" Type="DateTime" Precision="0" />
+          <Property Name="BACK1_NO" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="BACK1_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CK3_NO" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="CK3_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CK3_OFFICE_VALUE" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY_POA" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY_POA_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REJECTED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
+          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PBCK4_DOCUMENT" Relationship="EMSModel.FK_PBCK4_DOCUMENT_PBCK4" FromRole="PBCK4" ToRole="PBCK4_DOCUMENT" />
+          <NavigationProperty Name="PBCK4_ITEM" Relationship="EMSModel.FK_PBCK4_ITEM_PBCK4" FromRole="PBCK4" ToRole="PBCK4_ITEM" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_PBCK4_POA" FromRole="PBCK4" ToRole="POA" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK4_USER" FromRole="PBCK4" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK4_USER_MODIFIED" FromRole="PBCK4" ToRole="USER" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_PBCK4_USER_REJECT" FromRole="PBCK4" ToRole="USER" />
+          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_PBCK4_USER1" FromRole="PBCK4" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_PBCK4_DOCUMENT_PBCK4">
+          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="1" />
+          <End Type="EMSModel.PBCK4_DOCUMENT" Role="PBCK4_DOCUMENT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK4">
+              <PropertyRef Name="PBCK4_ID" />
+            </Principal>
+            <Dependent Role="PBCK4_DOCUMENT">
+              <PropertyRef Name="PBCK4_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK4_ITEM_PBCK4">
+          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="1" />
+          <End Type="EMSModel.PBCK4_ITEM" Role="PBCK4_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK4">
+              <PropertyRef Name="PBCK4_ID" />
+            </Principal>
+            <Dependent Role="PBCK4_ITEM">
+              <PropertyRef Name="PBCK4_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK4_POA">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="PBCK4">
+              <PropertyRef Name="APPROVED_BY_POA" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK4_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK4">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK4_USER_MODIFIED">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK4">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK4_USER_REJECT">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK4">
+              <PropertyRef Name="REJECTED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PBCK4_USER1">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.PBCK4" Role="PBCK4" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="PBCK4">
+              <PropertyRef Name="APPROVED_BY_MANAGER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8082,7 +8089,8 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="DEST_COUNTRY_NAME" ColumnName="DEST_COUNTRY_NAME" />
+          <ScalarProperty Name="CK5_MANUAL_TYPE" ColumnName="CK5_MANUAL_TYPE" />
+                <ScalarProperty Name="DEST_COUNTRY_NAME" ColumnName="DEST_COUNTRY_NAME" />
                 <ScalarProperty Name="DEST_COUNTRY_CODE" ColumnName="DEST_COUNTRY_CODE" />
                 <ScalarProperty Name="EX_GOODS_TYPE" ColumnName="EX_GOODS_TYPE" />
                 <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
@@ -8607,6 +8615,8 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="SUPPLIER_COMPANY_CODE" ColumnName="SUPPLIER_COMPANY_CODE" />
                 <ScalarProperty Name="SUPPLIER_COMPANY_NAME" ColumnName="SUPPLIER_COMPANY_NAME" />
                 <ScalarProperty Name="NOTED" ColumnName="NOTED" />
@@ -8868,39 +8878,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PBCK4">
-            <EntityTypeMapping TypeName="EMSModel.PBCK4">
-              <MappingFragment StoreEntitySet="PBCK4">
-                <ScalarProperty Name="POA_PRINTED_NAME" ColumnName="POA_PRINTED_NAME" />
-                <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />
-                <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
-                <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />
-                <ScalarProperty Name="REJECTED_BY" ColumnName="REJECTED_BY" />
-                <ScalarProperty Name="APPROVED_BY_POA_DATE" ColumnName="APPROVED_BY_POA_DATE" />
-                <ScalarProperty Name="APPROVED_BY_POA" ColumnName="APPROVED_BY_POA" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="CK3_OFFICE_VALUE" ColumnName="CK3_OFFICE_VALUE" />
-                <ScalarProperty Name="CK3_DATE" ColumnName="CK3_DATE" />
-                <ScalarProperty Name="CK3_NO" ColumnName="CK3_NO" />
-                <ScalarProperty Name="BACK1_DATE" ColumnName="BACK1_DATE" />
-                <ScalarProperty Name="BACK1_NO" ColumnName="BACK1_NO" />
-                <ScalarProperty Name="REPORTED_ON" ColumnName="REPORTED_ON" />
-                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
-                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
-                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
-                <ScalarProperty Name="NPPBKC_DESCRIPTION" ColumnName="NPPBKC_DESCRIPTION" />
-                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
-                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="PBCK4_NUMBER" ColumnName="PBCK4_NUMBER" />
-                <ScalarProperty Name="PBCK4_ID" ColumnName="PBCK4_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="LACK1_DOCUMENT">
             <EntityTypeMapping TypeName="EMSModel.LACK1_DOCUMENT">
               <MappingFragment StoreEntitySet="LACK1_DOCUMENT">
@@ -9125,6 +9102,39 @@
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="PBCK7_ID" ColumnName="PBCK7_ID" />
                 <ScalarProperty Name="PBCK7_ITEM_ID" ColumnName="PBCK7_ITEM_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PBCK4">
+            <EntityTypeMapping TypeName="EMSModel.PBCK4">
+              <MappingFragment StoreEntitySet="PBCK4">
+                <ScalarProperty Name="POA_PRINTED_NAME" ColumnName="POA_PRINTED_NAME" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
+                <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />
+                <ScalarProperty Name="REJECTED_BY" ColumnName="REJECTED_BY" />
+                <ScalarProperty Name="APPROVED_BY_POA_DATE" ColumnName="APPROVED_BY_POA_DATE" />
+                <ScalarProperty Name="APPROVED_BY_POA" ColumnName="APPROVED_BY_POA" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CK3_OFFICE_VALUE" ColumnName="CK3_OFFICE_VALUE" />
+                <ScalarProperty Name="CK3_DATE" ColumnName="CK3_DATE" />
+                <ScalarProperty Name="CK3_NO" ColumnName="CK3_NO" />
+                <ScalarProperty Name="BACK1_DATE" ColumnName="BACK1_DATE" />
+                <ScalarProperty Name="BACK1_NO" ColumnName="BACK1_NO" />
+                <ScalarProperty Name="REPORTED_ON" ColumnName="REPORTED_ON" />
+                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+                <ScalarProperty Name="NPPBKC_DESCRIPTION" ColumnName="NPPBKC_DESCRIPTION" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="PBCK4_NUMBER" ColumnName="PBCK4_NUMBER" />
+                <ScalarProperty Name="PBCK4_ID" ColumnName="PBCK4_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

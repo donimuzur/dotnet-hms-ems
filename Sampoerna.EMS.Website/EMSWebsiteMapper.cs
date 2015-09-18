@@ -64,7 +64,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<BrandRegistrationOutput, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.FaCode))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.BrandCe));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.FaCode));
 
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.STICKER_CODE))
@@ -325,7 +325,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
                 .ForMember(dest => dest.PrintingPrice, opt => opt.MapFrom(src => src.PRINTING_PRICE))
                 .ForMember(dest => dest.CutFilterCode, opt => opt.MapFrom(src => src.CUT_FILLER_CODE))
-                .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED));
+                .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED))
+                .ForMember(dest => dest.IsActive, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.STATUS));
 
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationDetailsViewModel>().IgnoreAllNonExisting()
@@ -820,7 +821,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCode))
                 .ForMember(dest => dest.ProoductionDate, opt => opt.MapFrom(src => src.ProductionDate));
 
-            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantName));
 
             Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));

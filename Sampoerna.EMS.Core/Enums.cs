@@ -535,5 +535,17 @@ namespace Sampoerna.EMS.Core
             [Description("Rejected")]
             Rejected = 2
         }
+
+        public enum Ck5ManualType
+        {
+            [Description("Trial")]
+            Trial = 1,
+            [Description("Non Plant (Plant to Exhibition)")]
+            NonPlantPlantToEx = 2,
+            [Description("Non Plant (Exhibition to Plant)")]
+            NonPlantExToPlant = 3,
+            [Description("Market Return")]
+            MarketReturn = 4
+        }
     }
 }
