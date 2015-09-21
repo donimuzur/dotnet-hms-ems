@@ -108,5 +108,13 @@ namespace Sampoerna.EMS.BLL
                             p.WASTE_PROD_DATE == wasteProductionDate)
                     .FirstOrDefault();
         }
+
+
+        public void SaveUpload(WasteUploadItems wasteUpload)
+        {
+            var dbUpload = Mapper.Map<WASTE>(wasteUpload);
+            _repository.InsertOrUpdate(dbUpload);
+            _uow.SaveChanges();
+        }
     }
 }

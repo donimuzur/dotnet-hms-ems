@@ -72,4 +72,17 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         //public DateTime RegistrationDate { get; set; }
         //public List<CK5_FILE_UPLOADDto> Ck5FileUploadList { get; set; }
     }
+
+    public class Pbck4GetSummaryReportByParamInput
+    {
+        public string Pbck4No { get; set; }
+
+        public int? YearFrom { get; set; }
+
+        public int? YearTo  { get; set; }
+
+        public string PlantId { get; set; }
+
+    }
+
 }

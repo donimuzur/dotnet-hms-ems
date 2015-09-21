@@ -129,7 +129,7 @@ namespace Sampoerna.EMS.BLL
                              TobaccoProductType = g.PRODUCT_TYPE,
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
-                             QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
+                             QtyProduced = p.QTY == null ? 0 : p.QTY,
                              Uom = p.UOM,
                              QtyPacked = p.QTY_PACKED,
                              QtyUnpacked = p.QTY_UNPACKED,
@@ -152,7 +152,7 @@ namespace Sampoerna.EMS.BLL
                              TobaccoProductType = g.PRODUCT_TYPE,
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
-                             QtyProduced = p.QTY_PACKED + p.QTY_UNPACKED,
+                             QtyProduced = p.QTY == null ? 0 : p.QTY,
                              Uom = p.UOM,
                              QtyPacked = p.QTY_PACKED,
                              QtyUnpacked = p.QTY_UNPACKED,
@@ -164,7 +164,7 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            return dbData.ToList();
+            return dbData.OrderByDescending(x => x.ProductionDate).ToList();
         }
 
 
