@@ -167,7 +167,10 @@
                 $('#form-pbck7-edit').submit();
             }
         });
-
+        $("#btnSaveGovStatusPbck3").click(function () {
+               $('#form-pbck7-edit').submit();
+            
+        });
         function ValidateGovInput() {
             var result = true;
             var govStatus = $('#Pbck7GovStatus').find("option:selected").val();
@@ -367,17 +370,6 @@
         });
 
 
-        $('#Back1GovStatus').change(function() {
-          
-            if ($(this).length) {
-                var back1govstatus = $(this).find("option:selected").val();
-                if (back1govstatus == 'FullApproved') {
-                    $('#Back1Dto_Back1Number').removeAttr('disabled');
-                } else {
-                    $('#Back1Dto_Back1Number').Attr('disabled', 'disabled');
-                }
-            }
-
-        });
+        
     </script>
 }
