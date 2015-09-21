@@ -271,17 +271,34 @@ namespace Sampoerna.EMS.Website.Controllers
                 back3Dto.Pbck3ID = existingData.Pbck3Id;
 
                 _pbck7AndPbck7And3Bll.InsertBack3(back3Dto);
-                SaveCk2(model, existingData.Pbck3Id);
+                var ck2Dto = SaveCk2(model, existingData.Pbck3Id);
                 if (existingData.Pbck3Status == Enums.DocumentStatus.GovApproved)
                 {
                     existingData.Pbck3Status = Enums.DocumentStatus.Completed;
                    _pbck7AndPbck7And3Bll.InsertPbck3(existingData);
+                   CreateXml(ck2Dto, model.NppbkcId, existingData.Pbck3Number);
+                    
+                    
                 }
             }
 
         }
 
-        public void SaveCk2(Pbck7Pbck3CreateViewModel model, int pbck3Id)
+
+        public void CreateXml(Ck2Dto ck2, string nppbckId, string pbck3Number)
+        {
+            var pbck4xmlDto = new Pbck4XmlDto();
+            pbck4xmlDto.NppbckId = nppbckId;
+            pbck4xmlDto.CompType = "CK-2";
+            pbck4xmlDto.PbckNo = pbck3Number;
+            pbck4xmlDto.CompnDate = ck2.Ck2Date;
+            pbck4xmlDto.CompnValue = ck2.Ck2Value.HasValue? ck2.Ck2Value.ToString() : null;
+            pbck4xmlDto.CompNo = ck2.Ck2Number;
+            var xmlwriter = new XMLReader.XmlPBCK4DataWriter();
+            xmlwriter.CreatePbck4Xml(pbck4xmlDto);
+        }
+
+        public Ck2Dto SaveCk2(Pbck7Pbck3CreateViewModel model, int pbck3Id)
         {
             
 
@@ -315,8 +332,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck2Dto.Ck2Date = model.Ck2Dto.Ck2Date;
                 ck2Dto.Pbck3ID = pbck3Id;
                 _pbck7AndPbck7And3Bll.InsertCk2(ck2Dto);
-                
-            
+
+            return ck2Dto;
 
         }
 
