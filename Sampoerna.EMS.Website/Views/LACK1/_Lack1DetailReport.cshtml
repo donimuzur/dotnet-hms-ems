@@ -1,0 +1,32 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailReportViewModel
+
+<table border="0" class="table table-bordered">
+    <thead>
+        <tr>
+            <th rowspan="2">Begining Balance</th>
+            <th colspan="5">Receiving</th>
+            <th colspan="5">Usage</th>
+            <th rowspan="2">Ending Balance</th>
+        </tr>
+        <tr>
+            <th>CK-5 Number</th>
+            <th>CK-5 Registration Number</th>
+            <th>CK-5 Registration Date</th>
+            <th>CK-5 GR Date</th>
+            <th>Qty</th>
+            <th>GI Date</th>
+            <th>Material Code</th>
+            <th>Usage Qty</th>
+            <th>Original Uom</th>
+            <th>Converted Uom</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DetailList) {
+            <tr>
+                <td rowspan="@item.ReceivingList.Count">@item.BeginingBalance</td>
+                <td rowspan="@item.ReceivingList.Count">@item.EndingBalance</td>
+            </tr>
+        }
+    </tbody>
+</table>

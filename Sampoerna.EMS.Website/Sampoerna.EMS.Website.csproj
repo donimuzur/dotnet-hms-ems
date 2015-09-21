@@ -324,6 +324,7 @@
     <Compile Include="Models\LACK1\Lack1BaseItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
     <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1GenerateInputModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexCompletedDocumentViewModel.cs" />
@@ -1137,6 +1138,8 @@
     <Content Include="Views\LACK1\SummaryReport.cshtml" />
     <Content Include="Views\Waste\_Upload.cshtml" />
     <Content Include="Views\Waste\_UploadList.cshtml" />
+    <Content Include="Views\LACK1\DetailReport.cshtml" />
+    <Content Include="Views\LACK1\_Lack1DetailReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

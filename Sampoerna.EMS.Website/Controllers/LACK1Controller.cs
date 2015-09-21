@@ -1273,5 +1273,73 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        #region --------------- Detail Report -------------
+
+        public ActionResult DetailReport()
+        {
+
+            Lack1DetailReportViewModel model;
+            try
+            {
+                model = new Lack1DetailReportViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo, 
+                    DetailList = new List<Lack1DetailReportItemModel>()
+                };
+                model = InitSearchDetilReportViewModel(model);
+            }
+            catch (Exception ex)
+            {
+                model = new Lack1DetailReportViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return View("DetailReport", model);
+        }
+
+        [HttpPost]
+        public ActionResult SearchDetailReport(Lack1DetailReportViewModel model)
+        {
+
+            return View(model);
+        }
+
+        private Lack1DetailReportViewModel InitSearchDetilReportViewModel(Lack1DetailReportViewModel model)
+        {
+            model.SearchView = new Lack1SearchDetailReportViewModel()
+            {
+                CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll)
+            };
+            model.SearchView.NppbkcIdList = GetNppbkcIdListOnLack1Data(model.SearchView.CompanyCode);
+            model.SearchView.ReceivingPlantIdList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.SearchView.NppbkcId);
+            model.SearchView.ExcisableGoodsTypeList = GetExciseGoodsTypeList(model.SearchView.NppbkcId);
+            model.SearchView.SupplierPlantIdList = GetSupplierPlantListByParam(model.SearchView.NppbkcId, model.SearchView.ExcisableGoodsType);
+            model.SearchView.PeriodFromList = GetPeriodList();
+            model.SearchView.PeriodToList = GetPeriodList();
+            return model;
+        }
+
+        private SelectList GetPeriodList()
+        {
+            var yearList = _lack1Bll.GetYearList();
+            var monthList = _monthBll.GetAll();
+            var selectListSource = new List<SelectItemModel>();
+            foreach (int t1 in yearList)
+            {
+                selectListSource.AddRange(monthList.Select(t => new SelectItemModel()
+                {
+                    ValueField = new DateTime(t1, t.MONTH_ID, 1).ToString("MM-yyyy"),
+                    TextField = new DateTime(t1, t.MONTH_ID, 1).ToString("MM.yyyy")
+                }));
+            }
+            return new SelectList(selectListSource, "ValueField", "TextField");
+        }
+        
+        #endregion
+
     }
 }
