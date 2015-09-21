@@ -542,11 +542,11 @@
 
                         case Enums.MenuList.PBCK4:
                         <div class="list-group">
-                            <a href="#" class="list-group-item">
+                            @*<a href="#" class="list-group-item">
                                 <i class="fa fa-tachometer"></i>
                                 <span>Dashboard</span>
-                            </a>
-                            <div class="collapse-menu active open">
+                            </a>*@
+                            <div id="menuPbck4OpenDocuments" class="collapse-menu open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
                                     <span>Document List</span>
@@ -557,17 +557,17 @@
                                     <li><a id="liPbck4Completed" href="@Url.Action("Pbck4Completed", "PBCK4")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
                                 </ul>
                             </div>
-                            <div class="collapse-menu">
+                            <div id="menuPbck4Report" class="collapse-menu">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-signal"></i>
                                     <span>Report</span>
                                     <i class="down fa fa-caret-down"></i>
                                 </a>
                                 <ul class="child list">
-                                    <li><a href="6.2-pbck4-summary-report.html"><i class="fa fa-angle-right"></i> Summary</a></li>
+                                    <li><a id="MenuPbck4SummaryReports" href="@Url.Action("SummaryReports", "PBCK4")"><i class="fa fa-angle-right"></i>Summary Reports</a></li>
                                 </ul>
                             </div>
-                            <div class="other">
+                            @*<div class="other">
                                 <a href="#" class="list-group-item">
                                     <i class="fa fa-th"></i>
                                     <span>Other Modules</span>
@@ -582,7 +582,7 @@
                                     <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
                                     <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
                                 </ul>
-                            </div>
+                            </div>*@
                         </div>
                             break;
                     }

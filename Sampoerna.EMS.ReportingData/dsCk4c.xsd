@@ -35,6 +35,7 @@
               <xs:element name="NBatang" msprop:Generator_ColumnVarNameInTable="columnNBatang" msprop:Generator_ColumnPropNameInRow="NBatang" msprop:Generator_ColumnPropNameInTable="NBatangColumn" msprop:Generator_UserColumnName="NBatang" type="xs:string" minOccurs="0" />
               <xs:element name="NGram" msprop:Generator_ColumnVarNameInTable="columnNGram" msprop:Generator_ColumnPropNameInRow="NGram" msprop:Generator_ColumnPropNameInTable="NGramColumn" msprop:Generator_UserColumnName="NGram" type="xs:string" minOccurs="0" />
               <xs:element name="ProdTotal" msprop:Generator_ColumnVarNameInTable="columnProdTotal" msprop:Generator_ColumnPropNameInRow="ProdTotal" msprop:Generator_ColumnPropNameInTable="ProdTotalColumn" msprop:Generator_UserColumnName="ProdTotal" type="xs:string" minOccurs="0" />
+              <xs:element name="City" msprop:Generator_ColumnVarNameInTable="columnCity" msprop:Generator_ColumnPropNameInRow="City" msprop:Generator_ColumnPropNameInTable="CityColumn" msprop:Generator_UserColumnName="City" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -43,7 +44,9 @@
             <xs:sequence>
               <xs:element name="Ck4cItemId" msprop:Generator_ColumnVarNameInTable="columnCk4cItemId" msprop:Generator_ColumnPropNameInRow="Ck4cItemId" msprop:Generator_ColumnPropNameInTable="Ck4cItemIdColumn" msprop:Generator_UserColumnName="Ck4cItemId" type="xs:string" minOccurs="0" />
               <xs:element name="ProdQty" msprop:Generator_ColumnVarNameInTable="columnProdQty" msprop:Generator_ColumnPropNameInRow="ProdQty" msprop:Generator_ColumnPropNameInTable="ProdQtyColumn" msprop:Generator_UserColumnName="ProdQty" type="xs:string" minOccurs="0" />
-              <xs:element name="Uom" msprop:Generator_ColumnVarNameInTable="columnUom" msprop:Generator_ColumnPropNameInRow="Uom" msprop:Generator_ColumnPropNameInTable="UomColumn" msprop:Generator_UserColumnName="Uom" type="xs:string" minOccurs="0" />
+              <xs:element name="ProdType" msprop:Generator_ColumnVarNameInTable="columnProdType" msprop:Generator_ColumnPropNameInRow="ProdType" msprop:Generator_ColumnPropNameInTable="ProdTypeColumn" msprop:Generator_UserColumnName="ProdType" type="xs:string" minOccurs="0" />
+              <xs:element name="Merk" msprop:Generator_ColumnVarNameInTable="columnMerk" msprop:Generator_ColumnPropNameInRow="Merk" msprop:Generator_ColumnPropNameInTable="MerkColumn" msprop:Generator_UserColumnName="Merk" type="xs:string" minOccurs="0" />
+              <xs:element name="Hje" msprop:Generator_ColumnVarNameInTable="columnHje" msprop:Generator_ColumnPropNameInRow="Hje" msprop:Generator_ColumnPropNameInTable="HjeColumn" msprop:Generator_UserColumnName="Hje" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
