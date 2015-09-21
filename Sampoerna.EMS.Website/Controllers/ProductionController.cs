@@ -332,20 +332,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (item.Uom == "TH")
                 {
                     item.Uom = "Btg";
-                    item.QtyPacked = modelDto.QtyPacked*1000;
-                    item.QtyUnpacked = modelDto.QtyUnpacked*1000;
+                    item.QtyPacked = item.QtyPacked*1000;
+                    item.QtyUnpacked = item.QtyUnpacked*1000;
                 }
                 else if (item.Uom == "KG")
                 {
                     item.Uom = "G";
-                    item.QtyPacked = modelDto.QtyPacked*1000;
-                    item.QtyUnpacked = modelDto.QtyUnpacked*1000;
+                    item.QtyPacked = item.QtyPacked*1000;
+                    item.QtyUnpacked = item.QtyUnpacked*1000;
                 }
                 else
                 {
                     item.Uom = modelDto.Uom;
-                    item.QtyPacked = modelDto.QtyPacked;
-                    item.QtyUnpacked = modelDto.QtyUnpacked;
+                    item.QtyPacked = item.QtyPacked;
+                    item.QtyUnpacked = item.QtyUnpacked;
                 }
 
                 item.CompanyName = company.BUTXT;
