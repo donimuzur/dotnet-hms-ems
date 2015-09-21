@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.BLL
        private IChangesHistoryBLL _changesHistoryBll;
        private IPrintHistoryBLL _printHistoryBll;
        private IBrandRegistrationService _brandRegistrationServices;
-       private ICK1BLL _ck1Bll;
+       private ICK1Services _ck1Services;
        private IMessageService _messageService;
        private IPOABLL _poaBll;
        private IUserBLL _userBll;
@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.BLL
            _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
            _printHistoryBll = new PrintHistoryBLL(_uow,_logger);
            _brandRegistrationServices = new BrandRegistrationService(_uow, _logger);
-           _ck1Bll = new CK1BLL(_uow,_logger);
+           _ck1Services = new CK1Services(_uow, _logger);
            _messageService = new MessageService(_logger);
            _poaBll = new POABLL(_uow,_logger);
            _userBll = new UserBLL(_uow,_logger);
@@ -381,7 +381,7 @@ namespace Sampoerna.EMS.BLL
                if (dbBrand == null)
                    messageList.Add("FA Code Not Exist");
 
-               var dbCk1 = _ck1Bll.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
+               var dbCk1 = _ck1Services.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
                if (dbCk1 == null)
                    messageList.Add("CK-1 Number Not Exist");
 
@@ -468,7 +468,7 @@ namespace Sampoerna.EMS.BLL
 
            }
 
-           var dbCk1 = _ck1Bll.GetCk1ByCk1Number(input.Ck1No);
+           var dbCk1 = _ck1Services.GetCk1ByCk1Number(input.Ck1No);
            if (dbCk1 == null)
            {
                input.Ck1Date = "";
@@ -1252,10 +1252,23 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
        }
 
-        public string GetBrandStickerCodeByPlantAndFaCode(string plant, string faCode)
+        public List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId)
+        {
+            var dbCk1 = _ck1Services.GetCk1ByNppbkc(nppbkcId);
+
+            return Mapper.Map<List<GetListCk1ByNppbkcOutput>>(dbCk1);
+        }
+
+        public GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode)
        {
            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
-           return dbBrand == null ? string.Empty : dbBrand.STICKER_CODE;
+            return Mapper.Map<GetBrandItemsOutput>(dbBrand);
        }
+
+        public string GetCk1DateByCk1Id(long ck1Id)
+        {
+            var dbCK1 = _ck1Services.GetCk1ById(ck1Id);
+            return dbCK1 == null ? string.Empty : dbCK1.CK1_DATE.ToString("dd MMM yyyy");
+        }
     }
 }

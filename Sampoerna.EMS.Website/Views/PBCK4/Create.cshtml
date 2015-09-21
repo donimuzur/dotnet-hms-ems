@@ -75,7 +75,7 @@
             <div class="modal-body form-excise">
                 <p></p>
                 <input id="uploadMaterialRow" type="hidden" value="">
-                <input id="uploadMaterialDesc" type="hidden" value="">
+
                 <div class="row">
                     <div class="col-md-6">
                         <label>Plant</label>
@@ -94,14 +94,14 @@
                     <div class="col-md-6">
                         <label>Sticker Code</label>
                         @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadStickerCode", @disabled = "disabled" })
-                      
+
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
                         <label>CK-1 No<span class="red">*</span></label>
-                        <select class="form-control" id="uploadFaCode">
+                        <select class="form-control" id="uploadCk1No" name="uploadCk1No">
                             <option value="">Select</option>
                         </select>
 
@@ -138,7 +138,7 @@
 
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <label>HJE</label>
@@ -152,35 +152,35 @@
 
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <label>Colour</label>
-                        <textarea class="form-control" id="uploadNote" cols="20" rows="3" disabled></textarea>
+                        <textarea class="form-control" id="uploadColour" cols="20" rows="3" disabled></textarea>
 
                     </div>
 
                     <div class="col-md-6">
                         <label>Requested Qty<span class="red">*</span></label>
-                        @Html.TextBoxFor(model => model.RequestedQty, new { @class = "form-control", @id = "uploadReqQty"})
+                        @Html.TextBoxFor(model => model.RequestedQty, new { @class = "form-control", @id = "uploadReqQty" })
 
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Total HJE</label>
-                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadTotalHje", @disabled = "disabled" })
+                @*<div class="row">
+                        <div class="col-md-6">
+                            <label>Total HJE</label>
+                            @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadTotalHje", @disabled = "disabled" })
 
-                    </div>
+                        </div>
 
-                    <div class="col-md-6">
-                        <label>Total Stamps</label>
-                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadTotalStamps", @disabled = "disabled" })
+                        <div class="col-md-6">
+                            <label>Total Stamps</label>
+                            @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadTotalStamps", @disabled = "disabled" })
 
-                    </div>
-                </div>
-                
+                        </div>
+                    </div>*@
+
                 <div class="row">
                     <div class="col-md-6">
                         <label>Approved Qty<span class="red">*</span></label>
@@ -202,10 +202,10 @@
                         <textarea class="form-control" id="uploadRemarks" cols="20" rows="5"></textarea>
                     </div>
                     <div class="col-md-6">
-                       
+
                     </div>
 
-                   
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -271,18 +271,70 @@
         }
     });
 
-      $("#btnAddRow").click(function () {
+
+      
+      function EditRow(o) {
+
+          var nRow = o.parents('tr');
+
+          $('#btnSaveMaterial').hide();
+          $('#btnUpdateMaterial').show();
+
           var sourcePlant = $("#PlantId").find("option:selected").val();
-        
+          var nppbkcId = $("#NppbkcId").val();
+
           $("#uploadPlant").val(sourcePlant);
 
-          ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant });
+          ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant }, nRow.find("td").eq(2).html());
 
+
+          ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());
+
+
+          //set value
+          $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
+
+          ClearInputForm();
+          ClearValidation();
+
+          $('#uploadStickerCode').val(nRow.find("td").eq(3).html());
+          $('#uploadCk1Date').val(nRow.find("td").eq(5).html());
+          $('#uploadSeriesCode').val(nRow.find("td").eq(6).html());
+          $('#uploadBrandName').val(nRow.find("td").eq(7).html());
+          $('#uploadProductAlias').val(nRow.find("td").eq(8).html());
+          $('#uploadContent').val(nRow.find("td").eq(9).html());
+          $('#uploadHje').val(nRow.find("td").eq(10).html());
+          $('#uploadTariff').val(nRow.find("td").eq(11).html());
+          $('#uploadColour').val(nRow.find("td").eq(12).html());
+          $('#uploadReqQty').val(nRow.find("td").eq(13).html());
+          $('#uploadApprovedQty').val(nRow.find("td").eq(17).html());
+          $('#uploadNoPengawas').val(nRow.find("td").eq(16).html());
+          $('#uploadRemarks').val(nRow.find("td").eq(18).html());
+
+
+          $("#lblTitleInputManual").text('Edit Input');
+
+          $('#Pbck4UploadModal').modal('show');
+
+
+      }
+      
+      $("#btnAddRow").click(function () {
+          var sourcePlant = $("#PlantId").find("option:selected").val();
+          var nppbkcId = $("#NppbkcId").val();
+          
+          $("#uploadPlant").val(sourcePlant);
+
+          ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant },'');
+
+         
+          ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId },'');
+          
           $('#btnSaveMaterial').show();
           $('#btnUpdateMaterial').hide();
 
-          //ClearInputForm();
-          //ClearValidation();
+          ClearInputForm();
+          ClearValidation();
           $("#lblTitleInputManual").text('New Input');
 
           $('#Pbck4UploadModal').modal('show');
@@ -294,15 +346,47 @@
               
             
               if (faCode == '') {
-                  $("input[name='uploadStickerCode']").val('');
+                  $("#uploadStickerCode").val('');
+                  $("#uploadSeriesCode").val('');
+                  $("#uploadBrandName").val('');
+                  $("#uploadProductAlias").val('');
+                  $("#uploadContent").val('');
+                  $("#uploadHje").val('');
+                  $("#uploadTariff").val('');
+                  $("#uploadColour").val('');
                 
               } else {
 
                   var plant = $("#uploadPlant").val();
-                  ajaxGetStickerCodes('@Url.Action("GetStickerCode", "PBCK4")', { plantId: plant, faCode: faCode });
+                  ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode });
               }
           }
       });
+      
+      $("#uploadCk1No").change(function () {
+          if ($("#uploadCk1No").length) {
+              var ck1Id = $(this).find("option:selected").val();
+
+              if (ck1Id == '') {
+               
+                  $("#uploadCk1Date").val('');
+
+              } else {
+
+                  ajaxGetCk1Date('@Url.Action("GetCk1Date", "PBCK4")', { ck1Id: ck1Id });
+              }
+          }
+      });
+      
+      $("#btnSaveMaterial").click(function () {
+          AddRowPbck4();
+      });
+      
+      $("#btnUpdateMaterial").click(function () {
+
+          UpdateRowPbck4();
+      });
+      
     </script>
 
 }

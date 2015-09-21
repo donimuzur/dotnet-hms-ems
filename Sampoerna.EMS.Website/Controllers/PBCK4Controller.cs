@@ -1457,13 +1457,32 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public string GetStickerCode(string plantId, string faCode)
+        public JsonResult GetListCk1(string nppbkcId)
         {
 
-            var stickerCode = _pbck4Bll.GetBrandStickerCodeByPlantAndFaCode(plantId, faCode);
+            var brandOutput = _pbck4Bll.GetListCk1ByNppbkc(nppbkcId);
+           
+            return Json(brandOutput);
+        }
+
+        [HttpPost]
+        public JsonResult GetBrandItems(string plantId, string faCode)
+        {
+
+            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByPlantAndFaCode(plantId, faCode);
 
 
-            return stickerCode;
+            return Json(brandOutput);
+        }
+
+        [HttpPost]
+        public string GetCk1Date(long ck1Id)
+        {
+
+            var ck1Date = _pbck4Bll.GetCk1DateByCk1Id(ck1Id);
+
+
+            return ck1Date;
         }
 
         #endregion

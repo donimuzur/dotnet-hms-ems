@@ -25,26 +25,26 @@ function OnReadyFunction() {
         for (var i = 0; i < datarows.length; i++) {
             data += '<tr>';
             if (columnLength > 0) {
-                data += '<td> <input name="UploadItemModels[' + i + '].FaCode" type="hidden" value = "' + datarows[i][0] + '">' + datarows[i][0] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].StickerCode" type="hidden" value = "' + datarows[i][1] + '">' + datarows[i][1] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Ck1No" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Ck1Date" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].SeriesCode" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].BrandName" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ProductAlias" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Content" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Colour" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].FaCode" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].StickerCode" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Ck1No" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Ck1Date" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].SeriesCode" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].BrandName" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ProductAlias" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Content" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Colour" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
                 
-                data += '<td> <input name="UploadItemModels[' + i + '].ReqQty" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].TotalHje" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].TotalStamps" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].NoPengawas" type="hidden" value = "' + datarows[i][14] + '">' + datarows[i][14] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].ApprovedQty" type="hidden" value = "' + datarows[i][15] + '">' + datarows[i][15] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Remark" type="hidden" value = "' + datarows[i][16] + '">' + datarows[i][16] + '</td>';
-                //data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][17] + '">' + datarows[i][17] + '</td>';
-                data += '<input name="UploadItemModels[' + i + '].CK1_ID" type="hidden" value = "' + datarows[i][18] + '">';
+                data += '<td> <input name="UploadItemModels[' + i + '].ReqQty" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].TotalHje" type="hidden" value = "' + datarows[i][14] + '">' + datarows[i][14] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].TotalStamps" type="hidden" value = "' + datarows[i][15] + '">' + datarows[i][15] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].NoPengawas" type="hidden" value = "' + datarows[i][16] + '">' + datarows[i][16] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].ApprovedQty" type="hidden" value = "' + datarows[i][17] + '">' + datarows[i][17] + '</td>';
+                data += '<td> <input name="UploadItemModels[' + i + '].Remark" type="hidden" value = "' + datarows[i][18] + '">' + datarows[i][18] + '</td>';
+                //data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][19] + '">' + datarows[i][19] + '</td>';
+                data += '<input name="UploadItemModels[' + i + '].CK1_ID" type="hidden" value = "' + datarows[i][20] + '">';
                 
             }
             data += '</tr>';
@@ -204,7 +204,7 @@ function GenerateXlsPbck4Items(url) {
         
         for (var i = 0; i < datarows.length; i++) {
            
-            if (datarows[i][17].length > 0)
+            if (datarows[i][19].length > 0)
                 return false;
         }
 
