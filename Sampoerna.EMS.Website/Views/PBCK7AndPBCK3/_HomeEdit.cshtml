@@ -1,4 +1,5 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+@using Sampoerna.EMS.Core
 @using Sampoerna.EMS.Website.Helpers
 @{
    
@@ -47,7 +48,8 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-3 No</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Pbck3Number, new {@class = "form-control", @disabled = "disabled"})
+                                            @Html.HiddenFor(x=>x.Pbck3Dto.Pbck3Number)
+                                            @Html.TextBox("pbck3_no", Model.Pbck3Dto.Pbck3Number, new {@class = "form-control", @disabled = "disabled"})
                                         </div>
                                     </div>
                                 </div>
@@ -56,8 +58,17 @@
                                         <label class="col-md-4">PBCK-3 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Pbck3Date, new {@class = "form-control"})
-                                                <span class="input-group-addon">
+                                                @if(Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                                                {
+                                                    @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control"})
+
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("pbck3_date", Model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @disabled = "disabled"  })
+
+                                                }
+                                                    <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
                                             </div>
@@ -110,7 +121,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Lampiran</label>
                                         <div class="col-md-8">
-                                            <input type="text" placeholder="" class="form-control">
+                                            @Html.TextBoxFor(model => model.Lampiran, new { @class = "form-control" })
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -134,10 +147,35 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK7 Gov Status</label>
                                         <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList,  "select", new { @class = "form-control" })
+                                            @if (Model.Pbck7Status == Enums.DocumentStatus.WaitingGovApproval)
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new {@class = "form-control"})
+                                            }
+                                            else
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control", @disabled="disabled" })
+
+                                            }
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK3 Gov Status</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
+                                            }
+                                            else
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
+
+                                            } </div>
+                                    </div>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>

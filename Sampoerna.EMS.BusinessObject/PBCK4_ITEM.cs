@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> REQUESTED_QTY { get; set; }
         public string NO_PENGAWAS { get; set; }
     
-        public virtual CK1 CK1 { get; set; }
         public virtual PBCK4 PBCK4 { get; set; }
+        public virtual CK1 CK1 { get; set; }
     }
 }

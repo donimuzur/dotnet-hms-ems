@@ -16,19 +16,23 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public CK1()
         {
+            this.CK1_ITEM = new HashSet<CK1_ITEM>();
             this.PBCK4_ITEM = new HashSet<PBCK4_ITEM>();
         }
     
         public long CK1_ID { get; set; }
         public string CK1_NUMBER { get; set; }
         public System.DateTime CK1_DATE { get; set; }
-        public string FA_CODE { get; set; }
-        public string MATERIAL_ID { get; set; }
         public string PLANT_ID { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
         public string CREATED_BY { get; set; }
+        public string COMPANY_ID { get; set; }
+        public string COMPANY_NAME { get; set; }
+        public string VENDOR_ID { get; set; }
+        public string NPPBKC_ID { get; set; }
+        public Nullable<System.DateTime> ORDER_DATE { get; set; }
     
-        public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND { get; set; }
+        public virtual ICollection<CK1_ITEM> CK1_ITEM { get; set; }
         public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }
     }
 }

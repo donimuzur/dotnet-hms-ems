@@ -164,7 +164,7 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            return dbData.ToList();
+            return dbData.OrderByDescending(x => x.ProductionDate).ToList();
         }
 
 

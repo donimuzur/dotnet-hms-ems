@@ -22,9 +22,9 @@ namespace Sampoerna.EMS.BusinessObject
         public int BACK3_ID { get; set; }
         public string BACK3_NUMBER { get; set; }
         public Nullable<System.DateTime> BACK3_DATE { get; set; }
-        public int PBCK3_PBCK7_ID { get; set; }
+        public int PBCK3_ID { get; set; }
     
         public virtual ICollection<BACK3_DOCUMENT> BACK3_DOCUMENT { get; set; }
-        public virtual PBCK3_PBCK7 PBCK3_PBCK7 { get; set; }
+        public virtual PBCK3 PBCK3 { get; set; }
     }
 }
