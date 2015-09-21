@@ -1178,7 +1178,14 @@ namespace Sampoerna.EMS.BLL
 
             var mailProcess = ProsesMailNotificationBody(pbck1Data, input.ActionType);
 
-            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+            //distinct double To email
+            List<string> ListTo = mailProcess.To.Distinct().ToList();
+            
+            if(mailProcess.IsCCExist)
+                //Send email with CC
+                _messageService.SendEmailToListWithCC(ListTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+            else
+                _messageService.SendEmailToList(ListTo, mailProcess.Subject, mailProcess.Body, true);
 
         }
 
@@ -1487,7 +1494,8 @@ namespace Sampoerna.EMS.BLL
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
-            rc.Subject = "PBCK-1 " + pbck1Data.Pbck1Number + " is " + EnumHelper.GetDescription(pbck1Data.Status);
+            //rc.Subject = "PBCK-1 " + pbck1Data.Pbck1Number + " is " + EnumHelper.GetDescription(pbck1Data.Status);
+            rc.Subject = "PBCK-1 is " + EnumHelper.GetDescription(pbck1Data.Status);
             bodyMail.Append("Dear Team,<br />");
             bodyMail.AppendLine();
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
@@ -1515,13 +1523,16 @@ namespace Sampoerna.EMS.BLL
                         {
                             rc.To.Add(poaDto.POA_EMAIL);
                         }
+                        rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
                     }
                     else if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         var managerId = _poaBll.GetManagerIdByPoaId(pbck1Data.CreatedById);
                         var managerDetail = _userBll.GetUserById(managerId);
                         rc.To.Add(managerDetail.EMAIL);
+                        rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
                     }
+                    rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Approve:
                     if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
@@ -1566,10 +1577,14 @@ namespace Sampoerna.EMS.BLL
             public Pbck1MailNotification()
             {
                 To = new List<string>();
+                CC = new List<string>();
+                IsCCExist = false;
             }
             public string Subject { get; set; }
             public string Body { get; set; }
             public List<string> To { get; set; }
+            public List<string> CC { get; set; }
+            public bool IsCCExist { get; set; }
         }
 
         public Pbck1Dto GetByDocumentNumber(string documentNumber)
