@@ -11,7 +11,6 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         {
             SearchView = new Lack1SearchSummaryReportViewModel();
             DetailsList = new List<Lack1SummaryReportItemModel>();
-            ExportModel = new Lack1ExportSummaryReportViewModel();
         }
         public Lack1SearchSummaryReportViewModel SearchView { get; set; }
         public List<Lack1SummaryReportItemModel> DetailsList { get; set; }
