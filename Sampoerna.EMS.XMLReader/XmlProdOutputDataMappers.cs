@@ -36,11 +36,11 @@ namespace Sampoerna.EMS.XMLReader
                     try
                     {
                         var item = new PRODUCTION();
+
                         item.WERKS = _xmlMapper.GetElementValue(xElement.Element("Plnt")); ;
                         item.FA_CODE = _xmlMapper.GetElementValue(xElement.Element("Material"));
                         item.BRAND_DESC = _xmlMapper.GetElementValue(xElement.Element("MaterialDescription"));
                         item.PRODUCTION_DATE = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("ProdDate"))));
-                        
                         var company = GetCompanyByPlant(item.WERKS);
                         if (company != null)
                         {
@@ -48,6 +48,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.COMPANY_NAME = company.T001.BUTXT;
                             item.PLANT_NAME = company.T001W.NAME1;
                         }
+                        
                         item.BATCH = _xmlMapper.GetElementValue(xElement.Element("Batch"));
                         item.BUNDLE = Convert.ToInt32(_xmlMapper.GetElementValue(xElement.Element("Bundle")));
                         item.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
@@ -57,30 +58,57 @@ namespace Sampoerna.EMS.XMLReader
                         
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
                         var qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
-                        var existingMaterialUom = GetMaterialUom(item.FA_CODE, item.WERKS);
-                        if (existingMaterialUom != null)
+                        var existingProduction = GetProductionExisting(item.FA_CODE, item.WERKS, item.COMPANY_CODE,
+                            item.PRODUCTION_DATE);
+                        
+                            //var prodQty = qty;
+                        var existingBrand = GetMaterialBrand(item.FA_CODE, item.WERKS);
+                        if (existingBrand != null)
                         {
-                            var prodQty = qty*existingMaterialUom.UMREN;
-                            var existingBrand = GetMaterialBrand(item.FA_CODE, item.WERKS);
-                            if (existingBrand != null)
+                            switch (bun)
                             {
-                                item.UOM = bun;
-                                item.PROD_QTY_STICK = prodQty;
-                                item.QTY_PACKED = prodQty/Convert.ToDecimal(existingBrand.BRAND_CONTENT);
-                                items.Add(item);
+                                case "TH":
+                                    item.QTY = qty * 1000;
+                                    item.UOM = "PC";
+                                    if (existingProduction == null)
+                                    {
+                                        item.PROD_QTY_STICK = item.QTY;
+                                        item.QTY_PACKED = item.QTY/Convert.ToDecimal(existingBrand.BRAND_CONTENT);
+                                    }
+                                    else
+                                    {
+                                        item.PROD_QTY_STICK = existingProduction.PROD_QTY_STICK;
+                                        item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                        item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                    }
+
+                                    break;
+                                case "KG":
+                                    item.QTY = qty * 1000;
+                                    item.UOM = "G";
+
+                                    item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                    item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                    break;
+                                default:
+                                    item.QTY = qty;
+                                    item.UOM = bun;
+
+                                    item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                    item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                    break;
                             }
-                            else
-                            {
-                                _xmlMapper.Errors.Add(string.Format("no brand fa_code {0} - werks {1}", item.FA_CODE,
-                                item.WERKS));
-                            }
-                            
+
+
+                            items.Add(item);
                         }
                         else
                         {
-                            _xmlMapper.Errors.Add(string.Format("no material uom fa_code {0} - werks {1}", item.FA_CODE,
-                                item.WERKS));
+                            _xmlMapper.Errors.Add(string.Format("no brand fa_code {0} - werks {1}", item.FA_CODE,
+                            item.WERKS));
                         }
+                        
+                        
 
                     }
                     catch (Exception ex)
@@ -132,6 +160,15 @@ namespace Sampoerna.EMS.XMLReader
                 .Get(x=>x.BWKEY == plant, null, "T001, T001W").FirstOrDefault();
             return existingData;
         }
-       
+
+        public PRODUCTION GetProductionExisting(string faCode, string plantid, string companyCode, DateTime prodDate)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<PRODUCTION>()
+                .Get(
+                    x =>
+                        x.COMPANY_CODE == companyCode && x.WERKS == plantid && x.FA_CODE == faCode &&
+                        x.PRODUCTION_DATE == prodDate).FirstOrDefault();
+            return existingData;
+        }
     }
 }
