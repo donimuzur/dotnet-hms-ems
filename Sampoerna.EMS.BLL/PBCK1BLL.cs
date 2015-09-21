@@ -917,8 +917,8 @@ namespace Sampoerna.EMS.BLL
             }
 
             //todo sent mail
-            //if (isNeedSendNotif)
-              //  SendEmailWorkflow(input);
+            if (isNeedSendNotif)
+                SendEmailWorkflow(input);
             _uow.SaveChanges();
         }
 
