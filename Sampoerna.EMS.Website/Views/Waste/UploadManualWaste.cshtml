@@ -10,7 +10,7 @@
             <div class="col-sm-12">
                 <h3>Manual Upload Document </h3>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
+                    <button id="btnSave" class="btn btn-blue">Save</button>
                     <a href="@Url.Action("Index", "Waste")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
@@ -48,6 +48,7 @@
             uploadXmlFile();
         });
 
+        $('#btnSave').prop('disabled', true);
 
         function createColumn(text) {
             return '<td>' + text + '</td>';
@@ -105,7 +106,7 @@
                     createColumnWithHiddenField(uploaditems[i].WasteProductionDate, 'UploadItems[' + i + '].WasteProductionDate') + + '</tr>';
                         $('#tb-upload-excel').append(tr);
                     }
-                    $('#btn-save-upload').enable();
+                    $('#btnSave').enable();
                 }
             });
         };
