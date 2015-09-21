@@ -148,10 +148,10 @@ namespace Sampoerna.EMS.BLL
 
                 
             }
-
-
+            data.MATERIAL_UOM = origin.MATERIAL_UOM;
+            var dataToSave = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
            
-            _repository.InsertOrUpdate(AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data));
+            _repository.InsertOrUpdate(dataToSave);
             
 
             
@@ -191,6 +191,7 @@ namespace Sampoerna.EMS.BLL
                 };
                 _repositoryUoM.InsertOrUpdate(data);
                 _changesHistoryBll.AddHistory(changes);
+                _uow.SaveChanges();
             }
             catch (Exception ex)
             {
