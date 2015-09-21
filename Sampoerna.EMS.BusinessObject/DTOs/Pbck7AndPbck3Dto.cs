@@ -13,7 +13,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Pbck3Dto()
         {
             Pbck3Status = Enums.DocumentStatus.Draft;
-            
+            Back3Dto = new Back3Dto();
+            Ck2Dto = new Ck2Dto();
         }
 
         public string Pbck3Number { get; set; }
@@ -39,6 +40,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public DateTime? Pbck3Date { get; set; }
+        public Back3Dto Back3Dto { get; set; }
+        public Ck2Dto Ck2Dto { get; set; }
        
     }
 
@@ -56,7 +59,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Pbck7Number { get; set; }
         public Enums.DocumentStatus Pbck7Status { get; set; }
         public DateTime Pbck7Date { get; set; }
-   
+        public string Lampiran { get; set; }
         public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
@@ -129,5 +132,26 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     }
 
-   
+    public class Back3Dto
+    {
+        public int Back3ID { get; set; }
+        public string Back3Number { get; set; }
+        public Nullable<System.DateTime> Back3Date { get; set; }
+        public int Pbck3ID { get; set; }
+
+        public List<BACK3_DOCUMENT> Back3Document { get; set; }
+      
+    }
+
+    public class Ck2Dto
+    {
+        public int Ck2ID { get; set; }
+        public string Ck2Number { get; set; }
+        public Nullable<System.DateTime> CK2_DATE { get; set; }
+        public Nullable<decimal> Ck2Value { get; set; }
+        public int Pbck3ID { get; set; }
+
+        public List<CK2_DOCUMENT> Ck2Document { get; set; }
+        
+    }
 }

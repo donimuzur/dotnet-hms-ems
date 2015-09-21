@@ -121,7 +121,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Lampiran</label>
                                         <div class="col-md-8">
-                                            <input type="text" placeholder="" class="form-control">
+                                            @Html.TextBoxFor(model => model.Lampiran, new { @class = "form-control" })
+
+
                                         </div>
                                     </div>
                                 </div>
