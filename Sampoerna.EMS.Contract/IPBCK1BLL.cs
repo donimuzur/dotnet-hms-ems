@@ -50,6 +50,6 @@ namespace Sampoerna.EMS.Contract
         List<T001WCompositeDto> GetSupplierPlantByParam(Pbck1GetSupplierPlantByParamInput input);
 
         bool checkUniquePBCK1(Pbck1SaveInput pbck1);
-
+        Pbck1Dto GetPBCK1Reference(Pbck1ReferenceSearchInput input);
     }
 }

@@ -1,5 +1,7 @@
 ﻿
-    $('.decimal').attr('onkeyup', 'this.value=ThausandSeperator($(this).val(), 2)');
+$('.decimal').attr('onkeyup', 'this.value=ThausandSeperator($(this).val(), 2)');
+
+$('.decimalMaxFour').attr('onkeyup', 'this.value=ThausandSeparatorMaxFour($(this).val(), 5)');
     
     
 function removeCharacter(v, ch) {
@@ -86,4 +88,37 @@ function allCharsToUpper(value) {
         tempValue = tempValue + chr;
     }
     return tempValue;
+}
+
+function ThausandSeparatorMaxFour(value, digit) {
+    var thausandSepCh = ",";
+    var decimalSepCh = ".";
+
+    var tempValue = "";
+    var realValue = value + "";
+    var devValue = "";
+    realValue = characterControl(realValue);
+    var comma = realValue.indexOf(decimalSepCh);
+    if (comma != -1) {
+        tempValue = realValue.substr(0, comma);
+        devValue = realValue.substr(comma);
+        devValue = removeCharacter(devValue, thausandSepCh);
+        devValue = removeCharacter(devValue, decimalSepCh);
+        devValue = decimalSepCh + devValue;
+        if (devValue.length > digit) {
+            devValue = devValue.substr(0, digit);
+        }
+    } else {
+        tempValue = realValue;
+    }
+    tempValue = removeCharacter(tempValue, thausandSepCh);
+
+    var result = "";
+    var len = tempValue.length;
+    while (len > digit) {
+        result = thausandSepCh + tempValue.substr(len - digit, digit) + result;
+        len -= digit;
+    }
+    result = tempValue.substr(0, len) + result;
+    return result + devValue;
 }
