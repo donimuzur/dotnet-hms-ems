@@ -32,5 +32,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string DOCGMVTER { get; set; }
         public string MATDOC { get; set; }
         public string ORDR { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public string MODIFIED_BY { get; set; }
     }
 }
