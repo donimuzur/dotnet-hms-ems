@@ -498,5 +498,10 @@ namespace Sampoerna.EMS.BLL
 
             return Mapper.Map<List<Ck4CDto>>(dtData);
         }
+        
+        public Ck4cReportDto GetCk4cReportDataById(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

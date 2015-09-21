@@ -125,6 +125,9 @@
 </div>
 
 @section scripts {
+    <script type="text/javascript">
+            var referenceURL = "@Url.Action("GetPBCK1Reference", "PBCK1")";
+    </script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
@@ -257,6 +260,15 @@
             isNppbkcImportChecked();
         });
 
+        $("#Detail_PeriodFrom").change(function () {
+            getReference();
+        });
+
+
+        $("#Detail_PeriodTo").change(function () {
+            getReference();
+        });
+
         changeToDecimal("input[name='Detail.LatestSaldo']:text", "val");
         changeToDecimal("input[name='Detail.RequestQty']:text", "val");
         changeToDecimal("input[name='Detail.QtyApproved']", "val");
@@ -264,6 +276,7 @@
         changeToDecimal("#ProdConvContent .decimal", "html"); 
         changeToDecimal("#Detail_Pbck1ProdConverter .decimal", "html");
         changeToDecimal("#Detail_Pbck1ProdPlan .decimal", "html");
+
 
         if ($("input[name='Detail.QtyApproved']:hidden").length) {
             $("input[name='Detail.QtyApproved']:text").keyup(function () {
@@ -308,6 +321,10 @@
             htmlSelect += '</select>';
             htmlSelect += '<input id="Detail_SupplierPlant" name="Detail.SupplierPlant" value="" type="hidden">';
             $('#supp-plant').html(htmlSelect);
+
+            if ("@Model.Detail.SupplierPlantWerks" != "")
+                $("#Detail_SupplierPlant_ddl").val("@Model.Detail.SupplierPlantWerks")
+
         }
     }
 
@@ -336,6 +353,7 @@
                 ajaxSelectNppbck({ nppbkcid: nppbkcid });
             }
         }
+        getReference();
     }
 
     function ajaxLoadSupplierPlant(formData, url) {
