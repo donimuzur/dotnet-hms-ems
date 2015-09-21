@@ -1919,5 +1919,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        [HttpPost]
+        public JsonResult GetPBCK1Reference(DateTime periodFrom, DateTime periodTo, string nppbkcId, string supplierNppbkcId,string supplierPlantWerks,string goodType)
+        {
+            var reference = _pbck1Bll.GetPBCK1Reference(new Pbck1ReferenceSearchInput() { NppbkcId = nppbkcId, PeriodFrom = periodFrom, PeriodTo = periodTo, SupllierNppbkcId = supplierNppbkcId, SupplierPlantWerks = supplierPlantWerks, GoodTypeId = goodType });
+            if (reference == null)
+            {
+                return Json(false);
+            }else{
+                return Json(new { referenceId = reference.Pbck1Id, refereceNumber = reference.Pbck1Number});
+            }
+        }
+
+
     }
 }

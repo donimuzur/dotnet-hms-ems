@@ -44,18 +44,21 @@
 }
 
 @section scripts {
+    <script type="text/javascript">
+        var referenceURL = "@Url.Action("GetPBCK1Reference", "PBCK1")";
+    </script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/pbck1script.js"></script>
     <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
-
         var supplierData;
         $(document).ready(function() {
             $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
             });
+
 
             $("#Detail_SupplierPortId").change(function() {
                 var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
@@ -113,6 +116,14 @@
                 isNppbkcImportChecked();
             });
 
+            $("#Detail_PeriodFrom").change(function () {
+                getReference();
+            });
+
+
+            $("#Detail_PeriodTo").change(function () {
+                getReference();
+            });
         });
 
         $('#Detail_Lack1FromMonthId').change(function () {
@@ -180,8 +191,14 @@
                 htmlSelect += '</select>';
                 htmlSelect += '<input id="Detail_SupplierPlant" name="Detail.SupplierPlant" value="" type="hidden">';
                 $('#supp-plant').html(htmlSelect);
+
+                if ("@Model.Detail.SupplierPlantWerks" != "")
+                    $("#Detail_SupplierPlant_ddl").val("@Model.Detail.SupplierPlantWerks")
+
                 //selected to 1
                 supplierChange(isNppbkcImport, '@Url.Action("GetSupplierPlantDetail", "PBCK1")');
+
+
             }
         }
 
@@ -199,7 +216,6 @@
         function nppbkcIdOnChange() {
 
             ChangeLatestSaldo();
-
             $('#Detail_NppbkcCompanyName').val('');
             $('#Detail_NppbkcCompanyCode').val('');
             $('#Detail_NppbkcKppbcId').val('');
@@ -213,6 +229,7 @@
                     ajaxSelectNppbck({ nppbkcid: nppbkcid });
                 }
             }
+            getReference();
         }
 
         function ajaxLoadSupplierPlant(formData, url) {
@@ -224,6 +241,7 @@
                     supplierData = data;
                     //load supplier plant
                     supplierPortOnChange();
+                    
                 }
             });
         }

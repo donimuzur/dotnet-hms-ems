@@ -114,4 +114,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ExciseableGoodsTypeId { get; set; }
     }
 
+    public class Pbck1ReferenceSearchInput {
+        public string NppbkcId { get; set; }
+        public DateTime PeriodFrom { get; set; }
+        public DateTime PeriodTo { get; set; }
+        public string SupllierNppbkcId { get; set; }
+        public string SupplierPlantWerks { get; set; }
+        public string GoodTypeId { get; set; }
+    }
 }
