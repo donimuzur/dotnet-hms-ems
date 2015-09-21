@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.BLL
             var result = from b in _repository.GetQuery()
                          join p in _repositoryPlantT001W.GetQuery() on b.WERKS equals p.WERKS
                          join s in _repositorySeries.GetQuery() on b.SERIES_CODE equals s.SERIES_CODE
-                         where b.IS_DELETED == false && b.STATUS == true
+                         //where (b.IS_DELETED == false || b.IS_DELETED == null && b.STATUS == true)
                          select new BrandRegistrationOutput()
                          {
                              StickerCode = b.STICKER_CODE,
@@ -115,6 +115,7 @@ namespace Sampoerna.EMS.BLL
         public List<ZAIDM_EX_BRAND> GetByPlantId(string plantId)
         {
             var dbData = _repository.Get(b => b.WERKS == plantId).ToList();
+            //var dbData = _repository.Get(b => b.WERKS == plantId && b.STATUS == true && b.IS_DELETED != true).ToList();
             return dbData;
         }
 
@@ -122,8 +123,8 @@ namespace Sampoerna.EMS.BLL
         public List<ZAIDM_EX_BRAND> GetBrandCeBylant(string plantWerk)
         {
             //var dbData = _repository.Get(c => c.WERKS == plantWerk).ToList();
-            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true).ToList();
-
+            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true ).ToList();
+            //var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true && b.STATUS == true).ToList();
             return dbData;
         }
     }

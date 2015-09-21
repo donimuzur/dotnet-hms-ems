@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public decimal? MarkerRejectStickQty { get; set; }
         public decimal? PackerRejectStickQty { get; set; }
 
-        public DateTime? WasteProductionDate { get; set; }
+        public string WasteProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
 

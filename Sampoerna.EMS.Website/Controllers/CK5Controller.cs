@@ -614,7 +614,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        model.Ck5Type != Enums.CK5Type.PortToImporter)
+                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        model.Ck5Type != Enums.CK5Type.Manual)
                     {
 
                         var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
@@ -812,7 +813,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        model.Ck5Type != Enums.CK5Type.PortToImporter)
+                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        model.Ck5Type != Enums.CK5Type.Manual)
                     {
                         var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
                         model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();

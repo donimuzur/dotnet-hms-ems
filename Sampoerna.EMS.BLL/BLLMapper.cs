@@ -447,6 +447,22 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.DUST_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.DustWasteGramQty))
                 .ForMember(dest => dest.FLOOR_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.FloorWasteStickQty));
 
+            Mapper.CreateMap<WasteUploadItems, WASTE>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantWerks))
+                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+                .ForMember(dest => dest.BRAND_DESC, opt => opt.MapFrom(src => src.BrandDescription))
+                .ForMember(dest => dest.MARKER_REJECT_STICK_QTY, opt => opt.MapFrom(src => src.MarkerRejectStickQty))
+                .ForMember(dest => dest.PACKER_REJECT_STICK_QTY, opt => opt.MapFrom(src => src.PackerRejectStickQty))
+                .ForMember(dest => dest.WASTE_PROD_DATE, opt => opt.MapFrom(src => src.WasteProductionDate))
+                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName))
+                .ForMember(dest => dest.DUST_WASTE_GRAM_QTY, opt => opt.MapFrom(src => src.DustWasteGramQty))
+                .ForMember(dest => dest.FLOOR_WASTE_GRAM_QTY, opt => opt.MapFrom(src => src.FloorWasteGramQty))
+                .ForMember(dest => dest.DUST_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.DustWasteGramQty))
+                .ForMember(dest => dest.FLOOR_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.FloorWasteStickQty));
+
+
             #endregion
 
             Mapper.CreateMap<CK1, CK1Dto>().IgnoreAllNonExisting();
