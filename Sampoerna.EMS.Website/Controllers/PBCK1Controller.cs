@@ -698,6 +698,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
+            else {
+                model.AllowApproveAndReject = false;
+                foreach (POADto poa in _poaBll.GetPoaByNppbkcIdAndMainPlant(model.Detail.NppbkcId))
+                { 
+                    if(poa.POA_ID == CurrentUser.USER_ID){
+                        model.AllowApproveAndReject = true;
+                    }
+                }
+                
+            }
+
+
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
 
