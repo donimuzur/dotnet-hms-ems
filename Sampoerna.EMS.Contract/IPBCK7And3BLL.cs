@@ -20,10 +20,21 @@ namespace Sampoerna.EMS.Contract
 
 
         void InsertBack1(Back1Dto back1);
+        void InsertBack3(Back3Dto back3);
+
+        void InsertCk2(Ck2Dto ck2);
+
 
         Back1Dto GetBack1ByPbck7(int pbck7Id);
 
         Pbck3Dto GetPbck3ByPbck7Id(int? id);
+
+        
+
+        Back3Dto GetBack3ByPbck3Id(int? id);
+
+        Ck2Dto GetCk2ByPbck3Id(int? id);
+
 
         void InsertPbck3(Pbck3Dto pbck3Dto);
 
