@@ -63,11 +63,13 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Pbck7AndPbck3Dto, Pbck7Pbck3CreateViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Pbck7Id))
-                 .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DocumentType))
+                .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DocumentType))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreateDate))
                 .ForMember(dest => dest.Pbck7StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck7Status)))
-                  .ForMember(dest => dest.Pbck3StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck3Dto.Pbck3Status)))
-                ;
+                .ForMember(dest => dest.Pbck3StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck3Dto.Pbck3Status)))
+                 .ForMember(dest => dest.Pbck7GovStatus, opt => opt.MapFrom(src => src.Pbck7GovStatus))
+                 
+                  ;
 
             Mapper.CreateMap<Pbck7Pbck3CreateViewModel, Pbck7AndPbck3Dto>().IgnoreAllNonExisting()
                    .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.Id))

@@ -28,5 +28,7 @@ namespace Sampoerna.EMS.Contract
         void Ck4cWorkflow(Ck4cWorkflowDocumentInput input);
 
         void UpdateReportedOn(Ck4cUpdateReportedOn input);
+
+        Ck4cReportDto GetCk4cReportDataById(int id);
     }
 }
