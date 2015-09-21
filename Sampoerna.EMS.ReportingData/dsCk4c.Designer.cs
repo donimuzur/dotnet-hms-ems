@@ -26,6 +26,8 @@ namespace Sampoerna.EMS.ReportingData {
         
         private Ck4cDataTable tableCk4c;
         
+        private Ck4cItemDataTable tableCk4cItem;
+        
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -57,6 +59,9 @@ namespace Sampoerna.EMS.ReportingData {
                 if ((ds.Tables["Ck4c"] != null)) {
                     base.Tables.Add(new Ck4cDataTable(ds.Tables["Ck4c"]));
                 }
+                if ((ds.Tables["Ck4cItem"] != null)) {
+                    base.Tables.Add(new Ck4cItemDataTable(ds.Tables["Ck4cItem"]));
+                }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
                 this.Namespace = ds.Namespace;
@@ -82,6 +87,16 @@ namespace Sampoerna.EMS.ReportingData {
         public Ck4cDataTable Ck4c {
             get {
                 return this.tableCk4c;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public Ck4cItemDataTable Ck4cItem {
+            get {
+                return this.tableCk4cItem;
             }
         }
         
@@ -155,6 +170,9 @@ namespace Sampoerna.EMS.ReportingData {
                 if ((ds.Tables["Ck4c"] != null)) {
                     base.Tables.Add(new Ck4cDataTable(ds.Tables["Ck4c"]));
                 }
+                if ((ds.Tables["Ck4cItem"] != null)) {
+                    base.Tables.Add(new Ck4cItemDataTable(ds.Tables["Ck4cItem"]));
+                }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
                 this.Namespace = ds.Namespace;
@@ -194,6 +212,12 @@ namespace Sampoerna.EMS.ReportingData {
                     this.tableCk4c.InitVars();
                 }
             }
+            this.tableCk4cItem = ((Ck4cItemDataTable)(base.Tables["Ck4cItem"]));
+            if ((initTable == true)) {
+                if ((this.tableCk4cItem != null)) {
+                    this.tableCk4cItem.InitVars();
+                }
+            }
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -206,11 +230,19 @@ namespace Sampoerna.EMS.ReportingData {
             this.SchemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
             this.tableCk4c = new Ck4cDataTable();
             base.Tables.Add(this.tableCk4c);
+            this.tableCk4cItem = new Ck4cItemDataTable();
+            base.Tables.Add(this.tableCk4cItem);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private bool ShouldSerializeCk4c() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        private bool ShouldSerializeCk4cItem() {
             return false;
         }
         
@@ -272,6 +304,9 @@ namespace Sampoerna.EMS.ReportingData {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         public delegate void Ck4cRowChangeEventHandler(object sender, Ck4cRowChangeEvent e);
         
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public delegate void Ck4cItemRowChangeEventHandler(object sender, Ck4cItemRowChangeEvent e);
+        
         /// <summary>
         ///Represents the strongly named DataTable class.
         ///</summary>
@@ -286,6 +321,40 @@ namespace Sampoerna.EMS.ReportingData {
             private global::System.Data.DataColumn columnReportedOn;
             
             private global::System.Data.DataColumn columnReportedPeriodStart;
+            
+            private global::System.Data.DataColumn columnReportedPeriodEnd;
+            
+            private global::System.Data.DataColumn columnReportedMonth;
+            
+            private global::System.Data.DataColumn columnReportedYear;
+            
+            private global::System.Data.DataColumn columnCompanyName;
+            
+            private global::System.Data.DataColumn columnCompanyAddress;
+            
+            private global::System.Data.DataColumn columnNppbkc;
+            
+            private global::System.Data.DataColumn columnPoa;
+            
+            private global::System.Data.DataColumn columnHeader;
+            
+            private global::System.Data.DataColumn columnFooter;
+            
+            private global::System.Data.DataColumn columnPreview;
+            
+            private global::System.Data.DataColumn columnReportedOnDay;
+            
+            private global::System.Data.DataColumn columnReportedOnMonth;
+            
+            private global::System.Data.DataColumn columnReportedOnYear;
+            
+            private global::System.Data.DataColumn columnNBatang;
+            
+            private global::System.Data.DataColumn columnNGram;
+            
+            private global::System.Data.DataColumn columnProdTotal;
+            
+            private global::System.Data.DataColumn columnCity;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -354,6 +423,142 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ReportedPeriodEndColumn {
+                get {
+                    return this.columnReportedPeriodEnd;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ReportedMonthColumn {
+                get {
+                    return this.columnReportedMonth;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ReportedYearColumn {
+                get {
+                    return this.columnReportedYear;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CompanyNameColumn {
+                get {
+                    return this.columnCompanyName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CompanyAddressColumn {
+                get {
+                    return this.columnCompanyAddress;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NppbkcColumn {
+                get {
+                    return this.columnNppbkc;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PoaColumn {
+                get {
+                    return this.columnPoa;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn HeaderColumn {
+                get {
+                    return this.columnHeader;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FooterColumn {
+                get {
+                    return this.columnFooter;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PreviewColumn {
+                get {
+                    return this.columnPreview;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ReportedOnDayColumn {
+                get {
+                    return this.columnReportedOnDay;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ReportedOnMonthColumn {
+                get {
+                    return this.columnReportedOnMonth;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ReportedOnYearColumn {
+                get {
+                    return this.columnReportedOnYear;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NBatangColumn {
+                get {
+                    return this.columnNBatang;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NGramColumn {
+                get {
+                    return this.columnNGram;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ProdTotalColumn {
+                get {
+                    return this.columnProdTotal;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CityColumn {
+                get {
+                    return this.columnCity;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -389,13 +594,51 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Ck4cRow AddCk4cRow(string Ck4cId, string Number, string ReportedOn, string ReportedPeriodStart) {
+            public Ck4cRow AddCk4cRow(
+                        string Ck4cId, 
+                        string Number, 
+                        string ReportedOn, 
+                        string ReportedPeriodStart, 
+                        string ReportedPeriodEnd, 
+                        string ReportedMonth, 
+                        string ReportedYear, 
+                        string CompanyName, 
+                        string CompanyAddress, 
+                        string Nppbkc, 
+                        string Poa, 
+                        byte[] Header, 
+                        string Footer, 
+                        string Preview, 
+                        string ReportedOnDay, 
+                        string ReportedOnMonth, 
+                        string ReportedOnYear, 
+                        string NBatang, 
+                        string NGram, 
+                        string ProdTotal, 
+                        string City) {
                 Ck4cRow rowCk4cRow = ((Ck4cRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Ck4cId,
                         Number,
                         ReportedOn,
-                        ReportedPeriodStart};
+                        ReportedPeriodStart,
+                        ReportedPeriodEnd,
+                        ReportedMonth,
+                        ReportedYear,
+                        CompanyName,
+                        CompanyAddress,
+                        Nppbkc,
+                        Poa,
+                        Header,
+                        Footer,
+                        Preview,
+                        ReportedOnDay,
+                        ReportedOnMonth,
+                        ReportedOnYear,
+                        NBatang,
+                        NGram,
+                        ProdTotal,
+                        City};
                 rowCk4cRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowCk4cRow);
                 return rowCk4cRow;
@@ -422,6 +665,23 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnNumber = base.Columns["Number"];
                 this.columnReportedOn = base.Columns["ReportedOn"];
                 this.columnReportedPeriodStart = base.Columns["ReportedPeriodStart"];
+                this.columnReportedPeriodEnd = base.Columns["ReportedPeriodEnd"];
+                this.columnReportedMonth = base.Columns["ReportedMonth"];
+                this.columnReportedYear = base.Columns["ReportedYear"];
+                this.columnCompanyName = base.Columns["CompanyName"];
+                this.columnCompanyAddress = base.Columns["CompanyAddress"];
+                this.columnNppbkc = base.Columns["Nppbkc"];
+                this.columnPoa = base.Columns["Poa"];
+                this.columnHeader = base.Columns["Header"];
+                this.columnFooter = base.Columns["Footer"];
+                this.columnPreview = base.Columns["Preview"];
+                this.columnReportedOnDay = base.Columns["ReportedOnDay"];
+                this.columnReportedOnMonth = base.Columns["ReportedOnMonth"];
+                this.columnReportedOnYear = base.Columns["ReportedOnYear"];
+                this.columnNBatang = base.Columns["NBatang"];
+                this.columnNGram = base.Columns["NGram"];
+                this.columnProdTotal = base.Columns["ProdTotal"];
+                this.columnCity = base.Columns["City"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -435,6 +695,40 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnReportedOn);
                 this.columnReportedPeriodStart = new global::System.Data.DataColumn("ReportedPeriodStart", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnReportedPeriodStart);
+                this.columnReportedPeriodEnd = new global::System.Data.DataColumn("ReportedPeriodEnd", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnReportedPeriodEnd);
+                this.columnReportedMonth = new global::System.Data.DataColumn("ReportedMonth", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnReportedMonth);
+                this.columnReportedYear = new global::System.Data.DataColumn("ReportedYear", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnReportedYear);
+                this.columnCompanyName = new global::System.Data.DataColumn("CompanyName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCompanyName);
+                this.columnCompanyAddress = new global::System.Data.DataColumn("CompanyAddress", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCompanyAddress);
+                this.columnNppbkc = new global::System.Data.DataColumn("Nppbkc", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNppbkc);
+                this.columnPoa = new global::System.Data.DataColumn("Poa", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPoa);
+                this.columnHeader = new global::System.Data.DataColumn("Header", typeof(byte[]), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnHeader);
+                this.columnFooter = new global::System.Data.DataColumn("Footer", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFooter);
+                this.columnPreview = new global::System.Data.DataColumn("Preview", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPreview);
+                this.columnReportedOnDay = new global::System.Data.DataColumn("ReportedOnDay", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnReportedOnDay);
+                this.columnReportedOnMonth = new global::System.Data.DataColumn("ReportedOnMonth", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnReportedOnMonth);
+                this.columnReportedOnYear = new global::System.Data.DataColumn("ReportedOnYear", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnReportedOnYear);
+                this.columnNBatang = new global::System.Data.DataColumn("NBatang", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNBatang);
+                this.columnNGram = new global::System.Data.DataColumn("NGram", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNGram);
+                this.columnProdTotal = new global::System.Data.DataColumn("ProdTotal", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnProdTotal);
+                this.columnCity = new global::System.Data.DataColumn("City", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCity);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -562,6 +856,323 @@ namespace Sampoerna.EMS.ReportingData {
         }
         
         /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class Ck4cItemDataTable : global::System.Data.TypedTableBase<Ck4cItemRow> {
+            
+            private global::System.Data.DataColumn columnCk4cItemId;
+            
+            private global::System.Data.DataColumn columnProdQty;
+            
+            private global::System.Data.DataColumn columnProdType;
+            
+            private global::System.Data.DataColumn columnMerk;
+            
+            private global::System.Data.DataColumn columnHje;
+            
+            private global::System.Data.DataColumn columnNo;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public Ck4cItemDataTable() {
+                this.TableName = "Ck4cItem";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal Ck4cItemDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected Ck4cItemDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn Ck4cItemIdColumn {
+                get {
+                    return this.columnCk4cItemId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ProdQtyColumn {
+                get {
+                    return this.columnProdQty;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ProdTypeColumn {
+                get {
+                    return this.columnProdType;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn MerkColumn {
+                get {
+                    return this.columnMerk;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn HjeColumn {
+                get {
+                    return this.columnHje;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NoColumn {
+                get {
+                    return this.columnNo;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public Ck4cItemRow this[int index] {
+                get {
+                    return ((Ck4cItemRow)(this.Rows[index]));
+                }
+            }
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event Ck4cItemRowChangeEventHandler Ck4cItemRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event Ck4cItemRowChangeEventHandler Ck4cItemRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event Ck4cItemRowChangeEventHandler Ck4cItemRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event Ck4cItemRowChangeEventHandler Ck4cItemRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void AddCk4cItemRow(Ck4cItemRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public Ck4cItemRow AddCk4cItemRow(string Ck4cItemId, string ProdQty, string ProdType, string Merk, string Hje, string No) {
+                Ck4cItemRow rowCk4cItemRow = ((Ck4cItemRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        Ck4cItemId,
+                        ProdQty,
+                        ProdType,
+                        Merk,
+                        Hje,
+                        No};
+                rowCk4cItemRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowCk4cItemRow);
+                return rowCk4cItemRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public override global::System.Data.DataTable Clone() {
+                Ck4cItemDataTable cln = ((Ck4cItemDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new Ck4cItemDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal void InitVars() {
+                this.columnCk4cItemId = base.Columns["Ck4cItemId"];
+                this.columnProdQty = base.Columns["ProdQty"];
+                this.columnProdType = base.Columns["ProdType"];
+                this.columnMerk = base.Columns["Merk"];
+                this.columnHje = base.Columns["Hje"];
+                this.columnNo = base.Columns["No"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            private void InitClass() {
+                this.columnCk4cItemId = new global::System.Data.DataColumn("Ck4cItemId", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCk4cItemId);
+                this.columnProdQty = new global::System.Data.DataColumn("ProdQty", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnProdQty);
+                this.columnProdType = new global::System.Data.DataColumn("ProdType", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnProdType);
+                this.columnMerk = new global::System.Data.DataColumn("Merk", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMerk);
+                this.columnHje = new global::System.Data.DataColumn("Hje", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnHje);
+                this.columnNo = new global::System.Data.DataColumn("No", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNo);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public Ck4cItemRow NewCk4cItemRow() {
+                return ((Ck4cItemRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new Ck4cItemRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override global::System.Type GetRowType() {
+                return typeof(Ck4cItemRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.Ck4cItemRowChanged != null)) {
+                    this.Ck4cItemRowChanged(this, new Ck4cItemRowChangeEvent(((Ck4cItemRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.Ck4cItemRowChanging != null)) {
+                    this.Ck4cItemRowChanging(this, new Ck4cItemRowChangeEvent(((Ck4cItemRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.Ck4cItemRowDeleted != null)) {
+                    this.Ck4cItemRowDeleted(this, new Ck4cItemRowChangeEvent(((Ck4cItemRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.Ck4cItemRowDeleting != null)) {
+                    this.Ck4cItemRowDeleting(this, new Ck4cItemRowChangeEvent(((Ck4cItemRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void RemoveCk4cItemRow(Ck4cItemRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                dsCk4c ds = new dsCk4c();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "Ck4cItemDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
         public partial class Ck4cRow : global::System.Data.DataRow {
@@ -641,6 +1252,278 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ReportedPeriodEnd {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.ReportedPeriodEndColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ReportedPeriodEnd\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.ReportedPeriodEndColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ReportedMonth {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.ReportedMonthColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ReportedMonth\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.ReportedMonthColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ReportedYear {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.ReportedYearColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ReportedYear\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.ReportedYearColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CompanyName {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.CompanyNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CompanyName\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.CompanyNameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CompanyAddress {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.CompanyAddressColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CompanyAddress\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.CompanyAddressColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Nppbkc {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.NppbkcColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Nppbkc\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.NppbkcColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Poa {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.PoaColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Poa\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.PoaColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public byte[] Header {
+                get {
+                    try {
+                        return ((byte[])(this[this.tableCk4c.HeaderColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Header\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.HeaderColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Footer {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.FooterColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Footer\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.FooterColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Preview {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.PreviewColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Preview\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.PreviewColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ReportedOnDay {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.ReportedOnDayColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ReportedOnDay\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.ReportedOnDayColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ReportedOnMonth {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.ReportedOnMonthColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ReportedOnMonth\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.ReportedOnMonthColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ReportedOnYear {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.ReportedOnYearColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ReportedOnYear\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.ReportedOnYearColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string NBatang {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.NBatangColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'NBatang\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.NBatangColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string NGram {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.NGramColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'NGram\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.NGramColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ProdTotal {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.ProdTotalColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ProdTotal\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.ProdTotalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string City {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4c.CityColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'City\' in table \'Ck4c\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4c.CityColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCk4cIdNull() {
                 return this.IsNull(this.tableCk4c.Ck4cIdColumn);
             }
@@ -686,6 +1569,393 @@ namespace Sampoerna.EMS.ReportingData {
             public void SetReportedPeriodStartNull() {
                 this[this.tableCk4c.ReportedPeriodStartColumn] = global::System.Convert.DBNull;
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsReportedPeriodEndNull() {
+                return this.IsNull(this.tableCk4c.ReportedPeriodEndColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetReportedPeriodEndNull() {
+                this[this.tableCk4c.ReportedPeriodEndColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsReportedMonthNull() {
+                return this.IsNull(this.tableCk4c.ReportedMonthColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetReportedMonthNull() {
+                this[this.tableCk4c.ReportedMonthColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsReportedYearNull() {
+                return this.IsNull(this.tableCk4c.ReportedYearColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetReportedYearNull() {
+                this[this.tableCk4c.ReportedYearColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCompanyNameNull() {
+                return this.IsNull(this.tableCk4c.CompanyNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCompanyNameNull() {
+                this[this.tableCk4c.CompanyNameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCompanyAddressNull() {
+                return this.IsNull(this.tableCk4c.CompanyAddressColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCompanyAddressNull() {
+                this[this.tableCk4c.CompanyAddressColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNppbkcNull() {
+                return this.IsNull(this.tableCk4c.NppbkcColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNppbkcNull() {
+                this[this.tableCk4c.NppbkcColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPoaNull() {
+                return this.IsNull(this.tableCk4c.PoaColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPoaNull() {
+                this[this.tableCk4c.PoaColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsHeaderNull() {
+                return this.IsNull(this.tableCk4c.HeaderColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetHeaderNull() {
+                this[this.tableCk4c.HeaderColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFooterNull() {
+                return this.IsNull(this.tableCk4c.FooterColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFooterNull() {
+                this[this.tableCk4c.FooterColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPreviewNull() {
+                return this.IsNull(this.tableCk4c.PreviewColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPreviewNull() {
+                this[this.tableCk4c.PreviewColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsReportedOnDayNull() {
+                return this.IsNull(this.tableCk4c.ReportedOnDayColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetReportedOnDayNull() {
+                this[this.tableCk4c.ReportedOnDayColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsReportedOnMonthNull() {
+                return this.IsNull(this.tableCk4c.ReportedOnMonthColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetReportedOnMonthNull() {
+                this[this.tableCk4c.ReportedOnMonthColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsReportedOnYearNull() {
+                return this.IsNull(this.tableCk4c.ReportedOnYearColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetReportedOnYearNull() {
+                this[this.tableCk4c.ReportedOnYearColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNBatangNull() {
+                return this.IsNull(this.tableCk4c.NBatangColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNBatangNull() {
+                this[this.tableCk4c.NBatangColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNGramNull() {
+                return this.IsNull(this.tableCk4c.NGramColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNGramNull() {
+                this[this.tableCk4c.NGramColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsProdTotalNull() {
+                return this.IsNull(this.tableCk4c.ProdTotalColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetProdTotalNull() {
+                this[this.tableCk4c.ProdTotalColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCityNull() {
+                return this.IsNull(this.tableCk4c.CityColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCityNull() {
+                this[this.tableCk4c.CityColumn] = global::System.Convert.DBNull;
+            }
+        }
+        
+        /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class Ck4cItemRow : global::System.Data.DataRow {
+            
+            private Ck4cItemDataTable tableCk4cItem;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            internal Ck4cItemRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableCk4cItem = ((Ck4cItemDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Ck4cItemId {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cItem.Ck4cItemIdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Ck4cItemId\' in table \'Ck4cItem\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cItem.Ck4cItemIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ProdQty {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cItem.ProdQtyColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ProdQty\' in table \'Ck4cItem\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cItem.ProdQtyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ProdType {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cItem.ProdTypeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ProdType\' in table \'Ck4cItem\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cItem.ProdTypeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Merk {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cItem.MerkColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Merk\' in table \'Ck4cItem\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cItem.MerkColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Hje {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cItem.HjeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Hje\' in table \'Ck4cItem\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cItem.HjeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string No {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cItem.NoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'No\' in table \'Ck4cItem\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cItem.NoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCk4cItemIdNull() {
+                return this.IsNull(this.tableCk4cItem.Ck4cItemIdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCk4cItemIdNull() {
+                this[this.tableCk4cItem.Ck4cItemIdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsProdQtyNull() {
+                return this.IsNull(this.tableCk4cItem.ProdQtyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetProdQtyNull() {
+                this[this.tableCk4cItem.ProdQtyColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsProdTypeNull() {
+                return this.IsNull(this.tableCk4cItem.ProdTypeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetProdTypeNull() {
+                this[this.tableCk4cItem.ProdTypeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsMerkNull() {
+                return this.IsNull(this.tableCk4cItem.MerkColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetMerkNull() {
+                this[this.tableCk4cItem.MerkColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsHjeNull() {
+                return this.IsNull(this.tableCk4cItem.HjeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetHjeNull() {
+                this[this.tableCk4cItem.HjeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNoNull() {
+                return this.IsNull(this.tableCk4cItem.NoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNoNull() {
+                this[this.tableCk4cItem.NoColumn] = global::System.Convert.DBNull;
+            }
         }
         
         /// <summary>
@@ -708,6 +1978,40 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Ck4cRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public class Ck4cItemRowChangeEvent : global::System.EventArgs {
+            
+            private Ck4cItemRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public Ck4cItemRowChangeEvent(Ck4cItemRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public Ck4cItemRow Row {
                 get {
                     return this.eventRow;
                 }
