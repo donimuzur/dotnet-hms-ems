@@ -197,6 +197,17 @@
         $('#DustStickStr').val(ThausandSeperator($('#DustStickStr').val(), 2));
         $('#FloorStickStr').val(ThausandSeperator($('#FloorStickStr').val(), 2));
 
+        $(document).ready(function () {
+            var cpy = $("#CompanyCode").find("option:selected").val();
+
+            $('#SearchInput_PlantId option').remove();
+            $('#SearchInput_BrandCe option').remove();
+
+            ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Waste")', { companyId: cpy });
+
+        });
+
+
         $("#SearchInput_BrandCe").change(function () {
             if ($("#SearchInput_BrandCe").length) {
 
@@ -251,6 +262,12 @@
                                 $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
                             }
                         }
+                        var listPlantX = '@Model.PlantWerks';
+                        var exist = 0 != $('#SearchInput_PlantId option[value=' + listPlantX + ']').length;
+                        if (exist) $('#SearchInput_PlantId').val(listPlantX);
+
+                        ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: listPlantX });
+                        $('#SearchInput_BrandCe option').remove();
 
                     }
                 });
@@ -284,6 +301,8 @@
                                 $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
                             }
                         }
+                        var facodeListX = '@Model.FaCode';
+                        $('#SearchInput_BrandCe').val(facodeListX);
 
                     }
                 });

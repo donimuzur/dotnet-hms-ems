@@ -366,6 +366,7 @@
     <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4PlantModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4SearchViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4SummaryReportsViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
@@ -397,6 +398,7 @@
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
+    <Compile Include="Models\Waste\WasteUploadViewModel.cs" />
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1126,7 +1128,12 @@
     <Content Include="Views\PBCK7AndPBCK3\Detail.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Back1.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck3.cshtml" />
+    <Content Include="Views\PBCK4\Pbck4SummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack1.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4ListSummaryReport.cshtml" />
+    <Content Include="Views\Waste\UploadManualWaste.cshtml" />
+    <Content Include="Views\Waste\_Upload.cshtml" />
+    <Content Include="Views\Waste\_UploadList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
