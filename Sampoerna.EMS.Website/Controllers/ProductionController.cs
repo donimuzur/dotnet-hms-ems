@@ -328,7 +328,26 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var company = _companyBll.GetById(item.CompanyCode);
                 var plant = _plantBll.GetT001WById(item.PlantWerks);
-               
+
+                if (item.Uom == "TH")
+                {
+                    item.Uom = "Btg";
+                    item.QtyPacked = modelDto.QtyPacked*1000;
+                    item.QtyUnpacked = modelDto.QtyUnpacked*1000;
+                }
+                else if (item.Uom == "KG")
+                {
+                    item.Uom = "G";
+                    item.QtyPacked = modelDto.QtyPacked*1000;
+                    item.QtyUnpacked = modelDto.QtyUnpacked*1000;
+                }
+                else
+                {
+                    item.Uom = modelDto.Uom;
+                    item.QtyPacked = modelDto.QtyPacked;
+                    item.QtyUnpacked = modelDto.QtyUnpacked;
+                }
+
                 item.CompanyName = company.BUTXT;
                 item.PlantName = plant.NAME1;
                 
