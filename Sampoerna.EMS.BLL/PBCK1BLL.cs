@@ -189,9 +189,16 @@ namespace Sampoerna.EMS.BLL
                 var origin = Mapper.Map<Pbck1Dto>(dbData);
                 origin.Pbck1Parent = Mapper.Map<Pbck1Dto>(dbData.PBCK12);
                 if (input.Pbck1.Pbck1Reference != null)
-                    input.Pbck1.Pbck1Parent = GetById((long) input.Pbck1.Pbck1Reference);
+                {
+                    input.Pbck1.Pbck1Parent = GetById((long)input.Pbck1.Pbck1Reference);
+                }
 
                 SetChangesHistory(origin, input.Pbck1, input.UserId);
+
+                if (input.Pbck1.Pbck1Reference == null)
+                {
+                    dbData.PBCK1_REF = null;
+                }
 
                 Mapper.Map<Pbck1Dto, PBCK1>(input.Pbck1, dbData);
                 dbData.PBCK1_PROD_CONVERTER = null;
@@ -1178,7 +1185,14 @@ namespace Sampoerna.EMS.BLL
 
             var mailProcess = ProsesMailNotificationBody(pbck1Data, input.ActionType);
 
-            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+            //distinct double To email
+            List<string> ListTo = mailProcess.To.Distinct().ToList();
+            
+            if(mailProcess.IsCCExist)
+                //Send email with CC
+                _messageService.SendEmailToListWithCC(ListTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+            else
+                _messageService.SendEmailToList(ListTo, mailProcess.Subject, mailProcess.Body, true);
 
         }
 
@@ -1487,7 +1501,8 @@ namespace Sampoerna.EMS.BLL
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
-            rc.Subject = "PBCK-1 " + pbck1Data.Pbck1Number + " is " + EnumHelper.GetDescription(pbck1Data.Status);
+            //rc.Subject = "PBCK-1 " + pbck1Data.Pbck1Number + " is " + EnumHelper.GetDescription(pbck1Data.Status);
+            rc.Subject = "PBCK-1 is " + EnumHelper.GetDescription(pbck1Data.Status);
             bodyMail.Append("Dear Team,<br />");
             bodyMail.AppendLine();
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
@@ -1515,13 +1530,16 @@ namespace Sampoerna.EMS.BLL
                         {
                             rc.To.Add(poaDto.POA_EMAIL);
                         }
+                        rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
                     }
                     else if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         var managerId = _poaBll.GetManagerIdByPoaId(pbck1Data.CreatedById);
                         var managerDetail = _userBll.GetUserById(managerId);
                         rc.To.Add(managerDetail.EMAIL);
+                        rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
                     }
+                    rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Approve:
                     if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
@@ -1566,10 +1584,14 @@ namespace Sampoerna.EMS.BLL
             public Pbck1MailNotification()
             {
                 To = new List<string>();
+                CC = new List<string>();
+                IsCCExist = false;
             }
             public string Subject { get; set; }
             public string Body { get; set; }
             public List<string> To { get; set; }
+            public List<string> CC { get; set; }
+            public bool IsCCExist { get; set; }
         }
 
         public Pbck1Dto GetByDocumentNumber(string documentNumber)
@@ -1669,20 +1691,34 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.Pbck1.Pbck1Type == Enums.PBCK1Type.Additional)
                 return true;
-
+            
             var dbData = _repository.Get(
-                    p => (p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId 
-                        && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodTo
-                        || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo) 
-                        && p.SUPPLIER_NPPBKC_ID == input.Pbck1.SupplierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType)
-                );
-
+                p => ((input.Pbck1.Pbck1Id == null || p.PBCK1_ID != input.Pbck1.Pbck1Id) && p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId 
+                    && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodFrom
+                    || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo || (p.PERIOD_FROM > input.Pbck1.PeriodFrom && p.PERIOD_TO < input.Pbck1.PeriodTo)) 
+                    && p.SUPPLIER_NPPBKC_ID == input.Pbck1.SupplierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
+            );
+            
             var data = Mapper.Map<List<Pbck1Dto>>(dbData);
 
             if (data.Count > 0)
                 return false;
 
             return true;
+        }
+
+        public Pbck1Dto GetPBCK1Reference(Pbck1ReferenceSearchInput input)
+        {
+            var dbData = _repository.Get(
+                p => p.PBCK1_TYPE == Enums.PBCK1Type.New && p.STATUS == Enums.DocumentStatus.Completed
+                    && p.NPPBKC_ID == input.NppbkcId 
+                    && (p.PERIOD_FROM <= input.PeriodFrom && p.PERIOD_TO >= input.PeriodFrom
+                    || p.PERIOD_FROM <= input.PeriodTo && p.PERIOD_TO >= input.PeriodTo)
+                    && p.SUPPLIER_NPPBKC_ID == input.SupllierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && p.EXC_GOOD_TYP == input.GoodTypeId
+            ).FirstOrDefault();
+            var data = Mapper.Map<Pbck1Dto>(dbData);
+
+            return data;
         }
     }
 }

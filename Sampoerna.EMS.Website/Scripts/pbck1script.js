@@ -36,6 +36,7 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
             } else {
                 setSupplierPlantEmpty();
             }
+            getReference();
         }
     });
 }
@@ -60,12 +61,12 @@ function supplierChange(isNppbkcImport, url) {
 }
 
 function goodTypeOnChange() {
-    if ($("#Detail_Pbck1Type").length) {
+    if ($("#Detail_GoodType").length) {
         var goodTypeName = $("#Detail_GoodType").find("option:selected").text();
         goodTypeName = goodTypeName.substr(3);
         $('#Detail_GoodTypeDesc').val(goodTypeName);
     }
-
+    getReference();
 }
 
 function IsProdPlanValid() {
@@ -270,11 +271,21 @@ function pbck1TypeOnchange() {
     if ($("select#Detail_Pbck1Type").length) {
         var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();
         if (pbck1Type == '' || pbck1Type.toLowerCase() == 'new') {
-            $('#Detail_Pbck1Reference').prop('disabled', true);
+            $('input[name="Detail.Pbck1ReferenceNumber"]:text').val("");
+            $('input[name="Detail.Pbck1Reference"]:hidden').val("");
+            $('input[name="Detail.Pbck1Reference"]:hidden').prop('disabled', true);
         } else {
-            $('#Detail_Pbck1Reference').prop('disabled', false);
+            $('input[name="Detail.Pbck1Reference"]:hidden').prop('disabled', false);
         }
+        getReference();
     }
+}
+
+function checkReference() {
+    var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();
+    if (($(pbck1Type == '' || pbck1Type.toLowerCase() == 'new') && 'input[name="Detail.Pbck1Reference"]:hidden').val() == "")
+        return false;
+    return true;
 }
 
 function btnProdConvUploadClick() {
@@ -404,3 +415,46 @@ function changeToNumber(dec) {
     dec = parseFloat(dec);
     return dec;
 }
+
+function getReference() {
+    if ($('select[name="Detail.Pbck1Type"]').val().toLowerCase() != "additional") {
+        return;
+    }
+
+    $('input[name="Detail.Pbck1ReferenceNumber"]:text').val("");
+    $('input[name="Detail.Pbck1Reference"]:hidden').prop("disabled", true);
+    $('input[name="Detail.Pbck1Reference"]:hidden').val("");
+
+    if ($('select[name="Detail.NppbkcId"]').val() == "" || $('input[name="Detail.PeriodFrom"]').val() == "" || $('input[name="Detail.PeriodTo"]').val() == "" || $('input[name="Detail.SupplierNppbkcId"]').val() == "" || $('input[name="Detail.SupplierPlantWerks"]').val() == "" || $('select[name="Detail.GoodType"]').val() == "")
+    {
+        return false;
+    }
+
+    var data = {
+        nppbkcId: $('select[name="Detail.NppbkcId"]').val(),
+        periodFrom: $('input[name="Detail.PeriodFrom"]').val(),
+        periodTo: $('input[name="Detail.PeriodTo"]').val(),
+        supplierNppbkcId: $('input[name="Detail.SupplierNppbkcId"]').val(),
+        supplierPlantWerks: $('input[name="Detail.SupplierPlantWerks"]').val(),
+        goodType: $('select[name="Detail.GoodType"]').val()
+
+    }
+    $.ajax({
+        type: 'POST',
+        url: referenceURL,
+        data: data,
+        success: function (data) {
+            if (data == false) {
+                $('input[name="Detail.Pbck1ReferenceNumber"]:text').val("");
+                $('input[name="Detail.Pbck1Reference"]:hidden').prop("disabled", true);
+                $('input[name="Detail.Pbck1Reference"]:hidden').val("");
+            } else {
+                $('input[name="Detail.Pbck1ReferenceNumber"]:text').val(data.refereceNumber);
+                $('input[name="Detail.Pbck1Reference"]:hidden').val(data.referenceId);
+                $('input[name="Detail.Pbck1Reference"]:hidden').prop("disabled", false);
+
+            }
+        }
+    });
+}
+
