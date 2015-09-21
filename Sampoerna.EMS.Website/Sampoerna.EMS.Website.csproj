@@ -1134,6 +1134,8 @@
     <Content Include="Views\Waste\UploadManualWaste.cshtml" />
     <Content Include="Views\Waste\_Upload.cshtml" />
     <Content Include="Views\Waste\_UploadList.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack3.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadCk2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
