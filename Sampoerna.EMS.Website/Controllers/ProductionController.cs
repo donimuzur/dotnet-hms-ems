@@ -28,9 +28,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPlantBLL _plantBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
+        private IChangesHistoryBLL _changeHistoryBll;
 
         public ProductionController(IPageBLL pageBll, IProductionBLL productionBll, ICompanyBLL companyBll, IPlantBLL plantBll, IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll)
+            IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changeHistorybll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _productionBll = productionBll;
@@ -39,6 +40,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _plantBll = plantBll;
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
+            _changeHistoryBll = changeHistorybll;
         }
 
         #region Index
