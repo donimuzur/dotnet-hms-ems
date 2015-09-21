@@ -792,7 +792,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 drow[16] = ck4cReportedOn.Year;
             }
 
-            if(ck4c.ReportedPeriod == 1)
+            if (ck4c.ReportedPeriod == 1)
             {
                 drow[3] = "1";
                 drow[4] = "14";
@@ -806,7 +806,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var ck4cPeriodMonth = _monthBll.GetMonth(ck4c.ReportedMonth).MONTH_NAME_IND;
             drow[5] = ck4cPeriodMonth;
-            
+
             drow[6] = ck4c.ReportedYears;
             drow[7] = ck4c.CompanyName;
 
@@ -860,7 +860,7 @@ namespace Sampoerna.EMS.Website.Controllers
             drow[18] = nGram;
 
             var prodTotal = string.Empty;
-            if(nBatang != 0 && nGram != 0)
+            if (nBatang != 0 && nGram != 0)
             {
                 prodTotal = nBatang + " batang dan " + nGram + " gram";
             }
@@ -877,7 +877,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var city = plant == null ? _nppbkcbll.GetById(ck4c.NppbkcId).CITY : plant.ORT01;
             drow[20] = city;
-            
+
             dt.Rows.Add(drow);
 
             var dtDetail = dsCk4c.Tables[1];

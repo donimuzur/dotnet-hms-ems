@@ -94,7 +94,7 @@
     <None Include="dsCk4c.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>dsCk4c.Designer.cs</LastGenOutput>
+      <LastGenOutput>dsCk4c1.Designer.cs</LastGenOutput>
     </None>
     <None Include="dsCk4c.xss">
       <DependentUpon>dsCk4c.xsd</DependentUpon>
