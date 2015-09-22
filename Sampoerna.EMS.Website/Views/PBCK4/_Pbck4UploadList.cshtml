@@ -3,6 +3,8 @@
     <table id="Ck5UploadTable" class="table table-bordered table-striped js-options-table">
         <thead>
             <tr>
+                <th>Action</th>
+                <th style="display: none"></th>
                 <th>FA Code</th>
                 <th>Sticker Code</th>
                 <th>CK-1 No</th>
@@ -32,6 +34,11 @@
                     foreach (var row in Model)
                     {
                         <tr>
+                            <td class="action">
+                                <a href="#" onclick=" RemoveRow($(this));" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i></a>
+                                <a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td style="display: none">@counter</td>
                             <td>@row.FaCode</td>
                             <td>@row.StickerCode</td>
                             <td>@row.Ck1No</td>

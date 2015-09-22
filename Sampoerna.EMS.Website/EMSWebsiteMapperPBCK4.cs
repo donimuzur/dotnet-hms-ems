@@ -96,8 +96,8 @@ namespace Sampoerna.EMS.Website
                 ;
 
             Mapper.CreateMap<Pbck4ItemDto, Pbck4UploadViewModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Ck1No, opt => opt.MapFrom(src => src.CK1_ID.HasValue ? src.CK1_ID.Value.ToString() : "0"))
-                .ForMember(dest => dest.Ck1Date, opt => opt.MapFrom(src => src.CK1_DATE))
+                .ForMember(dest => dest.Ck1No, opt => opt.MapFrom(src => src.CK1_NUMBER))
+                .ForMember(dest => dest.Ck1Date, opt => opt.MapFrom(src => src.CK1_DATE.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.TotalHje, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.TOTAL_HJE))
                 .ForMember(dest => dest.TotalStamps, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.TOTAL_STAMPS))
                 .ForMember(dest => dest.ApprovedQty, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.APPROVED_QTY))
