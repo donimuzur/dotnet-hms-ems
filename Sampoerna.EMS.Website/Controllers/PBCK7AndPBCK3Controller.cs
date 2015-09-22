@@ -386,6 +386,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         pbck3.CreateDate = DateTime.Now;
                         pbck3.CreatedBy = CurrentUser.USER_ID;
                         pbck3.Pbck7Id = existingData.Pbck7Id;
+                        pbck3.Pbck3Date = model.Pbck3Dto.Pbck3Date;
                         pbck3.Pbck3Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
                     
                    

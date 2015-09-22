@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.XMLReader
                             {
                                 case "TH":
                                     item.QTY = qty * 1000;
-                                    item.UOM = "PC";
+                                    item.UOM = "Btg";
                                     if (existingProduction == null)
                                     {
                                         item.PROD_QTY_STICK = item.QTY;
@@ -99,6 +99,20 @@ namespace Sampoerna.EMS.XMLReader
                                     break;
                             }
 
+                            if (existingProduction == null)
+                            {
+                                
+                                item.CREATED_DATE = DateTime.Now;
+                                item.CREATED_BY = "PI";
+                            }
+                            else
+                            {
+                                item.MODIFIED_DATE = DateTime.Now;
+                                item.MODIFIED_BY = "PI";
+                                item.CREATED_BY = existingProduction.CREATED_BY;
+                                item.CREATED_DATE = existingProduction.CREATED_DATE;
+                                
+                            }
 
                             items.Add(item);
                         }
