@@ -27,5 +27,9 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> FLOOR_WASTE_GRAM_QTY { get; set; }
         public Nullable<decimal> DUST_WASTE_STICK_QTY { get; set; }
         public Nullable<decimal> FLOOR_WASTE_STICK_QTY { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public string MODIFIED_BY { get; set; }
     }
 }

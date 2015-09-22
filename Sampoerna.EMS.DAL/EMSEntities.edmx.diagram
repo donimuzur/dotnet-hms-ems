@@ -172,8 +172,6 @@
         <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" />
         <AssociationConnector Association="EMSModel.FK_CK4C_POA" />
         <EntityTypeShape EntityType="EMSModel.BLOCK_STOCK" Width="1.5" PointX="11.375" PointY="4.75" />
-        <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="5.375" PointY="11.75" />
-        <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="0.75" PointY="11.75" />
         <EntityTypeShape EntityType="EMSModel.PBCK4_DOCUMENT" Width="1.5" PointX="8.125" PointY="47.625" />
         <EntityTypeShape EntityType="EMSModel.PBCK4_ITEM" Width="1.5" PointX="28.75" PointY="41.875" />
         <EntityTypeShape EntityType="EMSModel.LACK1_DOCUMENT" Width="1.5" PointX="15.75" PointY="41.5" />
@@ -238,6 +236,8 @@
         <EntityTypeShape EntityType="EMSModel.CK1" Width="1.5" PointX="25.5" PointY="47.75" />
         <AssociationConnector Association="EMSModel.FK_CK1_ITEM_CK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK4_ITEM_CK1" />
+        <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="0.75" PointY="11.75" />
+        <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="5.75" PointY="11.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

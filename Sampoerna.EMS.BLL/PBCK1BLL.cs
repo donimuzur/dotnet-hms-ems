@@ -169,6 +169,7 @@ namespace Sampoerna.EMS.BLL
         public SavePbck1Output Save(Pbck1SaveInput input)
         {
             PBCK1 dbData;
+            bool changed = true;
 
             if (input.Pbck1.Pbck1Id > 0)
             {
@@ -193,7 +194,7 @@ namespace Sampoerna.EMS.BLL
                     input.Pbck1.Pbck1Parent = GetById((long)input.Pbck1.Pbck1Reference);
                 }
 
-                SetChangesHistory(origin, input.Pbck1, input.UserId);
+                changed = SetChangesHistory(origin, input.Pbck1, input.UserId);
 
                 if (input.Pbck1.Pbck1Reference == null)
                 {
@@ -240,7 +241,6 @@ namespace Sampoerna.EMS.BLL
 
             //set workflow history
             var getUserRole = _poaBll.GetUserRole(input.UserId);
-
             var inputAddWorkflowHistory = new Pbck1WorkflowDocumentInput()
             {
                 DocumentId = output.Id,
@@ -250,8 +250,10 @@ namespace Sampoerna.EMS.BLL
                 UserRole = getUserRole
             };
 
-            AddWorkflowHistory(inputAddWorkflowHistory);
-
+            if (changed)
+            {
+                AddWorkflowHistory(inputAddWorkflowHistory);
+            }
             _uow.SaveChanges();
 
             return output;
@@ -274,8 +276,9 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        private void SetChangesHistory(Pbck1Dto origin, Pbck1Dto data, string userId)
+        private bool SetChangesHistory(Pbck1Dto origin, Pbck1Dto data, string userId)
         {
+            bool changed = false;
             var changesData = new Dictionary<string, bool>();
             changesData.Add("PBCK1_REF", origin.Pbck1Reference == data.Pbck1Reference);
             changesData.Add("PBCK1_TYPE", origin.Pbck1Type == data.Pbck1Type);
@@ -474,8 +477,11 @@ namespace Sampoerna.EMS.BLL
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);
+                    changed = true;
                 }
             }
+
+            return changed;
         }
 
         public string GetPbckNumberById(long id)
