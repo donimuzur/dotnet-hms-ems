@@ -266,6 +266,7 @@ namespace Sampoerna.EMS.BLL
                     //todo: ambil dari QTY_RECEIVED di CK5 yang sekarang belum ada
                 .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.CK5 != null ?
                     src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX) : 0))
+                    .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
                 ;
 
             Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ReportProdPlanDto>().IgnoreAllNonExisting()

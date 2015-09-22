@@ -366,6 +366,7 @@
     <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4PlantModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4SearchViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4SummaryReportsViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
@@ -854,6 +855,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\pbck1\docupload.js" />
+    <Content Include="Scripts\Pbck4InputManual.js" />
     <Content Include="Scripts\Pbck4Script.js" />
     <Content Include="Scripts\Pbck4ScriptDocUpload.js" />
     <Content Include="Scripts\pbck7\form.js" />
@@ -1126,7 +1128,9 @@
     <Content Include="Views\PBCK7AndPBCK3\Detail.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Back1.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck3.cshtml" />
+    <Content Include="Views\PBCK4\Pbck4SummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack1.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4ListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -23,6 +23,16 @@ namespace Sampoerna.EMS.Contract
 
        Pbck4XmlDto GetPbck4ForXmlById(int id);
 
+       List<Pbck4SummaryReportDto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input);
+
        void GovApproveDocumentRollback(Pbck4WorkflowDocumentInput input);
+
+       List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId);
+
+       List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId);
+
+       GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode);
+
+       string GetCk1DateByCk1Id(long ck1Id);
    }
 }

@@ -10,7 +10,10 @@
 {
     @Html.HiddenFor(x=>x.ActionType)
     @Html.HiddenFor(x => x.IsSaveSubmit)
+    @Html.HiddenFor(x => x.ActionTypePbck3)
+    @Html.HiddenFor(x => x.IsSaveSubmitPbck3)
     @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.Pbck3Dto.Pbck3Id)
     @Html.HiddenFor(x => x.CreatedBy)
     @Html.HiddenFor(x => x.CreatedDate)
     @Html.HiddenFor(x => x.ModifiedBy)
@@ -22,7 +25,17 @@
     @Html.HiddenFor(x => x.RejectedBy)
     @Html.HiddenFor(x => x.RejectedDate)
     @Html.HiddenFor(x => x.Pbck7Status)
-    @Html.HiddenFor(x => x.Pbck3Status)
+    @Html.HiddenFor(x => x.Pbck3Dto.Pbck3Status)
+    @Html.HiddenFor(x => x.Pbck3Dto.CreatedBy)
+    @Html.HiddenFor(x => x.Pbck3Dto.CreateDate)
+    @Html.HiddenFor(x => x.Pbck3Dto.ModifiedBy)
+    @Html.HiddenFor(x => x.Pbck3Dto.ModifiedDate)
+    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedBy)
+    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedDate)
+    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedByManager)
+    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedDateManager)
+    @Html.HiddenFor(x => x.Pbck3Dto.RejectedBy)
+    @Html.HiddenFor(x => x.Pbck3Dto.RejectedDate)
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -31,30 +44,43 @@
                 <h3>PBCK-7</h3>
                 <label class="status">@Model.Pbck7StatusName</label>
                 <div class="action-button">
-                    @if (Model.AllowApproveAndReject)
+                    @if (Model.Pbck7Status != Enums.DocumentStatus.Completed)
                     {
-                        <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
-
-                        <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
-                    }
-                    else
-                    {
-                        if (Model.AllowManagerReject)
+                        if (Model.AllowApproveAndReject)
                         {
+                            <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
+
                             <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                         }
-                    }
+                        else
+                        {
+                            if (Model.AllowManagerReject)
+                            {
+                                <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                            }
+                        }
 
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick=" printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new {id = @Model.Id})') " />
-
-                    @*@if (Model.do == Enums.DocumentStatus.Completed)
-                    {
-                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
-                    }
+                      }
                     else
                     {
-                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-doc" />
-                    }*@
+                        if (Model.AllowApproveAndRejectPbck3)
+                        {
+                            <input type="button" class="btn btn-blue" value="Approve" id="btnApprovePbck3" />
+
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck3" />
+                        }
+                        else
+                        {
+                            if (Model.AllowManagerRejectPbck3)
+                            {
+                                <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck3" />
+                            }
+                        }
+
+
+                    }
+                    @*<input type="button" class="btn btn-grey" value="Print Preview" onclick=" printpreview('@url.encryptedaction("printpreview", "lack2", new {id = @model.id})') " />*@
+
                 </div>
             </div>
         </div>
@@ -85,6 +111,8 @@
         </div>
     </div>
 }
+@if (Model.Pbck7Status != Enums.DocumentStatus.Completed)
+{
     <div id="pbck7ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -103,6 +131,27 @@
         </div>
     </div>
 
+}else 
+{
+    <div id="pbck3ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Approve</h3>
+                </div>
+                <div class="modal-body">
+                    Approve Documents  ?
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnApproveConfirmPbck3" class="btn btn-blue" value="Yes" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -113,9 +162,18 @@
             $('#ActionType').val('Approve');
             $('#form-pbck7-detail').submit();
         });
+        
+        $("#btnApproveConfirmPbck3").click(function () {
+            $('#ActionType').val('ApprovePbck3');
+            $('#form-pbck7-detail').submit();
+        });
         $('#btnApprove').click(function () {
 
             $('#pbck7ApproveModal').modal('show');
+        });
+        $('#btnApprovePbck3').click(function () {
+
+            $('#pbck3ApproveModal').modal('show');
         });
         $("#btnSubmitConfirm").click(function() {
             $('#IsSaveSubmit').val('true');

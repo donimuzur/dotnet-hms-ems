@@ -1664,5 +1664,25 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         
         }
+
+        public bool checkUniquePBCK1(Pbck1SaveInput input)
+        {
+            if (input.Pbck1.Pbck1Type == Enums.PBCK1Type.Additional)
+                return true;
+
+            var dbData = _repository.Get(
+                    p => (p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId 
+                        && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodTo
+                        || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo) 
+                        && p.SUPPLIER_NPPBKC_ID == input.Pbck1.SupplierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType)
+                );
+
+            var data = Mapper.Map<List<Pbck1Dto>>(dbData);
+
+            if (data.Count > 0)
+                return false;
+
+            return true;
+        }
     }
 }

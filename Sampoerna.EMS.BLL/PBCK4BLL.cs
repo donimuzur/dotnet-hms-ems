@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.BLL
        private IChangesHistoryBLL _changesHistoryBll;
        private IPrintHistoryBLL _printHistoryBll;
        private IBrandRegistrationService _brandRegistrationServices;
-       private ICK1BLL _ck1Bll;
+       private ICK1Services _ck1Services;
        private IMessageService _messageService;
        private IPOABLL _poaBll;
        private IUserBLL _userBll;
@@ -63,7 +63,7 @@ namespace Sampoerna.EMS.BLL
            _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
            _printHistoryBll = new PrintHistoryBLL(_uow,_logger);
            _brandRegistrationServices = new BrandRegistrationService(_uow, _logger);
-           _ck1Bll = new CK1BLL(_uow,_logger);
+           _ck1Services = new CK1Services(_uow, _logger);
            _messageService = new MessageService(_logger);
            _poaBll = new POABLL(_uow,_logger);
            _userBll = new UserBLL(_uow,_logger);
@@ -383,7 +383,7 @@ namespace Sampoerna.EMS.BLL
                if (dbBrand == null)
                    messageList.Add("FA Code Not Exist");
 
-               var dbCk1 = _ck1Bll.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
+               var dbCk1 = _ck1Services.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
                if (dbCk1 == null)
                    messageList.Add("CK-1 Number Not Exist");
 
@@ -470,7 +470,7 @@ namespace Sampoerna.EMS.BLL
 
            }
 
-           var dbCk1 = _ck1Bll.GetCk1ByCk1Number(input.Ck1No);
+           var dbCk1 = _ck1Services.GetCk1ByCk1Number(input.Ck1No);
            if (dbCk1 == null)
            {
                input.Ck1Date = "";
@@ -1106,7 +1106,136 @@ namespace Sampoerna.EMS.BLL
            return result;
         }
 
-       public Pbck4XmlDto GetPbck4ForXmlById(int id)
+       public List<Pbck4SummaryReportDto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input)
+       {
+
+           Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
+
+           if (!string.IsNullOrEmpty(input.Pbck4No))
+           {
+               queryFilter = queryFilter.And(c => c.PBCK4_NUMBER.Contains(input.Pbck4No));
+           }
+
+           if (input.YearFrom.HasValue)
+               queryFilter =
+                   queryFilter.And(c => c.REPORTED_ON.HasValue && c.REPORTED_ON.Value.Year >= input.YearFrom.Value);
+           if (input.YearTo.HasValue)
+               queryFilter =
+                   queryFilter.And(c => c.REPORTED_ON.HasValue && c.REPORTED_ON.Value.Year <= input.YearTo.Value);
+
+           if (!string.IsNullOrEmpty(input.PlantId))
+           {
+               queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
+           }
+
+           
+           queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+
+
+           var rc = _repository.Get(queryFilter, null, includeTables).ToList();
+           if (rc == null)
+           {
+               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+           }
+
+           //var mapResult = Mapper.Map<List<Pbck4Dto>>(rc.ToList());
+
+           //return mapResult;
+
+           return  SetDataSummaryReport(rc);
+
+           //return mapResult;
+
+       }
+
+       private List<Pbck4SummaryReportDto> SetDataSummaryReport(List<PBCK4> listPbck4)
+       {
+           var result = new List<Pbck4SummaryReportDto>();
+
+           foreach (var dtData in listPbck4)
+           {
+
+
+
+               foreach (var pbck4Item in dtData.PBCK4_ITEM)
+               {
+                   var summaryDto = new Pbck4SummaryReportDto();
+
+                   summaryDto.Pbck4No = dtData.PBCK4_NUMBER;
+                   summaryDto.Pbck4Date = dtData.REPORTED_ON.HasValue
+                       ? dtData.REPORTED_ON.Value.ToString("dd MMM yyyy")
+                       : string.Empty;
+                   //summaryDto.CeOffice = dtData.NPPBKC_ID;
+                   var nppbkcData = _nppbkcBll.GetById(dtData.NPPBKC_ID);
+                   summaryDto.CeOffice = nppbkcData != null ? nppbkcData.KPPBC_ID : string.Empty;
+                   summaryDto.Brand = pbck4Item.BRAND_NAME;
+                   summaryDto.Content = pbck4Item.BRAND_CONTENT;
+                   summaryDto.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value.ToString("f2") : string.Empty;
+                   summaryDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value.ToString("f2") : string.Empty;
+                   summaryDto.ProductType = pbck4Item.PRODUCT_ALIAS;
+
+
+                   summaryDto.SeriesCode = pbck4Item.SERIES_CODE;
+                   summaryDto.RequestedQty = ConvertHelper.ConvertDecimalToString(pbck4Item.REQUESTED_QTY);
+
+                   summaryDto.ExciseValue =
+                       (ConvertHelper.ConvertToDecimalOrZero(summaryDto.Content)*
+                        ConvertHelper.ConvertToDecimalOrZero(summaryDto.Tariff)*
+                        ConvertHelper.ConvertToDecimalOrZero(summaryDto.RequestedQty)).ToString();
+
+                   summaryDto.Remarks = pbck4Item.REMARKS;
+
+                   summaryDto.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.BACK1_DATE);
+                   summaryDto.Back1Number = dtData.BACK1_NO;
+                   summaryDto.Ck3Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.CK3_DATE);
+                   summaryDto.Ck3Number = dtData.CK3_NO;
+                   summaryDto.Ck3Value = ConvertHelper.ConvertDecimalToString(dtData.CK3_OFFICE_VALUE);
+
+                   var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(dtData.PLANT_ID, pbck4Item.FA_CODE);
+                   if (dbBrand == null)
+                   {
+                       summaryDto.FiscalYear = "";
+                       summaryDto.PrintingCost = "0";
+                   }
+                   else
+                   {
+                       summaryDto.FiscalYear = dbBrand.START_DATE.HasValue
+                           ? dbBrand.START_DATE.Value.ToString("yyyy")
+                           : string.Empty;
+
+                       summaryDto.PrintingCost =
+                           ConvertHelper.ConvertDecimalToString(
+                               ConvertHelper.ConvertToDecimalOrZero(
+                                   ConvertHelper.ConvertDecimalToString(dbBrand.PRINTING_PRICE))*
+                               ConvertHelper.ConvertToDecimalOrZero(summaryDto.RequestedQty));
+                   }
+
+                   //todo ask from where the value is
+                   summaryDto.CompensatedCk1Date = "";
+                   summaryDto.CompensatedCk1Number = "";
+                   summaryDto.PaymentDate = "";
+
+                   summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                   if (dtData.REPORTED_ON.HasValue)
+                       summaryDto.ReportedOn = Convert.ToInt32(dtData.REPORTED_ON.Value.ToString("yyyy"));
+
+
+                   //summaryDto.ReportedOn = dtData.REPORTED_ON.HasValue
+                   //    ? dtData.REPORTED_ON.Value.ToString("yyyy")
+                   //    : string.Empty;
+
+                   summaryDto.PlantId = dtData.PLANT_ID;
+                   summaryDto.PlantDescription = dtData.PLANT_NAME;
+
+                   result.Add(summaryDto);
+               }
+
+           }
+
+           return result;
+       }
+
+        public Pbck4XmlDto GetPbck4ForXmlById(int id)
        {
           
            var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
@@ -1129,5 +1258,32 @@ namespace Sampoerna.EMS.BLL
            return dataXmlDto;
 
        }
+
+
+        public List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId)
+       {
+           var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+
+            return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
+       }
+
+        public List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId)
+        {
+            var dbCk1 = _ck1Services.GetCk1ByNppbkc(nppbkcId);
+
+            return Mapper.Map<List<GetListCk1ByNppbkcOutput>>(dbCk1);
+        }
+
+        public GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode)
+       {
+           var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+            return Mapper.Map<GetBrandItemsOutput>(dbBrand);
+       }
+
+        public string GetCk1DateByCk1Id(long ck1Id)
+        {
+            var dbCK1 = _ck1Services.GetCk1ById(ck1Id);
+            return dbCK1 == null ? string.Empty : dbCK1.CK1_DATE.ToString("dd MMM yyyy");
+        }
     }
 }
