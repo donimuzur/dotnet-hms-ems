@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 try
                 {
-                    _wasteBll.Save(data);
+                    _wasteBll.Save(data,CurrentUser.USER_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
                     return RedirectToAction("Index");
@@ -270,7 +270,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _wasteBll.Save(dbWasteNew);
+                _wasteBll.Save(dbWasteNew, CurrentUser.USER_ID);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                     );
 
