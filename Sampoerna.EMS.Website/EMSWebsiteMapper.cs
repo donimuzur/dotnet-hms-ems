@@ -825,11 +825,11 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantName));
 
-            Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));
+            Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting();
+              
 
-            Mapper.CreateMap<ProductionUploadViewModel, ProductionDto>().IgnoreAllNonExisting()
-              .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));
+            Mapper.CreateMap<ProductionUploadViewModel, ProductionDto>().IgnoreAllNonExisting();
+              
 
            #endregion
 

@@ -123,7 +123,7 @@ namespace Sampoerna.EMS.BLL
         public List<ZAIDM_EX_BRAND> GetBrandCeBylant(string plantWerk)
         {
             //var dbData = _repository.Get(c => c.WERKS == plantWerk).ToList();
-            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true ).ToList();
+            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true && b.STATUS == true ).ToList();
             //var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true && b.STATUS == true).ToList();
             return dbData;
         }
