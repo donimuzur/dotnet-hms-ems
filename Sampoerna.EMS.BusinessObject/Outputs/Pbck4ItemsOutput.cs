@@ -31,5 +31,6 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
 
         public bool IsValid { get; set; }
         public Nullable<long> CK1_ID { get; set; }
+        public string BlockedStock { get; set; }
     }
 }
