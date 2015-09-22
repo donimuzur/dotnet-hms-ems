@@ -743,7 +743,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
 
