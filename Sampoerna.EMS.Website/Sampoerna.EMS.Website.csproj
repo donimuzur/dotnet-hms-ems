@@ -494,6 +494,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Pbck7Report.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\PBCK4\Pbck4PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -1267,10 +1268,11 @@
       <LastGenOutput>Pbck4PrintOut.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Reports\PBCK7\Pbck7Report.rpt">
+    <Content Include="Reports\PBCK7\Pbck7Report.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck7Report.cs</LastGenOutput>
-    </EmbeddedResource>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

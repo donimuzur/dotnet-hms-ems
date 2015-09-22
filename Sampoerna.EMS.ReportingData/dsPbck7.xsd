@@ -26,6 +26,10 @@
               <xs:element name="ReportingDate" msprop:Generator_ColumnVarNameInTable="columnReportingDate" msprop:Generator_ColumnPropNameInRow="ReportingDate" msprop:Generator_ColumnPropNameInTable="ReportingDateColumn" msprop:Generator_UserColumnName="ReportingDate" type="xs:string" minOccurs="0" />
               <xs:element name="Preview" msprop:Generator_ColumnVarNameInTable="columnPreview" msprop:Generator_ColumnPropNameInRow="Preview" msprop:Generator_ColumnPropNameInTable="PreviewColumn" msprop:Generator_UserColumnName="Preview" type="xs:string" minOccurs="0" />
               <xs:element name="DecreeDate" msprop:Generator_ColumnVarNameInTable="columnDecreeDate" msprop:Generator_ColumnPropNameInRow="DecreeDate" msprop:Generator_ColumnPropNameInTable="DecreeDateColumn" msprop:Generator_UserColumnName="DecreeDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Nomor" msprop:Generator_ColumnVarNameInTable="columnNomor" msprop:Generator_ColumnPropNameInRow="Nomor" msprop:Generator_ColumnPropNameInTable="NomorColumn" msprop:Generator_UserColumnName="Nomor" type="xs:string" minOccurs="0" />
+              <xs:element name="Lampiran" msprop:Generator_ColumnVarNameInTable="columnLampiran" msprop:Generator_ColumnPropNameInRow="Lampiran" msprop:Generator_ColumnPropNameInTable="LampiranColumn" msprop:Generator_UserColumnName="Lampiran" type="xs:string" minOccurs="0" />
+              <xs:element name="TextTo" msprop:Generator_ColumnVarNameInTable="columnTextTo" msprop:Generator_ColumnPropNameInRow="TextTo" msprop:Generator_ColumnPropNameInTable="TextToColumn" msprop:Generator_UserColumnName="TextTo" type="xs:string" minOccurs="0" />
+              <xs:element name="VendorCity" msprop:Generator_ColumnVarNameInTable="columnVendorCity" msprop:Generator_ColumnPropNameInRow="VendorCity" msprop:Generator_ColumnPropNameInTable="VendorCityColumn" msprop:Generator_UserColumnName="VendorCity" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
