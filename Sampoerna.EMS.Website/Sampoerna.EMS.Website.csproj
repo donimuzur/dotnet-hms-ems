@@ -407,6 +407,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Preview.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\CK5\CK5Materials.cs">
       <AutoGen>True</AutoGen>
@@ -1254,10 +1255,11 @@
       <LastGenOutput>Preview.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Reports\CK4C\Preview.rpt">
+    <Content Include="Reports\CK4C\Preview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Preview.cs</LastGenOutput>
-    </EmbeddedResource>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>
