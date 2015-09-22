@@ -86,8 +86,22 @@ namespace Sampoerna.EMS.BLL
         public void Save(ProductionDto productionDto, string userId)
         {
             var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
-            SetChange(dbProduction, dbProduction, userId);
+            SetChange(productionDto, productionDto, userId);
             dbProduction.CREATED_DATE = DateTime.Now;
+
+            if (dbProduction.UOM == "KG")
+            {
+                dbProduction.UOM = "G";
+                dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
+                dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
+            }
+
+            if (dbProduction.UOM == "TH")
+            {
+                dbProduction.UOM = "Btg";
+                dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
+                dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
+            }
 
             _repository.InsertOrUpdate(dbProduction);
             _uow.SaveChanges();
@@ -186,72 +200,75 @@ namespace Sampoerna.EMS.BLL
         public void SaveUpload(ProductionUploadItems uploadItems, string userId)
         {
             var dbUpload = Mapper.Map<PRODUCTION>(uploadItems);
-            SetChange(dbUpload, dbUpload, userId);
+
             _repository.InsertOrUpdate(dbUpload);
             dbUpload.CREATED_DATE = DateTime.Now;
             _uow.SaveChanges();
         }
 
-        private void SetChange(PRODUCTION origin, PRODUCTION data, string userId)
+        private void SetChange(ProductionDto origin, ProductionDto data, string userId)
         {
             var changeData = new Dictionary<string, bool>();
-            changeData.Add("COMPANY_CODE", origin.COMPANY_CODE == data.COMPANY_CODE);
-            changeData.Add("WERKS", origin.WERKS == data.WERKS);
-            changeData.Add("FA_CODE", origin.FA_CODE == data.FA_CODE);
-            changeData.Add("PRODUCTION_DATE", origin.PRODUCTION_DATE == data.PRODUCTION_DATE);
-            changeData.Add("BRAND_DESC", origin.BRAND_DESC == data.BRAND_DESC);
-            changeData.Add("QTY_PACKED", origin.QTY_PACKED == data.QTY_PACKED);
-            changeData.Add("QTY_UNPACKED", origin.QTY_UNPACKED == data.QTY_UNPACKED);
-            changeData.Add("UOM", origin.UOM == data.UOM);
+            changeData.Add("COMPANY_CODE", origin.CompanyCode == data.CompanyCode);
+            changeData.Add("WERKS", origin.PlantWerks == data.PlantWerks);
+            changeData.Add("FA_CODE", origin.FaCode == data.FaCode);
+            changeData.Add("PRODUCTION_DATE", origin.ProductionDate == data.ProductionDate);
+            changeData.Add("BRAND_DESC", origin.BrandDescription == data.BrandDescription);
+            changeData.Add("QTY_PACKED", origin.QtyPacked == data.QtyPacked);
+            changeData.Add("QTY_UNPACKED", origin.QtyUnpacked == data.QtyUnpacked);
+            changeData.Add("UOM", origin.Uom == data.Uom);
 
             foreach (var listChange in changeData)
             {
-                var changes = new CHANGES_HISTORY
+                if (!listChange.Value)
                 {
-                    FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
-                    FORM_ID = data.COMPANY_CODE + data.WERKS + data.FA_CODE + data.PRODUCTION_DATE,
-                    FIELD_NAME = listChange.Key,
-                    MODIFIED_BY = userId,
-                    MODIFIED_DATE = DateTime.Now
-                };
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
+                        FORM_ID = data.CompanyCode + data.PlantWerks + data.FaCode + data.ProductionDate,
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
 
-                switch (listChange.Key)
-                {
-                    case "COMPANY_CODE":
-                        changes.OLD_VALUE = origin.COMPANY_CODE;
-                        changes.NEW_VALUE = data.COMPANY_CODE;
-                        break;
-                    case "WERKS":
-                        changes.OLD_VALUE = origin.WERKS;
-                        changes.NEW_VALUE = data.WERKS;
-                        break;
-                    case "FA_CODE":
-                        changes.OLD_VALUE = origin.FA_CODE;
-                        changes.NEW_VALUE = data.FA_CODE;
-                        break;
-                    case "PRODUCTION_DATE":
-                        changes.OLD_VALUE = origin.PRODUCTION_DATE.ToString();
-                        changes.NEW_VALUE = data.PRODUCTION_DATE.ToString();
-                        break;
-                    case "BRAND_DESC":
-                        changes.OLD_VALUE = origin.BRAND_DESC;
-                        changes.NEW_VALUE = data.BRAND_DESC;
-                        break;
-                    case "QTY_PACKED":
-                        changes.OLD_VALUE = origin.QTY_PACKED.ToString();
-                        changes.NEW_VALUE = data.QTY_PACKED.ToString();
-                        break;
-                    case "QTY_UNPACKED":
-                        changes.OLD_VALUE = origin.QTY_UNPACKED.ToString();
-                        changes.NEW_VALUE = data.QTY_UNPACKED.ToString();
-                        break;
-                    case "UOM":
-                        changes.OLD_VALUE = origin.UOM;
-                        changes.NEW_VALUE = data.UOM;
-                        break;
-                    default: break;
+                    switch (listChange.Key)
+                    {
+                        case "COMPANY_CODE":
+                            changes.OLD_VALUE = origin.CompanyCode;
+                            changes.NEW_VALUE = data.CompanyCode;
+                            break;
+                        case "WERKS":
+                            changes.OLD_VALUE = origin.PlantWerks;
+                            changes.NEW_VALUE = data.PlantWerks;
+                            break;
+                        case "FA_CODE":
+                            changes.OLD_VALUE = origin.FaCode;
+                            changes.NEW_VALUE = data.FaCode;
+                            break;
+                        case "PRODUCTION_DATE":
+                            changes.OLD_VALUE = origin.ProductionDate.ToString();
+                            changes.NEW_VALUE = data.ProductionDate.ToString();
+                            break;
+                        case "BRAND_DESC":
+                            changes.OLD_VALUE = origin.BrandDescription;
+                            changes.NEW_VALUE = data.BrandDescription;
+                            break;
+                        case "QTY_PACKED":
+                            changes.OLD_VALUE = origin.QtyPacked.ToString();
+                            changes.NEW_VALUE = data.QtyPacked.ToString();
+                            break;
+                        case "QTY_UNPACKED":
+                            changes.OLD_VALUE = origin.QtyUnpacked.ToString();
+                            changes.NEW_VALUE = data.QtyUnpacked.ToString();
+                            break;
+                        case "UOM":
+                            changes.OLD_VALUE = origin.Uom;
+                            changes.NEW_VALUE = data.Uom;
+                            break;
+                        default: break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
                 }
-                _changesHistoryBll.AddHistory(changes);
             }
 
         }

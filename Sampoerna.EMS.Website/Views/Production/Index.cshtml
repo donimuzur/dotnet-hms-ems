@@ -47,7 +47,7 @@
                             <div class="row">
                                 <label class="col-md-4">Company</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = " form-control selectreset" })
+                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "Select", new { @class = " form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                             <div class="row">
                                 <label class="col-md-4">Plant ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
+                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "Select", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
                                 </div>
                             </div>
                         </div>

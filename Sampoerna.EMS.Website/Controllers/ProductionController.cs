@@ -146,6 +146,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.BrandDescription = brandDesc.BRAND_CE;
                 data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
                 data.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
+
+                
                 try
                 {
 
@@ -241,6 +243,8 @@ namespace Sampoerna.EMS.Website.Controllers
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
 
+            
+
             try
             {
                 if (!ModelState.IsValid)
@@ -252,7 +256,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _productionBll.Save(dbPrductionNew, CurrentUser.USER_ID);
+                _productionBll.Save(dbProduction, CurrentUser.USER_ID);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                     );
 
@@ -344,18 +348,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.QtyPacked = item.QtyPacked*1000;
                     item.QtyUnpacked = item.QtyUnpacked*1000;
                 }
-                else if (item.Uom == "KG")
+
+                if (item.Uom == "KG")
                 {
                     item.Uom = "G";
                     item.QtyPacked = item.QtyPacked*1000;
                     item.QtyUnpacked = item.QtyUnpacked*1000;
                 }
-                else
-                {
-                    item.Uom = modelDto.Uom;
-                    item.QtyPacked = item.QtyPacked;
-                    item.QtyUnpacked = item.QtyUnpacked;
-                }
+               
 
                 item.CompanyName = company.BUTXT;
                 item.PlantName = plant.NAME1;
