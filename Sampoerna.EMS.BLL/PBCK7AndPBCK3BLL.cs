@@ -25,6 +25,9 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<PBCK7> _repositoryPbck7;
         private IGenericRepository<PBCK3> _repositoryPbck3;
         private IGenericRepository<BACK1> _repositoryBack1;
+        private IGenericRepository<BACK3> _repositoryBack3;
+        private IGenericRepository<CK2> _repositoryCk2;
+       
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
         private IPOABLL _poabll;
@@ -42,6 +45,8 @@ namespace Sampoerna.EMS.BLL
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, logger);
             _repository = _uow.GetGenericRepository<PBCK3_PBCK7>();
             _repositoryBack1 = _uow.GetGenericRepository<BACK1>();
+            _repositoryBack3 = _uow.GetGenericRepository<BACK3>();
+            _repositoryCk2 = _uow.GetGenericRepository<CK2>();
         }
 
         public List<Pbck7AndPbck3Dto> GetAllByParam(Pbck7AndPbck3Input input)
@@ -148,6 +153,20 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
+        public void InsertBack3(Back3Dto back3)
+        {
+            var back3ToAdd = Mapper.Map<BACK3>(back3);
+            _repositoryBack3.InsertOrUpdate(back3ToAdd);
+            _uow.SaveChanges();
+        }
+
+        public void InsertCk2(Ck2Dto ck2)
+        {
+            var ck2ToAdd = Mapper.Map<CK2>(ck2);
+            _repositoryCk2.InsertOrUpdate(ck2ToAdd);
+            _uow.SaveChanges(); 
+        }
+
         public Back1Dto GetBack1ByPbck7(int pbck7Id)
         {
             var data = _repositoryBack1.Get(x => x.PBCK7_ID == pbck7Id, null, "BACK1_DOCUMENT");
@@ -158,6 +177,18 @@ namespace Sampoerna.EMS.BLL
         {
             var data = _repositoryPbck3.Get(p=>p.PBCK7_ID == id);
             return Mapper.Map<Pbck3Dto>(data.LastOrDefault());
+        }
+
+        public Back3Dto GetBack3ByPbck3Id(int? id)
+        {
+            var data = _repositoryBack3.Get(p => p.PBCK3_ID == id);
+            return Mapper.Map<Back3Dto>(data.LastOrDefault());
+        }
+
+        public Ck2Dto GetCk2ByPbck3Id(int? id)
+        {
+            var data = _repositoryCk2.Get(p => p.PBCK3_ID == id);
+            return Mapper.Map<Ck2Dto>(data.LastOrDefault());
         }
 
         public void InsertPbck3(Pbck3Dto pbck3Dto)
