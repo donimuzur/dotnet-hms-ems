@@ -211,7 +211,7 @@ function prodConvGenerateClick(url) {
                 //invalid generated
                 $('#prod-conv-save').attr('disabled', 'disabled');
             }
-            changeToDecimal('#ProdConvContent .decimal', 'html');
+            changeToDecimalMaxFour('#ProdConvContent .decimal', 'html');
         },
         error: function (error) {
             // Handle errors here
@@ -454,6 +454,20 @@ function getReference() {
                 $('input[name="Detail.Pbck1Reference"]:hidden').prop("disabled", false);
 
             }
+        }
+    });
+}
+
+function changeToDecimalMaxFour(selector, type) {
+    $(selector).each(function () {
+        if (type == "val") {
+            var val = $(this).val();
+            val = parseFloat(Math.round(val * 100) / 100).toFixed(5);
+            $(this).val(ThausandSeparatorMaxFour(val, 5));
+        } else {
+            var val = $(this).html();
+            //val = parseFloat(Math.round(val * 100) / 100).toFixed(5);
+            $(this).html(ThausandSeparatorMaxFour(val, 5));
         }
     });
 }
