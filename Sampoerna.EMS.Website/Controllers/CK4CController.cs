@@ -770,222 +770,161 @@ namespace Sampoerna.EMS.Website.Controllers
         #region Print Preview
 
         [EncryptedParameter]
-        public FileResult PrintPreview(int id)
+        public ActionResult PrintPreview(int? id)
         {
-            var ck4c = _ck4CBll.GetById(id);
+            if (!id.HasValue)
+                HttpNotFound();
 
-            var dsCk4c = CreateCk4cDs();
-            var dt = dsCk4c.Tables[0];
-            DataRow drow;
-            drow = dt.NewRow();
-            drow[0] = ck4c.Ck4CId;
-            drow[1] = ck4c.Number;
+            var ck4cData = _ck4CBll.GetCk4cReportDataById(id.Value);
+            if (ck4cData == null)
+                HttpNotFound();
 
-            if (ck4c.ReportedOn != null)
-            {
-                var ck4cReportedOn = ck4c.ReportedOn.Value;
-                var ck4cMonth = _monthBll.GetMonth(ck4cReportedOn.Month).MONTH_NAME_IND;
+            Stream stream = GetReport(ck4cData, "PREVIEW CK-4C");
 
-                drow[2] = string.Format("{0} {1} {2}", ck4cReportedOn.Day, ck4cMonth, ck4cReportedOn.Year);
-                drow[14] = ck4cReportedOn.Day;
-                drow[15] = ck4cMonth;
-                drow[16] = ck4cReportedOn.Year;
-            }
-
-            if (ck4c.ReportedPeriod == 1)
-            {
-                drow[3] = "1";
-                drow[4] = "14";
-            }
-            else if (ck4c.ReportedPeriod == 2)
-            {
-                var endDate = new DateTime(ck4c.ReportedYears, ck4c.ReportedMonth, 1).AddMonths(1).AddDays(-1).Day.ToString();
-                drow[3] = "15";
-                drow[4] = endDate;
-            }
-
-            var ck4cPeriodMonth = _monthBll.GetMonth(ck4c.ReportedMonth).MONTH_NAME_IND;
-            drow[5] = ck4cPeriodMonth;
-
-            drow[6] = ck4c.ReportedYears;
-            drow[7] = ck4c.CompanyName;
-
-            var addressPlant = ck4c.Ck4cItem.Select(x => x.Werks).Distinct().ToArray();
-            var address = string.Empty;
-
-            foreach (var item in addressPlant)
-            {
-                address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
-            }
-
-            drow[8] = address;
-
-            var plant = _plantBll.GetT001WById(ck4c.PlantId);
-            var nppbkc = plant == null ? ck4c.NppbkcId : plant.NPPBKC_ID;
-            drow[9] = nppbkc;
-
-            if (ck4c.ApprovedByPoa != null)
-            {
-                var poa = _poabll.GetDetailsById(ck4c.ApprovedByPoa);
-                if (poa != null)
-                {
-                    drow[10] = poa.PRINTED_NAME;
-                }
-            }
-
-            var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
-            {
-                CompanyCode = ck4c.CompanyId,
-                FormTypeId = Enums.FormType.CK4C
-            });
-            if (headerFooter != null)
-            {
-                drow[11] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
-                drow[12] = headerFooter.FOOTER_CONTENT;
-            }
-
-            if (ck4c.Status == Enums.DocumentStatus.WaitingGovApproval || ck4c.Status == Enums.DocumentStatus.Completed)
-            {
-                drow[13] = "CK-4C";
-            }
-            else
-            {
-                drow[13] = "PREVIEW CK-4C";
-            }
-
-            var nBatang = ck4c.Ck4cItem.Where(c => c.ProdQtyUom == "PC" || c.ProdQtyUom == "PCE").Sum(c => c.ProdQty);
-            var nGram = ck4c.Ck4cItem.Where(c => c.ProdQtyUom == "G").Sum(c => c.ProdQty);
-
-            drow[17] = nBatang;
-            drow[18] = nGram;
-
-            var prodTotal = string.Empty;
-            if (nBatang != 0 && nGram != 0)
-            {
-                prodTotal = nBatang + " batang dan " + nGram + " gram";
-            }
-            else if (nBatang == 0 && nGram != 0)
-            {
-                prodTotal = nGram + " gram";
-            }
-            else if (nBatang != 0 && nGram == 0)
-            {
-                prodTotal = nBatang + " batang";
-            }
-
-            drow[19] = prodTotal;
-
-            var city = plant == null ? _nppbkcbll.GetById(ck4c.NppbkcId).CITY : plant.ORT01;
-            drow[20] = city;
-
-            dt.Rows.Add(drow);
-
-            var dtDetail = dsCk4c.Tables[1];
-
-            foreach (var item in ck4c.Ck4cItem)
-            {
-                DataRow drowDetail;
-                drowDetail = dtDetail.NewRow();
-                drowDetail[0] = item.Ck4CItemId;
-                drowDetail[1] = item.ProdQty;
-
-                var prodType = _prodTypeBll.GetById(item.ProdCode);
-                drowDetail[2] = prodType.PRODUCT_ALIAS;
-
-                var brand = _brandRegistrationBll.GetById(item.Werks, item.FaCode);
-                drowDetail[3] = brand.BRAND_CE;
-
-                drowDetail[4] = item.HjeIdr;
-
-                dtDetail.Rows.Add(drowDetail);
-            }
-
-            ReportClass rpt = new ReportClass();
-            string report_path = ConfigurationManager.AppSettings["Report_Path"];
-            rpt.FileName = report_path + "CK4C\\Preview.rpt";
-            rpt.Load();
-            rpt.SetDataSource(dsCk4c);
-
-            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
             return File(stream, "application/pdf");
         }
 
-        private DataSet CreateCk4cDs()
+        private Stream GetReport(Ck4cReportDto ck4cReport, string printTitle)
         {
-            DataSet ds = new DataSet("dsCk4c");
+            var dataSet = SetDataSetReport(ck4cReport, printTitle);
 
-            DataTable dt = new DataTable("Ck4c");
-            dt.Columns.Add("Ck4cId", System.Type.GetType("System.String"));
-            dt.Columns.Add("Number", System.Type.GetType("System.String"));
-            dt.Columns.Add("ReportedOn", System.Type.GetType("System.String"));
-            dt.Columns.Add("ReportedPeriodStart", System.Type.GetType("System.String"));
-            dt.Columns.Add("ReportedPeriodEnd", System.Type.GetType("System.String"));
-            dt.Columns.Add("ReportedMonth", System.Type.GetType("System.String"));
-            dt.Columns.Add("ReportedYear", System.Type.GetType("System.String"));
-            dt.Columns.Add("CompanyName", System.Type.GetType("System.String"));
-            dt.Columns.Add("CompanyAddress", System.Type.GetType("System.String"));
-            dt.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
-            dt.Columns.Add("Poa", System.Type.GetType("System.String"));
-            dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
-            dt.Columns.Add("Footer", System.Type.GetType("System.String"));
-            dt.Columns.Add("Preview", System.Type.GetType("System.String"));
-            dt.Columns.Add("ReportedOnDay", System.Type.GetType("System.String"));
-            dt.Columns.Add("ReportedOnMonth", System.Type.GetType("System.String"));
-            dt.Columns.Add("ReportedOnYear", System.Type.GetType("System.String"));
-            dt.Columns.Add("NBatang", System.Type.GetType("System.String"));
-            dt.Columns.Add("NGram", System.Type.GetType("System.String"));
-            dt.Columns.Add("ProdTotal", System.Type.GetType("System.String"));
-            dt.Columns.Add("City", System.Type.GetType("System.String"));
+            ReportClass rpt = new ReportClass
+            {
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "CK4C\\Preview.rpt"
 
-            //item
-            DataTable dtDetail = new DataTable("Ck4cItem");
-            dtDetail.Columns.Add("Ck4cItemId", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("ProdQty", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("ProdType", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Merk", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Hje", System.Type.GetType("System.String"));
-
-            ds.Tables.Add(dt);
-            ds.Tables.Add(dtDetail);
-            return ds;
+            };
+            rpt.Load();
+            rpt.SetDataSource(dataSet);
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return stream;
         }
 
-        private byte[] GetHeader(string imagePath)
+        private DataSet SetDataSetReport(Ck4cReportDto ck4cReportDto, string printTitle)
         {
-            byte[] imgbyte = null;
-            try
-            {
-                FileStream fs;
-                BinaryReader br;
+            var dsCk4c = new dsCk4c();
 
-                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+            var listCk4c = new List<Ck4cReportInformationDto>();
+            listCk4c.Add(ck4cReportDto.Detail);
+
+            dsCk4c = AddDataCk4cRow(dsCk4c, ck4cReportDto.Detail, printTitle);
+            dsCk4c = AddDataCk4cItemsRow(dsCk4c, ck4cReportDto.Ck4cItemList);
+            dsCk4c = AddDataHeaderFooter(dsCk4c, ck4cReportDto.HeaderFooter);
+
+            return dsCk4c;
+        }
+
+        private dsCk4c AddDataCk4cRow(dsCk4c dsCk4c, Ck4cReportInformationDto ck4cReportDetails, string printTitle)
+        {
+            var detailRow = dsCk4c.Ck4c.NewCk4cRow();
+
+            detailRow.Ck4cId = ck4cReportDetails.Ck4cId.ToString();
+            detailRow.Number = ck4cReportDetails.Number;
+            detailRow.ReportedOn = ck4cReportDetails.ReportedOn;
+            detailRow.ReportedPeriodStart = ck4cReportDetails.ReportedPeriodStart;
+            detailRow.ReportedPeriodEnd = ck4cReportDetails.ReportedPeriodEnd;
+            detailRow.ReportedMonth = ck4cReportDetails.ReportedMonth;
+            detailRow.ReportedYear = ck4cReportDetails.ReportedYear;
+            detailRow.CompanyName = ck4cReportDetails.CompanyName;
+            detailRow.CompanyAddress = ck4cReportDetails.CompanyAddress;
+            detailRow.Nppbkc = ck4cReportDetails.Nppbkc;
+            detailRow.Poa = ck4cReportDetails.Poa;
+            detailRow.ReportedOnDay = ck4cReportDetails.ReportedOnDay;
+            detailRow.ReportedOnMonth = ck4cReportDetails.ReportedOnMonth;
+            detailRow.ReportedOnYear = ck4cReportDetails.ReportedOnYear;
+            detailRow.NBatang = ck4cReportDetails.NBatang;
+            detailRow.NGram = ck4cReportDetails.NGram;
+            detailRow.ProdTotal = ck4cReportDetails.ProdTotal;
+            detailRow.City = ck4cReportDetails.City;
+            detailRow.Preview = printTitle;
+
+            dsCk4c.Ck4c.AddCk4cRow(detailRow);
+
+            return dsCk4c;
+        }
+
+        private dsCk4c AddDataCk4cItemsRow(dsCk4c dsCk4c, List<Ck4cReportItemDto> listCk4cItemsDto)
+        {
+            foreach (var itemDto in listCk4cItemsDto)
+            {
+                var detailRow = dsCk4c.Ck4cItem.NewCk4cItemRow();
+
+                detailRow.Ck4cItemId = itemDto.Ck4cItemId.ToString();
+                detailRow.ProdQty = itemDto.ProdQty;
+                detailRow.ProdType = itemDto.ProdType;
+                detailRow.Merk = itemDto.Merk;
+                detailRow.Hje = itemDto.Hje;
+                detailRow.No = itemDto.No;
+                detailRow.NoProd = itemDto.NoProd;
+                detailRow.ProdDate = itemDto.ProdDate;
+                detailRow.SumBtg = itemDto.SumBtg;
+                detailRow.BtgGr = itemDto.BtgGr;
+                detailRow.Isi = itemDto.Isi;
+                detailRow.Total = itemDto.Total;
+                detailRow.ProdWaste = itemDto.ProdWaste;
+                detailRow.Comment = itemDto.Comment;
+
+                dsCk4c.Ck4cItem.AddCk4cItemRow(detailRow);
+            }
+            return dsCk4c;
+        }
+
+        private dsCk4c AddDataHeaderFooter(dsCk4c ds, HEADER_FOOTER_MAPDto headerFooter)
+        {
+            var dRow = ds.HeaderFooter.NewHeaderFooterRow();
+            if (headerFooter != null)
+            {
+                #region set Image Header
+
+                if (headerFooter.IS_HEADER_SET.HasValue && headerFooter.IS_HEADER_SET.Value)
                 {
-                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    //convert to byte image
+                    FileStream fs;
+                    BinaryReader br;
+                    var imagePath = headerFooter.HEADER_IMAGE_PATH;
+                    if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                    {
+                        fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read,
+                            FileShare.ReadWrite);
+                    }
+                    else
+                    {
+                        // if photo does not exist show the nophoto.jpg file 
+                        fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    }
+                    // initialise the binary reader from file streamobject 
+                    br = new BinaryReader(fs);
+                    // define the byte array of filelength 
+                    byte[] imgbyte = new byte[fs.Length + 1];
+                    // read the bytes from the binary reader 
+                    imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+                    dRow.HeaderImage = imgbyte;
+
                 }
                 else
                 {
-                    // if photo does not exist show the nophoto.jpg file 
-                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    dRow.HeaderImage = null;
                 }
-                // initialise the binary reader from file streamobject 
-                br = new BinaryReader(fs);
-                // define the byte array of filelength 
-                imgbyte = new byte[fs.Length + 1];
-                // read the bytes from the binary reader 
-                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
 
-                br.Close();
-                // close the binary reader 
-                fs.Close();
-                // close the file stream
+                #endregion
+
+                #region set Footer Content
+
+                dRow.FooterContent = headerFooter.IS_FOOTER_SET.HasValue && headerFooter.IS_FOOTER_SET.Value
+                    ? headerFooter.FOOTER_CONTENT.Replace("<br />", Environment.NewLine)
+                    : " ";
+
+                #endregion
             }
-            catch (Exception ex)
+            else
             {
+                dRow.HeaderImage = null;
+                dRow.FooterContent = " ";
             }
-            return imgbyte;
-            // Return Datatable After Image Row Insertion
+            ds.HeaderFooter.AddHeaderFooterRow(dRow);
+            return ds;
         }
-
+        
         [HttpPost]
         public ActionResult AddPrintHistory(int? id)
         {

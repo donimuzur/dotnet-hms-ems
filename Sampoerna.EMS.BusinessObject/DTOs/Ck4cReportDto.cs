@@ -9,10 +9,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             Ck4cItemList = new List<Ck4cReportItemDto>();
             Detail = new Ck4cReportInformationDto();
             HeaderFooter = new HEADER_FOOTER_MAPDto();
+            Ck4cTotal = new List<Ck4cTotalProd>();
         }
 
         public Ck4cReportInformationDto Detail { get; set; }
         public List<Ck4cReportItemDto> Ck4cItemList { get; set; }
+        public List<Ck4cTotalProd> Ck4cTotal { get; set; }
         public HEADER_FOOTER_MAPDto HeaderFooter { get; set; }
     }
 
@@ -64,5 +66,42 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class Ck4cReportItemDto
     {
         public int Ck4cItemId { get; set; }
+
+        public string ProdQty { get; set; }
+
+        public string ProdType { get; set; }
+
+        public string Merk { get; set; }
+
+        public string Hje { get; set; }
+
+        public string No { get; set; }
+
+        public string NoProd { get; set; }
+
+        public string ProdDate { get; set; }
+
+        public string SumBtg { get; set; }
+
+        public string BtgGr { get; set; }
+
+        public string Isi { get; set; }
+
+        public string Total { get; set; }
+
+        public string ProdWaste { get; set; }
+
+        public string Comment { get; set; }
+    }
+
+    public class Ck4cTotalProd
+    {
+        public string Comment { get; set; }
+
+        public string ProdType { get; set; }
+
+        public string ProdTotal { get; set; }
+
+        public string ProdBtg { get; set; }
     }
 }
