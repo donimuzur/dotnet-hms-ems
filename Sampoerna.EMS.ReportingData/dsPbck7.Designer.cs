@@ -346,6 +346,10 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnDocumentType;
             
+            private global::System.Data.DataColumn columnNppbkcCity;
+            
+            private global::System.Data.DataColumn columnPbckDate;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public MasterDataTable() {
@@ -509,6 +513,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NppbkcCityColumn {
+                get {
+                    return this.columnNppbkcCity;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PbckDateColumn {
+                get {
+                    return this.columnPbckDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -560,7 +580,9 @@ namespace Sampoerna.EMS.ReportingData {
                         string Lampiran, 
                         string TextTo, 
                         string VendorCity, 
-                        string DocumentType) {
+                        string DocumentType, 
+                        string NppbkcCity, 
+                        string PbckDate) {
                 MasterRow rowMasterRow = ((MasterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         PoaName,
@@ -578,7 +600,9 @@ namespace Sampoerna.EMS.ReportingData {
                         Lampiran,
                         TextTo,
                         VendorCity,
-                        DocumentType};
+                        DocumentType,
+                        NppbkcCity,
+                        PbckDate};
                 rowMasterRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowMasterRow);
                 return rowMasterRow;
@@ -617,6 +641,8 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnTextTo = base.Columns["TextTo"];
                 this.columnVendorCity = base.Columns["VendorCity"];
                 this.columnDocumentType = base.Columns["DocumentType"];
+                this.columnNppbkcCity = base.Columns["NppbkcCity"];
+                this.columnPbckDate = base.Columns["PbckDate"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -654,6 +680,10 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnVendorCity);
                 this.columnDocumentType = new global::System.Data.DataColumn("DocumentType", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDocumentType);
+                this.columnNppbkcCity = new global::System.Data.DataColumn("NppbkcCity", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNppbkcCity);
+                this.columnPbckDate = new global::System.Data.DataColumn("PbckDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPbckDate);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1397,6 +1427,38 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string NppbkcCity {
+                get {
+                    try {
+                        return ((string)(this[this.tableMaster.NppbkcCityColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'NppbkcCity\' in table \'Master\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaster.NppbkcCityColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PbckDate {
+                get {
+                    try {
+                        return ((string)(this[this.tableMaster.PbckDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PbckDate\' in table \'Master\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaster.PbckDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsPoaNameNull() {
                 return this.IsNull(this.tableMaster.PoaNameColumn);
             }
@@ -1585,6 +1647,30 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetDocumentTypeNull() {
                 this[this.tableMaster.DocumentTypeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNppbkcCityNull() {
+                return this.IsNull(this.tableMaster.NppbkcCityColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNppbkcCityNull() {
+                this[this.tableMaster.NppbkcCityColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPbckDateNull() {
+                return this.IsNull(this.tableMaster.PbckDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPbckDateNull() {
+                this[this.tableMaster.PbckDateColumn] = global::System.Convert.DBNull;
             }
         }
         
