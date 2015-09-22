@@ -47,11 +47,11 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual ICollection<BACK1> BACK1 { get; set; }
         public virtual ICollection<PBCK3> PBCK3 { get; set; }
-        public virtual ICollection<PBCK7_ITEM> PBCK7_ITEM { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual POA POA { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual USER USER3 { get; set; }
+        public virtual ICollection<PBCK7_ITEM> PBCK7_ITEM { get; set; }
     }
 }

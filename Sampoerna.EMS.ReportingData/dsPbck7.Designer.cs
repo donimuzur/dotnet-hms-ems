@@ -332,6 +332,10 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnReportingDate;
             
+            private global::System.Data.DataColumn columnPreview;
+            
+            private global::System.Data.DataColumn columnDecreeDate;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public MasterDataTable() {
@@ -439,6 +443,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PreviewColumn {
+                get {
+                    return this.columnPreview;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DecreeDateColumn {
+                get {
+                    return this.columnDecreeDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -474,7 +494,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MasterRow AddMasterRow(string PoaName, string CompanyName, string CompanyAddress, string Nppbkc, byte[] Header, string Footer, string TotalKemasan, string TotalCukai, string ReportingDate) {
+            public MasterRow AddMasterRow(string PoaName, string CompanyName, string CompanyAddress, string Nppbkc, byte[] Header, string Footer, string TotalKemasan, string TotalCukai, string ReportingDate, string Preview, string DecreeDate) {
                 MasterRow rowMasterRow = ((MasterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         PoaName,
@@ -485,7 +505,9 @@ namespace Sampoerna.EMS.ReportingData {
                         Footer,
                         TotalKemasan,
                         TotalCukai,
-                        ReportingDate};
+                        ReportingDate,
+                        Preview,
+                        DecreeDate};
                 rowMasterRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowMasterRow);
                 return rowMasterRow;
@@ -517,6 +539,8 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnTotalKemasan = base.Columns["TotalKemasan"];
                 this.columnTotalCukai = base.Columns["TotalCukai"];
                 this.columnReportingDate = base.Columns["ReportingDate"];
+                this.columnPreview = base.Columns["Preview"];
+                this.columnDecreeDate = base.Columns["DecreeDate"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -540,6 +564,10 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnTotalCukai);
                 this.columnReportingDate = new global::System.Data.DataColumn("ReportingDate", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnReportingDate);
+                this.columnPreview = new global::System.Data.DataColumn("Preview", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPreview);
+                this.columnDecreeDate = new global::System.Data.DataColumn("DecreeDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDecreeDate);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1157,6 +1185,38 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Preview {
+                get {
+                    try {
+                        return ((string)(this[this.tableMaster.PreviewColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Preview\' in table \'Master\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaster.PreviewColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DecreeDate {
+                get {
+                    try {
+                        return ((string)(this[this.tableMaster.DecreeDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DecreeDate\' in table \'Master\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaster.DecreeDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsPoaNameNull() {
                 return this.IsNull(this.tableMaster.PoaNameColumn);
             }
@@ -1261,6 +1321,30 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetReportingDateNull() {
                 this[this.tableMaster.ReportingDateColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPreviewNull() {
+                return this.IsNull(this.tableMaster.PreviewColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPreviewNull() {
+                this[this.tableMaster.PreviewColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDecreeDateNull() {
+                return this.IsNull(this.tableMaster.DecreeDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDecreeDateNull() {
+                this[this.tableMaster.DecreeDateColumn] = global::System.Convert.DBNull;
             }
         }
         
