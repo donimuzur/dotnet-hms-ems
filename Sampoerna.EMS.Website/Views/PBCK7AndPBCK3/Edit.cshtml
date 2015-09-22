@@ -77,7 +77,7 @@
                             <input type="submit" class="btn btn-blue" value="Save PBCK3" />
                         }
 
-                        <input type="button" class="btn btn-grey" value="Print Preview" onclick="printpreview('@Url.EncryptedAction("printpreview", "pbck7pbck3", new {id = @Model.Id})') " />
+                        <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7AndPbck3", new { id = @Model.Id })')" />
                         <input type="button" value="Back" class="btn btn-grey" id="btnCancelPbck3" />
 
                         if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Draft
@@ -167,7 +167,10 @@
                 $('#form-pbck7-edit').submit();
             }
         });
-
+        $("#btnSaveGovStatusPbck3").click(function () {
+               $('#form-pbck7-edit').submit();
+            
+        });
         function ValidateGovInput() {
             var result = true;
             var govStatus = $('#Pbck7GovStatus').find("option:selected").val();
@@ -366,18 +369,12 @@
 
         });
 
+        function printPreview(url) {
 
-        $('#Back1GovStatus').change(function() {
-          
-            if ($(this).length) {
-                var back1govstatus = $(this).find("option:selected").val();
-                if (back1govstatus == 'FullApproved') {
-                    $('#Back1Dto_Back1Number').removeAttr('disabled');
-                } else {
-                    $('#Back1Dto_Back1Number').Attr('disabled', 'disabled');
-                }
-            }
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
-        });
+        }
+
+        
     </script>
 }

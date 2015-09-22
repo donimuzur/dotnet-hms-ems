@@ -42,6 +42,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? Pbck3Date { get; set; }
         public Back3Dto Back3Dto { get; set; }
         public Ck2Dto Ck2Dto { get; set; }
+
+        public string NppbckId { get; set; }
+
+        public string Plant { get; set; }
        
     }
 
@@ -102,6 +106,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public Back1Dto Back1Dto { get; set; }
 
+        public Back3Dto Back3Dto { get; set; }
+        public Ck2Dto Ck2Dto { get; set; }
 
     }
 
@@ -128,7 +134,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public Decimal? ExciseValue { get; set; }
 
-        public Decimal? SeriesValue { get; set; }
+        public string SeriesValue { get; set; }
 
     }
 
@@ -147,7 +153,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public int Ck2ID { get; set; }
         public string Ck2Number { get; set; }
-        public Nullable<System.DateTime> CK2_DATE { get; set; }
+        public Nullable<System.DateTime> Ck2Date { get; set; }
         public Nullable<decimal> Ck2Value { get; set; }
         public int Pbck3ID { get; set; }
 

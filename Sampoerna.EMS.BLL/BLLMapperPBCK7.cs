@@ -140,6 +140,8 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
                .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.APPROVED_BY))
                .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
+                   .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.PBCK7.NPPBKC))
+             .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PBCK7.PLANT_ID + "-" + src.PBCK7.PLANT_NAME))
                ;
 
             Mapper.CreateMap<BACK3, Back3Dto>().IgnoreAllNonExisting();

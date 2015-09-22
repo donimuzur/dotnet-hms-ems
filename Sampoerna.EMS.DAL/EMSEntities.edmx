@@ -580,8 +580,8 @@
           <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="MEINH" Type="nvarchar" MaxLength="10" />
-          <Property Name="UMREZ" Type="numeric" Precision="18" Scale="2" />
-          <Property Name="UMREN" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="UMREZ" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="UMREN" Type="decimal" Precision="18" Scale="4" />
         </EntityType>
         <EntityType Name="MENGETAHUI">
           <Key>
@@ -905,7 +905,7 @@
           <Property Name="BRAND_CONTENT" Type="decimal" Precision="15" Scale="2" />
           <Property Name="PBCK7_QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="BACK1_QTY" Type="decimal" Precision="15" Scale="2" />
-          <Property Name="SERIES_VALUE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="SERIES_VALUE" Type="nvarchar" MaxLength="5" />
           <Property Name="HJE" Type="decimal" Precision="15" Scale="2" />
           <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
           <Property Name="FISCAL_YEAR" Type="int" />
@@ -996,6 +996,10 @@
           <Property Name="DOCGMVTER" Type="nvarchar" MaxLength="35" />
           <Property Name="MATDOC" Type="nvarchar" MaxLength="10" />
           <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
@@ -1127,6 +1131,10 @@
           <Property Name="FLOOR_WASTE_GRAM_QTY" Type="decimal" Precision="18" Scale="2" />
           <Property Name="DUST_WASTE_STICK_QTY" Type="decimal" Precision="18" Scale="2" />
           <Property Name="FLOOR_WASTE_STICK_QTY" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="WORKFLOW_HISTORY">
           <Key>
@@ -1184,7 +1192,7 @@
           <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" />
           <Property Name="CUT_FILLER_CODE" Type="nvarchar" MaxLength="30" />
           <Property Name="PRINTING_PRICE" Type="numeric" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="numeric" Precision="15" Scale="2" />
+          <Property Name="CONVERSION" Type="decimal" Precision="18" Scale="4" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
           <Property Name="STATUS" Type="bit" />
@@ -4190,8 +4198,6 @@
             <End Role="CK4C" EntitySet="CK4C" />
           </AssociationSet>
           <EntitySet Name="BLOCK_STOCK" EntityType="EMSModel.BLOCK_STOCK" />
-          <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
-          <EntitySet Name="WASTE" EntityType="EMSModel.WASTE" />
           <EntitySet Name="PBCK4_DOCUMENT" EntityType="EMSModel.PBCK4_DOCUMENT" />
           <EntitySet Name="PBCK4_ITEM" EntityType="EMSModel.PBCK4_ITEM" />
           <EntitySet Name="LACK1_DOCUMENT" EntityType="EMSModel.LACK1_DOCUMENT" />
@@ -4268,7 +4274,6 @@
           <EntitySet Name="BACK1_DOCUMENT" EntityType="EMSModel.BACK1_DOCUMENT" />
           <EntitySet Name="PBCK3" EntityType="EMSModel.PBCK3" />
           <EntitySet Name="PBCK7" EntityType="EMSModel.PBCK7" />
-          <EntitySet Name="PBCK7_ITEM" EntityType="EMSModel.PBCK7_ITEM" />
           <AssociationSet Name="FK_BACK1_DOCUMENT_BACK1" Association="EMSModel.FK_BACK1_DOCUMENT_BACK1">
             <End Role="BACK1" EntitySet="BACK1" />
             <End Role="BACK1_DOCUMENT" EntitySet="BACK1_DOCUMENT" />
@@ -4300,10 +4305,6 @@
           <AssociationSet Name="FK_PBCK3_USER" Association="EMSModel.FK_PBCK3_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="PBCK3" EntitySet="PBCK3" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK7_ITEM_PBCK7" Association="EMSModel.FK_PBCK7_ITEM_PBCK7">
-            <End Role="PBCK7" EntitySet="PBCK7" />
-            <End Role="PBCK7_ITEM" EntitySet="PBCK7_ITEM" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK7_MANAGER" Association="EMSModel.FK_PBCK7_MANAGER">
             <End Role="USER" EntitySet="USER" />
@@ -4381,6 +4382,13 @@
           <AssociationSet Name="FK_PBCK4_ITEM_CK1" Association="EMSModel.FK_PBCK4_ITEM_CK1">
             <End Role="CK1" EntitySet="CK1" />
             <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
+          </AssociationSet>
+          <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
+          <EntitySet Name="WASTE" EntityType="EMSModel.WASTE" />
+          <EntitySet Name="PBCK7_ITEM" EntityType="EMSModel.PBCK7_ITEM" />
+          <AssociationSet Name="FK_PBCK7_ITEM_PBCK7" Association="EMSModel.FK_PBCK7_ITEM_PBCK7">
+            <End Role="PBCK7" EntitySet="PBCK7" />
+            <End Role="PBCK7_ITEM" EntitySet="PBCK7_ITEM" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -4656,7 +4664,7 @@
           <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="CUT_FILLER_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PRINTING_PRICE" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="Decimal" Precision="15" Scale="4" />
+          <Property Name="CONVERSION" Type="Decimal" Precision="18" Scale="4" />
           <Property Name="START_DATE" Type="DateTime" Precision="3" />
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <Property Name="STATUS" Type="Boolean" />
@@ -6868,53 +6876,6 @@
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="SLOC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="PRODUCTION">
-          <Key>
-            <PropertyRef Name="COMPANY_CODE" />
-            <PropertyRef Name="WERKS" />
-            <PropertyRef Name="FA_CODE" />
-            <PropertyRef Name="PRODUCTION_DATE" />
-          </Key>
-          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="QTY_UNPACKED" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="QTY_PACKED" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PROD_QTY_STICK" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="BUNDLE" Type="Int32" />
-          <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="MATDOC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="WASTE">
-          <Key>
-            <PropertyRef Name="COMPANY_CODE" />
-            <PropertyRef Name="WERKS" />
-            <PropertyRef Name="FA_CODE" />
-            <PropertyRef Name="WASTE_PROD_DATE" />
-          </Key>
-          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="MARKER_REJECT_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="PACKER_REJECT_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="WASTE_PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="DUST_WASTE_GRAM_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="FLOOR_WASTE_GRAM_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="DUST_WASTE_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="FLOOR_WASTE_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
-        </EntityType>
         <EntityType Name="PBCK4_DOCUMENT">
           <Key>
             <PropertyRef Name="PBCK4_DOCUMENT_ID" />
@@ -7334,7 +7295,6 @@
           <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BACK1" Relationship="EMSModel.FK_BACK1_PBCK7" FromRole="PBCK7" ToRole="BACK1" />
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_PBCK7" FromRole="PBCK7" ToRole="PBCK3" />
-          <NavigationProperty Name="PBCK7_ITEM" Relationship="EMSModel.FK_PBCK7_ITEM_PBCK7" FromRole="PBCK7" ToRole="PBCK7_ITEM" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_PBCK7_MANAGER" FromRole="PBCK7" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_PBCK7_MODIFIED_USER" FromRole="PBCK7" ToRole="USER" />
           <NavigationProperty Name="POA" Relationship="EMSModel.FK_PBCK7_POA" FromRole="PBCK7" ToRole="POA" />
@@ -7344,25 +7304,7 @@
           <Property Name="PLANT_CITY" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
           <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
-        </EntityType>
-        <EntityType Name="PBCK7_ITEM">
-          <Key>
-            <PropertyRef Name="PBCK7_ITEM_ID" />
-          </Key>
-          <Property Name="PBCK7_ITEM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PBCK7_ID" Type="Int32" Nullable="false" />
-          <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_CE" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_CONTENT" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="PBCK7_QTY" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="BACK1_QTY" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="SERIES_VALUE" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="HJE" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="FISCAL_YEAR" Type="Int32" />
-          <Property Name="EXCISE_VALUE" Type="Decimal" Precision="15" Scale="2" />
-          <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_ITEM_PBCK7" FromRole="PBCK7_ITEM" ToRole="PBCK7" />
+          <NavigationProperty Name="PBCK7_ITEM" Relationship="EMSModel.FK_PBCK7_ITEM_PBCK7" FromRole="PBCK7" ToRole="PBCK7_ITEM" />
         </EntityType>
         <Association Name="FK_BACK1_DOCUMENT_BACK1">
           <End Type="EMSModel.BACK1" Role="BACK1" Multiplicity="1" />
@@ -7457,18 +7399,6 @@
             </Principal>
             <Dependent Role="PBCK3">
               <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK7_ITEM_PBCK7">
-          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="1" />
-          <End Type="EMSModel.PBCK7_ITEM" Role="PBCK7_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PBCK7">
-              <PropertyRef Name="PBCK7_ID" />
-            </Principal>
-            <Dependent Role="PBCK7_ITEM">
-              <PropertyRef Name="PBCK7_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7779,6 +7709,92 @@
             </Principal>
             <Dependent Role="PBCK4_ITEM">
               <PropertyRef Name="CK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PRODUCTION">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="PRODUCTION_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="QTY_UNPACKED" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="QTY_PACKED" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PROD_QTY_STICK" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BUNDLE" Type="Int32" />
+          <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="MATDOC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="WASTE">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="WASTE_PROD_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="MARKER_REJECT_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PACKER_REJECT_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="WASTE_PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DUST_WASTE_GRAM_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="FLOOR_WASTE_GRAM_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DUST_WASTE_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="FLOOR_WASTE_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PBCK7_ITEM">
+          <Key>
+            <PropertyRef Name="PBCK7_ITEM_ID" />
+          </Key>
+          <Property Name="PBCK7_ITEM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PBCK7_ID" Type="Int32" Nullable="false" />
+          <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CE" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CONTENT" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="PBCK7_QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BACK1_QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="SERIES_VALUE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="HJE" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="FISCAL_YEAR" Type="Int32" />
+          <Property Name="EXCISE_VALUE" Type="Decimal" Precision="15" Scale="2" />
+          <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_ITEM_PBCK7" FromRole="PBCK7_ITEM" ToRole="PBCK7" />
+        </EntityType>
+        <Association Name="FK_PBCK7_ITEM_PBCK7">
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="1" />
+          <End Type="EMSModel.PBCK7_ITEM" Role="PBCK7_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PBCK7">
+              <PropertyRef Name="PBCK7_ID" />
+            </Principal>
+            <Dependent Role="PBCK7_ITEM">
+              <PropertyRef Name="PBCK7_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -8813,49 +8829,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PRODUCTION">
-            <EntityTypeMapping TypeName="EMSModel.PRODUCTION">
-              <MappingFragment StoreEntitySet="PRODUCTION">
-                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
-                <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
-                <ScalarProperty Name="DOCGMVTER" ColumnName="DOCGMVTER" />
-                <ScalarProperty Name="MARKET" ColumnName="MARKET" />
-                <ScalarProperty Name="BUNDLE" ColumnName="BUNDLE" />
-                <ScalarProperty Name="QTY" ColumnName="QTY" />
-                <ScalarProperty Name="PROD_QTY_STICK" ColumnName="PROD_QTY_STICK" />
-                <ScalarProperty Name="BATCH" ColumnName="BATCH" />
-                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
-                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
-                <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
-                <ScalarProperty Name="UOM" ColumnName="UOM" />
-                <ScalarProperty Name="QTY_PACKED" ColumnName="QTY_PACKED" />
-                <ScalarProperty Name="QTY_UNPACKED" ColumnName="QTY_UNPACKED" />
-                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
-                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="WASTE">
-            <EntityTypeMapping TypeName="EMSModel.WASTE">
-              <MappingFragment StoreEntitySet="WASTE">
-                <ScalarProperty Name="FLOOR_WASTE_STICK_QTY" ColumnName="FLOOR_WASTE_STICK_QTY" />
-                <ScalarProperty Name="DUST_WASTE_STICK_QTY" ColumnName="DUST_WASTE_STICK_QTY" />
-                <ScalarProperty Name="FLOOR_WASTE_GRAM_QTY" ColumnName="FLOOR_WASTE_GRAM_QTY" />
-                <ScalarProperty Name="DUST_WASTE_GRAM_QTY" ColumnName="DUST_WASTE_GRAM_QTY" />
-                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
-                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
-                <ScalarProperty Name="WASTE_PROD_DATE" ColumnName="WASTE_PROD_DATE" />
-                <ScalarProperty Name="PACKER_REJECT_STICK_QTY" ColumnName="PACKER_REJECT_STICK_QTY" />
-                <ScalarProperty Name="MARKER_REJECT_STICK_QTY" ColumnName="MARKER_REJECT_STICK_QTY" />
-                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
-                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PBCK4_DOCUMENT">
             <EntityTypeMapping TypeName="EMSModel.PBCK4_DOCUMENT">
               <MappingFragment StoreEntitySet="PBCK4_DOCUMENT">
@@ -9079,25 +9052,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PBCK7_ITEM">
-            <EntityTypeMapping TypeName="EMSModel.PBCK7_ITEM">
-              <MappingFragment StoreEntitySet="PBCK7_ITEM">
-                <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
-                <ScalarProperty Name="FISCAL_YEAR" ColumnName="FISCAL_YEAR" />
-                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
-                <ScalarProperty Name="HJE" ColumnName="HJE" />
-                <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
-                <ScalarProperty Name="BACK1_QTY" ColumnName="BACK1_QTY" />
-                <ScalarProperty Name="PBCK7_QTY" ColumnName="PBCK7_QTY" />
-                <ScalarProperty Name="BRAND_CONTENT" ColumnName="BRAND_CONTENT" />
-                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
-                <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
-                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
-                <ScalarProperty Name="PBCK7_ID" ColumnName="PBCK7_ID" />
-                <ScalarProperty Name="PBCK7_ITEM_ID" ColumnName="PBCK7_ITEM_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PBCK4">
             <EntityTypeMapping TypeName="EMSModel.PBCK4">
               <MappingFragment StoreEntitySet="PBCK4">
@@ -9179,6 +9133,76 @@
                 <ScalarProperty Name="CK1_DATE" ColumnName="CK1_DATE" />
                 <ScalarProperty Name="CK1_NUMBER" ColumnName="CK1_NUMBER" />
                 <ScalarProperty Name="CK1_ID" ColumnName="CK1_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCTION">
+            <EntityTypeMapping TypeName="EMSModel.PRODUCTION">
+              <MappingFragment StoreEntitySet="PRODUCTION">
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
+                <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
+                <ScalarProperty Name="DOCGMVTER" ColumnName="DOCGMVTER" />
+                <ScalarProperty Name="MARKET" ColumnName="MARKET" />
+                <ScalarProperty Name="BUNDLE" ColumnName="BUNDLE" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="PROD_QTY_STICK" ColumnName="PROD_QTY_STICK" />
+                <ScalarProperty Name="BATCH" ColumnName="BATCH" />
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="QTY_PACKED" ColumnName="QTY_PACKED" />
+                <ScalarProperty Name="QTY_UNPACKED" ColumnName="QTY_UNPACKED" />
+                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WASTE">
+            <EntityTypeMapping TypeName="EMSModel.WASTE">
+              <MappingFragment StoreEntitySet="WASTE">
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="FLOOR_WASTE_STICK_QTY" ColumnName="FLOOR_WASTE_STICK_QTY" />
+                <ScalarProperty Name="DUST_WASTE_STICK_QTY" ColumnName="DUST_WASTE_STICK_QTY" />
+                <ScalarProperty Name="FLOOR_WASTE_GRAM_QTY" ColumnName="FLOOR_WASTE_GRAM_QTY" />
+                <ScalarProperty Name="DUST_WASTE_GRAM_QTY" ColumnName="DUST_WASTE_GRAM_QTY" />
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="WASTE_PROD_DATE" ColumnName="WASTE_PROD_DATE" />
+                <ScalarProperty Name="PACKER_REJECT_STICK_QTY" ColumnName="PACKER_REJECT_STICK_QTY" />
+                <ScalarProperty Name="MARKER_REJECT_STICK_QTY" ColumnName="MARKER_REJECT_STICK_QTY" />
+                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PBCK7_ITEM">
+            <EntityTypeMapping TypeName="EMSModel.PBCK7_ITEM">
+              <MappingFragment StoreEntitySet="PBCK7_ITEM">
+                <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
+                <ScalarProperty Name="FISCAL_YEAR" ColumnName="FISCAL_YEAR" />
+                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
+                <ScalarProperty Name="HJE" ColumnName="HJE" />
+                <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
+                <ScalarProperty Name="BACK1_QTY" ColumnName="BACK1_QTY" />
+                <ScalarProperty Name="PBCK7_QTY" ColumnName="PBCK7_QTY" />
+                <ScalarProperty Name="BRAND_CONTENT" ColumnName="BRAND_CONTENT" />
+                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
+                <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="PBCK7_ID" ColumnName="PBCK7_ID" />
+                <ScalarProperty Name="PBCK7_ITEM_ID" ColumnName="PBCK7_ITEM_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

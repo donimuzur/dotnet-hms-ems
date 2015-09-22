@@ -143,17 +143,18 @@
                                         </div>
                                     </div>
                                 </div>
+                             
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">PBCK7 Gov Status</label>
                                         <div class="col-md-8">
                                             @if (Model.Pbck7Status == Enums.DocumentStatus.WaitingGovApproval)
                                             {
-                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new {@class = "form-control"})
+                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control" })
                                             }
                                             else
                                             {
-                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control", @disabled="disabled" })
+                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
 
                                             }
                                         </div>
@@ -171,10 +172,10 @@
                                             {
                                                 @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
 
-                                            } </div>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-
 
                             </div>
                         </div>

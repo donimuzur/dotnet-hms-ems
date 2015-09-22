@@ -10,6 +10,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -50,6 +51,31 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PBCK4_DOCUMENTDto, PBCK4_DOCUMENT>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<PBCK4_DOCUMENT, PBCK4_DOCUMENTDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, GetListBrandByPlantOutput>().IgnoreAllNonExisting()
+                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                  .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                   .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
+                ;
+
+            Mapper.CreateMap<CK1, GetListCk1ByNppbkcOutput>().IgnoreAllNonExisting()
+                 .ForMember(dest => dest.Ck1Id, opt => opt.MapFrom(src => src.CK1_ID.ToString()))
+                 .ForMember(dest => dest.Ck1No, opt => opt.MapFrom(src => src.CK1_NUMBER))
+                 .ForMember(dest => dest.Ck1Date, opt => opt.MapFrom(src => src.CK1_DATE.ToString("dd MMM yyyy")))
+                ;
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, GetBrandItemsOutput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
+                .ForMember(dest => dest.SeriesCode, opt => opt.MapFrom(src => src.SERIES_CODE))
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.BRAND_CE))
+                .ForMember(dest => dest.ProductAlias, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP != null ? src.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS : string.Empty ))
+                .ForMember(dest => dest.BrandContent, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.BRAND_CONTENT).ToString()))
+                .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE_IDR.HasValue ? src.HJE_IDR.Value.ToString("f2") : "0"))
+                .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF.HasValue ? src.TARIFF.Value.ToString("f2") : "0"))
+                .ForMember(dest => dest.Colour, opt => opt.MapFrom(src => src.COLOUR))
+                ;
         }
     }
 }

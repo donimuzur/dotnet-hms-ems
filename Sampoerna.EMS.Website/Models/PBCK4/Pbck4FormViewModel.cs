@@ -78,6 +78,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public List<HttpPostedFileBase> Pbck4FileUploadFileList2 { get; set; }
         //ck-3
         public List<Pbck4FileUploadViewModel> Pbck4FileUploadModelList2 { get; set; }
+
+        public decimal RequestedQty { get; set; }
+        public decimal ApprovedQty { get; set; }
+        public string NoPengawas { get; set; }
+        public string Remarks { get; set; }
+        public string Ck1Date { get; set; }
     }
 
 
