@@ -139,38 +139,45 @@
             <div class="modal-body form-excise">
                 <p></p>
                 <input id="uploadMaterialRow" type="hidden" value="">
-
+                <input id="uploadCk1Id" type="hidden" value="">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Plant</label>
                         <input class="form-control" id="uploadPlant" type="text" value="" disabled>
                     </div>
 
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>FA Code<span class="red">*</span></label>
                         <select class="form-control" id="uploadFaCode">
                             <option value="">Select</option>
                         </select>
 
                     </div>
-                    <div class="col-md-6">
-                        <label>Sticker Code</label>
-                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadStickerCode", @disabled = "disabled" })
-
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>CK-1 No<span class="red">*</span></label>
                         <select class="form-control" id="uploadCk1No" name="uploadCk1No">
                             <option value="">Select</option>
                         </select>
 
                     </div>
-                    <div class="col-md-6">
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label>Sticker Code</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadStickerCode", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Series Code</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadSeriesCode", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
                         <label>CK-1 Date</label>
                         @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadCk1Date", @disabled = "disabled" })
 
@@ -178,84 +185,74 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <label>Series Code</label>
-                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadSeriesCode", @disabled = "disabled" })
 
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Brand Name</label>
                         @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadBrandName", @disabled = "disabled" })
 
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Product Alias</label>
                         @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadProductAlias", @disabled = "disabled" })
 
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Content</label>
                         @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadContent", @disabled = "disabled" })
 
                     </div>
                 </div>
 
+
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>HJE</label>
                         @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadHje", @disabled = "disabled" })
 
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Tariff</label>
                         @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadTariff", @disabled = "disabled" })
 
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Colour</label>
                         <textarea class="form-control" id="uploadColour" cols="20" rows="3" disabled></textarea>
 
                     </div>
+                </div>
 
-                    <div class="col-md-6">
+                <div class="row">
+
+
+                    <div class="col-md-4">
                         <label>Requested Qty<span class="red">*</span></label>
-                        @Html.TextBoxFor(model => model.RequestedQty, new { @class = "form-control", @id = "uploadReqQty" })
+                        @Html.TextBoxFor(model => model.RequestedQty, new { @class = "form-control", @id = "uploadReqQty", @maxlength = "15" })
 
                     </div>
-                </div>
 
-
-                <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Approved Qty<span class="red">*</span></label>
-                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadApprovedQty" })
+                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadApprovedQty", @maxlength = "15" })
 
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>No Pengawas</label>
-                        @Html.TextBoxFor(model => model.NoPengawas, new { @class = "form-control", @id = "uploadNoPengawas" })
+                        @Html.TextBoxFor(model => model.NoPengawas, new { @class = "form-control", @id = "uploadNoPengawas", @maxlength = "10" })
 
 
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Remarks</label>
                         <textarea class="form-control" id="uploadRemarks" cols="20" rows="5"></textarea>
                     </div>
-                    <div class="col-md-6">
-
-                    </div>
-
 
                 </div>
             </div>
@@ -406,7 +403,8 @@
             $('#uploadNoPengawas').val(nRow.find("td").eq(16).html());
             $('#uploadRemarks').val(nRow.find("td").eq(18).html());
 
-
+            $("#uploadCk1Id").val(nRow.find("td").eq(20).html());
+            
             $("#lblTitleInputManual").text('Edit Input');
 
             $('#Pbck4UploadModal').modal('show');
@@ -465,6 +463,7 @@
                 if (ck1Id == '') {
 
                     $("#uploadCk1Date").val('');
+                    $("#uploadCk1Id").val('');
 
                 } else {
 

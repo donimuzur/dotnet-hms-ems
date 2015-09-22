@@ -118,23 +118,24 @@ function ValidatePbck4Form() {
         }
     }
 
-    //    rowCount = $('#Ck5UploadTable tr').length;
+    if (result) {
+        rowCount = $('#Ck5UploadTable tr').length;
 
-    //    if (rowCount <= 1) {
-    //        // alert('Missing CK5 Material');
-    //        $('#modalBodyMessage').text('Missing CK5 Materials');
-    //        $('#ModalCk5Material').modal('show');
+        if (rowCount <= 1) {
+            // alert('Missing CK5 Material');
+            $('#modalBodyMessage').text('Missing PBCK-4 Items');
+            $('#ModalPbck4Items').modal('show');
 
-    //        $('#home-tab').removeClass('active');
-    //        $('#upload-tab').addClass('active');
+            $('#home-tab').removeClass('active');
+            $('#upload-tab').addClass('active');
 
-    //        $('#information').removeClass('active');
-    //        $('#upload').addClass('active');
+            $('#information').removeClass('active');
+            $('#upload').addClass('active');
 
-    //        result = false;
-    //    }
+            result = false;
+        }
 
-    //}
+    }
    
    
     return result;

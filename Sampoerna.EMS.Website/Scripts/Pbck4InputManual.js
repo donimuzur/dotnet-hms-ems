@@ -126,6 +126,7 @@ function ajaxGetCk1Date(url, formData) {
 
                 if (data != null) {
                     $("#uploadCk1Date").val(data);
+                    $("#uploadCk1Id").val(formData.ck1Id);
                 }
 
 
@@ -171,9 +172,9 @@ function RemoveRow(o) {
 
     var nRow = o.parents('tr');
     nRow.remove();
-    $('#CK5UploadSave').enable();
+    $('#Pbck4UploadSave').enable();
     if ($('#Ck5UploadTable tr').length == 1) {
-        $('#CK5UploadSave').prop('disabled', true);
+        $('#Pbck4UploadSave').prop('disabled', true);
     }
 }
 
@@ -249,7 +250,8 @@ function AddRowPbck4() {
                  "<td>" + $('#uploadRemarks').val() + "</td>" +
 
                 "<td></td>" +
-                "<td style='display: none'></td>" +
+                "<td style='display: none'>" + $('#uploadCk1Id').val() + "</td>" +
+               
               
                 "</tr>");
 
@@ -298,6 +300,8 @@ function UpdateRowPbck4() {
                 $(this).find('td').eq(16).text($('#uploadNoPengawas').val());
                 $(this).find('td').eq(17).text($('#uploadApprovedQty').val());
                 $(this).find('td').eq(18).text($('#uploadRemarks').val());
+              
+                $(this).find('td').eq(20).text($('#uploadCk1Id').val());
 
             }
         });
