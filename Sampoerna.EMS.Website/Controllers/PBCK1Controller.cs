@@ -699,7 +699,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
-            else {
+            else if(CurrentUser.UserRole == Enums.UserRole.POA){
                 model.AllowApproveAndReject = false;
                 foreach (POADto poa in _poaBll.GetPoaByNppbkcIdAndMainPlant(model.Detail.NppbkcId))
                 { 
