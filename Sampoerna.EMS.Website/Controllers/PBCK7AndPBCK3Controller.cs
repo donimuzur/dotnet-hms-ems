@@ -111,6 +111,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dtDetail.Columns.Add("SeriPitaCukai", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("Hje", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("Tariff", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("JmlCukai", System.Type.GetType("System.String"));
             ds.Tables.Add(dt);
             ds.Tables.Add(dtDetail);
             return ds;
@@ -148,9 +149,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     drow["Footer"] = headerFooter.FOOTER_CONTENT;
                 }
             }
-
+            var detailItem = pbck7.UploadItems;
             var totalKemasan = 0;
-            var totalCukai = 0;
+            var totalCukai = 0.0;
+            if (detailItem != null)
+            {
+                foreach (var item in detailItem)
+                {
+                    totalKemasan += Convert.ToInt32(item.Content);
+                    totalCukai += Convert.ToDouble(item.ExciseValue);
+                }
+            }
+
             drow["TotalKemasan"] = totalKemasan;
             drow["TotalCukai"] = totalCukai;
             drow["PrintedDate"] = pbck7.Pbck7Date == null ? null : pbck7.Pbck7Date.ToString("dd MMMM yyyy");
@@ -194,6 +204,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 drowDetail[4] = item.SeriesValue;
                 drowDetail[5] = item.Hje;
                 drowDetail[6] = item.Tariff;
+                drowDetail[7] = item.ExciseValue;
                 dtDetail.Rows.Add(drowDetail);
 
             }

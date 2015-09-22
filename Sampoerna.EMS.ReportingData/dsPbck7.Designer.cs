@@ -771,6 +771,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnTariff;
             
+            private global::System.Data.DataColumn columnJmlCukai;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public DetailDataTable() {
@@ -862,6 +864,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn JmlCukaiColumn {
+                get {
+                    return this.columnJmlCukai;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -897,7 +907,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DetailRow AddDetailRow(string Jenis, string Merek, string IsiKemasan, string JmlKemasan, string SeriPitaCukai, string Hje, string Tariff) {
+            public DetailRow AddDetailRow(string Jenis, string Merek, string IsiKemasan, string JmlKemasan, string SeriPitaCukai, string Hje, string Tariff, string JmlCukai) {
                 DetailRow rowDetailRow = ((DetailRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Jenis,
@@ -906,7 +916,8 @@ namespace Sampoerna.EMS.ReportingData {
                         JmlKemasan,
                         SeriPitaCukai,
                         Hje,
-                        Tariff};
+                        Tariff,
+                        JmlCukai};
                 rowDetailRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDetailRow);
                 return rowDetailRow;
@@ -936,6 +947,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnSeriPitaCukai = base.Columns["SeriPitaCukai"];
                 this.columnHje = base.Columns["Hje"];
                 this.columnTariff = base.Columns["Tariff"];
+                this.columnJmlCukai = base.Columns["JmlCukai"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -955,6 +967,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnHje);
                 this.columnTariff = new global::System.Data.DataColumn("Tariff", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTariff);
+                this.columnJmlCukai = new global::System.Data.DataColumn("JmlCukai", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnJmlCukai);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1644,6 +1658,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string JmlCukai {
+                get {
+                    try {
+                        return ((string)(this[this.tableDetail.JmlCukaiColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'JmlCukai\' in table \'Detail\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDetail.JmlCukaiColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsJenisNull() {
                 return this.IsNull(this.tableDetail.JenisColumn);
             }
@@ -1724,6 +1754,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetTariffNull() {
                 this[this.tableDetail.TariffColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsJmlCukaiNull() {
+                return this.IsNull(this.tableDetail.JmlCukaiColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetJmlCukaiNull() {
+                this[this.tableDetail.JmlCukaiColumn] = global::System.Convert.DBNull;
             }
         }
         
