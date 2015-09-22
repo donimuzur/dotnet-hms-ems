@@ -831,20 +831,24 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read,
                         FileShare.ReadWrite);
-                }
-                else
-                {
-                    // if photo does not exist show the nophoto.jpg file 
-                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                }
-                // initialise the binary reader from file streamobject 
-                br = new BinaryReader(fs);
-                // define the byte array of filelength 
-                byte[] imgbyte = new byte[fs.Length + 1];
-                // read the bytes from the binary reader 
-                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
 
-                detailRow.HeaderImage = imgbyte;
+                    // initialise the binary reader from file streamobject 
+                    br = new BinaryReader(fs);
+                    // define the byte array of filelength 
+                    byte[] imgbyte = new byte[fs.Length + 1];
+                    // read the bytes from the binary reader 
+                    imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+                    detailRow.HeaderImage = imgbyte;
+
+                }
+               
+                //else
+                //{
+                //    // if photo does not exist show the nophoto.jpg file 
+                //    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                //}
+              
             }
 
            
