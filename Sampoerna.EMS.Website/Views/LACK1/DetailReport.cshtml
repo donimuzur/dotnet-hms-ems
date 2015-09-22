@@ -112,6 +112,9 @@
         $('#MenuLack1DetailReport').addClass('active');
 
         $(document).ready(function () {
+            
+            //setupDataTables();
+            
             $('#SearchView_CompanyCode').on('change', function () {
                 OnCompanyCodeChange();
             });
@@ -124,6 +127,26 @@
                 OnExcisableGoodsTypeChange();
             });
         });
+        
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#lack1Table')) {
+                table = $('#lack1Table').DataTable();
+                table.destroy();
+            }
+
+            table = $('#lack1Table').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+        }
         
         function OnCompanyCodeChange() {
             if ($("#SearchView_CompanyCode").length) {

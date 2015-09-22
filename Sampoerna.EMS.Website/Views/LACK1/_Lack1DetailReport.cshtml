@@ -1,6 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailReportViewModel
 
-<table border="0" class="table table-bordered">
+<table id="lack1Table" border="0" class="table table-bordered">
     <thead>
         <tr>
             <th rowspan="2">Begining Balance</th>
@@ -24,7 +24,8 @@
     <tbody>
         @foreach (var item in Model.DetailList)
         {
-            if (item.TrackingConsolidations.Count > 0) {
+            if (item.TrackingConsolidations.Count > 0)
+            {
                 <tr>
                     <td rowspan="@item.TrackingConsolidations.Count">@item.BeginingBalance.ToString("N2")</td>
                     <td>@item.TrackingConsolidations[0].Ck5Number</td>
@@ -39,7 +40,8 @@
                     <td>@item.TrackingConsolidations[0].ConvertedUomId</td>
                     <td rowspan="@item.TrackingConsolidations.Count">@item.EndingBalance.ToString("N2")</td>
                 </tr>
-                for (int i = 1; i < item.TrackingConsolidations.Count; i++) {
+                for (int i = 1; i < item.TrackingConsolidations.Count; i++)
+                {
                     <tr>
                         <td>@item.TrackingConsolidations[i].Ck5Number</td>
                         <td>@item.TrackingConsolidations[i].Ck5RegistrationNumber</td>
@@ -54,7 +56,8 @@
                     </tr>
                 }
             }
-            else {
+            else
+            {
                 <tr>
                     <td>@item.BeginingBalance.ToString("N2")</td>
                     <td>-</td>
