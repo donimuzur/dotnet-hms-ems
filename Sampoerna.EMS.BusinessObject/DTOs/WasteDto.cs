@@ -24,6 +24,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? FloorWasteGramQty { get; set; }
         public decimal? DustWasteStickQty { get; set; }
         public decimal? FloorWasteStickQty { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifiedBy { get; set; }
         public List<WasteUploadItems> UploadItems { get; set; }
     }
 
@@ -42,5 +46,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? FloorWasteGramQty { get; set; }
         public decimal? DustWasteStickQty { get; set; }
         public decimal? FloorWasteStickQty { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifiedBy { get; set; }
     }
 }

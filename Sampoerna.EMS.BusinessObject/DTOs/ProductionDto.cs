@@ -34,6 +34,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Docgmvter { get; set; }
         public string MatDoc { get; set; }
         public string Ordr { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifiedBy { get; set; }
 
         public List<ProductionUploadItems> UploadItems { get; set; }
 
@@ -51,6 +55,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifiedBy { get; set; }
+
     }
 
 }
