@@ -29,6 +29,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public DateTime? ReportedOn { get; set; }
         public string NppbkcId { get; set; }
         public string NppbkcKppbcId { get; set; }
+        public string NppbkcKppbcName { get; set; }
         public string NppbkcCompanyCode { get; set; }
         public string NppbkcCompanyName { get; set; }
         public string GoodType { get; set; }
@@ -40,6 +41,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string SupplierPhone { get; set; }
         public string SupplierNppbkcId { get; set; }
         public string SupplierKppbcId { get; set; }
+        //=== Fixing Bug PBCK1 No. 168 ===
+        public string SupplierKppbcName { get; set; }
+        //================================
         public string SupplierPlantWerks { get; set; }
         public DateTime? PlanProdFrom { get; set; }
         public DateTime? PlanProdTo { get; set; }
@@ -88,6 +92,15 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
         public string NppbkcId { get; set; }
+
+        public bool Pbck1Type { get; set; }
+        public bool PoaList { get; set; }
+        public bool SupplierPortName { get; set; }
+        public bool SupplierPlant { get; set; }
+        public bool GoodTypeDesc { get; set; }
+        public bool PlanProdFrom { get; set; }
+        public bool PlanProdTo { get; set; }
+        public bool SupplierPhone { get; set; }
     }
 
     public class Pbck1FilterSummaryReportViewModel
@@ -118,6 +131,14 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string OriginalAddress { get; set; }
         public string ExcGoodsAmount { get; set; }
         public string Status { get; set; }
+        public string Pbck1Type { get; set; }
+        public string SupplierPortName { get; set; }
+        public string SupplierPlant { get; set; }
+        public string GoodTypeDesc { get; set; }
+        public string PlanProdFrom { get; set; }
+        public string PlanProdTo { get; set; }
+        public string SupplierPhone { get; set; }
+
     }
 
 }

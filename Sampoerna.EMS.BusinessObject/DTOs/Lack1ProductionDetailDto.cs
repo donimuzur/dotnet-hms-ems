@@ -8,5 +8,7 @@
         public string PROD_CODE { get; set; }
         public string PRODUCT_TYPE { get; set; }
         public string PRODUCT_ALIAS { get; set; }
+        public string UOM_ID { get; set; }
+        public string UOM_DESC { get; set; }
     }
 }

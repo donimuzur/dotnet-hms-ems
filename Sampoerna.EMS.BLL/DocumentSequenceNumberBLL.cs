@@ -77,7 +77,89 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        /// <summary>
+        /// Infinitive sequence number by Form Type
+        /// </summary>
+        /// <param name="formType"></param>
+        /// <returns></returns>
+        public string GenerateNumberByFormType(Enums.FormType formType)
+        {
+            var lastSeqData = _repository.Get(c => c.FORM_TYPE_ID == formType).FirstOrDefault();
 
+            if (lastSeqData == null)
+            {
+                //insert new record
+                lastSeqData = new DOC_NUMBER_SEQ()
+                {
+                    YEAR = 0,
+                    MONTH = 1, //have rellation with table MONTH so default will be 1
+                    FORM_TYPE_ID = formType,
+                    DOC_NUMBER_SEQ_LAST = 1
+                };
+                _repository.Insert(lastSeqData);
+            }
+            else
+            {
+                lastSeqData.DOC_NUMBER_SEQ_LAST += 1;
+                _repository.Update(lastSeqData);
+            }
+
+            var docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("0000000000");
+
+            _uow.SaveChanges();
+
+            return docNumber;
+
+        }
+
+        public string GenerateNumberNoReset(GenerateDocNumberInput input)
+        {
+            string docNumber;
+
+            var lastSeqData = _repository.Get().FirstOrDefault();
+
+            if (lastSeqData == null)
+            {
+                //insert new record
+                lastSeqData = new DOC_NUMBER_SEQ()
+                {
+                    YEAR = input.Year,
+                    MONTH = input.Month,
+                    DOC_NUMBER_SEQ_LAST = 1
+                };
+                _repository.Insert(lastSeqData);
+            }
+            else
+            {
+                lastSeqData.DOC_NUMBER_SEQ_LAST += 1;
+                _repository.Update(lastSeqData);
+            }
+
+            docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString();
+
+            if (input.FormType != Enums.FormType.CK5)
+            {
+                var t001Data =
+                    _t001KReporRepository.Get(
+                        c =>
+                            c.T001W.NPPBKC_ID == input.NppbkcId && c.T001W.IS_MAIN_PLANT.HasValue &&
+                            c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
+
+                //generate number
+                docNumber = docNumber + "/" +
+                            ((t001Data != null && t001Data.T001 != null && !string.IsNullOrEmpty(t001Data.T001.BUTXT_ALIAS)) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" +
+                            (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null &&
+                             !string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS)
+                                ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS
+                                : "-") + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" +
+                            input.Year.ToString();
+
+            }
+
+            _uow.SaveChanges();
+
+            return docNumber;
+        }
 
 
         public List<DOC_NUMBER_SEQ> GetDocumentSequenceList()

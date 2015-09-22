@@ -76,9 +76,13 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var item in existingData)
                 {
                     if (item is LFA1)
-                    {
                         continue;
-                    }
+
+                    var isFromSap = item.GetType().GetProperty("IS_FROM_SAP") != null && (bool)item.GetType().GetProperty("IS_FROM_SAP").GetValue(item);
+                    if (!isFromSap)
+                        continue;
+
+
                     var is_deleted = item.GetType().GetProperty("IS_DELETED");
                     if (is_deleted != null)
                     {

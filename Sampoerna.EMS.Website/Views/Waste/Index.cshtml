@@ -1,0 +1,182 @@
+﻿@model Sampoerna.EMS.Website.Models.Waste.WasteViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Waste Production List</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "Waste")"> <button class="btn btn-blue">NEW</button></a>
+                <a href="@Url.Action("UploadManualWaste", "Waste")"><button class="btn btn-blue">UPLOAD</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                @using (Ajax.BeginForm("FilterWasteIndex", "Waste",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables",
+                    }, new { @class = "form-excise", role = "form" }))
+                {
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-3 long">Date</label>
+                                <div class="col-md-8">
+                                    <div class="input-group date">
+                                        @Html.TextBoxFor(model => model.WasteProductionDate, new {@class ="form-control selectreset"})
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Company</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = " form-control selectreset" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Plant ID</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerksList, "All", new { @class = "form-control selectreset", id = "SearchInput_PlantId" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="last-form">
+                            <div class="col-md-4 col-md-offset-8">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_WasteTableIndex")
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+        $('#MenuCk4cWasteProduction').addClass('active');
+
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
+            });
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#WasteProduction')) {
+                table = $('#WasteProduction').DataTable();
+                table.destroy();
+            }
+
+            table = $('#WasteProduction').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                    
+                });
+            
+           
+            // Setup - add a text input to each footer cell
+            $('#WasteProduction .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        }
+
+
+        $("#CompanyCode").change(function () {
+            if ($("#CompanyCode").length) {
+                var cpy = $(this).find("option:selected").val();
+                $('#SearchInput_PlantId option').remove();
+                if (cpy == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+
+                } else {
+                    ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
+                }
+            }
+        });
+
+        $(document).ready(function () {
+            setupDataTables();
+        });
+        
+        function ajaxSelectCompany(url, formData) {
+            if (formData.companyId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var listPlant = data.PlantWerkList;
+                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
+        
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            setupDataTables();
+        }
+    </script>
+}
+

@@ -14,6 +14,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
             Detail = new List<DataWasteProduction>();    
         }
         public DateTime? ProductionDate { get; set; }
+        public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
         public string PlantId { get; set; }
         public string PlantName { get; set; }

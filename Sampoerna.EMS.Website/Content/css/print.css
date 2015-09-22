@@ -1,0 +1,112 @@
+@media print {
+	header, .excise-site{
+		display: none;
+	}
+	.print-out{
+		display: block;
+		width: 100%;
+		text-align: center;
+		font-family: arial;
+	}
+	.print-out .logo{
+		margin: 0 auto;
+		margin-top: 15px;
+	}
+	.print-out .heading{
+		text-transform: uppercase;
+		margin-top: 15px;
+		font-size: 8pt !important;
+		font-weight: bold;
+	}
+	.print-out .date{
+		font-size: 8pt !important;
+		float: right;
+		margin-right: 60px;
+	}
+	.print-out .modul{
+		text-transform: uppercase;
+		margin-top: 15px;
+		font-size: 8pt !important;
+		padding: 5px 10px;
+		float: right;
+		border:1px solid #333;
+		margin-top: -32px;
+		margin-right: 60px;
+	}
+	.print-out .lack-title{
+		margin-top: 25px;
+		margin-left: 60px;		
+	}
+	.print-out .lack-title tr td{
+		font-size: 8pt;
+		text-align: left;
+		vertical-align: top;
+	}
+	.print-out .lack-title tr td.first{
+		width: 200px;
+	}
+	.print-out .lack-content{
+		width: 100%;
+		border-collapse: collapse;
+	}
+	.print-out .lack-table-container{
+		display: block;
+		margin: 25px 60px;
+	}
+	.print-out .lack-content tr td{
+		font-size: 8pt;
+		text-align: center;
+		vertical-align: middle;
+		border:1px solid #555;
+		padding: 3px 6px;
+	}
+	.print-out .lack-bottom{
+		display: block;
+		width: 100%;
+		clear: both;
+		overflow: hidden;
+	}
+	.print-out .lack-date-bottom{
+		margin-top: 20px;
+		font-size: 8pt !important;
+		padding: 5px 10px;
+		border:1px solid #333;
+		margin-left: 60px;
+		float: left;
+		text-align: left;
+		width: 300px;
+		line-height: 15pt !important;
+	}
+	.print-out .lack-signature{
+		margin-top: 20px;
+		font-size: 8pt !important;
+		margin-right: 60px;
+		float: right;
+		text-align: left;
+		line-height: 15pt !important;
+	}
+	.print-out .lack-signature span{
+		margin-top: 10px;
+		margin-bottom: 30px;
+		display: block;
+	}
+	.print-out .lack-note{
+		margin-top: 20px;
+		font-size: 8pt !important;
+		margin-left: 60px;
+		text-align: left;
+		line-height: 15pt !important;
+		display: block;
+		width: 100%;
+		clear: both;
+	}
+	.print-out .page-break{ 
+		display: block; 
+		page-break-before: always; 
+	}
+	@page {
+        size: landscape;   /* auto is the current printer page size */
+        margin: 0mm;  /* this affects the margin in the printer settings */
+    }
+    
+}

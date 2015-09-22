@@ -104,6 +104,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo("Main Plant Already Set", Enums.MessageInfoType.Warning);
                 return InitialEdit(model);
             }
+
+            if (model.Detail.NPPBKC_ID == model.Detail.NPPBKC_IMPORT_ID) {
+                AddMessageInfo("NPPBKC domestic cannot be the same as NPPBKC Import", Enums.MessageInfoType.Warning);
+                return InitialEdit(model);
+            }
             try
             {
                

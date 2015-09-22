@@ -1,0 +1,135 @@
+﻿@model Sampoerna.EMS.Website.Models.Waste.WasteDetail
+@{
+    ViewBag.Title = "_HomeCreate";
+}
+<div id="information" class="tab-pane active" role="tabpanel">
+    <div class="">
+        <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
+            <div class="panel panel-default">
+                <div id="headingOne" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse">
+                            CK-4C Waste Production Create
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne">
+                    <div class="panel-body">
+                        <div role="form" class="form-excise">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Company<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = "form-control " })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Plant<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control ", id = "SearchInput_PlantId" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Date<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.WasteProductionDate, new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Finish Good<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.FaCode, Model.FacodeList, "All", new { @class = "form-control", id = "SearchInput_BrandCe" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Brand Description</label>
+                                        <div class="col-md-8">
+                                            @Html.TextAreaFor(model => model.BrandDescription, new { @class = "form-control", disabled = "disabled", id = "test" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Maker Reject Cigarette (sticks)</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.MarkerStr, new { @class = "decimal form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Packer Reject Cigarette (sticks)</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.PackerStr, new { @class = "decimal form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Dust Waste QTY (gram)</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.DustGramStr, new { @class = "decimal form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Floor Waste QTY (gram)</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.FloorGramStr, new { @class = "decimal form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Dust Waste QTY (stick)</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.DustStickStr, new { @class = "decimal form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Floor Waste QTY (stick</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.FloorStickStr, new { @class = "decimal form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

@@ -58,9 +58,11 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Ck5Id)
+                        @Html.HiddenFor(model => model.Ck5Type)
                         @Html.HiddenFor(model => model.DocumentStatus)
 
                         @Html.HiddenFor(model => model.IsCk5Export)
+                        @Html.HiddenFor(model => model.IsCk5PortToImporter)
 
                         @Html.HiddenFor(model => model.CountryCode)
                         @Html.HiddenFor(model => model.CountryName)

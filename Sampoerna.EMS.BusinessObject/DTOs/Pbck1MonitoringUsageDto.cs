@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sampoerna.EMS.Core;
+using System;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -6,6 +7,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public int Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }
+        public Enums.PBCK1Type Pbck1Type { get; set; }
         public DateTime PeriodFrom { get; set; }
         public DateTime? PeriodTo { get; set; }
         public string NppbkcId { get; set; }

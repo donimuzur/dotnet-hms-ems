@@ -78,21 +78,39 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual DbSet<ZAIDM_EX_KPPBC> ZAIDM_EX_KPPBC { get; set; }
         public virtual DbSet<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
-        public virtual DbSet<BACK1> BACK1 { get; set; }
-        public virtual DbSet<BACK1_DOCUMENT> BACK1_DOCUMENT { get; set; }
-        public virtual DbSet<BACK3_CK2_PBCK3_PBCK7> BACK3_CK2_PBCK3_PBCK7 { get; set; }
         public virtual DbSet<PBCK3_PBCK7> PBCK3_PBCK7 { get; set; }
         public virtual DbSet<ZAIDM_EX_SERIES> ZAIDM_EX_SERIES { get; set; }
         public virtual DbSet<UOM> UOM { get; set; }
         public virtual DbSet<LACK1> LACK1 { get; set; }
-        public virtual DbSet<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
-        public virtual DbSet<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
-        public virtual DbSet<LACK1_PLANT> LACK1_PLANT { get; set; }
-        public virtual DbSet<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
         public virtual DbSet<CK4C> CK4C { get; set; }
-        public virtual DbSet<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual DbSet<LACK2> LACK2 { get; set; }
         public virtual DbSet<BOM> BOM { get; set; }
         public virtual DbSet<INVENTORY_MOVEMENT> INVENTORY_MOVEMENT { get; set; }
+        public virtual DbSet<CK4C_ITEM> CK4C_ITEM { get; set; }
+        public virtual DbSet<BLOCK_STOCK> BLOCK_STOCK { get; set; }
+        public virtual DbSet<PBCK4_DOCUMENT> PBCK4_DOCUMENT { get; set; }
+        public virtual DbSet<PBCK4_ITEM> PBCK4_ITEM { get; set; }
+        public virtual DbSet<LACK1_DOCUMENT> LACK1_DOCUMENT { get; set; }
+        public virtual DbSet<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
+        public virtual DbSet<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
+        public virtual DbSet<LACK1_TRACKING> LACK1_TRACKING { get; set; }
+        public virtual DbSet<LACK1_PLANT> LACK1_PLANT { get; set; }
+        public virtual DbSet<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
+        public virtual DbSet<CK4C_DECREE_DOC> CK4C_DECREE_DOC { get; set; }
+        public virtual DbSet<BACK3_DOCUMENT> BACK3_DOCUMENT { get; set; }
+        public virtual DbSet<CK2_DOCUMENT> CK2_DOCUMENT { get; set; }
+        public virtual DbSet<PBCK3_PBCK7_ITEM> PBCK3_PBCK7_ITEM { get; set; }
+        public virtual DbSet<BACK1> BACK1 { get; set; }
+        public virtual DbSet<BACK1_DOCUMENT> BACK1_DOCUMENT { get; set; }
+        public virtual DbSet<PBCK3> PBCK3 { get; set; }
+        public virtual DbSet<PBCK7> PBCK7 { get; set; }
+        public virtual DbSet<PBCK4> PBCK4 { get; set; }
+        public virtual DbSet<CK2> CK2 { get; set; }
+        public virtual DbSet<BACK3> BACK3 { get; set; }
+        public virtual DbSet<CK1_ITEM> CK1_ITEM { get; set; }
+        public virtual DbSet<CK1> CK1 { get; set; }
+        public virtual DbSet<PRODUCTION> PRODUCTION { get; set; }
+        public virtual DbSet<WASTE> WASTE { get; set; }
+        public virtual DbSet<PBCK7_ITEM> PBCK7_ITEM { get; set; }
     }
 }

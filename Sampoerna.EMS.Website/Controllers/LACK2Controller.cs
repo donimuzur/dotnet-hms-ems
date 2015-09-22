@@ -1,8 +1,10 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.IO;
+using System.Web.Routing;
 using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using System;
@@ -10,12 +12,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Utils;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.LACK2;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.PrintHistory;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
+using Sampoerna.EMS.Website.Reports.HeaderFooter;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -36,8 +43,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICK5BLL _ck5Bll;
         private IPBCK1BLL _pbck1Bll;
         private IHeaderFooterBLL _headerFooterBll;
+        private IWorkflowBLL _workflowBll;
+        private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IPrintHistoryBLL _printHistoryBll;
         public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
+            IPlantBLL plantBll, ICompanyBLL companyBll, IPrintHistoryBLL printHistoryBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, ICK5BLL ck5Bll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExGoodTypeBLL exGroupBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _lack2Bll = lack2Bll;
@@ -53,6 +63,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck5Bll = ck5Bll;
             _pbck1Bll = pbck1Bll;
             _headerFooterBll = headerFooterBll;
+            _workflowBll = workflowBll;
+            _workflowHistoryBll = workflowHistoryBll;
+            _printHistoryBll = printHistoryBll;
         }
 
 
@@ -66,13 +79,27 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-
-            var dbData = _lack2Bll.GetAll(new Lack2GetByParamInput());
-            model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
-            GetNppbkcByCompanyId("1616");
+            model.IsOpenDocList = true;
+            var dbData = _lack2Bll.GetOpenDocument();
+            model.Details = dbData;
+            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             return View("Index", model);
         }
+        public ActionResult ListCompletedDoc()
+        {
+            var model = new Lack2IndexViewModel();
+            model = InitViewModel(model);
 
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            var dbData = _lack2Bll.GetCompletedDocument();
+            model.Details = dbData;
+            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            return View("Index", model);
+        }
         /// <summary>
         /// Fills the select lists for the IndexViewModel
         /// </summary>
@@ -95,16 +122,16 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
             model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            //model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearList = GlobalFunctions.GetYearList();
             model.UsrRole = CurrentUser.UserRole;
-
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
 
@@ -112,6 +139,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(LACK2CreateViewModel model)
         {
 
@@ -119,7 +147,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
 
-            var plant = _plantBll.GetT001ById(model.Lack2Model.LevelPlantId);
+            var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
@@ -132,18 +160,18 @@ namespace Sampoerna.EMS.Website.Controllers
             item.PeriodYear = model.Lack2Model.PeriodYear;
             item.CreatedBy = CurrentUser.USER_ID;
             item.CreatedDate = DateTime.Now;
-             var inputDoc = new GenerateDocNumberInput();
+            var inputDoc = new GenerateDocNumberInput();
             inputDoc.Month = item.PeriodMonth;
             inputDoc.Year = item.PeriodYear;
             inputDoc.NppbkcId = item.NppbkcId;
-            item.Lack2Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
+            item.Lack2Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
             item.Items = model.Lack2Model.Items.Select(x=>Mapper.Map<Lack2ItemDto>(x)).ToList();
             
              item.Status = Enums.DocumentStatus.Draft;
             
 
             _lack2Bll.Insert(item);
-
+            AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
@@ -152,40 +180,130 @@ namespace Sampoerna.EMS.Website.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
-        public ActionResult Edit(int id)
+       public ActionResult Edit(int? id)
+        {
+            if (!id.HasValue)
+                return HttpNotFound();
+            var model = InitDetailModel(id);
+            model.DocStatus = model.Lack2Model.Status;
+            return View("Edit", model);
+        }
+
+        public LACK2CreateViewModel InitDetailModel(int? id)
         {
             LACK2CreateViewModel model = new LACK2CreateViewModel();
 
-            model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetById(id));
-
-            model.NPPBKCDDL = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.Lack2Model = AutoMapper.Mapper.Map<LACK2Model>(_lack2Bll.GetByIdAndItem(id.Value));
+            model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeGroupList();
-            model.SendingPlantDDL = GlobalFunctions.GetPlantAll();
-
+            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = GlobalFunctions.GetYearList();
+            model.Lack2Model.StatusName = EnumHelper.GetDescription(model.Lack2Model.Status);
             model.UsrRole = CurrentUser.UserRole;
 
-            var govStatuses = from Enums.DocumentStatusGov ds in Enum.GetValues(typeof(Enums.DocumentStatusGov))
-                              select new { ID = (int)ds, Name = ds.ToString() };
-
-            model.GovStatusDDL = new SelectList(govStatuses, "ID", "Name");
-
+           
+            
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
-            model.Lack2Model.LACK2Period = new DateTime(model.Lack2Model.PeriodYear, model.Lack2Model.PeriodMonth, 1);
-            return View("Create", model);
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = model.Lack2Model.Lack2Number;
+            workflowInput.DocumentStatus = model.Lack2Model.Status;
+            workflowInput.NPPBKC_Id = model.Lack2Model.NppbkcId;
+           
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+            
+            model.WorkflowHistory = workflowHistory;
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Lack2Model.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = model.Lack2Model.CreatedBy,
+                CurrentUser = CurrentUser.USER_ID,
+                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                DocumentNumber = model.Lack2Model.Lack2Number,
+                NppbkcId = model.Lack2Model.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+            model.AllowEditAndSubmit = CurrentUser.USER_ID == model.Lack2Model.CreatedBy;
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
+            if (model.Lack2Model.Status == Enums.DocumentStatus.Completed)
+            {
+                model.AllowPrintDocument = true;
+            }
+            return model;
+        }
+        [HttpPost]
+        public ActionResult AddPrintHistory(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var lack2  = _lack2Bll.GetById(id.Value);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.PBCK1,
+                FORM_ID = lack2.Lack2Id,
+                FORM_NUMBER = lack2.Lack2Number,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel();
+            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack2.Lack2Number));
+            return PartialView("_PrintHistoryTable", model);
+
+        }
+        [HttpPost]
+        public JsonResult RemoveDoc(int docid)
+        {
+
+            return Json(_lack2Bll.RemoveDoc(docid));
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(LACK2CreateViewModel model)
         {
 
-            Lack2Dto item = new Lack2Dto();
-
-            item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
-
-            var plant = _plantBll.GetAll().Where(p => p.WERKS == model.Lack2Model.LevelPlantId).FirstOrDefault();
+            //if (model.IsSaveSubmit)
+            //{
+            //    return RedirectToAction("Submit", new {id = model.Lack2Model.Lack2Id});
+            //}
+             
+              var item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
+            if (item.CreatedBy != CurrentUser.USER_ID)
+            {
+                return RedirectToAction("Detail", new {id = item.Lack2Id});
+            }
+            var exItems = new Lack2ItemDto[item.Items.Count];
+              item.Items.CopyTo(exItems);
+              item.Items = new List<Lack2ItemDto>();
+              foreach (var items in exItems)
+              {
+                    if (items.Id == 0 )
+                    {
+                        item.Items.Add(items);
+                    }
+              }
+           
+            var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
             var company = _companyBll.GetById(model.Lack2Model.Burks);
             var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
@@ -194,194 +312,247 @@ namespace Sampoerna.EMS.Website.Controllers
             item.Butxt = company.BUTXT;
             item.LevelPlantName = plant.NAME1;
             item.LevelPlantCity = plant.ORT01;
-            item.PeriodMonth = model.Lack2Model.LACK2Period.Month;
-            item.PeriodYear = model.Lack2Model.LACK2Period.Year;
-
-            if (CurrentUser.UserRole == Enums.UserRole.POA) // && if a file is uploaded needs to be added
-            {
-                item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
-            }
-
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)// && if a file is uploaded needs to be added
-            {
-                item.Status = Enums.DocumentStatus.Completed;
-            }
+            item.PeriodMonth = model.Lack2Model.PeriodMonth;
+            item.PeriodYear = model.Lack2Model.PeriodYear;
 
             item.ModifiedBy = CurrentUser.USER_ID;
             item.ModifiedDate = DateTime.Now;
 
-            item.ApprovedBy = CurrentUser.USER_ID;
-            item.ApprovedDate = DateTime.Now;
+            item.Status = Enums.DocumentStatus.Draft;
+
+            
+            if (item.GovStatus == Enums.DocumentStatusGov.PartialApproved)
+            {
+                item.Status = Enums.DocumentStatus.GovApproved;
+            }
+            if (item.GovStatus == Enums.DocumentStatusGov.FullApproved)
+            {
+                item.Status = Enums.DocumentStatus.Completed;
+            }
+            if (item.GovStatus == Enums.DocumentStatusGov.Rejected)
+            {
+                item.Status = Enums.DocumentStatus.GovRejected;
+            }
+            if (model.IsSaveSubmit)
+            {
+                if (item.Status == Enums.DocumentStatus.Draft)
+                {
+                    item.Status = Enums.DocumentStatus.WaitingForApproval;
+                }
+
+            }
+
+            if (model.Documents != null)
+            {
+                item.Documents = new List<LACK2_DOCUMENT>();
+                foreach (var sk in model.Documents)
+                {
+                    if (sk != null)
+                    {
+                        var document = new LACK2_DOCUMENT();
+                        var filenamecheck = sk.FileName;
+                        if (filenamecheck.Contains("\\"))
+                        {
+                            document.FILE_NAME = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                        }
+                        else
+                        {
+                            document.FILE_NAME = sk.FileName;
+                        }
+                        document.LACK2_ID = item.Lack2Id;
+                        document.FILE_PATH = SaveUploadedFile(sk, item.Lack2Number.Substring(0,10));
+                        item.Documents.Add(document);
+                        _lack2Bll.InsertDocument(document);
+                    }
+                }
+            }
+
 
             _lack2Bll.Insert(item);
-
+             AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
+            if (item.Status == Enums.DocumentStatus.Completed)
+            {
+                return RedirectToAction("ListCompletedDoc");
+            }
             return RedirectToAction("Index");
         }
 
         #endregion
-
-        #region List By Plant
-
-        public ActionResult ListByPlant()
+        private string SaveUploadedFile(HttpPostedFileBase file, string lack2Num)
         {
-            var data = InitLack2LiistByPlant(new Lack2IndexPlantViewModel
+            if (file == null || file.FileName == "")
+                return "";
+
+            string sFileName = "";
+
+          
+            sFileName = Constans.UploadPath + Path.GetFileName("LACK2_"+ lack2Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+
+        public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+                return HttpNotFound();
+            //var urlBuilder =
+            //      new System.UriBuilder(Request.Url.AbsoluteUri)
+            //      {
+            //          Path = Url.Action("Index", "LACK2"),
+            //          Query = null,
+            //      };
+
+            //Uri uri = urlBuilder.Uri;
+            //if (uri != Request.UrlReferrer)
+            //    return HttpNotFound();
+            var model = InitDetailModel(id);
+            var periodMonth = _monthBll.GetMonth(Convert.ToInt32(model.Lack2Model.PeriodMonth));
+            if (periodMonth != null)
+                model.Lack2Model.PeriodMonthName = periodMonth.MONTH_NAME_IND;
+            model.DocStatus = model.Lack2Model.Status;
+            if (model.Lack2Model.Status == Enums.DocumentStatus.Completed)
             {
-
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-
-                Details = Mapper.Map<List<LACK2PlantData>>(_lack2Bll.GetAll(new Lack2GetByParamInput()))
-
-            });
-
-            return View("ListByPlant", data);
-        }
-
-        private Lack2IndexPlantViewModel InitLack2LiistByPlant(Lack2IndexPlantViewModel model)
-        {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
-            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
-            model.PlantIdList = GlobalFunctions.GetPlantAll();
-            model.CreatorList = GlobalFunctions.GetCreatorList();
-
-            return model;
-        }
-
-        #endregion
-
-        #region List Completed Documents
-
-        public ActionResult ListCompletedDoc()
-        {
-            var model = new Lack2IndexViewModel();
-
-            model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
-            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
-            model.SearchInput.PoaList = GlobalFunctions.GetPoaAll(_poabll);
-            model.SearchInput.YearList = LackYearList();
-
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-
-            // gets the completed documents by checking the status
-            var dbData = _lack2Bll.GetAllCompleted();
-            model.Details = dbData.Select(d => Mapper.Map<LACK2NppbkcData>(d)).ToList();
-
-            return View("ListCompletedDoc", model);
-        }
-
-        // this is a cover up for the years we will need a new table or way to get the years for the dropdowns
-        private SelectList LackYearList()
-        {
-            var years = new List<SelectItemModel>();
-            var currentYear = DateTime.Now.Year;
-            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
-            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
-            return new SelectList(years, "ValueField", "TextField");
-        }
-
-
-
-        #endregion
-
-        #region PreviewActions
-
-        public ActionResult PreviewDocument(LACK2CreateViewModel model)
-        {
-            return View();
-        }
-
-        #endregion
-
-
-        #region SearchFilters
-
-        private List<LACK2NppbkcData> GetListByNppbkc(Lack2IndexViewModel filter = null)
-        {
-            if (filter == null)
-            {
-                //get all 
-                var litsByNppbkc = _lack2Bll.GetAll(new Lack2GetByParamInput());
-                return Mapper.Map<List<LACK2NppbkcData>>(litsByNppbkc);
+                var printHistory =
+                    Mapper.Map<List<PrintHistoryItemModel>>(
+                        _printHistoryBll.GetByFormNumber(model.Lack2Model.Lack2Number));
+                model.PrintHistoryList = printHistory;
             }
-            //get by param
-            var input = Mapper.Map<Lack2GetByParamInput>(filter);
-            var dbData = _lack2Bll.GetAll(input);
-
-            return Mapper.Map<List<LACK2NppbkcData>>(dbData);
-
+            return View("Detail", model);
         }
 
         [HttpPost]
-        public PartialViewResult FilterListByNppbkc(Lack2Input model)
+        [ValidateAntiForgeryToken]
+        public ActionResult Detail(LACK2CreateViewModel model)
         {
-
-
-            var input = Mapper.Map<Lack2GetByParamInput>(model);
-
-            var dbData = _lack2Bll.GetAllCompletedByParam(input);
-
-            var result = Mapper.Map<List<LACK2NppbkcData>>(dbData);
-
-            var viewModel = new Lack2IndexViewModel();
-            viewModel.Details = result;
-
-            return PartialView("_Lack2Table", viewModel);
-
-        }
-
-
-        private List<LACK2PlantData> GetListByPlant(Lack2IndexPlantViewModel filter = null)
-        {
-            if (filter == null)
+            
+            if (model.ActionType == "Approve")
             {
-                //get all 
-                var litsByNppbkc = _lack2Bll.GetAll(new Lack2GetByParamInput());
-                return Mapper.Map<List<LACK2PlantData>>(litsByNppbkc);
+                return RedirectToAction("Approve",new { id = model.Lack2Model.Lack2Id});
             }
-            //get by param
-            var input = Mapper.Map<Lack2GetByParamInput>(filter);
-            var dbData = _lack2Bll.GetAll(input);
-
-            return Mapper.Map<List<LACK2PlantData>>(dbData);
-
+            
+            return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public PartialViewResult FilterListByPlant(Lack2Input model)
+        public ActionResult Submit(int id)
         {
+            var urlBuilder =
+                    new System.UriBuilder(Request.Url.AbsoluteUri)
+                    {
+                        Path = Url.Action("Edit", "LACK2", new { id= id }),
+                        Query = null ,
+                    };
 
-            var inputPlant = Mapper.Map<Lack2GetByParamInput>(model);
-
-            var dbDataPlant = _lack2Bll.GetAll(inputPlant);
-
-            var resultPlant = Mapper.Map<List<LACK2PlantData>>(dbDataPlant);
-
-            var viewModel = new Lack2IndexPlantViewModel();
-            viewModel.Details = resultPlant;
-
-            return PartialView("_Lack2ListByPlantTable", viewModel);
-
+            Uri uri = urlBuilder.Uri;
+            if (uri != Request.UrlReferrer)
+                return HttpNotFound();
+            var item = _lack2Bll.GetByIdAndItem(id);
+            if (item.Status == Enums.DocumentStatus.Draft)
+            {
+                item.Status = Enums.DocumentStatus.WaitingForApproval;
+            }
+           
+            item.Items = null;
+            item.ApprovedBy = CurrentUser.USER_ID;
+            item.ApprovedDate = DateTime.Now;
+            _lack2Bll.Insert(item);
+            return RedirectToAction("Index");
         }
+
+        public ActionResult Approve(int id)
+        {
+            var urlBuilder =
+                   new System.UriBuilder(Request.Url.AbsoluteUri)
+                   {
+                       Path = Url.Action("Detail", "LACK2", new { id = id }),
+                       Query = null,
+                   };
+
+            Uri uri = urlBuilder.Uri;
+            if (uri != Request.UrlReferrer)
+                return HttpNotFound();
+            var item = _lack2Bll.GetByIdAndItem(id);
+            if (item.Status == Enums.DocumentStatus.WaitingForApproval)
+            {
+                item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                item.ApprovedBy = CurrentUser.USER_ID;
+                item.ApprovedDate = DateTime.Now;
+            }
+            else if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                item.Status = Enums.DocumentStatus.WaitingGovApproval;
+                item.ApprovedByManager = CurrentUser.USER_ID;
+                item.ApprovedDateManager = DateTime.Now;
+            }
+           
+            else if (item.Status == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                item.Status = Enums.DocumentStatus.GovApproved;
+            }
+          
+            item.Items = null;
+            _lack2Bll.Insert(item);
+            return RedirectToAction("Index");
+        }
+
+       
+
+       
+
+        
+
+
+
+
+      
+       
+        
+       
+        
+
+      
+       
 
         [HttpPost]
         public PartialViewResult FilterOpenDocument(LACK2FilterViewModel SearchInput)
         {
             var input = Mapper.Map<Lack2GetByParamInput>(SearchInput);
-            // to search trough the completed documents
-            input.Status = Enums.DocumentStatus.Completed;
-
-            var dbData = _lack2Bll.GetAllCompletedByParam(input);
-
-            var result = Mapper.Map<List<LACK2NppbkcData>>(dbData);
-
-            var viewModel = new Lack2IndexViewModel();
-            viewModel.Details = result;
-
-            return PartialView("_Lack2CompletedDoc", viewModel);
+            
+            var dbData = _lack2Bll.GetDocumentByParam(input);
+            var model = new Lack2IndexViewModel();
+            model.Details = dbData;
+            return PartialView("_Lack2OpenDoc", model);
         }
 
-        #endregion
+      
+        public ActionResult RejectDocument(LACK2CreateViewModel model)
+        {
+            bool isSuccess = false;
+            try
+            {
+                var item = _lack2Bll.GetByIdAndItem(model.Lack2Model.Lack2Id);
+                item.Status = Enums.DocumentStatus.Draft;
+                item.IsRejected = true;
+                item.Comment = model.Lack2Model.Comment;
+                item.RejectedBy = CurrentUser.USER_ID;
+                item.RejectedDate = DateTime.Now;
+                item.Items = null;
+                _lack2Bll.Insert(item);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Detail", "Lack2", new { id = model.Lack2Model.Lack2Id });
+            AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
+        }
+        
 
 
         [HttpPost]
@@ -391,11 +562,17 @@ namespace Sampoerna.EMS.Website.Controllers
             return data;
 
         }
-
         [HttpPost]
-        public JsonResult GetCK5ByLack2Period(int month, int year, string desPlantId, string goodstype)
+        public JsonResult GetPoaByNppbkcId(string nppbkcid)
         {
-            var data =  _ck5Bll.GetByGIDate(month, year, desPlantId).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
+            var data = _poabll.GetPoaByNppbkcId(nppbkcid);
+            return Json(data.Distinct());
+
+        }
+        [HttpPost]
+        public JsonResult GetCK5ByLack2Period(int month, int year, string sendPlantId, string goodstype)
+        {
+            var data =  _ck5Bll.GetByGIDate(month, year, sendPlantId, goodstype).Select(d=>Mapper.Map<CK5Dto>(d)).ToList();
             return Json(data);
 
         }
@@ -419,10 +596,10 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
         }
 
-        public ActionResult PrintPreview(int id)
-        {
-            var lack2 = _lack2Bll.GetByIdAndItem(id);
+        
 
+        private DataSet CreateLack2Ds()
+        {
             DataSet ds = new DataSet("dsLack2");
 
             DataTable dt = new DataTable("Lack2");
@@ -434,23 +611,13 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("Alamat", System.Type.GetType("System.String"));
             dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
             dt.Columns.Add("Footer", System.Type.GetType("System.String"));
-            drow = dt.NewRow();
-
-            drow[0] = lack2.Butxt;
-            drow[1] = lack2.NppbkcId;
-            drow[2] = "xxx";
-            var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
-            {
-                CompanyCode = lack2.Burks,
-                FormTypeId = Enums.FormType.LACK2
-            });
-            if (headerFooter != null)
-            {
-                drow[3] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
-                drow[4] = headerFooter.FOOTER_CONTENT;
-            }
-            dt.Rows.Add(drow);
-
+            dt.Columns.Add("BKC", System.Type.GetType("System.String"));
+            dt.Columns.Add("Period", System.Type.GetType("System.String"));
+            dt.Columns.Add("City", System.Type.GetType("System.String"));
+            dt.Columns.Add("CreatedDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("PoaPrintedName", System.Type.GetType("System.String"));
+            dt.Columns.Add("Preview", System.Type.GetType("System.String"));
+            dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
 
             //detail
             DataTable dtDetail = new DataTable("Lack2Item");
@@ -461,13 +628,76 @@ namespace Sampoerna.EMS.Website.Controllers
             dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
-        
+
+            ds.Tables.Add(dt);
+            ds.Tables.Add(dtDetail);
+            return ds;
+        }
+
+        [EncryptedParameter]
+        public FileResult PrintPreview(int id)
+        {
+            var lack2 = _lack2Bll.GetByIdAndItem(id);
+
+            var dsLack2 = CreateLack2Ds();
+            var dt = dsLack2.Tables[0];
+            DataRow drow;
+            drow = dt.NewRow();
+            drow[0] = lack2.Butxt;
+            drow[1] = lack2.NppbkcId;
+            drow[2] = lack2.LevelPlantName + ", " +lack2.LevelPlantCity;
+            
+
+
+            var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
+            {
+                CompanyCode = lack2.Burks,
+                FormTypeId = Enums.FormType.LACK2
+            });
+            if (headerFooter != null)
+            {
+                drow[3] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
+                drow[4] = headerFooter.FOOTER_CONTENT;
+            }
+            drow[5] = lack2.ExTypDesc;
+            drow[6] = lack2.PeriodNameInd + " " + lack2.PeriodYear;
+            drow[7] = lack2.LevelPlantCity;
+            drow[8] = lack2.SubmissionDate == null ? null : lack2.SubmissionDate.ToString("dd MMMM yyyy");
+            if (lack2.ApprovedBy != null)
+            {
+                var poa = _poabll.GetDetailsById(lack2.ApprovedBy);
+                if (poa != null)
+                {
+                    drow[9] = poa.PRINTED_NAME;
+                }
+            }
+            if (lack2.Status != Enums.DocumentStatus.WaitingGovApproval || lack2.Status != Enums.DocumentStatus.GovApproved
+                || lack2.Status != Enums.DocumentStatus.Completed)
+            {
+                drow[10] = "PREVIEW LACK-2";
+            }
+            else
+            {
+                drow[10] = "LACK-2";
+                if (lack2.DecreeDate != null)
+                {
+                    var lack2DecreeDate = lack2.DecreeDate.Value;
+                    var lack2Month = _monthBll.GetMonth(lack2DecreeDate.Month).MONTH_NAME_IND;
+
+                    drow[11] = string.Format("{0} {1} {2}", lack2DecreeDate.Day, lack2Month, lack2DecreeDate.Year);
+                }
+            }
+            dt.Rows.Add(drow);
+
+
+
+            var dtDetail = dsLack2.Tables[1];
             foreach (var item in lack2.Items)
             {
                 DataRow drowDetail;
                 drowDetail = dtDetail.NewRow();
                 drowDetail[0] = item.Ck5Number;
-                drowDetail[1] = item.Ck5Number;
+                drowDetail[1] = item.Ck5GIDate;
                 drowDetail[2] = item.Ck5ItemQty;
                 drowDetail[3] = item.CompanyName;
                 drowDetail[4] = item.CompanyNppbkc;
@@ -477,14 +707,11 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             // object of data row 
            
-
-            ds.Tables.Add(dt);
-            ds.Tables.Add(dtDetail);
             ReportClass rpt = new ReportClass();
             string report_path = ConfigurationManager.AppSettings["Report_Path"];
             rpt.FileName = report_path + "LACK2\\Preview.rpt";
             rpt.Load();
-            rpt.SetDataSource(ds);
+            rpt.SetDataSource(dsLack2);
 
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
             return File(stream, "application/pdf");
@@ -534,6 +761,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+
+        public ActionResult Summary()
+        {
+            var model = new Lack2SummaryReportModel();
+            model.CompanyList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.PlantList = GlobalFunctions.GetPlantAll();
+
+            return View("Summary");
+        }
     }
 
 }

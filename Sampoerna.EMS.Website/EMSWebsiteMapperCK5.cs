@@ -106,6 +106,7 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.DEST_COUNTRY_NAME, opt => opt.MapFrom(src => src.CountryName))
 
               .ForMember(dest => dest.RemainQuota, opt => opt.MapFrom(src => src.RemainQuota))
+              .ForMember(dest => dest.CK5_MANUAL_TYPE, opt => opt.MapFrom(src => src.Ck5ManualType))
 
               ;
 
@@ -184,7 +185,8 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.DEST_COUNTRY_CODE))
             .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.DEST_COUNTRY_NAME))
             .ForMember(dest => dest.DisplayDetailsDestinationCountry, opt => opt.MapFrom(src => src.DEST_COUNTRY_CODE + " - " + src.DEST_COUNTRY_NAME))
-
+            .ForMember(dest => dest.Ck5ManualType, opt => opt.MapFrom(src => src.CK5_MANUAL_TYPE))
+            .ForMember(dest => dest.Ck5ManualTypeString, opt => opt.MapFrom(src => Utils.EnumHelper.GetDescription(src.CK5_MANUAL_TYPE)))
             .ForMember(dest => dest.Ck5FileUploadModelList, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.Ck5FileUploadDtos)));
 
             Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5FileUploadViewModel>().IgnoreAllNonExisting();
@@ -200,7 +202,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.EXCISE_VALUE, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.ExciseValue))
                 .ForMember(dest => dest.CONVERTION, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.Convertion))
                 .ForMember(dest => dest.USD_VALUE, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.UsdValue))
-                .ForMember(dest => dest.CONVERTED_UOM, opt => opt.MapFrom(src => src.ConvertedUom));
+                .ForMember(dest => dest.CONVERTED_UOM, opt => opt.MapFrom(src => src.ConvertedUom))
+                .ForMember(dest => dest.MATERIAL_DESC, opt => opt.MapFrom(src => src.MaterialDesc));
+
 
             Mapper.CreateMap<CK5MaterialDto, CK5UploadViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PLANT_ID))
@@ -209,7 +213,8 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.Convertion, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.CONVERTION))
                .ForMember(dest => dest.ExciseValue, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.EXCISE_VALUE))
                .ForMember(dest => dest.UsdValue, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.USD_VALUE))
-               .ForMember(dest => dest.ConvertedUom, opt => opt.MapFrom(src => src.CONVERTED_UOM));
+               .ForMember(dest => dest.ConvertedUom, opt => opt.MapFrom(src => src.CONVERTED_UOM))
+               .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC));
 
 
 
@@ -314,6 +319,13 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck1Dto, Ck5ListPbck1Completed>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PbckId, opt => opt.MapFrom(src => src.Pbck1Id))
                 .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.Pbck1Number))
+                ;
+
+            Mapper.CreateMap<MaterialDto, CK5InputManualViewModel>().IgnoreAllNonExisting()
+                  .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.STICKER_CODE))
+                  .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.GoodTypeDescription))
+                  .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE))
+                  .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
                 ;
         }
     }

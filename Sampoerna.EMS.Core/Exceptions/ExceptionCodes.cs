@@ -54,7 +54,19 @@ namespace Sampoerna.EMS.Core.Exceptions
             ReversalManualSAP,
 
             [Description("A record with same parameter is already exist")]
-            Lack1DuplicateSelectionCriteria
+            Lack1DuplicateSelectionCriteria,
+
+            [Description("Excisable Group Type not found")]
+            ExcisabeGroupTypeNotFound,
+
+            [Description("Missing Income List Item")]
+            MissingIncomeListItem,
+
+            [Description("Missing Hasil Produksi BKC")]
+            MissingProductionList,
+
+            [Description("Total Usage less than or equals to zero ")]
+            TotalUsageLessThanEqualTpZero
 
         }
         

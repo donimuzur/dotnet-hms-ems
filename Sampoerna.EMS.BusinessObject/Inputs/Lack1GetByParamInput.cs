@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.BusinessObject.DTOs;
 
@@ -26,16 +27,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     }
     
-    public class Lack1SaveInput
-    {
-        public Lack1Dto Lack1 { get; set; }
-        public string UserId { get; set; }
-        public Enums.ActionType WorkflowActionType { get; set; }
-    }
-
     public class Lack1WorkflowDocumentInput
     {
-        public long DocumentId { get; set; }
+        public int DocumentId { get; set; }
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
         public string Comment { get; set; }
@@ -48,8 +42,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class Lack1WorkflowDocumentData
     {
-        public DateTime DecreeDate { get; set; }
-        public Lack1DocumentDto Lack1Document { get; set; }
+        public DateTime? DecreeDate { get; set; }
+        public List<Lack1DocumentDto> Lack1Document { get; set; }
     }
 
     public class Lack1GetLatestSaldoPerPeriodInput
@@ -57,6 +51,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int MonthTo { get; set; }
         public int YearTo { get; set; }
         public string NppbkcId { get; set; }
+        public string SupplierPlantWerks { get; set; }
+        public string ExcisableGoodsType { get; set; }
     }
 
     public class Lack1GetByPeriodParamInput
@@ -87,6 +83,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string Noted { get; set; }
 
+        public int ExGroupTypeId { get; set; }
+
     }
 
     public class Lack1GetLatestLack1ByParamInput
@@ -109,6 +107,19 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SupplierPlantId { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
+    }
+
+    public class Lack1CreateParamInput : Lack1GenerateDataParamInput
+    {
+        public string UserId { get; set; }
+    }
+
+    public class Lack1RegenerateParamInput : Lack1GenerateDataParamInput
+    {
+        public string Lack1Number { get; set; }
+        public int Lack1Id { get; set; }
+        public string UserId { get; set; }
+        public Enums.ActionType WorkflowActionType { get; set; }
     }
 
 }

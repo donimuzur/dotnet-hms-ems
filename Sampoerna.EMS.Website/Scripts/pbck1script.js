@@ -36,6 +36,7 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
             } else {
                 setSupplierPlantEmpty();
             }
+            getReference();
         }
     });
 }
@@ -48,20 +49,24 @@ function disableSupplierFormInput(isDisable) {
     $('#Detail_SupplierCompany').prop('readonly', isDisable);
 }
 
-function supplierChange(url) {
+function supplierChange(isNppbkcImport, url) {
     if ($("#Detail_SupplierPlant_ddl").length) {
         var plantid = $("#Detail_SupplierPlant_ddl").find("option:selected").val();
+        var plantidFirst = $("#Detail_SupplierPlant_ddl").find("option:first").val();
         console.log(plantid);
-        ajaxLoadDetailSupplierPlant({ plantid: plantid }, url);
+        if (plantid == undefined)
+            plantid = plantidFirst;
+        ajaxLoadDetailSupplierPlant({ plantid: plantid, isNppbkcImport: isNppbkcImport }, url);
     }
 }
 
 function goodTypeOnChange() {
-    if ($("#Detail_Pbck1Type").length) {
+    if ($("#Detail_GoodType").length) {
         var goodTypeName = $("#Detail_GoodType").find("option:selected").text();
+        goodTypeName = goodTypeName.substr(3);
         $('#Detail_GoodTypeDesc').val(goodTypeName);
     }
-
+    getReference();
 }
 
 function IsProdPlanValid() {
@@ -104,8 +109,8 @@ function prodConvSaveClick() {
                 + '].ProdTypeAlias" type="hidden" value = "' + datarows[i][2] + '" />' + datarows[i][2] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ProdTypeName" type="hidden" value = "' + datarows[i][3] + '" />' + datarows[i][3] + '</td>';
-            data += '<td><input name="Detail.Pbck1ProdConverter[' + i
-                + '].ConverterOutput" type="hidden" value = "' + datarows[i][4] + '" />' + datarows[i][4] + '</td>';
+            data += '<td class="number"><input name="Detail.Pbck1ProdConverter[' + i
+                + '].ConverterOutput" type="hidden" value = "' + changeToNumber(datarows[i][4]) + '" />' + datarows[i][4] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ConverterUomId" type="hidden" value = "' + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
 
@@ -142,23 +147,26 @@ function prodPlanSaveClick() {
                 + datarows[i][3] + '" />' + datarows[i][3] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].ProdTypeAlias" type="hidden" value = "'
                 + datarows[i][4] + '" />' + datarows[i][4] + '</td>';
-            data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].Amount" type="hidden" value = "'
-                + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
-            data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequired" type="hidden" value = "'
-                + datarows[i][6] + '" />' + datarows[i][6] + '</td>';
+            data += '<td class="number"><input name="Detail.Pbck1ProdPlan[' + i + '].Amount" type="hidden" value = "'
+                + changeToNumber(datarows[i][5]) + '" />' + datarows[i][5] + '</td>';
+            data += '<td class="number"><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequired" type="hidden" value = "'
+                + changeToNumber(datarows[i][6]) + '" />' + datarows[i][6] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequiredUomId" type="hidden" value = "'
                 + datarows[i][7] + '" />' + datarows[i][7] + '</td>';
             data += '<td style="display:none"><input name="Detail.Pbck1ProdPlan[' + i + '].BkcRequiredUomName" type="hidden" value = "'
                 + datarows[i][8] + '" />' + datarows[i][8] + '</td>';
             
-            total += parseFloat(datarows[i][6]);
+            total += changeToNumber(datarows[i][6]);
             uom = datarows[i][7];
         }
         data += '</tr>';
         $('#Detail_Pbck1ProdPlan tbody').append(data);
     }
     $("input[name='Detail.RequestQty']:hidden").val(total);
-    $("input[name='Detail.RequestQty']:text").val(ThausandSeperator(total, 2));
+
+    var request = parseFloat(Math.round(total * 100) / 100).toFixed(2);
+    $("input[name='Detail.RequestQty']:text").val(ThausandSeperator(request, 2));
+
     $("select[name='Detail.RequestQtyUomId']").val(uom);
     $("select[name='Detail.LatestSaldoUomId']").val(uom);
     $("input[name='Detail.RequestQtyUomId']").val(uom);
@@ -203,6 +211,7 @@ function prodConvGenerateClick(url) {
                 //invalid generated
                 $('#prod-conv-save').attr('disabled', 'disabled');
             }
+            changeToDecimalMaxFour('#ProdConvContent .decimal', 'html');
         },
         error: function (error) {
             // Handle errors here
@@ -247,6 +256,7 @@ function prodPlanGenerateClick(url) {
                 //invalid generated
                 $('#prod-plan-save').attr('disabled', 'disabled');
             }
+            changeToDecimal('#ProdPlanContent .decimal', 'html');
         },
         error: function (error) {
             // Handle errors here
@@ -258,14 +268,24 @@ function prodPlanGenerateClick(url) {
 }
 
 function pbck1TypeOnchange() {
-    if ($("#Detail_Pbck1Type").length) {
+    if ($("select#Detail_Pbck1Type").length) {
         var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();
         if (pbck1Type == '' || pbck1Type.toLowerCase() == 'new') {
-            $('#Detail_Pbck1Reference').prop('disabled', true);
+            $('input[name="Detail.Pbck1ReferenceNumber"]:text').val("");
+            $('input[name="Detail.Pbck1Reference"]:hidden').val("");
+            $('input[name="Detail.Pbck1Reference"]:hidden').prop('disabled', true);
         } else {
-            $('#Detail_Pbck1Reference').prop('disabled', false);
+            $('input[name="Detail.Pbck1Reference"]:hidden').prop('disabled', false);
         }
+        getReference();
     }
+}
+
+function checkReference() {
+    var pbck1Type = $("#Detail_Pbck1Type").find("option:selected").val();
+    if (($(pbck1Type == '' || pbck1Type.toLowerCase() == 'new') && 'input[name="Detail.Pbck1Reference"]:hidden').val() == "")
+        return false;
+    return true;
 }
 
 function btnProdConvUploadClick() {
@@ -371,3 +391,84 @@ function AddValidationClass(isValid, objName) {
         $('#' + objName).addClass('input-validation-error');
     }
 }
+
+function changeToDecimal(selector, type) {
+    $(selector).each(function () {
+        if (type == "val") {
+            var val = $(this).val();
+            val = parseFloat(Math.round(val * 100) / 100).toFixed(2);
+            $(this).val(ThausandSeperator(val, 2));
+
+        } else {
+            var val = $(this).html();
+            val = parseFloat(Math.round(val * 100) / 100).toFixed(2);
+            $(this).html(ThausandSeperator(val, 2));
+        }
+    });
+}
+
+function changeToNumber(dec) {
+    var find = ',';
+    var re = new RegExp(find, 'g');
+
+    dec = dec.replace(re, '');
+    dec = parseFloat(dec);
+    return dec;
+}
+
+function getReference() {
+    if ($('select[name="Detail.Pbck1Type"]').val().toLowerCase() != "additional") {
+        return;
+    }
+
+    $('input[name="Detail.Pbck1ReferenceNumber"]:text').val("");
+    $('input[name="Detail.Pbck1Reference"]:hidden').prop("disabled", true);
+    $('input[name="Detail.Pbck1Reference"]:hidden').val("");
+
+    if ($('select[name="Detail.NppbkcId"]').val() == "" || $('input[name="Detail.PeriodFrom"]').val() == "" || $('input[name="Detail.PeriodTo"]').val() == "" || $('input[name="Detail.SupplierNppbkcId"]').val() == "" || $('input[name="Detail.SupplierPlantWerks"]').val() == "" || $('select[name="Detail.GoodType"]').val() == "")
+    {
+        return false;
+    }
+
+    var data = {
+        nppbkcId: $('select[name="Detail.NppbkcId"]').val(),
+        periodFrom: $('input[name="Detail.PeriodFrom"]').val(),
+        periodTo: $('input[name="Detail.PeriodTo"]').val(),
+        supplierNppbkcId: $('input[name="Detail.SupplierNppbkcId"]').val(),
+        supplierPlantWerks: $('input[name="Detail.SupplierPlantWerks"]').val(),
+        goodType: $('select[name="Detail.GoodType"]').val()
+
+    }
+    $.ajax({
+        type: 'POST',
+        url: referenceURL,
+        data: data,
+        success: function (data) {
+            if (data == false) {
+                $('input[name="Detail.Pbck1ReferenceNumber"]:text').val("");
+                $('input[name="Detail.Pbck1Reference"]:hidden').prop("disabled", true);
+                $('input[name="Detail.Pbck1Reference"]:hidden').val("");
+            } else {
+                $('input[name="Detail.Pbck1ReferenceNumber"]:text').val(data.refereceNumber);
+                $('input[name="Detail.Pbck1Reference"]:hidden').val(data.referenceId);
+                $('input[name="Detail.Pbck1Reference"]:hidden').prop("disabled", false);
+
+            }
+        }
+    });
+}
+
+function changeToDecimalMaxFour(selector, type) {
+    $(selector).each(function () {
+        if (type == "val") {
+            var val = $(this).val();
+            val = parseFloat(Math.round(val * 100) / 100).toFixed(5);
+            $(this).val(ThausandSeparatorMaxFour(val, 5));
+        } else {
+            var val = $(this).html();
+            //val = parseFloat(Math.round(val * 100) / 100).toFixed(5);
+            $(this).html(ThausandSeparatorMaxFour(val, 5));
+        }
+    });
+}
+

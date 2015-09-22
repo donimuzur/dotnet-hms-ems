@@ -1,6 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1SummaryReportViewModel
 
-<table id="pbckTable" class="display" cellspacing="0" width="100%">
+<table id="pbckTable" class="table-condensed display compact nowrap" width="100%">
     <thead>
         <tr>
             <th class="toggle-row"> No </th>
@@ -8,12 +8,19 @@
             <th>NPPBKC</th>
             <th>KPPBC</th>
             <th>PBCK-1 Number</th>
+            <th>Status</th>
             <th>Address</th>
             <th>Original NPPBKC</th>
             <th>Original KPPBC</th>
             <th>Original Address</th>
             <th>Exc. Goods Amount</th>
-            <th>Status</th>
+            <th>Type</th>
+            <th>Supplier Port</th>
+            <th>Supplier Plant</th>
+            <th>Exciseable Goods</th>
+            <th>Plan Prod From</th>
+            <th>Plan Prod To</th>
+            <th>Supplier Phone</th>
         </tr>
     </thead>
     <tbody>
@@ -27,9 +34,12 @@
                     <td>@Html.DisplayFor(model => item.NppbkcCompanyName)</td>
                     <td>@Html.DisplayFor(model => item.NppbkcId)</td>
                     <td>
-                        @Html.DisplayFor(model => item.NppbkcKppbcId)
+                        @Html.DisplayFor(model => item.NppbkcKppbcName)
                     </td>
                     <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
+                    <td>
+                        @item.StatusName
+                    </td>
                     <td>
                         <ol>
                             @foreach (var plant in item.NppbkcPlants)
@@ -42,7 +52,8 @@
                         @item.SupplierNppbkcId
                     </td>
                     <td>
-                        @item.SupplierKppbcId
+                        <!-- Fixing Bug PBCK1 No. 168 -->
+                        @item.SupplierKppbcName
                     </td>
                     <td>
                         @item.SupplierAddress
@@ -51,10 +62,28 @@
                         @item.QtyApproved
                     </td>
                     <td>
-                        @item.StatusName
+                        @item.Pbck1Type
+                    </td>
+                    <td>
+                        @item.SupplierPortName
+                    </td>
+                    <td>
+                        @item.SupplierPlant
+                    </td>
+                    <td>
+                        @item.GoodTypeDesc
+                    </td>
+                    <td>
+                        @item.PlanProdFrom
+                    </td>
+                    <td>
+                        @item.PlanProdTo
+                    </td>
+                    <td>
+                        @item.SupplierPhone
                     </td>
                 </tr>
-                row = row + 1;
+                            row = row + 1;
             }
         }
     </tbody>

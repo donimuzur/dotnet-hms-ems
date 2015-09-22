@@ -107,13 +107,15 @@ namespace Sampoerna.EMS.BLL.Services
                     p.BEGINING_BALANCE,
                     p.TOTAL_INCOME,
                     p.USAGE,
-                    p.TOTAL_PRODUCTION,
+                    p.SUPPLIER_PLANT_WERKS,
+                    p.EX_GOODTYP,
+                    //p.TOTAL_PRODUCTION,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).ToList();
 
             if (getData.Count == 0) return 0;
 
-            var selected = getData.Where(c => c.PERIODE <= dtTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
+            var selected = getData.Where(c => c.PERIODE <= dtTo &&  c.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && c.EX_GOODTYP == input.ExcisableGoodsType).OrderByDescending(o => o.PERIODE).FirstOrDefault();
 
             if (selected == null) return 0;
 
@@ -149,7 +151,7 @@ namespace Sampoerna.EMS.BLL.Services
                     p.BEGINING_BALANCE,
                     p.TOTAL_INCOME,
                     p.USAGE,
-                    p.TOTAL_PRODUCTION,
+                    //p.TOTAL_PRODUCTION,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).ToList();
 
@@ -165,7 +167,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public LACK1 GetById(int id)
         {
-            return _repository.Get(c => c.LACK1_ID == id, null, includeTables).FirstOrDefault();
+            return _repository.GetByID(id);
         }
 
         public void Insert(LACK1 data)
@@ -214,7 +216,7 @@ namespace Sampoerna.EMS.BLL.Services
 
             if (input.IsOpenDocumentOnly)
             {
-                queryFilter = queryFilter.And(c => (int)c.STATUS <= (int)Core.Enums.DocumentStatus.WaitingGovApproval);
+                queryFilter = queryFilter.And(c => c.STATUS <= Core.Enums.DocumentStatus.WaitingGovApproval || c.STATUS == Core.Enums.DocumentStatus.GovRejected);
             }
 
             return queryFilter;
@@ -235,6 +237,12 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _repository.Get(queryFilter).FirstOrDefault();
 
+        }
+
+        public LACK1 GetDetailsById(int id)
+        {
+            var incTables = includeTables + ", LACK1_DOCUMENT, LACK1_INCOME_DETAIL, LACK1_PLANT, LACK1_PRODUCTION_DETAIL, LACK1_PRODUCTION_DETAIL.UOM, LACK1_PBCK1_MAPPING, LACK1_PBCK1_MAPPING.PBCK1, LACK1_TRACKING";
+            return _repository.Get(c => c.LACK1_ID == id, null, incTables).FirstOrDefault();
         }
 
     }

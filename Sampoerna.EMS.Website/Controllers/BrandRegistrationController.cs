@@ -164,6 +164,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
+                dbBrand.STATUS = model.IsActive;
                 if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
                     dbBrand.PER_CODE_DESC = dbBrand.PER_CODE_DESC.Split('-')[1];
 
@@ -244,6 +245,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.PRINTING_PRICE = model.PrintingPrice;
                 dbBrand.CONVERSION = model.Conversion;
                 dbBrand.CUT_FILLER_CODE = model.CutFillerCode;
+                dbBrand.STATUS = model.IsActive;
             }
             else
                 Mapper.Map(model, dbBrand);

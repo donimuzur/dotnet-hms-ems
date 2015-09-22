@@ -21,5 +21,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Note { get; set; }
         public string Message { get; set; }
         public string Total { get; set; }
+
+        public string MaterialDesc { get; set; }
+        
+        public decimal ExciseQty { get; set; }
+        public string ExciseUom { get; set; }
     }
 }

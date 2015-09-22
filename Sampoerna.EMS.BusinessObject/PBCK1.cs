@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
             this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
-            this.LACK1 = new HashSet<LACK1>();
+            this.LACK1_PBCK1_MAPPING = new HashSet<LACK1_PBCK1_MAPPING>();
         }
     
         public int PBCK1_ID { get; set; }
@@ -70,6 +70,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string NPPBKC_KPPBC_ID { get; set; }
         public string SUPPLIER_KPPBC_NAME { get; set; }
         public string SUPPLIER_COMPANY { get; set; }
+        public Nullable<bool> IS_NPPBKC_IMPORT { get; set; }
     
         public virtual ICollection<CK5> CK5 { get; set; }
         public virtual MONTH MONTH { get; set; }
@@ -85,6 +86,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER2 { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual UOM UOM1 { get; set; }
-        public virtual ICollection<LACK1> LACK1 { get; set; }
+        public virtual ICollection<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
     }
 }

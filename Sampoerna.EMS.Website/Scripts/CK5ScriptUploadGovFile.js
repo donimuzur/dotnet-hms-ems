@@ -24,22 +24,28 @@ $('#upload-file-sk').click(function () {
         
         $('#poa-files').append(attachmentDiv);
     }
-    
-    //$('#poa-files').html("");
-    //for (var j = 0; j < poa_sk.length; j++) {
-    //    $('#poa-files').append('<div class="row"> <div class="ck5Attachment"  id="poa_sk' + j + '">' + poa_sk[j]
-    //        + '<button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + j + ')">-</button></p>');
-    //}
+ 
 
 });
 
 
 $('#file-sk-container').on('click', '.add-files', (function () {
+   // $('.file-inputs').bootstrapFileInput();
+    
     file_sk++;
 
+    //$('#file-sk-container').append(' <div class="row"><div class="col-sm-9"> ' +
+    //                             '<input type="file" id="Ck5FileUploadFileList_' + file_sk + '_" name="Ck5FileUploadFileList[' + file_sk + ']" class="file-inputs" data-filename-placement="inside" >' +
+    //                         '</div><div class="col-sm-3"></div></div>');
+   
     $('#file-sk-container').append(' <div class="row"><div class="col-sm-9"> ' +
-                                 '<input type="file" id="Ck5FileUploadFileList_' + file_sk + '_" name="Ck5FileUploadFileList[' + file_sk + ']" class="form-control">' +
-                             '</div><div class="col-sm-3"></div></div>');
+                            '<a class="file-input-wrapper btn btn-grey  file-inputs">' +
+                            ' <span>Browse</span>' +
+                               '<input type="file" id="Ck5FileUploadFileList_' + file_sk + '_" name="Ck5FileUploadFileList[' + file_sk + ']" class="file-inputs" data-filename-placement="inside" style="left: -169px; top: 14px;"></a>' +
+                           '</div><div class="col-sm-3"></div></div>');
+    
+   
+        
 }));
 
 function removeUploadButton(index) {
@@ -50,26 +56,13 @@ function removeUploadButton(index) {
     $('#file-sk-container').html("");
     $('#file-sk-container').html('<div class="row"><div class="col-sm-4"><button type="button"  class="btn btn-primary full add-files">Add Files</button></div></div>');
     for (var i = 0; i <= file_sk; i++) {
-        $('#file-sk-container').append('<div class="row"><div class="col-sm-9"> ' +
-                        '<input type="file" id="Ck5FileUploadFileList_' + i + '_" name="Ck5FileUploadFileList[' + i + ']" class="form-control">' +
-                    '</div><div class="col-sm-3"></div></div>');
+        $('#file-sk-container').append(' <div class="row"><div class="col-sm-9"> ' +
+                            '<a class="file-input-wrapper btn btn-grey  file-inputs">' +
+                            ' <span>Browse</span>' +
+                               '<input type="file" id="Ck5FileUploadFileList_' + file_sk + '_" name="Ck5FileUploadFileList[' + file_sk + ']" class="file-inputs" data-filename-placement="inside" style="left: -169px; top: 14px;"></a>' +
+                           '</div><div class="col-sm-3"></div></div>');
 
     }
 
 }
 
-//function removeUploadButton(index) {
-//    file_sk--;
-//    $('#poa_sk' + index).remove();
-//    $('#Detail_PoaSKFile_' + index + '_').remove();
-
-//    $('#file-sk-container').html("");
-//    $('#file-sk-container').html('<div class="row"><div class="col-sm-4"><button type="button"  class="btn btn-primary full add-files">Add Files</button></div></div>');
-//    for (var i = 0; i <= file_sk; i++) {
-//        $('#file-sk-container').append('<div class="row"><div class="col-sm-9"> ' +
-//                        '<input type="file" id="Detail_PoaSKFile_' + i + '_" name="Detail.PoaSKFile[' + i + ']" class="form-control">' +
-//                    '</div><div class="col-sm-3"></div></div>');
-
-//    }
-
-//}

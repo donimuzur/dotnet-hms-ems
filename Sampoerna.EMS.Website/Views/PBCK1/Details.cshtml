@@ -149,6 +149,7 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/pbck1script.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
         $('#MenuPBCK1OpenListDocument').addClass('active');
         $(document).ready(function () {
@@ -263,6 +264,13 @@
 
             setSupplierName();
 
+            changeToDecimal("input[name='Detail.LatestSaldo']:text", "val");
+            changeToDecimal("input[name='Detail.RequestQty']:text", "val");
+            changeToDecimal("input[name='Detail.QtyApproved']", "val");
+            changeToDecimal("#Detail_Pbck1ProdConverter .decimal", "html");
+            changeToDecimal("#Detail_Pbck1ProdPlan .decimal", "html"); 
+
+
         });
 
         function ajaxLoadPoa(formData) {
@@ -353,7 +361,7 @@
                 isExternal = false;
             }
 
-            $("#externalSupPort").prop('checked', isExternal);
+            $("#Detail_IsExternalSupplier").prop('checked', isExternal);
         }
         
     </script>

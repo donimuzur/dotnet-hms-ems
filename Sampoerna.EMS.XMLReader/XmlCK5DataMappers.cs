@@ -54,6 +54,8 @@ namespace Sampoerna.EMS.XMLReader
                     return Enums.CK5XmlStatus.StoCreated;
                 case "11":
                     return Enums.CK5XmlStatus.StoFailed;
+                case "12":
+                    return Enums.CK5XmlStatus.StoCancel;
                 case "15":
                     return Enums.CK5XmlStatus.GIPartial;
                 case "16":
@@ -86,6 +88,12 @@ namespace Sampoerna.EMS.XMLReader
                     return Enums.CK5XmlStatus.StoRecGRPartial;
                 case "46":
                     return Enums.CK5XmlStatus.StoRecGRCompleted;
+                case "50":
+                    return Enums.CK5XmlStatus.TFPosted;
+                case "51":
+                    return Enums.CK5XmlStatus.TFReversed;
+                case "52":
+                    return Enums.CK5XmlStatus.TFPartial;
                 default:
                     return Enums.CK5XmlStatus.None;
             }
@@ -149,8 +157,7 @@ namespace Sampoerna.EMS.XMLReader
                                         item.STATUS_ID = Enums.DocumentStatus.GIPartial;
                                     }
 
-                                    if (typeCk5 == Enums.CK5Type.Domestic)
-                                    {
+                                  
                                         #region "Domestic"
 
                                         var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
@@ -160,7 +167,7 @@ namespace Sampoerna.EMS.XMLReader
 
 
                                         #endregion
-                                    }
+                                    
                                    
 
                                 }
@@ -176,12 +183,12 @@ namespace Sampoerna.EMS.XMLReader
                                         workflowHistory.ACTION = Enums.ActionType.GRPartial;
                                         item.STATUS_ID = Enums.DocumentStatus.GRPartial;
                                     }
-                                    if (typeCk5 == Enums.CK5Type.Domestic)
+                                    if (typeCk5 != Enums.CK5Type.Intercompany)
                                     {
                                         var grDate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
                                         item.GR_DATE = _xmlMapper.GetDate(grDate);
                                     }
-                                    else if(typeCk5 == Enums.CK5Type.Intercompany)
+                                    else if (typeCk5 == Enums.CK5Type.Intercompany)
                                     {
                                         var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
                                         item.STO_SENDER_NUMBER = stoNumber;
@@ -198,136 +205,168 @@ namespace Sampoerna.EMS.XMLReader
                                 }
                                 else if (statusCk5 == Enums.CK5XmlStatus.GIReversal)
                                 {
-                                    workflowHistory.ACTION = Enums.ActionType.GIReversal;
-                                    AddWorkflowHistory(workflowHistory, null, null, null, null);
-
                                     CreateCk5XmlCancel(item);
+                                    workflowHistory.ACTION = Enums.ActionType.GIReversal;
+                                    item.STATUS_ID = Enums.DocumentStatus.GIReversal;
                                    
-                                    item.STATUS_ID = Enums.DocumentStatus.Cancelled;
-                                    workflowHistory.ACTION = Enums.ActionType.Cancelled;
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StoCancel)
+                               {
+                                  
+                                   item.STATUS_ID = Enums.DocumentStatus.Cancelled;
+                                   workflowHistory.ACTION = Enums.ActionType.STOCancelled;
+                                
+                                   
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StoFailed)
+                               {
+                                   item.STATUS_ID = Enums.DocumentStatus.Cancelled;
+                                   workflowHistory.ACTION = Enums.ActionType.STOFailed;
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StobGIPartial)
+                               {
+                                   item.STATUS_ID = Enums.DocumentStatus.StobGIPartial;
+                                   workflowHistory.ACTION = Enums.ActionType.StobGIPartial;
+                                   var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
+                                   item.STO_SENDER_NUMBER = stoNumber;
+                                   var stobNumber = _xmlMapper.GetElementValue(xElement.Element("STOB_NUMBER"));
+                                   item.STOB_NUMBER = stobNumber;
+                                   var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
+                                   item.GI_DATE = _xmlMapper.GetDate(giDate);
 
-                                }
-                                else if (statusCk5 == Enums.CK5XmlStatus.StoFailed)
-                                {
-                                    item.STATUS_ID = Enums.DocumentStatus.Cancelled;
-                                    workflowHistory.ACTION = Enums.ActionType.STOFailed;
-                                }
-                                else if (statusCk5 == Enums.CK5XmlStatus.StobGIPartial)
-                                {
-                                    item.STATUS_ID = Enums.DocumentStatus.StobGIPartial;
-                                    workflowHistory.ACTION = Enums.ActionType.StobGIPartial;
-                                    var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
-                                    item.STO_SENDER_NUMBER = stoNumber;
-                                    var stobNumber = _xmlMapper.GetElementValue(xElement.Element("STOB_NUMBER"));
-                                    item.STOB_NUMBER = stobNumber;
-                                    var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
-                                    item.GI_DATE = _xmlMapper.GetDate(giDate);
+                                   UpdateDNumber(item, existingCk5, xElement);
 
-                                    UpdateDNumber(item, existingCk5, xElement);
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StobGRPartial)
+                               {
+                                   var grDate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
+                                   item.GR_DATE = _xmlMapper.GetDate(grDate);
+                                   item.STATUS_ID = Enums.DocumentStatus.STOBGRPartial;
+                                   workflowHistory.ACTION = Enums.ActionType.STOBGRPartial;
 
-                                }
-                                         else if (statusCk5 == Enums.CK5XmlStatus.StobGRPartial)
-                                         {
-                                             var grDate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
-                                             item.GR_DATE = _xmlMapper.GetDate(grDate);
-                                             item.STATUS_ID = Enums.DocumentStatus.STOBGRPartial;
-                                             workflowHistory.ACTION = Enums.ActionType.STOBGRPartial;
-                                            
-                                         }
-                                         else if (statusCk5 == Enums.CK5XmlStatus.StobGICompleted)
-                                         {
-                                             item.STATUS_ID = Enums.DocumentStatus.StobGICompleted;
-                                             workflowHistory.ACTION = Enums.ActionType.StobGICompleted;
-                                             var stobNumber = _xmlMapper.GetElementValue(xElement.Element("STOB_NUMBER"));
-                                             item.STOB_NUMBER = stobNumber;
-                                             var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
-                                             item.GI_DATE = _xmlMapper.GetDate(giDate);
-                                             UpdateDNumber(item, existingCk5, xElement);
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StobGICompleted)
+                               {
+                                   item.STATUS_ID = Enums.DocumentStatus.StobGICompleted;
+                                   workflowHistory.ACTION = Enums.ActionType.StobGICompleted;
+                                   var stobNumber = _xmlMapper.GetElementValue(xElement.Element("STOB_NUMBER"));
+                                   item.STOB_NUMBER = stobNumber;
+                                   var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
+                                   item.GI_DATE = _xmlMapper.GetDate(giDate);
+                                   UpdateDNumber(item, existingCk5, xElement);
 
-                                         }
-                                    else if (statusCk5 == Enums.CK5XmlStatus.StobGRCompleted)
-                                    {
-                                        var grDate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
-                                        item.GR_DATE = _xmlMapper.GetDate(grDate);
-                                        item.STATUS_ID = Enums.DocumentStatus.StobGRCompleted;
-                                        workflowHistory.ACTION = Enums.ActionType.StobGRCompleted;
-                                           
-
-                                    }
-                                         else if (statusCk5 == Enums.CK5XmlStatus.StoRecCreated)
-                                         {
-                                             var stobRecNumber =
-                                                 _xmlMapper.GetElementValue(xElement.Element("STO_REC_NUMBER"));
-                                             item.STO_RECEIVER_NUMBER = stobRecNumber;
-
-                                             item.STATUS_ID = Enums.DocumentStatus.StoRecCreated;
-                                             workflowHistory.ACTION = Enums.ActionType.StoRecCreated;
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StobGRCompleted)
+                               {
+                                   var grDate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
+                                   item.GR_DATE = _xmlMapper.GetDate(grDate);
+                                   item.STATUS_ID = Enums.DocumentStatus.StobGRCompleted;
+                                   workflowHistory.ACTION = Enums.ActionType.StobGRCompleted;
 
 
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StoRecCreated)
+                               {
+                                   var stobRecNumber =
+                                       _xmlMapper.GetElementValue(xElement.Element("STO_REC_NUMBER"));
+                                   item.STO_RECEIVER_NUMBER = stobRecNumber;
 
-                                         }
-
-                                         else if (statusCk5 == Enums.CK5XmlStatus.StoRecGIPartial)
-                                         {
-
-                                             item.STATUS_ID = Enums.DocumentStatus.StoRecGIPartial;
-                                             workflowHistory.ACTION = Enums.ActionType.StoRecGIPartial;
-                                             var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
-                                             item.STO_SENDER_NUMBER = stoNumber;
-
-                                         }
-                                         else if (statusCk5 == Enums.CK5XmlStatus.StoRecGICompleted)
-                                         {
-                                             #region "sto rec gicompleted"
-
-                                             item.STATUS_ID = Enums.DocumentStatus.StoRecGIPartial;
-                                             workflowHistory.ACTION = Enums.ActionType.StoRecGIPartial;
-                                             var stobNumber = _xmlMapper.GetElementValue(xElement.Element("STOB_NUMBER"));
-                                             item.STOB_NUMBER = stobNumber;
-                                             var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
-                                             item.GI_DATE = _xmlMapper.GetDate(giDate);
-                                             UpdateDNumber(item, existingCk5, xElement);
-                                             #endregion
-
-                                         }
-                                         else if (statusCk5 == Enums.CK5XmlStatus.StoRecGRPartial)
-                                         {
-
-                                             item.STATUS_ID = Enums.DocumentStatus.StoRecGRPartial;
-                                             workflowHistory.ACTION = Enums.ActionType.StoRecGRPartial;
-
-
-                                         }
-                                         else if (statusCk5 == Enums.CK5XmlStatus.StoRecGRCompleted)
-                                         {
-                                             var grdate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
-                                             item.GR_DATE = _xmlMapper.GetDate(grdate);
-
-                                             item.STATUS_ID = Enums.DocumentStatus.StoRecGRCompleted;
-                                             workflowHistory.ACTION = Enums.ActionType.StoRecGRCompleted;
+                                   item.STATUS_ID = Enums.DocumentStatus.StoRecCreated;
+                                   workflowHistory.ACTION = Enums.ActionType.StoRecCreated;
 
 
 
-                                         }
+                               }
 
-                                         else if (statusCk5 == Enums.CK5XmlStatus.STOBGRReversal)
-                                         {
+                               else if (statusCk5 == Enums.CK5XmlStatus.StoRecGIPartial)
+                               {
 
-                                             item.STATUS_ID = Enums.DocumentStatus.STOBGRReversal;
-                                             workflowHistory.ACTION = Enums.ActionType.STOBGRReversal;
+                                   item.STATUS_ID = Enums.DocumentStatus.StoRecGIPartial;
+                                   workflowHistory.ACTION = Enums.ActionType.StoRecGIPartial;
+                                   var stoNumber = _xmlMapper.GetElementValue(xElement.Element("STO_NUMBER"));
+                                   item.STO_SENDER_NUMBER = stoNumber;
 
-                                         }
-                                         else if (statusCk5 == Enums.CK5XmlStatus.STOBGIReversal)
-                                         {
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StoRecGICompleted)
+                               {
+                                   #region "sto rec gicompleted"
 
-                                             workflowHistory.ACTION = Enums.ActionType.STOBGIReversal;
-                                             AddWorkflowHistory(workflowHistory, null, null, null, null);
+                                   item.STATUS_ID = Enums.DocumentStatus.StoRecGICompleted;
+                                   workflowHistory.ACTION = Enums.ActionType.StoRecGICompleted;
+                                   var stobNumber = _xmlMapper.GetElementValue(xElement.Element("STOB_NUMBER"));
+                                   item.STOB_NUMBER = stobNumber;
+                                   var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
+                                   item.GI_DATE = _xmlMapper.GetDate(giDate);
+                                   UpdateDNumber(item, existingCk5, xElement);
 
-                                             CreateCk5XmlCancel(item);
+                                   #endregion
 
-                                             item.STATUS_ID = Enums.DocumentStatus.Cancelled;
-                                             workflowHistory.ACTION = Enums.ActionType.Cancelled;
-                                         }
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StoRecGRPartial)
+                               {
+
+                                   item.STATUS_ID = Enums.DocumentStatus.StoRecGRPartial;
+                                   workflowHistory.ACTION = Enums.ActionType.StoRecGRPartial;
+
+
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.StoRecGRCompleted)
+                               {
+                                   var grdate = _xmlMapper.GetElementValue(xElement.Element("GR_DATE"));
+                                   item.GR_DATE = _xmlMapper.GetDate(grdate);
+
+                                   item.STATUS_ID = Enums.DocumentStatus.StoRecGRCompleted;
+                                   workflowHistory.ACTION = Enums.ActionType.StoRecGRCompleted;
+
+
+
+                               }
+
+                               else if (statusCk5 == Enums.CK5XmlStatus.STOBGRReversal)
+                               {
+
+                                   item.STATUS_ID = Enums.DocumentStatus.STOBGRReversal;
+                                   workflowHistory.ACTION = Enums.ActionType.STOBGRReversal;
+
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.STOBGIReversal)
+                               {
+
+                                   workflowHistory.ACTION = Enums.ActionType.STOBGIReversal;
+                                   AddWorkflowHistory(workflowHistory, null, null, null, null);
+                                   workflowHistory = new WORKFLOW_HISTORY();
+                                   workflowHistory.FORM_ID = existingCk5.CK5_ID;
+                                   workflowHistory.ACTION_BY = Constans.PI;
+                                   workflowHistory.ROLE = Enums.UserRole.System;
+                                   workflowHistory.FORM_NUMBER = existingCk5.SUBMISSION_NUMBER;
+                                   workflowHistory.FORM_TYPE_ID = Enums.FormType.CK5;
+                                   workflowHistory.ACTION_DATE = DateTime.Now;
+                                   CreateCk5XmlCancel(item);
+
+                                   item.STATUS_ID = Enums.DocumentStatus.Cancelled;
+                                   workflowHistory.ACTION = Enums.ActionType.Cancelled;
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.TFPosted)
+                               {
+                                   item.STATUS_ID = Enums.DocumentStatus.TFPosted;
+                                   workflowHistory.ACTION = Enums.ActionType.TFPosted;
+                                   UpdateMatDoc(item, existingCk5, xElement);
+
+
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.TFPartial)
+                               {
+                                   item.STATUS_ID = Enums.DocumentStatus.TFPartial;
+                                   workflowHistory.ACTION = Enums.ActionType.TFPartial;
+                               }
+                               else if (statusCk5 == Enums.CK5XmlStatus.TFReversed)
+                               {
+                                   workflowHistory.ACTION = Enums.ActionType.TFReversed;
+                                   CreateCk5XmlCancel(item);
+
+                                   item.STATUS_ID = Enums.DocumentStatus.Cancelled;
+                                   workflowHistory.ACTION = Enums.ActionType.Cancelled;
+                               }
                                 if (statusCk5 != Enums.CK5XmlStatus.None)
                                 {
                                     var emailCreator = GetEmail(item.CREATED_BY);
@@ -379,7 +418,7 @@ namespace Sampoerna.EMS.XMLReader
         public CK5 GetExistingCK5(string ck5Number)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<CK5>()
-                .Get(p => p.SUBMISSION_NUMBER.Contains(ck5Number)).FirstOrDefault();
+                .Get(p => p.SUBMISSION_NUMBER.Contains(ck5Number)).OrderByDescending(x=>x.CK5_ID).FirstOrDefault();
             return existingData;
         }
         public List<CK5_MATERIAL> GetExistingCK5Material(long ck5Id)
@@ -440,6 +479,31 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var dn_number =
                             _xmlMapper.GetElementValue(ckt5Item.Element("DELIVERY_NOTE"));
+                        if (!string.IsNullOrEmpty(dn_number))
+                        {
+                            item.DN_NUMBER = dn_number;
+                        }
+
+
+                    }
+                }
+
+            }
+        }
+
+        private void UpdateMatDoc(CK5 item, CK5 existingCk5, XElement xElement)
+        {
+            var ck5Item = GetExistingCK5Material(existingCk5.CK5_ID);
+            if (ck5Item.Count > 0)
+            {
+
+                var xmlCk5Items = xElement.Elements("Z1A_CK5_ITM");
+                if (ck5Item.Count() >= xmlCk5Items.Count())
+                {
+                    foreach (var ckt5Item in xmlCk5Items)
+                    {
+                        var dn_number =
+                            _xmlMapper.GetElementValue(ckt5Item.Element("GI_MAT_DOC"));
                         if (!string.IsNullOrEmpty(dn_number))
                         {
                             item.DN_NUMBER = dn_number;
