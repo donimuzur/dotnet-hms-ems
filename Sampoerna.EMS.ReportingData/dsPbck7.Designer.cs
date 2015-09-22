@@ -344,6 +344,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnVendorCity;
             
+            private global::System.Data.DataColumn columnDocumentType;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public MasterDataTable() {
@@ -499,6 +501,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn DocumentTypeColumn {
+                get {
+                    return this.columnDocumentType;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -534,7 +544,23 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MasterRow AddMasterRow(string PoaName, string CompanyName, string CompanyAddress, string Nppbkc, byte[] Header, string Footer, string TotalKemasan, string TotalCukai, string ReportingDate, string Preview, string DecreeDate, string Nomor, string Lampiran, string TextTo, string VendorCity) {
+            public MasterRow AddMasterRow(
+                        string PoaName, 
+                        string CompanyName, 
+                        string CompanyAddress, 
+                        string Nppbkc, 
+                        byte[] Header, 
+                        string Footer, 
+                        string TotalKemasan, 
+                        string TotalCukai, 
+                        string ReportingDate, 
+                        string Preview, 
+                        string DecreeDate, 
+                        string Nomor, 
+                        string Lampiran, 
+                        string TextTo, 
+                        string VendorCity, 
+                        string DocumentType) {
                 MasterRow rowMasterRow = ((MasterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         PoaName,
@@ -551,7 +577,8 @@ namespace Sampoerna.EMS.ReportingData {
                         Nomor,
                         Lampiran,
                         TextTo,
-                        VendorCity};
+                        VendorCity,
+                        DocumentType};
                 rowMasterRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowMasterRow);
                 return rowMasterRow;
@@ -589,6 +616,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnLampiran = base.Columns["Lampiran"];
                 this.columnTextTo = base.Columns["TextTo"];
                 this.columnVendorCity = base.Columns["VendorCity"];
+                this.columnDocumentType = base.Columns["DocumentType"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -624,6 +652,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnTextTo);
                 this.columnVendorCity = new global::System.Data.DataColumn("VendorCity", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnVendorCity);
+                this.columnDocumentType = new global::System.Data.DataColumn("DocumentType", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDocumentType);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1351,6 +1381,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string DocumentType {
+                get {
+                    try {
+                        return ((string)(this[this.tableMaster.DocumentTypeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'DocumentType\' in table \'Master\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaster.DocumentTypeColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsPoaNameNull() {
                 return this.IsNull(this.tableMaster.PoaNameColumn);
             }
@@ -1527,6 +1573,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetVendorCityNull() {
                 this[this.tableMaster.VendorCityColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsDocumentTypeNull() {
+                return this.IsNull(this.tableMaster.DocumentTypeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetDocumentTypeNull() {
+                this[this.tableMaster.DocumentTypeColumn] = global::System.Convert.DBNull;
             }
         }
         

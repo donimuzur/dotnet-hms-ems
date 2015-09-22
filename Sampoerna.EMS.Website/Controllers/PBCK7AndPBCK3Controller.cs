@@ -15,6 +15,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.CK5;
@@ -100,7 +101,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("Lampiran", System.Type.GetType("System.String"));
             dt.Columns.Add("TextTo", System.Type.GetType("System.String"));
             dt.Columns.Add("VendorCity", System.Type.GetType("System.String"));
-
+            dt.Columns.Add("DocumentType", System.Type.GetType("System.String"));
             //detail
             DataTable dtDetail = new DataTable("Detail");
             dtDetail.Columns.Add("Jenis", System.Type.GetType("System.String"));
@@ -187,7 +188,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     drow["VendorCity"] = vendor.ORT01;
                 }
             }
-
+            drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType);
             dt.Rows.Add(drow);
 
 
