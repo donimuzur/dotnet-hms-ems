@@ -20,5 +20,7 @@ namespace Sampoerna.EMS.Contract
         WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate);
 
         WASTE GetExistDto(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate);
+
+        void SaveUpload(WasteUploadItems wasteUpload);
     }
 }

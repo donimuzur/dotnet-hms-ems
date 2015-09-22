@@ -68,8 +68,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Document Type</label>
                                         <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.DocumentType, Model.DocumentTypeList, "Select", new { @class = "form-control", @disabled = "disabled" })
-                                    </div>
+                                           @Html.EnumDropDownListFor(model => model.DocumentType, Model.DocumentTypeList, "Select", new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -77,6 +77,7 @@
                                         <label class="col-md-4">Exec Date From</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
+                                                @Html.HiddenFor(x => x.ExecDateFrom)
                                                 @Html.TextBox("exec_date_from", Model.ExecDateFrom, new {@class = "form-control", @disabled="disabled"})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
@@ -90,6 +91,7 @@
                                         <label class="col-md-4">Exec Date To</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
+                                                @Html.HiddenFor(x=>x.ExecDateTo)
                                                 @Html.TextBox("exec_date_to", Model.ExecDateTo, new {@class = "form-control", @disabled="disabled"})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
@@ -102,7 +104,8 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(x => x.NppbkcId, Model.NppbkIdList, "select", new {@class = "form-control", @disabled="disabled"})
+                                            @Html.HiddenFor(x=>x.NppbkcId)
+                                            @Html.DropDownList("_nppbck", Model.NppbkIdList, "select", new {@class = "form-control", @disabled="disabled"})
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +113,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Lampiran</label>
                                         <div class="col-md-8">
-                                            <input type="text" placeholder="" class="form-control">
+                                            @Html.HiddenFor(x=>x.Lampiran)
+                                            @Html.TextBox("_lampiran", Model.Lampiran, new { @class = "form-control", @disabled="disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -118,7 +122,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Plant ID</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(x => x.PlantId, Model.PlantList, "select", new {@class = "form-control", @disabled="disabled"})
+                                            @Html.HiddenFor(x=>x.PlantId)
+                                            @Html.DropDownList("_plantid", Model.PlantList, "select", new {@class = "form-control", @disabled="disabled"})
                                         </div>
                                     </div>
                                 </div>
@@ -127,6 +132,38 @@
                                         <label class="col-md-4">POA</label>
                                         <div class="col-md-8">
                                             @Html.TextArea("poalist", null, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK7 Gov Status</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck7Status == Enums.DocumentStatus.WaitingGovApproval)
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control" })
+                                            }
+                                            else
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK3 Gov Status</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
+                                            }
+                                            else
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
+
+                                            }
                                         </div>
                                     </div>
                                 </div>

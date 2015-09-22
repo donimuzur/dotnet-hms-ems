@@ -106,7 +106,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
-            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+            model.UomList = GlobalFunctions.GetUomStickGram(_uomBll);
 
             return model;
 
@@ -202,7 +202,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
-            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+            model.UomList = GlobalFunctions.GetUomStickGram(_uomBll);
 
             return model;
         }
@@ -279,7 +279,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantAll();
             model.FacodeList = GlobalFunctions.GetBrandList();
-            model.UomList = GlobalFunctions.GetUomList(_uomBll);
+            model.UomList = GlobalFunctions.GetUomStickGram(_uomBll);
 
             return model;
         }
@@ -322,25 +322,48 @@ namespace Sampoerna.EMS.Website.Controllers
             var modelDto = Mapper.Map<ProductionDto>(model);
             
             try
+
             {
             foreach (var item in modelDto.UploadItems)
             {
                 var company = _companyBll.GetById(item.CompanyCode);
                 var plant = _plantBll.GetT001WById(item.PlantWerks);
-               
+
+                if (item.Uom == "TH")
+                {
+                    item.Uom = "Btg";
+                    item.QtyPacked = item.QtyPacked*1000;
+                    item.QtyUnpacked = item.QtyUnpacked*1000;
+                }
+                else if (item.Uom == "KG")
+                {
+                    item.Uom = "G";
+                    item.QtyPacked = item.QtyPacked*1000;
+                    item.QtyUnpacked = item.QtyUnpacked*1000;
+                }
+                else
+                {
+                    item.Uom = modelDto.Uom;
+                    item.QtyPacked = item.QtyPacked;
+                    item.QtyUnpacked = item.QtyUnpacked;
+                }
+
                 item.CompanyName = company.BUTXT;
                 item.PlantName = plant.NAME1;
-               
+                
                 _productionBll.SaveUpload(item);
-                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                   );
-            }
-
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                       );
+                }
+                
             }
             
             catch (Exception ex)
             {
-                AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);
+               
+                AddMessageInfo("Error, Data is not Valid", Enums.MessageInfoType.Error);
+                return RedirectToAction("UploadManualProduction");
+               
             }
 
             return RedirectToAction("Index");

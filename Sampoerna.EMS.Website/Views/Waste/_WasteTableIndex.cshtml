@@ -34,7 +34,7 @@
     </thead>
     <tbody>
 
-        @foreach (var item in Model.Details)
+        @foreach (var item in Model.Details.OrderByDescending(x => x.WasteProductionDate))
         {
             <tr>
                 <td class="action">
