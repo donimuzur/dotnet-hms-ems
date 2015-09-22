@@ -256,7 +256,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _productionBll.Save(dbProduction, CurrentUser.USER_ID);
+                _productionBll.Save(dbPrductionNew, CurrentUser.USER_ID);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                     );
 
