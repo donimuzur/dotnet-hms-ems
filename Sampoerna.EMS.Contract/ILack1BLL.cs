@@ -32,5 +32,7 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbckListByCompanyCode(string companyCode);
 
+        List<Lack1DetailReportDto> GetDetailReportByParam(Lack1GetDetailReportByParamInput input);
+
     }
 }

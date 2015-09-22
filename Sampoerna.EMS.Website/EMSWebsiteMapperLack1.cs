@@ -218,6 +218,25 @@ namespace Sampoerna.EMS.Website
             #endregion
 
 
+            #region ----------------- Detail Report ---------
+
+            Mapper.CreateMap<Lack1TrackingConsolidationDetailReportDto, Lack1TrackingConsolidationDetailReportItemModel>()
+                .IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck5RegistrationDate, opt => opt.MapFrom(src => src.Ck5RegistrationDate.HasValue ? src.Ck5RegistrationDate.Value.ToString("dd-MMM-yyyy") : string.Empty))
+                .ForMember(dest => dest.Ck5GrDate, opt => opt.MapFrom(src => src.Ck5GrDate.HasValue ? src.Ck5GrDate.Value.ToString("dd-MMM-yyyy") : string.Empty))
+                .ForMember(dest => dest.GiDate, opt => opt.MapFrom(src => src.GiDate.HasValue ? src.GiDate.Value.ToString("dd-MMM-yyyy") : string.Empty))
+                ;
+
+            Mapper.CreateMap<Lack1SearchDetailReportViewModel, Lack1GetDetailReportByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1DetailReportDto, Lack1DetailReportItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TrackingConsolidations, opt => opt.MapFrom(src
+                    => Mapper.Map<List<Lack1TrackingConsolidationDetailReportItemModel>>(src.TrackingConsolidations)))
+                ;
+            
+            #endregion
+
         }
     }
 }

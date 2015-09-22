@@ -40,30 +40,36 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
     public class Lack1DetailReportItemModel
     {
+        public Lack1DetailReportItemModel()
+        {
+            TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportItemModel>();
+        }
         public int Lack1Id { get; set; }
         public string Lack1Number { get; set; }
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
-        public List<Lack1ReceivingDetailReportItemModel> ReceivingList { get; set; }
-        public List<Lack1UsageDetailReportItemModel> UsageList { get; set; }
+        public List<Lack1TrackingConsolidationDetailReportItemModel> TrackingConsolidations { get; set; }
     }
 
-    public class Lack1ReceivingDetailReportItemModel
+    public class Lack1TrackingConsolidationDetailReportItemModel
     {
-        public int Ck5Id { get; set; }
+        #region -------------- Receiving Table on FS Doc ------------
+        public long Ck5Id { get; set; }
         public string Ck5Number { get; set; }
         public string Ck5RegistrationNumber { get; set; }
         public string Ck5RegistrationDate { get; set; }
         public string Ck5GrDate { get; set; }
         public decimal Qty { get; set; }
-    }
+        #endregion
 
-    public class Lack1UsageDetailReportItemModel
-    {
+        #region ----------- Usage Table on FS Doc ---------
         public string GiDate { get; set; }
+        public string PurchaseDoc { get; set; }
         public string MaterialCode { get; set; }
-        public decimal UsageQty { get; set; }
+        public decimal? UsageQty { get; set; }
         public string OriginalUomId { get; set; }
         public string ConvertedUomId { get; set; }
+        #endregion 
     }
+
 }

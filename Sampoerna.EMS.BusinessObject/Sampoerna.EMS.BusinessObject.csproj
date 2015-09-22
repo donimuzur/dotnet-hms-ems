@@ -139,6 +139,7 @@
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
     <Compile Include="DTOs\InventoryMovementDto.cs" />
+    <Compile Include="DTOs\Lack1DetailReportDto.cs" />
     <Compile Include="DTOs\Lack1GeneratedDto.cs" />
     <Compile Include="DTOs\Lack1IncomeDetailDto.cs" />
     <Compile Include="DTOs\Lack1Pbck1MappingDto.cs" />

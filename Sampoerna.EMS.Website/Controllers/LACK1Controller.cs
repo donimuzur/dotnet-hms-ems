@@ -1285,7 +1285,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     MainMenu = _mainMenu,
                     CurrentMenu = PageInfo, 
-                    DetailList = new List<Lack1DetailReportItemModel>()
+                    DetailList = SearchDetailReport()
                 };
                 model = InitSearchDetilReportViewModel(model);
             }
@@ -1304,8 +1304,38 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult SearchDetailReport(Lack1DetailReportViewModel model)
         {
+            model.DetailList = SearchDetailReport(model.SearchView);
+            return PartialView("_Lack1DetailReport", model);
+        }
 
-            return View(model);
+        private List<Lack1DetailReportItemModel> SearchDetailReport(Lack1SearchDetailReportViewModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var data = _lack1Bll.GetDetailReportByParam(new Lack1GetDetailReportByParamInput());
+                return Mapper.Map<List<Lack1DetailReportItemModel>>(data);
+            }
+            //getbyparams
+            var input = Mapper.Map<Lack1GetDetailReportByParamInput>(filter);
+            
+            if (!string.IsNullOrEmpty(filter.PeriodFrom))
+            {
+                var strList = filter.PeriodFrom.Split('-').ToList();
+                input.PeriodMonthFrom = Convert.ToInt32(strList[0]);
+                input.PeriodYearFrom = Convert.ToInt32(strList[1]);
+            }
+
+            if (!string.IsNullOrEmpty(filter.PeriodTo))
+            {
+                var strList = filter.PeriodTo.Split('-').ToList();
+                input.PeriodMonthTo = Convert.ToInt32(strList[0]);
+                input.PeriodYearTo = Convert.ToInt32(strList[1]);
+            }
+
+            var dbData = _lack1Bll.GetDetailReportByParam(input);
+            return Mapper.Map<List<Lack1DetailReportItemModel>>(dbData);
         }
 
         private Lack1DetailReportViewModel InitSearchDetilReportViewModel(Lack1DetailReportViewModel model)

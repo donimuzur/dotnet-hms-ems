@@ -141,4 +141,16 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Approver { get; set; }
     }
 
+    public class Lack1GetDetailReportByParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string ReceivingPlantId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string SupplierPlantId { get; set; }
+        public int? PeriodMonthFrom { get; set; }
+        public int? PeriodYearFrom { get; set; }
+        public int? PeriodMonthTo { get; set; }
+        public int? PeriodYearTo { get; set; }
+    }
 }

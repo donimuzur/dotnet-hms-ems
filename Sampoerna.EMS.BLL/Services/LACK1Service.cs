@@ -332,5 +332,40 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(c => c.BUKRS == companyCode).ToList();
         }
 
+        public List<LACK1> GetDetailReportByParamInput(Lack1GetDetailReportByParamInput input)
+        {
+            const string incTables = "LACK1_TRACKING, LACK1_TRACKING.INVENTORY_MOVEMENT, LACK1_INCOME_DETAIL, LACK1_INCOME_DETAIL.CK5, LACK1_INCOME_DETAIL.CK5.CK5_MATERIAL";
+            //process QueryFilter
+            Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
+            if (!string.IsNullOrEmpty(input.CompanyCode))
+            {
+                queryFilter = queryFilter.And(c => c.BUKRS == input.CompanyCode);
+            }
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+            }
+            if (!string.IsNullOrEmpty(input.ReceivingPlantId))
+            {
+                queryFilter =
+                    queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.ReceivingPlantId));
+            }
+            if (!string.IsNullOrEmpty(input.SupplierPlantId))
+            {
+                queryFilter = queryFilter.And(c => c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId);
+            }
+            if (input.PeriodMonthFrom.HasValue && input.PeriodYearFrom.HasValue)
+            {
+                var dtFrom = new DateTime(input.PeriodYearFrom.Value, input.PeriodMonthFrom.Value, 1);
+                queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) >= dtFrom);
+            }
+            if (input.PeriodMonthTo.HasValue && input.PeriodYearTo.HasValue)
+            {
+                var dtTo = new DateTime(input.PeriodYearTo.Value, input.PeriodMonthTo.Value, 1);
+                queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) <= dtTo);
+            }
+            return _repository.Get(queryFilter, null, incTables).ToList();
+        }
+
     }
 }

@@ -34,5 +34,7 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<LACK1> GetByCompanyCode(string companyCode);
 
+        List<LACK1> GetDetailReportByParamInput(Lack1GetDetailReportByParamInput input);
+
     }
 }

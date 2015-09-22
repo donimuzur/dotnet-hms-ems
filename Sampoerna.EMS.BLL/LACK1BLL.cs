@@ -252,7 +252,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(generatedData.Data.IncomeList);
                 dbData.LACK1_PBCK1_MAPPING = Mapper.Map<List<LACK1_PBCK1_MAPPING>>(generatedData.Data.Pbck1List);
                 dbData.LACK1_PRODUCTION_DETAIL = Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(generatedData.Data.ProductionList);
-                
+
                 //set LACK1_TRACKING
                 var allTrackingList = generatedData.Data.InvMovementAllList;
                 allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
@@ -287,7 +287,7 @@ namespace Sampoerna.EMS.BLL
             dbData.NOTED = input.Detail.Noted;
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
-            
+
             _uow.SaveChanges();
 
             rc.Success = true;
@@ -1380,6 +1380,150 @@ namespace Sampoerna.EMS.BLL
                 return nppbkcList.DistinctBy(c => c.NPPBKC_ID).ToList();
             }
             return new List<ZAIDM_EX_NPPBKCCompositeDto>();
+        }
+
+        #endregion
+
+        #region --------------------- Detail Report ----------------
+
+        public List<Lack1DetailReportDto> GetDetailReportByParam(Lack1GetDetailReportByParamInput input)
+        {
+            var dbData = _lack1Service.GetDetailReportByParamInput(input);
+
+            var rc = new List<Lack1DetailReportDto>();
+
+            foreach (var data in dbData)
+            {
+                var item = new Lack1DetailReportDto()
+                {
+                    Lack1Id = data.LACK1_ID,
+                    Lack1Number = data.LACK1_NUMBER,
+                    BeginingBalance = data.BEGINING_BALANCE,
+                    EndingBalance = data.BEGINING_BALANCE + data.TOTAL_INCOME - data.USAGE,
+                    TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>()
+                };
+
+                var ck5MaterialList = new List<Lack1Ck5MaterialDetailReportDto>();
+                foreach (var toInsert in data.LACK1_INCOME_DETAIL.Select(ck5 =>
+                    (from x in ck5.CK5.CK5_MATERIAL
+                     let ck5Id = x.CK5_ID
+                     where ck5Id != null
+                     select new Lack1Ck5MaterialDetailReportDto()
+                     {
+                         Ck5Id = ck5Id.Value,
+                         Ck5Number = x.CK5.SUBMISSION_NUMBER,
+                         Ck5RegistrationNumber = x.CK5.REGISTRATION_NUMBER,
+                         Ck5RegistrationDate = x.CK5.REGISTRATION_DATE,
+                         Ck5GrDate = x.CK5.GR_DATE,
+                         StoNumber =
+                             x.CK5.CK5_TYPE == Enums.CK5Type.Intercompany
+                                 ? x.CK5.STO_RECEIVER_NUMBER
+                                 : x.CK5.STO_SENDER_NUMBER,
+                         GiDate = x.CK5.GI_DATE,
+                         Qty = x.QTY.HasValue ? x.QTY.Value : 0,
+                         UomId = x.UOM,
+                         ConvertedUomId = x.CONVERTED_UOM,
+                         MaterialId = x.BRAND,
+                         ConvertedQty = x.CONVERTED_QTY.HasValue ? x.CONVERTED_QTY.Value : 0
+                     })))
+                {
+                    ck5MaterialList.AddRange(toInsert.ToList());
+                }
+
+                if (data.LACK1_TRACKING != null && data.LACK1_TRACKING.Count > 0)
+                {
+                    var receiving =
+                        data.LACK1_TRACKING.Where(
+                            c => c.INVENTORY_MOVEMENT.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving))
+                            .ToList();
+
+                    var mvtTypeForUsage = new List<string>
+                    {
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd),
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin)
+                    };
+
+                    var usage =
+                        data.LACK1_TRACKING.Where(c => mvtTypeForUsage.Contains(c.INVENTORY_MOVEMENT.MVT)).ToList();
+
+                    var usageReceiving = (from rec in receiving
+                                          join a in usage on new { rec.INVENTORY_MOVEMENT.BATCH, rec.INVENTORY_MOVEMENT.MATERIAL_ID } equals
+                                              new { a.INVENTORY_MOVEMENT.BATCH, a.INVENTORY_MOVEMENT.MATERIAL_ID }
+                                          select new Lack1TrackingConsolidationDetailReportDto()
+                                          {
+                                              PurchaseDoc = rec.INVENTORY_MOVEMENT.PURCH_DOC,
+                                              MaterialCode = a.INVENTORY_MOVEMENT.MATERIAL_ID,
+                                              UsageQty = a.INVENTORY_MOVEMENT.QTY.HasValue ? a.INVENTORY_MOVEMENT.QTY.Value : 0
+                                          }).ToList();
+
+
+                    var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
+                    foreach (var d in ck5MaterialList)
+                    {
+                        var rec =
+                            usageReceiving.FirstOrDefault(
+                                c => c.PurchaseDoc == d.StoNumber && c.MaterialCode == d.MaterialId);
+                        if (rec == null)
+                        {
+                            usageConsolidationData.Add(new Lack1TrackingConsolidationDetailReportDto()
+                            {
+                                Ck5Id = d.Ck5Id,
+                                Ck5Number = d.Ck5Number,
+                                Ck5RegistrationNumber = d.Ck5RegistrationNumber,
+                                Ck5RegistrationDate = d.Ck5RegistrationDate,
+                                Ck5GrDate = d.Ck5GrDate,
+                                Qty = d.Qty,
+                                GiDate = d.GiDate,
+                                PurchaseDoc = "",
+                                UsageQty = null,
+                                OriginalUomId = d.UomId,
+                                ConvertedUomId = d.ConvertedUomId,
+                                MaterialCode = d.MaterialId
+                            });
+                        }
+                        else
+                        {
+                            usageConsolidationData.Add(new Lack1TrackingConsolidationDetailReportDto()
+                            {
+                                Ck5Id = d.Ck5Id,
+                                Ck5Number = d.Ck5Number,
+                                Ck5RegistrationNumber = d.Ck5RegistrationNumber,
+                                Ck5RegistrationDate = d.Ck5RegistrationDate,
+                                Ck5GrDate = d.Ck5GrDate,
+                                Qty = d.Qty,
+                                GiDate = d.GiDate,
+                                PurchaseDoc = rec.PurchaseDoc,
+                                UsageQty = rec.UsageQty,
+                                OriginalUomId = d.UomId,
+                                ConvertedUomId = d.ConvertedUomId,
+                                MaterialCode = d.MaterialId
+                            });
+                        }
+                    }
+                    item.TrackingConsolidations.AddRange(usageConsolidationData);
+                }
+                else
+                {
+                    var usageConsolidationData = ck5MaterialList.Select(d => new Lack1TrackingConsolidationDetailReportDto()
+                    {
+                        Ck5Id = d.Ck5Id,
+                        Ck5Number = d.Ck5Number,
+                        Ck5RegistrationNumber = d.Ck5RegistrationNumber,
+                        Ck5RegistrationDate = d.Ck5RegistrationDate,
+                        Ck5GrDate = d.Ck5GrDate,
+                        Qty = d.Qty,
+                        GiDate = d.GiDate,
+                        PurchaseDoc = "",
+                        UsageQty = null,
+                        OriginalUomId = d.UomId,
+                        ConvertedUomId = d.ConvertedUomId,
+                        MaterialCode = d.MaterialId
+                    }).ToList();
+                    item.TrackingConsolidations.AddRange(usageConsolidationData);
+                }
+                rc.Add(item);
+            }
+            return rc;
         }
 
         #endregion
