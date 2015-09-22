@@ -37,8 +37,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IHeaderFooterBLL _headerFooterBll;
+        private ILFA1BLL _lfa1Bll;
         public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
-            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
+            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7AndPbck7And3Bll = pbck7AndPbck3Bll;
@@ -52,6 +53,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
             _headerFooterBll = headerFooterBll;
+            _lfa1Bll = lfa1Bll;
         }
 
         #region Index PBCK7
@@ -123,6 +125,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 drow[0] = _poaBll.GetById(pbck7.ApprovedBy).PRINTED_NAME;
             }
             var company = _plantBll.GetId(pbck7.PlantId);
+            var nppbkc = _nppbkcBll.GetById(pbck7.NppbkcId);
+          
             if (company != null)
             {
                 drow[1] = company.COMPANY_NAME;
@@ -132,7 +136,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     CompanyCode = company.COMPANY_CODE,
                     FormTypeId = Enums.FormType.LACK2
                 });
-                drow[3] = pbck7.NppbkcId;
+
+                drow[3] = pbck7.NppbkcId + " tanggal " + nppbkc.START_DATE.Value.ToString("dd MMMM yyyy"); 
                 if (headerFooter != null)
                 {
                     drow[4] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
@@ -145,7 +150,7 @@ namespace Sampoerna.EMS.Website.Controllers
             drow[6] = totalKemasan;
             drow[7] = totalCukai;
             drow[8] = pbck7.Pbck7Date == null ? null : pbck7.Pbck7Date.ToString("dd MMMM yyyy");
-
+          
             if (pbck7.Pbck7Status != Enums.DocumentStatus.WaitingGovApproval || pbck7.Pbck7Status != Enums.DocumentStatus.GovApproved
                 || pbck7.Pbck7Status != Enums.DocumentStatus.Completed)
             {
@@ -156,6 +161,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 drow[9] = "PBCK-7";
                 
             }
+            drow[10] = pbck7.Pbck7Number;
+            drow[11] = pbck7.Lampiran;
+
+            if (nppbkc != null)
+            {
+                drow[12] = nppbkc.TEXT_TO;
+                var vendor = _lfa1Bll.GetById(nppbkc.KPPBC_ID);
+                if (vendor != null)
+                {
+                    drow[13] = vendor.ORT01;
+                }
+            }
+
             dt.Rows.Add(drow);
 
 
