@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.BLL
        private IZaidmExNPPBKCBLL _nppbkcBll;
        private IPlantBLL _plantBll;
        private IBlockStockBLL _blockStockBll;
+       private IHeaderFooterBLL _headerFooterBll;
 
        private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
 
@@ -69,6 +70,7 @@ namespace Sampoerna.EMS.BLL
            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
            _plantBll = new PlantBLL(_uow, _logger);
            _blockStockBll = new BlockStockBLL(_uow,_logger);
+           _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
@@ -1086,9 +1088,22 @@ namespace Sampoerna.EMS.BLL
 
 
            }
-         
 
-             return result;
+           //set header footer data by CompanyCode and FormTypeId
+           var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+           {
+               FormTypeId = Enums.FormType.PBCK4,
+               CompanyCode = dtData.COMPANY_ID
+           });
+
+           result.ReportDetails.HeaderImage = string.Empty;
+
+           if (headerFooterData.IS_HEADER_SET.HasValue && headerFooterData.IS_HEADER_SET.Value)
+           {
+               result.ReportDetails.HeaderImage = headerFooterData.HEADER_IMAGE_PATH;
+           }
+
+           return result;
         }
 
        public Pbck4XmlDto GetPbck4ForXmlById(int id)

@@ -816,7 +816,37 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.PrintDate = pbck4ReportDetails.PrintDate;
             detailRow.RegionOffice = pbck4ReportDetails.RegionOffice;
             detailRow.DocumentTitle = printTitle;
+            
+            //set image
+            if (string.IsNullOrEmpty(pbck4ReportDetails.HeaderImage))
+                detailRow.HeaderImage = null;
+            else
+            {
+                //convert to byte image
+                FileStream fs;
+                BinaryReader br;
+                var imagePath = pbck4ReportDetails.HeaderImage;
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read,
+                        FileShare.ReadWrite);
+                }
+                else
+                {
+                    // if photo does not exist show the nophoto.jpg file 
+                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                // initialise the binary reader from file streamobject 
+                br = new BinaryReader(fs);
+                // define the byte array of filelength 
+                byte[] imgbyte = new byte[fs.Length + 1];
+                // read the bytes from the binary reader 
+                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
 
+                detailRow.HeaderImage = imgbyte;
+            }
+
+           
             dsPbck4.Pbck4.AddPbck4Row(detailRow);
 
             return dsPbck4;
