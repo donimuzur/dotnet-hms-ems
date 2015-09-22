@@ -134,7 +134,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public Decimal? ExciseValue { get; set; }
 
-        public Decimal? SeriesValue { get; set; }
+        public string SeriesValue { get; set; }
 
     }
 
