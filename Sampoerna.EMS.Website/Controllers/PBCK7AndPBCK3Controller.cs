@@ -102,6 +102,8 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("TextTo", System.Type.GetType("System.String"));
             dt.Columns.Add("VendorCity", System.Type.GetType("System.String"));
             dt.Columns.Add("DocumentType", System.Type.GetType("System.String"));
+            dt.Columns.Add("NppbkcCity", System.Type.GetType("System.String"));
+            dt.Columns.Add("PbckDate", System.Type.GetType("System.String"));
             //detail
             DataTable dtDetail = new DataTable("Detail");
             dtDetail.Columns.Add("Jenis", System.Type.GetType("System.String"));
@@ -189,6 +191,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
             drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType);
+            drow["NppbkcCity"] = nppbkc.CITY;
+            drow["PbckDate"] = pbck7.Pbck7Date.ToString("dd MMM yyyy");
+          
             dt.Rows.Add(drow);
 
 
