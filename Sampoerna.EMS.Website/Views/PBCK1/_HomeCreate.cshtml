@@ -37,7 +37,8 @@
                                     <div class="row">
                                         <label class="col-md-3">References</label>
                                         <div class="col-md-9">
-                                            @Html.DropDownListFor(model => model.Detail.Pbck1Reference, Model.PbckReferenceList, "Select", new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.Detail.Pbck1Reference)
+                                            @Html.TextBoxFor(model => model.Detail.Pbck1ReferenceNumber, new { @class = "form-control", @readonly = "readonly" })
                                         </div>
                                     </div>
                                 </div>

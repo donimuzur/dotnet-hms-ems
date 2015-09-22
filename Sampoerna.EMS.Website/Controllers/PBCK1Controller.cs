@@ -540,6 +540,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     return View(model);
                 }
 
+                Pbck1ItemViewModel modelOld = model;
+                
                 //model.Detail.Status = Enums.DocumentStatus.Revised;
                 model = CleanSupplierInfo(model);
 
@@ -551,6 +553,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = CurrentUser.USER_ID,
                     WorkflowActionType = Enums.ActionType.Modified
                 };
+
+                if (!_pbck1Bll.checkUniquePBCK1(input))
+                {
+                    AddMessageInfo("PBCK1 Cannot Duplicate", Enums.MessageInfoType.Error);
+                    return CreateInitial(modelOld);
+                }
 
                 //set null, set this field only from Gov Approval
                 input.Pbck1.DecreeDate = null;
@@ -690,6 +698,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
+            else {
+                model.AllowApproveAndReject = false;
+                foreach (POADto poa in _poaBll.GetPoaByNppbkcIdAndMainPlant(model.Detail.NppbkcId))
+                { 
+                    if(poa.POA_ID == CurrentUser.USER_ID){
+                        model.AllowApproveAndReject = true;
+                    }
+                }
+                
+            }
+
+
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
 
@@ -1910,6 +1930,19 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_PrintHistoryTable", model);
 
         }
+
+        [HttpPost]
+        public JsonResult GetPBCK1Reference(DateTime periodFrom, DateTime periodTo, string nppbkcId, string supplierNppbkcId,string supplierPlantWerks,string goodType)
+        {
+            var reference = _pbck1Bll.GetPBCK1Reference(new Pbck1ReferenceSearchInput() { NppbkcId = nppbkcId, PeriodFrom = periodFrom, PeriodTo = periodTo, SupllierNppbkcId = supplierNppbkcId, SupplierPlantWerks = supplierPlantWerks, GoodTypeId = goodType });
+            if (reference == null)
+            {
+                return Json(false);
+            }else{
+                return Json(new { referenceId = reference.Pbck1Id, refereceNumber = reference.Pbck1Number});
+            }
+        }
+
 
     }
 }

@@ -398,6 +398,7 @@
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
+    <Compile Include="Models\Waste\WasteUploadViewModel.cs" />
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -486,6 +487,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Pbck1RencanaProduksi.rpt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK7\Pbck7Report.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck7Report.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PBCK4\Pbck4PrintOut.cs">
@@ -1130,6 +1137,11 @@
     <Content Include="Views\PBCK4\Pbck4SummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack1.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4ListSummaryReport.cshtml" />
+    <Content Include="Views\Waste\UploadManualWaste.cshtml" />
+    <Content Include="Views\Waste\_Upload.cshtml" />
+    <Content Include="Views\Waste\_UploadList.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack3.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadCk2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1254,6 +1266,10 @@
       <LastGenOutput>Pbck4PrintOut.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Reports\PBCK7\Pbck7Report.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck7Report.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

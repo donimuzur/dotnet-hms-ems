@@ -130,5 +130,6 @@ namespace Sampoerna.EMS.BLL
             queryFilter = queryFilter.And(c => allowedConvertedUoms.Contains(c.UOM_ID));
             return _repository.Get(queryFilter, null, "").ToList();
         }
+        
     }
 }

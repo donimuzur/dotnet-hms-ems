@@ -15,15 +15,8 @@
             <div class="panel-body">
                 <div class="form-excise" role="form">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <label class="col-md-4">Goverment Status</label>
-                                <div class="col-md-8">
-                                    @Html.EnumDropDownListFor(x=>x.Back1GovStatus, Model.Back1GovStatusList, "select", new { @class="form-control" })
-                                   
-                                </div>
-                            </div>
-                        </div>
+                        
+
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -32,7 +25,7 @@
                                 <div class="col-md-8">
                                     @if(Model.Pbck7Status == Enums.DocumentStatus.GovApproved)
                                     {
-                                        @Html.TextBoxFor(x => x.Back1Dto.Back1Number, new {@class = "form-control", @disabled = "disabled"})
+                                        @Html.TextBoxFor(x => x.Back1Dto.Back1Number, new {@class = "form-control"})
                                     }
                                     else
                                     {
@@ -113,8 +106,10 @@
 
 
                     </div>
-                    @Html.Partial("_FileUploadBack1")
-
+                    @if (Model.Pbck7Status == Enums.DocumentStatus.GovApproved)
+                    {
+                        @Html.Partial("_FileUploadBack1")
+                    }
                 </div>
             </div>
         </div>

@@ -9,7 +9,9 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.Waste;
+using Sampoerna.EMS.Website.Utility;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -56,13 +58,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
+                WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
                 Details = Mapper.Map<List<WasteDetail>>(_wasteBll.GetAllByParam(new WasteGetByParamInput()))
 
                 
             });
-
-            
-
 
             return View("Index", data);
         }
@@ -117,8 +117,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantWerkList = GlobalFunctions.GetPlantAll();
-            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
+            model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
 
             return model;
 
@@ -188,8 +188,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantWerkList = GlobalFunctions.GetPlantAll();
-            model.FacodeList = GlobalFunctions.GetBrandList();
+            model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
+            model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
            
             return model;
         }
@@ -297,6 +297,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Detail
 
+        private WasteDetail InitDetail(WasteDetail model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.PlantWerkList = GlobalFunctions.GetPlantAll();
+            model.FacodeList = GlobalFunctions.GetBrandList();
+
+            return model;
+        }
+
         public ActionResult Detail(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
         {
             var model = new WasteDetail();
@@ -316,13 +327,90 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
             model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
 
-            model = IniEdit(model);
+            model = InitDetail(model);
             return View(model);
 
         }
         #endregion
 
+        #region Upload
 
+        public ActionResult UploadManualWaste()
+        {
+            var model = new WasteUploadViewModel();
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public ActionResult UploadManualWaste(WasteUploadViewModel model)
+        {
+            var modelDto = Mapper.Map<WasteDto>(model);
+
+            try
+            {
+                foreach (var item in modelDto.UploadItems)
+                {
+                    var company = _companyBll.GetById(item.CompanyCode);
+                    var plant = _plantBll.GetT001WById(item.PlantWerks);
+
+                    item.CompanyName = company.BUTXT;
+                    item.PlantName = plant.NAME1;
+
+                    _wasteBll.SaveUpload(item);
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                       );
+                }
+            }
+
+            catch (Exception ex)
+            {
+                AddMessageInfo("Error, Data is not Valid", Enums.MessageInfoType.Error);
+                return RedirectToAction("UploadManualWaste");
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public JsonResult UploadFile(HttpPostedFileBase itemExcelFile)
+        {
+            var data = (new ExcelReader()).ReadExcel(itemExcelFile);
+            var model = new List<WasteUploadItems>();
+            if (data != null)
+            {
+                foreach (var dataRow in data.DataRows)
+                {
+                    var item = new WasteUploadItems();
+
+                    item.CompanyCode = dataRow[0];
+                    item.PlantWerks = dataRow[1];
+                    item.FaCode = dataRow[2];
+                    item.BrandDescription = dataRow[3];
+                    item.PackerRejectStickQty = Convert.ToDecimal(dataRow[4]);
+                    item.MarkerRejectStickQty = Convert.ToDecimal(dataRow[5]);
+                    item.DustWasteGramQty = Convert.ToDecimal(dataRow[6]);
+                    item.FloorWasteGramQty = Convert.ToDecimal(dataRow[7]);
+                    item.DustWasteStickQty = Convert.ToDecimal(dataRow[8]);
+                    item.FloorWasteStickQty = Convert.ToDecimal(dataRow[9]);
+                    item.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(data.DataRows[0][10])).ToString("dd MMM yyyy");
+
+                    {
+                        model.Add(item);
+                    }
+
+                }
+            }
+
+            return Json(model);
+
+
+        }
+
+        #endregion
 
         #region Json
         [HttpPost]

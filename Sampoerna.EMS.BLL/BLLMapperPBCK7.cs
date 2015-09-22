@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME))
+                .ForMember(dest => dest.Lampiran, opt => opt.MapFrom(src => src.LAMPIRAN))
                 .ForMember(dest => dest.PlantCity, opt => opt.MapFrom(src => src.PLANT_CITY))
                 .ForMember(dest => dest.ExecDateFrom, opt => opt.MapFrom(src => src.EXEC_DATE_FROM))
                 .ForMember(dest => dest.ExecDateTo, opt => opt.MapFrom(src => src.EXEC_DATE_TO))
@@ -140,6 +141,12 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.APPROVED_BY))
                .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
                ;
+
+            Mapper.CreateMap<BACK3, Back3Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Back3Dto, BACK3>().IgnoreAllNonExisting();
+            Mapper.CreateMap<CK2, Ck2Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Ck2Dto, CK2>().IgnoreAllNonExisting();
+
             #endregion
 
         }

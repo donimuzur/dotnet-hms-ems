@@ -25,6 +25,7 @@ using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.UserAuthorization;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
+using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.Waste;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.Settings;
@@ -824,11 +825,11 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantName));
 
-            Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));
+            Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting();
+              
 
-            Mapper.CreateMap<ProductionUploadViewModel, ProductionDto>().IgnoreAllNonExisting()
-              .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));
+            Mapper.CreateMap<ProductionUploadViewModel, ProductionDto>().IgnoreAllNonExisting();
+              
 
            #endregion
 
@@ -854,6 +855,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WasteProductionDate));
 
             Mapper.CreateMap<WasteDetail, WasteDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<WasteUploadViewModel, WasteDto>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));
 
 
             #endregion
