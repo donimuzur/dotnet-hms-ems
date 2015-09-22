@@ -33,11 +33,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
     public class DataListIndexPbck3
     {
+        public int Pbck7Id { get; set; }
         public string Pbck3Number { get; set; }
         public string ReportedOn { get; set; }
         public string NppbkcId { get; set; }
-        public string PlantId { get; set; }
+        public string Plant { get; set; }
         public string Poa { get; set; }
-        public int Status { get; set; }
+        public string Status { get; set; }
     }
 }

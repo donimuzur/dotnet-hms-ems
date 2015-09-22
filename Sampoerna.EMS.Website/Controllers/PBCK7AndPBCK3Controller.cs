@@ -61,7 +61,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Pbck7Type = Enums.Pbck7Type.Pbck7List,
 
                 Detail =
-                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetAllByParam(new Pbck7AndPbck3Input()))
+                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input()))
             });
 
             return View("Index", data);
@@ -92,7 +92,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetAllByParam(input);
+            var dbData = _pbck7AndPbck7And3Bll.GetPbck7ByParam(input);
 
             var result = Mapper.Map<List<DataListIndexPbck7>>(dbData);
 
@@ -109,14 +109,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult ListPbck3Index()
         {
+            var detail =
+                Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input()));
+          
             var data = InitPbck3ViewModel(new Pbck3IndexViewModel
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Pbck3Type = Enums.Pbck7Type.Pbck3List,
 
-                Detail =
-                    Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetAllByParam(new Pbck7AndPbck3Input()))
+                Detail = detail
             });
 
             return View("ListPbck3Index", data);
@@ -143,7 +145,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetAllByParam(input);
+            var dbData = _pbck7AndPbck7And3Bll.GetPbck3ByParam(input);
             var result = Mapper.Map<List<DataListIndexPbck3>>(dbData);
 
             var viewModel = new Pbck3IndexViewModel();

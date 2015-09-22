@@ -42,6 +42,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? Pbck3Date { get; set; }
         public Back3Dto Back3Dto { get; set; }
         public Ck2Dto Ck2Dto { get; set; }
+
+        public string NppbckId { get; set; }
+
+        public string Plant { get; set; }
        
     }
 

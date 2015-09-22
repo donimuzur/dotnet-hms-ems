@@ -41,12 +41,13 @@ namespace Sampoerna.EMS.Website
 
             #region PBCK3
 
-            Mapper.CreateMap<Pbck7AndPbck3Dto, DataListIndexPbck3>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
-                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck7Date))
-                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
+            Mapper.CreateMap<Pbck3Dto, DataListIndexPbck3>().IgnoreAllNonExisting()
+                  .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.Pbck7Id))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbckId))
+                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck3Date.HasValue ? src.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.Plant))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.ApprovedBy))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Pbck7Status));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck3Status)));
                 
 
             Mapper.CreateMap<Pbck3IndexViewModel, Pbck7AndPbck3Input>().IgnoreAllNonExisting()
