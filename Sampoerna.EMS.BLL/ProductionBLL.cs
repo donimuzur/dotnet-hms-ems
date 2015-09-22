@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryProd = _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
             _repositoryUom = _uow.GetGenericRepository<UOM>();
             _repositoryPlant = _uow.GetGenericRepository<T001W>();
-            _changesHistoryBll = new ChangesHistoryBLL(uow, logger);
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -86,7 +86,16 @@ namespace Sampoerna.EMS.BLL
         public void Save(ProductionDto productionDto, string userId)
         {
             var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
-            SetChange(productionDto, productionDto, userId);
+
+            var origin = _repository.GetByID(dbProduction.COMPANY_CODE, dbProduction.WERKS, dbProduction.FA_CODE,
+                dbProduction.PRODUCTION_DATE);
+
+                //_repository.Get(
+                //    x =>
+                //        x.COMPANY_CODE == productionDto.CompanyCode && x.WERKS == productionDto.PlantWerks &&
+                //        x.FA_CODE == productionDto.FaCode && x.PRODUCTION_DATE == productionDto.ProductionDate);
+         
+            SetChange(origin, productionDto, userId);
             dbProduction.CREATED_DATE = DateTime.Now;
 
             if (dbProduction.UOM == "KG")
@@ -206,17 +215,17 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-        private void SetChange(ProductionDto origin, ProductionDto data, string userId)
+        private void SetChange(PRODUCTION origin, ProductionDto data, string userId)
         {
             var changeData = new Dictionary<string, bool>();
-            changeData.Add("COMPANY_CODE", origin.CompanyCode == data.CompanyCode);
-            changeData.Add("WERKS", origin.PlantWerks == data.PlantWerks);
-            changeData.Add("FA_CODE", origin.FaCode == data.FaCode);
-            changeData.Add("PRODUCTION_DATE", origin.ProductionDate == data.ProductionDate);
-            changeData.Add("BRAND_DESC", origin.BrandDescription == data.BrandDescription);
-            changeData.Add("QTY_PACKED", origin.QtyPacked == data.QtyPacked);
-            changeData.Add("QTY_UNPACKED", origin.QtyUnpacked == data.QtyUnpacked);
-            changeData.Add("UOM", origin.Uom == data.Uom);
+            changeData.Add("COMPANY_CODE", origin.COMPANY_CODE == data.CompanyCode);
+            changeData.Add("WERKS", origin.WERKS == data.PlantWerks);
+            changeData.Add("FA_CODE", origin.FA_CODE == data.FaCode);
+            changeData.Add("PRODUCTION_DATE", origin.PRODUCTION_DATE == data.ProductionDate);
+            changeData.Add("BRAND_DESC", origin.BRAND_DESC == data.BrandDescription);
+            changeData.Add("QTY_PACKED", origin.QTY_PACKED == data.QtyPacked);
+            changeData.Add("QTY_UNPACKED", origin.QTY_UNPACKED == data.QtyUnpacked);
+            changeData.Add("UOM", origin.UOM == data.Uom);
 
             foreach (var listChange in changeData)
             {
@@ -225,7 +234,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
-                        FORM_ID = data.CompanyCode + data.PlantWerks + data.FaCode + data.ProductionDate,
+                        FORM_ID = data.CompanyCode+"_" + data.PlantWerks+"_" + data.FaCode+"_" + data.ProductionDate.ToString("ddMMMyyyy"),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
                         MODIFIED_DATE = DateTime.Now
@@ -234,35 +243,35 @@ namespace Sampoerna.EMS.BLL
                     switch (listChange.Key)
                     {
                         case "COMPANY_CODE":
-                            changes.OLD_VALUE = origin.CompanyCode;
+                            changes.OLD_VALUE = origin.COMPANY_CODE;
                             changes.NEW_VALUE = data.CompanyCode;
                             break;
                         case "WERKS":
-                            changes.OLD_VALUE = origin.PlantWerks;
+                            changes.OLD_VALUE = origin.WERKS;
                             changes.NEW_VALUE = data.PlantWerks;
                             break;
                         case "FA_CODE":
-                            changes.OLD_VALUE = origin.FaCode;
+                            changes.OLD_VALUE = origin.FA_CODE;
                             changes.NEW_VALUE = data.FaCode;
                             break;
                         case "PRODUCTION_DATE":
-                            changes.OLD_VALUE = origin.ProductionDate.ToString();
+                            changes.OLD_VALUE = origin.PRODUCTION_DATE.ToString();
                             changes.NEW_VALUE = data.ProductionDate.ToString();
                             break;
                         case "BRAND_DESC":
-                            changes.OLD_VALUE = origin.BrandDescription;
+                            changes.OLD_VALUE = origin.BRAND_DESC;
                             changes.NEW_VALUE = data.BrandDescription;
                             break;
                         case "QTY_PACKED":
-                            changes.OLD_VALUE = origin.QtyPacked.ToString();
+                            changes.OLD_VALUE = origin.QTY_PACKED.ToString();
                             changes.NEW_VALUE = data.QtyPacked.ToString();
                             break;
                         case "QTY_UNPACKED":
-                            changes.OLD_VALUE = origin.QtyUnpacked.ToString();
+                            changes.OLD_VALUE = origin.QTY_UNPACKED.ToString();
                             changes.NEW_VALUE = data.QtyUnpacked.ToString();
                             break;
                         case "UOM":
-                            changes.OLD_VALUE = origin.Uom;
+                            changes.OLD_VALUE = origin.UOM;
                             changes.NEW_VALUE = data.Uom;
                             break;
                         default: break;
