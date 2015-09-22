@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> BRAND_CONTENT { get; set; }
         public Nullable<decimal> PBCK7_QTY { get; set; }
         public Nullable<decimal> BACK1_QTY { get; set; }
-        public Nullable<decimal> SERIES_VALUE { get; set; }
+        public string SERIES_VALUE { get; set; }
         public Nullable<decimal> HJE { get; set; }
         public Nullable<decimal> TARIFF { get; set; }
         public Nullable<int> FISCAL_YEAR { get; set; }

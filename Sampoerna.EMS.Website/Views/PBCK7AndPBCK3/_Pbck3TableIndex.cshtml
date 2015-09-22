@@ -28,26 +28,26 @@
         {
             <tr>
                 <td class="action">
-                    <a href="#"><i class="fa fa-eye"></i></a>
-                    <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                    <a href="@Url.Action("Detail", "PBCK7AndPBCK3", new { id = item.Pbck7Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "PBCK7AndPBCK3", new { id = item.Pbck7Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Pbck3Number)
+                    @item.Pbck3Number
                 </td>
                 <td>
-                    @Model.ReportedOn.ToString("dd MMM yyyy")
+                    @Model.ReportedOn
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.NppbkcId)
+                    @item.NppbkcId
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.PlantId)
+                    @item.Plant
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Poa)
+                    @item.Poa
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Status)
+                    @item.Status
                 </td>
             </tr>
         }

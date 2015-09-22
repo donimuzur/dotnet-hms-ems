@@ -10,7 +10,10 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IPBCK7And3BLL
     {
-        List<Pbck7AndPbck3Dto> GetAllByParam(Pbck7AndPbck3Input input);
+        List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input);
+
+        List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input);
+
 
         Pbck7AndPbck3Dto GetPbck7ById(int? id);
 
