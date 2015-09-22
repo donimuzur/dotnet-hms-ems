@@ -79,7 +79,8 @@
 
 
                     }
-                    @*<input type="button" class="btn btn-grey" value="Print Preview" onclick=" printpreview('@url.encryptedaction("printpreview", "lack2", new {id = @model.id})') " />*@
+                  
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7AndPbck3", new { id = @Model.Id })')" />
 
                 </div>
             </div>
@@ -341,5 +342,12 @@
             }
 
         });
+        
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
+
     </script>
 }

@@ -37,13 +37,14 @@ namespace Sampoerna.EMS.BLL
        private IChangesHistoryBLL _changesHistoryBll;
        private IPrintHistoryBLL _printHistoryBll;
        private IBrandRegistrationService _brandRegistrationServices;
-       private ICK1BLL _ck1Bll;
+       private ICK1Services _ck1Services;
        private IMessageService _messageService;
        private IPOABLL _poaBll;
        private IUserBLL _userBll;
        private IZaidmExNPPBKCBLL _nppbkcBll;
        private IPlantBLL _plantBll;
        private IBlockStockBLL _blockStockBll;
+       private IHeaderFooterBLL _headerFooterBll;
 
        private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
 
@@ -62,13 +63,14 @@ namespace Sampoerna.EMS.BLL
            _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
            _printHistoryBll = new PrintHistoryBLL(_uow,_logger);
            _brandRegistrationServices = new BrandRegistrationService(_uow, _logger);
-           _ck1Bll = new CK1BLL(_uow,_logger);
+           _ck1Services = new CK1Services(_uow, _logger);
            _messageService = new MessageService(_logger);
            _poaBll = new POABLL(_uow,_logger);
            _userBll = new UserBLL(_uow,_logger);
            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
            _plantBll = new PlantBLL(_uow, _logger);
            _blockStockBll = new BlockStockBLL(_uow,_logger);
+           _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
@@ -381,7 +383,7 @@ namespace Sampoerna.EMS.BLL
                if (dbBrand == null)
                    messageList.Add("FA Code Not Exist");
 
-               var dbCk1 = _ck1Bll.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
+               var dbCk1 = _ck1Services.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
                if (dbCk1 == null)
                    messageList.Add("CK-1 Number Not Exist");
 
@@ -468,7 +470,7 @@ namespace Sampoerna.EMS.BLL
 
            }
 
-           var dbCk1 = _ck1Bll.GetCk1ByCk1Number(input.Ck1No);
+           var dbCk1 = _ck1Services.GetCk1ByCk1Number(input.Ck1No);
            if (dbCk1 == null)
            {
                input.Ck1Date = "";
@@ -1086,9 +1088,22 @@ namespace Sampoerna.EMS.BLL
 
 
            }
-         
 
-             return result;
+           //set header footer data by CompanyCode and FormTypeId
+           var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+           {
+               FormTypeId = Enums.FormType.PBCK4,
+               CompanyCode = dtData.COMPANY_ID
+           });
+
+           result.ReportDetails.HeaderImage = string.Empty;
+
+           if (headerFooterData.IS_HEADER_SET.HasValue && headerFooterData.IS_HEADER_SET.Value)
+           {
+               result.ReportDetails.HeaderImage = headerFooterData.HEADER_IMAGE_PATH;
+           }
+
+           return result;
         }
 
        public List<Pbck4SummaryReportDto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input)
@@ -1244,6 +1259,31 @@ namespace Sampoerna.EMS.BLL
 
        }
 
-       
+
+        public List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId)
+       {
+           var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+
+            return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
+       }
+
+        public List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId)
+        {
+            var dbCk1 = _ck1Services.GetCk1ByNppbkc(nppbkcId);
+
+            return Mapper.Map<List<GetListCk1ByNppbkcOutput>>(dbCk1);
+        }
+
+        public GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode)
+       {
+           var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+            return Mapper.Map<GetBrandItemsOutput>(dbBrand);
+       }
+
+        public string GetCk1DateByCk1Id(long ck1Id)
+        {
+            var dbCK1 = _ck1Services.GetCk1ById(ck1Id);
+            return dbCK1 == null ? string.Empty : dbCK1.CK1_DATE.ToString("dd MMM yyyy");
+        }
     }
 }
