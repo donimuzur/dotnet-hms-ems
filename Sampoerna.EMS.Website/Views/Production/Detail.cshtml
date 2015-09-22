@@ -25,6 +25,7 @@
                     <!-- Nav tabs -->
                     <ul role="tablist" class="nav nav-tabs">
                         <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                     </ul>
 
                     <!-- Tab panes -->
@@ -174,6 +175,11 @@
                                 </div>
                             </div>
 
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="changes">
+                            <div class="table-container">
+                                @Html.Partial("_ChangesHistoryTable", Model)
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -14,6 +14,8 @@ using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK4C;
 using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Utility;
@@ -147,7 +149,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
 
-                    _productionBll.Save(data);
+                    _productionBll.Save(data,CurrentUser.USER_ID);
 
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
                          );
@@ -250,7 +252,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _productionBll.Save(dbPrductionNew);
+                _productionBll.Save(dbPrductionNew, CurrentUser.USER_ID);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                     );
 
@@ -296,6 +298,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbProduction = _productionBll.GetById(companyCode, plantWerk, faCode, productionDate);
 
             model = Mapper.Map<ProductionDetail>(dbProduction);
+
+            model.ChangesHistoryList =
+                Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                    companyCode + plantWerk + faCode + productionDate.ToString("ddMMMyyyy")));
+
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
             model.ProdQtyStickStr = model.ProQtyStick == null ? string.Empty : model.ProQtyStick.ToString();
@@ -353,7 +360,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 item.CompanyName = company.BUTXT;
                 item.PlantName = plant.NAME1;
                 
-                _productionBll.SaveUpload(item);
+                _productionBll.SaveUpload(item, CurrentUser.USER_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
                        );
                 }
