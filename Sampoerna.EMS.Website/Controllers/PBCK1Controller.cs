@@ -555,9 +555,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     WorkflowActionType = Enums.ActionType.Modified
                 };
 
-                if (!_pbck1Bll.checkUniquePBCK1(input))
+                var checkUnique = _pbck1Bll.checkUniquePBCK1(input);
+
+                if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK1 Cannot Duplicate", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 dengan no " + checkUnique + " sudah ada", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
 
@@ -743,7 +745,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
 
@@ -763,9 +765,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     WorkflowActionType = Enums.ActionType.Created
                 };
 
-                if (!_pbck1Bll.checkUniquePBCK1(input))
+                var checkUnique = _pbck1Bll.checkUniquePBCK1(input);
+
+                if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK1 Cannot Duplicate", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 dengan no " + checkUnique +" sudah ada", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
                 
