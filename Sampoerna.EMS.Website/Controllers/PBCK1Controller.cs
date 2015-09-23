@@ -422,11 +422,6 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
 
-                if (!ValidateEditDocument(model))
-                {
-                    return RedirectToAction("Index");
-                }
-
                 var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
@@ -478,6 +473,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 if(model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval)
                 {
                     model.ActionType = "GovApproveDocument";
+                }
+
+                if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject) )
+                { 
+                
+                }else if (!ValidateEditDocument(model))
+                {
+                    return RedirectToAction("Index");
                 }
 
             }
