@@ -37,5 +37,16 @@ namespace Sampoerna.EMS.BLL.Services
             var dbData = _repository.Get(c => c.WERKS == plant);
             return dbData.ToList();
         }
+
+        public ZAIDM_EX_GOODTYP GetGoodTypeByProdCodeInBrandRegistration(string prodCode)
+        {
+            const string incTables = "ZAIDM_EX_GOODTYP";
+            var dbData = _repository.Get(c => c.PROD_CODE == prodCode, null, incTables).FirstOrDefault();
+            if (dbData != null)
+            {
+                return dbData.ZAIDM_EX_GOODTYP;
+            }
+            return null;
+        }
     }
 }
