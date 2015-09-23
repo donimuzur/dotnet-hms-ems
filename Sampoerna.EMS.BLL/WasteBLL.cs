@@ -88,7 +88,7 @@ namespace Sampoerna.EMS.BLL
                 dbWaste.WASTE_PROD_DATE);
 
             var originDto = Mapper.Map<WasteDto>(origin);
-            dbWaste.MODIFIED_DATE = DateTime.Now;
+            dbWaste.CREATED_DATE = DateTime.Now;
 
             SetChange(originDto, wasteDto, userId);
             _repository.InsertOrUpdate(dbWaste);
@@ -129,10 +129,10 @@ namespace Sampoerna.EMS.BLL
         private void SetChange(WasteDto origin, WasteDto data, string userId)
         {
             var changeData = new Dictionary<string, bool>();
-            changeData.Add("COMPANY_CODE", origin.CompanyCode == data.CompanyCode);
-            changeData.Add("WERKS", origin.PlantWerks == data.PlantWerks);
-            changeData.Add("FA_CODE", origin.FaCode == data.FaCode);
-            changeData.Add("PRODUCTION_DATE", origin.WasteProductionDate == data.WasteProductionDate);
+            //changeData.Add("COMPANY_CODE", origin.CompanyCode == data.CompanyCode);
+            //changeData.Add("WERKS", origin.PlantWerks == data.PlantWerks);
+            //changeData.Add("FA_CODE", origin.FaCode == data.FaCode);
+            //changeData.Add("PRODUCTION_DATE", origin.WasteProductionDate == data.WasteProductionDate);
             changeData.Add("BRAND_DESC", origin.BrandDescription == data.BrandDescription);
             changeData.Add("PLANT_NAME", origin.PlantName == data.PlantName);
             changeData.Add("COMPANY_NAME", origin.CompanyName == data.CompanyName);
@@ -160,22 +160,22 @@ namespace Sampoerna.EMS.BLL
 
                     switch (listChange.Key)
                     {
-                        case "COMPANY_CODE":
-                            changes.OLD_VALUE = origin.CompanyCode;
-                            changes.NEW_VALUE = data.CompanyCode;
-                            break;
-                        case "WERKS":
-                            changes.OLD_VALUE = origin.PlantWerks;
-                            changes.NEW_VALUE = data.PlantWerks;
-                            break;
-                        case "FA_CODE":
-                            changes.OLD_VALUE = origin.FaCode;
-                            changes.NEW_VALUE = data.FaCode;
-                            break;
-                        case "PRODUCTION_DATE":
-                            changes.OLD_VALUE = origin.WasteProductionDate.ToString();
-                            changes.NEW_VALUE = data.WasteProductionDate.ToString();
-                            break;
+                        //case "COMPANY_CODE":
+                        //    changes.OLD_VALUE = origin.CompanyCode;
+                        //    changes.NEW_VALUE = data.CompanyCode;
+                        //    break;
+                        //case "WERKS":
+                        //    changes.OLD_VALUE = origin.PlantWerks;
+                        //    changes.NEW_VALUE = data.PlantWerks;
+                        //    break;
+                        //case "FA_CODE":
+                        //    changes.OLD_VALUE = origin.FaCode;
+                        //    changes.NEW_VALUE = data.FaCode;
+                        //    break;
+                        //case "PRODUCTION_DATE":
+                        //    changes.OLD_VALUE = origin.WasteProductionDate.ToString();
+                        //    changes.NEW_VALUE = data.WasteProductionDate.ToString();
+                        //    break;
                         case "BRAND_DESC":
                             changes.OLD_VALUE = origin.BrandDescription;
                             changes.NEW_VALUE = data.BrandDescription;
