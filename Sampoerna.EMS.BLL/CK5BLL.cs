@@ -339,6 +339,14 @@ namespace Sampoerna.EMS.BLL
                 {
                     if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
                         messageList.Add("Material is not Excisable goods");
+                    else
+                    {
+                        var exGroupType = _goodTypeGroupBLL.GetGroupByExGroupType(dbMaterial.EXC_GOOD_TYP);
+                        if (exGroupType.EX_GROUP_TYPE_ID != (int) ck5MaterialInput.ExGoodsType)
+                        {
+                            messageList.Add("This material good type is not matched");
+                        }
+                    }
                 }
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
                     messageList.Add("Qty not valid");
@@ -361,6 +369,8 @@ namespace Sampoerna.EMS.BLL
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
                     messageList.Add("UsdValue not valid");
+
+                
 
                 if (messageList.Count > 0)
                 {
@@ -1759,6 +1769,7 @@ namespace Sampoerna.EMS.BLL
                 inputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
                 inputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
                 
+                inputCk5Material.ExGoodsType = ck5UploadFileDocumentsInput.EX_GOODS_TYPE;
                 lisCk5Material.Add(inputCk5Material);
 
             }
