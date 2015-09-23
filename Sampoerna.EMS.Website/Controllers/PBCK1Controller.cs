@@ -120,6 +120,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var years = new List<SelectItemModel>();
             var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear + 1, TextField = (currentYear + 1).ToString() });
             years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
             years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
             return new SelectList(years, "ValueField", "TextField");
