@@ -243,15 +243,21 @@
                     <div class="col-md-4">
                         <label>No Pengawas</label>
                         @Html.TextBoxFor(model => model.NoPengawas, new { @class = "form-control", @id = "uploadNoPengawas", @maxlength = "10" })
-
-
                     </div>
+                    
+
                 </div>
 
                 <div class="row">
                     <div class="col-md-4">
                         <label>Remarks</label>
                         <textarea class="form-control" id="uploadRemarks" cols="20" rows="5"></textarea>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label>Blocked Stock</label>
+                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadBlockedStocked", @disabled = "disabled" })
+
                     </div>
 
                 </div>
@@ -404,6 +410,8 @@
             $('#uploadRemarks').val(nRow.find("td").eq(18).html());
 
             $("#uploadCk1Id").val(nRow.find("td").eq(20).html());
+            
+            $('#uploadBlockedStocked').val(nRow.find("td").eq(21).html());
             
             $("#lblTitleInputManual").text('Edit Input');
 

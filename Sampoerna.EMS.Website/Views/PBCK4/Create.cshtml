@@ -193,7 +193,11 @@
                         <textarea class="form-control" id="uploadRemarks" cols="20" rows="5"></textarea>
                     </div>
                   
+                    <div class="col-md-4">
+                        <label>Blocked Stock</label>
+                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadBlockedStocked", @disabled = "disabled" })
 
+                    </div>
 
                 </div>
             </div>
@@ -300,6 +304,7 @@
           $('#uploadNoPengawas').val(nRow.find("td").eq(16).html());
           $('#uploadRemarks').val(nRow.find("td").eq(18).html());
 
+          $('#uploadBlockedStocked').val(nRow.find("td").eq(21).html());
 
           $("#lblTitleInputManual").text('Edit Input');
 
@@ -343,6 +348,7 @@
                   $("#uploadHje").val('');
                   $("#uploadTariff").val('');
                   $("#uploadColour").val('');
+                  $("#uploadBlockedStocked").val('0');
                 
               } else {
 
