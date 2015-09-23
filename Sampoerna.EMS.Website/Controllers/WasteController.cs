@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 try
                 {
-                    _wasteBll.Save(data);
+                    _wasteBll.Save(data,CurrentUser.USER_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
                     return RedirectToAction("Index");
@@ -270,7 +270,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _wasteBll.Save(dbWasteNew);
+                _wasteBll.Save(dbWasteNew, CurrentUser.USER_ID);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                     );
 
@@ -360,6 +360,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
 
+                    item.CreatedDate = DateTime.Now;
+
                     _wasteBll.SaveUpload(item);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
                        );
@@ -386,17 +388,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var item = new WasteUploadItems();
 
+                  
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
-                    item.PackerRejectStickQty = Convert.ToDecimal(dataRow[4]);
-                    item.MarkerRejectStickQty = Convert.ToDecimal(dataRow[5]);
+                    item.MarkerRejectStickQty = Convert.ToDecimal(dataRow[4]);
+                    item.PackerRejectStickQty = Convert.ToDecimal(dataRow[5]);
                     item.DustWasteGramQty = Convert.ToDecimal(dataRow[6]);
                     item.FloorWasteGramQty = Convert.ToDecimal(dataRow[7]);
                     item.DustWasteStickQty = Convert.ToDecimal(dataRow[8]);
                     item.FloorWasteStickQty = Convert.ToDecimal(dataRow[9]);
-                    item.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(data.DataRows[0][10])).ToString("dd MMM yyyy");
+                    item.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[10])).ToString("dd MMM yyyy");
 
                     {
                         model.Add(item);

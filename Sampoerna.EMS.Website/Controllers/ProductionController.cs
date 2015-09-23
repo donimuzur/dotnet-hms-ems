@@ -359,6 +359,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 item.CompanyName = company.BUTXT;
                 item.PlantName = plant.NAME1;
+                item.CreatedDate = DateTime.Now;
                 
                 _productionBll.SaveUpload(item, CurrentUser.USER_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
@@ -397,7 +398,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.QtyPacked = Convert.ToDecimal(dataRow[4]);
                     item.QtyUnpacked = Convert.ToDecimal(dataRow[5]);
                     item.Uom = dataRow[6];
-                    item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(data.DataRows[0][7])).ToString("dd MMM yyyy");
+                    item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
 
                     {
                         model.Add(item);
