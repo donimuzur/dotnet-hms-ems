@@ -171,8 +171,6 @@ namespace Sampoerna.EMS.BLL
            return output;
        }
 
-
-
        public Pbck4Dto SavePbck4(Pbck4SaveInput input)
        {
            //workflowhistory
@@ -572,14 +570,7 @@ namespace Sampoerna.EMS.BLL
 
        private void SendEmailWorkflow(Pbck4WorkflowDocumentInput input)
        {
-           //todo: body message from email template
-           //todo: to = ?
-           //todo: subject = from email template
-           //var to = "irmansulaeman41@gmail.com";
-           //var subject = "this is subject for " + input.DocumentNumber;
-           //var body = "this is body message for " + input.DocumentNumber;
-           //var from = "a@gmail.com";
-
+         
            var pbck4Dto = Mapper.Map<Pbck4Dto>(_repository.Get(c => c.PBCK4_ID == input.DocumentId).FirstOrDefault());
 
            var mailProcess = ProsesMailNotificationBody(pbck4Dto, input.ActionType);
@@ -696,7 +687,6 @@ namespace Sampoerna.EMS.BLL
            var managerDetail = _userBll.GetUserById(managerId);
            return managerDetail.EMAIL;
        }
-
 
        private void SubmitDocument(Pbck4WorkflowDocumentInput input)
        {
@@ -1082,18 +1072,7 @@ namespace Sampoerna.EMS.BLL
 
            foreach (var pbck4Item in dtData.PBCK4_ITEM)
            {
-               //var pbckItemsDto = new Pbck4ItemReportDto();
-               //pbckItemsDto.Seri = pbck4Item.SERIES_CODE;
-               //pbckItemsDto.ReqQty = pbck4Item.REQUESTED_QTY.HasValue?pbck4Item.REQUESTED_QTY.Value : 0;
-               //pbckItemsDto.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
-               //pbckItemsDto.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
-               //pbckItemsDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
-               //pbckItemsDto.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
-               //pbckItemsDto.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
-               //pbckItemsDto.NoPengawas = pbck4Item.NO_PENGAWAS;
-
-               //result.ListPbck4Items.Add(pbckItemsDto);
-
+              
                 var pbck4Matrikck1 = new Pbck4IMatrikCk1ReportDto();
                pbck4Matrikck1.Number = i + 1;
                pbck4Matrikck1.SeriesCode = pbck4Item.SERIES_CODE;
@@ -1297,7 +1276,6 @@ namespace Sampoerna.EMS.BLL
 
        }
 
-
         public List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId)
        {
            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
@@ -1331,5 +1309,6 @@ namespace Sampoerna.EMS.BLL
                 ? 0
                 : dbBlock.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
         }
+
    }
 }
