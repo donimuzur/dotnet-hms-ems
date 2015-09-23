@@ -126,7 +126,8 @@
 
 @section scripts {
     <script type="text/javascript">
-            var referenceURL = "@Url.Action("GetPBCK1Reference", "PBCK1")";
+        var referenceURL = "@Url.Action("GetPBCK1Reference", "PBCK1")";
+        var kppbcUrl = "@Url.Action("GetKPPBCByNPPBKC", "PBCK1")";
     </script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -267,6 +268,10 @@
 
         $("#Detail_PeriodTo").change(function () {
             getReference();
+        });
+
+        $("#Detail_SupplierNppbkcId").change(function () {
+            getKPPBCByNPPBKC($(this).val());
         });
 
         changeToDecimal("input[name='Detail.LatestSaldo']:text", "val");

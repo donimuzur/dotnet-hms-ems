@@ -1951,6 +1951,21 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult GetKPPBCByNPPBKC(string nppbkcid)
+        {
+            var nppbkc = _nppbkcbll.GetDetailsById(nppbkcid);
+            if (nppbkc == null)
+            {
+                return Json(new { kppbcid = (String) null, kppbcname = (String) null });
+            }
+            else
+            {
+                var lfa = _lfa1Bll.GetById(nppbkc.KPPBC_ID);
+                return Json(new { kppbcid = nppbkc.KPPBC_ID, kppbcname = lfa.NAME1 });
+            }
+        }
+
 
     }
 }
