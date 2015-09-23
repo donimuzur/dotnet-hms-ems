@@ -24,6 +24,15 @@
               <xs:element name="TotalKemasan" msprop:Generator_ColumnVarNameInTable="columnTotalKemasan" msprop:Generator_ColumnPropNameInRow="TotalKemasan" msprop:Generator_ColumnPropNameInTable="TotalKemasanColumn" msprop:Generator_UserColumnName="TotalKemasan" type="xs:string" minOccurs="0" />
               <xs:element name="TotalCukai" msprop:Generator_ColumnVarNameInTable="columnTotalCukai" msprop:Generator_ColumnPropNameInRow="TotalCukai" msprop:Generator_ColumnPropNameInTable="TotalCukaiColumn" msprop:Generator_UserColumnName="TotalCukai" type="xs:string" minOccurs="0" />
               <xs:element name="ReportingDate" msprop:Generator_ColumnVarNameInTable="columnReportingDate" msprop:Generator_ColumnPropNameInRow="ReportingDate" msprop:Generator_ColumnPropNameInTable="ReportingDateColumn" msprop:Generator_UserColumnName="ReportingDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Preview" msprop:Generator_ColumnVarNameInTable="columnPreview" msprop:Generator_ColumnPropNameInRow="Preview" msprop:Generator_ColumnPropNameInTable="PreviewColumn" msprop:Generator_UserColumnName="Preview" type="xs:string" minOccurs="0" />
+              <xs:element name="DecreeDate" msprop:Generator_ColumnVarNameInTable="columnDecreeDate" msprop:Generator_ColumnPropNameInRow="DecreeDate" msprop:Generator_ColumnPropNameInTable="DecreeDateColumn" msprop:Generator_UserColumnName="DecreeDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Nomor" msprop:Generator_ColumnVarNameInTable="columnNomor" msprop:Generator_ColumnPropNameInRow="Nomor" msprop:Generator_ColumnPropNameInTable="NomorColumn" msprop:Generator_UserColumnName="Nomor" type="xs:string" minOccurs="0" />
+              <xs:element name="Lampiran" msprop:Generator_ColumnVarNameInTable="columnLampiran" msprop:Generator_ColumnPropNameInRow="Lampiran" msprop:Generator_ColumnPropNameInTable="LampiranColumn" msprop:Generator_UserColumnName="Lampiran" type="xs:string" minOccurs="0" />
+              <xs:element name="TextTo" msprop:Generator_ColumnVarNameInTable="columnTextTo" msprop:Generator_ColumnPropNameInRow="TextTo" msprop:Generator_ColumnPropNameInTable="TextToColumn" msprop:Generator_UserColumnName="TextTo" type="xs:string" minOccurs="0" />
+              <xs:element name="VendorCity" msprop:Generator_ColumnVarNameInTable="columnVendorCity" msprop:Generator_ColumnPropNameInRow="VendorCity" msprop:Generator_ColumnPropNameInTable="VendorCityColumn" msprop:Generator_UserColumnName="VendorCity" type="xs:string" minOccurs="0" />
+              <xs:element name="DocumentType" msprop:Generator_ColumnVarNameInTable="columnDocumentType" msprop:Generator_ColumnPropNameInRow="DocumentType" msprop:Generator_ColumnPropNameInTable="DocumentTypeColumn" msprop:Generator_UserColumnName="DocumentType" type="xs:string" minOccurs="0" />
+              <xs:element name="NppbkcCity" msprop:Generator_ColumnVarNameInTable="columnNppbkcCity" msprop:Generator_ColumnPropNameInRow="NppbkcCity" msprop:Generator_ColumnPropNameInTable="NppbkcCityColumn" msprop:Generator_UserColumnName="NppbkcCity" type="xs:string" minOccurs="0" />
+              <xs:element name="PbckDate" msprop:Generator_ColumnVarNameInTable="columnPbckDate" msprop:Generator_ColumnPropNameInRow="PbckDate" msprop:Generator_ColumnPropNameInTable="PbckDateColumn" msprop:Generator_UserColumnName="PbckDate" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -37,6 +46,7 @@
               <xs:element name="SeriPitaCukai" msprop:Generator_ColumnVarNameInTable="columnSeriPitaCukai" msprop:Generator_ColumnPropNameInRow="SeriPitaCukai" msprop:Generator_ColumnPropNameInTable="SeriPitaCukaiColumn" msprop:Generator_UserColumnName="SeriPitaCukai" type="xs:string" minOccurs="0" />
               <xs:element name="Hje" msprop:Generator_ColumnVarNameInTable="columnHje" msprop:Generator_ColumnPropNameInRow="Hje" msprop:Generator_ColumnPropNameInTable="HjeColumn" msprop:Generator_UserColumnName="Hje" type="xs:string" minOccurs="0" />
               <xs:element name="Tariff" msprop:Generator_ColumnVarNameInTable="columnTariff" msprop:Generator_ColumnPropNameInRow="Tariff" msprop:Generator_ColumnPropNameInTable="TariffColumn" msprop:Generator_UserColumnName="Tariff" type="xs:string" minOccurs="0" />
+              <xs:element name="JmlCukai" msprop:Generator_ColumnVarNameInTable="columnJmlCukai" msprop:Generator_ColumnPropNameInRow="JmlCukai" msprop:Generator_ColumnPropNameInTable="JmlCukaiColumn" msprop:Generator_UserColumnName="JmlCukai" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

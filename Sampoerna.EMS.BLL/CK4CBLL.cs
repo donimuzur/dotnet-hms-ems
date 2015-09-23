@@ -598,6 +598,8 @@ namespace Sampoerna.EMS.BLL
 
             var nBatang = dtData.CK4C_ITEM.Where(c => c.UOM_PROD_QTY == "PC" || c.UOM_PROD_QTY == "PCE").Sum(c => c.PROD_QTY);
             var nGram = dtData.CK4C_ITEM.Where(c => c.UOM_PROD_QTY == "G").Sum(c => c.PROD_QTY);
+            var nKGram = dtData.CK4C_ITEM.Where(c => c.UOM_PROD_QTY == "KG").Sum(c => c.PROD_QTY) * 1000;
+            nGram = nGram + nKGram;
 
             result.Detail.NBatang = nBatang.ToString();
             result.Detail.NGram = nGram.ToString();
@@ -635,6 +637,9 @@ namespace Sampoerna.EMS.BLL
             {
                 i = i + 1;
                 var prodDate = j + "-" + result.Detail.ReportedMonth.Substring(0,3) + "-" + result.Detail.ReportedYear;
+                var prodDateFormat = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), j);
+                var dateStart = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), Convert.ToInt32(result.Detail.ReportedPeriodStart));
+
                 foreach (var item in addressPlant)
                 {
                     address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
@@ -645,24 +650,24 @@ namespace Sampoerna.EMS.BLL
                     foreach (var data in activeBrand)
                     {
                         var ck4cItem = new Ck4cReportItemDto();
+                        var brand = _brandBll.GetById(item, data.FA_CODE);
+                        var prodType = _prodTypeBll.GetById(data.PROD_CODE);
+                        var prodQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PROD_QTY);
+                        var packedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PACKED_QTY);
+                        var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && (c.PROD_DATE <= prodDateFormat && c.PROD_DATE >= dateStart)).Sum(x => x.UNPACKED_QTY);
+                        var total = packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
 
                         ck4cItem.No = i.ToString();
                         ck4cItem.NoProd = i.ToString();
                         ck4cItem.ProdDate = prodDate;
-
-                        var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                         ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
-
-                        ck4cItem.SumBtg = "0";
-                        ck4cItem.BtgGr = "0";
-
-                        var brand = _brandBll.GetById(item, data.FA_CODE);
+                        ck4cItem.SumBtg = prodQty.ToString();
+                        ck4cItem.BtgGr = packedQty == null ? "0" : packedQty.ToString();
                         ck4cItem.Merk = brand.BRAND_CE;
-
                         ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT).ToString();
                         ck4cItem.Hje = plantDetail.HJE_IDR.ToString();
-                        ck4cItem.Total = "0";
-                        ck4cItem.ProdWaste = "0";
+                        ck4cItem.Total = total == null ? "0" : total.ToString();
+                        ck4cItem.ProdWaste = unpackedQty == null ? "0" : unpackedQty.ToString();
                         ck4cItem.Comment = "";
 
                         result.Ck4cItemList.Add(ck4cItem);

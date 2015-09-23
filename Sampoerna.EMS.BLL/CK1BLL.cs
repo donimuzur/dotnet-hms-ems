@@ -29,11 +29,11 @@ namespace Sampoerna.EMS.BLL
         public CK1Dto GetCk1ByCk1Number(string ck1Number)
         {
             var dtData = _repository.Get(c => c.CK1_NUMBER == ck1Number, null, includeTables).FirstOrDefault();
-            //if (dtData == null)
-            //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
+           
             return Mapper.Map<CK1Dto>(dtData);
 
         }
+
+        
     }
 }

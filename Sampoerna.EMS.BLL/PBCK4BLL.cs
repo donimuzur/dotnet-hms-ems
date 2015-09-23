@@ -37,13 +37,14 @@ namespace Sampoerna.EMS.BLL
        private IChangesHistoryBLL _changesHistoryBll;
        private IPrintHistoryBLL _printHistoryBll;
        private IBrandRegistrationService _brandRegistrationServices;
-       private ICK1BLL _ck1Bll;
+       private ICK1Services _ck1Services;
        private IMessageService _messageService;
        private IPOABLL _poaBll;
        private IUserBLL _userBll;
        private IZaidmExNPPBKCBLL _nppbkcBll;
        private IPlantBLL _plantBll;
        private IBlockStockBLL _blockStockBll;
+       private IHeaderFooterBLL _headerFooterBll;
 
        private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
 
@@ -62,13 +63,14 @@ namespace Sampoerna.EMS.BLL
            _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
            _printHistoryBll = new PrintHistoryBLL(_uow,_logger);
            _brandRegistrationServices = new BrandRegistrationService(_uow, _logger);
-           _ck1Bll = new CK1BLL(_uow,_logger);
+           _ck1Services = new CK1Services(_uow, _logger);
            _messageService = new MessageService(_logger);
            _poaBll = new POABLL(_uow,_logger);
            _userBll = new UserBLL(_uow,_logger);
            _nppbkcBll = new ZaidmExNPPBKCBLL(_uow, _logger);
            _plantBll = new PlantBLL(_uow, _logger);
            _blockStockBll = new BlockStockBLL(_uow,_logger);
+           _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
@@ -152,7 +154,7 @@ namespace Sampoerna.EMS.BLL
 
            //details
            output.Pbck4ItemsDto = Mapper.Map<List<Pbck4ItemDto>>(dtData.PBCK4_ITEM);
-
+           
            //change history data
            output.ListChangesHistorys = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK4, output.Pbck4Dto.PBCK4_ID.ToString());
 
@@ -168,8 +170,6 @@ namespace Sampoerna.EMS.BLL
            output.ListPrintHistorys = _printHistoryBll.GetByFormTypeAndFormId(Enums.FormType.PBCK4, dtData.PBCK4_ID);
            return output;
        }
-
-
 
        public Pbck4Dto SavePbck4(Pbck4SaveInput input)
        {
@@ -381,7 +381,7 @@ namespace Sampoerna.EMS.BLL
                if (dbBrand == null)
                    messageList.Add("FA Code Not Exist");
 
-               var dbCk1 = _ck1Bll.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
+               var dbCk1 = _ck1Services.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
                if (dbCk1 == null)
                    messageList.Add("CK-1 Number Not Exist");
 
@@ -468,7 +468,7 @@ namespace Sampoerna.EMS.BLL
 
            }
 
-           var dbCk1 = _ck1Bll.GetCk1ByCk1Number(input.Ck1No);
+           var dbCk1 = _ck1Services.GetCk1ByCk1Number(input.Ck1No);
            if (dbCk1 == null)
            {
                input.Ck1Date = "";
@@ -479,8 +479,16 @@ namespace Sampoerna.EMS.BLL
                input.Ck1Date = dbCk1.CK1_DATE.ToString("dd MMM yyyy");
            }
 
-         
 
+           var dbBlockStock = _blockStockBll.GetBlockStockByPlantAndMaterialId(input.Plant, input.FaCode);
+           if (dbBlockStock.Count == 0)
+               input.BlockedStock = "0";
+           else
+           {
+               var sumBlockStock = dbBlockStock.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
+               input.BlockedStock = sumBlockStock.ToString();
+
+           }
            return input;
        }
 
@@ -511,6 +519,7 @@ namespace Sampoerna.EMS.BLL
 
                output.TotalStamps = resultValue.TotalStamps;
                output.CK1_ID = resultValue.CK1_ID;
+               output.BlockedStock = resultValue.BlockedStock;
            }
 
            return outputList;
@@ -539,12 +548,14 @@ namespace Sampoerna.EMS.BLL
                    break;
                case Enums.ActionType.GovApprove:
                    GovApproveDocument(input);
+                   isNeedSendNotif = true;
                    break;
                case Enums.ActionType.GovReject:
                    GovRejectedDocument(input);
                    break;
                case Enums.ActionType.GovPartialApprove:
                    GovPartialApproveDocument(input);
+                   isNeedSendNotif = true;
                    break;
               
            }
@@ -559,14 +570,7 @@ namespace Sampoerna.EMS.BLL
 
        private void SendEmailWorkflow(Pbck4WorkflowDocumentInput input)
        {
-           //todo: body message from email template
-           //todo: to = ?
-           //todo: subject = from email template
-           //var to = "irmansulaeman41@gmail.com";
-           //var subject = "this is subject for " + input.DocumentNumber;
-           //var body = "this is body message for " + input.DocumentNumber;
-           //var from = "a@gmail.com";
-
+         
            var pbck4Dto = Mapper.Map<Pbck4Dto>(_repository.Get(c => c.PBCK4_ID == input.DocumentId).FirstOrDefault());
 
            var mailProcess = ProsesMailNotificationBody(pbck4Dto, input.ActionType);
@@ -595,6 +599,27 @@ namespace Sampoerna.EMS.BLL
            bodyMail.AppendLine();
            bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-4</td></tr>");
            bodyMail.AppendLine();
+           if (actionType == Enums.ActionType.GovApprove || actionType == Enums.ActionType.GovPartialApprove)
+           {
+               string back1Date = ConvertHelper.ConvertDateToString(pbck4Dto.BACK1_DATE,"dd MMMM yyyy");
+
+               string ck3Date = ConvertHelper.ConvertDateToString(pbck4Dto.CK3_DATE,"dd MMMM yyyy");
+
+
+               string ck3Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(pbck4Dto.CK3_OFFICE_VALUE);
+
+
+               bodyMail.Append("<tr><td>BACK-1 Number</td><td> : " + pbck4Dto.BACK1_NO + "</td></tr>");
+               bodyMail.AppendLine();
+               bodyMail.Append("<tr><td>BACK-1 Date</td><td> : " + back1Date + "</td></tr>");
+               bodyMail.AppendLine();
+               bodyMail.Append("<tr><td>CK-3 Number</td><td> : " + pbck4Dto.CK3_NO + "</td></tr>");
+               bodyMail.AppendLine();
+               bodyMail.Append("<tr><td>CK-3 Date</td><td> : " + ck3Date + "</td></tr>");
+               bodyMail.AppendLine();
+               bodyMail.Append("<tr><td>CK-3 Value</td><td> : " + ck3Value + "</td></tr>");
+               bodyMail.AppendLine();
+           }
            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/PBCK4/Details/" + pbck4Dto.PBCK4_ID + "'>link</a> to show detailed information</i></td></tr>");
            bodyMail.AppendLine();
            bodyMail.Append("</table>");
@@ -620,24 +645,30 @@ namespace Sampoerna.EMS.BLL
                    }
                    break;
                case Enums.ActionType.Approve:
-                   if (pbck4Dto.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+               case Enums.ActionType.GovApprove:
+               case Enums.ActionType.GovPartialApprove:
+                   switch (pbck4Dto.Status)
                    {
-                       rc.To.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
-                   }
-                   else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingGovApproval)
-                   {
-                       var poaData = _poaBll.GetById(pbck4Dto.CREATED_BY);
-                       if (poaData != null)
+                       case Enums.DocumentStatus.WaitingForApprovalManager:
+                           rc.To.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
+                           break;
+                       case Enums.DocumentStatus.WaitingGovApproval:
+                       case Enums.DocumentStatus.Completed:
                        {
-                           //creator is poa user
-                           rc.To.Add(poaData.POA_EMAIL);
+                           var poaData = _poaBll.GetById(pbck4Dto.CREATED_BY);
+                           if (poaData != null)
+                           {
+                               //creator is poa user
+                               rc.To.Add(poaData.POA_EMAIL);
+                           }
+                           else
+                           {
+                               //creator is excise executive
+                               var userData = _userBll.GetUserById(pbck4Dto.CREATED_BY);
+                               rc.To.Add(userData.EMAIL);
+                           }
                        }
-                       else
-                       {
-                           //creator is excise executive
-                           var userData = _userBll.GetUserById(pbck4Dto.CREATED_BY);
-                           rc.To.Add(userData.EMAIL);
-                       }
+                           break;
                    }
                    break;
                case Enums.ActionType.Reject:
@@ -656,7 +687,6 @@ namespace Sampoerna.EMS.BLL
            var managerDetail = _userBll.GetUserById(managerId);
            return managerDetail.EMAIL;
        }
-
 
        private void SubmitDocument(Pbck4WorkflowDocumentInput input)
        {
@@ -1042,18 +1072,7 @@ namespace Sampoerna.EMS.BLL
 
            foreach (var pbck4Item in dtData.PBCK4_ITEM)
            {
-               //var pbckItemsDto = new Pbck4ItemReportDto();
-               //pbckItemsDto.Seri = pbck4Item.SERIES_CODE;
-               //pbckItemsDto.ReqQty = pbck4Item.REQUESTED_QTY.HasValue?pbck4Item.REQUESTED_QTY.Value : 0;
-               //pbckItemsDto.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
-               //pbckItemsDto.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
-               //pbckItemsDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
-               //pbckItemsDto.TotalHje = pbck4Item.TOTAL_HJE.HasValue ? pbck4Item.TOTAL_HJE.Value : 0;
-               //pbckItemsDto.TotalCukai = pbck4Item.TOTAL_STAMPS.HasValue ? pbck4Item.TOTAL_STAMPS.Value : 0;
-               //pbckItemsDto.NoPengawas = pbck4Item.NO_PENGAWAS;
-
-               //result.ListPbck4Items.Add(pbckItemsDto);
-
+              
                 var pbck4Matrikck1 = new Pbck4IMatrikCk1ReportDto();
                pbck4Matrikck1.Number = i + 1;
                pbck4Matrikck1.SeriesCode = pbck4Item.SERIES_CODE;
@@ -1086,9 +1105,22 @@ namespace Sampoerna.EMS.BLL
 
 
            }
-         
 
-             return result;
+           //set header footer data by CompanyCode and FormTypeId
+           var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+           {
+               FormTypeId = Enums.FormType.PBCK4,
+               CompanyCode = dtData.COMPANY_ID
+           });
+
+           result.ReportDetails.HeaderImage = string.Empty;
+
+           if (headerFooterData.IS_HEADER_SET.HasValue && headerFooterData.IS_HEADER_SET.Value)
+           {
+               result.ReportDetails.HeaderImage = headerFooterData.HEADER_IMAGE_PATH;
+           }
+
+           return result;
         }
 
        public List<Pbck4SummaryReportDto> GetSummaryReportsByParam(Pbck4GetSummaryReportByParamInput input)
@@ -1244,6 +1276,39 @@ namespace Sampoerna.EMS.BLL
 
        }
 
-       
-    }
+        public List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId)
+       {
+           var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+
+            return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
+       }
+
+        public List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId)
+        {
+            var dbCk1 = _ck1Services.GetCk1ByNppbkc(nppbkcId);
+
+            return Mapper.Map<List<GetListCk1ByNppbkcOutput>>(dbCk1);
+        }
+
+        public GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode)
+       {
+           var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+            return Mapper.Map<GetBrandItemsOutput>(dbBrand);
+       }
+
+        public string GetCk1DateByCk1Id(long ck1Id)
+        {
+            var dbCK1 = _ck1Services.GetCk1ById(ck1Id);
+            return dbCK1 == null ? string.Empty : dbCK1.CK1_DATE.ToString("dd MMM yyyy");
+        }
+
+        public decimal GetBlockedStockByPlantAndFaCode(string plant, string faCode)
+        {
+            var dbBlock = _blockStockBll.GetBlockStockByPlantAndMaterialId(plant, faCode);
+            return dbBlock.Count == 0
+                ? 0
+                : dbBlock.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
+        }
+
+   }
 }

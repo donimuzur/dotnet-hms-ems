@@ -101,11 +101,12 @@
 
 @section scripts {
 
+    <script src="~/Scripts/js/custom.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript">
 
         $('#MenuPBCK1OpenListDocument').addClass('active');
-
+        
        function setupDataTables() {
             $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
@@ -125,6 +126,8 @@
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     }
                 });
+
+
 
             // Setup - add a text input to each footer cell
             $('#pbckTable .filters th').each(function () {

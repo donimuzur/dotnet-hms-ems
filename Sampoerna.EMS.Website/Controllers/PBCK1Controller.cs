@@ -157,7 +157,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         decimal value;
                         if (Decimal.TryParse(text, out value))
                         {
-                            text = Math.Round(Convert.ToDecimal(text), 2).ToString();
+                            //text = Math.Round(Convert.ToDecimal(text), 4).ToString();
+                            text = Convert.ToDecimal(text).ToString();
                         }
 
                         uploadItem.ProductCode = datarow[0];
@@ -421,11 +422,6 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
 
-                if (!ValidateEditDocument(model))
-                {
-                    return RedirectToAction("Index");
-                }
-
                 var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
@@ -477,6 +473,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 if(model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval)
                 {
                     model.ActionType = "GovApproveDocument";
+                }
+
+                if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject) )
+                { 
+                
+                }else if (!ValidateEditDocument(model))
+                {
+                    return RedirectToAction("Index");
                 }
 
             }
@@ -554,9 +558,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     WorkflowActionType = Enums.ActionType.Modified
                 };
 
-                if (!_pbck1Bll.checkUniquePBCK1(input))
+                var checkUnique = _pbck1Bll.checkUniquePBCK1(input);
+
+                if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK1 Cannot Duplicate", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 dengan no " + checkUnique + " sudah ada", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
 
@@ -698,7 +704,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
-            else {
+            else if(CurrentUser.UserRole == Enums.UserRole.POA){
                 model.AllowApproveAndReject = false;
                 foreach (POADto poa in _poaBll.GetPoaByNppbkcIdAndMainPlant(model.Detail.NppbkcId))
                 { 
@@ -742,7 +748,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
 
@@ -762,9 +768,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     WorkflowActionType = Enums.ActionType.Created
                 };
 
-                if (!_pbck1Bll.checkUniquePBCK1(input))
+                var checkUnique = _pbck1Bll.checkUniquePBCK1(input);
+
+                if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK1 Cannot Duplicate", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 dengan no " + checkUnique +" sudah ada", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
                 

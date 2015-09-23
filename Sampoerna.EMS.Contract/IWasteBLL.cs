@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.Contract
 
         List<WasteDto> GetAllWaste();
 
-        void Save(WasteDto wasteDto);
+        void Save(WasteDto wasteDto, string userId);
 
         WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate);
 

@@ -444,6 +444,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = InitEdit(model);
 
                 model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(pbck4Details.Pbck4ItemsDto);
+                //get blocked stock
+                foreach (var uploadItemModel in model.UploadItemModels)
+                {
+                    uploadItemModel.BlockedStock = _pbck4Bll.GetBlockedStockByPlantAndFaCode(uploadItemModel.Plant,uploadItemModel.FaCode).ToString();
+                }
+
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(pbck4Details.ListChangesHistorys);
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(pbck4Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(pbck4Details.ListPrintHistorys);
@@ -817,7 +823,41 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.PrintDate = pbck4ReportDetails.PrintDate;
             detailRow.RegionOffice = pbck4ReportDetails.RegionOffice;
             detailRow.DocumentTitle = printTitle;
+            
+            //set image
+            if (string.IsNullOrEmpty(pbck4ReportDetails.HeaderImage))
+                detailRow.HeaderImage = null;
+            else
+            {
+                //convert to byte image
+                FileStream fs;
+                BinaryReader br;
+                var imagePath = pbck4ReportDetails.HeaderImage;
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read,
+                        FileShare.ReadWrite);
 
+                    // initialise the binary reader from file streamobject 
+                    br = new BinaryReader(fs);
+                    // define the byte array of filelength 
+                    byte[] imgbyte = new byte[fs.Length + 1];
+                    // read the bytes from the binary reader 
+                    imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+                    detailRow.HeaderImage = imgbyte;
+
+                }
+               
+                //else
+                //{
+                //    // if photo does not exist show the nophoto.jpg file 
+                //    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                //}
+              
+            }
+
+           
             dsPbck4.Pbck4.AddPbck4Row(detailRow);
 
             return dsPbck4;
@@ -1443,5 +1483,54 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        #region "Input Manual"
+
+        [HttpPost]
+        public JsonResult GetListFaCode(string plantId)
+        {
+
+            var brandOutput = _pbck4Bll.GetListBrandByPlant(plantId);
+            //var model = Mapper.Map<List<Pbck4InputManualViewModel>>(dbMaterial);
+
+            return Json(brandOutput);
+        }
+
+        [HttpPost]
+        public JsonResult GetListCk1(string nppbkcId)
+        {
+
+            var brandOutput = _pbck4Bll.GetListCk1ByNppbkc(nppbkcId);
+           
+            return Json(brandOutput);
+        }
+
+        [HttpPost]
+        public JsonResult GetBrandItems(string plantId, string faCode)
+        {
+
+            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByPlantAndFaCode(plantId, faCode);
+
+            //getblockedstock
+            brandOutput.BlockedStock = _pbck4Bll.GetBlockedStockByPlantAndFaCode(plantId, faCode).ToString();
+            
+            return Json(brandOutput);
+        }
+
+        [HttpPost]
+        public string GetCk1Date(long ck1Id)
+        {
+
+            var ck1Date = _pbck4Bll.GetCk1DateByCk1Id(ck1Id);
+
+
+            return ck1Date;
+        }
+
+        #endregion
+
     }
+
+   
+
 }

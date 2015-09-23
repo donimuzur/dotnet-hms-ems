@@ -79,8 +79,12 @@
 
 
                     }
-                    @*<input type="button" class="btn btn-grey" value="Print Preview" onclick=" printpreview('@url.encryptedaction("printpreview", "lack2", new {id = @model.id})') " />*@
-
+                  
+                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
+                    @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                    {
+                        <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Id })')" />
+                    }
                 </div>
             </div>
         </div>
@@ -341,5 +345,12 @@
             }
 
         });
+        
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
+
     </script>
 }
