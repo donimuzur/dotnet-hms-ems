@@ -54,7 +54,7 @@
                                         <label class="col-md-4">PBCK-3 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new {@class = "form-control"})
+                                                @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @disabled = "disabled" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>

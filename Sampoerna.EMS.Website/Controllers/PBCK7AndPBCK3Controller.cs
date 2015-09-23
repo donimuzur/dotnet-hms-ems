@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.EMMA;
 using iTextSharp.text.pdf.qrcode;
@@ -12,7 +15,9 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PBCK7AndPBCK3;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -32,8 +37,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
+        private IHeaderFooterBLL _headerFooterBll;
+        private ILFA1BLL _lfa1Bll;
         public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
-            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
+            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7AndPbck7And3Bll = pbck7AndPbck3Bll;
@@ -46,6 +53,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _documentSequenceNumberBll = documentSequenceNumberBll;
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
+            _headerFooterBll = headerFooterBll;
+            _lfa1Bll = lfa1Bll;
         }
 
         #region Index PBCK7
@@ -61,13 +70,205 @@ namespace Sampoerna.EMS.Website.Controllers
                 Pbck7Type = Enums.Pbck7Type.Pbck7List,
 
                 Detail =
-                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetAllByParam(new Pbck7AndPbck3Input()))
+                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input()))
             });
 
             return View("Index", data);
         }
 
         #endregion
+
+        private DataSet CreatePbck7Ds()
+        {
+            DataSet ds = new DataSet("dsPbck7");
+
+            DataTable dt = new DataTable("Master");
+
+            // object of data row 
+            DataRow drow;
+            dt.Columns.Add("PoaName", System.Type.GetType("System.String"));
+            dt.Columns.Add("CompanyName", System.Type.GetType("System.String"));
+            dt.Columns.Add("CompanyAddress", System.Type.GetType("System.String"));
+            dt.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
+            dt.Columns.Add("Footer", System.Type.GetType("System.String"));
+            dt.Columns.Add("TotalKemasan", System.Type.GetType("System.String"));
+            dt.Columns.Add("TotalCukai", System.Type.GetType("System.String"));
+            dt.Columns.Add("PrintedDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("Preview", System.Type.GetType("System.String"));
+            dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("Nomor", System.Type.GetType("System.String"));
+            dt.Columns.Add("Lampiran", System.Type.GetType("System.String"));
+            dt.Columns.Add("TextTo", System.Type.GetType("System.String"));
+            dt.Columns.Add("VendorCity", System.Type.GetType("System.String"));
+            dt.Columns.Add("DocumentType", System.Type.GetType("System.String"));
+            dt.Columns.Add("NppbkcCity", System.Type.GetType("System.String"));
+            dt.Columns.Add("PbckDate", System.Type.GetType("System.String"));
+            //detail
+            DataTable dtDetail = new DataTable("Detail");
+            dtDetail.Columns.Add("Jenis", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Merek", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("IsiKemasan", System.Type.GetType("System.String"));
+
+            dtDetail.Columns.Add("JmlKemasan", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("SeriPitaCukai", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Hje", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Tariff", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("JmlCukai", System.Type.GetType("System.String"));
+            ds.Tables.Add(dt);
+            ds.Tables.Add(dtDetail);
+            return ds;
+        }
+        [EncryptedParameter]
+        public FileResult PrintPreview(int id)
+        {
+            var pbck7 = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+
+            var dsPbck7 = CreatePbck7Ds();
+            var dt = dsPbck7.Tables[0];
+            DataRow drow;
+            drow = dt.NewRow();
+            if (pbck7.ApprovedBy != null)
+            {
+                drow["PoaName"] = _poaBll.GetById(pbck7.ApprovedBy).PRINTED_NAME;
+            }
+            var company = _plantBll.GetId(pbck7.PlantId);
+            var nppbkc = _nppbkcBll.GetById(pbck7.NppbkcId);
+          
+            if (company != null)
+            {
+                drow["CompanyName"] = company.COMPANY_NAME;
+                drow["CompanyAddress"] = company.COMPANY_ADDRESS;
+                var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
+                {
+                    CompanyCode = company.COMPANY_CODE,
+                    FormTypeId = Enums.FormType.LACK2
+                });
+
+                drow["Nppbkc"] = pbck7.NppbkcId + " tanggal " + nppbkc.START_DATE.Value.ToString("dd MMMM yyyy"); 
+                if (headerFooter != null)
+                {
+                    drow["Header"] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
+                    drow["Footer"] = headerFooter.FOOTER_CONTENT;
+                }
+            }
+            var detailItem = pbck7.UploadItems;
+            var totalKemasan = 0;
+            var totalCukai = 0.0;
+            if (detailItem != null)
+            {
+                foreach (var item in detailItem)
+                {
+                    totalKemasan += Convert.ToInt32(item.Content);
+                    totalCukai += Convert.ToDouble(item.ExciseValue);
+                }
+            }
+
+            drow["TotalKemasan"] = totalKemasan;
+            drow["TotalCukai"] = totalCukai;
+            drow["PrintedDate"] = pbck7.Pbck7Date == null ? null : pbck7.Pbck7Date.ToString("dd MMMM yyyy");
+          
+            if (pbck7.Pbck7Status != Enums.DocumentStatus.WaitingGovApproval || pbck7.Pbck7Status != Enums.DocumentStatus.GovApproved
+                || pbck7.Pbck7Status != Enums.DocumentStatus.Completed)
+            {
+                drow["Preview"] = "PREVIEW LACK-2";
+            }
+            else
+            {
+                drow["Preview"] = "PBCK-7";
+                
+            }
+            drow["Nomor"] = pbck7.Pbck7Number;
+            drow["Lampiran"] = pbck7.Lampiran;
+
+            if (nppbkc != null)
+            {
+                drow["TextTo"] = nppbkc.TEXT_TO;
+                var vendor = _lfa1Bll.GetById(nppbkc.KPPBC_ID);
+                if (vendor != null)
+                {
+                    drow["VendorCity"] = vendor.ORT01;
+                }
+            }
+            drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType);
+            drow["NppbkcCity"] = nppbkc.CITY;
+            drow["PbckDate"] = pbck7.Pbck7Date.ToString("dd MMM yyyy");
+          
+            dt.Rows.Add(drow);
+
+
+
+            var dtDetail = dsPbck7.Tables[1];
+            foreach (var item in pbck7.UploadItems)
+            {
+                DataRow drowDetail;
+                drowDetail = dtDetail.NewRow();
+                drowDetail[0] = item.ProdTypeAlias;
+                drowDetail[1] = item.Brand;
+                drowDetail[2] = item.Content;
+                drowDetail[3] = item.Pbck7Qty;
+                drowDetail[4] = item.SeriesValue;
+                drowDetail[5] = item.Hje;
+                drowDetail[6] = item.Tariff;
+                drowDetail[7] = item.ExciseValue;
+                dtDetail.Rows.Add(drowDetail);
+
+            }
+            // object of data row 
+
+            ReportClass rpt = new ReportClass();
+            string report_path = System.Configuration.ConfigurationManager.AppSettings["Report_Path"];
+            rpt.FileName = report_path + "PBCK7\\Pbck7Report.rpt";
+            rpt.Load();
+            rpt.SetDataSource(dsPbck7);
+
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return File(stream, "application/pdf");
+        }
+
+        private byte[] GetHeader(string imagePath)
+        {
+            byte[] imgbyte = null;
+            try
+            {
+
+                FileStream fs;
+                BinaryReader br;
+
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                else
+                {
+                    // if photo does not exist show the nophoto.jpg file 
+                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                // initialise the binary reader from file streamobject 
+                br = new BinaryReader(fs);
+                // define the byte array of filelength 
+                imgbyte = new byte[fs.Length + 1];
+                // read the bytes from the binary reader 
+                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+
+                br.Close();
+                // close the binary reader 
+                fs.Close();
+                // close the file stream 
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+            }
+            return imgbyte;
+            // Return Datatable After Image Row Insertion
+
+        }
 
         private Pbck7IndexViewModel InitPbck7ViewModel(Pbck7IndexViewModel model)
         {
@@ -92,7 +293,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetAllByParam(input);
+            var dbData = _pbck7AndPbck7And3Bll.GetPbck7ByParam(input);
 
             var result = Mapper.Map<List<DataListIndexPbck7>>(dbData);
 
@@ -109,14 +310,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult ListPbck3Index()
         {
+            var detail =
+                Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input()));
+          
             var data = InitPbck3ViewModel(new Pbck3IndexViewModel
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Pbck3Type = Enums.Pbck7Type.Pbck3List,
 
-                Detail =
-                    Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetAllByParam(new Pbck7AndPbck3Input()))
+                Detail = detail
             });
 
             return View("ListPbck3Index", data);
@@ -143,7 +346,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetAllByParam(input);
+            var dbData = _pbck7AndPbck7And3Bll.GetPbck3ByParam(input);
             var result = Mapper.Map<List<DataListIndexPbck3>>(dbData);
 
             var viewModel = new Pbck3IndexViewModel();
@@ -217,7 +420,12 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (!id.HasValue)
                 return HttpNotFound();
+            
             var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            if (existingData.CreatedBy != CurrentUser.USER_ID)
+            {
+                return RedirectToAction("Detail", new {id = id});
+            }
             GetDetailPbck7(existingData);
            
           
@@ -386,6 +594,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         pbck3.CreateDate = DateTime.Now;
                         pbck3.CreatedBy = CurrentUser.USER_ID;
                         pbck3.Pbck7Id = existingData.Pbck7Id;
+                        pbck3.Pbck3Date = model.Pbck3Dto.Pbck3Date;
                         pbck3.Pbck3Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
                     
                    
@@ -561,12 +770,31 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
+        public string GetPoaList(string nppbkcid)
+        {
+            var poaList = _poaBll.GetPoaByNppbkcId(nppbkcid);
+            var poaListStr = string.Empty;
+            var poaLength = poaList.Count;
+            
+            for(int i=0; i< poaLength; i++)
+            {
+                poaListStr += poaList[i].PRINTED_NAME;
+                if (i < poaLength)
+                {
+                    poaListStr += ", ";
+                }
+            }
+            return poaListStr;
+
+        }
+
         private Pbck7Pbck3CreateViewModel InitialModel(Pbck7Pbck3CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
+            model.PoaList = GetPoaList(model.NppbkcId);
             //workflow history
             var workflowInput = new GetByFormNumberInput();
             workflowInput.FormId = model.Id;
@@ -769,7 +997,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (existingBrand != null)
                         {
                             item.Brand = existingBrand.BRAND_CE;
-                            item.SeriesValue =  existingBrand.ZAIDM_EX_SERIES.SERIES_VALUE;
+                            item.SeriesValue =  existingBrand.ZAIDM_EX_SERIES.SERIES_CODE;
                             item.ProdTypeAlias = existingBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
                             item.Content = Convert.ToInt32(existingBrand.BRAND_CONTENT);
                             item.Hje = existingBrand.HJE_IDR;

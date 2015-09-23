@@ -52,7 +52,7 @@
                                                                 @Html.HiddenFor(model => model.CompanyCodeX)
                                                                 @Html.HiddenFor(model => model.CompanyName)
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = "form-control " })
+                                                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "Select", new { @class = "form-control " })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -62,7 +62,7 @@
                                                                 @Html.HiddenFor(model => model.PlantWerksX)
                                                                 <div class="col-md-8">
 
-                                                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control ", id = "SearchInput_PlantId" })
+                                                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "Select", new { @class = "form-control ", id = "SearchInput_PlantId" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -126,7 +126,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Uom<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(model => model.Uom, Model.UomList, "All", new { @class = "form-control" })
+                                                                    @Html.DropDownListFor(model => model.Uom, Model.UomList, "Select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>

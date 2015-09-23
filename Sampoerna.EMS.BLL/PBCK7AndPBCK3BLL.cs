@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryCk2 = _uow.GetGenericRepository<CK2>();
         }
 
-        public List<Pbck7AndPbck3Dto> GetAllByParam(Pbck7AndPbck3Input input)
+        public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -88,6 +88,47 @@ namespace Sampoerna.EMS.BLL
             }
             var mapResult = Mapper.Map<List<Pbck7AndPbck3Dto>>(dbData.ToList());
 
+            return mapResult;
+        }
+
+        public List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input)
+        {
+            Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK7.NPPBKC == input.NppbkcId);
+            }
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK7.PLANT_ID == input.PlantId);
+            }
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+            }
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty((input.Pbck3Date)))
+            {
+                var dt = Convert.ToDateTime(input.Pbck3Date);
+                queryFilter = queryFilter.And(c => c.PBCK3_DATE == dt);
+            }
+
+
+            Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = null;
+            if (!string.IsNullOrEmpty(input.ShortOrderColum))
+            {
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK3>(input.ShortOrderColum));
+            }
+
+            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7");
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            var mapResult = Mapper.Map<List<Pbck3Dto>>(dbData.ToList());
             return mapResult;
         }
 
