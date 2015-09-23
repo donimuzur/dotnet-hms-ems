@@ -257,7 +257,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //add to print history
             var input = new PrintHistoryDto()
             {
-                FORM_TYPE_ID = Enums.FormType.PBCK1,
+                FORM_TYPE_ID = Enums.FormType.LACK2,
                 FORM_ID = lack2.Lack2Id,
                 FORM_NUMBER = lack2.Lack2Number,
                 PRINT_DATE = DateTime.Now,

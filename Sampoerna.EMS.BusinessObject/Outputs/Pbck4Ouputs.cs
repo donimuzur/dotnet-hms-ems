@@ -49,5 +49,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Hje { get; set; }
         public string Tariff { get; set; }
         public string Colour { get; set; }
+
+        public string BlockedStock { get; set; }
     }
 }
