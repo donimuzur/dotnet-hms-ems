@@ -232,7 +232,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year)
         {
-            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).Select(d => Mapper.Map<ProductionDto>(d)).ToList();
+            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).ToList();
             return Json(data);
         }
 
@@ -862,6 +862,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.Total = itemDto.Total;
                 detailRow.ProdWaste = itemDto.ProdWaste;
                 detailRow.Comment = itemDto.Comment;
+                detailRow.CollumNo = itemDto.CollumNo;
 
                 dsCk4c.Ck4cItem.AddCk4cItemRow(detailRow);
             }

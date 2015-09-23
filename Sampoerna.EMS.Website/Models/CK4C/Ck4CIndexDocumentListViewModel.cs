@@ -95,5 +95,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string BrandDescription { get; set; }
         public string PlantName { get; set; }
         public string ProdType { get; set; }
+        public int ContentPerPack { get; set; }
+        public int PackedInPack { get; set; }
     }
 }
