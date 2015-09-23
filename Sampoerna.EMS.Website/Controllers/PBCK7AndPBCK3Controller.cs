@@ -119,11 +119,28 @@ namespace Sampoerna.EMS.Website.Controllers
             ds.Tables.Add(dtDetail);
             return ds;
         }
+
         [EncryptedParameter]
-        public FileResult PrintPreview(int id)
+        public FileResult PrintPreviewPbck7(int id)
+        {
+            return PrintPreview(id, true);
+        }
+        [EncryptedParameter]
+        public FileResult PrintPreviewPbck3(int id)
+        {
+            return PrintPreview(id, false);
+        }
+        public FileResult PrintPreview(int id, bool isPbck7)
         {
             var pbck7 = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
-
+            if (!isPbck7)
+            {
+                //get pbck3
+                if (pbck7 != null)
+                {
+                    pbck7.Pbck3Dto = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(pbck7.Pbck7Id);
+                }
+            }
             var dsPbck7 = CreatePbck7Ds();
             var dt = dsPbck7.Tables[0];
             DataRow drow;
@@ -166,19 +183,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
             drow["TotalKemasan"] = totalKemasan;
             drow["TotalCukai"] = totalCukai;
-            drow["PrintedDate"] = pbck7.Pbck7Date == null ? null : pbck7.Pbck7Date.ToString("dd MMMM yyyy");
+            drow["PrintedDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy");
           
             if (pbck7.Pbck7Status != Enums.DocumentStatus.WaitingGovApproval || pbck7.Pbck7Status != Enums.DocumentStatus.GovApproved
                 || pbck7.Pbck7Status != Enums.DocumentStatus.Completed)
             {
-                drow["Preview"] = "PREVIEW LACK-2";
+                drow["Preview"] = isPbck7 ? "PREVIEW PBCK-7" : "PREVIEW PBCK-3";
             }
             else
             {
-                drow["Preview"] = "PBCK-7";
+                drow["Preview"] = isPbck7 ? "PBCK-7" : "PBCK-3";
                 
             }
-            drow["Nomor"] = pbck7.Pbck7Number;
+            drow["Nomor"] = isPbck7 ? pbck7.Pbck7Number :pbck7.Pbck3Dto.Pbck3Number;
             drow["Lampiran"] = pbck7.Lampiran;
 
             if (nppbkc != null)
@@ -225,6 +242,9 @@ namespace Sampoerna.EMS.Website.Controllers
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
             return File(stream, "application/pdf");
         }
+
+
+   
 
         private byte[] GetHeader(string imagePath)
         {
