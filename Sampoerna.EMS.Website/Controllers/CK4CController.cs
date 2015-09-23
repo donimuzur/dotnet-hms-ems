@@ -232,7 +232,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year)
         {
-            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).Select(d => Mapper.Map<ProductionDto>(d)).ToList();
+            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).ToList();
             return Json(data);
         }
 
