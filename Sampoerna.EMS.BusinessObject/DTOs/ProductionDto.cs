@@ -61,6 +61,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
         public string MesssageUploadFileDocuments { get; set; }
+        public bool IsValid { get; set; }
+        public string Message { get; set; }
 
     }
 

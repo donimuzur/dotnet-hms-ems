@@ -220,12 +220,12 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-        private List<ProductionUploadItems> ValidateProductionUpload(ProductionUploadItems input)
+        private List<ProductionUploadItems> ValidateProductionUpload(List<ProductionUploadItems> input)
         {
             var messageList = new List<string>();
             var outputList = new List<ProductionUploadItems>();
 
-            foreach (var productionUploadItems in outputList)
+            foreach (var productionUploadItems in input)
             {
                 messageList.Clear();
 
@@ -236,23 +236,38 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Company Code is Not valid");
 
                 var dbPlant = _plantBll.GetId(productionUploadItems.PlantWerks);
-                if(dbPlant == null)
+                if (dbPlant == null)
                     messageList.Add("Plant Id is not valid");
 
                 var dbBrand = _brandRegistrationBll.GetById(productionUploadItems.PlantWerks, productionUploadItems.FaCode);
-                    if(dbBrand == null)
-                        messageList.Add("Fa Code is not Register");
+                if (dbBrand == null)
+                    messageList.Add("Fa Code is not Register");
 
                 if (string.IsNullOrEmpty(productionUploadItems.ProductionDate))
-                     messageList.Add("Daily Production Date is not valid");
-               
+                    messageList.Add("Daily Production Date is not valid");
+
                 var dbproduction = GetExistDto(productionUploadItems.CompanyCode, productionUploadItems.PlantWerks,
                     productionUploadItems.FaCode, Convert.ToDateTime(productionUploadItems.ProductionDate));
-                    if(dbproduction == null)
+                if (dbproduction == null)
                     messageList.Add("Production data all ready Exist");
-                  
 
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = " ";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
 
+                }
+                     
+                else
+                {
+                    output.IsValid = true;
+
+                }
+                outputList.Add(output);
             }
             return outputList;
         }
