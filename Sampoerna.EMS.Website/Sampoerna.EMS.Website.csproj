@@ -1060,8 +1060,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_Pbck3TableIndex.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Create.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_HomeCreate.cshtml" />
-    <Content Include="Views\PBCK7AndPBCK3\_PrintOut.cshtml" />
-    <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTable.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck7.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
     <Content Include="Views\CK5\CK5InputMaterial.cshtml" />
@@ -1151,6 +1150,8 @@
     <Content Include="Views\LACK1\_Lack1DetailReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack3.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadCk2.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck3.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTablePbck3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
