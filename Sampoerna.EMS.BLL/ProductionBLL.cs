@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProd;
         private IGenericRepository<UOM> _repositoryUom;
         private IGenericRepository<T001W> _repositoryPlant;
+        private ChangesHistoryBLL _changesHistoryBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -36,6 +37,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryProd = _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
             _repositoryUom = _uow.GetGenericRepository<UOM>();
             _repositoryPlant = _uow.GetGenericRepository<T001W>();
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -81,11 +83,32 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<ProductionDto>>(dtData);
         }
 
-        public void Save(ProductionDto productionDto)
+        public void Save(ProductionDto productionDto, string userId)
         {
-           var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
+            var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
 
-            
+            var origin = _repository.GetByID(dbProduction.COMPANY_CODE, dbProduction.WERKS, dbProduction.FA_CODE,
+                dbProduction.PRODUCTION_DATE);
+
+            var originDto = Mapper.Map<ProductionDto>(origin);
+
+            SetChange(originDto, dbProduction, userId);
+            dbProduction.CREATED_DATE = DateTime.Now;
+
+            if (dbProduction.UOM == "KG")
+            {
+                dbProduction.UOM = "G";
+                dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
+                dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
+            }
+
+            if (dbProduction.UOM == "TH")
+            {
+                dbProduction.UOM = "Btg";
+                dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
+                dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
+            }
+
             _repository.InsertOrUpdate(dbProduction);
             _uow.SaveChanges();
         }
@@ -110,14 +133,14 @@ namespace Sampoerna.EMS.BLL
             DateTime startDate = firstDay;
             DateTime endDate = new DateTime(year, month, 14);
 
-            if(period == 2)
+            if (period == 2)
             {
                 startDate = new DateTime(year, month, 15);
                 endDate = firstDay.AddMonths(1).AddDays(-1);
             }
 
             var dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && p.WERKS == plant && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
-                         join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { p.FA_CODE,p.WERKS } equals new { b.FA_CODE,b.WERKS }
+                         join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { p.FA_CODE, p.WERKS } equals new { b.FA_CODE, b.WERKS }
                          join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
                          select new ProductionDto()
                          {
@@ -136,7 +159,7 @@ namespace Sampoerna.EMS.BLL
                              ProdCode = b.PROD_CODE
                          };
 
-            if(nppbkc != string.Empty)
+            if (nppbkc != string.Empty)
             {
                 dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
                          join n in _repositoryPlant.Get(n => n.NPPBKC_ID == nppbkc) on p.WERKS equals n.WERKS
@@ -179,12 +202,82 @@ namespace Sampoerna.EMS.BLL
                     .FirstOrDefault();
         }
 
-        
-        public void SaveUpload(ProductionUploadItems uploadItems)
+
+        public void SaveUpload(ProductionUploadItems uploadItems, string userId)
         {
             var dbUpload = Mapper.Map<PRODUCTION>(uploadItems);
+
             _repository.InsertOrUpdate(dbUpload);
+           
             _uow.SaveChanges();
         }
+
+        private void SetChange(ProductionDto origin, PRODUCTION data, string userId)
+        {
+            var changeData = new Dictionary<string, bool>();
+            changeData.Add("COMPANY_CODE", origin.CompanyCode == data.COMPANY_CODE);
+            changeData.Add("WERKS", origin.PlantWerks == data.WERKS);
+            changeData.Add("FA_CODE", origin.FaCode == data.FA_CODE);
+            changeData.Add("PRODUCTION_DATE", origin.ProductionDate == data.PRODUCTION_DATE);
+            changeData.Add("BRAND_DESC", origin.BrandDescription == data.BRAND_DESC);
+            changeData.Add("QTY_PACKED", origin.QtyPacked == data.QTY_PACKED);
+            changeData.Add("QTY_UNPACKED", origin.QtyUnpacked == data.QTY_UNPACKED);
+            changeData.Add("UOM", origin.Uom == data.UOM);
+
+            foreach (var listChange in changeData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
+                        FORM_ID = data.COMPANY_CODE + "_" + data.WERKS + "_" + data.FA_CODE + "_" + data.PRODUCTION_DATE.ToString("ddMMMyyyy"),
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+
+                    switch (listChange.Key)
+                    {
+                        case "COMPANY_CODE":
+                            changes.OLD_VALUE = origin.CompanyCode;
+                            changes.NEW_VALUE = data.COMPANY_CODE;
+                            break;
+                        case "WERKS":
+                            changes.OLD_VALUE = origin.PlantWerks;
+                            changes.NEW_VALUE = data.WERKS;
+                            break;
+                        case "FA_CODE":
+                            changes.OLD_VALUE = origin.FaCode;
+                            changes.NEW_VALUE = data.FA_CODE;
+                            break;
+                        case "PRODUCTION_DATE":
+                            changes.OLD_VALUE = origin.ProductionDate.ToString();
+                            changes.NEW_VALUE = data.PRODUCTION_DATE.ToString();
+                            break;
+                        case "BRAND_DESC":
+                            changes.OLD_VALUE = origin.BrandDescription;
+                            changes.NEW_VALUE = data.BRAND_DESC;
+                            break;
+                        case "QTY_PACKED":
+                            changes.OLD_VALUE = origin.QtyPacked.ToString();
+                            changes.NEW_VALUE = data.QTY_PACKED.ToString();
+                            break;
+                        case "QTY_UNPACKED":
+                            changes.OLD_VALUE = origin.QtyUnpacked.ToString();
+                            changes.NEW_VALUE = data.QTY_UNPACKED.ToString();
+                            break;
+                        case "UOM":
+                            changes.OLD_VALUE = origin.Uom;
+                            changes.NEW_VALUE = data.UOM;
+                            break;
+                        default: break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+
+        }
+
     }
 }

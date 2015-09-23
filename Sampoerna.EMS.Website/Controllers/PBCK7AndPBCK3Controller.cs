@@ -15,6 +15,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.CK5;
@@ -37,8 +38,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IHeaderFooterBLL _headerFooterBll;
+        private ILFA1BLL _lfa1Bll;
         public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
-            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
+            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7AndPbck7And3Bll = pbck7AndPbck3Bll;
@@ -52,6 +54,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
             _headerFooterBll = headerFooterBll;
+            _lfa1Bll = lfa1Bll;
         }
 
         #region Index PBCK7
@@ -91,10 +94,16 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("Footer", System.Type.GetType("System.String"));
             dt.Columns.Add("TotalKemasan", System.Type.GetType("System.String"));
             dt.Columns.Add("TotalCukai", System.Type.GetType("System.String"));
-            dt.Columns.Add("PrintedDateDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("PrintedDate", System.Type.GetType("System.String"));
             dt.Columns.Add("Preview", System.Type.GetType("System.String"));
             dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
-
+            dt.Columns.Add("Nomor", System.Type.GetType("System.String"));
+            dt.Columns.Add("Lampiran", System.Type.GetType("System.String"));
+            dt.Columns.Add("TextTo", System.Type.GetType("System.String"));
+            dt.Columns.Add("VendorCity", System.Type.GetType("System.String"));
+            dt.Columns.Add("DocumentType", System.Type.GetType("System.String"));
+            dt.Columns.Add("NppbkcCity", System.Type.GetType("System.String"));
+            dt.Columns.Add("PbckDate", System.Type.GetType("System.String"));
             //detail
             DataTable dtDetail = new DataTable("Detail");
             dtDetail.Columns.Add("Jenis", System.Type.GetType("System.String"));
@@ -105,6 +114,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dtDetail.Columns.Add("SeriPitaCukai", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("Hje", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("Tariff", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("JmlCukai", System.Type.GetType("System.String"));
             ds.Tables.Add(dt);
             ds.Tables.Add(dtDetail);
             return ds;
@@ -120,42 +130,70 @@ namespace Sampoerna.EMS.Website.Controllers
             drow = dt.NewRow();
             if (pbck7.ApprovedBy != null)
             {
-                drow[0] = _poaBll.GetById(pbck7.ApprovedBy).PRINTED_NAME;
+                drow["PoaName"] = _poaBll.GetById(pbck7.ApprovedBy).PRINTED_NAME;
             }
             var company = _plantBll.GetId(pbck7.PlantId);
+            var nppbkc = _nppbkcBll.GetById(pbck7.NppbkcId);
+          
             if (company != null)
             {
-                drow[1] = company.COMPANY_NAME;
-                drow[2] = company.COMPANY_ADDRESS;
+                drow["CompanyName"] = company.COMPANY_NAME;
+                drow["CompanyAddress"] = company.COMPANY_ADDRESS;
                 var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
                 {
                     CompanyCode = company.COMPANY_CODE,
                     FormTypeId = Enums.FormType.LACK2
                 });
-                drow[3] = pbck7.NppbkcId;
+
+                drow["Nppbkc"] = pbck7.NppbkcId + " tanggal " + nppbkc.START_DATE.Value.ToString("dd MMMM yyyy"); 
                 if (headerFooter != null)
                 {
-                    drow[4] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
-                    drow[5] = headerFooter.FOOTER_CONTENT;
+                    drow["Header"] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
+                    drow["Footer"] = headerFooter.FOOTER_CONTENT;
+                }
+            }
+            var detailItem = pbck7.UploadItems;
+            var totalKemasan = 0;
+            var totalCukai = 0.0;
+            if (detailItem != null)
+            {
+                foreach (var item in detailItem)
+                {
+                    totalKemasan += Convert.ToInt32(item.Content);
+                    totalCukai += Convert.ToDouble(item.ExciseValue);
                 }
             }
 
-            var totalKemasan = 0;
-            var totalCukai = 0;
-            drow[6] = totalKemasan;
-            drow[7] = totalCukai;
-            drow[8] = pbck7.Pbck7Date == null ? null : pbck7.Pbck7Date.ToString("dd MMMM yyyy");
-
+            drow["TotalKemasan"] = totalKemasan;
+            drow["TotalCukai"] = totalCukai;
+            drow["PrintedDate"] = pbck7.Pbck7Date == null ? null : pbck7.Pbck7Date.ToString("dd MMMM yyyy");
+          
             if (pbck7.Pbck7Status != Enums.DocumentStatus.WaitingGovApproval || pbck7.Pbck7Status != Enums.DocumentStatus.GovApproved
                 || pbck7.Pbck7Status != Enums.DocumentStatus.Completed)
             {
-                drow[9] = "PREVIEW LACK-2";
+                drow["Preview"] = "PREVIEW LACK-2";
             }
             else
             {
-                drow[9] = "PBCK-7";
+                drow["Preview"] = "PBCK-7";
                 
             }
+            drow["Nomor"] = pbck7.Pbck7Number;
+            drow["Lampiran"] = pbck7.Lampiran;
+
+            if (nppbkc != null)
+            {
+                drow["TextTo"] = nppbkc.TEXT_TO;
+                var vendor = _lfa1Bll.GetById(nppbkc.KPPBC_ID);
+                if (vendor != null)
+                {
+                    drow["VendorCity"] = vendor.ORT01;
+                }
+            }
+            drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType);
+            drow["NppbkcCity"] = nppbkc.CITY;
+            drow["PbckDate"] = pbck7.Pbck7Date.ToString("dd MMM yyyy");
+          
             dt.Rows.Add(drow);
 
 
@@ -172,6 +210,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 drowDetail[4] = item.SeriesValue;
                 drowDetail[5] = item.Hje;
                 drowDetail[6] = item.Tariff;
+                drowDetail[7] = item.ExciseValue;
                 dtDetail.Rows.Add(drowDetail);
 
             }
@@ -381,7 +420,12 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (!id.HasValue)
                 return HttpNotFound();
+            
             var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            if (existingData.CreatedBy != CurrentUser.USER_ID)
+            {
+                return RedirectToAction("Detail", new {id = id});
+            }
             GetDetailPbck7(existingData);
            
           
@@ -726,12 +770,31 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
+        public string GetPoaList(string nppbkcid)
+        {
+            var poaList = _poaBll.GetPoaByNppbkcId(nppbkcid);
+            var poaListStr = string.Empty;
+            var poaLength = poaList.Count;
+            
+            for(int i=0; i< poaLength; i++)
+            {
+                poaListStr += poaList[i].PRINTED_NAME;
+                if (i < poaLength)
+                {
+                    poaListStr += ", ";
+                }
+            }
+            return poaListStr;
+
+        }
+
         private Pbck7Pbck3CreateViewModel InitialModel(Pbck7Pbck3CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
+            model.PoaList = GetPoaList(model.NppbkcId);
             //workflow history
             var workflowInput = new GetByFormNumberInput();
             workflowInput.FormId = model.Id;

@@ -61,8 +61,8 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Plant, T001W>().IgnoreAllNonExisting();
             Mapper.CreateMap<T001W, Plant>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NPWP, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.NPWP))
-                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.BUTXT))
-                .ForMember(dest => dest.COMPANY_ADDRESS, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.T001.SPRAS))
+                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.T001K.T001.BUTXT))
+                .ForMember(dest => dest.COMPANY_ADDRESS, opt => opt.MapFrom(src => src.T001K.T001.SPRAS))
                 .ForMember(dest => dest.KPPBC_CITY, opt => opt.MapFrom(src => src.ZAIDM_EX_NPPBKC.CITY))
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.ORT01, opt => opt.MapFrom(src => src.ORT01))
@@ -297,7 +297,7 @@ namespace Sampoerna.EMS.BLL
 
             #region Material Dto
             Mapper.CreateMap<MaterialDto, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting();
-            Mapper.CreateMap<ZAIDM_EX_MATERIAL,MaterialDto>().IgnoreAllNonExisting()
+            Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.GoodTypeDescription, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
                 ;
 
@@ -368,7 +368,11 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Market, opt => opt.MapFrom(src => src.MARKET))
                 .ForMember(dest => dest.Docgmvter, opt => opt.MapFrom(src => src.DOCGMVTER))
                 .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MATDOC))
-                .ForMember(dest => dest.Ordr, opt => opt.MapFrom(src => src.ORDR));
+                .ForMember(dest => dest.Ordr, opt => opt.MapFrom(src => src.ORDR))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(dest => dest.MODIFIED_BY));
 
 
 
@@ -389,7 +393,11 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.MARKET, opt => opt.MapFrom(src => src.Market))
                .ForMember(dest => dest.DOCGMVTER, opt => opt.MapFrom(src => src.Docgmvter))
                .ForMember(dest => dest.MATDOC, opt => opt.MapFrom(src => src.MatDoc))
-               .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr));
+               .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr))
+               .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+               .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+               .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+               .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy));
 
             Mapper.CreateMap<ProductionUploadItems, PRODUCTION>().IgnoreAllNonExisting()
                .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.CompanyCode))
@@ -397,11 +405,16 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
                .ForMember(dest => dest.BRAND_DESC, opt => opt.MapFrom(src => src.BrandDescription))
                .ForMember(dest => dest.QTY_PACKED, opt => opt.MapFrom(src => src.QtyPacked))
-               .ForMember(dest => dest.QTY_UNPACKED, opt => opt.MapFrom(src => src.QtyPacked))
+               .ForMember(dest => dest.QTY_UNPACKED, opt => opt.MapFrom(src => src.QtyUnpacked))
                .ForMember(dest => dest.UOM, opt => opt.MapFrom(src => src.Uom))
                .ForMember(dest => dest.PRODUCTION_DATE, opt => opt.MapFrom(src => src.ProductionDate))
                .ForMember(dest => dest.COMPANY_NAME, opt => opt.MapFrom(src => src.CompanyName))
-               .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName));
+               .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName))
+               .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+               .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+               .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+               .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy));
+            
 
             Mapper.CreateMap<PRODUCTION, ProductionUploadItems>().IgnoreAllNonExisting()
             .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.COMPANY_CODE))
@@ -409,11 +422,15 @@ namespace Sampoerna.EMS.BLL
             .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.BRAND_DESC))
             .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
             .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
-            .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_UNPACKED))
+            .ForMember(dest => dest.QtyUnpacked, opt => opt.MapFrom(src => src.QTY_UNPACKED))
             .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
             .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.PRODUCTION_DATE))
             .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
-            .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME));
+            .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME))
+            .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+            .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
+            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
+            .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(dest => dest.MODIFIED_BY));
 
             #endregion
 
@@ -429,10 +446,15 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WASTE_PROD_DATE))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_NAME))
-                .ForMember(dest => dest.DustWasteGramQty, opt => opt.MapFrom( src => src.DUST_WASTE_GRAM_QTY))
+                .ForMember(dest => dest.DustWasteGramQty, opt => opt.MapFrom(src => src.DUST_WASTE_GRAM_QTY))
                 .ForMember(dest => dest.FloorWasteGramQty, opt => opt.MapFrom(src => src.FLOOR_WASTE_GRAM_QTY))
                 .ForMember(dest => dest.DustWasteStickQty, opt => opt.MapFrom(src => src.DUST_WASTE_STICK_QTY))
-                .ForMember(dest => dest.FloorWasteStickQty, opt => opt.MapFrom(src => src.FLOOR_WASTE_STICK_QTY));
+                .ForMember(dest => dest.FloorWasteStickQty, opt => opt.MapFrom(src => src.FLOOR_WASTE_STICK_QTY))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(dest => dest.MODIFIED_BY));
+;
 
             Mapper.CreateMap<WasteDto, WASTE>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.CompanyCode))
@@ -446,8 +468,13 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName))
                 .ForMember(dest => dest.DUST_WASTE_GRAM_QTY, opt => opt.MapFrom(src => src.DustWasteGramQty))
                 .ForMember(dest => dest.FLOOR_WASTE_GRAM_QTY, opt => opt.MapFrom(src => src.FloorWasteGramQty))
-                .ForMember(dest => dest.DUST_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.DustWasteGramQty))
-                .ForMember(dest => dest.FLOOR_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.FloorWasteStickQty));
+                .ForMember(dest => dest.DUST_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.DustWasteStickQty))
+                .ForMember(dest => dest.FLOOR_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.FloorWasteStickQty))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy));
+
 
             Mapper.CreateMap<WasteUploadItems, WASTE>().IgnoreAllNonExisting()
                .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.CompanyCode))
@@ -461,8 +488,12 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PLANT_NAME, opt => opt.MapFrom(src => src.PlantName))
                 .ForMember(dest => dest.DUST_WASTE_GRAM_QTY, opt => opt.MapFrom(src => src.DustWasteGramQty))
                 .ForMember(dest => dest.FLOOR_WASTE_GRAM_QTY, opt => opt.MapFrom(src => src.FloorWasteGramQty))
-                .ForMember(dest => dest.DUST_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.DustWasteGramQty))
-                .ForMember(dest => dest.FLOOR_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.FloorWasteStickQty));
+                .ForMember(dest => dest.DUST_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.DustWasteStickQty))
+                .ForMember(dest => dest.FLOOR_WASTE_STICK_QTY, opt => opt.MapFrom(src => src.FloorWasteStickQty))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy));
 
 
             #endregion
