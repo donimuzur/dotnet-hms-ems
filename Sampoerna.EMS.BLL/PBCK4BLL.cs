@@ -1079,20 +1079,22 @@ namespace Sampoerna.EMS.BLL
                pbck4Matrikck1.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
                pbck4Matrikck1.JenisHt = pbck4Item.PRODUCT_ALIAS;
                pbck4Matrikck1.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
+               pbck4Matrikck1.Ck1RequestedQty = pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0;
+
                pbck4Matrikck1.BrandName = pbck4Item.BRAND_NAME;
                if (pbck4Item.CK1 == null)
                {
                    pbck4Matrikck1.Ck1No = "";
                    pbck4Matrikck1.Ck1Date = "";
                    pbck4Matrikck1.Ck1OrderQty = 0;
-                   pbck4Matrikck1.Ck1RequestedQty = 0;
+                   //pbck4Matrikck1.Ck1RequestedQty = 0;
                }
                else
                {
                    pbck4Matrikck1.Ck1No = pbck4Item.CK1.CK1_NUMBER;
                    pbck4Matrikck1.Ck1Date = DateReportDisplayString(pbck4Item.CK1.CK1_DATE, false);
                    pbck4Matrikck1.Ck1OrderQty = 0;//todo ask
-                   pbck4Matrikck1.Ck1RequestedQty = 0;//todo ask
+                   //pbck4Matrikck1.Ck1RequestedQty = 0;//todo ask
                }
 
                pbck4Matrikck1.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
