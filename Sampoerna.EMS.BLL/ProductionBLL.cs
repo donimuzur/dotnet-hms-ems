@@ -27,6 +27,10 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<UOM> _repositoryUom;
         private IGenericRepository<T001W> _repositoryPlant;
         private ChangesHistoryBLL _changesHistoryBll;
+        private IGenericRepository<T001> _repositoryCompany;
+        private ICompanyBLL _companyBll;
+        private IPlantBLL _plantBll;
+        private IBrandRegistrationBLL _brandRegistrationBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -38,6 +42,9 @@ namespace Sampoerna.EMS.BLL
             _repositoryUom = _uow.GetGenericRepository<UOM>();
             _repositoryPlant = _uow.GetGenericRepository<T001W>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
+            _companyBll = new CompanyBLL(_uow, _logger);
+            _plantBll = new PlantBLL(_uow, _logger);
+            _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -92,8 +99,8 @@ namespace Sampoerna.EMS.BLL
 
             var originDto = Mapper.Map<ProductionDto>(origin);
 
-            
-            dbProduction.CREATED_DATE = DateTime.Now;
+            //to do ask and to do refactor
+            //SetChange(originDto, productionDto, userId);
 
             if (dbProduction.UOM == "KG")
             {
@@ -108,7 +115,8 @@ namespace Sampoerna.EMS.BLL
                 dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
                 dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
             }
-            SetChange(originDto, productionDto, userId);
+            dbProduction.CREATED_DATE = DateTime.Now;
+
             _repository.InsertOrUpdate(dbProduction);
             _uow.SaveChanges();
         }
@@ -208,8 +216,45 @@ namespace Sampoerna.EMS.BLL
             var dbUpload = Mapper.Map<PRODUCTION>(uploadItems);
 
             _repository.InsertOrUpdate(dbUpload);
-            dbUpload.CREATED_DATE = DateTime.Now;
+
             _uow.SaveChanges();
+        }
+
+        private List<ProductionUploadItems> ValidateProductionUpload(ProductionUploadItems input)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<ProductionUploadItems>();
+
+            foreach (var productionUploadItems in outputList)
+            {
+                messageList.Clear();
+
+                var output = Mapper.Map<ProductionUploadItems>(productionUploadItems);
+
+                var dbCompany = _companyBll.GetById(productionUploadItems.CompanyCode);
+                if (dbCompany == null)
+                    messageList.Add("Company Code is Not valid");
+
+                var dbPlant = _plantBll.GetId(productionUploadItems.PlantWerks);
+                if(dbPlant == null)
+                    messageList.Add("Plant Id is not valid");
+
+                var dbBrand = _brandRegistrationBll.GetById(productionUploadItems.PlantWerks, productionUploadItems.FaCode);
+                    if(dbBrand == null)
+                        messageList.Add("Fa Code is not Register");
+
+                if (string.IsNullOrEmpty(productionUploadItems.ProductionDate))
+                     messageList.Add("Daily Production Date is not valid");
+               
+                var dbproduction = GetExistDto(productionUploadItems.CompanyCode, productionUploadItems.PlantWerks,
+                    productionUploadItems.FaCode, Convert.ToDateTime(productionUploadItems.ProductionDate));
+                    if(dbproduction == null)
+                    messageList.Add("Production data all ready Exist");
+                  
+
+
+            }
+            return outputList;
         }
 
         private void SetChange(ProductionDto origin, ProductionDto data, string userId)
@@ -231,7 +276,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
-                        FORM_ID = data.CompanyCode+"_" + data.PlantWerks+"_" + data.FaCode+"_" + data.ProductionDate.ToString("ddMMMyyyy"),
+                        FORM_ID = data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" + data.ProductionDate.ToString("ddMMMyyyy"),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
                         MODIFIED_DATE = DateTime.Now

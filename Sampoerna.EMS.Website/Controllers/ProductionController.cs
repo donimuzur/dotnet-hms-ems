@@ -147,6 +147,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
                 data.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
 
+                data.CreatedDate = DateTime.Now;
+
                 
                 try
                 {
@@ -389,6 +391,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 foreach (var dataRow in data.DataRows)
                 {
+                    if (dataRow[0] == "")
+                    {
+                        continue;
+                    }
+
                     var item = new ProductionUploadItems();
 
                     item.CompanyCode = dataRow[0];

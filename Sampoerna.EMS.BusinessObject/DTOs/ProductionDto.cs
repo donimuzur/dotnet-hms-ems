@@ -11,6 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string CompanyCodeX { get; set; }
         public string PlantWerksX { get; set; }
         public string FaCodeX { get; set; }
+        public string ProductionDateX { get; set; }
         public string CompanyCode { get; set; }
         public string PlantWerks { get; set; }
         public string FaCode { get; set; }
@@ -59,6 +60,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ModifiedDate { get; set; }
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
+        public string MesssageUploadFileDocuments { get; set; }
 
     }
 
