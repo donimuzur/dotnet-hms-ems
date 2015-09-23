@@ -57,4 +57,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
     }
 
+
+    public class Ck4CGetSummaryReportByParamInput
+    {
+        public string Ck4CNo { get; set; }
+     
+        public string PlantId { get; set; }
+
+    }
 }

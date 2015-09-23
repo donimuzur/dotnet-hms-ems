@@ -1,0 +1,40 @@
+﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CSummaryReportsViewModel
+
+<table id="ck4CTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>CK-4C Number</th>
+            <th>Ce Office</th>
+            <th>Plant</th>
+            <th>Plant Description</th>
+            <th>License Number</th>
+            <th>Report Period</th>
+            <th>Status</th>
+
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.Ck4CNo)</td>
+                    <td>@Html.DisplayFor(model => item.CeOffice)</td>
+                    <td>@Html.DisplayFor(model => item.PlantId)</td>
+                    <td>@Html.DisplayFor(model => item.PlantDescription)</td>
+                    <td>@Html.DisplayFor(model => item.LicenseNumber)</td>
+                    <td>@Html.DisplayFor(model => item.ReportPeriod)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Status)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+

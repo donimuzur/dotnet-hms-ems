@@ -677,5 +677,60 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        #region SummaryReport
+
+        public List<Ck4CSummaryReportDto> GetSummaryReportsByParam(Ck4CGetSummaryReportByParamInput input)
+        {
+
+            Expression<Func<CK4C, bool>> queryFilter = PredicateHelper.True<CK4C>();
+
+            if (!string.IsNullOrEmpty(input.Ck4CNo))
+            {
+                queryFilter = queryFilter.And(c => c.NUMBER == input.Ck4CNo);
+            }
+
+         
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
+            }
+
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            
+            var rc = _repository.Get(queryFilter, null, includeTables).ToList();
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+       
+            return SetDataSummaryReport(rc);
+        }
+
+        private List<Ck4CSummaryReportDto> SetDataSummaryReport(List<CK4C> listCk4C)
+        {
+            var result = new List<Ck4CSummaryReportDto>();
+
+            foreach (var dtData in listCk4C)
+            {
+                var summaryDto = new Ck4CSummaryReportDto();
+
+                summaryDto.Ck4CNo = dtData.NUMBER;
+                summaryDto.CeOffice = dtData.COMPANY_ID;
+                summaryDto.PlantId = dtData.PLANT_ID;
+                summaryDto.PlantDescription = dtData.PLANT_NAME;
+                summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
+                summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                
+                result.Add(summaryDto);
+
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 }
