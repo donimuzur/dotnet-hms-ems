@@ -72,7 +72,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //add to print history
             var input = new PrintHistoryDto()
             {
-                FORM_TYPE_ID = Enums.FormType.PBCK1,
+                FORM_TYPE_ID = Enums.FormType.PBCK7,
                 FORM_ID = pbck7.Pbck7Id,
                 FORM_NUMBER = pbck7.Pbck7Number,
                 PRINT_DATE = DateTime.Now,
@@ -95,7 +95,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //add to print history
             var input = new PrintHistoryDto()
             {
-                FORM_TYPE_ID = Enums.FormType.PBCK1,
+                FORM_TYPE_ID = Enums.FormType.PBCK3,
                 FORM_ID = pbck3.Pbck3Id,
                 FORM_NUMBER = pbck3.Pbck3Number,
                 PRINT_DATE = DateTime.Now,
@@ -531,7 +531,25 @@ namespace Sampoerna.EMS.Website.Controllers
             var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
             GetDetailPbck7(existingData);
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
-            return View("Detail", InitialModel(model));
+            model = InitialModel(model);
+            if (model.Pbck7Status == Enums.DocumentStatus.Completed)
+            {
+                var printHistory =
+                    Mapper.Map<List<PrintHistoryItemModel>>(
+                        _printHistoryBll.GetByFormNumber(model.Pbck7Number));
+                model.PrintHistoryList = printHistory;
+            }
+            if (model.Pbck3Dto != null)
+            {
+                if (model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Completed)
+                {
+                    var printHistory =
+                        Mapper.Map<List<PrintHistoryItemModel>>(
+                            _printHistoryBll.GetByFormNumber(model.Pbck3Dto.Pbck3Number));
+                    model.PrintHistoryListPbck3 = printHistory;
+                }
+            }
+            return View("Detail", model);
         }
 
         public void SaveBack3(Pbck7Pbck3CreateViewModel model)
