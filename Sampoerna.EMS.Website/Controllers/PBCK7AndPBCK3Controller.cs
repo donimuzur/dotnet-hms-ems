@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -119,18 +120,41 @@ namespace Sampoerna.EMS.Website.Controllers
             ds.Tables.Add(dtDetail);
             return ds;
         }
+
         [EncryptedParameter]
-        public FileResult PrintPreview(int id)
+        public FileResult PrintPreviewPbck7(int id)
+        {
+            return PrintPreview(id, true);
+        }
+        [EncryptedParameter]
+        public FileResult PrintPreviewPbck3(int id)
+        {
+            return PrintPreview(id, false);
+        }
+        public FileResult PrintPreview(int id, bool isPbck7)
         {
             var pbck7 = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
-
+            if (!isPbck7)
+            {
+                //get pbck3
+                if (pbck7 != null)
+                {
+                    pbck7.Pbck3Dto = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(pbck7.Pbck7Id);
+                }
+            }
             var dsPbck7 = CreatePbck7Ds();
             var dt = dsPbck7.Tables[0];
             DataRow drow;
             drow = dt.NewRow();
-            if (pbck7.ApprovedBy != null)
+            
+           string approvedBy = null;
+            if(isPbck7)
+                approvedBy = pbck7.ApprovedBy;
+            else
+                approvedBy = pbck7.Pbck3Dto.ApprovedBy;
+            if (approvedBy != null)
             {
-                drow["PoaName"] = _poaBll.GetById(pbck7.ApprovedBy).PRINTED_NAME;
+                drow["PoaName"] = _poaBll.GetById(approvedBy).PRINTED_NAME;
             }
             var company = _plantBll.GetId(pbck7.PlantId);
             var nppbkc = _nppbkcBll.GetById(pbck7.NppbkcId);
@@ -166,19 +190,33 @@ namespace Sampoerna.EMS.Website.Controllers
 
             drow["TotalKemasan"] = totalKemasan;
             drow["TotalCukai"] = totalCukai;
-            drow["PrintedDate"] = pbck7.Pbck7Date == null ? null : pbck7.Pbck7Date.ToString("dd MMMM yyyy");
-          
-            if (pbck7.Pbck7Status != Enums.DocumentStatus.WaitingGovApproval || pbck7.Pbck7Status != Enums.DocumentStatus.GovApproved
-                || pbck7.Pbck7Status != Enums.DocumentStatus.Completed)
+            drow["PrintedDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy");
+            if (isPbck7)
             {
-                drow["Preview"] = "PREVIEW LACK-2";
+                if (pbck7.Pbck7Status != Enums.DocumentStatus.Completed)
+                {
+                    drow["Preview"] = "PREVIEW PBCK-7";
+                }
+                else
+                {
+                    drow["Preview"] = "PBCK-7";
+
+                }
             }
             else
             {
-                drow["Preview"] = "PBCK-7";
-                
+                if (pbck7.Pbck3Dto.Pbck3Status != Enums.DocumentStatus.Completed)
+                {
+                    drow["Preview"] = "PREVIEW PBCK-3";
+                }
+                else
+                {
+                    drow["Preview"] = "PBCK-3";
+
+                }
+
             }
-            drow["Nomor"] = pbck7.Pbck7Number;
+            drow["Nomor"] = isPbck7 ? pbck7.Pbck7Number :pbck7.Pbck3Dto.Pbck3Number;
             drow["Lampiran"] = pbck7.Lampiran;
 
             if (nppbkc != null)
@@ -192,7 +230,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType);
             drow["NppbkcCity"] = nppbkc.CITY;
-            drow["PbckDate"] = pbck7.Pbck7Date.ToString("dd MMM yyyy");
+            drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy");
           
             dt.Rows.Add(drow);
 
@@ -205,7 +243,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 drowDetail = dtDetail.NewRow();
                 drowDetail[0] = item.ProdTypeAlias;
                 drowDetail[1] = item.Brand;
-                drowDetail[2] = item.Content;
+                drowDetail[2] = Convert.ToInt32(item.Content);
                 drowDetail[3] = item.Pbck7Qty;
                 drowDetail[4] = item.SeriesValue;
                 drowDetail[5] = item.Hje;
@@ -225,6 +263,9 @@ namespace Sampoerna.EMS.Website.Controllers
             Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
             return File(stream, "application/pdf");
         }
+
+
+   
 
         private byte[] GetHeader(string imagePath)
         {
@@ -502,6 +543,11 @@ namespace Sampoerna.EMS.Website.Controllers
             pbck4xmlDto.CompnDate = ck2.Ck2Date;
             pbck4xmlDto.CompnValue = ck2.Ck2Value.HasValue? ck2.Ck2Value.ToString() : null;
             pbck4xmlDto.CompNo = ck2.Ck2Number;
+            var fileName = System.Configuration.ConfigurationManager.AppSettings["CK5PathXml"] + "COMPENSATION-CK2-" +
+                               DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
+            pbck4xmlDto.GeneratedXmlPath = fileName;
+               
             var xmlwriter = new XMLReader.XmlPBCK4DataWriter();
             xmlwriter.CreatePbck4Xml(pbck4xmlDto);
         }
@@ -554,7 +600,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                var pbck3 = new Pbck3Dto();
               
-                if (existingData.Pbck3Dto != null)
+                if (existingData.Pbck3Dto != null && existingData.Pbck3Dto.Pbck3Id != 0)
                 {
                     pbck3 = existingData.Pbck3Dto;
                     pbck3.Pbck3Date = model.Pbck3Dto.Pbck3Date;

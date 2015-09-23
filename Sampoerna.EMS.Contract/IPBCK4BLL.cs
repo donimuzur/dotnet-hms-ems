@@ -34,5 +34,7 @@ namespace Sampoerna.EMS.Contract
        GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode);
 
        string GetCk1DateByCk1Id(long ck1Id);
+
+       decimal GetBlockedStockByPlantAndFaCode(string plant, string faCode);
    }
 }

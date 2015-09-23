@@ -283,11 +283,11 @@ namespace Sampoerna.EMS.BLL
             }
             if (docStatus == Core.Enums.DocumentStatus.GovApproved)
             {
-                return Core.Enums.ActionType.GovPartialApprove;
+                return Core.Enums.ActionType.GovApprove;
             }
             if (docStatus == Core.Enums.DocumentStatus.Completed)
             {
-                return Core.Enums.ActionType.GovApprove;
+                return Core.Enums.ActionType.Completed;
             }
             return Core.Enums.ActionType.Reject;
         }
@@ -323,11 +323,11 @@ namespace Sampoerna.EMS.BLL
             }
             if (docStatus == Core.Enums.DocumentStatus.GovApproved)
             {
-                return Core.Enums.ActionType.GovPartialApprove;
+                return Core.Enums.ActionType.GovApprove;
             }
             if (docStatus == Core.Enums.DocumentStatus.Completed)
             {
-                return Core.Enums.ActionType.GovApprove;
+                return Core.Enums.ActionType.Completed;
             }
             return Core.Enums.ActionType.Reject;
         }

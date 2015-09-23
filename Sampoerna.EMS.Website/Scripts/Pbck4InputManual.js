@@ -48,6 +48,7 @@ function ajaxGetListFaCode(url, formData, selectedValue) {
                 listMaterial.html(list);
                 if (selectedValue != '') {
                     $('#uploadFaCode').val(selectedValue);
+                   
                 }
 
 
@@ -107,7 +108,7 @@ function ajaxGetBrandItems(url, formData) {
                     $("#uploadHje").val(data.Hje);
                     $("#uploadTariff").val(data.Tariff);
                     $("#uploadColour").val(data.Colour);
-                   
+                    $("#uploadBlockedStocked").val(data.BlockedStock);
                 }
 
 
@@ -156,7 +157,15 @@ function ValidateManualPbck4() {
         AddValidationClass(false, 'uploadReqQty');
         result = false;
     }
-    
+
+    if (result) {
+        
+        if (parseFloat($('#uploadReqQty').val()) > parseFloat($('#uploadBlockedStocked').val())) {
+            AddValidationClass(false, 'uploadReqQty');
+            result = false;
+        }
+    }
+
     AddValidationClass(true, 'uploadApprovedQty');
     if ($.isNumeric($('#uploadApprovedQty').val()) == false) {
         AddValidationClass(false, 'uploadApprovedQty');
@@ -196,7 +205,7 @@ function ClearInputForm() {
     $("#uploadHje").val('');
     $("#uploadTariff").val('');
     $("#uploadColour").val('');
-
+    $("#uploadBlockedStocked").val('0');
 
 
 }
@@ -251,6 +260,7 @@ function AddRowPbck4() {
 
                 "<td></td>" +
                 "<td style='display: none'>" + $('#uploadCk1Id').val() + "</td>" +
+                "<td style='display: none'>" + $('#uploadBlockedStocked').val() + "</td>" +
                
               
                 "</tr>");
@@ -302,6 +312,7 @@ function UpdateRowPbck4() {
                 $(this).find('td').eq(18).text($('#uploadRemarks').val());
               
                 $(this).find('td').eq(20).text($('#uploadCk1Id').val());
+                $(this).find('td').eq(21).text($('#uploadBlockedStocked').val());
 
             }
         });
