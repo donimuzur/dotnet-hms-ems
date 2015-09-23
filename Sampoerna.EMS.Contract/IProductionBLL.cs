@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.Contract
 
         List<ProductionDto> GetAllProduction();
 
-        void Save(ProductionDto productionDto);
+        void Save(ProductionDto productionDto, string userId);
         
         ProductionDto GetById(string companyCode, string plantWerk, string faCode, DateTime productionDate );
 
@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Contract
 
         PRODUCTION GetExistDto(string companyCode, string plantWerk, string faCode, DateTime productionDate);
 
-        void SaveUpload(ProductionUploadItems uploadItems);
+        void SaveUpload(ProductionUploadItems uploadItems, string userId);
 
     }
 }

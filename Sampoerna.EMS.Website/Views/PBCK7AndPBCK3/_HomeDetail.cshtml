@@ -106,7 +106,7 @@
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
                                             @Html.HiddenFor(x=>x.NppbkcId)
-                                            @Html.DropDownList("_nppbck", Model.NppbkIdList, "select", new {@class = "form-control", @disabled="disabled"})
+                                            @Html.DropDownList("_nppbck", Model.NppbkIdList, Model.NppbkcId, new {@class = "form-control", @disabled="disabled"})
                                         </div>
                                     </div>
                                 </div>
@@ -124,7 +124,7 @@
                                         <label class="col-md-4">Plant ID</label>
                                         <div class="col-md-8">
                                             @Html.HiddenFor(x=>x.PlantId)
-                                            @Html.DropDownList("_plantid", Model.PlantList, "select", new {@class = "form-control", @disabled="disabled"})
+                                            @Html.DropDownList("_plantid", Model.PlantList, Model.PlantId, new {@class = "form-control", @disabled="disabled"})
                                         </div>
                                     </div>
                                 </div>

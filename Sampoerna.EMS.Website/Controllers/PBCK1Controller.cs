@@ -699,7 +699,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
-            else {
+            else if(CurrentUser.UserRole == Enums.UserRole.POA){
                 model.AllowApproveAndReject = false;
                 foreach (POADto poa in _poaBll.GetPoaByNppbkcIdAndMainPlant(model.Detail.NppbkcId))
                 { 
@@ -743,7 +743,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Model Error", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
 
