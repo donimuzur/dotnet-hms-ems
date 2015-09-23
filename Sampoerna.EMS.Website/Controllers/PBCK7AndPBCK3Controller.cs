@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -145,9 +146,15 @@ namespace Sampoerna.EMS.Website.Controllers
             var dt = dsPbck7.Tables[0];
             DataRow drow;
             drow = dt.NewRow();
-            if (pbck7.ApprovedBy != null)
+            
+           string approvedBy = null;
+            if(isPbck7)
+                approvedBy = pbck7.ApprovedBy;
+            else
+                approvedBy = pbck7.Pbck3Dto.ApprovedBy;
+            if (approvedBy != null)
             {
-                drow["PoaName"] = _poaBll.GetById(pbck7.ApprovedBy).PRINTED_NAME;
+                drow["PoaName"] = _poaBll.GetById(approvedBy).PRINTED_NAME;
             }
             var company = _plantBll.GetId(pbck7.PlantId);
             var nppbkc = _nppbkcBll.GetById(pbck7.NppbkcId);
@@ -184,16 +191,30 @@ namespace Sampoerna.EMS.Website.Controllers
             drow["TotalKemasan"] = totalKemasan;
             drow["TotalCukai"] = totalCukai;
             drow["PrintedDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy");
-          
-            if (pbck7.Pbck7Status != Enums.DocumentStatus.WaitingGovApproval || pbck7.Pbck7Status != Enums.DocumentStatus.GovApproved
-                || pbck7.Pbck7Status != Enums.DocumentStatus.Completed)
+            if (isPbck7)
             {
-                drow["Preview"] = isPbck7 ? "PREVIEW PBCK-7" : "PREVIEW PBCK-3";
+                if (pbck7.Pbck7Status != Enums.DocumentStatus.Completed)
+                {
+                    drow["Preview"] = "PREVIEW PBCK-7";
+                }
+                else
+                {
+                    drow["Preview"] = "PBCK-7";
+
+                }
             }
             else
             {
-                drow["Preview"] = isPbck7 ? "PBCK-7" : "PBCK-3";
-                
+                if (pbck7.Pbck3Dto.Pbck3Status != Enums.DocumentStatus.Completed)
+                {
+                    drow["Preview"] = "PREVIEW PBCK-3";
+                }
+                else
+                {
+                    drow["Preview"] = "PBCK-3";
+
+                }
+
             }
             drow["Nomor"] = isPbck7 ? pbck7.Pbck7Number :pbck7.Pbck3Dto.Pbck3Number;
             drow["Lampiran"] = pbck7.Lampiran;
@@ -209,7 +230,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType);
             drow["NppbkcCity"] = nppbkc.CITY;
-            drow["PbckDate"] = pbck7.Pbck7Date.ToString("dd MMM yyyy");
+            drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy");
           
             dt.Rows.Add(drow);
 
@@ -222,7 +243,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 drowDetail = dtDetail.NewRow();
                 drowDetail[0] = item.ProdTypeAlias;
                 drowDetail[1] = item.Brand;
-                drowDetail[2] = item.Content;
+                drowDetail[2] = Convert.ToInt32(item.Content);
                 drowDetail[3] = item.Pbck7Qty;
                 drowDetail[4] = item.SeriesValue;
                 drowDetail[5] = item.Hje;
@@ -522,6 +543,11 @@ namespace Sampoerna.EMS.Website.Controllers
             pbck4xmlDto.CompnDate = ck2.Ck2Date;
             pbck4xmlDto.CompnValue = ck2.Ck2Value.HasValue? ck2.Ck2Value.ToString() : null;
             pbck4xmlDto.CompNo = ck2.Ck2Number;
+            var fileName = System.Configuration.ConfigurationManager.AppSettings["CK5PathXml"] + "COMPENSATION-CK2-" +
+                               DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
+            pbck4xmlDto.GeneratedXmlPath = fileName;
+               
             var xmlwriter = new XMLReader.XmlPBCK4DataWriter();
             xmlwriter.CreatePbck4Xml(pbck4xmlDto);
         }
@@ -574,7 +600,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                var pbck3 = new Pbck3Dto();
               
-                if (existingData.Pbck3Dto != null)
+                if (existingData.Pbck3Dto != null && existingData.Pbck3Dto.Pbck3Id != 0)
                 {
                     pbck3 = existingData.Pbck3Dto;
                     pbck3.Pbck3Date = model.Pbck3Dto.Pbck3Date;
