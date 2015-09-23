@@ -1190,7 +1190,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     Company = d.NppbkcCompanyName,
                     Nppbkc = "'" + d.NppbkcId,
-                    Kppbc = "'" + d.NppbkcKppbcId,
+                    Kppbc = d.NppbkcKppbcName,
                     Pbck1Number = "'" + d.Pbck1Number,
                     Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
                     OriginalNppbkc = "'" + d.SupplierNppbkcId,
@@ -1420,12 +1420,23 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //Get All
                 var pbck1Data = _pbck1Bll.GetMonitoringUsageByParam(new Pbck1GetMonitoringUsageByParamInput());
-                return Mapper.Map<List<Pbck1MonitoringUsageItem>>(pbck1Data);
+                foreach (var item in pbck1Data)
+                {
+                    var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
+                    item.NppbkcKppbcName = Kppbc == null ? "" : Kppbc.NAME1;
+                }
+                var a = Mapper.Map<List<Pbck1MonitoringUsageItem>>(pbck1Data);
+                return a;
             }
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetMonitoringUsageByParamInput>(filter);
             var dbData = _pbck1Bll.GetMonitoringUsageByParam(input);
+            foreach (var item in dbData)
+            {
+                var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
+                item.NppbkcKppbcName = Kppbc == null ? "" : Kppbc.NAME1;
+            }
             return Mapper.Map<List<Pbck1MonitoringUsageItem>>(dbData);
         }
         
@@ -1489,7 +1500,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "NppbkcKppbcId",
+                    DataField = "NppbkcKppbcName",
                     HeaderText = "Kppbc"
                 });
             }
