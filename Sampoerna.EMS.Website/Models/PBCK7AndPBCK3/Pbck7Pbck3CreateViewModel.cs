@@ -18,6 +18,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         {
             Back1Dto = new Back1Dto();
             Pbck3Dto =new Pbck3Dto();
+            Ck2Dto = new Ck2Dto();
+            Back3Dto = new Back3Dto();
         }
 
         public int Id { get; set; }

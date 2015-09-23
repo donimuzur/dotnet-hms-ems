@@ -192,3 +192,12 @@ function removeDocBack1(id, url, obj) {
         });
     
 }
+function AddValidationClass(isValid, objName) {
+    if (isValid) {
+        $('#' + objName).removeClass('input-validation-error');
+        $('#' + objName).addClass('valid');
+    } else {
+        $('#' + objName).removeClass('valid');
+        $('#' + objName).addClass('input-validation-error');
+    }
+}
