@@ -1085,7 +1085,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
                     },
                     //view all data pbck1 completed document
-                    DetailsList = SearchSummaryReports()
+                    DetailsList = SearchSummaryReports().OrderBy(c => c.NppbkcId).ToList()
                 };
             }
             catch (Exception ex)
@@ -1390,7 +1390,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         YearToList = GetYearListPbck1(false),
                         NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
                     },
-                    DetailsList = SearchMonitoringUsages()
+                    DetailsList = SearchMonitoringUsages().OrderBy(c => c.NppbkcId).ToList()
                 };
             }
             catch (Exception ex)

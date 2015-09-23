@@ -1219,7 +1219,7 @@ namespace Sampoerna.EMS.BLL
                     queryFilter.And(c => c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year >= input.YearFrom.Value);
             if (input.YearTo.HasValue)
                 queryFilter =
-                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year >= input.YearTo.Value);
+                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year <= input.YearTo.Value);
             if (!string.IsNullOrEmpty(input.CompanyCode))
                 queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -1263,7 +1263,7 @@ namespace Sampoerna.EMS.BLL
 
             if (input.YearTo.HasValue)
                 queryFilter =
-                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year >= input.YearTo.Value);
+                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year <= input.YearTo.Value);
 
             if (!string.IsNullOrEmpty(input.CompanyCode))
                 queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
