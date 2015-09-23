@@ -324,6 +324,7 @@
     <Compile Include="Models\LACK1\Lack1BaseItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
     <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1GenerateInputModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexCompletedDocumentViewModel.cs" />
@@ -334,6 +335,7 @@
     <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
     <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
+    <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
@@ -1141,8 +1143,12 @@
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack1.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4ListSummaryReport.cshtml" />
     <Content Include="Views\Waste\UploadManualWaste.cshtml" />
+    <Content Include="Views\LACK1\_Lack1SummaryReport.cshtml" />
+    <Content Include="Views\LACK1\SummaryReport.cshtml" />
     <Content Include="Views\Waste\_Upload.cshtml" />
     <Content Include="Views\Waste\_UploadList.cshtml" />
+    <Content Include="Views\LACK1\DetailReport.cshtml" />
+    <Content Include="Views\LACK1\_Lack1DetailReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack3.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadCk2.cshtml" />
   </ItemGroup>

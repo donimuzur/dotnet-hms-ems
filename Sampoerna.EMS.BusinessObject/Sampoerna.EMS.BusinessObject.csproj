@@ -139,12 +139,14 @@
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
     <Compile Include="DTOs\InventoryMovementDto.cs" />
+    <Compile Include="DTOs\Lack1DetailReportDto.cs" />
     <Compile Include="DTOs\Lack1GeneratedDto.cs" />
     <Compile Include="DTOs\Lack1IncomeDetailDto.cs" />
     <Compile Include="DTOs\Lack1Pbck1MappingDto.cs" />
     <Compile Include="DTOs\Lack1PlantDto.cs" />
     <Compile Include="DTOs\Lack1PrintOutDto.cs" />
     <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
+    <Compile Include="DTOs\Lack1SummaryReportDto.cs" />
     <Compile Include="DTOs\Lack1TrackingDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
