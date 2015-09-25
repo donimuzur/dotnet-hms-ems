@@ -116,13 +116,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
         
-        private SelectList LackYearList()
+        private SelectList LackYearList(int year)
         {
             var years = new List<SelectItemModel>();
-            var currentYear = DateTime.Now.Year;
-            years.Add(new SelectItemModel() { ValueField = currentYear + 1, TextField = (currentYear + 1).ToString() });
-            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
-            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            years.Add(new SelectItemModel() { ValueField = year, TextField = year.ToString() });
+            years.Add(new SelectItemModel() { ValueField = year - 1, TextField = (year - 1).ToString() });
+            years.Add(new SelectItemModel() { ValueField = year - 2, TextField = (year - 2).ToString() });
             return new SelectList(years, "ValueField", "TextField");
         }
 
@@ -233,7 +232,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SupplierPortList = GlobalFunctions.GetSupplierPortList(_supplierPortBll);
             //model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
             model.SupplierPlantList = GlobalFunctions.GetPlantAll();
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+
+            var dataGoodType = _goodTypeBll.GetAll().Where(x => x.IS_DELETED != true && ( x.EXC_GOOD_TYP == "02" || x.EXC_GOOD_TYP == "04"));
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(dataGoodType);
+
+            model.GoodTypeList = new SelectList(selectItemSource, "ValueField", "TextField");
             model.UomList = GlobalFunctions.GetUomList(_uomBll);
 
             var pbck1RefList = GetCompletedDocument();
@@ -247,7 +250,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PbckReferenceList = new SelectList(pbck1RefList, "Pbck1Id", "Pbck1Number");
 
             //model.YearList = CreateYearList();
-            model.YearList = LackYearList();
+            var year = DateTime.Now.Year;
+            
+            if(model.Detail != null && model.Detail.PeriodFrom.HasValue){
+                year = model.Detail.PeriodFrom.Value.Year;
+            }
+
+            model.YearList = LackYearList(year);
 
             model.AllowPrintDocument = false;
 
