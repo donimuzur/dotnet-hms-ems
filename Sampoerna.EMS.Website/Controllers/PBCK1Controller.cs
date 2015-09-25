@@ -120,6 +120,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var years = new List<SelectItemModel>();
             var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear + 1, TextField = (currentYear + 1).ToString() });
             years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
             years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
             return new SelectList(years, "ValueField", "TextField");
@@ -422,11 +423,6 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
 
-                if (!ValidateEditDocument(model))
-                {
-                    return RedirectToAction("Index");
-                }
-
                 var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
@@ -478,6 +474,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval)
                 {
                     model.ActionType = "GovApproveDocument";
+                }
+
+                if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject) )
+                { 
+                
+                }else if (!ValidateEditDocument(model))
+                {
+                    return RedirectToAction("Index");
                 }
 
             }
@@ -555,9 +559,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     WorkflowActionType = Enums.ActionType.Modified
                 };
 
-                if (!_pbck1Bll.checkUniquePBCK1(input))
+                var checkUnique = _pbck1Bll.checkUniquePBCK1(input);
+
+                if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK1 Cannot Duplicate", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 dengan no " + checkUnique + " sudah ada", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
 
@@ -765,9 +771,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     WorkflowActionType = Enums.ActionType.Created
                 };
 
-                if (!_pbck1Bll.checkUniquePBCK1(input))
+                var checkUnique = _pbck1Bll.checkUniquePBCK1(input);
+
+                if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK1 Cannot Duplicate", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 dengan no " + checkUnique +" sudah ada", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
 
@@ -1087,7 +1095,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
                     },
                     //view all data pbck1 completed document
-                    DetailsList = SearchSummaryReports()
+                    DetailsList = SearchSummaryReports().OrderBy(c => c.NppbkcId).ToList()
                 };
             }
             catch (Exception ex)
@@ -1185,7 +1193,7 @@ namespace Sampoerna.EMS.Website.Controllers
                        {
                            Company = d.NppbkcCompanyName,
                            Nppbkc = "'" + d.NppbkcId,
-                           Kppbc = "'" + d.NppbkcKppbcId,
+                    Kppbc = d.NppbkcKppbcName,
                            Pbck1Number = "'" + d.Pbck1Number,
                            Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
                            OriginalNppbkc = "'" + d.SupplierNppbkcId,
@@ -1392,7 +1400,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         YearToList = GetYearListPbck1(false),
                         NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
                     },
-                    DetailsList = SearchMonitoringUsages()
+                    DetailsList = SearchMonitoringUsages().OrderBy(c => c.NppbkcId).ToList()
                 };
             }
             catch (Exception ex)
@@ -1415,12 +1423,23 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //Get All
                 var pbck1Data = _pbck1Bll.GetMonitoringUsageByParam(new Pbck1GetMonitoringUsageByParamInput());
-                return Mapper.Map<List<Pbck1MonitoringUsageItem>>(pbck1Data);
+                foreach (var item in pbck1Data)
+                {
+                    var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
+                    item.NppbkcKppbcName = Kppbc == null ? "" : Kppbc.NAME1;
+                }
+                var a = Mapper.Map<List<Pbck1MonitoringUsageItem>>(pbck1Data);
+                return a;
             }
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetMonitoringUsageByParamInput>(filter);
             var dbData = _pbck1Bll.GetMonitoringUsageByParam(input);
+            foreach (var item in dbData)
+            {
+                var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
+                item.NppbkcKppbcName = Kppbc == null ? "" : Kppbc.NAME1;
+            }
             return Mapper.Map<List<Pbck1MonitoringUsageItem>>(dbData);
         }
 
@@ -1484,7 +1503,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "NppbkcKppbcId",
+                    DataField = "NppbkcKppbcName",
                     HeaderText = "Kppbc"
                 });
             }
@@ -2059,6 +2078,21 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 return Json(new { referenceId = reference.Pbck1Id, refereceNumber = reference.Pbck1Number });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetKPPBCByNPPBKC(string nppbkcid)
+        {
+            var nppbkc = _nppbkcbll.GetDetailsById(nppbkcid);
+            if (nppbkc == null)
+            {
+                return Json(new { kppbcid = (String) null, kppbcname = (String) null });
+            }
+            else
+            {
+                var lfa = _lfa1Bll.GetById(nppbkc.KPPBC_ID);
+                return Json(new { kppbcid = nppbkc.KPPBC_ID, kppbcname = lfa.NAME1 });
             }
         }
 

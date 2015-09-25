@@ -1220,7 +1220,7 @@ namespace Sampoerna.EMS.BLL
                     queryFilter.And(c => c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year >= input.YearFrom.Value);
             if (input.YearTo.HasValue)
                 queryFilter =
-                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year >= input.YearTo.Value);
+                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year <= input.YearTo.Value);
             if (!string.IsNullOrEmpty(input.CompanyCode))
                 queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -1264,7 +1264,7 @@ namespace Sampoerna.EMS.BLL
 
             if (input.YearTo.HasValue)
                 queryFilter =
-                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year >= input.YearTo.Value);
+                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year <= input.YearTo.Value);
 
             if (!string.IsNullOrEmpty(input.CompanyCode))
                 queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
@@ -1753,10 +1753,10 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public bool checkUniquePBCK1(Pbck1SaveInput input)
+        public string checkUniquePBCK1(Pbck1SaveInput input)
         {
             if (input.Pbck1.Pbck1Type == Enums.PBCK1Type.Additional)
-                return true;
+                return null;
 
             var dbData = _repository.Get(
                 p => ((input.Pbck1.Pbck1Id == null || p.PBCK1_ID != input.Pbck1.Pbck1Id) && p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId
@@ -1768,9 +1768,9 @@ namespace Sampoerna.EMS.BLL
             var data = Mapper.Map<List<Pbck1Dto>>(dbData);
 
             if (data.Count > 0)
-                return false;
+                return data.FirstOrDefault().Pbck1Number;
 
-            return true;
+            return null;
         }
 
         public Pbck1Dto GetPBCK1Reference(Pbck1ReferenceSearchInput input)

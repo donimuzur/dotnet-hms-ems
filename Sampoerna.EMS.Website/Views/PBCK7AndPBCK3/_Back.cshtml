@@ -20,7 +20,15 @@
                             <div class="row">
                                 <label class="col-md-4">CK-2 No</label>
                                 <div class="col-md-8">
-                                    @Html.TextBoxFor(x => x.Ck2Dto.Ck2Number, new { @class = "form-control" })
+                                    @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
+                                    {
+                                        @Html.TextBoxFor(x => x.Ck2Dto.Ck2Number, new {@class = "form-control"})
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBox("_ck2Number", Model.Ck2Dto.Ck2Number, new { @class = "form-control", @disabled = "disabled" })
+
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -32,8 +40,16 @@
                             <div class="row">
                                 <label class="col-md-4">BACK-3 No</label>
                                 <div class="col-md-8">
-                                    @Html.TextBoxFor(x=>x.Back3Dto.Back3Number, new { @class = "form-control"})
-                                </div>
+                                    @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
+                                    {
+                                        @Html.TextBoxFor(x => x.Back3Dto.Back3Number, new {@class = "form-control"})
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBox("_back3Number", Model.Back3Dto.Back3Number, new { @class = "form-control", @disabled="disabled" })
+
+                                    }
+                                        </div>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -41,7 +57,17 @@
                                 <label class="col-md-4">CK-2 Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        @Html.TextBoxFor(x => x.Ck2Dto.Ck2Date, new { @class = "form-control" })
+                                        @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
+                                        {
+
+                                            @Html.TextBoxFor(x => x.Ck2Dto.Ck2Date, new {@class = "form-control"})
+                                        }
+                                        else
+                                        {
+                                            
+                                            @Html.TextBox("_ck2Date",Model.Ck2Dto.Ck2Date, new { @class = "form-control", @disabled="disabled" })
+
+                                        }
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -54,7 +80,16 @@
                                 <label class="col-md-4">BACK-3 Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        @Html.TextBoxFor(x => x.Back3Dto.Back3Date, new { @class = "form-control" })
+                                        @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
+                                        {
+                                            @Html.TextBoxFor(x => x.Back3Dto.Back3Date, new {@class = "form-control"})
+                                        }
+                                        else
+                                        {
+                                           
+                                            @Html.TextBox("_back3Date", Model.Back3Dto.Back3Date, new { @class = "form-control", @disabled = "disabled" })
+
+                                        }
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -66,8 +101,15 @@
                             <div class="row">
                                 <label class="col-md-4">CK-2 Value</label>
                                 <div class="col-md-8">
-                                    @Html.TextBoxFor(x => x.Ck2Dto.Ck2Value, new { @class = "form-control" })
+                                    @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
+                                    {
+                                        @Html.TextBoxFor(x => x.Ck2Dto.Ck2Value, new {@class = "form-control"})
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBox("_ck2Value", Model.Ck2Dto.Ck2Value, new { @class = "form-control", @disabled="disabled" })
 
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -144,7 +186,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
+                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
                                             {
                                                 <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file-ck2">Add File</button>
                                             }
