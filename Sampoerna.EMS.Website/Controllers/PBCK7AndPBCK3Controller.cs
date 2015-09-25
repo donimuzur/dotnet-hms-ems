@@ -19,8 +19,10 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
+using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PBCK7AndPBCK3;
+using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
 
@@ -40,8 +42,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowBLL _workflowBll;
         private IHeaderFooterBLL _headerFooterBll;
         private ILFA1BLL _lfa1Bll;
+        private IPrintHistoryBLL _printHistoryBll;
+      
         public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
-            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
+            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IPrintHistoryBLL printHistoryBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7AndPbck7And3Bll = pbck7AndPbck3Bll;
@@ -56,6 +60,53 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowBll = workflowBll;
             _headerFooterBll = headerFooterBll;
             _lfa1Bll = lfa1Bll;
+            _printHistoryBll = printHistoryBll;
+        }
+        [HttpPost]
+        public ActionResult AddPrintHistoryPbck7(int id)
+        {
+          
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbck7 = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.PBCK7,
+                FORM_ID = pbck7.Pbck7Id,
+                FORM_NUMBER = pbck7.Pbck7Number,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel();
+            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(pbck7.Pbck7Number));
+            return PartialView("_PrintHistoryTable", model);
+
+        }
+        [HttpPost]
+        public ActionResult AddPrintHistoryPbck3(int id)
+        {
+           
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbck3 = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(id);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.PBCK3,
+                FORM_ID = pbck3.Pbck3Id,
+                FORM_NUMBER = pbck3.Pbck3Number,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel();
+            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(pbck3.Pbck3Number));
+            return PartialView("_PrintHistoryTable", model);
+
         }
 
         #region Index PBCK7
@@ -230,7 +281,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType);
             drow["NppbkcCity"] = nppbkc.CITY;
-            drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy");
+            drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMMM yyyy");
           
             dt.Rows.Add(drow);
 
@@ -256,7 +307,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             ReportClass rpt = new ReportClass();
             string report_path = System.Configuration.ConfigurationManager.AppSettings["Report_Path"];
-            rpt.FileName = report_path + "PBCK7\\Pbck7Report.rpt";
+            rpt.FileName = System.IO.Path.Combine(report_path, "PBCK7", "Pbck7Report.rpt");
             rpt.Load();
             rpt.SetDataSource(dsPbck7);
 
@@ -480,7 +531,25 @@ namespace Sampoerna.EMS.Website.Controllers
             var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
             GetDetailPbck7(existingData);
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
-            return View("Detail", InitialModel(model));
+            model = InitialModel(model);
+            if (model.Pbck7Status == Enums.DocumentStatus.Completed)
+            {
+                var printHistory =
+                    Mapper.Map<List<PrintHistoryItemModel>>(
+                        _printHistoryBll.GetByFormNumber(model.Pbck7Number));
+                model.PrintHistoryList = printHistory;
+            }
+            if (model.Pbck3Dto != null)
+            {
+                if (model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Completed)
+                {
+                    var printHistory =
+                        Mapper.Map<List<PrintHistoryItemModel>>(
+                            _printHistoryBll.GetByFormNumber(model.Pbck3Dto.Pbck3Number));
+                    model.PrintHistoryListPbck3 = printHistory;
+                }
+            }
+            return View("Detail", model);
         }
 
         public void SaveBack3(Pbck7Pbck3CreateViewModel model)
