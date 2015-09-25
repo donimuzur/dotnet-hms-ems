@@ -1794,16 +1794,20 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var dsPbck1 = new dsPbck1();
             dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail, printTitle);
-            dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.Detail.ExcisableGoodsDescription, pbck1ReportData.ProdPlanList);
+            dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.Detail.ExcisableGoodsDescription, pbck1ReportData);
             dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList);
-            dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData.RealisasiP3Bkc, pbck1ReportData.SummaryRealisasiP3Bkc);
+            dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData, pbck1ReportData.SummaryRealisasiP3Bkc);
             //dsPbck1 = FakeDataRealisasiP3Bkc(dsPbck1);
             dsPbck1 = AddDataHeaderFooter(dsPbck1, pbck1ReportData.HeaderFooter);
             return dsPbck1;
         }
 
-        private dsPbck1 AddDataRealisasiP3Bkc(dsPbck1 ds, List<Pbck1RealisasiP3BkcDto> data, List<Pbck1SummaryRealisasiProductionDetailDto> summaryData)
+        private dsPbck1 AddDataRealisasiP3Bkc(dsPbck1 ds, Pbck1ReportDto reportDto, List<Pbck1SummaryRealisasiProductionDetailDto> summaryData)
         {
+            var data = reportDto.RealisasiP3Bkc;
+            //var convertedUomId = reportDto.Detail.ConvertedUomId;
+            var realisasiUomId = reportDto.Detail.RealisasiUomId;
+            var bkcExcisableGoodsTypeDesc = reportDto.Detail.RealisasiBkcExcisableGoodsTypeDesc;
             if (data != null && data.Count > 0)
             {
                 var summaryJenis = string.Join(Environment.NewLine, summaryData.Select(d => d.ProductAlias));
@@ -1814,11 +1818,47 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     uomId = dt.Lack1UomId;
                 }
+                
+                var visibilityUomPemasukan = "l"; //code : l (liter), k (kg) regarding to converted uom id
+                var visibilityUomPenggunaan = "l"; //code : l (liter), k (kg) regarding to converted uom id
+                var visibilityUomBkc = "l"; //code : l (liter), k (kg), b (batang) //from Excisable Goods Type on Brand Registration by Prod_Code in Lack1 Production Data
+                decimal conversion;
+                decimal conversionBkc = 0;
 
-                var visibilityUomPemasukan = "l"; //code : l (liter), k (kg)
-                var visibilityUomPenggunaan = "l"; //code : l (liter), k (kg)
-                var visibilityUomBkc = "l"; //code : l (liter), k (kg), b (batang) //todo: ask to analyst
+                if (realisasiUomId.ToLower() == "g" || realisasiUomId.ToLower() == "kg")
+                {
+                    conversion = (decimal)0.001;
+                    visibilityUomPemasukan = "k";
+                    visibilityUomPenggunaan = "k";
+                }
+                else
+                {
+                    conversion = 1;
+                }
 
+                if (bkcExcisableGoodsTypeDesc.ToLower().Contains("hasil tembakau"))
+                {
+                    visibilityUomBkc = "b";//Batang
+                    conversionBkc = 1;
+                }
+                else if (bkcExcisableGoodsTypeDesc.ToLower().Contains("tembakau iris"))
+                {
+                    visibilityUomBkc = "k";//Kilogram
+                    if (reportDto.Detail.RealisasiBkcUomId.ToLower() == "g")
+                    {
+                        conversionBkc = (decimal)0.001;
+                    }
+                    else
+                    {
+                        conversionBkc = 1;
+                    }
+                }
+                else if (bkcExcisableGoodsTypeDesc.ToLower().Contains("alkohol"))
+                {
+                    conversionBkc = 1;
+                    visibilityUomBkc = "l";//Liter
+                }
+                
                 foreach (var item in data)
                 {
                     if (item.ProductionList.Count > 0)
@@ -1837,8 +1877,6 @@ namespace Sampoerna.EMS.Website.Controllers
                             var jumlahDisplay = "-";
                             decimal jumlah = 0;
 
-                            decimal conversion = 1;
-
                             var detailRow = ds.RealisasiP3BKC.NewRealisasiP3BKCRow();
                             detailRow.Bulan = item.Bulan;
                             detailRow.No = item.BulanId.ToString(CultureInfo.InvariantCulture);
@@ -1846,65 +1884,31 @@ namespace Sampoerna.EMS.Website.Controllers
                             detailRow.Jenis = prod.ProductAlias;
                             detailRow.Uom = uomId;
                             detailRow.UomBKC = prod.UomId;
-
-                            detailRow.VisibilityUomJumlahBkc = "l";
-                            detailRow.VisibilityUomPemasukan = "l";
-                            detailRow.VisibilityUomPenggunaan = "l";
-
-                            if (item.Lack1UomId.ToLower() == "g")
-                            {
-                                conversion = (1/1000);
-                                visibilityUomPemasukan = "k";
-                                visibilityUomPenggunaan = "k";
-                            }
-
-                            //todo: ask to analyst for fix
-                            decimal conversionBkc = 1;
-
-                            if (prod.UomId.ToLower() == "g")
-                            {
-                                conversionBkc = (1/1000);
-                            }
-
-                            if (prod.ExcisableGoodsTypeDesc.ToLower().Contains("hasil tembakau"))
-                            {
-                                visibilityUomBkc = "b"; //strikeout except "Batang" / "batang"
-                            }
-                            else if (prod.ExcisableGoodsTypeDesc.ToLower().Contains("tembakau iris"))
-                            {
-                                visibilityUomBkc = "k"; //strikeout except "Kilogram" / "kilogram"
-                            }
-                            else if (prod.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol"))
-                            {
-                                visibilityUomBkc = "l";
-                            }
-
+                            
                             if (item.SaldoAwal.HasValue)
                             {
                                 saldoAwal = item.SaldoAwal.Value;
-                                saldoAwalDisplay = item.SaldoAwal.Value.ToString("N0");
+                                saldoAwalDisplay = saldoAwal.ToString("N2");
                             }
                             if (item.Pemasukan.HasValue)
                             {
-                                pemasukan = conversion*item.Pemasukan.Value;
-                                pemasukanDisplay = item.Pemasukan.Value.ToString("N0");
+                                pemasukan = conversion * item.Pemasukan.Value;
+                                pemasukanDisplay = pemasukan.ToString("N2");
                             }
                             if (item.Penggunaan.HasValue)
                             {
-                                penggunaan = conversion*item.Penggunaan.Value;
-                                penggunaanDisplay = item.Penggunaan.Value.ToString("N0");
+                                penggunaan = conversion * item.Penggunaan.Value;
+                                penggunaanDisplay = penggunaan.ToString("N2");
                             }
                             if (prod.Amount.HasValue)
                             {
-                                jumlah = conversionBkc*prod.Amount.Value;
-                                jumlahDisplay = prod.Amount.Value.ToString("N0");
+                                jumlah = conversionBkc * prod.Amount.Value;
+                                jumlahDisplay = jumlah.ToString("N2");
                             }
-                            if (item.SaldoAkhir != null)
-                            {
-                                saldoAkhir = item.SaldoAkhir.Value;
-                                saldoAkhirDisplay = item.SaldoAkhir.Value.ToString("N0");
-                            }
-
+                            item.SaldoAkhir = saldoAwal + pemasukan - penggunaan;
+                            saldoAkhir = item.SaldoAkhir.Value;
+                            saldoAkhirDisplay = saldoAkhir.ToString("N2");
+                            
                             detailRow.PemasukanDisplay = pemasukanDisplay;
                             detailRow.Pemasukan = pemasukan;
                             detailRow.SaldoAwalDisplay = saldoAwalDisplay;
@@ -2061,15 +2065,19 @@ namespace Sampoerna.EMS.Website.Controllers
             return ds;
         }
 
-        private dsPbck1 AddDataPbck1ProdPlan(dsPbck1 ds, string excisableGoodsType, List<Pbck1ReportProdPlanDto> prodPlan)
+        private dsPbck1 AddDataPbck1ProdPlan(dsPbck1 ds, string excisableGoodsType, Pbck1ReportDto reportData)
         {
+            var prodPlan = reportData.ProdPlanList;
+            var summary = reportData.SummaryProdPlantList;
+
             if (prodPlan != null && prodPlan.Count > 0)
             {
-                int no = 1;
-
                 var visibilityUomAmount = "l";
                 var uomAmount = "Kilogram";
                 var visibilityUomBkc = "k";
+                var uomBkc = "Kilogram";
+                var uomBkcId = "Kg";
+                decimal conversiBkc = 1;
                 if (excisableGoodsType.ToLower().Contains("hasil tembakau"))
                 {
                     visibilityUomAmount = "b"; //strikeout except "Batang" / "batang"
@@ -2085,7 +2093,35 @@ namespace Sampoerna.EMS.Website.Controllers
                     uomAmount = "Liter";
                     visibilityUomAmount = "l";
                 }
+                var summaryUomBkc = string.Empty;
+                var firstDataBkc = prodPlan.FirstOrDefault(c => !string.IsNullOrEmpty(c.BkcRequiredUomId));
+                if (firstDataBkc != null)
+                {
+                    
+                    if (firstDataBkc.BkcRequiredUomId.ToLower() == "l")
+                    {
+                        visibilityUomBkc = "l";
+                        uomBkc = firstDataBkc.BkcRequiredUomName;
+                        uomBkcId = firstDataBkc.BkcRequiredUomId;
+                    }
+                    else if (firstDataBkc.BkcRequiredUomId.ToLower() == "g")
+                    {
+                        conversiBkc = (1/1000);
+                        visibilityUomBkc = "k";
+                        uomBkc = "Kilogram";
+                        uomBkcId = "Kg";
+                    }
+                    summaryUomBkc = string.Join(Environment.NewLine,
+                    summary.Select(d => uomBkcId).ToList());
+                }
 
+                var summaryJenis = string.Join(Environment.NewLine, summary.Select(d => d.ProdAlias).ToList());
+                var summaryAmount = string.Join(Environment.NewLine,
+                    summary.Select(d => d.TotalAmount.ToString("N2")).ToList());
+                var summaryUomAmount = string.Join(Environment.NewLine, summary.Select(d => uomAmount).ToList());
+                var summaryBkc = string.Join(Environment.NewLine,
+                    summary.Select(d => d.TotalBkc.ToString("N2")).ToList());
+                
                 foreach (var item in prodPlan)
                 {
                     var detailRow = ds.Pbck1ProdPlan.NewPbck1ProdPlanRow();
@@ -2094,29 +2130,33 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.ProdTypeName = item.ProdTypeName;
                     detailRow.ProdAlias = item.ProdAlias;
                     detailRow.AmountDecimal = 0;
-                    if (item.Amount != null)
+                    if (item.Amount.HasValue)
                     {
                         detailRow.AmountDecimal = item.Amount.Value;
                     }
                     detailRow.BkcRequired = 0;
-                    if (item.BkcRequired != null)
+                    if (item.BkcRequired.HasValue)
                     {
-                        detailRow.BkcRequired = item.BkcRequired.Value;
+                        detailRow.BkcRequired = conversiBkc * item.BkcRequired.Value;
                     }
-                    detailRow.BkcRequiredUomId = item.BkcRequiredUomId;
-                    detailRow.BkcRequiredUomName = item.BkcRequiredUomName;
+                    detailRow.BkcRequiredUomId = uomBkcId;
+                    detailRow.BkcRequiredUomName = uomBkc;
                     // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                     detailRow.MonthId = item.MonthId;
                     detailRow.MonthName = item.MonthName;
                     // ReSharper disable once SpecifyACultureInStringConversionExplicitly
-                    detailRow.No = no.ToString();
+                    detailRow.No = item.MonthId.ToString();
 
                     detailRow.VisibilityUomAmount = visibilityUomAmount;
                     detailRow.UomAmount = uomAmount;
                     detailRow.VisibilityUomBkc = visibilityUomBkc;
-
+                    detailRow.SummaryAmount = summaryAmount;
+                    detailRow.SummaryBkcRequired = summaryBkc;
+                    detailRow.SummaryJenis = summaryJenis;
+                    detailRow.SummaryUomAmount = summaryUomAmount;
+                    detailRow.SummaryUomBkc = summaryUomBkc;
                     ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
-                    no++;
+                    
                 }
             }
             else
