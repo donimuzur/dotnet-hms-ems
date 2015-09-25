@@ -222,13 +222,13 @@ namespace Sampoerna.EMS.BLL
 
         public Back3Dto GetBack3ByPbck3Id(int? id)
         {
-            var data = _repositoryBack3.Get(p => p.PBCK3_ID == id);
+            var data = _repositoryBack3.Get(p => p.PBCK3_ID == id, null, "BACK3_DOCUMENT");
             return Mapper.Map<Back3Dto>(data.LastOrDefault());
         }
 
         public Ck2Dto GetCk2ByPbck3Id(int? id)
         {
-            var data = _repositoryCk2.Get(p => p.PBCK3_ID == id);
+            var data = _repositoryCk2.Get(p => p.PBCK3_ID == id, null, "CK2_DOCUMENT");
             return Mapper.Map<Ck2Dto>(data.LastOrDefault());
         }
 
