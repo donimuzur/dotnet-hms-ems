@@ -1,3 +1,0 @@
-ALTER TABLE CK1
-ADD LAST_SHIFT int null
-go
