@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         /// </summary>
         public List<Pbck1ReportBrandRegistrationDto> BrandRegistrationList { get; set; }
         public List<Pbck1RealisasiP3BkcDto> RealisasiP3Bkc { get; set; }
+        public List<Pbck1SummaryRealisasiProductionDetailDto> SummaryRealisasiP3Bkc { get; set; }
 
         public HEADER_FOOTER_MAPDto HeaderFooter { get; set; }
     }
@@ -158,20 +159,40 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     public class Pbck1RealisasiP3BkcDto
     {
+        public Pbck1RealisasiP3BkcDto()
+        {
+            ProductionList = new List<Pbck1RealisasiProductionDetailDto>();
+        }
+        public int BulanId { get; set; }
         public string Bulan { get; set; }
-        public decimal SaldoAwal { get; set; }
-        public decimal Pemasukan { get; set; }
-        public decimal Penggunaan { get; set; }
-        public string Jenis { get; set; }
-        public decimal Jumlah { get; set; }
-        public decimal SaldoAkhir { get; set; }
+        public decimal? SaldoAwal { get; set; }
+        public decimal? Pemasukan { get; set; }
+        public decimal? Penggunaan { get; set; }
+        public decimal? SaldoAkhir { get; set; }
         public string Lack1UomId { get; set; }
         public string Lack1UomName { get; set; }
-        
+        public List<Pbck1RealisasiProductionDetailDto> ProductionList { get; set; }
+    }
+
+    public class Pbck1RealisasiProductionDetailDto
+    {
         //lack1 production detail
-        public decimal ProdAmount { get; set; }
         public string ProductCode { get; set; }
         public string ProductType { get; set; }
         public string ProductAlias { get; set; }
+        public string UomId { get; set; }
+        public string UomDesc { get; set; }
+        public decimal? Amount { get; set; }
+        public string ExcisableGoodsTypeId { get; set; }
+        public string ExcisableGoodsTypeDesc { get; set; }
     }
+
+    public class Pbck1SummaryRealisasiProductionDetailDto
+    {
+        public string ProductCode { get; set; }
+        public string ProductType { get; set; }
+        public string ProductAlias { get; set; }
+        public decimal Total { get; set; }
+    }
+
 }
