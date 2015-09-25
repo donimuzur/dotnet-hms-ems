@@ -5,10 +5,12 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -33,6 +35,8 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationBLL _brandBll;
         private IZaidmExProdTypeBLL _prodTypeBll;
 
+        private IBrandRegistrationService _brandRegistrationService;
+
         private string includeTables = "MONTH, CK4C_ITEM";
 
         public CK4CBLL(ILogger logger, IUnitOfWork uow)
@@ -51,6 +55,8 @@ namespace Sampoerna.EMS.BLL
             _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
             _brandBll = new BrandRegistrationBLL(_uow, _logger);
             _prodTypeBll = new ZaidmExProdTypeBLL(_uow, _logger);
+            _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
+
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -728,8 +734,27 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
                     summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
 
-                    
+                    summaryDto.ProductionDate = ConvertHelper.ConvertDateToStringddMMMyyyy(ck4CItem.PROD_DATE);
 
+                    var dbBrand = _brandRegistrationService.GetByPlantIdAndFaCode(ck4CItem.WERKS, ck4CItem.FA_CODE);
+
+                    if (dbBrand != null)
+                    {
+                        summaryDto.TobaccoProductType = dbBrand.ZAIDM_EX_PRODTYP != null
+                            ? dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_TYPE
+                            : string.Empty;
+                        summaryDto.BrandDescription = dbBrand.BRAND_CE;
+                    }
+
+                    summaryDto.Hje = ConvertHelper.ConvertDecimalToString(ck4CItem.HJE_IDR);
+                    summaryDto.Tariff = ConvertHelper.ConvertDecimalToString(ck4CItem.TARIFF);
+                    summaryDto.ProducedQty = ConvertHelper.ConvertDecimalToString(ck4CItem.PROD_QTY);
+                    summaryDto.ProducedQty = ConvertHelper.ConvertDecimalToString(ck4CItem.PACKED_QTY);
+                    summaryDto.UnPackQty = ConvertHelper.ConvertDecimalToString(ck4CItem.UNPACKED_QTY);
+
+                    summaryDto.Content = ck4CItem.CONTENT_PER_PACK.HasValue
+                        ? ck4CItem.CONTENT_PER_PACK.ToString()
+                        : string.Empty;
 
                     result.Add(summaryDto);
                 }

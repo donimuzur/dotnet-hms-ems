@@ -1100,6 +1100,41 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 iColumn = 1;
+               
+
+                if (modelExport.Ck4CNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck4CNo);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.CeOffice)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CeOffice);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.PlantId)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantId);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.PlantDescription)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantDescription);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.LicenseNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.LicenseNumber);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.ReportPeriod)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReportPeriod);
+                    iColumn = iColumn + 1;
+                }
+
                 if (modelExport.ProductionDate)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.ProductionDate);
@@ -1154,39 +1189,6 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.Ck4CNumber)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.Ck4CNo);
-                    iColumn = iColumn + 1;
-                }
-                if (modelExport.CeOffice)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.CeOffice);
-                    iColumn = iColumn + 1;
-                }
-
-                if (modelExport.PlantId)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.PlantId);
-                    iColumn = iColumn + 1;
-                }
-
-                if (modelExport.PlantDescription)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.PlantDescription);
-                    iColumn = iColumn + 1;
-                }
-                if (modelExport.LicenseNumber)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.LicenseNumber);
-                    iColumn = iColumn + 1;
-                }
-                if (modelExport.ReportPeriod)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.ReportPeriod);
-                    iColumn = iColumn + 1;
-                }
-               
                 if (modelExport.Status)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Status);
@@ -1204,6 +1206,41 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             int iColumn = 1;
             int iRow = 1;
+
+            
+            if (modelExport.Ck4CNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-4C Number");
+                iColumn = iColumn + 1;
+            }
+            
+            if (modelExport.CeOffice)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Ce Office");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.PlantId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.PlantDescription)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant Description");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.LicenseNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "License Number");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.ReportPeriod)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Report Period");
+                iColumn = iColumn + 1;
+            }
 
             if (modelExport.ProductionDate)
             {
@@ -1259,40 +1296,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.Ck4CNumber)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "CK-4C Number");
-                iColumn = iColumn + 1;
-            }
-            
-            if (modelExport.CeOffice)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Ce Office");
-                iColumn = iColumn + 1;
-            }
 
-            if (modelExport.PlantId)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Plant");
-                iColumn = iColumn + 1;
-            }
-            if (modelExport.PlantDescription)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Plant Description");
-                iColumn = iColumn + 1;
-            }
-            if (modelExport.LicenseNumber)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "License Number");
-                iColumn = iColumn + 1;
-            }
-
-            if (modelExport.ReportPeriod)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Report Period");
-                iColumn = iColumn + 1;
-            }
-         
             if (modelExport.Status)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Status");
