@@ -29,6 +29,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string Pbck1PeriodDisplay { get; set; }
         public string NppbkcId { get; set; }
         public string NppbkcKppbcId { get; set; }
+        public string NppbkcKppbcName { get; set; }
         public string NppbkcCompanyCode { get; set; }
         public string NppbkcCompanyName { get; set; }
         [UIHint("FormatQty")]

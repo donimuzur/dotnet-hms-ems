@@ -156,7 +156,9 @@ namespace Sampoerna.EMS.BLL
                              Uom = p.UOM,
                              QtyPacked = p.QTY_PACKED,
                              QtyUnpacked = p.QTY_UNPACKED,
-                             ProdCode = b.PROD_CODE
+                             ProdCode = b.PROD_CODE,
+                             ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
+                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
                          };
 
             if (nppbkc != string.Empty)
@@ -179,7 +181,9 @@ namespace Sampoerna.EMS.BLL
                              Uom = p.UOM,
                              QtyPacked = p.QTY_PACKED,
                              QtyUnpacked = p.QTY_UNPACKED,
-                             ProdCode = b.PROD_CODE
+                             ProdCode = b.PROD_CODE,
+                             ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
+                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
                          };
             }
 
