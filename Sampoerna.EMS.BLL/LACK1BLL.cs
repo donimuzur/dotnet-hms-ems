@@ -725,16 +725,16 @@ namespace Sampoerna.EMS.BLL
             return selected.Count == 0 ? new List<Lack1Dto>() : selected;
         }
 
-        internal List<LACK1_PRODUCTION_DETAIL> GetProductionDetailByPeriode(Lack1GetByPeriodParamInput input)
-        {
-            var getData = _lack1Service.GetProductionDetailByPeriode(input);
+        //internal List<LACK1_PRODUCTION_DETAIL> GetProductionDetailByPeriode(Lack1GetByPeriodParamInput input)
+        //{
+        //    var getData = _lack1Service.GetProductionDetailByPeriode(input);
 
-            if (getData == null) return new List<LACK1_PRODUCTION_DETAIL>();
+        //    if (getData == null) return new List<LACK1_PRODUCTION_DETAIL>();
 
-            //todo: select by periode in range period from and period to from input param
+        //    //todo: select by periode in range period from and period to from input param
 
-            return getData.ToList();
-        }
+        //    return getData.ToList();
+        //}
 
         public Lack1GeneratedOutput GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
         {
@@ -814,6 +814,11 @@ namespace Sampoerna.EMS.BLL
             return dtToReturn;
         }
 
+        public List<Lack1DetailsDto> GetPbck1RealizationList(Lack1GetPbck1RealizationListParamInput input)
+        {
+            return Mapper.Map<List<Lack1DetailsDto>>(_lack1Service.GetPbck1RealizationList(input));
+        }
+        
         #region ----------------Private Method-------------------
 
         private bool IsNeedToRegenerate(Lack1GenerateDataParamInput input, LACK1 lack1Data)
