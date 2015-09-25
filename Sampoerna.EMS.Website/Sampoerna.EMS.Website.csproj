@@ -347,6 +347,7 @@
     <Compile Include="Models\LACK2\LACK2PlantData.cs" />
     <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
     <Compile Include="Models\LACK2\Lack2SummaryReportModel.cs" />
+    <Compile Include="Models\LACK2\Lack2SummaryReportsViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
@@ -410,6 +411,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DaftarRincian.rpt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\CK4C\Preview.cs">
       <AutoGen>True</AutoGen>
@@ -1161,6 +1163,8 @@
     <Content Include="Views\CK4C\Ck4CSummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTablePbck3.cshtml" />
     <Content Include="Views\CK4C\_Ck4CListSummaryReport.cshtml" />
+    <Content Include="Views\LACK2\Lack2SummaryReport.cshtml" />
+    <Content Include="Views\LACK2\_Lack2ListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

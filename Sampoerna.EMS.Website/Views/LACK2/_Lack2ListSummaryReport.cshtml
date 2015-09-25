@@ -1,0 +1,48 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2SummaryReportsViewModel
+
+<table id="pbck4Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>LACK-2 Number</th>
+            <th>Document Type</th>
+            <th>Company Code</th>
+            <th>Company Name</th>
+            <th>NPPBKC ID</th>
+            <th>CK-5 Sending Plant</th>
+            <th>Sending Plant Address</th>
+            <th>LACK-2 Period</th>
+            <th>LACK-2 Date</th>
+            <th>Type of Excisable Goods</th>
+            <th>Status</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.Lack2Number)</td>
+                    <td>@Html.DisplayFor(model => item.DocumentType)</td>
+                    <td>@Html.DisplayFor(model => item.CompanyCode)</td>
+                    <td>@Html.DisplayFor(model => item.CompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.NppbkcId)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5SendingPlant)</td>
+                    <td>@Html.DisplayFor(model => item.SendingPlantAddress)</td>
+                    <td>@Html.DisplayFor(model => item.Lack2Period)</td>
+                    <td>@Html.DisplayFor(model => item.Lack2Date)</td>
+                    <td>@Html.DisplayFor(model => item.TypeExcisableGoods)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Status)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+
+
