@@ -1038,10 +1038,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
             //change back to draft
-            dbData.STATUS = Enums.DocumentStatus.Draft;
+            dbData.STATUS = Enums.DocumentStatus.Rejected;
 
             //todo ask
             dbData.APPROVED_BY_POA = null;
@@ -1233,6 +1233,11 @@ namespace Sampoerna.EMS.BLL
 
             //todo: ask the cleanest way
             var rc = Mapper.Map<List<Pbck1SummaryReportDto>>(pbck1Data);
+            foreach (var item in rc)
+            {
+                item.Pbck1Parent = Mapper.Map<Pbck1SummaryReportDto>(pbck1Data.Where(c => c.PBCK1_ID == item.Pbck1Id).Select(c => c.PBCK12).FirstOrDefault());
+                item.Pbck1Childs = Mapper.Map<List<Pbck1SummaryReportDto>>(pbck1Data.Where(c => c.PBCK1_ID == item.Pbck1Id).Select(c => c.PBCK11).FirstOrDefault());
+            }
             // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < rc.Count; i++)
             {

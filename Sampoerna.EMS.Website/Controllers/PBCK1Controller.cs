@@ -52,9 +52,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private ICompanyBLL _companyBll;
         private IUnitOfMeasurementBLL _uomBll;
         private ILFA1BLL _lfa1Bll;
+        private IT001KBLL _t001kBll;
 
         public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -73,6 +74,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _companyBll = companyBll;
             _lfa1Bll = lfa1Bll;
             _uomBll = uomBll;
+            _t001kBll = t001kBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -1106,6 +1108,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     //view all data pbck1 completed document
                     DetailsList = SearchSummaryReports().OrderBy(c => c.NppbkcId).ToList()
                 };
+                foreach (var item in model.DetailsList)
+                {
+                    item.PoaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(item.NppbkcId).Select(c => c.PRINTED_NAME).ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -1130,6 +1136,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 foreach (var item in pbck1Data)
                 {
                     var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
+                    var PoaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(item.NppbkcId);
+                    item.PoaList = PoaList.Select(c => c.PRINTED_NAME).ToList();
                     item.NppbkcKppbcName = Kppbc == null ? "" : Kppbc.NAME1;
                 }
                 return Mapper.Map<List<Pbck1SummaryReportsItem>>(pbck1Data);
@@ -1141,6 +1149,8 @@ namespace Sampoerna.EMS.Website.Controllers
             foreach (var item in dbData)
             {
                 var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
+                var PoaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(item.NppbkcId);
+                item.PoaList = PoaList.Select(c => c.PRINTED_NAME).ToList();
                 item.NppbkcKppbcName = Kppbc == null ? "" : Kppbc.NAME1;
             }
             return Mapper.Map<List<Pbck1SummaryReportsItem>>(dbData);
@@ -1202,7 +1212,7 @@ namespace Sampoerna.EMS.Website.Controllers
                        {
                            Company = d.NppbkcCompanyName,
                            Nppbkc = "'" + d.NppbkcId,
-                    Kppbc = d.NppbkcKppbcName,
+                           Kppbc = d.NppbkcKppbcName,
                            Pbck1Number = "'" + d.Pbck1Number,
                            Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
                            OriginalNppbkc = "'" + d.SupplierNppbkcId,
@@ -1217,7 +1227,19 @@ namespace Sampoerna.EMS.Website.Controllers
                            GoodTypeDesc = d.GoodTypeDesc,
                            PlanProdFrom = d.PlanProdFrom.Value.ToString(),
                            PlanProdTo = d.PlanProdTo.Value.ToString(),
-                           SupplierPhone = d.SupplierPhone
+                           SupplierPhone = d.SupplierPhone,
+                           PoaList = d.PoaList == null ? "" : d.PoaList.Count > 0 ? string.Join("<br />", d.PoaList.ToArray()) : "",
+                           Reference = d.Pbck1ReferenceNumber,
+                           LACKFrom = d.Lack1FromMonthName + d.Lack1FormYear,
+                           LACKTo = d.Lack1ToMonthName + d.Lack1ToYear,
+                           LatestSaldo = d.LatestSaldo.Value.ToString(),
+                           PeriodFrom = d.PeriodFrom.ToString("dd MMMM yyyy"),
+                           PeriodTo = d.PeriodTo.Value.ToString("dd MMMM yyyy"),
+                           ReportedOn = d.ReportedOn == null ? "" : d.ReportedOn.Value.ToString(),
+                           RequestQty = d.RequestQty == null ? "" : d.RequestQty.Value.ToString(),
+                           StatusGov = d.StatusGovName,
+                           QtyApproved = d.QtyApproved == null ? "" : d.QtyApproved.Value.ToString(),
+                           DecreeDate = d.DecreeDate == null ? "" : d.DecreeDate.Value.ToString()
                        }).ToList();
 
             var grid = new System.Web.UI.WebControls.GridView
@@ -1363,6 +1385,112 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "SupplierPhone"
                 });
             }
+            if (model.ExportModel.PoaList)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PoaList",
+                    HeaderText = "PoaList",
+                    HtmlEncode = false
+                });
+            }
+            if (model.ExportModel.Reference)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Reference",
+                    HeaderText = "Reference"
+                });
+            }
+            if (model.ExportModel.LACKFrom)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "LACKFrom",
+                    HeaderText = "LACKFrom"
+                });
+            }
+            if (model.ExportModel.LACKTo)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "LACKTo",
+                    HeaderText = "LACKTo"
+                });
+            }
+            if (model.ExportModel.LatestSaldo)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "LatestSaldo",
+                    HeaderText = "LatestSaldo"
+                });
+            }
+            if (model.ExportModel.PeriodFrom)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PeriodFrom",
+                    HeaderText = "PeriodFrom"
+                });
+            }
+            if (model.ExportModel.PeriodTo)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PeriodTo",
+                    HeaderText = "PeriodTo"
+                });
+            }
+            if (model.ExportModel.ReportedOn)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ReportedOn",
+                    HeaderText = "ReportedOn"
+                });
+            }
+            if (model.ExportModel.PeriodFrom)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PeriodFrom",
+                    HeaderText = "PeriodFrom"
+                });
+            }
+            if (model.ExportModel.RequestQty)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "RequestQty",
+                    HeaderText = "RequestQty"
+                });
+            }
+            if (model.ExportModel.StatusGov)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "StatusGov",
+                    HeaderText = "StatusGov"
+                });
+            }
+            if (model.ExportModel.QtyApproved)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QtyApproved",
+                    HeaderText = "QtyApproved"
+                });
+            }
+            if (model.ExportModel.DecreeDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DecreeDate",
+                    HeaderText = "DecreeDate"
+                });
+            }
+
 
 
             grid.DataBind();
@@ -1593,6 +1721,22 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.Flush();
 
             Response.End();
+        }
+
+        [HttpPost]
+        public JsonResult GetNPPBKCListByCompanyID(string companyId)
+        {
+            if (String.IsNullOrEmpty(companyId))
+            {
+                //GET All NPPBKC
+                var NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll).ToList();
+                return Json(NppbkcIdList.Select(c => c.Text).ToList(), JsonRequestBehavior.AllowGet);
+            }
+            else 
+            {
+                var NppbkcIdList = _t001kBll.GetNPPBKCIDByCompany(companyId);
+                return Json(NppbkcIdList, JsonRequestBehavior.AllowGet);
+            }
         }
 
         #endregion

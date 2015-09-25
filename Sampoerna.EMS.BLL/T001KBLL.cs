@@ -70,5 +70,27 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<T001Dto>>(dbData.Select(x=>x.T001));
 
         }
+
+        public List<string> GetNPPBKCIDByCompany(string companyId)
+        {
+            includeTables = "T001W";
+            IEnumerable<T001K> dbData;
+            if (String.IsNullOrEmpty(companyId))
+            {
+                dbData = _repository.Get(null, null, includeTables);
+            }
+            else 
+            {
+                dbData = _repository.Get(c => c.BUKRS == companyId, null, includeTables);
+            }
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            var listNPPBKCID = dbData.Where(c => c.T001W.NPPBKC_ID != null).Select(c => c.T001W.NPPBKC_ID).ToList();
+            listNPPBKCID.Sort();
+            return listNPPBKCID;
+        }
     }
 }
