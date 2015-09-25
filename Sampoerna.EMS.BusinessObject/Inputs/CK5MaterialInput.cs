@@ -13,6 +13,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ConvertedUom { get; set; }
         public string UsdValue { get; set; }
         public string Note { get; set; }
+
+        public Enums.ExGoodsType ExGoodsType { get; set; }
        
     }
 
