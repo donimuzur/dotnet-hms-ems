@@ -298,6 +298,7 @@
     <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CSummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileUploadViewModel.cs" />
     <Compile Include="Models\CK5\CK5FormViewModel.cs" />
@@ -1157,7 +1158,9 @@
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack3.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadCk2.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck3.cshtml" />
+    <Content Include="Views\CK4C\Ck4CSummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTablePbck3.cshtml" />
+    <Content Include="Views\CK4C\_Ck4CListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
