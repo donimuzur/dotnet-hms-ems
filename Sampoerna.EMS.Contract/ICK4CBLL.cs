@@ -30,5 +30,7 @@ namespace Sampoerna.EMS.Contract
         void UpdateReportedOn(Ck4cUpdateReportedOn input);
 
         Ck4cReportDto GetCk4cReportDataById(int id);
+
+        List<Ck4CSummaryReportDto> GetSummaryReportsByParam(Ck4CGetSummaryReportByParamInput input);
     }
 }

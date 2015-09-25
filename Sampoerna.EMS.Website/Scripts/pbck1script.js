@@ -42,8 +42,8 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
 }
 
 function disableSupplierFormInput(isDisable) {
-    $('#Detail_SupplierNppbkcId').prop('disabled', isDisable);
-    $('#Detail_SupplierKppbcName').prop('readonly', true);
+    $('#Detail_SupplierNppbkcId').prop('readonly', isDisable);
+    $('#Detail_SupplierKppbcName').prop('readonly', isDisable);
     $('#Detail_SupplierAddress').prop('readonly', isDisable);
     $('#Detail_SupplierPhone').prop('readonly', isDisable);
     $('#Detail_SupplierCompany').prop('readonly', isDisable);
@@ -486,5 +486,17 @@ function changeToDecimalMaxFour(selector, type) {
             $(this).html(ThausandSeparatorMaxFour(val, 5));
         }
     });
+}
+
+function setLackYear() {
+    var date = $("#Detail_PeriodFrom").datepicker('getDate');
+    var year = date.getFullYear();
+
+    $("#Detail_Lack1FormYear").html("");
+    $("#Detail_Lack1ToYear").html("");
+    for (var i = 0; i < 3 ; i++) {
+        $("#Detail_Lack1FormYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
+        $("#Detail_Lack1ToYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
+    }
 }
 
