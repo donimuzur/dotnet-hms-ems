@@ -714,18 +714,23 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var dtData in listCk4C)
             {
-                var summaryDto = new Ck4CSummaryReportDto();
+                foreach (var ck4CItem in dtData.CK4C_ITEM)
+                {
+                    var summaryDto = new Ck4CSummaryReportDto();
 
-                summaryDto.Ck4CNo = dtData.NUMBER;
-                summaryDto.CeOffice = dtData.COMPANY_ID;
-                summaryDto.PlantId = dtData.PLANT_ID;
-                summaryDto.PlantDescription = dtData.PLANT_NAME;
-                summaryDto.LicenseNumber = dtData.NPPBKC_ID;
-                summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
-                summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
-                
-                result.Add(summaryDto);
+                    summaryDto.Ck4CNo = dtData.NUMBER;
+                    summaryDto.CeOffice = dtData.COMPANY_ID;
+                    summaryDto.PlantId = dtData.PLANT_ID;
+                    summaryDto.PlantDescription = dtData.PLANT_NAME;
+                    summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                    summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
+                    summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
 
+                    
+
+
+                    result.Add(summaryDto);
+                }
             }
 
             return result;

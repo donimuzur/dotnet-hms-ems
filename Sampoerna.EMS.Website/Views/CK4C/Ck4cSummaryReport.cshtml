@@ -86,41 +86,95 @@
                                         </div>
 
                                         <div class="toggle-component">
-
+                                            
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.Ck4CNumber, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })CK-4C Number
+                                                    @Html.CheckBoxFor(model => model.ExportModel.ProductionDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })Production Date
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="checkbox">
+                                                <label>
+                                                    @Html.CheckBoxFor(model => model.ExportModel.TobaccoProductType, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Tobacco Product Type
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="checkbox">
+                                                <label>
+                                                    @Html.CheckBoxFor(model => model.ExportModel.BrandDescription, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Brand Description
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="checkbox">
+                                                <label>
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Hje, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })HJE
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="checkbox">
+                                                <label>
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Tariff, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Tariff
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="checkbox">
+                                                <label>
+                                                    @Html.CheckBoxFor(model => model.ExportModel.ProducedQty, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })Produced QTY
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="checkbox">
+                                                <label>
+                                                    @Html.CheckBoxFor(model => model.ExportModel.PackedQty, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })Packed QTY
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="checkbox">
+                                                <label>
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Content, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "8" })Content per Pack
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="checkbox">
+                                                <label>
+                                                    @Html.CheckBoxFor(model => model.ExportModel.UnPackQty, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "9" })Unpacked QTY
                                                 </label>
                                             </div>
 
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.CeOffice, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Ce Office
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Ck4CNumber, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "10" })CK-4C Number
+                                                </label>
+                                            </div>
+
+                                            <div class="checkbox">
+                                                <label>
+                                                    @Html.CheckBoxFor(model => model.ExportModel.CeOffice, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "11" })Ce Office
                                                 </label>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.PlantId, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Plant
+                                                    @Html.CheckBoxFor(model => model.ExportModel.PlantId, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "12" })Plant
                                                 </label>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.PlantDescription, new {@checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Plant Description
+                                                    @Html.CheckBoxFor(model => model.ExportModel.PlantDescription, new {@checked = "checked", @class = "checkbox checkexport", @datacolumn = "13" })Plant Description
                                                 </label>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.LicenseNumber, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })License Number
+                                                    @Html.CheckBoxFor(model => model.ExportModel.LicenseNumber, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "14" })License Number
                                                 </label>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.ReportPeriod, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })Report Period
+                                                    @Html.CheckBoxFor(model => model.ExportModel.ReportPeriod, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "15" })Report Period
                                                 </label>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.Status, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })Status
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Status, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "16" })Status
                                                 </label>
                                             </div>
 

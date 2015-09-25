@@ -15,5 +15,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string LicenseNumber { get; set; }
         public string ReportPeriod { get; set; }
         public string Status { get; set; }
+
+        public string ProductionDate { get; set; }
+        public string TobaccoProductType { get; set; }
+        public string BrandDescription { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string ProducedQty { get; set; }
+        public string PackedQty { get; set; }
+        public string Content { get; set; }
+        public string UnPackQty { get; set; }
     }
 }

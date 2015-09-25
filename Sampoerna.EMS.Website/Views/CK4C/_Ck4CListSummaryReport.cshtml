@@ -4,6 +4,15 @@
     <thead>
         <tr>
             <th class="toggle-row"> No </th>
+            <th>Production Date</th>
+            <th>Tobacco Product Type</th>
+            <th>Brand Description</th>
+            <th>HJE</th>
+            <th>Tariff</th>
+            <th>Produced QTY</th>
+            <th>Packed QTY</th>
+            <th>Content per Pack</th>
+            <th>Unpacked QTY</th>
             <th>CK-4C Number</th>
             <th>Ce Office</th>
             <th>Plant</th>
@@ -24,6 +33,15 @@
             {
                 <tr>
                     <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.ProductionDate)</td>
+                    <td>@Html.DisplayFor(model => item.TobaccoProductType)</td>
+                    <td>@Html.DisplayFor(model => item.BrandDescription)</td>
+                    <td>@Html.DisplayFor(model => item.Hje)</td>
+                    <td>@Html.DisplayFor(model => item.Tariff)</td>
+                    <td>@Html.DisplayFor(model => item.ProducedQty)</td>
+                    <td>@Html.DisplayFor(model => item.PackedQty)</td>
+                    <td>@Html.DisplayFor(model => item.Content)</td>
+                    <td>@Html.DisplayFor(model => item.UnPackQty)</td>
                     <td>@Html.DisplayFor(model => item.Ck4CNo)</td>
                     <td>@Html.DisplayFor(model => item.CeOffice)</td>
                     <td>@Html.DisplayFor(model => item.PlantId)</td>

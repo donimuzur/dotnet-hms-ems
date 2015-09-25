@@ -25,13 +25,6 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string Ck4CNo { get; set; }
         public SelectList Ck4CNoList { get; set; }
 
-        //public int? YearFrom { get; set; }
-        //public SelectList YearFromList { get; set; }
-
-        //public int? YearTo { get; set; }
-        //public SelectList YearToList { get; set; }
-
-
         public string PlantId { get; set; }
         public SelectList PlantIdList { get; set; }
 
@@ -51,6 +44,16 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         
         public string Status { get; set; }
 
+        public string ProductionDate { get; set; }
+        public string TobaccoProductType { get; set; }
+        public string BrandDescription { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string ProducedQty { get; set; }
+        public string PackedQty { get; set; }
+        public string Content { get; set; }
+        public string UnPackQty { get; set; }
+
     }
 
     public class Ck4CExportSummaryReportsViewModel : Ck4CSearchSummaryReportsViewModel
@@ -63,6 +66,16 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool LicenseNumber { get; set; }
         public bool ReportPeriod { get; set; }        
         public bool Status { get; set; }
+
+        public bool ProductionDate { get; set; }
+        public bool TobaccoProductType { get; set; }
+        public bool BrandDescription { get; set; }
+        public bool Hje { get; set; }
+        public bool Tariff { get; set; }
+        public bool ProducedQty { get; set; }
+        public bool PackedQty { get; set; }
+        public bool Content { get; set; }
+        public bool UnPackQty { get; set; }
 
     }
 }

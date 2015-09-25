@@ -1099,6 +1099,60 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 iColumn = 1;
+                if (modelExport.ProductionDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ProductionDate);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.TobaccoProductType)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.TobaccoProductType);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BrandDescription)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.BrandDescription);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Hje)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Hje);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Tariff)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Tariff);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.ProducedQty)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ProducedQty);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.PackedQty)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PackedQty);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Content)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Content);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.UnPackQty)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.UnPackQty);
+                    iColumn = iColumn + 1;
+                }
+
                 if (modelExport.Ck4CNumber)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Ck4CNo);
@@ -1149,6 +1203,60 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             int iColumn = 1;
             int iRow = 1;
+
+            if (modelExport.ProductionDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Production Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.TobaccoProductType)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Tobacco Product Type");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BrandDescription)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Brand Description");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Hje)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "HJE");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Tariff)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Tariff");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.ProducedQty)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Produced QTY");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.PackedQty)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Packed QTY");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Content)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Content per Pack");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.UnPackQty)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Unpacked QTY");
+                iColumn = iColumn + 1;
+            }
 
             if (modelExport.Ck4CNumber)
             {
