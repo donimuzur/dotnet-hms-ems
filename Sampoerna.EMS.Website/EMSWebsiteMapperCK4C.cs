@@ -63,7 +63,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(src => src.Tarif, opt => opt.MapFrom(dest => dest.Tarif))
                 .ForMember(src => src.ProdCode, opt => opt.MapFrom(dest => dest.ProdCode))
                 .ForMember(src => src.PackedQty, opt => opt.MapFrom(dest => dest.PackedQty))
-                .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty));
+                .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty))
+                .ForMember(src => src.ContentPerPack, opt => opt.MapFrom(dest => dest.ContentPerPack))
+                .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PackedInPack));
 
             Mapper.CreateMap<Ck4CIndexDocumentListViewModel, Ck4cGetOpenDocumentByParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Ck4cNumber))
@@ -116,10 +118,25 @@ namespace Sampoerna.EMS.Website
                 .ForMember(src => src.Tarif, opt => opt.MapFrom(dest => dest.Tarif))
                 .ForMember(src => src.ProdCode, opt => opt.MapFrom(dest => dest.ProdCode))
                 .ForMember(src => src.PackedQty, opt => opt.MapFrom(dest => dest.PackedQty))
-                .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty));
+                .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty))
+                .ForMember(src => src.ContentPerPack, opt => opt.MapFrom(dest => dest.ContentPerPack))
+                .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PackedInPack));
 
             Mapper.CreateMap<Ck4cDecreeDocDto, Ck4cDecreeDocModel>().IgnoreAllNonExisting();
             Mapper.CreateMap<Ck4cDecreeDocModel, Ck4cDecreeDocDto>().IgnoreAllNonExisting();
+
+            #endregion
+
+
+            #region SummaryReports
+
+            Mapper.CreateMap<Ck4CSummaryReportDto, Ck4CSummaryReportsItem>().IgnoreAllNonExisting()
+                ;
+
+            Mapper.CreateMap<Ck4CSearchSummaryReportsViewModel, Ck4CGetSummaryReportByParamInput>().IgnoreAllNonExisting()
+                .ForMember(src => src.Ck4CNo, opt => opt.MapFrom(dest => dest.Ck4CNo))
+                .ForMember(src => src.PlantId, opt => opt.MapFrom(dest => dest.PlantId))
+                ;
 
             #endregion
         }

@@ -10,5 +10,8 @@ namespace Sampoerna.EMS.Contract.Services
         ZAIDM_EX_BRAND GetByPlantIdAndFaCode(string plantId, string faCode);
 
         List<ZAIDM_EX_BRAND> GetBrandByPlant(string plant);
+
+        ZAIDM_EX_GOODTYP GetGoodTypeByProdCodeInBrandRegistration(string prodCode);
+
     }
 }

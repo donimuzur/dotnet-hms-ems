@@ -5,10 +5,12 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -33,6 +35,8 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationBLL _brandBll;
         private IZaidmExProdTypeBLL _prodTypeBll;
 
+        private IBrandRegistrationService _brandRegistrationService;
+
         private string includeTables = "MONTH, CK4C_ITEM";
 
         public CK4CBLL(ILogger logger, IUnitOfWork uow)
@@ -51,6 +55,8 @@ namespace Sampoerna.EMS.BLL
             _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
             _brandBll = new BrandRegistrationBLL(_uow, _logger);
             _prodTypeBll = new ZaidmExProdTypeBLL(_uow, _logger);
+            _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
+
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -558,6 +564,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     var ck4cItem = new Ck4cReportItemDto();
 
+                    ck4cItem.CollumNo = 0;
                     ck4cItem.No = string.Empty;
                     ck4cItem.NoProd = string.Empty;
                     ck4cItem.ProdDate = string.Empty;
@@ -657,6 +664,7 @@ namespace Sampoerna.EMS.BLL
                         var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && (c.PROD_DATE <= prodDateFormat && c.PROD_DATE >= dateStart)).Sum(x => x.UNPACKED_QTY);
                         var total = packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
 
+                        ck4cItem.CollumNo = i;
                         ck4cItem.No = i.ToString();
                         ck4cItem.NoProd = i.ToString();
                         ck4cItem.ProdDate = prodDate;
@@ -677,5 +685,84 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        #region SummaryReport
+
+        public List<Ck4CSummaryReportDto> GetSummaryReportsByParam(Ck4CGetSummaryReportByParamInput input)
+        {
+
+            Expression<Func<CK4C, bool>> queryFilter = PredicateHelper.True<CK4C>();
+
+            if (!string.IsNullOrEmpty(input.Ck4CNo))
+            {
+                queryFilter = queryFilter.And(c => c.NUMBER == input.Ck4CNo);
+            }
+
+         
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
+            }
+
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            
+            var rc = _repository.Get(queryFilter, null, includeTables).ToList();
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+       
+            return SetDataSummaryReport(rc);
+        }
+
+        private List<Ck4CSummaryReportDto> SetDataSummaryReport(List<CK4C> listCk4C)
+        {
+            var result = new List<Ck4CSummaryReportDto>();
+
+            foreach (var dtData in listCk4C)
+            {
+                foreach (var ck4CItem in dtData.CK4C_ITEM)
+                {
+                    var summaryDto = new Ck4CSummaryReportDto();
+
+                    summaryDto.Ck4CNo = dtData.NUMBER;
+                    summaryDto.CeOffice = dtData.COMPANY_ID;
+                    summaryDto.PlantId = dtData.PLANT_ID;
+                    summaryDto.PlantDescription = dtData.PLANT_NAME;
+                    summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                    summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
+                    summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+
+                    summaryDto.ProductionDate = ConvertHelper.ConvertDateToStringddMMMyyyy(ck4CItem.PROD_DATE);
+
+                    var dbBrand = _brandRegistrationService.GetByPlantIdAndFaCode(ck4CItem.WERKS, ck4CItem.FA_CODE);
+
+                    if (dbBrand != null)
+                    {
+                        summaryDto.TobaccoProductType = dbBrand.ZAIDM_EX_PRODTYP != null
+                            ? dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_TYPE
+                            : string.Empty;
+                        summaryDto.BrandDescription = dbBrand.BRAND_CE;
+                    }
+
+                    summaryDto.Hje = ConvertHelper.ConvertDecimalToString(ck4CItem.HJE_IDR);
+                    summaryDto.Tariff = ConvertHelper.ConvertDecimalToString(ck4CItem.TARIFF);
+                    summaryDto.ProducedQty = ConvertHelper.ConvertDecimalToString(ck4CItem.PROD_QTY);
+                    summaryDto.ProducedQty = ConvertHelper.ConvertDecimalToString(ck4CItem.PACKED_QTY);
+                    summaryDto.UnPackQty = ConvertHelper.ConvertDecimalToString(ck4CItem.UNPACKED_QTY);
+
+                    summaryDto.Content = ck4CItem.CONTENT_PER_PACK.HasValue
+                        ? ck4CItem.CONTENT_PER_PACK.ToString()
+                        : string.Empty;
+
+                    result.Add(summaryDto);
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 }

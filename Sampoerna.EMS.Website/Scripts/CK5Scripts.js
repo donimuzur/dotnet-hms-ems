@@ -189,6 +189,15 @@ function GenerateXlsCk5Material(url, ck5Type) {
             formData.append("plantId", $('#SourcePlantId').val());
         
     }
+    
+    var goodTypeGroupId = $("#GoodType").val();
+    if (goodTypeGroupId == "") {
+        $('#modalBodyMessage').text('Please fill the excisable good types for this CK-5 document');
+        $('#ModalCk5Material').modal('show');
+    } else {
+        formData.append("groupType", $('#GoodType').val());
+    }
+
     $.ajax({
         type: "POST",
         url: url,

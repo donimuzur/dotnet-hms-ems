@@ -281,7 +281,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType);
             drow["NppbkcCity"] = nppbkc.CITY;
-            drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy");
+            drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMMM yyyy");
           
             dt.Rows.Add(drow);
 
@@ -307,7 +307,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             ReportClass rpt = new ReportClass();
             string report_path = System.Configuration.ConfigurationManager.AppSettings["Report_Path"];
-            rpt.FileName = report_path + "PBCK7\\Pbck7Report.rpt";
+            rpt.FileName = System.IO.Path.Combine(report_path, "PBCK7", "Pbck7Report.rpt");
             rpt.Load();
             rpt.SetDataSource(dsPbck7);
 
