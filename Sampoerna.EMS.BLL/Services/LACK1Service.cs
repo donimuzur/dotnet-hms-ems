@@ -126,6 +126,19 @@ namespace Sampoerna.EMS.BLL.Services
             return rc;
         }
 
+        public List<LACK1> GetPbck1RealizationList(Lack1GetPbck1RealizationListParamInput input)
+        {
+            const string incTables = "LACK1_PRODUCTION_DETAIL";
+            Expression<Func<LACK1, bool>> queryFilter = c => c.PERIOD_YEAR.HasValue && c.PERIOD_YEAR.Value == input.Year
+                                          && c.PERIOD_MONTH.HasValue && c.PERIOD_MONTH.Value >= input.MonthFrom
+                                          && c.PERIOD_MONTH.Value <= input.MonthTo && c.NPPBKC_ID == input.NppbkcId &&
+                                          c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId
+                                          && c.EX_GOODTYP == input.ExcisableGoodsTypeId;
+
+            var rc = _repository.Get(queryFilter, null, incTables).ToList();
+            return rc;
+        }
+
         public LACK1 GetLatestLack1ByParam(Lack1GetLatestLack1ByParamInput input)
         {
 

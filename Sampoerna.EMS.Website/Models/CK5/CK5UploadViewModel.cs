@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
@@ -26,5 +27,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         
         public decimal ExciseQty { get; set; }
         public string ExciseUom { get; set; }
+
+        public Enums.ExGoodsType ExGoodsType { get; set; }
     }
 }
