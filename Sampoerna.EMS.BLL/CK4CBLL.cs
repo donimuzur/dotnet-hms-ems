@@ -558,6 +558,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     var ck4cItem = new Ck4cReportItemDto();
 
+                    ck4cItem.CollumNo = 0;
                     ck4cItem.No = string.Empty;
                     ck4cItem.NoProd = string.Empty;
                     ck4cItem.ProdDate = string.Empty;
@@ -657,6 +658,7 @@ namespace Sampoerna.EMS.BLL
                         var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && (c.PROD_DATE <= prodDateFormat && c.PROD_DATE >= dateStart)).Sum(x => x.UNPACKED_QTY);
                         var total = packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
 
+                        ck4cItem.CollumNo = i;
                         ck4cItem.No = i.ToString();
                         ck4cItem.NoProd = i.ToString();
                         ck4cItem.ProdDate = prodDate;

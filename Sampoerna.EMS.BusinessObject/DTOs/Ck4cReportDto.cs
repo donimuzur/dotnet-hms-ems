@@ -92,6 +92,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ProdWaste { get; set; }
 
         public string Comment { get; set; }
+
+        public int CollumNo { get; set; }
     }
 
     public class Ck4cTotalProd

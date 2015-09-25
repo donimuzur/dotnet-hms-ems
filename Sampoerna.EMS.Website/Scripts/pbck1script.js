@@ -42,8 +42,8 @@ function ajaxLoadDetailSupplierPlant(formData, url) {
 }
 
 function disableSupplierFormInput(isDisable) {
-    $('#Detail_SupplierNppbkcId').prop('readonly', isDisable);
-    $('#Detail_SupplierKppbcName').prop('readonly', isDisable);
+    $('#Detail_SupplierNppbkcId').prop('disabled', isDisable);
+    $('#Detail_SupplierKppbcName').prop('readonly', true);
     $('#Detail_SupplierAddress').prop('readonly', isDisable);
     $('#Detail_SupplierPhone').prop('readonly', isDisable);
     $('#Detail_SupplierCompany').prop('readonly', isDisable);
@@ -456,6 +456,22 @@ function getReference() {
             }
         }
     });
+}
+
+function getKPPBCByNPPBKC(id) {
+    if ($("#Detail_IsExternalSupplier").is(':checked')) {
+        $.ajax({
+            type: 'POST',
+            url: kppbcUrl,
+            data: { nppbkcid: id },
+            success: function (data) {
+                $('input[name="Detail.SupplierKppbcName"]:text').val(data.kppbcname);
+                $('input[name="Detail.HiddenSupplierKppbcId"]:hidden').val(data.kppbcname);
+                $('input[name="Detail.SupplierKppbcId"]:hidden').val(data.kppbcid);
+            }
+        });
+    }
+
 }
 
 function changeToDecimalMaxFour(selector, type) {

@@ -405,6 +405,12 @@
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\CK4C\DaftarRincian.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DaftarRincian.rpt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Reports\CK4C\Preview.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1153,6 +1159,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadCk2.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck3.cshtml" />
     <Content Include="Views\CK4C\Ck4CSummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTablePbck3.cshtml" />
     <Content Include="Views\CK4C\_Ck4CListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -1268,6 +1275,11 @@
     <Content Include="Reports\CK4C\Preview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Preview.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK4C\DaftarRincian.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DaftarRincian.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
