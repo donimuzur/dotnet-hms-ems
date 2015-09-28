@@ -1,5 +1,4 @@
 ﻿function setSupplierPlantEmpty() {
-    $('#Detail_SupplierPortName').val('');
     $('#Detail_SupplierNppbkcId').val('');
     $('#Detail_SupplierKppbcId').val('');
     $('#Detail_SupplierPhone').val('');
