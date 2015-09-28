@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
@@ -32,6 +36,9 @@ namespace Sampoerna.EMS.BLL
         private IHeaderFooterBLL _headerFooterBll;
         private IBrandRegistrationBLL _brandBll;
         private IZaidmExProdTypeBLL _prodTypeBll;
+        private IMessageService _messageService;
+        private IUserBLL _userBll;
+        private IBrandRegistrationService _brandRegistrationService;
 
         private string includeTables = "MONTH, CK4C_ITEM";
 
@@ -51,6 +58,9 @@ namespace Sampoerna.EMS.BLL
             _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
             _brandBll = new BrandRegistrationBLL(_uow, _logger);
             _prodTypeBll = new ZaidmExProdTypeBLL(_uow, _logger);
+            _messageService = new MessageService(_logger);
+            _userBll = new UserBLL(_uow, _logger);
+            _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -215,9 +225,127 @@ namespace Sampoerna.EMS.BLL
             }
 
             //todo sent mail
-            //if (isNeedSendNotif) //SendEmailWorkflow(input);
+            if (isNeedSendNotif) SendEmailWorkflow(input);
                 
             _uow.SaveChanges();
+        }
+
+        private void SendEmailWorkflow(Ck4cWorkflowDocumentInput input)
+        {
+            var ck4cData = Mapper.Map<Ck4CDto>(_repository.Get(c => c.CK4C_ID == input.DocumentId, null, includeTables).FirstOrDefault());
+
+            var mailProcess = ProsesMailNotificationBody(ck4cData, input.ActionType);
+
+            //distinct double To email
+            List<string> ListTo = mailProcess.To.Distinct().ToList();
+
+            if (mailProcess.IsCCExist)
+                //Send email with CC
+                _messageService.SendEmailToListWithCC(ListTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+            else
+                _messageService.SendEmailToList(ListTo, mailProcess.Subject, mailProcess.Body, true);
+
+        }
+
+        private Ck4cMailNotification ProsesMailNotificationBody(Ck4CDto ck4cData, Enums.ActionType actionType)
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new Ck4cMailNotification();
+            var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+            var nppbkc = plant == null ? ck4cData.NppbkcId : plant.NPPBKC_ID;
+
+            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+
+            rc.Subject = "CK-4C " + ck4cData.Number + " is " + EnumHelper.GetDescription(ck4cData.Status);
+            bodyMail.Append("Dear Team,<br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("Kindly be informed, CK-4C is " + EnumHelper.GetDescription(ck4cData.Status) + ". <br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("<table><tr><td>Company Code </td><td>: " + ck4cData.CompanyId + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>NPPBKC </td><td>: " + nppbkc + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Number</td><td> : " + ck4cData.Number + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Type</td><td> : CK-4C</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK4C/Details/" + ck4cData.Ck4CId + "'>link</a> to show detailed information</i></td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+            switch (actionType)
+            {
+                case Enums.ActionType.Submit:
+                    if (ck4cData.Status == Enums.DocumentStatus.WaitingForApproval)
+                    {
+                        var poaList = _poabll.GetPoaByNppbkcId(nppbkc);
+                        foreach (var poaDto in poaList)
+                        {
+                            rc.To.Add(poaDto.POA_EMAIL);
+                        }
+                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                    }
+                    else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        var managerId = _poabll.GetManagerIdByPoaId(ck4cData.CreatedBy);
+                        var managerDetail = _userBll.GetUserById(managerId);
+                        rc.To.Add(managerDetail.EMAIL);
+                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                    }
+                    rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.Approve:
+                    if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        rc.To.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                    }
+                    else if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
+                    {
+                        var poaData = _poabll.GetById(ck4cData.CreatedBy);
+                        if (poaData != null)
+                        {
+                            //creator is poa user
+                            rc.To.Add(poaData.POA_EMAIL);
+                        }
+                        else
+                        {
+                            //creator is excise executive
+                            var userData = _userBll.GetUserById(ck4cData.CreatedBy);
+                            rc.To.Add(userData.EMAIL);
+                        }
+                    }
+                    break;
+                case Enums.ActionType.Reject:
+                    //send notification to creator
+                    var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
+                    rc.To.Add(userDetail.EMAIL);
+                    break;
+            }
+            rc.Body = bodyMail.ToString();
+            return rc;
+        }
+
+        private string GetManagerEmail(string poaId)
+        {
+            var managerId = _poabll.GetManagerIdByPoaId(poaId);
+            var managerDetail = _userBll.GetUserById(managerId);
+            return managerDetail.EMAIL;
+        }
+
+        private class Ck4cMailNotification
+        {
+            public Ck4cMailNotification()
+            {
+                To = new List<string>();
+                CC = new List<string>();
+                IsCCExist = false;
+            }
+            public string Subject { get; set; }
+            public string Body { get; set; }
+            public List<string> To { get; set; }
+            public List<string> CC { get; set; }
+            public bool IsCCExist { get; set; }
         }
 
         private void SubmitDocument(Ck4cWorkflowDocumentInput input)
@@ -545,6 +673,8 @@ namespace Sampoerna.EMS.BLL
 
             var addressPlant = dtData.CK4C_ITEM.Select(x => x.WERKS).Distinct().ToArray();
             var address = string.Empty;
+            string prodTypeDistinct = string.Empty;
+            string currentProdType = string.Empty;
 
             //add data details of CK-4C sebelumnya
             foreach (var item in addressPlant)
@@ -556,6 +686,12 @@ namespace Sampoerna.EMS.BLL
 
                 foreach (var data in activeBrand)
                 {
+                    if(currentProdType != data.PROD_CODE)
+                    {
+                        currentProdType = data.PROD_CODE;
+                        prodTypeDistinct += "|" + data.PROD_CODE;
+                    }
+
                     var ck4cItem = new Ck4cReportItemDto();
 
                     ck4cItem.CollumNo = 0;
@@ -677,7 +813,102 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+            var brandType = prodTypeDistinct.Substring(1).Split('|');
+            var prodAlias = string.Empty;
+            var sumTotal = string.Empty;
+            var btgTotal = string.Empty;
+
+            foreach(var data in brandType)
+            {
+                prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
+                sumTotal += dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY).ToString() + Environment.NewLine;
+                btgTotal += dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY).ToString() + Environment.NewLine;
+            }
+
+            result.Ck4cTotal.ProdType = prodAlias;
+            result.Ck4cTotal.ProdTotal = sumTotal;
+            result.Ck4cTotal.ProdBtg = btgTotal;
+
             return result;
         }
+
+        #region SummaryReport
+
+        public List<Ck4CSummaryReportDto> GetSummaryReportsByParam(Ck4CGetSummaryReportByParamInput input)
+        {
+
+            Expression<Func<CK4C, bool>> queryFilter = PredicateHelper.True<CK4C>();
+
+            if (!string.IsNullOrEmpty(input.Ck4CNo))
+            {
+                queryFilter = queryFilter.And(c => c.NUMBER == input.Ck4CNo);
+            }
+
+         
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
+            }
+
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            
+            var rc = _repository.Get(queryFilter, null, includeTables).ToList();
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+       
+            return SetDataSummaryReport(rc);
+        }
+
+        private List<Ck4CSummaryReportDto> SetDataSummaryReport(List<CK4C> listCk4C)
+        {
+            var result = new List<Ck4CSummaryReportDto>();
+
+            foreach (var dtData in listCk4C)
+            {
+                foreach (var ck4CItem in dtData.CK4C_ITEM)
+                {
+                    var summaryDto = new Ck4CSummaryReportDto();
+
+                    summaryDto.Ck4CNo = dtData.NUMBER;
+                    summaryDto.CeOffice = dtData.COMPANY_ID;
+                    summaryDto.PlantId = dtData.PLANT_ID;
+                    summaryDto.PlantDescription = dtData.PLANT_NAME;
+                    summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                    summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
+                    summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+
+                    summaryDto.ProductionDate = ConvertHelper.ConvertDateToStringddMMMyyyy(ck4CItem.PROD_DATE);
+
+                    var dbBrand = _brandRegistrationService.GetByPlantIdAndFaCode(ck4CItem.WERKS, ck4CItem.FA_CODE);
+
+                    if (dbBrand != null)
+                    {
+                        summaryDto.TobaccoProductType = dbBrand.ZAIDM_EX_PRODTYP != null
+                            ? dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_TYPE
+                            : string.Empty;
+                        summaryDto.BrandDescription = dbBrand.BRAND_CE;
+                    }
+
+                    summaryDto.Hje = ConvertHelper.ConvertDecimalToString(ck4CItem.HJE_IDR);
+                    summaryDto.Tariff = ConvertHelper.ConvertDecimalToString(ck4CItem.TARIFF);
+                    summaryDto.ProducedQty = ConvertHelper.ConvertDecimalToString(ck4CItem.PROD_QTY);
+                    summaryDto.ProducedQty = ConvertHelper.ConvertDecimalToString(ck4CItem.PACKED_QTY);
+                    summaryDto.UnPackQty = ConvertHelper.ConvertDecimalToString(ck4CItem.UNPACKED_QTY);
+
+                    summaryDto.Content = ck4CItem.CONTENT_PER_PACK.HasValue
+                        ? ck4CItem.CONTENT_PER_PACK.ToString()
+                        : string.Empty;
+
+                    result.Add(summaryDto);
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 }

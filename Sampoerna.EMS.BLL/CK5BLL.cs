@@ -316,6 +316,83 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<CK5MaterialOutput>();
+
+            foreach (var ck5MaterialInput in inputs)
+            {
+                messageList.Clear();
+
+                //var output = new CK5MaterialOutput();
+                var output = Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
+
+                //change to 
+                //zaidm_ex_material
+                //where werks and sticker_code
+                //validate
+                var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                if (dbMaterial == null)
+                    messageList.Add("Material Number Not Exist");
+                else
+                {
+                    if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
+                        messageList.Add("Material is not Excisable goods");
+                    else
+                    {
+                        var exGroupType = _goodTypeGroupBLL.GetGroupByExGroupType(dbMaterial.EXC_GOOD_TYP);
+                        if (exGroupType.EX_GROUP_TYPE_ID != (int)groupType)
+                        {
+                            messageList.Add("This material good type is not matched");
+                        }
+                    }
+                }
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
+                    messageList.Add("Qty not valid");
+
+                if (!_uomBll.IsUomIdExist(ck5MaterialInput.Uom))
+                    messageList.Add("UOM not exist");
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
+                    messageList.Add("Convertion not valid");
+
+                if (!_uomBll.IsUomIdExist(ck5MaterialInput.ConvertedUom))
+                    messageList.Add("ConvertedUom not valid");
+                else
+                {
+                    var uom = _uomBll.GetById(ck5MaterialInput.ConvertedUom);
+                    if (!_allowedCk5Uom.Contains(uom.UOM_ID))
+                        messageList.Add("Selected UOM must be in KG / G / L");
+
+                }
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
+                    messageList.Add("UsdValue not valid");
+
+
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                outputList.Add(output);
+            }
+
+            //return outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid);
+            return outputList;
+        }
+
         private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs)
         {
             var messageList = new List<string>();
@@ -339,6 +416,14 @@ namespace Sampoerna.EMS.BLL
                 {
                     if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
                         messageList.Add("Material is not Excisable goods");
+                    else
+                    {
+                        var exGroupType = _goodTypeGroupBLL.GetGroupByExGroupType(dbMaterial.EXC_GOOD_TYP);
+                        if (exGroupType.EX_GROUP_TYPE_ID != (int) ck5MaterialInput.ExGoodsType)
+                        {
+                            messageList.Add("This material good type is not matched");
+                        }
+                    }
                 }
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
                     messageList.Add("Qty not valid");
@@ -361,6 +446,8 @@ namespace Sampoerna.EMS.BLL
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
                     messageList.Add("UsdValue not valid");
+
+                
 
                 if (messageList.Count > 0)
                 {
@@ -427,9 +514,9 @@ namespace Sampoerna.EMS.BLL
             return input;
         }
 
-        public List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs)
+        public List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType)
         {
-            var outputList = ValidateCk5Material(inputs);
+            var outputList = ValidateCk5Material(inputs,groupType);
 
             if (!outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid))
                 return outputList;
@@ -1759,6 +1846,7 @@ namespace Sampoerna.EMS.BLL
                 inputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
                 inputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
                 
+                inputCk5Material.ExGoodsType = ck5UploadFileDocumentsInput.EX_GOODS_TYPE;
                 lisCk5Material.Add(inputCk5Material);
 
             }

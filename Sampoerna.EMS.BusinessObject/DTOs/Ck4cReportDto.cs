@@ -9,12 +9,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             Ck4cItemList = new List<Ck4cReportItemDto>();
             Detail = new Ck4cReportInformationDto();
             HeaderFooter = new HEADER_FOOTER_MAPDto();
-            Ck4cTotal = new List<Ck4cTotalProd>();
+            Ck4cTotal = new Ck4cTotalProd();
         }
 
         public Ck4cReportInformationDto Detail { get; set; }
         public List<Ck4cReportItemDto> Ck4cItemList { get; set; }
-        public List<Ck4cTotalProd> Ck4cTotal { get; set; }
+        public Ck4cTotalProd Ck4cTotal { get; set; }
         public HEADER_FOOTER_MAPDto HeaderFooter { get; set; }
     }
 

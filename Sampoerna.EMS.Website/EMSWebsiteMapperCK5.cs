@@ -215,6 +215,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.UsdValue, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.USD_VALUE))
                .ForMember(dest => dest.ConvertedUom, opt => opt.MapFrom(src => src.CONVERTED_UOM))
                .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC));
+               //.ForMember(dest => dest.ExGoodsType, opt => opt.MapFrom(src => src.EX_GOOD_TYPE_GROUP));
 
 
 

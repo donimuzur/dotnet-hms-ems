@@ -205,6 +205,10 @@
                 this.checked = true;
             });
             $('#MenuPBCK1MonitoringUsage').addClass('active');
+
+            $('#SearchView_CompanyCode').change(function () {
+                GetListNPPBKC_ID();
+            });
         });
 
         function setupDataTables() {
@@ -303,6 +307,29 @@
             $('#ExportMonitoringUsageForms').submit();
             preventDefault();
         });
+
+        function GetListNPPBKC_ID() {
+            var CompanyCode_BUKRS = "";
+            if ($("#SearchView_CompanyCode").length) {
+                CompanyCode_BUKRS = $('#SearchView_CompanyCode').find("option:selected").val();
+            }
+            ajaxLoadNppbkcListByCompanyCode(CompanyCode_BUKRS, '@Url.Action("GetNPPBKCListByCompanyID", "pbck1")');
+        }
+
+        function ajaxLoadNppbkcListByCompanyCode(formData, url) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: { companyId: formData },
+                success: function (data) {
+                    $("#SearchView_NppbkcId").empty();
+                    $("#SearchView_NppbkcId").append("<option value=''>All</option>");
+                    $.each(data, function (index, val) {
+                        $("#SearchView_NppbkcId").append("<option value='" + val + "'>" + val + "</option>");
+                    });
+                }
+            });
+        }
 
     </script>
     @* ReSharper restore Html.IdNotResolved *@

@@ -197,7 +197,7 @@
                                             <label class="col-md-4">Supplier NPPBKC</label>
                                             <div class="col-md-8">
                                                 @Html.HiddenFor(model => model.Detail.HiddenSupplierNppbkcId)
-                                                @Html.DropDownListFor(model => model.Detail.SupplierNppbkcId, Model.NppbkcList, "Select", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Detail.SupplierNppbkcId, new { @class = "form-control" })
                                             </div>
                                         </div>
                                     </div>

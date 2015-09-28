@@ -512,7 +512,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
         [HttpPost]
-        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
+        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId,Enums.ExGoodsType groupType)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new CK5FormViewModel();
@@ -532,7 +532,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.UsdValue = datarow[5];
                         if (datarow.Count > 6)
                             uploadItem.Note = datarow[6];
-
+                        //uploadItem.ExGoodsType = groupType;
                         uploadItem.Plant = plantId;
 
                         model.UploadItemModels.Add(uploadItem);
@@ -549,7 +549,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var input = Mapper.Map<List<CK5MaterialInput>>(model.UploadItemModels);
 
-            var outputResult = _ck5Bll.CK5MaterialProcess(input);
+            var outputResult = _ck5Bll.CK5MaterialProcess(input,groupType);
 
             model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(outputResult);
 
