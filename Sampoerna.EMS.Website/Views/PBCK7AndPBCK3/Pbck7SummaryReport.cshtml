@@ -108,7 +108,54 @@
 {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript">
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
+            });
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#pbck7-summary')) {
+                table = $('#pbck7-summary').DataTable();
+                table.destroy();
+            }
+
+            table = $('#pbck7-summary').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+            // Setup - add a text input to each footer cell
+            $('#pbck7-summary .filters th').each(function () {
+                var idx = $(this).index();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+
+        }
         function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            setupDataTables();
         }
     </script>
     

@@ -1,16 +1,34 @@
 ﻿@model List<Sampoerna.EMS.BusinessObject.DTOs.Pbck7AndPbck3Dto>
 
-<table id="pbck-1">
+<table id="pbck7-summary">
     <thead>
-        <tr><th>No</th><th>NPPBKC</th><th>Plant</th><th>Doc.Type</th><th>Date</th><th>Status</th></tr>
+        <tr>
+           
+            <th>No</th>
+            <th>NPPBKC</th>
+            <th>Plant</th>
+            <th>Doc.Type</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
     </thead>
-
+    <thead class="filters">
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
     <tbody>
         @if (Model != null)
         {
             foreach (var item in Model)
             {
                 <tr>
+                    
                     <td>@item.Pbck7Number</td>
                     <td>@item.NppbkcId</td>
                     <td>@(item.PlantId + "-" +item.PlantName)</td>
