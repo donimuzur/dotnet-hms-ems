@@ -1,100 +1,196 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Validations;
 
 namespace Sampoerna.EMS.Website.Models.PBCK1
 {
-    public class PBCK1Item
+    public class Pbck1Item
     {
-        public long PBCK1_ID { get; set; }
+        public Pbck1Item()
+        {
+            int nextyear = DateTime.Now.Year + 1;
+            int year = DateTime.Now.Year;
+            Pbck1ProdConverter = new List<Pbck1ProdConvModel>();
+            Pbck1ProdPlan = new List<Pbck1ProdPlanModel>();
+            PeriodFrom = new DateTime(nextyear, 1, 1);
+            PeriodTo = new DateTime(nextyear, 12, 31);
+            Lack1FromMonthId = 1;
+            Lack1FormYear = year;
+            Lack1ToYear = year;
+            Lack1ToMonthId = 12;
+            //ReportedOn = DateTime.Now;
+            //PlanProdFrom = DateTime.Now;
+            //PlanProdTo = DateTime.Now;
+            //DecreeDate = DateTime.Now;
+            ReportedOn = DateTime.Now;
+            RequestQty = 0;
+        }
+        public int Pbck1Id { get; set; }
 
-        [Required, Display(Name = "PBCK-1 No")]
-        public string NUMBER { get; set; }
+        [Display(Name = "PBCK-1 No")]
+        public string Pbck1Number { get; set; }
 
-        [Required, Display(Name = "References")]
-        public long? PBCK1_REF { get; set; }
+        [RequiredIf("Pbck1Type", Enums.PBCK1Type.Additional), Display(Name = "References")]
+        public long? Pbck1Reference { get; set; }
+        public string Pbck1ReferenceNumber { get; set; }
 
         [Required, Display(Name = "PBCK Type")]
-        public Enums.PBCK1Type PBCK1_TYPE { get; set; }
-        
-        public string PBCK1_TYPEText { get; set; }
+        public Enums.PBCK1Type Pbck1Type { get; set; }
+
+        public string PbckTypeName { get; set; }
 
         [Required, Display(Name = "Period From")]
-        public DateTime? PERIOD_FROM { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? PeriodFrom { get; set; }
 
         [Required, Display(Name = "Period To")]
-        public DateTime? PERIOD_TO { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? PeriodTo { get; set; }
+
         public string Year { get; set; }
 
         [Required, Display(Name = "Reported On")]
-        public DateTime? REPORTED_ON { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? ReportedOn { get; set; }
 
         [Required, Display(Name = "NPPBKC ID")]
-        public long? NPPBKC_ID { get; set; }
+        public string NppbkcId { get; set; }
 
-        public string CompanyName { get; set; }
-        public string NPPBKC_NO { get; set; }
+        public string NppbkcKppbcId { get; set; }
+
+        public string NppbkcCompanyCode { get; set; }
+        public string NppbkcCompanyName { get; set; }
+        
+        public string PoaList { get; set; }
 
         [Required, Display(Name = "Exciseable Goods Description")]
-        public int? GOODTYPE_ID { get; set; }
+        public string GoodType { get; set; }
+        public string GoodTypeDesc { get; set; }
 
-        public string GOODTYPE_DESC { get; set; }
-        public string SUPPLIER_PLANT { get; set; }
+        [Required, Display(Name = "Supplier Plant")]
+        public string SupplierPlant { get; set; }
 
-        [Required, Display(Name = "Supplier Port")]
-        public int? SUPPLIER_PORT_ID { get; set; }
+        public string SupplierPlantWerks { get; set; }
+        
+        [Display(Name = "Supplier Port")]
+        public int? SupplierPortId { get; set; }
 
-        [Required, Display(Name = "Supplier Address")]
-        public string SUPPLIER_ADDRESS { get; set; }
+        public string SupplierNppbkcId { get; set; }
 
-        [Required, Display(Name = "Supplier Phone")]
-        public string SUPPLIER_PHONE { get; set; }
+        public string HiddenSupplierNppbkcId { get; set; }
+
+        public string SupplierPortName { get; set; }
+
+        [Display(Name = "Supplier Address")]
+        public string SupplierAddress { get; set; }
+
+        public string HiddendSupplierAddress { get; set; }
+
+        [Display(Name = "Supplier Phone")]
+        public string SupplierPhone { get; set; }
+
+        public string SupplierKppbcId { get; set; }
+
+        public string SupplierKppbcName { get; set; }
+
+        public string SupplierCompany { get; set; }
+
+        public string HiddenSupplierKppbcId { get; set; }
 
         [Required, Display(Name = "Plan Production From")]
-        public DateTime? PLAN_PROD_FROM { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? PlanProdFrom { get; set; }
 
         [Required, Display(Name = "Plan Production To")]
-        public DateTime? PLAN_PROD_TO { get; set; }
+        //[UIHint("FormatDateTime")]
+        public DateTime? PlanProdTo { get; set; }
 
         [UIHint("FormatQty")]
         [Required, Display(Name = "Request Qty")]
-        public decimal? REQUEST_QTY { get; set; }
+        public decimal? RequestQty { get; set; }
 
         [Required]
-        public int? REQUEST_QTY_UOM { get; set; }
-        public string REQUEST_QTY_UOM_NAME { get; set; }
+        public string RequestQtyUomId { get; set; }
+
+        public string RequestQtyUomName { get; set; }
 
         [Required, Display(Name = "LACK-1 From")]
-        public int? LACK1_FROM_MONTH_ID { get; set; }
+        public int Lack1FromMonthId { get; set; }
 
-        public string LACK1_FROM_MONTH_NAME { get; set; }
+        public string Lack1FromMonthName { get; set; }
 
         [Required]
-        public int? LACK1_FROM_YEAR { get; set; }
+        public int Lack1FormYear { get; set; }
 
         [Required, Display(Name = "LACK-1 To")]
-        public int? LACK1_TO_MONTH_ID { get; set; }
-        public string LACK1_TO_MONTH_NAME { get; set; }
-        public int? LACK1_TO_YEAR { get; set; }
-        public Enums.DocumentStatus STATUS { get; set; }
-        public string STATUS_NAME { get; set; }
-        public Enums.DocumentStatus STATUS_GOV { get; set; }
-        public string STATUS_GOV_NAME { get; set; }
+        public int Lack1ToMonthId { get; set; }
+
+        public string Lack1ToMonthName { get; set; }
+
+        [Required]
+        public int Lack1ToYear { get; set; }
+
+        public Enums.DocumentStatus Status { get; set; }
+
+        public string StatusName { get; set; }
+
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Status Gov")]
+        public Enums.DocumentStatusGov StatusGov { get; set; }
+        
+        public string StatusGovName { get; set; }
+
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Qty Approved")]
         [UIHint("FormatQty")]
-        public decimal? QTY_APPROVED { get; set; }
-        public DateTime? DECREE_DATE { get; set; }
-        public DateTime? CREATED_DATE { get; set; }
-        public int? CREATED_BY { get; set; }
-        public string CREATED_USERNAME { get; set; }
-        public int? APPROVED_BY { get; set; }
-        public string APPROVED_USERNAME { get; set; }
-        public DateTime? APPROVED_DATE { get; set; }
-        public DateTime? MODIFIED_DATE { get; set; }
-        public decimal? LATEST_SALDO { get; set; }
-        public int? LATEST_SALDO_UOM { get; set; }
-        public string LATEST_SALDO_UOM_NAME { get; set; }
+        public decimal QtyApproved { get; set; }
+
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Date")]
+        //[UIHint("FormatDateTime")]
+        public DateTime? DecreeDate { get; set; }
         
-        public string SUPPLIER_PORT_NAME { get; set; }
+        public DateTime CreatedDate { get; set; }
         
+        public string CreatedById { get; set; }
+
+        public string ApprovedByPoaId { get; set; }
+        public string ApprovedByManagerId { get; set; }
+        public DateTime? ApprovedByPoaDate { get; set; }
+        public DateTime? ApprovedByManagerDate { get; set; }
+
+        public DateTime? ModifiedDate { get; set; }
+
+        public decimal LatestSaldo { get; set; }
+
+        public string LatestSaldoUomId { get; set; }
+
+        public string LatestSaldoUomName { get; set; }
+
+        public List<Pbck1Item> Pbck1Childs { get; set; }
+
+        public Pbck1Item Pbck1Parent { get; set; }
+
+        public List<Pbck1ProdConvModel> Pbck1ProdConverter { get; set; }
+
+        public List<Pbck1ProdPlanModel> Pbck1ProdPlan { get; set; }
+
+        [RequiredIf("StatusGov", Enums.DocumentStatusGov.Rejected), Display(Name = "Comment")]
+        public string Comment { get; set; }
+        
+        public List<Pbck1DecreeDocModel> Pbck1DecreeDoc { get; set; }
+
+        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Doc")]
+        public List<HttpPostedFileBase> Pbck1DecreeFiles { get; set; }
+
+        public Enums.DocumentStatusGov DocStatusGov { get; set; }
+
+        public Enums.ActionType GovApprovalActionType { get; set; }
+
+        public string IsSaveSubmit { get; set; }
+
+        public bool IsNppbkcImport { get; set; }
+
+        public bool IsExternalSupplier { get; set; }
     }
 }

@@ -1,0 +1,38 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1CreateViewModel
+
+<table id="tbl-generated-lack1" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Beginning Balance</th>
+            <th>Usage</th>
+            <th>Production</th>
+            <th>Ending Balance</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody id="tbody-generated-lack1">
+        <tr>
+            @if (Model.Lack1Generated != null)
+            {
+                <td>1</td>
+                <td>
+                    @Html.DisplayFor(model => model.Lack1Generated.BeginingBalance)
+                </td>
+                <td>@Html.DisplayFor(model => model.Lack1Generated.TotalUsage)</td>
+                <td>@Html.DisplayFor(model => model.Lack1Generated.TotalProduction)</td>
+                <td>@Html.DisplayFor(model => model.Lack1Generated.EndingBalance)</td>
+                <td>@Html.DisplayFor(model => model.Lack1Generated.Noted)</td>
+            }
+            else
+            {
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            }
+        </tr>
+    </tbody>
+</table>

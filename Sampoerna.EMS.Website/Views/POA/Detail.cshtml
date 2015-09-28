@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.POA.POAFormModel
+﻿@using Microsoft.Ajax.Utilities
+@model Sampoerna.EMS.Website.Models.POA.POAFormModel
 @section scripts {
 
     <script src="~/Scripts/js/scripts.min.js"></script>
@@ -13,6 +14,8 @@
         var confirmDeletePOA = function () {
             $('#btn-delete-poa').click();
         };
+
+      
     </script>
 }
 @{
@@ -21,15 +24,16 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-                <h3>Detail POA</h3>
+            <h3 class="desc">POA <span>(Power of Attorney)</span></h3>
             <div class="action-button">
                 <a href="@Url.Action("Index", "POA")">
                     <button class="btn btn-grey">Back</button>
                 </a>
-                @if (Model.Detail.Is_Deleted.Equals("No"))
-                {
-                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">Delete</a>
+                @{
+                    var isActive = Model.Detail.Is_Active == "Yes" ? true : false;
                 }
+                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">@(isActive == true ? "DEACTIVE": "ACTIVE")</a>
+                
             </div>
         </div>
     </div>
@@ -56,7 +60,7 @@
                                     <div class="panel-heading" role="tab" id="headingOne">
                                         <h4 class="panel-title">
                                             <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                POA Detail
+                                                Detail POA 
                                                 <i class="fa fa-caret-down"></i>
                                             </a>
                                         </h4>
@@ -76,9 +80,9 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-3">User Account</label>
+                                                            <label class="col-md-3">Login As</label>
                                                             <div class="col-md-9">
-                                                                @Html.DropDownListFor(model => model.Detail.User.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.DropDownListFor(model => model.Detail.UserId, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -89,7 +93,7 @@
                                                         <div class="row">
                                                             <label class="col-md-3">Manager</label>
                                                             <div class="col-md-9">
-                                                                @Html.DropDownListFor(model => model.Detail.Manager.USER_ID, Model.Users, "select", new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.DropDownListFor(model => model.Detail.ManagerId, Model.Managers, "select", new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -147,6 +151,31 @@
                                                     </div>
 
                                                 </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">SK Doc</label>
+                                                        <div class="col-md-8">
+                                                            <div class="file-upload" id="poa-files">
+                                                                @if (Model.Detail.PoaSk != null)
+                                                                {
+
+                                                                    foreach (var file in Model.Detail.PoaSk)
+                                                                    {
+                                                                        <div class="row">
+                                                                            <div class="col-sm-10">
+                                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                            </div>
+                                                                           
+                                                                        </div>
+
+                                                                    }
+                                                                }
+
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
 
                                             </form>
 
@@ -169,18 +198,26 @@
 </div>
 <!--delete-->
 <input id="btn-delete-poa" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.poa" value="delete">
-<div class="modal main-menu-child fade delete-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div class="modal ems-modal fade delete-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Delete</h3>
+                @if (Model.Detail.Is_Active == "Yes")
+                {
+                     <h4 class="modal-title">Deactive</h4>
+                }
+                else
+                {
+                     <h4 class="modal-title">Active</h4>
+                }
+
             </div>
             <div class="modal-body">
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="poaDelete();">Delete</button>
+                <button type="button" class="btn btn-danger" onclick="poaDelete();">Yes</button>
                 <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>

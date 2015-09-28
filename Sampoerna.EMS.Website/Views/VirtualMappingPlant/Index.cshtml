@@ -1,13 +1,14 @@
-﻿@model Sampoerna.EMS.Website.Models.VirtualMappingPlant.VirtualMappingPlantIndexViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.VirtualMappingPlant.VirtualMappingPlantIndexViewModel
 
 @{
     ViewBag.Title = "Virtual Plant Mapping";
 }
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+   <script src="~/Scripts/js/custom.js"></script>>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterVirtualMappingPlant').addClass('active');
         $(document).ready(function () {
             
             // Setup - add a text input to each footer cell
@@ -35,7 +36,26 @@
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
 
-            $('#MenuMasterVirtualMappingPlant').addClass('active');
+           
+
+            @if (TempData[Constans.SubmitType.Save] != null)
+            {
+                @: $('#modal-virtualplant-message').html('@TempData[Constans.SubmitType.Save]');
+                @: $('#btn-virtualplant-modal').click();
+                @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: $('#modal-virtualplant-message').html('@TempData[Constans.SubmitType.Update]');
+                @: $('#btn-virtualplant-modal').click();
+                @:TempData[Constans.SubmitType.Update] = null;
+            }
+            else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-virtualplant-message').html('@TempData[Constans.SubmitType.Delete]');
+                @: $('#btn-virtualplant-modal').click();
+                @:TempData[Constans.SubmitType.Delete] = null;
+            }
         });
     </script>
 }
@@ -87,8 +107,8 @@
                             {
                                 <tr>
                                     <td class="action">
-                                        <a href="@Url.Action("Details", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })"><i class="fa fa-eye"></i></a>
-                                        <a href="@Url.Action("Edit", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })"><i class="fa fa-pencil-square-o"></i></a>
+                                        <a href="@Url.Action("Details", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                        <a href="@Url.Action("Edit", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.CompanyName)
@@ -115,58 +135,19 @@
 </div>
 
 
-@*<div class="modal fade main-menu-child menu-maping-type" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md">
+<!--modal-->
+<input id="btn-virtualplant-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Maping Virtual Plant Form</h3>
+                <h4 class="modal-title">Success</h4>
             </div>
-            <div class="modal-body form">
-                <form class="form-excise" role="form">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <label class="col-md-4">Company</label>
-                                <div class="col-md-8">
-                                    @Html.DropDownListFor(m => m.CompanyList, Model.CompanyList, "Choose One", new { @class = "form-control" })
-                                    @*<select class="form-control">
-                                            <option>PT HM Sampoerna Tbk</option>
-                                            <option>PT HM Sampoerna Tbk</option>
-                                        </select>*@
-                                @*</div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row">
-                                <label class="col-md-4">Import Virtual Plant</label>
-                                <div class="col-md-8">
-                                    <select class="form-control">
-                                        <option></option>
-                                        <option></option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row">
-                                <label class="col-md-4">Export Virtual Plant</label>
-                                <div class="col-md-8">
-                                    <select class="form-control">
-                                        <option></option>
-                                        <option></option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+            <div class="modal-body" id="modal-virtualplant-message">
 
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-blue">Save</button>
-                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-</div>*@
+</div>

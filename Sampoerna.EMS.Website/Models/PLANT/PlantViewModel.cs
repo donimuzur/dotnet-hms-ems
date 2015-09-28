@@ -19,6 +19,8 @@ namespace Sampoerna.EMS.Website.Models.PLANT
     {
         public IEnumerable<SelectListItem> Nppbkc { get; set; }
         public DetailPlantT1001W Detail { get; set; }
+
+        public bool IsMainPlantExist     { get; set; }
     }
 
     public class DetailPlantT1001W
@@ -29,12 +31,12 @@ namespace Sampoerna.EMS.Website.Models.PLANT
             ReceiveMaterials = new List<PlantReceiveMaterialItemModel>();
         }
 
-        public long PlantId { get; set; }
-
-                [Display(Name = "Werks")]
+       
+        [Display(Name = "Werks")]
         public string Werks { get; set; }
         public string Name1 { get; set; }
         public string PlantDescription { get; set; }
+        [Required]
         public string Ort01 { get; set; }
 
         public bool IsMainPlant { get; set; }
@@ -42,23 +44,42 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public bool IsNo { get; set; }
 
         [Display(Name = "Address")]
+        [Required]
         public string Address { get; set; }
 
-        [Display(Name = "Plant City")]
-        public string City { get; set; }
+       
 
         [Display(Name = "Skeptis")]
         public string Skeptis { get; set; }
 
-        public string NPPBKC_NO { get; set; }
         public string KPPBC_NO { get; set; }
 
-        public int? NPPBCK_ID { get; set; }
+        public string KPPBC_NAME { get; set; }
+
+        public string SUPPLIER_COMPANY { get; set; }
+
+        [Required]
+        public string NPPBKC_ID { get; set; }
+
+        public string NPPBKC_IMPORT_ID { get; set; }
         public DateTime? CreatedDate { get; set; }
         
         public List<PlantReceiveMaterialItemModel> ReceiveMaterials { get; set; }
-
+        [Required]
+        [MaxLength(25)]
         public string Phone { get; set; }
+
+
+        public bool? IsDeleted { get; set; }
+
+        public string IsDeletedString
+        {
+            get
+            {
+                return this.IsDeleted.HasValue ? (this.IsDeleted.Value ? "Yes" : "No") : "No";
+            }
+            
+        }
     }
 
 }

@@ -14,16 +14,7 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class CURRENCY
     {
-        public CURRENCY()
-        {
-            this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
-            this.ZAIDM_EX_BRAND1 = new HashSet<ZAIDM_EX_BRAND>();
-        }
-    
-        public int CURRENCY_ID { get; set; }
-        public string CURRENCY_CODE { get; set; }
-    
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
-        public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND1 { get; set; }
+        public string CURRENCY_ID { get; set; }
+        public string CURRENCY_NAME { get; set; }
     }
 }

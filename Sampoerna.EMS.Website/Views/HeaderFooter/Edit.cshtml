@@ -10,7 +10,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>Header Footer Form</h3>
+                <h3>Header Footer </h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
@@ -29,7 +29,7 @@
                                 <div class="panel-heading" role="tab" id="headingOne">
                                     <h4 class="panel-title">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            @ViewBag.Title
+                                           Update Header Footer
                                             <i class="fa fa-caret-down"></i>
                                         </a>
                                     </h4>
@@ -38,6 +38,7 @@
                                 @Html.HiddenFor(model => model.Detail.HEADER_FOOTER_ID)
                                 @Html.HiddenFor(model => model.Detail.CREATED_DATE)
                                 @Html.HiddenFor(model => model.Detail.HEADER_IMAGE_PATH_BEFOREEDIT)
+                             
 
                                 <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                     <div class="panel-body">
@@ -48,10 +49,11 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Company Code</label>
+                                                        <label class="col-md-4">Company Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.Detail.COMPANY_ID, Model.CompanyList, "Select", new { @class = "form-control" })
-                                                            @Html.ValidationMessageFor(model => model.Detail.COMPANY_ID)
+                                                            @Html.TextBox("compnyCode",Model.Detail.COMPANY_ID,  new { @class = " form-control ", disabled="disabled" })
+                                                            @*@Html.ValidationMessageFor(model => model.Detail.COMPANY_ID)*@
+                                                            @Html.HiddenFor(model => model.Detail.COMPANY_ID)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -68,10 +70,11 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4 long">Company Footer</label>
+                                                        <label class="col-md-4 long">Company Footer<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            <textarea id="Detail_FOOTER_CONTENT" name="Detail.FOOTER_CONTENT" class="form-control" rows="5">@Model.Detail.FOOTER_CONTENT</textarea>
-                                                            @Html.ValidationMessageFor(model => model.Detail.FOOTER_CONTENT)
+                                                            @Html.TextAreaFor(model => model.Detail.FOOTER_CONTENT, new { @class = "form-control", rows = "5", id = "Detail_FOOTER_CONTENT" })
+                                                            @*<textarea id="Detail_FOOTER_CONTENT" name="Detail.FOOTER_CONTENT" class="form-control" rows="5">@Model.Detail.FOOTER_CONTENT</textarea>*@
+                                                            @*@Html.ValidationMessageFor(model => model.Detail.FOOTER_CONTENT)*@
                                                         </div>
                                                     </div>
                                                 </div>
@@ -131,8 +134,8 @@
                                                 @Html.EditorFor(x => x.Detail.HeaderFooterMapList[idx].IS_FOOTER_SET)
                                             </td>
                                             <td>
-                                                <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview(@idx, @Model.Detail.HEADER_FOOTER_ID)" />
-                                            </td>
+                                                <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview(@idx, @Model.Detail.HEADER_FOOTER_ID )"/>
+                                           </td>
                                         </tr>
                                     }
                                 </tbody>
@@ -189,7 +192,7 @@
                     data: formData,
                     success: function(data) {
                         if (data != null) {
-                            $('#Detail_COMPANY_NAME').val(data.BUKRSTXT);
+                            $('#Detail_COMPANY_NAME').val(data.BUTXT);
                         } else {
                             $('#Detail_COMPANY_NAME').val('');
                         }
@@ -199,14 +202,15 @@
         }
 
         function printPreview(idx, id) {
-            
+
             var elementHeaderId = '#Detail_HeaderFooterMapList_' + idx + '__IS_HEADER_SET';
             var elementFooterId = '#Detail_HeaderFooterMapList_' + idx + '__IS_FOOTER_SET';
 
             var isHeaderSet = $(elementHeaderId).is(':checked');
             var isFooterSet = $(elementFooterId).is(':checked');
-            
-            var url = '/HeaderFooter/PrintPreview/' + id + '?isHeaderSet=' + isHeaderSet + '&isFooterSet=' + isFooterSet;
+
+            var url = '@Url.Action("PrintOut", "HeaderFooter")';
+            url += "?id=" + id + '&isHeaderSet=' + isHeaderSet + '&isFooterSet=' + isFooterSet;
             window.open(url, '_blank', 'width=1200,height=600');
 
         }

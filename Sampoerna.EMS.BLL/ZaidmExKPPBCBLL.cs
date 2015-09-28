@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -21,14 +20,25 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_KPPBC>();
         }
-        public ZAIDM_EX_KPPBC GetById(long id)
+        public ZAIDM_EX_KPPBCDto GetById(string id)
+        {
+            return Mapper.Map<ZAIDM_EX_KPPBCDto>(_repository.GetByID(id));
+        }
+
+        public ZAIDM_EX_KPPBC GetKppbcById(string id)
         {
             return _repository.GetByID(id);
         }
 
-        public List<ZAIDM_EX_KPPBC> GetAll()
+        public List<ZAIDM_EX_KPPBCDto> GetAll()
         {
-            return _repository.Get().ToList();
+            return Mapper.Map<List<ZAIDM_EX_KPPBCDto>>(_repository.Get().ToList());
+        }
+
+        public void Save(ZAIDM_EX_KPPBC kppbc)
+        {
+            _repository.InsertOrUpdate(kppbc);
+            _uow.SaveChanges();
         }
     }
 }

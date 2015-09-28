@@ -16,22 +16,21 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public ZAIDM_EX_KPPBC()
         {
-            this.CK5 = new HashSet<CK5>();
             this.ZAIDM_EX_NPPBKC = new HashSet<ZAIDM_EX_NPPBKC>();
         }
     
-        public long KPPBC_ID { get; set; }
-        public string KPPBC_NUMBER { get; set; }
+        public string KPPBC_ID { get; set; }
         public string KPPBC_TYPE { get; set; }
-        public Nullable<int> MENGETAHUI_ID { get; set; }
+        public string MENGETAHUI { get; set; }
         public string CK1_KEP_HEADER { get; set; }
         public string CK1_KEP_FOOTER { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-        public Nullable<int> MODIFIED_BY { get; set; }
+        public string CREATED_BY { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public string MENGETAHUI_DETAIL { get; set; }
     
-        public virtual ICollection<CK5> CK5 { get; set; }
-        public virtual MENGETAHUI MENGETAHUI { get; set; }
-        public virtual USER USER { get; set; }
         public virtual ICollection<ZAIDM_EX_NPPBKC> ZAIDM_EX_NPPBKC { get; set; }
     }
 }

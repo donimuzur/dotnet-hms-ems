@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -18,36 +19,49 @@ namespace Sampoerna.EMS.XMLReader
         }
 
         
-        public List<T1001W> Items
+        public List<T001W> Items
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
-                var items = new List<T1001W>();
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1AXX_T001W");
+                var items = new List<T001W>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new T1001W();
-                    item.WERKS = xElement.Element("WERKS").Value;
-                    item.NAME1 = xElement.Element("NAME1").Value;
-                    item.ORT01 = xElement.Element("ORT01").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                    var plantDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var exisitingPlant = GetPlant(item.WERKS);
-                    if (exisitingPlant != null)
+                    try
                     {
-                        if (plantDateXml > exisitingPlant.CREATED_DATE)
+                        var item = new T001W();
+                        item.WERKS = _xmlMapper.GetElementValue(xElement.Element("WERKS"));
+                        item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
+                        item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                        item.ADDRESS = _xmlMapper.GetElementValue(xElement.Element("STRAS")) + " " + item.ORT01;
+                        item.CREATED_BY = Constans.PI;
+                        var exisitingPlant = GetPlant(item.WERKS);
+                        if (exisitingPlant != null)
                         {
+                            item.NPPBKC_ID = exisitingPlant.NPPBKC_ID;
+                            item.PHONE = exisitingPlant.PHONE;
+                            item.SKEPTIS = exisitingPlant.SKEPTIS;
+                            item.NPPBKC_IMPORT_ID = exisitingPlant.NPPBKC_IMPORT_ID;
+                            item.IS_MAIN_PLANT = exisitingPlant.IS_MAIN_PLANT;
+                            item.CREATED_BY = exisitingPlant.CREATED_BY;
+                            item.CREATED_DATE = exisitingPlant.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
+
                         }
                         else
                         {
-                            continue;
-
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        items.Add(item);
+                        _xmlMapper.Errors.Add(ex.Message);
+                        continue;
+                        
                     }
 
                 }
@@ -57,17 +71,20 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-          _xmlMapper.InsertToDatabase<T1001W>(Items);
+          return _xmlMapper.InsertToDatabase<T001W>(Items);
         }
 
-        public T1001W GetPlant(string PlantId)
+        public List<string> GetErrorList()
         {
-            var exisitingPlant = _xmlMapper.uow.GetGenericRepository<T1001W>()
-                          .Get(p => p.WERKS == PlantId)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+            return _xmlMapper.Errors;
+        }
+
+        public T001W GetPlant(string PlantId)
+        {
+            var exisitingPlant = _xmlMapper.uow.GetGenericRepository<T001W>()
+                .GetByID(PlantId);
             return exisitingPlant;
         }
 

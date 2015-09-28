@@ -70,6 +70,7 @@ namespace Sampoerna.EMS.Website.Helpers
             var values = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
             IEnumerable<SelectListItem> items;
 
+            //todo : remove this section .. no need use languange ..?
             if (values.ToString().Contains("Languages"))
             {
                 items = from value in values
@@ -98,7 +99,13 @@ namespace Sampoerna.EMS.Website.Helpers
         public static string UserName(this HtmlHelper htmlHelper)
         {
             var user = (Login)HttpContext.Current.Session[Core.Constans.SessionKey.CurrentUser];
-            return user != null ? user.USERNAME : "";
+            return user != null ? user.USER_ID : "";
+        }
+
+        public static string UserRole(this HtmlHelper htmlHelper)
+        {
+            var user = (Login)HttpContext.Current.Session[Core.Constans.SessionKey.CurrentUser];
+            return user != null ? user.UserRole.ToString() : "";
         }
 
         public static string BooleanToString(this HtmlHelper htmlHelper, bool active, string text)

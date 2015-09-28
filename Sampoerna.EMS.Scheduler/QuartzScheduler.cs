@@ -61,10 +61,10 @@ namespace Sampoerna.HMS.Scheduler
                 //Ask the scheduler factory for a scheduler
                 IScheduler scheduler = _quartzContainer.GetInstance<IScheduler>();
                 scheduler.Start();
-                 logger.Debug("Starting scheduler, job listed : ");
+                 logger.Debug(" --- Starting scheduler --- ");
                 IList<string> jobGroups = scheduler.GetJobGroupNames();
-                logger.Debug("groups: " + string.Join(" - ", jobGroups.ToArray()));
-                IList<string> triggerGroups = scheduler.GetTriggerGroupNames();
+                //logger.Debug("groups: " + string.Join(" - ", jobGroups.ToArray()));
+                //IList<string> triggerGroups = scheduler.GetTriggerGroupNames();
 
                 foreach (string group in jobGroups)
                 {
@@ -77,24 +77,26 @@ namespace Sampoerna.HMS.Scheduler
                         var triggers = scheduler.GetTriggersOfJob(jobKey);
                         foreach (ITrigger trigger in triggers)
                         {
-                            logger.Debug("group: " + group);
-                            logger.Debug("jobkey name: " + jobKey.Name);
-                            logger.Debug("detail description: " + detail.Description);
-                            logger.Debug("trigger key name: " + trigger.Key.Name);
-                            logger.Debug("trigger key group: " + trigger.Key.Group);
-                            logger.Debug("trigger type name: " + trigger.GetType().Name);
-                            logger.Debug("trigger state: " + scheduler.GetTriggerState(trigger.Key).ToString());
+                            //logger.Debug("group: " + group);
+                            //logger.Debug("jobkey name: " + jobKey.Name);
+                            //logger.Debug("detail description: " + detail.Description);
+                            //logger.Debug("trigger key name: " + trigger.Key.Name);
+                            //logger.Debug("trigger key group: " + trigger.Key.Group);
+                            //logger.Debug("trigger type name: " + trigger.GetType().Name);
+                            //logger.Debug("trigger state: " + scheduler.GetTriggerState(trigger.Key).ToString());
+                            
+
+                           // DateTimeOffset? previousFireTime = trigger.GetPreviousFireTimeUtc();
+                            //if (previousFireTime.HasValue)
+                            //{
+                            //    logger.Info("previousFireTime : " + previousFireTime.Value.LocalDateTime.ToString());
+                            //}
+
                             DateTimeOffset? nextFireTime = trigger.GetNextFireTimeUtc();
                             if (nextFireTime.HasValue)
                             {
-                               
-                                logger.Info("nextFireTime : " + nextFireTime.Value.LocalDateTime.ToString());
-                            }
 
-                            DateTimeOffset? previousFireTime = trigger.GetPreviousFireTimeUtc();
-                            if (previousFireTime.HasValue)
-                            {
-                                logger.Info("previousFireTime : " + previousFireTime.Value.LocalDateTime.ToString());
+                                logger.Info("nextFireTime : " + nextFireTime.Value.LocalDateTime.ToString());
                             }
                         }
                     }

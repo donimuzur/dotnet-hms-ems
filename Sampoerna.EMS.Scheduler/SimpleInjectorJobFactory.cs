@@ -44,7 +44,7 @@ namespace Sampoerna.HMS.Scheduler
                 ILoggerFactory loggerFactory = _container.GetInstance<ILoggerFactory>();
                 ILogger logger = loggerFactory.GetLogger("Scheduler.LifetimeScopeJobDecorator");
 
-                logger.Debug("LifetimeScopeJobDecorator - Execute " + Thread.CurrentThread.Name);
+               // logger.Debug("LifetimeScopeJobDecorator - Execute " + Thread.CurrentThread.Name);
                 try
                 {
                     using (_container.BeginLifetimeScope())
@@ -72,7 +72,7 @@ namespace Sampoerna.HMS.Scheduler
             {
                 IJobDetail jobDetail = bundle.JobDetail;
                 Type jobType = jobDetail.JobType;
-                logger.Debug(string.Format("Producing Instance of job: {0}, class: {1}", jobDetail.Key, jobType.FullName));
+                //logger.Debug(string.Format("Producing Instance of job: {0}, class: {1}", jobDetail.Key, jobType.FullName));
                 var job = (IJob)_container.GetInstance(jobType);
                 return new LifetimeScopeJobDecorator(job, _container);
             }

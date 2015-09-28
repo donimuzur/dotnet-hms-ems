@@ -17,19 +17,37 @@ namespace Sampoerna.EMS.BusinessObject
         public CK4C()
         {
             this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
+            this.CK4C_DECREE_DOC = new HashSet<CK4C_DECREE_DOC>();
         }
     
-        public long CK4C_ID { get; set; }
-        public string CK4C_NUMBER { get; set; }
-        public Nullable<long> COMPANY_ID { get; set; }
-        public Nullable<System.DateTime> REPORT_ON { get; set; }
-        public Nullable<System.DateTime> REPORTED_PERIOD { get; set; }
-        public Nullable<long> PLANT_ID { get; set; }
-        public Nullable<long> NPPBCK_ID { get; set; }
+        public int CK4C_ID { get; set; }
+        public string NUMBER { get; set; }
+        public string COMPANY_ID { get; set; }
+        public string COMPANY_NAME { get; set; }
+        public string PLANT_ID { get; set; }
+        public string PLANT_NAME { get; set; }
+        public string NPPBKC_ID { get; set; }
+        public string CREATED_BY { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public Nullable<System.DateTime> REPORTED_ON { get; set; }
+        public Nullable<int> REPORTED_PERIOD { get; set; }
+        public Nullable<int> REPORTED_MONTH { get; set; }
+        public Nullable<int> REPORTED_YEAR { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.StatusGovCk4c> GOV_STATUS { get; set; }
+        public string APPROVED_BY_POA { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_POA { get; set; }
+        public string APPROVED_BY_MANAGER { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
+        public Nullable<System.DateTime> DECREE_DATE { get; set; }
     
+        public virtual USER USER { get; set; }
+        public virtual MONTH MONTH { get; set; }
+        public virtual USER USER1 { get; set; }
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
-        public virtual T1001 T1001 { get; set; }
-        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
-        public virtual T1001W T1001W { get; set; }
+        public virtual POA POA { get; set; }
+        public virtual ICollection<CK4C_DECREE_DOC> CK4C_DECREE_DOC { get; set; }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Sampoerna.EMS.Website.Models.VirtualMappingPlant
+﻿namespace Sampoerna.EMS.Website.Models.VirtualMappingPlant
 {
     public class VirtualMappingPlantDetailsViewModel : BaseModel
     {
@@ -11,7 +6,11 @@ namespace Sampoerna.EMS.Website.Models.VirtualMappingPlant
         public string CompanyName { get; set; }
         public string ImportPlanName { get; set; }
         public string ExportPlanName { get; set; }
+        public string ImportPlantDesc { get; set; }
+        public string ExportPlantDesc { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public bool? IsDeleted { get; set; }
+
+        public bool IsAllowDelete { get; set; }
     }
 }

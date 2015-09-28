@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -25,34 +26,42 @@ namespace Sampoerna.EMS.XMLReader
 
         public List<ZAIDM_EX_MARKET> Items
         {
-         get
+           get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_MARKET");
                 var items = new List<ZAIDM_EX_MARKET>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new ZAIDM_EX_MARKET();
-                    item.MARKET_CODE = Convert.ToInt32(xElement.Element("MARKET_CODE").Value);
-                    item.MARKET_DESC = xElement.Element("MARKET_DESC").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                    var exisitingMarket = GetMarket(item.MARKET_CODE);
-                    var marketDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                     if (exisitingMarket != null)
+                    try
                     {
-                        if (marketDateXml > exisitingMarket.CREATED_DATE)
+                        var item = new ZAIDM_EX_MARKET();
+                        item.MARKET_ID = xElement.Element("MARKET").Value;
+                        item.MARKET_DESC = _xmlMapper.GetElementValue(xElement.Element("MARKET_DESC"));
+                        item.CREATED_BY = Constans.PI;
+                        var exisitingMarket = GetMarket(item.MARKET_ID);
+                        if (exisitingMarket != null)
                         {
+                            item.CREATED_BY = exisitingMarket.CREATED_BY;
+                            item.CREATED_DATE = exisitingMarket.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
+
                         }
                         else
                         {
-                            continue;
-                            
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        items.Add(item);
+                        _xmlMapper.Errors.Add(ex.Message);
+                        continue;
+                        
                     }
+                   
 
                 }
                 return items;
@@ -61,18 +70,23 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_MARKET>(Items);
+            
+            
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_MARKET>(Items);
        
         }
 
-        public ZAIDM_EX_MARKET GetMarket(int? MarketCode)
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
+        }
+
+        public ZAIDM_EX_MARKET GetMarket(string MarketId)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MARKET>()
-                          .Get(p => p.MARKET_CODE == MarketCode)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(MarketId);
             return exisitingPlant;
         }
 

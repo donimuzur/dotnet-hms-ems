@@ -31,6 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <IncludeIisSettings>false</IncludeIisSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -47,7 +48,20 @@
     <Reference Include="AutoMapper.Net4">
       <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>references\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.6\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.6\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -76,6 +90,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SimpleInjector.Integration.Web.Mvc.2.6.1\lib\net40\SimpleInjector.Integration.Web.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="SpreadsheetLight">
+      <HintPath>..\packages\SpreadsheetLight.3.4.4\lib\SpreadsheetLight.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices" />
@@ -87,6 +104,30 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -104,32 +145,8 @@
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=__MvcPagesVersion__, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.2\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Optimization">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.2\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="Voxteneo.WebCompoments.NLogLogger">
       <HintPath>..\packages\NLogLogger.1.3.0\lib\Voxteneo.WebCompoments.NLogLogger.dll</HintPath>
@@ -211,33 +228,62 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\PBCK4Controller.cs" />
+    <Compile Include="Controllers\ProductionController.cs" />
+    <Compile Include="Code\PdfResult.cs" />
+    <Compile Include="Controllers\WasteController.cs" />
+    <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
     <Compile Include="Code\IFormsAuthenticationService.cs" />
+    <Compile Include="Code\MessageInfo.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspxReportViewerController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BrandRegistrationController.cs" />
+    <Compile Include="Controllers\CK4CController.cs" />
     <Compile Include="Controllers\CK5Controller.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\DocumenSequenceController.cs" />
+    <Compile Include="Controllers\EmailTemplateController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\GlobalSettingsController.cs" />
     <Compile Include="Controllers\GoodsTypeGroupController.cs" />
     <Compile Include="Controllers\HeaderFooterController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LACK2Controller.cs" />
+    <Compile Include="Controllers\PBCK7AndPBCK3Controller.cs" />
+    <Compile Include="Controllers\UserPlantMapController.cs" />
+    <Compile Include="Controllers\LACK1Controller.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MaterialController.cs" />
     <Compile Include="Controllers\NPPBKCController.cs" />
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\PlantController.cs" />
     <Compile Include="Controllers\POAController.cs" />
+    <Compile Include="Controllers\KPPBCController.cs" />
+    <Compile Include="Controllers\POAMapController.cs" />
+    <Compile Include="Controllers\UomController.cs" />
+    <Compile Include="Controllers\UserAuthorizationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\VendorController.cs" />
     <Compile Include="Controllers\VirtualMappingPlantController.cs" />
+    <Compile Include="Controllers\WorkflowSettingsController.cs" />
     <Compile Include="EMSWebsiteMapper.cs" />
+    <Compile Include="EMSWebsiteMapperCK5.cs" />
+    <Compile Include="EMSWebsiteMapperLack1.cs" />
+    <Compile Include="EMSWebsiteMapperPBCK1.cs" />
+    <Compile Include="EMSWebsiteMapperPBCK4.cs" />
+    <Compile Include="EMSWebsiteMapperPBCK7AndPBCK3.cs" />
+    <Compile Include="Filters\EncryptedParameterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AuthorizeADAttribute.cs" />
     <Compile Include="Helpers\HtmlHelperExtention.cs" />
     <Compile Include="Helpers\LDAPHelper.cs" />
+    <Compile Include="Helpers\UrlHelperExtensions.cs" />
     <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
@@ -245,11 +291,28 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationDetailsViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
-     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
-
+    <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CCreateWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cDecreeDocModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CSummaryReportsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5FileUploadViewModel.cs" />
+    <Compile Include="Models\CK5\CK5FormViewModel.cs" />
+    <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
+    <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5EditViewModel.cs" />
+    <Compile Include="Models\CK5\CK5InputManualViewModel.cs" />
+    <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
+    <Compile Include="Models\CK5\CK5SummaryReportsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
+    <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupDetailsViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupEditViewModel.cs" />
@@ -257,30 +320,204 @@
     <Compile Include="Models\HeaderFooter\HeaderFooterMapViewModel.cs" />
     <Compile Include="Models\HeaderFooter\HeaderFooterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KPPBC\KppbcDetailViewModel.cs" />
+    <Compile Include="Models\KPPBC\KppbcIndexViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1BaseItemModel.cs" />
+    <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
+    <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
+    <Compile Include="Models\LACK1\Lack1GenerateInputModel.cs" />
+    <Compile Include="Models\LACK1\Lack1IndexCompletedDocumentViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1Input.cs" />
+    <Compile Include="Models\LACK1\Lack1ItemViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
+    <Compile Include="Models\LACK1\Lack1PlantData.cs" />
+    <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
+    <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
+    <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2IndexViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2Input.cs" />
+    <Compile Include="Models\LACK2\LACK2Model.cs" />
+    <Compile Include="Models\LACK2\LACK2NppbkcData.cs" />
+    <Compile Include="Models\LACK2\LACK2PlantData.cs" />
+    <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2SummaryReportModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
+    <Compile Include="Models\Material\MaterialDetailViewModel.cs" />
+    <Compile Include="Models\Material\MaterialEditViewModel.cs" />
+    <Compile Include="Models\Material\MaterialListViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
+    <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1SupInfo.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
+    <Compile Include="Models\PBCK1\Pbck1MonitoringUsageViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdConvModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4FileUploadViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4PlantModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4SearchViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4SummaryReportsViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3CreateViewModel.cs" />
     <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
+    <Compile Include="Models\PLANT\T001WModel.cs" />
+    <Compile Include="Models\POAMap\PoaMapIndexViewModel.cs" />
+    <Compile Include="Models\POAMap\PoaMapDetailViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
+    <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
+    <Compile Include="Models\PRODUCTION\ProductionUploadViewModel.cs" />
+    <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
+    <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
+    <Compile Include="Models\Settings\GlobalSettingModel.cs" />
+    <Compile Include="Models\UOM\UomDetailViewModel.cs" />
+    <Compile Include="Models\UOM\UomIndexViewModel.cs" />
+    <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
+    <Compile Include="Models\UserAuthorization\IndexUserAuthorizationViewModel.cs" />
+    <Compile Include="Models\UserPlantMap\UserPlantMapIndexViewModel.cs" />
+    <Compile Include="Models\UserPlantMap\UserPlantMapDetailViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Models\Vendor\VendorDetailViewModel.cs" />
+    <Compile Include="Models\Vendor\VendorIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantCreateViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantDetailsViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
+    <Compile Include="Models\Waste\WasteUploadViewModel.cs" />
+    <Compile Include="Models\Waste\WasteViewModel.cs" />
+    <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\CK4C\DaftarRincian.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DaftarRincian.rpt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK4C\Preview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Preview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5Materials.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5Materials.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5MaterialsExtend.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5MaterialsExtend.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5PrintOutFooter.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5PrintOutFooter.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5PrintOutMaterial.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\HeaderFooter\HeaderFooterDs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\HeaderFooter\HeaderFooterPreview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\LACK2\Preview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Preview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PBCK1PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\PBCK1\Pbck1RealisasiP3BKC.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck1RealisasiP3BKC.rpt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck1RealisasiP3BKCTable.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK1\Pbck1RencanaProduksi.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck1RencanaProduksi.rpt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK7\Pbck7Report.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck7Report.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\PBCK4\Pbck4PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck4PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
     <Compile Include="Utility\ExcelReader.cs" />
     <Compile Include="Utility\ExcelWriter.cs" />
+    <Compile Include="Validations\RequiredIfAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AspnetWebForms\GenericReportViewer.aspx" />
@@ -309,7 +546,10 @@
     <Content Include="Content\assets\images\sort_desc_disabled.png" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\chosen.min.css" />
+    <Content Include="Content\css\lack1preview.css" />
     <Content Include="Content\css\main.min.css" />
+    <Content Include="Content\css\print.css" />
     <Content Include="Content\css\vendors\font-awesome.min.css" />
     <Content Include="Content\css\vendors\yamm.css" />
     <Content Include="Content\css\loading.css" />
@@ -346,7 +586,12 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\upload\header\header_sampoerna.jpg" />
     <Content Include="Content\upload\header\sample_header.png" />
+    <Content Include="ExtLib\itextsharp.dll" />
+    <Content Include="ExtLib\itextsharp.pdfa.dll" />
+    <Content Include="ExtLib\iTextSharp.xml" />
+    <Content Include="ExtLib\itextsharp.xtra.dll" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
@@ -376,7 +621,14 @@
     <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff" />
     <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff2" />
     <Content Include="Content\css\main.min.css.map" />
+    <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
+    <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\ck4cscript.js" />
+    <Content Include="Scripts\ck4c\docupload.js" />
+    <Content Include="Scripts\CK5InputManual.js" />
+    <Content Include="Scripts\CK5Scripts.js" />
+    <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
     <Content Include="Scripts\DataTables-1.10.7\Contributing.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\Readme.md" />
@@ -578,6 +830,17 @@
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.js" />
+    <Content Include="Reports\HeaderFooter\HeaderFooterDs.xsc">
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Content>
+    <None Include="Reports\HeaderFooter\HeaderFooterDs.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>HeaderFooterDs.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Reports\HeaderFooter\HeaderFooterDs.xss">
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -596,18 +859,37 @@
     <Content Include="Scripts\js\custom.js" />
     <Content Include="Scripts\js\scripts.min.js" />
     <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\js\vendors\bootstrap-select-custom.js" />
     <Content Include="Scripts\js\vendors\bootstrap-select.min.js" />
     <Content Include="Scripts\js\vendors\datatablesResponsive.js" />
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
+    <Content Include="Scripts\lack1\Lack1GenerateTable.js" />
+    <Content Include="Scripts\lack1\Lack1Upload.js" />
+    <Content Include="Scripts\lack2\form.js" />
+    <Content Include="Scripts\lack1\Lack1Scripts.js" />
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\pbck1script.js" />
+    <Content Include="Scripts\pbck1\docupload.js" />
+    <Content Include="Scripts\Pbck4InputManual.js" />
+    <Content Include="Scripts\Pbck4Script.js" />
+    <Content Include="Scripts\Pbck4ScriptDocUpload.js" />
+    <Content Include="Scripts\pbck7\form.js" />
+    <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\thousand-separator.js" />
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
+    <Content Include="Views\LACK1\PrintDocument.cshtml" />
+    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
+    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -666,7 +948,6 @@
     <Content Include="Views\PBCK1\_ProdPlanUpload.cshtml" />
     <Content Include="Views\PBCK1\_ProdPlanList.cshtml" />
     <Content Include="Views\CK5\CK5Export.cshtml" />
-    <Content Include="Views\CK5\CK5DomesticAlcohol.cshtml" />
     <Content Include="Views\CK5\CK5Completed.cshtml" />
     <Content Include="Views\CK5\CK5Import.cshtml" />
     <Content Include="Views\PBCK1\_Pbck1Table.cshtml" />
@@ -689,6 +970,10 @@
     <Content Include="Views\VirtualMappingPlant\Create.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
     <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
+    <Content Include="Views\Material\Index.cshtml" />
+    <Content Include="Views\Material\Details.cshtml" />
+    <Content Include="Views\Material\Create.cshtml" />
+    <Content Include="Views\Material\Edit.cshtml" />
     <Content Include="Views\BrandRegistration\Details.cshtml" />
     <Content Include="Views\BrandRegistration\Create.cshtml" />
     <Content Include="Views\BrandRegistration\Edit.cshtml" />
@@ -696,10 +981,193 @@
     <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
     <Content Include="Views\NPPBKC\Edit.cshtml" />
     <Content Include="Views\NPPBKC\Detail.cshtml" />
+    <Content Include="Views\POA\_FileUpload.cshtml" />
+    <Content Include="Views\Uom\Create.cshtml" />
+    <Content Include="Views\Uom\Details.cshtml" />
+    <Content Include="Views\Uom\Edit.cshtml" />
+    <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
+    <Content Include="Views\Shared\_MessageInfo.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadListOriginal.cshtml" />
+    <Content Include="Views\CK5\_CK5DomesticAlcoholTablePartial.cshtml" />
+    <Content Include="Views\EmailTemplate\Create.cshtml" />
+    <Content Include="Views\EmailTemplate\Edit.cshtml" />
+    <Content Include="Views\GlobalSettings\Index.cshtml" />
+    <Content Include="Views\Material\_EditConvertionList.cshtml" />
+    <Content Include="Views\EmailTemplate\Index.cshtml" />
+    <Content Include="Views\EmailTemplate\Details.cshtml" />
+    <Content Include="Views\CK5\_CK5ChangeLog.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationCreate.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationEdit.cshtml" />
+    <Content Include="Views\CK5\_CK5Printout.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadCreate.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadEdit.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadList.cshtml" />
+    <Content Include="Views\CK5\Create.cshtml" />
+    <Content Include="Views\CK5\Details.cshtml" />
+    <Content Include="Views\CK5\Edit.cshtml" />
+    <Content Include="Views\PBCK1\CompletedDocument.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
+    <Content Include="Views\EmailTemplate\Edit.cshtml" />
+    <Content Include="Views\DocumentSequence\Index.cshtml" />
+    <Content Include="Views\WorkflowSettings\Index.cshtml" />
+    <Content Include="Views\WorkflowSettings\Edit.cshtml" />
+    <Content Include="Views\WorkflowSettings\Details.cshtml" />
+    <Content Include="Views\WorkflowSettings\GetMapping.cshtml" />
+    <Content Include="Views\WorkflowSettings\GetMappingPartial.cshtml" />
+    <Content Include="Views\PBCK1\_DecreeDocUpload.cshtml" />
+    <Content Include="Views\LACK1\Index.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <Content Include="Views\CK5\_CK5GovApproval.cshtml" />
+    <Content Include="Views\PBCK1\_HomeGovApproval.cshtml" />
+    <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
+    <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
+    <Content Include="Views\LACK1\_Lack1Table.cshtml" />
+    <Content Include="Views\LACK1\ListByPlant.cshtml" />
+    <Content Include="Views\LACK1\_Lack1ListByPlantTable.cshtml" />
+    <Content Include="Views\LACK1\Create.cshtml" />
+    <Content Include="Views\LACK1\_HomeCreate.cshtml" />
+    <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
+    <Content Include="Views\UserAuthorization\Index.cshtml" />
+    <Content Include="Views\UserAuthorization\Detail.cshtml" />
+    <Content Include="Views\PBCK1\SummaryReports.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
+    <Content Include="Views\UserAuthorization\Edit.cshtml" />
+    <Content Include="Views\LACK1\_PrintOut.cshtml" />
+    <Content Include="Views\POAMap\Create.cshtml" />
+    <Content Include="Views\Uom\Index.cshtml" />
+    <Content Include="Views\POAMap\Index.cshtml" />
+    <Content Include="Views\POAMap\Detail.cshtml" />
+    <Content Include="Views\Vendor\Details.cshtml" />
+    <Content Include="Views\Vendor\Index.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
+    <Content Include="Views\POAMap\Edit.cshtml" />
+    <Content Include="Views\CK5\CK5UploadFileDocument.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadFileDocumentsList.cshtml" />
+    <Content Include="Views\POAMap\Edit.cshtml" />
+    <Content Include="Views\KPPBC\Index.cshtml" />
+    <Content Include="Views\KPPBC\Edit.cshtml" />
+    <Content Include="Views\KPPBC\Detail.cshtml" />
+    <Content Include="Views\UserPlantMap\Create.cshtml" />
+    <Content Include="Views\UserPlantMap\Index.cshtml" />
+    <Content Include="Views\UserPlantMap\Edit.cshtml" />
+    <Content Include="Views\UserPlantMap\Detail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Index.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7TableIndex.cshtml" />
+    <Content Include="Views\LACK2\Create.cshtml" />
+    <Content Include="Views\LACK2\CreateDocument.cshtml" />
+    <Content Include="Views\LACK2\Index.cshtml" />
+    <Content Include="Views\LACK2\_Lack2PlantTable .cshtml" />
+    <Content Include="Views\LACK2\_Lack2OpenDoc.cshtml" />
+    <Content Include="Views\LACK1\ListCompletedDocument.cshtml" />
+    <Content Include="Views\LACK1\_Lack1CompletedDocumentTable.cshtml" />
+    <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\ListPbck3Index.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3TableIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Create.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeCreate.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck7.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
+    <Content Include="Views\CK5\CK5InputMaterial.cshtml" />
+    <Content Include="Views\CK5\_CK5SealingInput.cshtml" />
+    <Content Include="Views\CK4C\Index.cshtml" />
+    <Content Include="Views\CK4C\_CreateDailyProduction.cshtml" />
+    <Content Include="Views\CK4C\_Ck4CTableIndex.cshtml" />
+    <Content Include="Views\CK4C\WasteProductionIndex.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableWasteProduction.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateDailyProduction.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateWasteProduction.cshtml" />
+    <Content Include="Views\LACK2\Edit.cshtml" />
+    <Content Include="Views\LACK2\Detail.cshtml" />
+    <Content Include="Views\CK4C\DocumentList.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableDocumentList.cshtml" />
+    <Content Include="Views\LACK2\_FileUpload.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateDocumentList.cshtml" />
+    <Content Include="Views\CK4C\_HomeCreate.cshtml" />
+    <Content Include="Views\LACK1\Details.cshtml" />
+    <Content Include="Views\LACK1\_HomeDetails.cshtml" />
+    <Content Include="Views\LACK1\_ChangeLog.cshtml" />
+    <Content Include="Views\LACK2\_FileUpload.cshtml" />
+    <Content Include="Views\LACK2\_PrintOut.cshtml" />
+    <Content Include="Views\LACK2\_ChangesLog.cshtml" />
+    <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
+    <Content Include="Views\Production\Index.cshtml" />
+    <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
+    <Content Include="Views\Production\Create.cshtml" />
+    <Content Include="Views\Production\Edit.cshtml" />
+    <Content Include="Views\Production\Detail.cshtml" />
+    <Content Include="Views\CK4C\Details.cshtml" />
+    <Content Include="Views\CK4C\_HomeDetails.cshtml" />
+    <Content Include="Views\CK4C\Edit.cshtml" />
+    <Content Include="Views\CK4C\_HomeEdit.cshtml" />
+    <Content Include="Views\CK4C\_ChangeLog.cshtml" />
+    <Content Include="Views\CK4C\_PrintOut.cshtml" />
+    <Content Include="Views\LACK1\Edit.cshtml" />
+    <Content Include="Views\LACK1\_HomeEdit.cshtml" />
+    <Content Include="Views\LACK1\_FileUpload.cshtml" />
+    <Content Include="Views\PBCK4\Index.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4Search.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4OpenListDocuments.cshtml" />
+    <Content Include="Views\PBCK4\Create.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationCreate.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4Printout.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadCreate.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadList.cshtml" />
+    <Content Include="Views\PBCK4\Details.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4ChangeLog.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationDetails.cshtml" />
+    <Content Include="Views\PBCK4\Edit.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationEdit.cshtml" />
+    <Content Include="Views\Waste\Index.cshtml" />
+    <Content Include="Views\Waste\_WasteTableIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck7.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Back.cshtml" />
+    <Content Include="Views\Waste\Create.cshtml" />
+    <Content Include="Views\Waste\Edit.cshtml" />
+    <Content Include="Views\CK4C\_HomeGovApproval.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4GovApproval.cshtml" />
+    <Content Include="Views\CK4C\_DecreeDocUpload.cshtml" />
+    <Content Include="Views\CK4C\CompletedDocument.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableCompletedDocument.cshtml" />
+    <Content Include="Views\Waste\Detail.cshtml" />
+    <Content Include="Views\Production\_HomeCreate.cshtml" />
+    <Content Include="Views\Production\_Upload.cshtml" />
+    <Content Include="Views\Production\_UploadList.cshtml" />
+    <Content Include="Views\PBCK4\Pbck4CompletedDocuments.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeEdit.cshtml" />
+    <Content Include="Views\Waste\_HomeCreate.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Edit.cshtml" />
+    <Content Include="Views\Production\UploadManualProduction.cshtml" />
+    <Content Include="Views\LACK1\_HomeGovApproval.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeDetail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Detail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Back1.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck3.cshtml" />
+    <Content Include="Views\PBCK4\Pbck4SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack1.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4ListSummaryReport.cshtml" />
+    <Content Include="Views\Waste\UploadManualWaste.cshtml" />
+    <Content Include="Views\LACK1\_Lack1SummaryReport.cshtml" />
+    <Content Include="Views\LACK1\SummaryReport.cshtml" />
+    <Content Include="Views\Waste\_Upload.cshtml" />
+    <Content Include="Views\Waste\_UploadList.cshtml" />
+    <Content Include="Views\LACK1\DetailReport.cshtml" />
+    <Content Include="Views\LACK1\_Lack1DetailReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack3.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadCk2.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck3.cshtml" />
+    <Content Include="Views\CK4C\Ck4CSummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTablePbck3.cshtml" />
+    <Content Include="Views\CK4C\_Ck4CListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\WorkflowHistory\" />
     <Folder Include="Views\AspxReportViewer\" />
+    <Folder Include="Views\SettingsGlobal\" />
+    <Folder Include="Views\Settings\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -738,6 +1206,10 @@
       <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
       <Name>Sampoerna.EMS.Utils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.XMLReader\Sampoerna.EMS.XMLReader.csproj">
+      <Project>{5370f240-5512-461a-9956-351009512c94}</Project>
+      <Name>Sampoerna.EMS.XMLReader</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Reports\EmployeeData.rdlc">
@@ -745,7 +1217,85 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Reports\HeaderFooterPreview.rdlc" />
+    <Content Include="Reports\HeaderFooterPreview.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\CK5\CK5Materials.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5Materials.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5MaterialsExtend.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5MaterialsExtend.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5PrintOutFooter.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOutFooter.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5PrintOutMaterial.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\PBCK1\PBCK1PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\PBCK1\Pbck1RealisasiP3BKC.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck1RealisasiP3BKC.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\PBCK1\Pbck1RencanaProduksi.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck1RencanaProduksi.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\LACK2\Preview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Preview.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK4C\Preview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Preview.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK4C\DaftarRincian.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DaftarRincian.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Content Include="Reports\PBCK4\Pbck4PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck4PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\PBCK7\Pbck7Report.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck7Report.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -766,6 +1316,8 @@
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

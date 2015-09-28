@@ -1,0 +1,143 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1SummaryReportViewModel
+
+<table id="pbckTable" class="table-condensed display compact nowrap" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>Company</th>
+            <th>NPPBKC</th>
+            <th>KPPBC</th>
+            <th>PBCK-1 Number</th>
+            <th>Status</th>
+            <th>Address</th>
+            <th>Original NPPBKC</th>
+            <th>Original KPPBC</th>
+            <th>Original Address</th>
+            <th>Exc. Goods Amount</th>
+            <th>Type</th>
+            <th>Supplier Port</th>
+            <th>Supplier Plant</th>
+            <th>Exciseable Goods</th>
+            <th>Plan Prod From</th>
+            <th>Plan Prod To</th>
+            <th>Supplier Phone</th>
+            <th>POA</th>
+            <th>PBCK-1 Reference</th>
+            <th>LACK From</th>
+            <th>LACK To</th>
+            <th>Latest Saldo</th>
+            <th>Period From</th>
+            <th>Period To</th>
+            <th>Reported On</th>
+            <th>Request Qty</th>
+            <th>Status Gov</th>
+            <th>Qty Approved</th>
+            <th>Decree Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.NppbkcCompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.NppbkcId)</td>
+                    <td>
+                        @Html.DisplayFor(model => item.NppbkcKppbcName)
+                    </td>
+                    <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
+                    <td>
+                        @item.StatusName
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var plant in item.NppbkcPlants)
+                            {
+                                <li>@plant.ADDRESS</li>
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        @item.SupplierNppbkcId
+                    </td>
+                    <td>
+                        <!-- Fixing Bug PBCK1 No. 168 -->
+                        @item.SupplierKppbcName
+                    </td>
+                    <td>
+                        @item.SupplierAddress
+                    </td>
+                    <td>
+                        @item.QtyApproved
+                    </td>
+                    <td>
+                        @item.Pbck1Type
+                    </td>
+                    <td>
+                        @item.SupplierPortName
+                    </td>
+                    <td>
+                        @item.SupplierPlant
+                    </td>
+                    <td>
+                        @item.GoodTypeDesc
+                    </td>
+                    <td>
+                        @item.PlanProdFrom
+                    </td>
+                    <td>
+                        @item.PlanProdTo
+                    </td>
+                    <td>
+                        @item.SupplierPhone
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var poa in item.PoaList)
+                            {
+                                <li>@poa</li>
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        @item.Pbck1ReferenceNumber
+                    </td>
+                    <td>
+                        @item.Lack1FromMonthName  @item.Lack1FormYear
+                    </td>
+                    <td>
+                         @item.Lack1ToMonthName @item.Lack1ToYear
+                    </td>
+                    <td>
+                        @item.LatestSaldo
+                    </td>
+                    <td>
+                        @item.PeriodFrom
+                    </td>
+                    <td>
+                        @item.PeriodTo
+                    </td>
+                    <td>
+                        @item.ReportedOn
+                    </td>
+                    <td>
+                        @item.RequestQty
+                    </td>
+                    <td>
+                        @item.StatusGov
+                    </td>
+                    <td>
+                        @item.QtyApproved
+                    </td>
+                    <td>
+                        @item.DecreeDate
+                    </td>
+                </tr>
+                            row = row + 1;
+            }
+        }
+    </tbody>
+</table>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -18,41 +19,53 @@ namespace Sampoerna.EMS.XMLReader
         }
 
         
-        public List<T1001> Items
+        public List<T001> Items
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
-                var items = new List<T1001>();
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1AXX_T001");
+                var items = new List<T001>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new T1001();
-                    item.BUKRS = xElement.Element("BUKRS").Value;
-                    item.BUKRSTXT = xElement.Element("BUTXT").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                    var companyDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var modifiedDateXml =  xElement.Element("MODIFIED_DATE").Value;
-                    var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T1001>()
-                           .Get(p => p.BUKRS == item.BUKRS)
-                           .OrderByDescending(p => p.CREATED_DATE)
-                           .FirstOrDefault();
-
-                    if (exisitingCompany != null)
+                    try
                     {
-                        if (companyDateXml > exisitingCompany.CREATED_DATE)
+                        var item = new T001();
+                        var bukrs = xElement.Element("BUKRS").Value;
+                        item.BUTXT = _xmlMapper.GetElementValue(xElement.Element("BUTXT"));
+                        item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                        //item.SPRAS = _xmlMapper.GetElementValue(xElement.Element("SPRAS"));
+                       // item.NPWP = _xmlMapper.GetElementValue(xElement.Element("STCEG"));
+                        item.CREATED_BY = Constans.PI;
+                        var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T001>()
+                            .GetByID(bukrs);
+                        item.BUKRS = bukrs;
+                        if (exisitingCompany != null)
                         {
+                            item.CREATED_BY = exisitingCompany.CREATED_BY;
+                            item.CREATED_DATE = exisitingCompany.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            item.MODIFIED_BY = Constans.PI;
+                            item.BUTXT_ALIAS = exisitingCompany.BUTXT_ALIAS;
+                            item.NPWP = exisitingCompany.NPWP;
+                            item.SPRAS = exisitingCompany.SPRAS;
                             items.Add(item);
+
                         }
                         else
                         {
-                            continue;
-
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        items.Add(item);
+                        _xmlMapper.Errors.Add(ex.Message);
+                        continue;
+                        
+
                     }
+                    
                    
                 }
                 return items;
@@ -61,17 +74,20 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-          _xmlMapper.InsertToDatabase<T1001>(Items);
+           return _xmlMapper.InsertToDatabase<T001>(Items);
         }
 
-        public T1001 GetCompany(string CompanyCode)
+        public List<string> GetErrorList()
         {
-            var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T1001>()
-                          .Get(p => p.BUKRS == CompanyCode)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+            return _xmlMapper.Errors;
+        }
+
+        public T001 GetCompany(string CompanyCode)
+        {
+            var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T001>()
+                .GetByID(CompanyCode);
             return exisitingCompany;
         }
 

@@ -10,22 +10,25 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
     public class UserBLL : IUserBLL
     {
-        
+
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
-        private string includeTables = "USER1, USER2, USER_GROUP";
+        
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<USER>();
+
+           
         }
 
         public List<USER> GetUsers(UserInput input)
@@ -35,7 +38,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.UserName))
             {
-                queryFilter = queryFilter.And(s => s.USERNAME.Contains(input.UserName));
+                queryFilter = queryFilter.And(s => s.USER_ID.Contains(input.UserName));
             }
 
             if (!string.IsNullOrEmpty(input.FirstName))
@@ -48,16 +51,8 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(s => s.LAST_NAME.Contains(input.LastName));
             }
 
-            if (input.IsActive.HasValue)
-            {
-                queryFilter = queryFilter.And(s => s.IS_ACTIVE == input.IsActive);
-            }
-
-            if (input.ManagerId.HasValue)
-            {
-                queryFilter = queryFilter.And(s => s.MANAGER_ID.HasValue && s.MANAGER_ID.Value == input.ManagerId.Value);
-            }
             
+          
             Func<IQueryable<USER>, IOrderedQueryable<USER>> orderBy = null;
 
             if (!string.IsNullOrEmpty(input.SortOrderColumn))
@@ -65,7 +60,7 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<USER>(input.SortOrderColumn)) as IOrderedQueryable<USER>;
             }
 
-            var rc = _repository.Get(queryFilter, orderBy, includeTables);
+            var rc = _repository.Get(queryFilter, orderBy);
             if (rc == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -75,34 +70,43 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<USER> GetUsers()
+        {
+            return _repository.Get().ToList();
+        }
+
         public List<UserTree> GetUserTree()
         {
             Expression<Func<USER, bool>> queryFilter = PredicateHelper.True<USER>();
-            var users = _repository.Get(queryFilter, null, includeTables);
-            if(users == null)
+            var users = _repository.Get(queryFilter, null, null);
+            if (users == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             return Mapper.Map<List<UserTree>>(users);
         }
 
-        public UserTree GetUserTreeByUserID(int userID)
-        {
-            var user = _repository.Get(c => c.USER_ID == userID, null, includeTables).FirstOrDefault();
-            if(user == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            return Mapper.Map<UserTree>(user);
-        }
+      
 
         public Login GetLogin(string userName)
         {
-            return Mapper.Map<Login>(_repository.Get(c => c.USERNAME == userName, null, includeTables).FirstOrDefault());
+            return Mapper.Map<Login>(_repository.GetByID(userName));
+        } 
+
+
+
+        public USER GetUserById(string id)
+        {
+            return _repository.GetByID(id);
         }
 
 
 
-        public USER GetUserById(int id)
+
+        public List<USER> GetUsersByListId(List<string> useridlist)
         {
-            return _repository.Get(p => p.USER_ID == id).FirstOrDefault();
+            var data = _repository.Get(obj => useridlist.Contains(obj.USER_ID),null,"").ToList();
+
+            return data;
         }
     }
 }

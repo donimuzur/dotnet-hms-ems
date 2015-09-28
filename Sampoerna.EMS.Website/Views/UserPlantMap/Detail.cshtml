@@ -1,0 +1,235 @@
+﻿@model Sampoerna.EMS.Website.Models.UserPlantMap.UserPlantMapDetailViewModel
+
+
+@{
+    ViewBag.Title = "Detail User Plant Map";
+}
+@section styles{
+    <link href="~/Content/chosen.min.css" rel="stylesheet" />
+}
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>User Plant Map</h3>
+                <div class="action-button">
+                   
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Detail User Plant Map
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form class="form-excise" role="form">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-4">User ID<span class="red">*</span></label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.UserPlantMap.UserId, Model.Users, new { @class = "form-control", disabled="disabled" })
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-4">NPPBKC<span class="red">*</span></label>
+                                                <div class="col-md-6">
+                                                    @Html.DropDownList("select-nppbck", Model.Nppbkcs, new { @id = "select-nppbkc-id", @class = "chosen form-control", multiple = "multiple", disabled="disabled" })
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-4">Plant</label>
+                                                <div class="col-md-8">
+                                                    <div class="page-role" id="plant-list">
+
+
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+@section scripts {
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script type="text/javascript" language="javascript">
+        var plantlist = [];
+        var selectedPlant = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Plants)));
+        var selectedNppbkc = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedNppbkc)));
+        $(document).ready(function() {
+            $('#MenuUserPlantMap').addClass('active');
+
+            $('#btnCancel').click(function(e) {
+                location.href = '@Url.Action("Index", "UserPlantMap")';
+            });
+
+
+        });
+
+        $('#plant-list').html('');
+
+        var GetPlantByNppbkc = (function(nppbkcId) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPlantByNppbkc", "UserPlantMap")',
+                data: { nppbkcid: nppbkcId },
+                success: function(data) {
+                    PushPlantList(data);
+                }
+            });
+
+
+        });
+
+
+        selectedNppbkc.forEach(function(v, i) {
+            GetPlantByNppbkc(v);
+
+        });
+
+        var plantLength = 0;
+        function PushPlantList(data) {
+
+            for (var i = 0; i < data.length; i++) {
+                plantlist.push(data[i]);
+
+                $('#plant-list').append(SetPlantList(data[i], plantLength));
+                for (var q = 0; q < selectedPlant.length; q++) {
+                    if (data[i].WERKS == selectedPlant[q].WERKS) {
+
+                        $('#plants_' + plantLength + '__checkbox').prop('checked', true);
+                        $('#Plants_' + plantLength + '__IsChecked').val(true);
+                    }
+                }
+                plantLength++;
+
+            }
+
+
+        }
+
+
+        $('#select-nppbkc-id').val(selectedNppbkc);
+
+        $(".chosen").chosen();
+
+
+        $('.chosen').on('change', function(evt, params) {
+            ViewPlant(params.selected);
+
+            if (params.deselected) {
+                $('.' + params.deselected).remove();
+                var arrlength = plantlist.length;
+                var tempArray = [];
+                for (var j = 0; j < arrlength; j++) {
+                    var m = plantlist[j].NPPBKC_ID;
+                    if (m != params.deselected) {
+                        tempArray.push(plantlist[j]);
+                    }
+                }
+                plantlist = tempArray;
+                $('#plant-list').html('');
+                for (var l = 0; l < plantlist.length; l++) {
+                    $('#plant-list').append(SetPlantList(plantlist[l], l));
+                    for (var f = 0; f < selectedPlant.length; f++) {
+                        if (plantlist[l].WERKS == selectedPlant[f].WERKS) {
+
+                            $('#plants_' + l + '__checkbox').prop('checked', true);
+                            $('#Plants_' + l + '__IsChecked').val(true);
+                        }
+                    }
+                }
+            }
+
+        });
+
+
+        function ViewPlant(nppbkcid_selected) {
+            if (nppbkcid_selected) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetPlantByNppbkc", "UserPlantMap")',
+                    data: { nppbkcid: nppbkcid_selected },
+                    success: function(data) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            plantlist.push(data[i]);
+
+                        }
+                        $('#plant-list').html('');
+                        for (var k = 0; k < plantlist.length; k++) {
+                            $('#plant-list').append(SetPlantList(plantlist[k], k));
+                            for (var g = 0; g < selectedPlant.length; g++) {
+                                if (plantlist[k].WERKS == selectedPlant[g].WERKS) {
+
+                                    $('#plants_' + k + '__checkbox').prop('checked', true);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function SetPlantList(data, index) {
+            var isChecked = (data.IsChecked != null && data.IsChecked != undefined) == true ? 'Checked' : '';
+            var view = '<div class="' + data.NPPBCK_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' +
+                '<input id="plants_' + index + '__checkbox"  onchange="setChecked(' + index + ', $(this))" type="checkbox" disabled="disabled"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked" ' + isChecked + ' >' +
+                data.WERKS + '-' + data.NAME1 + '</div>';
+            return view;
+        }
+
+        function setChecked(index, obj) {
+            var isCheck = $(obj[0]).prop('checked');
+
+            $('#Plants_' + index + '__IsChecked').val(isCheck);
+        }
+
+    </script>
+}

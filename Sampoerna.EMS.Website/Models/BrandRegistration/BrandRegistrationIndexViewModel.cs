@@ -17,15 +17,15 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
 
     public class BrandRegistrationDetail
     {
-        public long BrandId { get; set; }
         public string StickerCode { get; set; }
         public string PlantName { get; set; }
         public string FaCode { get; set; }
         public string BrandName { get; set; }
         public string SeriesValue { get; set; }
-        public string Conversion { get; set; }
+        public decimal? Conversion { get; set; }
         public decimal? PrintingPrice { get; set; }
         public string CutFilterCode { get; set; }
         public string IsDeleted { get; set; }
+        public string IsActive { get; set; }
     }
 }

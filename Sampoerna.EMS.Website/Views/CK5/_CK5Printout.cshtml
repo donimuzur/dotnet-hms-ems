@@ -1,0 +1,70 @@
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
+<div role="tabpanel" class="tab-pane" id="printout">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Print Out
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="form-excise " role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-3">CK-5 No</label>
+                                        <div class="col-md-9">
+                                            @Html.TextBoxFor(model => model.Ck5Id, new { @class = "form-control", @disabled = "true" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-3">Date</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" value="@DateTime.Now.ToString("dd MMM yyyy HH:mm:ss")" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-3">User</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" value="@Html.UserName()" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                @if (Model.IsAllowPrint)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-3"></label>
+                                            <div class="col-md-9">
+                                               
+                                                @*<a class="btn btn-blue full" onclick="window.open('@Url.EncryptedAction("PrintOut", "CK5", new { id = Model.Ck5Id })', 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');">Print</a>*@
+                                                <a class="btn btn-blue full" onclick="PrintOutClick('@Url.EncryptedAction("PrintOut", "CK5", new { id = @Model.Ck5Id })', '@Url.Action("AddPrintHistory", "CK5")', @Model.Ck5Id)">Print</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-container" id="PrintOutHistoryTable">
+        @Html.Partial("_PrintHistoryTable")
+    </div>
+</div>

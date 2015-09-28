@@ -16,13 +16,15 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public BACK1()
         {
-            this.PBCK4 = new HashSet<PBCK4>();
+            this.BACK1_DOCUMENT = new HashSet<BACK1_DOCUMENT>();
         }
     
-        public long BACK1_ID { get; set; }
-        public string NUMBER { get; set; }
-        public Nullable<System.DateTime> DATE { get; set; }
+        public int BACK1_ID { get; set; }
+        public string BACK1_NUMBER { get; set; }
+        public System.DateTime BACK1_DATE { get; set; }
+        public int PBCK7_ID { get; set; }
     
-        public virtual ICollection<PBCK4> PBCK4 { get; set; }
+        public virtual ICollection<BACK1_DOCUMENT> BACK1_DOCUMENT { get; set; }
+        public virtual PBCK7 PBCK7 { get; set; }
     }
 }

@@ -9,14 +9,13 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
 {
     public class BrandRegistrationEditViewModel : BaseModel
     {
-        public long BrandId { get; set; }
-
+       
         [Required]
         [StringLength(18)]
         public string StickerCode { get; set; }
 
         [Required]
-        public long PlantId { get; set; }
+        public string PlantId { get; set; }
         public SelectList PlantList { get; set; }
 
         [Required]
@@ -24,7 +23,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string FaCode { get; set; }
 
         [Required]
-        public long PersonalizationCode { get; set; }
+        public string PersonalizationCode { get; set; }
         public SelectList PersonalizationCodeList { get; set; }
         public string PersonalizationCodeDescription { get; set; }
 
@@ -41,44 +40,51 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public DateTime SkepDate { get; set; }
 
         [Required]
-        public int ProductCode { get; set; }
+        public string ProductCode { get; set; }
         public SelectList ProductCodeList { get; set; }
         public string ProductType { get; set; }
         public string ProductAlias { get; set; }
 
         [Required]
-        public long SeriesId { get; set; }
+        public string SeriesId { get; set; }
         public SelectList SeriesList { get; set; }
-        public string SeriesCode { get; set; }
-        public string SeriesValue { get; set; }
+        public int SeriesCode { get; set; }
+        public int SeriesValue { get; set; }
 
-        [Required]
-        [StringLength(30)]
+       
         public string Content { get; set; }
 
         [Required]
-        public long MarketId { get; set; }
+        public string MarketId { get; set; }
         public SelectList MarketCodeList { get; set; }
         public string MarketDescription { get; set; }
 
         [Required]
-        public int CountryId { get; set; }
+        public string CountryId { get; set; }
         public SelectList CountryCodeList { get; set; }
 
+       
         [Required]
-        [UIHint("FormatDecimal")]
-        public decimal? HjeValue { get; set; }
-
+        public string HjeValueStr { get; set; }
+        public decimal? HjeValue
+        {
+            get; set;
+        }
         [Required]
-        public int? HjeCurrency { get; set; }
+        public string HjeCurrency { get; set; }
         public SelectList HjeCurrencyList { get; set; }
 
+        public decimal? Tariff
+        {
+            get; set;
+        }
         [Required]
-        [UIHint("FormatDecimal")]
-        public decimal? Tariff { get; set; }
+        public string TariffValueStr { get; set; }
+       
+      
 
         [Required]
-        public int? TariffCurrency { get; set; }
+        public string TariffCurrency { get; set; }
         public SelectList TariffCurrencyList { get; set; }
 
         [Required]
@@ -86,30 +92,46 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string ColourName { get; set; }
 
         [Required]
-        public int GoodType { get; set; }
+        public string GoodType { get; set; }
         public SelectList GoodTypeList { get; set; }
         public string GoodTypeDescription { get; set; }
 
         [Required]
-        [UIHint("FormatDateTime")]
+      
         public DateTime? StartDate { get; set; }
 
         [Required]
-        [UIHint("FormatDateTime")]
+       
         public DateTime? EndDate { get; set; }
 
-        [UIHint("FormatDecimal")]
-        public decimal? Conversion { get; set; }
 
-        [UIHint("FormatDecimal")]
-        public decimal? PrintingPrice { get; set; }
+        public decimal? Conversion
+        {
+            get;
+            set;
+        }
+       
+        public string ConversionValueStr
+        {
+            get;
+            set;
+        }
+
+        public decimal? PrintingPrice
+        {
+            get; set;
+        }
+        
+        public string PrintingPriceValueStr { get; set; }
 
         [StringLength(25)]
-        public string CutFilterCode { get; set; }
+        public string CutFillerCode { get; set; }
 
         public string Status { get; set; }
 
         public bool IsActive { get; set; }
         public bool IsFromSAP { get; set; }
+
+        public SelectList CutFillerCodeList { get; set; }
     }
 }

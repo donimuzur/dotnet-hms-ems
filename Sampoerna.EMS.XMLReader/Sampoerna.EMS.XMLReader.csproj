@@ -11,6 +11,21 @@
     <AssemblyName>Sampoerna.EMS.XMLReader</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +47,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=3.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
@@ -62,23 +84,29 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />
+    <Compile Include="XmlCK1DataMappers.cs" />
+    <Compile Include="XmlPBCK4DataWriter.cs" />
+    <Compile Include="XmlProdOutputDataMappers.cs" />
+    <Compile Include="XmlBlockStockDataMappers.cs" />
     <Compile Include="XmlBrandDataMappers.cs" />
     <Compile Include="XmlCK5DataWriter.cs" />
+    <Compile Include="XmlCK5DataMappers.cs" />
+    <Compile Include="XmlBOMDataMappers.cs" />
+    <Compile Include="XmlMovementDataMappers.cs" />
+    <Compile Include="XmlPoaDataMappers.cs" />
+    <Compile Include="XmlUoMDataMappers.cs" />
+    <Compile Include="XmlT001KDataMappers.cs" />
     <Compile Include="XmlPCodeDataMappers .cs" />
     <Compile Include="XmlMaterialDataMappers.cs" />
     <Compile Include="XmlGoodsTypeDataMappers.cs" />
     <Compile Include="XmlNPPBCKDataMappers.cs" />
     <Compile Include="XmlPlantDataMappers.cs" />
-    <Compile Include="XmlUoMDataMappers.cs" />
     <Compile Include="XmlVendorDataMappers.cs" />
     <Compile Include="XmlProdTypeDataMappers.cs" />
     <Compile Include="XmlKPPBCDataMappers.cs" />
     <Compile Include="XmlSeriesDataMappers.cs" />
     <Compile Include="XmlMarketDataMappers.cs" />
     <Compile Include="XmlUserDataMappers.cs" />
-    <Compile Include="XmlPoaDataMappers.cs" />
-    <Compile Include="XmlPoaMapDataMappers.cs" />
-    <Compile Include="XmlAreaDataMappers.cs" />
     <Compile Include="XmlDataMapper.cs" />
     <Compile Include="XmlCompanyDataMappers.cs" />
   </ItemGroup>
@@ -106,6 +134,27 @@
       <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>
       <Name>Sampoerna.EMS.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.MessagingService\Sampoerna.EMS.MessagingService.csproj">
+      <Project>{c0c96fbc-d939-4121-b79c-1ab8b96092de}</Project>
+      <Name>Sampoerna.EMS.MessagingService</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

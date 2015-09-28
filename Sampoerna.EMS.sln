@@ -41,6 +41,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.Scheduler", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.ReportingData", "Sampoerna.EMS.ReportingData\Sampoerna.EMS.ReportingData.csproj", "{8708B0F2-5E32-43EA-A2F1-F18AAB51DC47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.MessagingService", "Sampoerna.EMS.MessagingService\Sampoerna.EMS.MessagingService.csproj", "{C0C96FBC-D939-4121-B79C-1AB8B96092DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.LinqExtensions", "Sampoerna.EMS.LinqExtensions\Sampoerna.EMS.LinqExtensions.csproj", "{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -191,6 +195,26 @@ Global
 		{8708B0F2-5E32-43EA-A2F1-F18AAB51DC47}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8708B0F2-5E32-43EA-A2F1-F18AAB51DC47}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8708B0F2-5E32-43EA-A2F1-F18AAB51DC47}.Release|x86.ActiveCfg = Release|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C0C96FBC-D939-4121-B79C-1AB8B96092DE}.Release|x86.ActiveCfg = Release|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

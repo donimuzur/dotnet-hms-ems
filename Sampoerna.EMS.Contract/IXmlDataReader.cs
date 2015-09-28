@@ -8,6 +8,8 @@ namespace Sampoerna.EMS.Contract
 {
     public  interface IXmlDataReader
     {
-        void InsertToDatabase();
+        string InsertToDatabase();
+
+        List<string> GetErrorList();
     }
 }

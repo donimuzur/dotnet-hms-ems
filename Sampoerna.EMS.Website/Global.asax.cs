@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Website.Code;
 using Voxteneo.WebCompoments.NLogLogger;
@@ -45,8 +46,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IFormsAuthenticationService, FormsAuthenticationService>();
             container.Register<IPageBLL, PageBLL>();
             container.Register<IPBCK1BLL, PBCK1BLL>();
-            container.Register<IZaidmExPOABLL, ZaidmExPOABLL>();
-            container.Register<ICK4C_BLL, CK4C_BLL>();
+            container.Register<ICK4CBLL, CK4CBLL>();
             container.Register<IZaidmExPOAMapBLL, ZaidmExPOAMapBLL>();
             container.Register<IVirtualMappingPlantBLL, VirtualMappingPlantBLL>();
             container.Register<IMasterDataBLL, MasterDataBLL>();
@@ -59,9 +59,35 @@ namespace Sampoerna.EMS.Website
             container.Register<IMonthBLL, MonthBLL>();
             container.Register<IDocumentSequenceNumberBLL, DocumentSequenceNumberBLL>();
             container.Register<IHeaderFooterBLL, HeaderFooterBLL>();
-            container.Register<IExGroupType, ExGroupType>();
+            container.Register<IExGroupTypeBLL, ExGroupTypeBLL>();
             container.Register<IZaidmExKPPBCBLL, ZaidmExKPPBCBLL>();
             container.Register<IChangesHistoryBLL, ChangesHistoryBLL>();
+            container.Register<IMaterialBLL, MaterialBLL>();
+            container.Register<IWorkflowHistoryBLL,WorkflowHistoryBLL>();
+            container.Register <IUnitOfMeasurementBLL, UnitOfMeasurementBLL>();
+            container.Register<IPOASKBLL, POASKBLL>();
+             container.Register<IPOABLL, POABLL>();
+            container.Register<IWorkflowSettingBLL, WorkflowSettingBLL>();
+            container.Register<IEmailTemplateBLL, EmailTemplateBLL>();
+
+            container.Register<IPbck1ProdPlanBLL, Pbck1ProdPlanBLL>();
+            container.Register<ILACK1BLL, LACK1BLL>();
+            container.Register<ILACK2BLL, LACK2BLL>();
+            container.Register<IPrintHistoryBLL, PrintHistoryBLL>();
+            container.Register<IUserAuthorizationBLL, UserAuthorizationBLL>();
+            container.Register<IPOAMapBLL, POAMapBLL>();
+            container.Register<ILFA1BLL, LFA1BLL>();
+            container.Register<IT001KBLL, T001KBLL>();
+            container.Register<IUserPlantMapBLL, UserPlantMapBLL>();
+            container.Register<ICountryBLL, CountryBLL>();
+            container.Register<ISupplierPortBLL, SupplierPortBLL>();
+            container.Register<IPBCK7And3BLL,PBCK7AndPBCK3BLL>();
+            container.Register<IBACK1BLL, BACK1BLL>();
+            container.Register<IProductionBLL, ProductionBLL>();
+            container.Register<IPBCK4BLL, PBCK4BLL>();
+            container.Register<ICK1BLL, CK1BLL>();
+            container.Register<IWasteBLL, WasteBLL>();
+            container.Register<IBlockStockBLL, BlockStockBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
@@ -73,6 +99,9 @@ namespace Sampoerna.EMS.Website
         
         protected void Application_Start()
         {
+            //SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
+            //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
+
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -81,7 +110,7 @@ namespace Sampoerna.EMS.Website
             Bootstrap();
 
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(_container));
-
+            
         }
     }
 }

@@ -1,0 +1,63 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1IndexCompletedDocumentViewModel
+
+<table id="lack1Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Lack-1 Number</th>
+            <th>Company</th>
+            <th>Plant</th>
+            <th>Tobacco Goods Type</th>
+            <th>Supplier</th>
+            <th>Period</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th>Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Details)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Details", "LACK1", new { id = @item.Lack1Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Lack1Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Company)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.PlantId)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.TobaccoGoodType)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Supplier)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Period)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Status)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+

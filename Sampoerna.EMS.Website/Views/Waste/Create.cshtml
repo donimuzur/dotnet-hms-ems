@@ -1,0 +1,151 @@
+﻿@model Sampoerna.EMS.Website.Models.Waste.WasteDetail
+
+@{
+    ViewBag.Title = "Create";
+}
+
+@using (Html.BeginForm("Create", "Waste"))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Waste Production Create</h3>
+                <div class="action-button">
+                    <button class="btn btn-blue">Save</button>
+                    <a href="@Url.Action("Index", "Waste")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeCreate")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts
+{
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuCk4cWasteProduction').addClass('active');
+
+        $('#MarkerStr').val(ThausandSeperator($('#MarkerStr').val(), 2));
+        $('#ParkerStr').val(ThausandSeperator($('#ParkerStr').val(), 2));
+
+        $('#DustGramStr').val(ThausandSeperator($('#DustGramStr').val(), 2));
+        $('#FloorGramStr').val(ThausandSeperator($('#FloorGramStr').val(), 2));
+
+        $('#DustStickStr').val(ThausandSeperator($('#DustStickStr').val(), 2));
+        $('#FloorStickStr').val(ThausandSeperator($('#FloorStickStr').val(), 2));
+
+        $("#SearchInput_BrandCe").change(function () {
+            if ($("#SearchInput_BrandCe").length) {
+
+                var FaDesc = $(this).find("option:selected").val();
+                if (FaDesc == '') {
+                    $('#test').val('');
+                } else {
+                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Waste")', { faCode: FaDesc });
+                }
+            }
+
+        });
+
+        function ajaxFaCodeDescription(url, formData) {
+            if (formData.faCode) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $('#test').val(data);
+                    }
+                });
+            }
+
+        }
+
+        $("#CompanyCode").change(function () {
+            if ($("#CompanyCode").length) {
+                var cpy = $(this).find("option:selected").val();
+                $('#SearchInput_PlantId option').remove();
+                if (cpy == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_PlantId option').append('<option value="">Select</option>');
+
+                } else {
+                    ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Waste")', { companyId: cpy });
+                }
+            }
+        });
+
+        function ajaxSelectCompany(url, formData) {
+            if (formData.companyId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var listPlant = data.PlantWerkList;
+                        $('#SearchInput_PlantId').append('<option value="">Select</option>');
+                        if (listPlant.length > 0) {
+                            for (var i = 0; i < listPlant.length; i++) {
+                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
+
+        $("#SearchInput_PlantId").change(function () {
+            if ($("#SearchInput_PlantId").length) {
+                var ce = $(this).find("option:selected").val();
+                $('#SearchInput_BrandCe option').remove();
+                if (ce == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_BrandCe option').append('<option value="">Select</option>');
+
+                } else {
+                    ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Waste")', { plantWerk: ce });
+                }
+            }
+        });
+
+        function ajaxSelectPlantWerks(url, formData) {
+            if (formData.plantWerk) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var facodeList = data.FacodeList;
+                        $('#SearchInput_BrandCe').append('<option value="">Select</option>');
+                        if (facodeList.length > 0) {
+                            for (var i = 0; i < facodeList.length; i++) {
+                                $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
+                            }
+                        }
+
+                    }
+                });
+            }
+        }
+
+    </script>
+}

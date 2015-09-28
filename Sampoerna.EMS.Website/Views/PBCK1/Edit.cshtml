@@ -1,5 +1,531 @@
-﻿@{
-    ViewBag.Title = "Edit PBCK 1";
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
+@{
+    ViewBag.Title = "Edit PBCK-1";
 }
 
-<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm(Model.ActionType, "PBCK1", FormMethod.Post, new { @id = "EditForm", enctype = "multipart/form-data" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>PBCK-1 Form</h3>
+                <label class="status">@Model.Detail.StatusName</label>
+                <div class="action-button">
+                    @if (Model.AllowGovApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                    }
+                    else
+                    {
+                        <input type="submit" class="btn btn-blue" value="Save" />
+                    }
+
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+
+                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Draft)
+                    {
+                        <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation" id="prod-plan-upload-tab"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Upload Production Plan</a></li>
+                        <li role="presentation" id="prod-conv-upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload Production Converted</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.HiddenFor(model => model.Detail.Pbck1Id)
+                        @Html.HiddenFor(model => model.Detail.Status)
+                        @Html.HiddenFor(model => model.Detail.CreatedById)
+
+                        @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+                        {
+                            @Html.HiddenFor(model => model.Detail.Pbck1Reference)
+                            @Html.HiddenFor(model => model.Detail.Pbck1Type)
+                            @Html.HiddenFor(model => model.Detail.PeriodFrom)
+                            @Html.HiddenFor(model => model.Detail.PeriodTo)
+                            @Html.HiddenFor(model => model.Detail.NppbkcId)
+                            @Html.HiddenFor(model => model.Detail.GoodType)
+                            @Html.HiddenFor(model => model.Detail.PlanProdFrom)
+                            @Html.HiddenFor(model => model.Detail.PlanProdTo)
+                            @Html.HiddenFor(model => model.Detail.RequestQty)
+                            @Html.HiddenFor(model => model.Detail.RequestQtyUomId)
+                            @Html.HiddenFor(model => model.Detail.Lack1FromMonthId)
+                            @Html.HiddenFor(model => model.Detail.Lack1FormYear)
+                            @Html.HiddenFor(model => model.Detail.Lack1ToMonthId)
+                            @Html.HiddenFor(model => model.Detail.Lack1ToYear)
+                            @Html.HiddenFor(model => model.Detail.GovApprovalActionType)
+                            @*@Html.HiddenFor(model => model.Detail.SupplierPlant)*@
+                            @Html.Partial("_HomeGovApproval")
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.Detail.CreatedDate)
+                            @Html.Partial("_HomeEdit")
+                        }
+                        
+                        @Html.Partial("_PrintOut")
+                        @Html.Partial("_ProdPlanUpload")
+                        @Html.Partial("_ProdConvUpload")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="Pbck1Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Submit</h3>
+            </div>
+            <div class="modal-body">
+                Submit Documents  ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ModalPbck1ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Missing attach files</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        var referenceURL = "@Url.Action("GetPBCK1Reference", "PBCK1")";
+    </script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/pbck1script.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
+    @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+    {
+        <script src="~/Scripts/pbck1/docupload.js"></script>
+    }
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+
+        openGovStatusBlock();
+
+        $('#divComment').hide();
+
+        $("#btnSubmitConfirm").click(function () {
+            $('#Detail_IsSaveSubmit').val('submit');
+            $('#EditForm').submit();
+        });
+
+        $('#Detail_StatusGov').on('change', function (e) {
+            var valueSelected = this.value;
+            var request = $("input[name='Detail.RequestQty']:hidden").val();
+
+            $('#divComment').hide();
+            $("input[name='Detail.QtyApproved']:text").prop("readonly", true);
+
+            if (valueSelected == 'Rejected') {
+                $('#divComment').show();
+                $("input[name='Detail.QtyApproved']:hidden").val(0);
+                $("input[name='Detail.QtyApproved']:text").val(0);
+                $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+            }
+            else if (valueSelected == 'PartialApproved') {
+                $("input[name='Detail.QtyApproved']:text").prop("readonly", false);
+                $("input[name='Detail.QtyApproved']:hidden").val(request);
+                $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request,2));
+                $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+            }
+            else if (valueSelected == 'FullApproved') {
+                $("input[name='Detail.QtyApproved']:hidden").val(request);
+                $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request, 2));
+                $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+            }
+        });
+
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateGovInput()) {
+                $('#EditForm').submit();
+            }
+        });
+
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("Index", "Pbck1")';
+        });
+
+        $("#Detail_SupplierPortId").change(function () {
+            var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+            $('#Detail_SupplierPortName').val(port_name);
+        });
+
+        $('#btn-changelog-export-xls').click(function () {
+            href.location = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
+        });
+
+        $('#prod-conv-save').click(function () {
+            prodConvSaveClick();
+        });
+        $('#prod-plan-save').click(function () {
+            prodPlanSaveClick();
+        });
+
+        $('#ProdConvSubmitBtn').click(function () {
+            prodConvGenerateClick('@Url.Action("UploadFileConversion", "PBCK1")');
+        });
+
+        $('#ProdPlanSubmitBtn').click(function () {
+            prodPlanGenerateClick('@Url.Action("UploadFilePlan", "PBCK1")');
+        });
+
+        $('#btn-prod-conv-upload').click(function () {
+            btnProdConvUploadClick();
+        });
+
+        $('#btn-prod-plan-upload').click(function () {
+            btnProdPlanUploadClick();
+        });
+
+        $('#MenuPBCK1OpenListDocument').addClass('active');
+
+        $("#Detail_Pbck1Type").change(function () {
+            pbck1TypeOnchange();
+        });
+
+        var isNppbkcImport = false;
+        if ($("#Detail_IsNppbkcImport").is(':checked')) {
+            isNppbkcImport = true;
+            $('#Detail_IsExternalSupplier').prop('disabled', true);
+        }
+
+        ajaxFirstLoadSupplierPlant({ isNppbkcImport: isNppbkcImport }, '@Url.Action("GetSupplierPlant", "PBCK1")');
+
+        pbck1TypeOnchange();
+
+        $('#Detail_GoodType').change(function () {
+            goodTypeOnChange();
+        });
+
+        $('#Detail_NppbkcId').change(function () {
+            nppbkcIdOnChange();
+            ChangeLatestSaldo();
+        });
+
+        $("#btnSubmitDocument").click(function () {
+            $('#Pbck1Modal').modal('show');
+        });
+
+        $("#Detail_IsExternalSupplier").click(function () {
+            supplierPortOnChange();
+            var isNppbkcImport = false;
+            if ($("#Detail_IsNppbkcImport").is(':checked')) {
+                isNppbkcImport = true;
+            }
+            supplierChange(isNppbkcImport, '@Url.Action("GetSupplierPlantDetail", "PBCK1")');
+        });
+
+        $("#Detail_IsNppbkcImport").click(function () {
+            isNppbkcImportChecked();
+        });
+
+        $("#Detail_PeriodFrom").change(function () {
+            setLackYear();
+            getReference();
+        });
+
+
+        $("#Detail_PeriodTo").change(function () {
+            getReference();
+        });
+
+        changeToDecimal("input[name='Detail.LatestSaldo']:text", "val");
+        changeToDecimal("input[name='Detail.RequestQty']:text", "val");
+        changeToDecimal("input[name='Detail.QtyApproved']", "val");
+        changeToDecimal("#ProdPlanContent .decimal", "html"); 
+        changeToDecimal("#ProdConvContent .decimal", "html"); 
+        changeToDecimal("#Detail_Pbck1ProdConverter .decimal", "html");
+        changeToDecimal("#Detail_Pbck1ProdPlan .decimal", "html");
+
+
+        if ($("input[name='Detail.QtyApproved']:hidden").length) {
+            $("input[name='Detail.QtyApproved']:text").keyup(function () {
+                $(this).val(ThausandSeperator($(this).val(), 2));
+                $("input[name='Detail.QtyApproved']:hidden").val(changeToNumber($(this).val()));
+            });
+        }
+    });
+
+    function openGovStatusBlock() {
+        var docStatus = '@Model.Detail.Status.ToString()';
+        var isAllow = '@Model.AllowGovApproveAndReject';
+        if (docStatus == '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() == 'true') {
+            $('#home').addClass('active');
+            $('#home-tab').addClass('active');
+            $('#collapseOne').removeClass('in');
+            $('#collapseOne').addClass('collapse');
+            $('#collapseFour').addClass("in");
+
+            setSupplierName();
+        }
+    }
+
+    function printPreview(url) {
+
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+    }
+
+    function loadSupplierPlant() {
+        var list = supplierData;
+        if (list.length > 0) {
+            var isNppbkcImport = false;
+            if ($("#Detail_IsNppbkcImport").is(':checked')) {
+                isNppbkcImport = true;
+            }
+            var htmlSelect = '';
+            htmlSelect += '<select class="form-control" id="Detail_SupplierPlant_ddl" name="Detail.SupplierPlant_ddl" onchange="ChangeLatestSaldo();supplierChange(' + isNppbkcImport + ',\'@Url.Action("GetSupplierPlantDetail", "PBCK1")\');">';
+            for (var i = 0; i < list.length; i++) {
+                htmlSelect += '<option value=' + list[i].Value + '>' + list[i].Text + '</option>';
+            }
+            htmlSelect += '</select>';
+            htmlSelect += '<input id="Detail_SupplierPlant" name="Detail.SupplierPlant" value="" type="hidden">';
+            $('#supp-plant').html(htmlSelect);
+
+            if ("@Model.Detail.SupplierPlantWerks" != "")
+                $("#Detail_SupplierPlant_ddl").val("@Model.Detail.SupplierPlantWerks")
+
+        }
+    }
+
+    function ajaxSelectNppbck(formData) {
+        if (formData.nppbkcid) {
+            //Load POA
+            ajaxLoadPoa(formData, '@Url.Action("PoaListPartial", "pbck1")');
+
+            //Load company
+            ajaxLoadCompany(formData, '@Url.Action("GetNppbkcDetail", "PBCK1")');
+        }
+    }
+
+    function nppbkcIdOnChange() {
+        $('#Detail_NppbkcCompanyName').val('');
+        $('#Detail_NppbkcCompanyCode').val('');
+        $('#Detail_NppbkcKppbcId').val('');
+        $('#displayCompanyName').val('');
+        $('#Detail_PoaList').val('');
+        $('#displayPoaList').val('');
+
+        if ($("#Detail_NppbkcId").length) {
+            var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+            console.log(nppbkcid);
+            if (nppbkcid != '') {
+                ajaxSelectNppbck({ nppbkcid: nppbkcid });
+            }
+        }
+        getReference();
+    }
+
+    function ajaxLoadSupplierPlant(formData, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                supplierData = data;
+                //load supplier plant
+                supplierPortOnChange();
+                supplierChange(formData.isNppbkcImport, '@Url.Action("GetSupplierPlantDetail", "PBCK1")');
+            }
+        });
+    }
+
+    function ajaxFirstLoadSupplierPlant(formData, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                supplierData = data;
+                //load supplier plant
+                supplierPortOnChange();
+                setSupplierInfo();
+            }
+        });
+    }
+
+    function supplierPortOnChange() {
+        if ($("#Detail_SupplierPortId").length) {
+            var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
+            console.log(port_id);
+            $('#Detail_SupplierPlant').remove();
+            if ($("#Detail_IsExternalSupplier").is(':checked')) {
+                $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
+                disableSupplierFormInput(false);
+                setSupplierPlantEmpty();
+            } else {
+                loadSupplierPlant();
+                disableSupplierFormInput(true);
+            }
+
+        }
+    }
+
+    $('#Detail_Lack1FromMonthId').change(function () {
+        ChangeLatestSaldo();
+    });
+
+    $('#Detail_Lack1ToMonthId').change(function () {
+        ChangeLatestSaldo();
+    });
+
+    $('#Detail_Lack1FormYear').change(function () {
+        ChangeLatestSaldo();
+    });
+
+    $('#Detail_Lack1ToYear').change(function () {
+        ChangeLatestSaldo();
+    });
+
+    $('#Detail_GoodType').change(function () {
+        ChangeLatestSaldo();
+    });
+
+    function ChangeLatestSaldo() {
+        var month = 0;
+        var year = 0;
+        var plant = "";
+        var goodtype = "";
+
+        var nppbkcid = "";
+        if ($("#Detail_NppbkcId").length) {
+            nppbkcid = $('#Detail_NppbkcId').val();
+        }
+        if ($("#Detail_Lack1ToMonthId").length) {
+            month = $('#Detail_Lack1ToMonthId').val();
+        }
+        if ($('#Detail_Lack1ToYear').length) {
+            year = $('#Detail_Lack1ToYear').val();
+        }
+        if ($('#Detail_SupplierPlant_ddl').length) {
+            plant = $('#Detail_SupplierPlant_ddl').val();
+        }
+        if ($('#Detail_GoodType').length) {
+            goodtype = $('#Detail_GoodType').val();
+        }
+
+        if (month != 0 && year != 0 && plant != "" && goodtype != "") {
+            setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid, plant: plant, goodtype: goodtype}, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
+        } else {
+            $('#Detail_LatestSaldoUomName').val('0');
+        }
+    }
+
+
+    function setLatestSaldo(formData, url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                if (data != null) {
+                    var saldo = parseFloat(Math.round(data.latestSaldo * 100) / 100).toFixed(2);
+                    $("input[name='Detail.LatestSaldo']:hidden").val(data.latestSaldo);
+                    $("input[name='Detail.LatestSaldo']:text").val(ThausandSeperator(saldo, 2));
+                } else {
+                    $("input[name='Detail.LatestSaldo']:hidden").val('0');
+                    $("input[name='Detail.LatestSaldo']:text").val('0' + ".00");
+                }
+            }
+        });
+    }
+
+    function setSupplierInfo() {
+        $('#Detail_SupplierPlantWerks').val($('#SupInfo_SupplierPlantWerks').val());
+        $('#Detail_SupplierPlant_ddl').val($('#SupInfo_SupplierPlantWerks').val());
+        $('#Detail_SupplierNppbkcId').val($('#SupInfo_SupplierNppkbc').val());
+        $('#Detail_SupplierAddress').val($('#SupInfo_SupplierAddress').val());
+        $('#Detail_SupplierKppbcName').val($('#SupInfo_SupplierKppkbc').val());
+        $('#Detail_HiddenSupplierNppbkcId').val($('#SupInfo_SupplierNppkbc').val());
+        $('#Detail_HiddendSupplierAddress').val($('#SupInfo_SupplierAddress').val());
+        $('#Detail_HiddenSupplierKppbcId').val($('#SupInfo_SupplierKppkbc').val());
+        $('#Detail_SupplierPlant').val($('#SupInfo_SupplierPlantName').val());
+        $('#Detail_SupplierPhone').val($('#SupInfo_SupplierPhone').val());
+
+        var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+
+        if ($('#SupInfo_SupplierPlantWerks').val() == '') {
+            disableSupplierFormInput(false);
+            $("#Detail_IsExternalSupplier").prop('checked', true);
+            $("#Detail_SupplierPlant_ddl").hide();
+            $("#Detail_SupplierPlant").prop("type", "text");
+            $("#Detail_SupplierPlant").addClass('form-control');
+        }
+
+        ajaxSelectNppbck({ nppbkcid: nppbkcid });
+    }
+
+    function setSupplierName() {
+        var suppId = $("#Detail_SupplierPlantWerks").val();
+        var suppName = $("input[name='Detail.SupplierPlant']:hidden").val();
+        var correctSupName = suppId + '-' + suppName;
+        var isExternal = true;
+
+        if (suppId != '') {
+            $("input[name='Detail.SupplierPlant']:text").val(correctSupName);
+            isExternal = false;
+        }
+
+        $("#Detail_IsExternalSupplier").prop('checked', isExternal);
+    }
+
+    function isNppbkcImportChecked() {
+        var isDisabled = false;
+        var isChecked;
+        var isNppbkcImport = false;
+
+        if ($("#Detail_IsNppbkcImport").is(':checked')) {
+            isDisabled = true;
+            isChecked = false;
+            isNppbkcImport = true;
+        }
+
+        $("#Detail_IsExternalSupplier").prop('checked', isChecked);
+        $('#Detail_IsExternalSupplier').prop('disabled', isDisabled);
+
+        ajaxLoadSupplierPlant({ isNppbkcImport: isNppbkcImport }, '@Url.Action("GetSupplierPlant", "PBCK1")');
+    }
+
+    </script>
+}
