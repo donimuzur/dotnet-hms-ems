@@ -2335,5 +2335,12 @@ namespace Sampoerna.EMS.BLL
             return data;
 
         }
+
+        public List<int> GetAllYearsByGiDate()
+        {
+            var data = _repository.Get(x => x.GI_DATE.HasValue, null, "").Select(x => x.GI_DATE != null ? x.GI_DATE.Value.Year : 0).ToList();
+
+            return data;
+        }
     }
 }
