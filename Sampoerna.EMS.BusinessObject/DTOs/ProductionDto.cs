@@ -41,7 +41,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ModifiedBy { get; set; }
 
         public List<ProductionUploadItems> UploadItems { get; set; }
-
+        public int ContentPerPack { get; set; }
+        public int PackedInPack { get; set; }
     }
 
     public class ProductionUploadItems

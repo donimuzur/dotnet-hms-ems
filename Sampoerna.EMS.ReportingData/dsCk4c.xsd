@@ -54,6 +54,7 @@
               <xs:element name="Total" msprop:Generator_ColumnVarNameInTable="columnTotal" msprop:Generator_ColumnPropNameInRow="Total" msprop:Generator_ColumnPropNameInTable="TotalColumn" msprop:Generator_UserColumnName="Total" type="xs:string" minOccurs="0" />
               <xs:element name="ProdWaste" msprop:Generator_ColumnVarNameInTable="columnProdWaste" msprop:Generator_ColumnPropNameInRow="ProdWaste" msprop:Generator_ColumnPropNameInTable="ProdWasteColumn" msprop:Generator_UserColumnName="ProdWaste" type="xs:string" minOccurs="0" />
               <xs:element name="Comment" msprop:Generator_ColumnVarNameInTable="columnComment" msprop:Generator_ColumnPropNameInRow="Comment" msprop:Generator_ColumnPropNameInTable="CommentColumn" msprop:Generator_UserColumnName="Comment" type="xs:string" minOccurs="0" />
+              <xs:element name="CollumNo" msprop:Generator_ColumnVarNameInTable="columnCollumNo" msprop:Generator_ColumnPropNameInRow="CollumNo" msprop:Generator_ColumnPropNameInTable="CollumNoColumn" msprop:Generator_UserColumnName="CollumNo" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

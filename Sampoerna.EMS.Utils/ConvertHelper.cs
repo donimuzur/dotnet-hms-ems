@@ -91,5 +91,10 @@ namespace Sampoerna.EMS.Utils
         {
             return value.HasValue ? value.Value.ToString("dd MMM yyyy") : string.Empty;
         }
+
+        public static string ConvertDecimalToStringMoneyFormat(decimal? value)
+        {
+            return value.HasValue ? value.Value.ToString("#,##0.#0") : string.Empty;
+        }
     }
 }

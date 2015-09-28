@@ -458,6 +458,22 @@ function getReference() {
     });
 }
 
+function getKPPBCByNPPBKC(id) {
+    if ($("#Detail_IsExternalSupplier").is(':checked')) {
+        $.ajax({
+            type: 'POST',
+            url: kppbcUrl,
+            data: { nppbkcid: id },
+            success: function (data) {
+                $('input[name="Detail.SupplierKppbcName"]:text').val(data.kppbcname);
+                $('input[name="Detail.HiddenSupplierKppbcId"]:hidden').val(data.kppbcname);
+                $('input[name="Detail.SupplierKppbcId"]:hidden').val(data.kppbcid);
+            }
+        });
+    }
+
+}
+
 function changeToDecimalMaxFour(selector, type) {
     $(selector).each(function () {
         if (type == "val") {
@@ -472,3 +488,14 @@ function changeToDecimalMaxFour(selector, type) {
     });
 }
 
+function setLackYear() {
+    var date = $("#Detail_PeriodFrom").datepicker('getDate');
+    var year = date.getFullYear();
+
+    $("#Detail_Lack1FormYear").html("");
+    $("#Detail_Lack1ToYear").html("");
+    for (var i = 0; i < 4 ; i++) {
+        $("#Detail_Lack1FormYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
+        $("#Detail_Lack1ToYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
+    }
+}

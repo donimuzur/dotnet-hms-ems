@@ -117,6 +117,7 @@
             });
 
             $("#Detail_PeriodFrom").change(function () {
+                setLackYear();
                 getReference();
             });
 
@@ -300,6 +301,5 @@
             
             ajaxLoadSupplierPlant({ isNppbkcImport: isNppbkcImport }, '@Url.Action("GetSupplierPlant", "PBCK1")');
         }
-
     </script>
 }

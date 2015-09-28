@@ -444,6 +444,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = InitEdit(model);
 
                 model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(pbck4Details.Pbck4ItemsDto);
+                //get blocked stock
+                foreach (var uploadItemModel in model.UploadItemModels)
+                {
+                    uploadItemModel.BlockedStock = _pbck4Bll.GetBlockedStockByPlantAndFaCode(uploadItemModel.Plant,uploadItemModel.FaCode).ToString();
+                }
+
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(pbck4Details.ListChangesHistorys);
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(pbck4Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(pbck4Details.ListPrintHistorys);
@@ -1505,7 +1511,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByPlantAndFaCode(plantId, faCode);
 
-
+            //getblockedstock
+            brandOutput.BlockedStock = _pbck4Bll.GetBlockedStockByPlantAndFaCode(plantId, faCode).ToString();
+            
             return Json(brandOutput);
         }
 

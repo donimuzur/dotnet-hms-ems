@@ -234,6 +234,66 @@
                                             @Html.CheckBoxFor(model => model.ExportModel.SupplierPhone, new { @class = "checkbox checkexport", @datacolumn = "17" }) Supplier Phone
                                         </label>
                                     </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.PoaList, new { @class = "checkbox checkexport", @datacolumn = "18" }) POA
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.Reference, new { @class = "checkbox checkexport", @datacolumn = "19" }) Reference
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.LACKFrom, new { @class = "checkbox checkexport", @datacolumn = "20" }) LACK From
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.LACKTo, new { @class = "checkbox checkexport", @datacolumn = "21" }) LACK To
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.LatestSaldo, new { @class = "checkbox checkexport", @datacolumn = "22" }) Latest Saldo
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.PeriodFrom, new { @class = "checkbox checkexport", @datacolumn = "23" }) Period From
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.PeriodTo, new { @class = "checkbox checkexport", @datacolumn = "24" }) Period To
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.ReportedOn, new { @class = "checkbox checkexport", @datacolumn = "25" }) Reported On
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.RequestQty, new { @class = "checkbox checkexport", @datacolumn = "26" }) Request Qty
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.StatusGov, new { @class = "checkbox checkexport", @datacolumn = "27" }) Status Gov
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.QtyApproved, new { @class = "checkbox checkexport", @datacolumn = "28" }) Qty Approved
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.DecreeDate, new { @class = "checkbox checkexport", @datacolumn = "29" }) Decree Date
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -302,6 +362,9 @@
                     setupDataTables();
                     $('#MenuPBCK1SummaryReports').addClass('active');
                     
+                    $('#SearchView_CompanyCode').change(function () {
+                        GetListNPPBKC_ID();
+                    });
                 });
 
                 function setupDataTables() {
@@ -315,7 +378,7 @@
 
                     table = $('#pbckTable').DataTable(
                         {
-                            "order": [[2, "asc"]],
+                            "order": [[0, 'asc'], [2, 'asc']],
                             "sDom": "Rlfrtip",
                             "language": {
                                 "zeroRecords": "No records found",
@@ -351,7 +414,7 @@
                         var checked = document.querySelectorAll('input:checked');
 
                         if (checked.length === 1) {
-                            for (var i = 1; i < 18; i++) {
+                            for (var i = 1; i < 30; i++) {
                                 table.column(i).visible(false);
                             }
                             table.column(0).visible(true);
@@ -373,7 +436,7 @@
                        
                     });
 
-                    for (var i = 6; i < 18; i++) {
+                    for (var i = 6; i < 30; i++) {
                         table.column(i).visible(false);
                     }
 
@@ -384,7 +447,7 @@
                             
                             $('#pbckTable').parents('div.dataTables_wrapper').first().show();
                             var table = $('#pbckTable').DataTable();
-                            for (var i = 0; i < 18; i++) {
+                            for (var i = 0; i < 30; i++) {
                                 table.column(i).visible(true);
                             }
                         } else {
@@ -422,6 +485,29 @@
                     $('#ExportSummaryReportsForms').submit();
                     preventDefault();
                 });
+
+                function GetListNPPBKC_ID() {
+                    var CompanyCode_BUKRS = "";
+                    if ($("#SearchView_CompanyCode").length) {
+                        CompanyCode_BUKRS = $('#SearchView_CompanyCode').find("option:selected").val();
+                    }
+                    ajaxLoadNppbkcListByCompanyCode(CompanyCode_BUKRS, '@Url.Action("GetNPPBKCListByCompanyID", "pbck1")');
+                }
+
+                function ajaxLoadNppbkcListByCompanyCode(formData, url) {
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: { companyId: formData },
+                        success: function (data) {
+                            $("#SearchView_NppbkcId").empty();
+                            $("#SearchView_NppbkcId").append("<option value=''>All</option>");
+                            $.each(data, function (index, val) {
+                                $("#SearchView_NppbkcId").append("<option value='" + val + "'>" + val + "</option>");
+                            });
+                        }
+                    });
+                }
             </script>
             @* ReSharper restore Html.IdNotResolved *@
             @* ReSharper restore UnknownCssClass *@

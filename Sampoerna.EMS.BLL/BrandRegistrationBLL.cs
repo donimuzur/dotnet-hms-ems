@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
@@ -86,20 +84,26 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public void Delete(string plant, string facode)
+        public bool Delete(string plant, string facode)
         {
             var dbBrand = _repository.GetByID(plant, facode);
             if (dbBrand == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            {
+                dbBrand.IS_DELETED = false;
+            }
+            else
+            {
+                dbBrand.IS_DELETED = true;
+            }
 
-            dbBrand.IS_DELETED = true;
+            
             //_repository.Update(dbBrand);
             _uow.SaveChanges();
 
-
+            return dbBrand.IS_DELETED.Value;
         }
 
 
@@ -127,5 +131,17 @@ namespace Sampoerna.EMS.BLL
             //var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true && b.STATUS == true).ToList();
             return dbData;
         }
+
+        public ZAIDM_EX_GOODTYP GetGoodTypeByProdCodeInBrandRegistration(string prodCode)
+        {
+            const string incTables = "ZAIDM_EX_GOODTYP";
+            var dbData = _repository.Get(c => c.PROD_CODE == prodCode, null, incTables).FirstOrDefault();
+            if (dbData != null)
+            {
+                return dbData.ZAIDM_EX_GOODTYP;
+            }
+            return null;
+        }
+
     }
 }
