@@ -85,9 +85,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput()).OrderByDescending(d => d.Pbck1Number);
                 return Mapper.Map<List<Pbck1Item>>(pbck1Data);
             }
-
+            
             //getbyparams
             var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
             var dbData = _pbck1Bll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Pbck1Number);
             return Mapper.Map<List<Pbck1Item>>(dbData);
         }
@@ -491,9 +494,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject) )
                 { 
                 
-                }else if (!ValidateEditDocument(model))
+                }else if (!ValidateEditDocument(model, false))
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Details", new { id });
                 }
 
             }
@@ -506,7 +509,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        private bool ValidateEditDocument(Pbck1ItemViewModel model)
+        private bool ValidateEditDocument(Pbck1ItemViewModel model, bool message = true)
         {
 
             //check is Allow Edit Document
@@ -519,9 +522,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (!isAllowEditDocument)
             {
-                AddMessageInfo(
-                    "Operation not allowed.",
-                    Enums.MessageInfoType.Error);
+                if(message)
+                    AddMessageInfo("Operation not allowed.",Enums.MessageInfoType.Error);
+
                 return false;
             }
 
@@ -1185,7 +1188,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult SearchSummaryReports(Pbck1SummaryReportViewModel model)
         {
-            model.DetailsList = SearchSummaryReports(model.SearchView);
+            model.DetailsList = SearchSummaryReports(model.SearchView).OrderBy(c => c.NppbkcId).ToList(); ;
             return PartialView("_Pbck1SummaryReportTable", model);
         }
 
@@ -1205,6 +1208,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void ExportSummaryReportsToExcel(Pbck1SummaryReportViewModel model)
         {
+            model.SearchView.CompanyCode = model.ExportModel.CompanyCode;
+            model.SearchView.YearFrom = model.ExportModel.YearFrom;
+            model.SearchView.YearTo = model.ExportModel.YearTo;
+            model.SearchView.NppbkcId = model.ExportModel.NppbkcId;
             var dataSummaryReport = SearchSummaryReports(model.SearchView);
 
             //todo: to automapper
@@ -1245,7 +1252,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var grid = new System.Web.UI.WebControls.GridView
             {
-                DataSource = src,
+                DataSource = src.OrderBy(c => c.Nppbkc).ToList(),
                 AutoGenerateColumns = false
             };
 
@@ -1492,7 +1499,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
-
+            if (src.Count == 0)
+            {
+                grid.ShowHeaderWhenEmpty = true;
+            }
 
             grid.DataBind();
 
@@ -1584,7 +1594,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult SearchMonitoringUsage(Pbck1MonitoringUsageViewModel model)
         {
-            model.DetailsList = SearchMonitoringUsages(model.SearchView);
+            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
+            model.DetailsList = SearchMonitoringUsages(model.SearchView).OrderBy(c => c.NppbkcId).ToList();
             return PartialView("_Pbck1MonitoringUsageTable", model);
         }
 
@@ -1604,11 +1615,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void ExportMonitoringUsageToExcel(Pbck1MonitoringUsageViewModel model)
         {
+            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
+            
+            model.SearchView.CompanyCode = model.ExportModel.CompanyCode;
+            model.SearchView.YearFrom = model.ExportModel.YearFrom;
+            model.SearchView.YearTo = model.ExportModel.YearTo;
+            model.SearchView.NppbkcId = model.ExportModel.NppbkcId;
+
             var dataToExport = SearchMonitoringUsages(model.SearchView);
 
             var grid = new GridView
             {
-                DataSource = dataToExport,
+                DataSource = dataToExport.OrderBy(c => c.NppbkcId).ToList(),
                 AutoGenerateColumns = false
             };
 
@@ -1701,7 +1719,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Quota Remaining"
                 });
             }
+
+            if (dataToExport.Count == 0)
+            {
+                grid.ShowHeaderWhenEmpty = true;
+            }
+            
             grid.DataBind();
+            
 
             var fileName = "PBCK1MonitoringUsage" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
             Response.ClearContent();

@@ -88,9 +88,12 @@ namespace Sampoerna.EMS.BLL
                 dbWaste.WASTE_PROD_DATE);
 
             var originDto = Mapper.Map<WasteDto>(origin);
+
             dbWaste.CREATED_DATE = DateTime.Now;
 
-            SetChange(originDto, wasteDto, userId);
+            if (originDto != null)
+                SetChange(originDto, wasteDto, userId);
+
             _repository.InsertOrUpdate(dbWaste);
             _uow.SaveChanges();
         }
