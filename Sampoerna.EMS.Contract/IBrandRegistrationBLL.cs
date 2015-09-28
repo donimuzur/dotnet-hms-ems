@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_BRAND> GetAllBrands();
 
-        void Delete(string plant, string facode);
+        bool Delete(string plant, string facode);
 
         ZAIDM_EX_BRAND GetByFaCode(string plantWerk, string faCode );
         
