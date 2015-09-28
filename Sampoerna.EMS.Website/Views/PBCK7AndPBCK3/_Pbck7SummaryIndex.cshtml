@@ -1,1 +1,27 @@
-﻿
+﻿@model List<Sampoerna.EMS.BusinessObject.DTOs.Pbck7AndPbck3Dto>
+
+<table id="pbck-1">
+    <thead>
+        <tr><th>No</th><th>NPPBKC</th><th>Plant</th><th>Doc.Type</th><th>Date</th><th>Status</th></tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Pbck7Number</td>
+                    <td>@item.NppbkcId</td>
+                    <td>@(item.PlantId + "-" +item.PlantName)</td>
+                    <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.DocumentType)</td>
+                    <td>@item.Pbck7Date.ToString("dd MMM yyyy")</td>
+                    <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.Pbck7Status)</td>
+                    
+                </tr>
+            }
+        }
+        
+    </tbody>
+</table>
+
