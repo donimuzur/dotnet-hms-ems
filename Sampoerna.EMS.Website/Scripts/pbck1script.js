@@ -494,9 +494,8 @@ function setLackYear() {
 
     $("#Detail_Lack1FormYear").html("");
     $("#Detail_Lack1ToYear").html("");
-    for (var i = 0; i < 3 ; i++) {
+    for (var i = 0; i < 4 ; i++) {
         $("#Detail_Lack1FormYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
         $("#Detail_Lack1ToYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
     }
 }
-

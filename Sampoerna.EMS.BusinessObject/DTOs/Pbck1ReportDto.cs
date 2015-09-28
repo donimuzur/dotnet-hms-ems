@@ -10,9 +10,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             Detail = new Pbck1ReportInformationDto();
             RealisasiP3Bkc = new List<Pbck1RealisasiP3BkcDto>();
             HeaderFooter = new HEADER_FOOTER_MAPDto();
+            SummaryProdPlantList = new List<Pbck1ReportSummaryProdPlanDto>();
         }
         public Pbck1ReportInformationDto Detail { get; set; }
         public List<Pbck1ReportProdPlanDto> ProdPlanList { get; set; }
+        public List<Pbck1ReportSummaryProdPlanDto> SummaryProdPlantList { get; set; }
 
         /// <summary>
         /// Pbck-1 Prod Conv uploaded file
@@ -132,6 +134,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ExciseManager { get; set; }
         public string ProdPlanPeriode { get; set; }
         public string Lack1Periode { get; set; }
+        public string ConvertedUomId { get; set; }
+        public string RealisasiBkcExcisableGoodsTypeId { get; set; }
+        public string RealisasiBkcExcisableGoodsTypeDesc { get; set; }
+        public string RealisasiBkcUomId { get; set; }
+        public string RealisasiUomId { get; set; }
+        public string RealisasiUomDesc { get; set; }
     }
 
     public class Pbck1ReportProdPlanDto
@@ -145,6 +153,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string BkcRequiredUomName { get; set; }
         public int MonthId { get; set; }
         public string MonthName { get; set; }
+    }
+
+    public class Pbck1ReportSummaryProdPlanDto
+    {
+        public string ProdTypeCode { get; set; }
+        public string ProdTypeName { get; set; }
+        public string ProdAlias { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal TotalBkc { get; set; }
     }
 
     public class Pbck1ReportBrandRegistrationDto

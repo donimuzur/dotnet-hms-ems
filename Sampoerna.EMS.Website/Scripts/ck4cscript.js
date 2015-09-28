@@ -111,7 +111,7 @@ function ChangeBasedOn(value) {
     $('#Details_NppbkcId').prop('disabled', IsDisabledNppbkc);
 }
 
-function ajaxSelectPlant(url, formData) {
+function ajaxSelectPlant(url, formData, plant) {
     if (formData.companyId) {
         $.ajax({
             type: 'POST',
@@ -123,14 +123,15 @@ function ajaxSelectPlant(url, formData) {
                     for (var i = 0; i < listPlant.length; i++) {
                         $('#Details_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
                     }
-                }
 
+                    $('#Details_PlantId').val(plant);
+                }
             }
         });
     }
 }
 
-function ajaxGetNppbkcByCompany(urlFunction, company) {
+function ajaxGetNppbkcByCompany(urlFunction, company, nppbkc) {
     $.ajax({
         type: 'POST',
         url: urlFunction,
@@ -139,6 +140,8 @@ function ajaxGetNppbkcByCompany(urlFunction, company) {
             for (var i = 0; i < data.length; i++) {
                 $('#Details_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
             }
+
+            $('#Details_NppbkcId').val(nppbkc);
         }
     });
 }
