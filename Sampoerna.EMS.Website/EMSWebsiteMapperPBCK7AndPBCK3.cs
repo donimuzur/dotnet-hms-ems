@@ -58,6 +58,16 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.Poa))
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.Creator));
 
+
+            Mapper.CreateMap<Pbck7SummaryReportModel, Pbck7SummaryInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.SelectedNppbkc))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.SelectedPlant))
+                .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.SelectedNumber))
+                .ForMember(dest => dest.Pbck7DateFrom, opt => opt.MapFrom(src => src.From))
+                .ForMember(dest => dest.Pbck7DateTo, opt => opt.MapFrom(src => src.To))
+                ;
+             
+
             #endregion
 
             #region PBCK7adPBCK3 Create

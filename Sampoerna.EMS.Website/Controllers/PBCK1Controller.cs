@@ -85,9 +85,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput()).OrderByDescending(d => d.Pbck1Number);
                 return Mapper.Map<List<Pbck1Item>>(pbck1Data);
             }
-
+            
             //getbyparams
             var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
             var dbData = _pbck1Bll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Pbck1Number);
             return Mapper.Map<List<Pbck1Item>>(dbData);
         }
@@ -491,9 +494,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject) )
                 { 
                 
-                }else if (!ValidateEditDocument(model))
+                }else if (!ValidateEditDocument(model, false))
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Details", new { id });
                 }
 
             }
@@ -506,7 +509,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        private bool ValidateEditDocument(Pbck1ItemViewModel model)
+        private bool ValidateEditDocument(Pbck1ItemViewModel model, bool message = true)
         {
 
             //check is Allow Edit Document
@@ -519,9 +522,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (!isAllowEditDocument)
             {
-                AddMessageInfo(
-                    "Operation not allowed.",
-                    Enums.MessageInfoType.Error);
+                if(message)
+                    AddMessageInfo("Operation not allowed.",Enums.MessageInfoType.Error);
+
                 return false;
             }
 

@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.BLL
         {
             bool isEditable = false;
 
-            if ((input.DocumentStatus == Enums.DocumentStatus.Draft  || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval) && input.CreatedUser == input.CurrentUser)
+            if ((input.DocumentStatus == Enums.DocumentStatus.Rejected || input.DocumentStatus == Enums.DocumentStatus.Draft  || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval) && input.CreatedUser == input.CurrentUser)
                 isEditable = true;
             else
                 isEditable = false;
