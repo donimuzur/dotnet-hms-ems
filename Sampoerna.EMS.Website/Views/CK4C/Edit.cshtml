@@ -96,6 +96,8 @@
         $(document).ready(function () {
             SetBasedOn();
 
+            SetDataByCompany();
+
             $('#divComment').hide();
 
             $('#Details_StatusGoverment').on('change', function (e) {
@@ -113,7 +115,7 @@
             });
 
             $("#Details_CompanyId").change(function () {
-                ChangeCompany($(this).find("option:selected").val());
+                ChangeCompany($(this).find("option:selected").val(), '', '');
             });
 
             $('#btnCancel').click(function (e) {
@@ -150,7 +152,7 @@
             });
         });
 
-        function ChangeCompany(comp) {
+        function ChangeCompany(comp, plant, nppbkc) {
             $('#Details_PlantId').html('');
             $('#Details_PlantId').append('<option value="">select</option>');
             $('#Details_NppbkcId').html('');
@@ -158,12 +160,10 @@
             if ($("#Details_CompanyId").length) {
                 var cpy = comp;
                 if (cpy != '') {
-                    ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy });
-                    ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy);
+                    ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy }, plant);
+                    ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
                 }
             }
-            $('#Details_PlantId').val('');
-            $('#Details_NppbkcId').val('');
         }
 
         function SetBasedOn() {
@@ -180,6 +180,12 @@
                     $('#Details_PlantId').prop('disabled', true);
                 }
             }
+        }
+
+        function SetDataByCompany() {
+            var nppbkc = '@Model.Details.NppbkcId';
+            var plant = '@Model.Details.PlantId';
+            ChangeCompany($("#Details_CompanyId").find("option:selected").val(), plant, nppbkc);
         }
 
         function printPreview(url) {
