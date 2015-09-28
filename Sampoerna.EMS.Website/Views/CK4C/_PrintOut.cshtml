@@ -47,7 +47,7 @@
                                     <div class="col-md-9">
                                         @if (Model.AllowPrintDocument)
                                         {
-                                            <a class="btn btn-blue full" onclick="PrintOutClick('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })', '@Url.Action("AddPrintHistory", "CK4C")', @Model.Details.Ck4CId)">Print</a>
+                                            <a class="btn btn-blue full" onclick="PrintOutClick('@Url.EncryptedAction("PrintOut", "CK4C", new { id = @Model.Details.Ck4CId })', '@Url.Action("AddPrintHistory", "CK4C")', @Model.Details.Ck4CId)">Print</a>
                                         }
                                     </div>
                                 </div>
