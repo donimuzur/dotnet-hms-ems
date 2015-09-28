@@ -273,6 +273,7 @@
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="EMSWebsiteMapperCK5.cs" />
     <Compile Include="EMSWebsiteMapperLack1.cs" />
+    <Compile Include="EMSWebsiteMapperLack2.cs" />
     <Compile Include="EMSWebsiteMapperPBCK1.cs" />
     <Compile Include="EMSWebsiteMapperPBCK4.cs" />
     <Compile Include="EMSWebsiteMapperPBCK7AndPBCK3.cs" />

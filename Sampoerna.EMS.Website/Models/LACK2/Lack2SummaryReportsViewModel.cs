@@ -63,22 +63,49 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public string Lack2Period { get; set; }
             public string Lack2Date { get; set; }
             public string TypeExcisableGoods { get; set; }
+
+            public string TotalDeliveryExcisable { get; set; }
+            public string Uom { get; set; }
+            public string Poa { get; set; }
+            public string PoaManager { get; set; }
+            public string CreatedDate { get; set; }
+            public string CreatedTime { get; set; }
+            public string CreatedBy { get; set; }
+            public string ApprovedDate { get; set; }
+            public string ApprovedTime { get; set; }
+            public string ApprovedBy { get; set; }
+            public string LastChangedDate { get; set; }
+            public string LastChangedTime { get; set; }
             public string Status { get; set; }
+            public string LegalizeData { get; set; }
         }
 
         public class Lack2ExportSummaryReportsViewModel : Lack2SearchSummaryReportsViewModel
         {
-            public bool Lack2Number { get; set; }
-            public bool DocumentType { get; set; }
-            public new bool CompanyCode { get; set; }
-            public bool CompanyName { get; set; }
-            public new bool NppbkcId { get; set; }
-            public bool Ck5SendingPlant { get; set; }
-            public bool SendingPlantAddress { get; set; }
-            public bool Lack2Period { get; set; }
-            public bool Lack2Date { get; set; }
-            public bool TypeExcisableGoods { get; set; }
-            public bool Status { get; set; }
+            public bool BLack2Number { get; set; }
+            public bool BDocumentType { get; set; }
+            public bool BCompanyCode { get; set; }
+            public bool BCompanyName { get; set; }
+            public bool BNppbkcId { get; set; }
+            public bool BCk5SendingPlant { get; set; }
+            public bool BSendingPlantAddress { get; set; }
+            public bool BLack2Period { get; set; }
+            public bool BLack2Date { get; set; }
+            public bool BTypeExcisableGoods { get; set; }
+            public bool BTotalDeliveryExcisable { get; set; }
+            public bool BUom { get; set; }
+            public bool BPoa { get; set; }
+            public bool BPoaManager { get; set; }
+            public bool BCreatedDate { get; set; }
+            public bool BCreatedTime { get; set; }
+            public bool BCreatedBy { get; set; }
+            public bool BApprovedDate { get; set; }
+            public bool BApprovedTime { get; set; }
+            public bool BApprovedBy { get; set; }
+            public bool BLastChangedDate { get; set; }
+            public bool BLastChangedTime { get; set; }
+            public bool BStatus { get; set; }
+            public bool BLegalizeData { get; set; }
         }
     
 }

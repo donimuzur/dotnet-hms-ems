@@ -45,6 +45,7 @@ namespace Sampoerna.EMS.Website
             InitializeLACK1();
             InitializeCk4C();
             InitializePBCK4();
+            InitializeLACK2();
             //AutoMapper
             Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.USER_ID))

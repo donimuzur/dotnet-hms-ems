@@ -32,5 +32,7 @@ namespace Sampoerna.EMS.Contract
         List<Lack2Dto> GetCompletedDocument();
 
         void RemoveExistingItem(long id);
+
+        List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
     }
 }

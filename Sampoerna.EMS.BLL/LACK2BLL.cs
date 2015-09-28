@@ -34,7 +34,8 @@ namespace Sampoerna.EMS.BLL
         private string includeTables = "MONTH";
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPOABLL _poabll;
-         
+        private IPlantBLL _plantBll;
+
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -46,6 +47,7 @@ namespace Sampoerna.EMS.BLL
             _userBll = new UserBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _poabll = new POABLL(_uow, _logger);
+            _plantBll = new PlantBLL(_uow, _logger);
         }
 
 
@@ -338,6 +340,151 @@ namespace Sampoerna.EMS.BLL
         {
             _repositoryItem.Delete(id);
             _uow.SaveChanges();
+        }
+
+        public List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input)
+        {
+
+            Expression<Func<LACK2, bool>> queryFilter = PredicateHelper.True<LACK2>();
+
+            if (!string.IsNullOrEmpty(input.CompanyCode))
+            {
+                queryFilter = queryFilter.And(c => c.BUKRS.Contains(input.CompanyCode));
+            }
+
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID.Contains(input.NppbkcId));
+            }
+
+            if (!string.IsNullOrEmpty(input.SendingPlantId))
+            {
+                queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID.Contains(input.SendingPlantId));
+            }
+
+            if (!string.IsNullOrEmpty(input.GoodType))
+            {
+                queryFilter = queryFilter.And(c => c.EX_GOOD_TYP.Contains(input.GoodType));
+            }
+
+            if (input.PeriodMonth.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth.Value);
+
+            if (input.PeriodYear.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
+
+            if (input.DocumentStatus.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == input.DocumentStatus.Value);
+            }
+
+            if (input.CreatedDate.HasValue)
+            {
+                queryFilter =
+                    queryFilter.And(
+                        c =>
+                            c.CREATED_DATE.Year == input.CreatedDate.Value.Year &&
+                            c.CREATED_DATE.Month == input.CreatedDate.Value.Month &&
+                            c.CREATED_DATE.Day == input.CreatedDate.Value.Day);
+            }
+            if (!string.IsNullOrEmpty(input.CreatedBy))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.CreatedBy);
+            }
+            if (input.ApprovedDate.HasValue)
+            {
+                queryFilter =
+                    queryFilter.And(
+                        c =>
+                            c.APPROVED_DATE.HasValue &&
+                            c.APPROVED_DATE.Value.Year == input.ApprovedDate.Value.Year &&
+                            c.APPROVED_DATE.Value.Month == input.ApprovedDate.Value.Month &&
+                            c.APPROVED_DATE.Value.Day == input.ApprovedDate.Value.Day);
+            }
+            if (!string.IsNullOrEmpty(input.ApprovedBy))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.ApprovedBy);
+            }
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty(input.Approver))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_MANAGER == input.Approver);
+            }
+          
+
+
+            var rc = _repository.Get(queryFilter, null, includeTables).ToList();
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            return SetDataSummaryReport(rc);
+            
+
+        }
+
+        private List<Lack2SummaryReportDto> SetDataSummaryReport(List<LACK2> listLack2)
+        {
+            var result = new List<Lack2SummaryReportDto>();
+
+            foreach (var dtData in listLack2)
+            {
+
+                var summaryDto = new Lack2SummaryReportDto();
+
+                summaryDto.Lack2Number = dtData.LACK2_NUMBER;
+                summaryDto.DocumentType = EnumHelper.GetDescription(Enums.FormType.LACK2);
+
+                summaryDto.CompanyCode = dtData.BUKRS;
+                summaryDto.CompanyName = dtData.BUTXT;
+                summaryDto.NppbkcId = dtData.NPPBKC_ID;
+                summaryDto.Ck5SendingPlant = dtData.LEVEL_PLANT_ID;
+
+                var dbPlant = _plantBll.GetT001WById(dtData.LEVEL_PLANT_ID);
+                if (dbPlant != null)
+                {
+                    summaryDto.SendingPlantAddress = dbPlant.ADDRESS;
+                }
+
+                var monthData = _monthBll.GetMonth(dtData.PERIOD_MONTH);
+                if (monthData != null)
+                {
+                    summaryDto.Lack2Period = monthData.MONTH_NAME_IND + " " + dtData.PERIOD_YEAR;
+                }
+
+                summaryDto.Lack2Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.SUBMISSION_DATE);
+
+                summaryDto.TypeExcisableGoods = dtData.EX_TYP_DESC;
+
+                summaryDto.TotalDeliveryExcisable = "0";
+                summaryDto.Uom = "";
+
+                summaryDto.CreatedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.CREATED_DATE);
+                summaryDto.CreatedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.CREATED_DATE);
+                summaryDto.CreatedBy = dtData.CREATED_BY;
+
+                summaryDto.ApprovedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.APPROVED_DATE);
+                summaryDto.ApprovedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.APPROVED_DATE);
+                summaryDto.ApprovedBy = dtData.APPROVED_BY;
+
+                summaryDto.LastChangedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE);
+                summaryDto.LastChangedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.MODIFIED_DATE);
+
+                summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+
+                //search
+                summaryDto.PeriodYear = dtData.PERIOD_YEAR.ToString();
+                result.Add(summaryDto);
+
+            }
+
+            return result;
         }
     }
 }
