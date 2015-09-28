@@ -1152,6 +1152,55 @@ namespace Sampoerna.EMS.Website.Controllers
             return sFileName;
         }
 
+
+        public ActionResult Pbck7SummaryReport()
+        {
+
+            Pbck7SummaryReportModel model;
+            try
+            {
+
+                model = new Pbck7SummaryReportModel();
+
+               
+                InitSummaryReports(model);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck7SummaryReportModel();
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("Pbck7SummaryReport", model);
+        }
+
+        private void InitSummaryReports(Pbck7SummaryReportModel model)
+        {
+            model.MainMenu = Enums.MenuList.PBCK7;
+            model.CurrentMenu = PageInfo;
+
+            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+            model.Pbck7List = GetAllPbck7No();
+        }
+
+        private SelectList GetAllPbck7No()
+        {
+            var pbck7List = _pbck7AndPbck7And3Bll.GetAllPbck7();
+            return new SelectList(pbck7List, "Pbck7Number", "Pbck7Number");
+
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterPbck7SummaryReport(Pbck7SummaryReportModel model)
+        {
+            var input = Mapper.Map<Pbck7SummaryInput>(model);
+            var result = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(input);
+            return PartialView("_Pbck7SummaryIndex", result);
+        }
     }
 
 }

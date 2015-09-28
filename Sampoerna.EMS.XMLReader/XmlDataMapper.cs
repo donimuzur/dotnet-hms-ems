@@ -110,7 +110,12 @@ namespace Sampoerna.EMS.XMLReader
                 this.Errors.Add(ex.Message);
                 uow.RevertChanges();
             }
-            if (errorCount == 0 && itemToInsert > 0)
+            //if (errorCount == 0 && itemToInsert > 0)
+            //{
+            //    fileName = MoveFile();
+            //    return fileName;
+            //}
+            if (errorCount == 0)
             {
                 fileName = MoveFile();
                 return fileName;

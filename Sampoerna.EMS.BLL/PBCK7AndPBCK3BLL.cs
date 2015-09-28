@@ -49,6 +49,47 @@ namespace Sampoerna.EMS.BLL
             _repositoryCk2 = _uow.GetGenericRepository<CK2>();
         }
 
+        public List<Pbck7AndPbck3Dto> GetAllPbck7()
+        {
+            return Mapper.Map<List<Pbck7AndPbck3Dto>>(_repositoryPbck7.Get().ToList());
+        }
+
+        public List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
+        {
+            Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC == input.NppbkcId);
+            }
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter = queryFilter.And(c => c.PLANT_ID == input.PlantId);
+            }
+
+            if (input.Pbck7DateFrom != null)
+            {
+                
+                queryFilter = queryFilter.And(c => c.PBCK7_DATE > input.Pbck7DateFrom);
+            }
+
+
+            Func<IQueryable<PBCK7>, IOrderedQueryable<PBCK7>> orderBy = null;
+            if (!string.IsNullOrEmpty(input.ShortOrderColum))
+            {
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK7>(input.ShortOrderColum));
+            }
+
+            var dbData = _repositoryPbck7.Get(queryFilter, orderBy);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            var mapResult = Mapper.Map<List<Pbck7AndPbck3Dto>>(dbData.ToList());
+
+            return mapResult;
+       
+        }
+
         public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
