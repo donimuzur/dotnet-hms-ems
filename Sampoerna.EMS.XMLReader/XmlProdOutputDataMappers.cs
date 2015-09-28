@@ -108,25 +108,30 @@ namespace Sampoerna.EMS.XMLReader
                             }
                             
 
-                            if (existingProduction != null)
+                            if (existingProduction == null)
                             {
-                                if (item.LAST_SHIFT > existingProduction.LAST_SHIFT)
-                                {
-                                    item.QTY += existingProduction.QTY;
-                                }
+                                
                                 item.CREATED_DATE = DateTime.Now;
                                 item.CREATED_BY = "PI";
                             }
                             else
                             {
+                                if (item.LAST_SHIFT > existingProduction.LAST_SHIFT)
+                                {
+                                    item.QTY += existingProduction.QTY;
+                                }
                                 item.MODIFIED_DATE = DateTime.Now;
                                 item.MODIFIED_BY = "PI";
                                 item.CREATED_BY = existingProduction.CREATED_BY;
                                 item.CREATED_DATE = existingProduction.CREATED_DATE;
                                 
                             }
-
-                            items.Add(item);
+                            //ignore if last shift is null or 0
+                            if (item.LAST_SHIFT > 0)
+                            {
+                                
+                                items.Add(item);
+                            }
                         }
                         else
                         {
@@ -199,10 +204,12 @@ namespace Sampoerna.EMS.XMLReader
 
         private int GetShift(string shift)
         {
+            var validValue = new string[] {"1st", "2nd", "3rd", "4th", "5th", "6th"};
             if (string.IsNullOrEmpty(shift))
-            {
                 return 0;
-            }
+            if (!validValue.Contains(shift.ToLower()))
+                return 0;
+
             char[] arr = shift.ToCharArray();
 
             var arrDigit = Array.FindAll<char>(arr, (c => (char.IsDigit(c))));

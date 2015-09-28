@@ -1188,7 +1188,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult SearchSummaryReports(Pbck1SummaryReportViewModel model)
         {
-            model.DetailsList = SearchSummaryReports(model.SearchView);
+            model.DetailsList = SearchSummaryReports(model.SearchView).OrderBy(c => c.NppbkcId).ToList(); ;
             return PartialView("_Pbck1SummaryReportTable", model);
         }
 
@@ -1208,6 +1208,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void ExportSummaryReportsToExcel(Pbck1SummaryReportViewModel model)
         {
+            model.SearchView.CompanyCode = model.ExportModel.CompanyCode;
+            model.SearchView.YearFrom = model.ExportModel.YearFrom;
+            model.SearchView.YearTo = model.ExportModel.YearTo;
+            model.SearchView.NppbkcId = model.ExportModel.NppbkcId;
             var dataSummaryReport = SearchSummaryReports(model.SearchView);
 
             //todo: to automapper
@@ -1248,7 +1252,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var grid = new System.Web.UI.WebControls.GridView
             {
-                DataSource = src,
+                DataSource = src.OrderBy(c => c.Nppbkc).ToList(),
                 AutoGenerateColumns = false
             };
 
@@ -1495,7 +1499,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
-
+            if (src.Count == 0)
+            {
+                grid.ShowHeaderWhenEmpty = true;
+            }
 
             grid.DataBind();
 
@@ -1587,7 +1594,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult SearchMonitoringUsage(Pbck1MonitoringUsageViewModel model)
         {
-            model.DetailsList = SearchMonitoringUsages(model.SearchView);
+            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
+            model.DetailsList = SearchMonitoringUsages(model.SearchView).OrderBy(c => c.NppbkcId).ToList();
             return PartialView("_Pbck1MonitoringUsageTable", model);
         }
 
@@ -1607,11 +1615,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void ExportMonitoringUsageToExcel(Pbck1MonitoringUsageViewModel model)
         {
+            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
+            
+            model.SearchView.CompanyCode = model.ExportModel.CompanyCode;
+            model.SearchView.YearFrom = model.ExportModel.YearFrom;
+            model.SearchView.YearTo = model.ExportModel.YearTo;
+            model.SearchView.NppbkcId = model.ExportModel.NppbkcId;
+
             var dataToExport = SearchMonitoringUsages(model.SearchView);
 
             var grid = new GridView
             {
-                DataSource = dataToExport,
+                DataSource = dataToExport.OrderBy(c => c.NppbkcId).ToList(),
                 AutoGenerateColumns = false
             };
 
@@ -1704,7 +1719,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Quota Remaining"
                 });
             }
+
+            if (dataToExport.Count == 0)
+            {
+                grid.ShowHeaderWhenEmpty = true;
+            }
+            
             grid.DataBind();
+            
 
             var fileName = "PBCK1MonitoringUsage" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
             Response.ClearContent();
