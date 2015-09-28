@@ -124,6 +124,7 @@ namespace Sampoerna.EMS.Website.Controllers
             years.Add(new SelectItemModel() { ValueField = year, TextField = year.ToString() });
             years.Add(new SelectItemModel() { ValueField = year - 1, TextField = (year - 1).ToString() });
             years.Add(new SelectItemModel() { ValueField = year - 2, TextField = (year - 2).ToString() });
+            years.Add(new SelectItemModel() { ValueField = year - 3, TextField = (year - 3).ToString() });
             return new SelectList(years, "ValueField", "TextField");
         }
 
