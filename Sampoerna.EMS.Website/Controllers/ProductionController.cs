@@ -307,7 +307,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.ChangesHistoryList =
                 Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
-                    companyCode + plantWerk + faCode + productionDate.ToString("ddMMMyyyy")));
+                    companyCode + "_" + plantWerk + "_" + faCode + "_" + productionDate.ToString("ddMMMyyyy")));
 
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
