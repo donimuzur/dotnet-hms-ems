@@ -1852,7 +1852,7 @@ namespace Sampoerna.EMS.BLL
                 p => ((input.Pbck1.Pbck1Id == null || p.PBCK1_ID != input.Pbck1.Pbck1Id) && p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId
                     && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodFrom
                     || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo || (p.PERIOD_FROM > input.Pbck1.PeriodFrom && p.PERIOD_TO < input.Pbck1.PeriodTo))
-                    && p.SUPPLIER_NPPBKC_ID == input.Pbck1.SupplierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
+                    && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
             );
 
             var data = Mapper.Map<List<Pbck1Dto>>(dbData);
@@ -1870,7 +1870,7 @@ namespace Sampoerna.EMS.BLL
                     && p.NPPBKC_ID == input.NppbkcId
                     && (p.PERIOD_FROM <= input.PeriodFrom && p.PERIOD_TO >= input.PeriodFrom
                     || p.PERIOD_FROM <= input.PeriodTo && p.PERIOD_TO >= input.PeriodTo)
-                    && p.SUPPLIER_NPPBKC_ID == input.SupllierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && p.EXC_GOOD_TYP == input.GoodTypeId
+                    && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && p.EXC_GOOD_TYP == input.GoodTypeId
             ).FirstOrDefault();
             var data = Mapper.Map<Pbck1Dto>(dbData);
 

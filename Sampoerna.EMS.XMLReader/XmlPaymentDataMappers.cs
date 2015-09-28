@@ -36,7 +36,7 @@ namespace Sampoerna.EMS.XMLReader
                         if (existingCk1 != null)
                         {
                             item = existingCk1;
-                            
+                            item.IS_PAID_OFF = true;
                             items.Add(item);
 
                         }

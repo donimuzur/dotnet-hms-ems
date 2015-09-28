@@ -84,20 +84,26 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public void Delete(string plant, string facode)
+        public bool Delete(string plant, string facode)
         {
             var dbBrand = _repository.GetByID(plant, facode);
             if (dbBrand == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            {
+                dbBrand.IS_DELETED = false;
+            }
+            else
+            {
+                dbBrand.IS_DELETED = true;
+            }
 
-            dbBrand.IS_DELETED = true;
+            
             //_repository.Update(dbBrand);
             _uow.SaveChanges();
 
-
+            return dbBrand.IS_DELETED.Value;
         }
 
 
