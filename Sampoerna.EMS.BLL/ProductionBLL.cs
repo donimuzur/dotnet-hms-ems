@@ -100,7 +100,8 @@ namespace Sampoerna.EMS.BLL
             var originDto = Mapper.Map<ProductionDto>(origin);
 
             //to do ask and to do refactor
-            //SetChange(originDto, productionDto, userId);
+            if(originDto != null)
+                SetChange(originDto, productionDto, userId);
 
             if (dbProduction.UOM == "KG")
             {
