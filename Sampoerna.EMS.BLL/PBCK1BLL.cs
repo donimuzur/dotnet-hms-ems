@@ -1416,7 +1416,7 @@ namespace Sampoerna.EMS.BLL
                     Total = g.Sum(p => p.CONVERTER_OUTPUT)
                 });
                 rc.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
-                    prodConverterGroup.Select(d => d.Total.Value.ToString("N0") + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
+                    prodConverterGroup.Select(d => String.Format("{0:n}", d.Total.Value) + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
             }
             if (dbData.PERIOD_FROM.HasValue)
             {
@@ -1427,10 +1427,10 @@ namespace Sampoerna.EMS.BLL
                 rc.Detail.PeriodTo = DateReportString(dbData.PERIOD_TO.Value);
             }
             // ReSharper disable once PossibleInvalidOperationException
-            rc.Detail.RequestQty = dbData.REQUEST_QTY.Value.ToString("N0");
+            rc.Detail.RequestQty = String.Format("{0:n}", dbData.REQUEST_QTY.Value);
             rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
             rc.Detail.RequestQtyUomName = dbData.UOM.UOM_DESC;
-            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = dbData.LATEST_SALDO.Value.ToString("N0");
+            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = String.Format("{0:n}", dbData.LATEST_SALDO.Value);
             rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
             rc.Detail.SupplierPlantName = dbData.SUPPLIER_PLANT;
             rc.Detail.SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS;
