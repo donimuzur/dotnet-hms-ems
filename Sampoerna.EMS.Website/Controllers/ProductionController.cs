@@ -258,8 +258,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _productionBll.Save(dbPrductionNew, CurrentUser.USER_ID);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                var isNewData = _productionBll.Save(dbPrductionNew, CurrentUser.USER_ID);
+                var message = Constans.SubmitMessage.Updated;
+
+                if (isNewData) 
+                { 
+                    _productionBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
+               Convert.ToDateTime(model.ProductionDateX));
+                }
+
+                AddMessageInfo(message, Enums.MessageInfoType.Success
                     );
 
 
