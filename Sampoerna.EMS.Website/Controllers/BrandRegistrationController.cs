@@ -64,21 +64,16 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode));
 
-            if (model.BoolIsDeleted.HasValue && model.BoolIsDeleted.Value)
+            
+            if (model.IsFromSap.HasValue && model.IsFromSap.Value)
             {
                 model.IsAllowDelete = false;
             }
             else
             {
-                if (model.IsFromSap.HasValue && model.IsFromSap.Value)
-                {
-                    model.IsAllowDelete = false;
-                }
-                else
-                {
-                    model.IsAllowDelete = true;
-                }
+                model.IsAllowDelete = true;
             }
+            
 
             return View(model);
         }
@@ -430,9 +425,13 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Delete(string plant, string facode)
         {
             AddHistoryDelete(plant, facode);
-            _brandRegistrationBll.Delete(plant, facode);
-
-            TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
+            var isDeleted = _brandRegistrationBll.Delete(plant, facode);
+            
+            if(isDeleted)
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
+            else
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
+            
             return RedirectToAction("Index");
         }
 

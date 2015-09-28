@@ -55,16 +55,17 @@ namespace Sampoerna.EMS.XMLReader
                         item.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
                         item.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
                         item.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
-
+                        var shift = _xmlMapper.GetElementValue(xElement.Element("Shift"));
+                        item.LAST_SHIFT = GetShift(shift);
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
                         var qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
-                        var existingProduction = GetProductionExisting(item.FA_CODE, item.WERKS, item.COMPANY_CODE,
-                            item.PRODUCTION_DATE);
-
                         //var prodQty = qty;
                         var existingBrand = GetMaterialBrand(item.FA_CODE, item.WERKS);
                         if (existingBrand != null)
                         {
+                            var existingProduction = GetProductionExisting(item.FA_CODE, item.WERKS,
+                            item.PRODUCTION_DATE);
+                           
                             switch (bun)
                             {
                                 case "TH":
@@ -86,22 +87,33 @@ namespace Sampoerna.EMS.XMLReader
                                 case "KG":
                                     item.QTY = qty * 1000;
                                     item.UOM = "G";
+                                    if (existingProduction != null)
+                                    {
 
-                                    item.QTY_PACKED = existingProduction.QTY_PACKED;
-                                    item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                        item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                        item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                
+                                    }
                                     break;
                                 default:
                                     item.QTY = qty;
                                     item.UOM = bun;
 
-                                    item.QTY_PACKED = existingProduction.QTY_PACKED;
-                                    item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                    if (existingProduction != null)
+                                    {
+                                        item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                        item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                    }
                                     break;
                             }
+                            
 
-                            if (existingProduction == null)
+                            if (existingProduction != null)
                             {
-                                
+                                if (item.LAST_SHIFT > existingProduction.LAST_SHIFT)
+                                {
+                                    item.QTY += existingProduction.QTY;
+                                }
                                 item.CREATED_DATE = DateTime.Now;
                                 item.CREATED_BY = "PI";
                             }
@@ -175,14 +187,27 @@ namespace Sampoerna.EMS.XMLReader
             return existingData;
         }
 
-        public PRODUCTION GetProductionExisting(string faCode, string plantid, string companyCode, DateTime prodDate)
+        public PRODUCTION GetProductionExisting(string faCode, string plantid, DateTime prodDate)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<PRODUCTION>()
                 .Get(
                     x =>
-                        x.COMPANY_CODE == companyCode && x.WERKS == plantid && x.FA_CODE == faCode &&
+                      x.WERKS == plantid && x.FA_CODE == faCode &&
                         x.PRODUCTION_DATE == prodDate).FirstOrDefault();
             return existingData;
+        }
+
+        private int GetShift(string shift)
+        {
+            if (string.IsNullOrEmpty(shift))
+            {
+                return 0;
+            }
+            char[] arr = shift.ToCharArray();
+
+            var arrDigit = Array.FindAll<char>(arr, (c => (char.IsDigit(c))));
+            var str =  new string(arrDigit);
+            return Convert.ToInt32(str);
         }
     }
 }
