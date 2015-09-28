@@ -115,11 +115,17 @@ namespace Sampoerna.EMS.XMLReader
             //    fileName = MoveFile();
             //    return fileName;
             //}
-            if (errorCount == 0)
+            if (errorCount == 0 && itemToInsert > 0)
             {
                 fileName = MoveFile();
                 return fileName;
             }
+            else
+            {
+                fileName = MoveFile(true);
+                return fileName;
+            }
+
             return null;
 
         }
@@ -154,13 +160,21 @@ namespace Sampoerna.EMS.XMLReader
             MoveFile();
         }
         
-        public string MoveFile()
+        public string MoveFile(bool isError=false)
         {
             var filenameMoved = string.Empty;
             try
             {
                 string sourcePath = _xmlName;
-                string archievePath = ConfigurationManager.AppSettings["XmlArchievePath"];
+                string archievePath;
+                if (!isError)
+                {
+                    archievePath = ConfigurationManager.AppSettings["XmlArchievePath"];
+                }
+                else
+                {
+                    archievePath = ConfigurationManager.AppSettings["XmlErrorPath"];
+                }
                 var sourcefileName = Path.GetFileName(sourcePath);
                 var destPath = Path.Combine(archievePath, sourcefileName);
                 if (File.Exists(destPath))

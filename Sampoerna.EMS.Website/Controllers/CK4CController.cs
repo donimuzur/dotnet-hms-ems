@@ -334,7 +334,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             List<Ck4cItemData> listData;
 
-            listData = ck4cItemData;
+            listData = ck4cItemData.OrderBy(x => x.ProdDate).ToList();
 
             foreach(var item in listData)
             {
@@ -342,6 +342,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var plant = _plantBll.GetT001WById(item.Werks);
                 var prodType = _prodTypeBll.GetByCode(item.ProdCode);
 
+                if (item.ContentPerPack == 0)
+                    item.ContentPerPack = Convert.ToInt32(brand.BRAND_CONTENT);
+                if (item.PackedInPack == 0)
+                    item.PackedInPack = Convert.ToInt32(item.PackedQty) / Convert.ToInt32(brand.BRAND_CONTENT);
+                if (item.ProdQty == 0)
+                    item.ProdQty = item.PackedQty + item.UnpackedQty;
                 item.ProdDateName = item.ProdDate.ToString("dd MMM yyyy");
                 item.BrandDescription = brand.BRAND_CE;
                 item.PlantName = item.Werks + "-" + plant.NAME1;
