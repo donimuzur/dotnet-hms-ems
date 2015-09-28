@@ -157,6 +157,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Ck2ID, opt => opt.MapFrom(src => src.CK2_ID))
                 .ForMember(dest => dest.Ck2Number, opt => opt.MapFrom(src => src.CK2_NUMBER))
                 .ForMember(dest => dest.Ck2Date, opt => opt.MapFrom(src => src.CK2_DATE))
+                .ForMember(dest => dest.Ck2Value, opt => opt.MapFrom(src => src.CK2_VALUE))
                 .ForMember(dest => dest.Ck2Document, opt => opt.MapFrom(src => src.CK2_DOCUMENT));
 
             Mapper.CreateMap<Ck2Dto, CK2>().IgnoreAllNonExisting();

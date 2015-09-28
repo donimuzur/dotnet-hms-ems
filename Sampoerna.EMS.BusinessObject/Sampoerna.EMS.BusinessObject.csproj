@@ -128,6 +128,7 @@
     <Compile Include="DTOs\Ck4cDecreeDocDto.cs" />
     <Compile Include="DTOs\Ck4CDto.cs" />
     <Compile Include="DTOs\Ck4cReportDto.cs" />
+    <Compile Include="DTOs\Ck4CSummaryReportDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />

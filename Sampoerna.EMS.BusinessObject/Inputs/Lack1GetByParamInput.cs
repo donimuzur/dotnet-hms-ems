@@ -153,4 +153,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int? PeriodMonthTo { get; set; }
         public int? PeriodYearTo { get; set; }
     }
+
+    public class Lack1GetPbck1RealizationListParamInput
+    {
+        public int MonthFrom { get; set; }
+        public int MonthTo { get; set; }
+        public int Year { get; set; }
+        public string NppbkcId { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string ExcisableGoodsTypeId { get; set; }
+    }
 }
