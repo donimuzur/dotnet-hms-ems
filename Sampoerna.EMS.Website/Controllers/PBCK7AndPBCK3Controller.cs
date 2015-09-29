@@ -1222,10 +1222,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PlantList = GlobalFunctions.GetPlantAll();
             model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
-            model.Pbck7List = GetAllPbck7No();
+            model.Pbck3List = GetAllPbck3No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
-            model.ReportItems = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
+            model.ReportItems = _pbck7AndPbck7And3Bll.GetPbck3SummaryReportsByParam(new Pbck3SummaryInput());
         }
 
         private SelectList GetAllPbck7No()
@@ -1269,6 +1269,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
             return RedirectToAction("Pbck7SummaryReport");
+        }
+        [HttpPost]
+        public ActionResult Pbck3ExportSummaryReports(Pbck3SummaryReportModel model)
+        {
+            try
+            {
+                ExportSummaryReportsToExcelPbck3(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Pbck3SummaryReport");
         }
 
         public void ExportSummaryReportsToExcel(Pbck7SummaryReportModel model)
@@ -1359,6 +1372,104 @@ namespace Sampoerna.EMS.Website.Controllers
 
             Response.End();
         }
+
+        public void ExportSummaryReportsToExcelPbck3(Pbck3SummaryReportModel model)
+        {
+
+            var input = Mapper.Map<Pbck3SummaryInput>(model);
+            var result = _pbck7AndPbck7And3Bll.GetPbck3SummaryReportsByParam(input);
+            var src = (from b in result
+                       select new Pbck3SummaryReportItem()
+                       {
+                           Pbck3Number = b.Pbck3Number,
+                           Pbck7Number = b.Pbck7Number,
+                           Nppbkc = b.NppbckId,
+                           PlantName = b.Plant,
+                           Pbck3Date = b.Pbck3Date,
+                           Pbck3Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck3Status)
+
+                       }).ToList();
+            var grid = new System.Web.UI.WebControls.GridView
+            {
+                DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
+                AutoGenerateColumns = false
+            };
+            if (model.ExportModel.IsSelectPbck3No)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck3Number",
+                    HeaderText = "Number"
+                });
+            }
+            if (model.ExportModel.IsSelectPbck7)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck7Number",
+                    HeaderText = "PBCK-7"
+                });
+            }
+            if (model.ExportModel.IsSelectNppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Nppbkc",
+                    HeaderText = "Nppbkc"
+                });
+            }
+            if (model.ExportModel.IsSelectPlant)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PlantName",
+                    HeaderText = "Plant"
+                });
+            }
+            if (model.ExportModel.IsSelectDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck3Date",
+                    HeaderText = "Date"
+                });
+            }
+            if (model.ExportModel.IsSelectStatus)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck3Status",
+                    HeaderText = "Status"
+                });
+            }
+            if (src.Count == 0)
+            {
+                grid.ShowHeaderWhenEmpty = true;
+            }
+
+            grid.DataBind();
+
+            var fileName = "PBCK3" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
+
     }
 
 }

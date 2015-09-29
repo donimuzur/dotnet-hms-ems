@@ -115,6 +115,10 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.PBCK7.PLANT_ID == input.PlantId);
             }
+            if (!string.IsNullOrEmpty(input.Pbck3Number))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK3_NUMBER == input.Pbck3Number);
+            }
 
             if (input.From != null)
             {

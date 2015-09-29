@@ -13,14 +13,14 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
     {
         public Pbck3SummaryReportModel()
         {
-            ReportItems = new List<Pbck7AndPbck3Dto>();
+            ReportItems = new List<Pbck3Dto>();
             ExportModel = new Pbck3ExportModel();
         }
         public string SelectedNumber { get; set; }
         public string SelectedNppbkc { get; set; }
         public string SelectedPlant { get; set; }
       
-        public SelectList Pbck7List { get; set; }
+        public SelectList Pbck3List { get; set; }
 
         public SelectList PlantList { get; set; }
 
@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public int? To { get; set; }
 
-        public List<Pbck7AndPbck3Dto> ReportItems { get; set; }
+        public List<Pbck3Dto> ReportItems { get; set; }
 
         public Pbck3ExportModel ExportModel { get; set; }
     }
@@ -61,11 +61,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public bool IsSelectNppbkc { get; set; }
 
-        public bool IsSelectPbck7No { get; set; }
+        public bool IsSelectPbck3No { get; set; }
 
         public bool IsSelectPlant { get; set; }
 
         public bool IsSelectDocType { get; set; }
+        public bool IsSelectPbck7 { get; set; }
 
         public bool IsSelectStatus { get; set; }
 
@@ -74,8 +75,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
     public class Pbck3SummaryReportItem
     {
+        public string Pbck3Number { get; set; }
+        
         public  string Pbck7Number { get; set; }
-        public DateTime? Pbck7Date { get; set; }
+        public DateTime? Pbck3Date { get; set; }
 
        
         public string PlantName { get; set; }
@@ -85,6 +88,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string Nppbkc { get; set; }
 
       
-        public string Pbck7Status { get; set; }
+        public string Pbck3Status { get; set; }
     }
 }

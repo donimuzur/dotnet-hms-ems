@@ -131,6 +131,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PBCK3, Pbck3Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck3Id, opt => opt.MapFrom(src => src.PBCK3_ID))
                .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.PBCK3_NUMBER))
+               .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.PBCK7.PBCK7_NUMBER))
                .ForMember(dest => dest.Pbck3Date, opt => opt.MapFrom(src => src.PBCK3_DATE))
                .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID))
                .ForMember(dest => dest.Pbck3Status, opt => opt.MapFrom(src => src.STATUS))

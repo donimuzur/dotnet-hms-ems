@@ -1166,6 +1166,8 @@
     <Content Include="Views\CK4C\_Ck4CListSummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Pbck7SummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck7SummaryIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Pbck3SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3SummaryIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
