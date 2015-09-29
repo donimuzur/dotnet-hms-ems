@@ -450,7 +450,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 workflowInput.FormType = Enums.FormType.PBCK1;
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
-                model.WorkflowHistory = workflowHistory.OrderBy(c => c.ACTION_DATE).ToList();
+                model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
 
                 model.DocStatus = model.Detail.Status;
@@ -693,7 +693,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Detail = Mapper.Map<Pbck1Item>(pbck1Data),
                 ChangesHistoryList = changesHistory,
-                WorkflowHistory = workflowHistory.OrderBy(c => c.ACTION_DATE).ToList(),
+                WorkflowHistory = workflowHistory,
                 PrintHistoryList = printHistory
             };
 
@@ -719,7 +719,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
             else if (CurrentUser.UserRole == Enums.UserRole.POA)
             {
