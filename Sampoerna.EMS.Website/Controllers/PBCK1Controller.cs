@@ -208,7 +208,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Amount = datarow[2];
                         uploadItem.BkcRequired = datarow[3];
                         uploadItem.BkcRequiredUomId = datarow[4];
-
+                        
                         model.Detail.Pbck1ProdPlan.Add(uploadItem);
 
                     }
@@ -450,8 +450,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 workflowInput.FormType = Enums.FormType.PBCK1;
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
-
-                model.WorkflowHistory = workflowHistory;
+                model.WorkflowHistory = workflowHistory.OrderBy(c => c.ACTION_DATE).ToList();
                 model.ChangesHistoryList = changeHistory;
 
                 model.DocStatus = model.Detail.Status;
@@ -694,7 +693,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Detail = Mapper.Map<Pbck1Item>(pbck1Data),
                 ChangesHistoryList = changesHistory,
-                WorkflowHistory = workflowHistory,
+                WorkflowHistory = workflowHistory.OrderBy(c => c.ACTION_DATE).ToList(),
                 PrintHistoryList = printHistory
             };
 
