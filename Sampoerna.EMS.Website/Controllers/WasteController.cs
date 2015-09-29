@@ -210,7 +210,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.FloorGramStr = model.FloorWasteGramQty == null ? string.Empty : model.FloorWasteGramQty.ToString();
             //Waste Stick
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
-            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
+            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
 
             model = IniEdit(model);
 
@@ -270,9 +270,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _wasteBll.Save(dbWasteNew, CurrentUser.USER_ID);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                    );
+                var isNewData = _wasteBll.Save(dbWasteNew, CurrentUser.USER_ID);
+                var message = Constans.SubmitMessage.Updated;
+
+                if (isNewData)
+                {
+                    _wasteBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
+               Convert.ToDateTime(model.WasteProductionDateX));
+                }
+
+                AddMessageInfo(message, Enums.MessageInfoType.Success);
 
 
                 return RedirectToAction("Index");
@@ -325,7 +332,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //Waste Stick
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
-            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
+            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
 
             model = InitDetail(model);
             return View(model);

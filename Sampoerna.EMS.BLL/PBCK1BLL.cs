@@ -88,6 +88,16 @@ namespace Sampoerna.EMS.BLL
         {
 
             var queryFilter = ProcessQueryFilter(input);
+            if(input.UserRole == Enums.UserRole.POA){
+                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+            }
+            else if (input.UserRole == Enums.UserRole.Manager) {
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval);
+            }else{
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+            }
 
             queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
 
@@ -211,7 +221,9 @@ namespace Sampoerna.EMS.BLL
                 dbData.PBCK1_PROD_CONVERTER = Mapper.Map<List<PBCK1_PROD_CONVERTER>>(input.Pbck1.Pbck1ProdConverter);
                 dbData.PBCK1_PROD_PLAN = Mapper.Map<List<PBCK1_PROD_PLAN>>(input.Pbck1.Pbck1ProdPlan);
                 dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.Pbck1.Pbck1DecreeDoc);
-
+                if(dbData.STATUS == Enums.DocumentStatus.Rejected){
+                    dbData.STATUS = Enums.DocumentStatus.Draft;
+                }
             }
             else
             {
@@ -944,7 +956,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.Draft)
+            if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             if (dbData.CREATED_BY != input.UserId)
@@ -1404,7 +1416,7 @@ namespace Sampoerna.EMS.BLL
                     Total = g.Sum(p => p.CONVERTER_OUTPUT)
                 });
                 rc.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
-                    prodConverterGroup.Select(d => d.Total.Value.ToString("N0") + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
+                    prodConverterGroup.Select(d => String.Format("{0:n}", d.Total.Value) + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
             }
             if (dbData.PERIOD_FROM.HasValue)
             {
@@ -1415,10 +1427,10 @@ namespace Sampoerna.EMS.BLL
                 rc.Detail.PeriodTo = DateReportString(dbData.PERIOD_TO.Value);
             }
             // ReSharper disable once PossibleInvalidOperationException
-            rc.Detail.RequestQty = dbData.REQUEST_QTY.Value.ToString("N0");
+            rc.Detail.RequestQty = String.Format("{0:n}", dbData.REQUEST_QTY.Value);
             rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
             rc.Detail.RequestQtyUomName = dbData.UOM.UOM_DESC;
-            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = dbData.LATEST_SALDO.Value.ToString("N0");
+            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = String.Format("{0:n}", dbData.LATEST_SALDO.Value);
             rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
             rc.Detail.SupplierPlantName = dbData.SUPPLIER_PLANT;
             rc.Detail.SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS;

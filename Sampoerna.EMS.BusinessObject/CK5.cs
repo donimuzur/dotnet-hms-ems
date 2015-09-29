@@ -91,6 +91,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string DEST_COUNTRY_CODE { get; set; }
         public string DEST_COUNTRY_NAME { get; set; }
         public Nullable<Sampoerna.EMS.Core.Enums.Ck5ManualType> CK5_MANUAL_TYPE { get; set; }
+        public Nullable<long> CK5_REF_ID { get; set; }
     
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }

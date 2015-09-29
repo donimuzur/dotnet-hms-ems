@@ -85,9 +85,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput()).OrderByDescending(d => d.Pbck1Number);
                 return Mapper.Map<List<Pbck1Item>>(pbck1Data);
             }
-
+            
             //getbyparams
             var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
             var dbData = _pbck1Bll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Pbck1Number);
             return Mapper.Map<List<Pbck1Item>>(dbData);
         }
@@ -444,6 +447,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 workflowInput.FormNumber = pbck1Data.Pbck1Number;
                 workflowInput.DocumentStatus = pbck1Data.Status;
                 workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+                workflowInput.FormType = Enums.FormType.PBCK1;
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -491,9 +495,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject) )
                 { 
                 
-                }else if (!ValidateEditDocument(model))
+                }else if (!ValidateEditDocument(model, false))
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Details", new { id });
                 }
 
             }
@@ -506,7 +510,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        private bool ValidateEditDocument(Pbck1ItemViewModel model)
+        private bool ValidateEditDocument(Pbck1ItemViewModel model, bool message = true)
         {
 
             //check is Allow Edit Document
@@ -519,9 +523,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (!isAllowEditDocument)
             {
-                AddMessageInfo(
-                    "Operation not allowed.",
-                    Enums.MessageInfoType.Error);
+                if(message)
+                    AddMessageInfo("Operation not allowed.",Enums.MessageInfoType.Error);
+
                 return false;
             }
 
@@ -673,6 +677,7 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.FormNumber = pbck1Data.Pbck1Number;
             workflowInput.DocumentStatus = pbck1Data.Status;
             workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+            workflowInput.FormType = Enums.FormType.PBCK1;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -744,7 +749,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
             if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
+            {   
                 //can't create PBCK1 Document
                 AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
