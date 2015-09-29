@@ -22,7 +22,7 @@
                         InsertionMode = InsertionMode.Replace,
                         UpdateTargetId = "contenttable",
                         OnComplete = "ReloadDataTables",
-                    }, new {@class = "form-excise", role = "form"}))
+                    }, new { @class = "form-excise", role = "form" }))
                 {
                     <form class="form-excise" role="form">
                         <div class="row">
@@ -30,7 +30,7 @@
                                 <div class="row">
                                     <label class="col-md-4">PBCK No</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.SelectedNumber, Model.Pbck7List, "All", new {@class = "form-control"})
+                                        @Html.DropDownListFor(x => x.SelectedNumber, Model.Pbck7List, "All", new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
@@ -38,7 +38,7 @@
                                 <div class="row">
                                     <label class="col-md-4">NPPBKC</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.SelectedNppbkc, Model.NppbkcList, "All", new {@class = "form-control"})
+                                        @Html.DropDownListFor(x => x.SelectedNppbkc, Model.NppbkcList, "All", new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
@@ -47,32 +47,21 @@
 
                             <div class="col-md-4">
                                 <div class="row">
-                                    <label class="col-md-2">From</label>
-                                    <div class="col-md-4">
-                                        <div class="input-group date">
-                                           @Html.TextBoxFor(x=>x.From, new { @class="form-control"})
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
+                                    <label class="col-md-4">From-To</label>
+                                    <div class="col-md-8 year-from">
+                                        @Html.DropDownListFor(x => x.From, Model.FromYear, "All", new { @class = "form-control selectreset" })
+                                        @Html.DropDownListFor(x => x.To, Model.ToYear, "All", new { @class = "form-control selectreset" })
+
+
                                     </div>
-                                    <label class="col-md-2">To</label>
-                                    <div class="col-md-4">
-                                        <div class="input-group date">
-                                           @Html.TextBoxFor(x => x.To, new { @class = "form-control" })
-                                          <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
                                     </div>
-                                </div>
                             </div>
-                    
+
                             <div class="col-md-4">
                                 <div class="row">
                                     <label class="col-md-4 long">Plant</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.SelectedPlant, Model.PlantList, "All", new {@class = "form-control"})
+                                        @Html.DropDownListFor(x => x.SelectedPlant, Model.PlantList, "All", new { @class = "form-control" })
 
 
                                     </div>
@@ -87,7 +76,7 @@
                                             <button class="btn btn-blue full">VIEW</button>
                                         </div>
                                         <div class="col-md-6">
-                                            <button class="btn btn-blue full">EXPORT</button>
+                                            <button class="btn btn-blue full" id="btnExport">EXPORT</button>
                                         </div>
                                     </div>
                                 </div>
@@ -96,6 +85,57 @@
                     </form>
                 }
             </div>
+            <div>
+            @using (Html.BeginForm("Pbck7ExportSummaryReports", "Pbck7AndPbck3", FormMethod.Post, new {@id = "ExportSummaryReportsForms"}))
+            {
+                <div class="white-wrapper toggle-wrapper">
+                    <div class="form-excise" role="form">
+                        <div class="row">
+
+                            <div class="last-form">
+                                <div class="col-md-12">
+                                    <div>
+                                        @Html.HiddenFor(model => model.ExportModel.Pbck7No)
+                                        @Html.HiddenFor(model => model.ExportModel.NppbkcId)
+                                        @Html.HiddenFor(model => model.ExportModel.Plant)
+
+                                        <div class="row toggle">
+                                            <div class="toggle-title">
+                                                Toggle column <i class="fa fa-chevron-down"></i>
+                                            </div>
+
+                                            <div class="toggle-component">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPbck7No, new {@id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1"})Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectNppbkc, new {@id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2"})NPPBKC
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Plant
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+                </div>
             <div class="table-container">
                 <div id="contenttable" class="dataTables_wrapper no-footer">
                     @Html.Partial("_Pbck7SummaryIndex", Model.ReportItems)
@@ -104,59 +144,74 @@
         </div>
     </div>
 </div>
-@section scripts
-{
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script type="text/javascript">
-        function setupDataTables() {
-            $('#btn-reset-filter').click(function () {
-                $(".selectreset").val($(".selectreset option:first").val());
-            });
-            // DataTable
-            var table = null;
-            if ($.fn.dataTable.isDataTable('#pbck7-summary')) {
-                table = $('#pbck7-summary').DataTable();
-                table.destroy();
-            }
 
-            table = $('#pbck7-summary').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "zeroRecords": "No records found",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
+            
+            @section scripts {
+                <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        setupDataTables();
+                    });
+
+                    function setupDataTables() {
+                        $('#btn-reset-filter').click(function () {
+                            $(".selectreset").val($(".selectreset option:first").val());
+                        });
+                        // DataTable
+                        var table = null;
+                        if ($.fn.dataTable.isDataTable('#pbck7-summary')) {
+                            table = $('#pbck7-summary').DataTable();
+                            table.destroy();
+                        }
+
+                        table = $('#pbck7-summary').DataTable(
+                            {
+                                "sDom": "Rlfrtip",
+                                "language": {
+                                    "zeroRecords": "No records found",
+                                    "infoFiltered": "(filtered from _MAX_ total records)"
+                                }
+                            });
+
+                        // Setup - add a text input to each footer cell
+                        $('#pbck7-summary .filters th').each(function () {
+                            var idx = $(this).index();
+                            $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+
+                        });
+
+                        // Apply the search
+                        table.columns().eq(0).each(function (colIdx) {
+                            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                                table
+                                    .column(colIdx)
+                                    .search(this.value)
+                                    .draw();
+                            });
+                        });
+
+
                     }
-                });
 
-            // Setup - add a text input to each footer cell
-            $('#pbck7-summary .filters th').each(function () {
-                var idx = $(this).index();
-                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
-                
-            });
+                    function ReloadDataTables() {
+                        $('.toggle-row').click(function () {
 
-            // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                    table
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
-                });
-            });
+                            var filter = $(".filters");
+                            filter.slideToggle(100).promise().done(function () {
 
+                            });
+                        });
+                        setupDataTables();
+                    }
+                    
 
-        }
-        function ReloadDataTables() {
-            $('.toggle-row').click(function () {
+                    $("#btnExport").click(function () {
+                        $('#ExportModel_Pbck7No').val($('#SelectedNumber').find("option:selected").val());
+                        $('#ExportModel_NppbkcId').val($('#SelectedNppbkc').find("option:selected").val());
+                        $('#ExportModel_FromYear').val($('#FromYear').find("option:selected").val());
+                        $('#ExportModel_ToYear').val($('#ToYear').find("option:selected").val());
+                        $('#ExportSummaryReportsForms').submit();
+                    });
 
-                var filter = $(".filters");
-                filter.slideToggle(100).promise().done(function () {
-
-                });
-            });
-            setupDataTables();
-        }
-    </script>
-    
-}
+                </script>
+            }

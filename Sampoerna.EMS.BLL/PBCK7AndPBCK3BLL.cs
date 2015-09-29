@@ -70,10 +70,15 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PBCK7_NUMBER == input.Pbck7Number);
             }
 
-            if (input.Pbck7DateFrom != null)
+            if (input.From != null)
             {
                 
-                queryFilter = queryFilter.And(c => c.PBCK7_DATE > input.Pbck7DateFrom);
+                queryFilter = queryFilter.And(c => c.PBCK7_DATE.Year >= input.From);
+            }
+            if (input.To != null)
+            {
+
+                queryFilter = queryFilter.And(c => c.PBCK7_DATE.Year <= input.To);
             }
 
 
