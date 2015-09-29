@@ -4,6 +4,7 @@ using System.IO;
 using System.Web.Routing;
 using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -23,6 +24,7 @@ using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Reports.HeaderFooter;
+using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -534,7 +536,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var item = _lack2Bll.GetByIdAndItem(model.Lack2Model.Lack2Id);
-                item.Status = Enums.DocumentStatus.Draft;
+                item.Status = Enums.DocumentStatus.Rejected;
                 item.IsRejected = true;
                 item.Comment = model.Lack2Model.Comment;
                 item.RejectedBy = CurrentUser.USER_ID;
@@ -771,6 +773,915 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View("Summary");
         }
+
+        #region Summary Reports
+
+        private SelectList GetLack2CompanyCodeList(List<Lack2SummaryReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.CompanyCode,
+                        TextField = x.CompanyCode
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetLack2NppbkcIdList(List<Lack2SummaryReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.NppbkcId,
+                        TextField = x.NppbkcId
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetLack2SendingPlantList(List<Lack2SummaryReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.Ck5SendingPlant,
+                        TextField = x.Ck5SendingPlant
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetLack2GoodTypeList(List<Lack2SummaryReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.TypeExcisableGoods,
+                        TextField = x.TypeExcisableGoods + " - " + x.TypeExcisableGoodsDesc
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetLack2PeriodYearList(List<Lack2SummaryReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.PeriodYear,
+                        TextField = x.PeriodYear
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+        
+
+        private List<Lack2SummaryReportsItem> SearchDataSummaryReports(Lack2SearchSummaryReportsViewModel filter = null)
+        {
+            Lack2GetSummaryReportByParamInput input;
+            List<Lack2SummaryReportDto> dbData;
+            if (filter == null)
+            {
+                //Get All
+                input = new Lack2GetSummaryReportByParamInput();
+
+                dbData = _lack2Bll.GetSummaryReportsByParam(input);
+                return Mapper.Map<List<Lack2SummaryReportsItem>>(dbData);
+            }
+
+            //getbyparams
+
+            input = Mapper.Map<Lack2GetSummaryReportByParamInput>(filter);
+
+            dbData = _lack2Bll.GetSummaryReportsByParam(input);
+            return Mapper.Map<List<Lack2SummaryReportsItem>>(dbData);
+        }
+
+        private Lack2SummaryReportsViewModel InitSummaryReports(Lack2SummaryReportsViewModel model)
+        {
+            model.MainMenu = Enums.MenuList.LACK2;
+            model.CurrentMenu = PageInfo;
+
+            var listLack2 = _lack2Bll.GetSummaryReportsByParam(new Lack2GetSummaryReportByParamInput());
+
+            model.SearchView.CompanyCodeList = GetLack2CompanyCodeList(listLack2);
+            model.SearchView.NppbkcIdList = GetLack2NppbkcIdList(listLack2);
+            model.SearchView.SendingPlantIdList = GetLack2SendingPlantList(listLack2);
+            model.SearchView.GoodTypeList = GetLack2GoodTypeList(listLack2);
+
+            model.SearchView.PeriodMonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchView.PeriodYearList = GetLack2PeriodYearList(listLack2);
+
+            model.SearchView.CreatedByList = GlobalFunctions.GetCreatorList();
+            model.SearchView.ApprovedByList = GlobalFunctions.GetPoaAll(_poabll);
+            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchView.ApproverList = GlobalFunctions.GetPoaAll(_poabll);
+
+            var filter = new Lack2SearchSummaryReportsViewModel();
+
+            model.DetailsList = SearchDataSummaryReports(filter);
+
+            return model;
+        }
+
+        public ActionResult SummaryReports()
+        {
+
+            Lack2SummaryReportsViewModel model;
+            try
+            {
+
+                model = new Lack2SummaryReportsViewModel();
+
+
+                model = InitSummaryReports(model);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Lack2SummaryReportsViewModel();
+                model.MainMenu = Enums.MenuList.LACK2;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("Lack2SummaryReport", model);
+        }
+
+        [HttpPost]
+        public PartialViewResult SearchSummaryReports(Lack2SummaryReportsViewModel model)
+        {
+            model.DetailsList = SearchDataSummaryReports(model.SearchView);
+            return PartialView("_Lack2ListSummaryReport", model);
+
+
+        }
+
+        public void ExportXlsSummaryReports(Lack2SummaryReportsViewModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsSummaryReports(model.ExportModel);
+
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsSummaryReports(Lack2ExportSummaryReportsViewModel modelExport)
+        {
+            var dataSummaryReport = SearchDataSummaryReports(modelExport);
+
+            int iRow = 1;
+            var slDocument = new SLDocument();
+
+            //create header
+            slDocument = CreateHeaderExcel(slDocument, modelExport);
+
+            iRow++;
+            int iColumn = 1;
+            foreach (var data in dataSummaryReport)
+            {
+
+                iColumn = 1;
+                if (modelExport.BLack2Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Lack2Number);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BDocumentType)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.DocumentType);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BCompanyCode)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanyCode);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BCompanyName)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanyName);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BNppbkcId)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.NppbkcId);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCk5SendingPlant)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5SendingPlant);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BSendingPlantAddress)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.SendingPlantAddress);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BLack2Period)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Lack2Period);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BLack2Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Lack2Date);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BTypeExcisableGoods)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.TypeExcisableGoodsDesc);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BTotalDeliveryExcisable)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.TotalDeliveryExcisable);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BUom)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Uom);
+                    iColumn = iColumn + 1;
+                }
+
+                //start
+                if (modelExport.BPoa)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BPoaManager)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PoaManager);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCreatedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CreatedDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCreatedTime)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CreatedTime);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCreatedBy)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CreatedBy);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BApprovedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ApprovedDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BApprovedTime)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ApprovedTime);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BApprovedBy)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ApprovedBy);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BLastChangedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.LastChangedDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BLastChangedTime)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.LastChangedTime);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BStatus)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Status);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BLegalizeData)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.LegalizeData);
+                    iColumn = iColumn + 1;
+                }
+
+                iRow++;
+            }
+
+            return CreateXlsFileSummaryReports(slDocument, iColumn, iRow);
+
+        }
+
+        private SLDocument CreateHeaderExcel(SLDocument slDocument, Lack2ExportSummaryReportsViewModel modelExport)
+        {
+            int iColumn = 1;
+            int iRow = 1;
+
+            if (modelExport.BLack2Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "LACK-2 Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BDocumentType)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Document Type");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BCompanyCode)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Company Code");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BCompanyName)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Company Name");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BNppbkcId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "NPPBKC ID");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BCk5SendingPlant)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Sending Plant");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BSendingPlantAddress)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Sending Plant Address");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BLack2Period)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "LACK-2 Period");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BLack2Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "LACK-2 Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BTypeExcisableGoods)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Type of Excisable Goods");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BTotalDeliveryExcisable)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Total Delivered Excisable Goods (kg)");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BUom)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "UOM");
+                iColumn = iColumn + 1;
+            }
+
+            //start
+            if (modelExport.BPoa)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BPoaManager)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA  Manager");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BCreatedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Created Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BCreatedTime)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Created Time");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BCreatedBy)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Created By");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BApprovedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Approved Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BApprovedTime)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Approved Time");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BApprovedBy)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Approved By");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BLastChangedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Last Change Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BLastChangedTime)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Last Change Time");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BStatus)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BLegalizeData)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Legalize Date");
+                iColumn = iColumn + 1;
+            }
+
+            return slDocument;
+
+        }
+
+        private string CreateXlsFileSummaryReports(SLDocument slDocument, int iColumn, int iRow)
+        {
+
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
+            slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
+
+            var fileName = "LACK2" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath(Constans.CK5FolderPath), fileName);
+
+
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        #endregion
+
+        #region Detail Reports
+
+        private SelectList GetLack2CompanyCodeList(List<Lack2DetailReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.CompanyCode,
+                        TextField = x.CompanyCode
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetLack2NppbkcIdList(List<Lack2DetailReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.NppbkcId,
+                        TextField = x.NppbkcId
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetLack2SendingPlantList(List<Lack2DetailReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.Ck5SendingPlant,
+                        TextField = x.Ck5SendingPlant
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetLack2GoodTypeList(List<Lack2DetailReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.TypeExcisableGoods,
+                        TextField = x.TypeExcisableGoods + " - " + x.TypeExcisableGoodsDesc
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetLack2PeriodYearList(List<Lack2DetailReportDto> listPbck2)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck2
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.PeriodYear,
+                        TextField = x.PeriodYear
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetGiDateList(bool isFrom, List<Lack2DetailReportDto> listLack2)
+        {
+
+            IEnumerable<SelectItemModel> query;
+            if (isFrom)
+                query = from x in listLack2.Where(c => c.GiDate != null).OrderBy(c => c.GiDate)
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.GiDate,
+                            TextField = x.GiDate.Value.ToString("dd MMM yyyy")
+                        };
+            else
+                query = from x in listLack2.Where(c => c.GiDate != null).OrderByDescending(c => c.GiDate)
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.GiDate,
+                            TextField = x.GiDate.Value.ToString("dd MMM yyyy")
+                        };
+
+            return new SelectList(query.DistinctBy(c => c.TextField), "ValueField", "TextField");
+
+        }
+        private List<Lack2DetailReportsItem> SearchDataDetailReports(Lack2SearchDetailReportsViewModel filter = null)
+        {
+            Lack2GetDetailReportByParamInput input;
+            List<Lack2DetailReportDto> dbData;
+            if (filter == null)
+            {
+                //Get All
+                input = new Lack2GetDetailReportByParamInput();
+
+                dbData = _lack2Bll.GetDetailReportsByParam(input);
+                return Mapper.Map<List<Lack2DetailReportsItem>>(dbData);
+            }
+
+            //getbyparams
+            input = Mapper.Map<Lack2GetDetailReportByParamInput>(filter);
+
+            dbData = _lack2Bll.GetDetailReportsByParam(input);
+            return Mapper.Map<List<Lack2DetailReportsItem>>(dbData);
+        }
+
+        private Lack2DetailReportsViewModel InitDetailReports(Lack2DetailReportsViewModel model)
+        {
+            model.MainMenu = Enums.MenuList.LACK2;
+            model.CurrentMenu = PageInfo;
+
+            var listLack2 = _lack2Bll.GetDetailReportsByParam(new Lack2GetDetailReportByParamInput());
+
+            model.SearchView.CompanyCodeList = GetLack2CompanyCodeList(listLack2);
+            model.SearchView.NppbkcIdList = GetLack2NppbkcIdList(listLack2);
+            model.SearchView.SendingPlantIdList = GetLack2SendingPlantList(listLack2);
+            model.SearchView.GoodTypeList = GetLack2GoodTypeList(listLack2);
+
+            model.SearchView.PeriodMonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchView.PeriodYearList = GetLack2PeriodYearList(listLack2);
+
+            model.SearchView.DateFromList = GetGiDateList(true, listLack2);
+            model.SearchView.DateToList = GetGiDateList(false, listLack2);
+
+            var filter = new Lack2SearchDetailReportsViewModel();
+
+            model.DetailsList = SearchDataDetailReports(filter);
+
+            return model;
+        }
+
+        public ActionResult DetailReports()
+        {
+
+            Lack2DetailReportsViewModel model;
+            try
+            {
+
+                model = new Lack2DetailReportsViewModel();
+
+
+                model = InitDetailReports(model);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Lack2DetailReportsViewModel();
+                model.MainMenu = Enums.MenuList.LACK2;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("Lack2DetailReport", model);
+        }
+
+        [HttpPost]
+        public PartialViewResult SearchDetailReports(Lack2DetailReportsViewModel model)
+        {
+            model.DetailsList = SearchDataDetailReports(model.SearchView);
+            return PartialView("_Lack2ListDetailReport", model);
+
+
+        }
+
+        public void ExportXlsDetailReports(Lack2DetailReportsViewModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsDetailReports(model.ExportModel);
+
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsDetailReports(Lack2ExportDetailReportsViewModel modelExport)
+        {
+            var dataSummaryReport = SearchDataDetailReports(modelExport);
+
+            int iRow = 1;
+            var slDocument = new SLDocument();
+
+            //create header
+            slDocument = CreateHeaderExcelDetail(slDocument, modelExport);
+
+            iRow++;
+            int iColumn = 1;
+            foreach (var data in dataSummaryReport)
+            {
+
+                iColumn = 1;
+                if (modelExport.BLack2Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Lack2Number);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCk5GiDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5GiDate);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BCk5RegistrationNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5RegistrationNumber);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BCk5RegistrationDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5RegistrationDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCk5Total)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5Total);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BReceivingCompanyCode)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingCompanyCode);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BReceivingCompanyName)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingCompanyName);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BReceivingNppbkc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingNppbkc);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BReceivingAddress)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingAddress);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BCk5SendingPlant)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5SendingPlant);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BSendingPlantAddress)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.SendingPlantAddress);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.BCompanyCode)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanyCode);
+                    iColumn = iColumn + 1;
+                }
+
+                //start
+                if (modelExport.BCompanyName)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanyName);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BNppbkcId)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.NppbkcId);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BTypeExcisableGoods)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.TypeExcisableGoodsDesc);
+                    iColumn = iColumn + 1;
+                }
+               
+                iRow++;
+            }
+
+            return CreateXlsFileSummaryReports(slDocument, iColumn, iRow);
+
+        }
+
+        private SLDocument CreateHeaderExcelDetail(SLDocument slDocument, Lack2ExportDetailReportsViewModel modelExport)
+        {
+            int iColumn = 1;
+            int iRow = 1;
+
+            if (modelExport.BLack2Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "LACK-2 Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BCk5GiDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 GI Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BCk5RegistrationNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Registration Number");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BCk5RegistrationDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Registration Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BCk5Total)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Total");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BReceivingCompanyCode)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Receiving Company Code");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BReceivingCompanyName)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Receiving Company Name");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BReceivingNppbkc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Receiving NPPBKC");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BReceivingAddress)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Receiving Address");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BCk5SendingPlant)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Sending Plant");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BSendingPlantAddress)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Sending Plant Address");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BCompanyCode)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Company Code");
+                iColumn = iColumn + 1;
+            }
+
+            //start
+            if (modelExport.BCompanyName)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Company Name");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BNppbkcId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "NPPBKC ID");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BTypeExcisableGoods)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Type of Excisable Goods");
+                iColumn = iColumn + 1;
+            }
+           
+
+            return slDocument;
+
+        }
+
+
+        #endregion
+
     }
 
 }

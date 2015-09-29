@@ -54,6 +54,11 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck7AndPbck3Dto>>(_repositoryPbck7.Get().ToList());
         }
 
+        public List<Pbck3Dto> GetAllPbck3()
+        {
+            return Mapper.Map<List<Pbck3Dto>>(_repositoryPbck3.Get().ToList()); ;
+        }
+
         public List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
@@ -65,11 +70,20 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.PLANT_ID == input.PlantId);
             }
+            if (!string.IsNullOrEmpty(input.Pbck7Number))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK7_NUMBER == input.Pbck7Number);
+            }
 
-            if (input.Pbck7DateFrom != null)
+            if (input.From != null)
             {
                 
-                queryFilter = queryFilter.And(c => c.PBCK7_DATE > input.Pbck7DateFrom);
+                queryFilter = queryFilter.And(c => c.PBCK7_DATE.Year >= input.From);
+            }
+            if (input.To != null)
+            {
+
+                queryFilter = queryFilter.And(c => c.PBCK7_DATE.Year <= input.To);
             }
 
 
@@ -88,6 +102,50 @@ namespace Sampoerna.EMS.BLL
 
             return mapResult;
        
+        }
+
+        public List<Pbck3Dto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input)
+        {
+            Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK7.NPPBKC == input.NppbkcId);
+            }
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK7.PLANT_ID == input.PlantId);
+            }
+            if (!string.IsNullOrEmpty(input.Pbck3Number))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK3_NUMBER == input.Pbck3Number);
+            }
+
+            if (input.From != null)
+            {
+
+                queryFilter = queryFilter.And(c => c.PBCK3_DATE.Year >= input.From);
+            }
+            if (input.To != null)
+            {
+
+                queryFilter = queryFilter.And(c => c.PBCK3_DATE.Year <= input.To);
+            }
+
+
+            Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = null;
+            if (!string.IsNullOrEmpty(input.ShortOrderColum))
+            {
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK3>(input.ShortOrderColum));
+            }
+
+            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7");
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            var mapResult = Mapper.Map<List<Pbck3Dto>>(dbData.ToList());
+            
+            return mapResult;
         }
 
         public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input)
