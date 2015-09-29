@@ -1,3 +1,3 @@
 ALTER TABLE CK5 ADD
-CK5_REF_ID as bigint
+CK5_REF_ID bigint
 GO

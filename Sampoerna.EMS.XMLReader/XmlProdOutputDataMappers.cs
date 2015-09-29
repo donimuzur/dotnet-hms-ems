@@ -79,7 +79,7 @@ namespace Sampoerna.EMS.XMLReader
                                     else
                                     {
                                         
-                                        item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                        //item.QTY_PACKED = existingProduction.QTY_PACKED;
                                         item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
                                     }
 
@@ -90,7 +90,7 @@ namespace Sampoerna.EMS.XMLReader
                                     if (existingProduction != null)
                                     {
 
-                                        item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                        //item.QTY_PACKED = existingProduction.QTY_PACKED;
                                         item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
                                 
                                     }
@@ -101,7 +101,7 @@ namespace Sampoerna.EMS.XMLReader
 
                                     if (existingProduction != null)
                                     {
-                                        item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                        //item.QTY_PACKED = existingProduction.QTY_PACKED;
                                         item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
                                     }
                                     break;
@@ -126,6 +126,12 @@ namespace Sampoerna.EMS.XMLReader
                                 item.CREATED_DATE = existingProduction.CREATED_DATE;
                                 
                             }
+
+                            var tempPack = decimal.Floor(item.QTY.Value /decimal.Parse(existingBrand.BRAND_CONTENT));
+                            var tempQtyPacked = tempPack * int.Parse(existingBrand.BRAND_CONTENT);
+
+                            item.QTY_PACKED = tempQtyPacked;
+                            item.PROD_QTY_STICK = item.QTY;
                             //ignore if last shift is null or 0
                             if (item.LAST_SHIFT > 0)
                             {
