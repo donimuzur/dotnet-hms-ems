@@ -681,7 +681,8 @@ namespace Sampoerna.EMS.BLL
             {
                 address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
 
-                var activeBrand = _brandBll.GetBrandCeBylant(item);
+                Int32 isInt;
+                var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
                 var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
 
                 foreach (var data in activeBrand)
@@ -708,7 +709,7 @@ namespace Sampoerna.EMS.BLL
                     var brand = _brandBll.GetById(item, data.FA_CODE);
                     ck4cItem.Merk = brand.BRAND_CE;
 
-                    ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT).ToString();
+                    ck4cItem.Isi = Int32.Parse(brand.BRAND_CONTENT).ToString();
                     ck4cItem.Hje = plantDetail.HJE_IDR.ToString();
                     ck4cItem.Total = "0";
                     ck4cItem.ProdWaste = "0";
@@ -781,7 +782,8 @@ namespace Sampoerna.EMS.BLL
                 {
                     address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
 
-                    var activeBrand = _brandBll.GetBrandCeBylant(item);
+                    Int32 isInt;
+                    var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
                     var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
 
                     foreach (var data in activeBrand)
@@ -792,7 +794,7 @@ namespace Sampoerna.EMS.BLL
                         var prodQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PROD_QTY);
                         var packedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PACKED_QTY);
                         var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && (c.PROD_DATE <= prodDateFormat && c.PROD_DATE >= dateStart)).Sum(x => x.UNPACKED_QTY);
-                        var total = packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
+                        var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
 
                         ck4cItem.CollumNo = i;
                         ck4cItem.No = i.ToString();

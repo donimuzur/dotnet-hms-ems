@@ -361,7 +361,30 @@ namespace Sampoerna.EMS.Website.Code
 
 
         }
+        public static SelectList GetYearList()
+        {
+            var selectItemSource = new List<SelectItemModel>();
 
+
+            for (int i = 3; i > 0; i--)
+            {
+                var item = new SelectItemModel();
+
+                item.TextField = (DateTime.Now.Year - i).ToString();
+                item.ValueField = (DateTime.Now.Year - i).ToString();
+                selectItemSource.Add(item);
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                var item = new SelectItemModel();
+
+                item.TextField = (DateTime.Now.Year + i).ToString();
+                item.ValueField = (DateTime.Now.Year + i).ToString();
+                selectItemSource.Add(item);
+            }
+
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
         public static SelectList GetYearList(ICK5BLL ck5Bll)
         {
             var yearList = ck5Bll.GetAllYearsByGiDate();

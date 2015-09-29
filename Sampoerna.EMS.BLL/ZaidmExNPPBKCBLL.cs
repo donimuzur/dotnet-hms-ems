@@ -153,6 +153,8 @@ namespace Sampoerna.EMS.BLL
                 join c
                     in _repositoryT001k.GetQuery()
                     on b.WERKS equals c.BWKEY
+                where
+                    c.BUKRS == companyId
                 select a
                 ).Distinct();
                 
