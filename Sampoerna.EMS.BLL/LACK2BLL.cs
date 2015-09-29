@@ -415,10 +415,10 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY_MANAGER == input.Approver);
             }
-          
 
 
-            var rc = _repository.Get(queryFilter, null, includeTables).ToList();
+
+            var rc = _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5").ToList();
             if (rc == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -463,11 +463,26 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.TypeExcisableGoods = dtData.EX_GOOD_TYP;
                 summaryDto.TypeExcisableGoodsDesc = dtData.EX_TYP_DESC;
 
-                summaryDto.TotalDeliveryExcisable = "0";
-                summaryDto.Uom = "";
-                summaryDto.Poa = "";
-                summaryDto.PoaManager = "";
-                summaryDto.LegalizeData = "";
+                decimal total = dtData.LACK2_ITEM.Where(lack2Item => lack2Item.CK5 != null).Sum(lack2Item => lack2Item.CK5.GRAND_TOTAL_EX.HasValue ? lack2Item.CK5.GRAND_TOTAL_EX.Value : 0);
+                summaryDto.TotalDeliveryExcisable = ConvertHelper.ConvertDecimalToStringMoneyFormat(total);
+
+                foreach (var lack2Item in dtData.LACK2_ITEM.Where(lack2Item => lack2Item.CK5 != null))
+                {
+                    summaryDto.Uom = lack2Item.CK5.PACKAGE_UOM_ID;
+                    break;
+                }
+                summaryDto.LegalizeData = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE);
+
+                //if (lack2Item.CK5 != null)
+                //    {
+                //        summaryDto.TotalDeliveryExcisable = ConvertHelper.ConvertDecimalToStringMoneyFormat(lack2Item.CK5.GRAND_TOTAL_EX);
+                //        summaryDto.Uom = lack2Item.CK5.PACKAGE_UOM_ID;
+                //        summaryDto.LegalizeData =ConvertHelper.ConvertDateToStringddMMMyyyy(lack2Item.CK5.REGISTRATION_DATE);
+                //    }
+
+                summaryDto.Poa = dtData.APPROVED_BY;
+                summaryDto.PoaManager = dtData.APPROVED_BY_MANAGER;
+
 
                 summaryDto.CreatedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.CREATED_DATE);
                 summaryDto.CreatedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.CREATED_DATE);
@@ -525,28 +540,7 @@ namespace Sampoerna.EMS.BLL
                 queryFilter =
                     queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
 
-            //if (input.CreatedFrom.HasValue)
-            //{
-            //    queryFilter =
-            //        queryFilter.And(
-            //            c =>
-            //                c.CREATED_DATE.Year == input.CreatedDate.Value.Year &&
-            //                c.CREATED_DATE.Month == input.CreatedDate.Value.Month &&
-            //                c.CREATED_DATE.Day == input.CreatedDate.Value.Day);
-            //}
-         
-            //if (input.CreatedTo.HasValue)
-            //{
-            //    queryFilter =
-            //        queryFilter.And(
-            //            c =>
-            //                c.APPROVED_DATE.HasValue &&
-            //                c.APPROVED_DATE.Value.Year == input.ApprovedDate.Value.Year &&
-            //                c.APPROVED_DATE.Value.Month == input.ApprovedDate.Value.Month &&
-            //                c.APPROVED_DATE.Value.Day == input.ApprovedDate.Value.Day);
-            //}
-
-
+          
 
             var rc = _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5").ToList();
             if (rc == null)

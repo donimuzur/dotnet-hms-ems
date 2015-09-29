@@ -19,11 +19,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Lack2Date { get; set; }
         public string TypeExcisableGoods { get; set; }
 
-        public string TotalDeliveryExcisable { get; set; } //ask 
-        public string Uom { get; set; } //ask 
+        public string TotalDeliveryExcisable { get; set; } 
+        public string Uom { get; set; } 
 
-        public string Poa { get; set; } //ask 
-        public string PoaManager { get; set; } //ask 
+        public string Poa { get; set; } 
+        public string PoaManager { get; set; } 
 
         public string CreatedDate { get; set; }
         public string CreatedTime { get; set; }
@@ -38,8 +38,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string Status { get; set; }
 
-        public string LegalizeData { get; set; } //ask
-
+        public string LegalizeData { get; set; }
         //search
         public string PeriodYear { get; set; }
         public string TypeExcisableGoodsDesc { get; set; }
