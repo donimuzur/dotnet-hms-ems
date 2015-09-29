@@ -375,6 +375,8 @@
     <Compile Include="Models\PBCK4\Pbck4SummaryReportsViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7SummaryReportModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3CreateViewModel.cs" />
     <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
@@ -1169,6 +1171,10 @@
     <Content Include="Views\LACK2\_Lack2ListSummaryReport.cshtml" />
     <Content Include="Views\LACK2\Lack2DetailReport.cshtml" />
     <Content Include="Views\LACK2\_Lack2ListDetailReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Pbck7SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7SummaryIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Pbck3SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3SummaryIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

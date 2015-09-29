@@ -1233,6 +1233,16 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnVisibilityUomBkc;
             
+            private global::System.Data.DataColumn columnSummaryJenis;
+            
+            private global::System.Data.DataColumn columnSummaryAmount;
+            
+            private global::System.Data.DataColumn columnSummaryBkcRequired;
+            
+            private global::System.Data.DataColumn columnSummaryUomAmount;
+            
+            private global::System.Data.DataColumn columnSummaryUomBkc;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Pbck1ProdPlanDataTable() {
@@ -1372,6 +1382,46 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SummaryJenisColumn {
+                get {
+                    return this.columnSummaryJenis;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SummaryAmountColumn {
+                get {
+                    return this.columnSummaryAmount;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SummaryBkcRequiredColumn {
+                get {
+                    return this.columnSummaryBkcRequired;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SummaryUomAmountColumn {
+                get {
+                    return this.columnSummaryUomAmount;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SummaryUomBkcColumn {
+                get {
+                    return this.columnSummaryUomBkc;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1407,7 +1457,25 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Pbck1ProdPlanRow AddPbck1ProdPlanRow(string ProdTypeCode, string ProdTypeName, string ProdAlias, decimal BkcRequired, string BkcRequiredUomId, string BkcRequiredUomName, int MonthId, string MonthName, string No, decimal AmountDecimal, string VisibilityUomAmount, string UomAmount, string VisibilityUomBkc) {
+            public Pbck1ProdPlanRow AddPbck1ProdPlanRow(
+                        string ProdTypeCode, 
+                        string ProdTypeName, 
+                        string ProdAlias, 
+                        decimal BkcRequired, 
+                        string BkcRequiredUomId, 
+                        string BkcRequiredUomName, 
+                        int MonthId, 
+                        string MonthName, 
+                        string No, 
+                        decimal AmountDecimal, 
+                        string VisibilityUomAmount, 
+                        string UomAmount, 
+                        string VisibilityUomBkc, 
+                        string SummaryJenis, 
+                        string SummaryAmount, 
+                        string SummaryBkcRequired, 
+                        string SummaryUomAmount, 
+                        string SummaryUomBkc) {
                 Pbck1ProdPlanRow rowPbck1ProdPlanRow = ((Pbck1ProdPlanRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ProdTypeCode,
@@ -1422,7 +1490,12 @@ namespace Sampoerna.EMS.ReportingData {
                         AmountDecimal,
                         VisibilityUomAmount,
                         UomAmount,
-                        VisibilityUomBkc};
+                        VisibilityUomBkc,
+                        SummaryJenis,
+                        SummaryAmount,
+                        SummaryBkcRequired,
+                        SummaryUomAmount,
+                        SummaryUomBkc};
                 rowPbck1ProdPlanRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPbck1ProdPlanRow);
                 return rowPbck1ProdPlanRow;
@@ -1458,6 +1531,11 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnVisibilityUomAmount = base.Columns["VisibilityUomAmount"];
                 this.columnUomAmount = base.Columns["UomAmount"];
                 this.columnVisibilityUomBkc = base.Columns["VisibilityUomBkc"];
+                this.columnSummaryJenis = base.Columns["SummaryJenis"];
+                this.columnSummaryAmount = base.Columns["SummaryAmount"];
+                this.columnSummaryBkcRequired = base.Columns["SummaryBkcRequired"];
+                this.columnSummaryUomAmount = base.Columns["SummaryUomAmount"];
+                this.columnSummaryUomBkc = base.Columns["SummaryUomBkc"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1489,6 +1567,16 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnUomAmount);
                 this.columnVisibilityUomBkc = new global::System.Data.DataColumn("VisibilityUomBkc", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnVisibilityUomBkc);
+                this.columnSummaryJenis = new global::System.Data.DataColumn("SummaryJenis", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSummaryJenis);
+                this.columnSummaryAmount = new global::System.Data.DataColumn("SummaryAmount", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSummaryAmount);
+                this.columnSummaryBkcRequired = new global::System.Data.DataColumn("SummaryBkcRequired", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSummaryBkcRequired);
+                this.columnSummaryUomAmount = new global::System.Data.DataColumn("SummaryUomAmount", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSummaryUomAmount);
+                this.columnSummaryUomBkc = new global::System.Data.DataColumn("SummaryUomBkc", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSummaryUomBkc);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4015,6 +4103,86 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SummaryJenis {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1ProdPlan.SummaryJenisColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SummaryJenis\' in table \'Pbck1ProdPlan\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1ProdPlan.SummaryJenisColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SummaryAmount {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1ProdPlan.SummaryAmountColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SummaryAmount\' in table \'Pbck1ProdPlan\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1ProdPlan.SummaryAmountColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SummaryBkcRequired {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1ProdPlan.SummaryBkcRequiredColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SummaryBkcRequired\' in table \'Pbck1ProdPlan\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1ProdPlan.SummaryBkcRequiredColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SummaryUomAmount {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1ProdPlan.SummaryUomAmountColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SummaryUomAmount\' in table \'Pbck1ProdPlan\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1ProdPlan.SummaryUomAmountColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string SummaryUomBkc {
+                get {
+                    try {
+                        return ((string)(this[this.tablePbck1ProdPlan.SummaryUomBkcColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SummaryUomBkc\' in table \'Pbck1ProdPlan\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePbck1ProdPlan.SummaryUomBkcColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsProdTypeCodeNull() {
                 return this.IsNull(this.tablePbck1ProdPlan.ProdTypeCodeColumn);
             }
@@ -4167,6 +4335,66 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetVisibilityUomBkcNull() {
                 this[this.tablePbck1ProdPlan.VisibilityUomBkcColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSummaryJenisNull() {
+                return this.IsNull(this.tablePbck1ProdPlan.SummaryJenisColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSummaryJenisNull() {
+                this[this.tablePbck1ProdPlan.SummaryJenisColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSummaryAmountNull() {
+                return this.IsNull(this.tablePbck1ProdPlan.SummaryAmountColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSummaryAmountNull() {
+                this[this.tablePbck1ProdPlan.SummaryAmountColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSummaryBkcRequiredNull() {
+                return this.IsNull(this.tablePbck1ProdPlan.SummaryBkcRequiredColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSummaryBkcRequiredNull() {
+                this[this.tablePbck1ProdPlan.SummaryBkcRequiredColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSummaryUomAmountNull() {
+                return this.IsNull(this.tablePbck1ProdPlan.SummaryUomAmountColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSummaryUomAmountNull() {
+                this[this.tablePbck1ProdPlan.SummaryUomAmountColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSummaryUomBkcNull() {
+                return this.IsNull(this.tablePbck1ProdPlan.SummaryUomBkcColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSummaryUomBkcNull() {
+                this[this.tablePbck1ProdPlan.SummaryUomBkcColumn] = global::System.Convert.DBNull;
             }
         }
         

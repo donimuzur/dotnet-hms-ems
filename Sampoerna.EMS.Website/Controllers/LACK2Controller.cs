@@ -132,7 +132,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
-            model.YearList = GlobalFunctions.GetYearList();
+            model.YearList = GlobalFunctions.GetYearList(_ck5Bll);
             model.UsrRole = CurrentUser.UserRole;
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
@@ -201,7 +201,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
-            model.YearList = GlobalFunctions.GetYearList();
+            model.YearList = GlobalFunctions.GetYearList(_ck5Bll);
             model.Lack2Model.StatusName = EnumHelper.GetDescription(model.Lack2Model.Status);
             model.UsrRole = CurrentUser.UserRole;
 

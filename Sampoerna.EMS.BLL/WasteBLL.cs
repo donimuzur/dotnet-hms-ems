@@ -79,20 +79,28 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public void Save(WasteDto wasteDto, string userId)
+        public bool Save(WasteDto wasteDto, string userId)
         {
-
+            var isNewData = true;
             var dbWaste = Mapper.Map<WASTE>(wasteDto);
 
             var origin = _repository.GetByID(dbWaste.COMPANY_CODE, dbWaste.WERKS, dbWaste.FA_CODE,
                 dbWaste.WASTE_PROD_DATE);
 
             var originDto = Mapper.Map<WasteDto>(origin);
+
             dbWaste.CREATED_DATE = DateTime.Now;
 
-            SetChange(originDto, wasteDto, userId);
+            if (originDto != null)
+            {
+                SetChange(originDto, wasteDto, userId);
+                isNewData = false;
+            }
+
             _repository.InsertOrUpdate(dbWaste);
             _uow.SaveChanges();
+
+            return isNewData;
         }
 
         public WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
@@ -222,6 +230,22 @@ namespace Sampoerna.EMS.BLL
                 
             }
 
+        }
+
+        public void DeleteOldData(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
+        {
+            var dbData = _repository.GetByID(companyCode, plantWerk, faCode, wasteProductionDate);
+
+            if (dbData == null)
+            {
+                _logger.Error(new BLLException(ExceptionCodes.BLLExceptions.DataNotFound));
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            else
+            {
+                _repository.Delete(dbData);
+                _uow.SaveChanges();
+            }
         }
     }
 }

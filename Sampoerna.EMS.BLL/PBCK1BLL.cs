@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -87,6 +88,16 @@ namespace Sampoerna.EMS.BLL
         {
 
             var queryFilter = ProcessQueryFilter(input);
+            if(input.UserRole == Enums.UserRole.POA){
+                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+            }
+            else if (input.UserRole == Enums.UserRole.Manager) {
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval);
+            }else{
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+            }
 
             queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
 
@@ -210,7 +221,9 @@ namespace Sampoerna.EMS.BLL
                 dbData.PBCK1_PROD_CONVERTER = Mapper.Map<List<PBCK1_PROD_CONVERTER>>(input.Pbck1.Pbck1ProdConverter);
                 dbData.PBCK1_PROD_PLAN = Mapper.Map<List<PBCK1_PROD_PLAN>>(input.Pbck1.Pbck1ProdPlan);
                 dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.Pbck1.Pbck1DecreeDoc);
-
+                if(dbData.STATUS == Enums.DocumentStatus.Rejected){
+                    dbData.STATUS = Enums.DocumentStatus.Draft;
+                }
             }
             else
             {
@@ -943,7 +956,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.Draft)
+            if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             if (dbData.CREATED_BY != input.UserId)
@@ -1038,10 +1051,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
             //change back to draft
-            dbData.STATUS = Enums.DocumentStatus.Draft;
+            dbData.STATUS = Enums.DocumentStatus.Rejected;
 
             //todo ask
             dbData.APPROVED_BY_POA = null;
@@ -1233,6 +1246,11 @@ namespace Sampoerna.EMS.BLL
 
             //todo: ask the cleanest way
             var rc = Mapper.Map<List<Pbck1SummaryReportDto>>(pbck1Data);
+            foreach (var item in rc)
+            {
+                item.Pbck1Parent = Mapper.Map<Pbck1SummaryReportDto>(pbck1Data.Where(c => c.PBCK1_ID == item.Pbck1Id).Select(c => c.PBCK12).FirstOrDefault());
+                item.Pbck1Childs = Mapper.Map<List<Pbck1SummaryReportDto>>(pbck1Data.Where(c => c.PBCK1_ID == item.Pbck1Id).Select(c => c.PBCK11).FirstOrDefault());
+            }
             // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < rc.Count; i++)
             {
@@ -1326,10 +1344,17 @@ namespace Sampoerna.EMS.BLL
                                               Brand = brand.BRAND_CE,
                                               Kadar = "-", //hardcoded, ref: FS PBCK-1 EMS Version document
                                               Convertion =
-                                                  prodConv.CONVERTER_OUTPUT.HasValue ? prodConv.CONVERTER_OUTPUT.Value.ToString("N0") : "-",
+                                                  prodConv.CONVERTER_OUTPUT.HasValue ? prodConv.CONVERTER_OUTPUT.Value.ToString("N2") : "-",
                                               ConvertionUom = prodConv.UOM.UOM_DESC,
                                               ConvertionUomId = prodConv.CONVERTER_UOM_ID
                                           }).DistinctBy(c => c.Brand).ToList();
+
+                        var convertedUomData =
+                            dbData.PBCK1_PROD_CONVERTER.FirstOrDefault(c => !string.IsNullOrEmpty(c.CONVERTER_UOM_ID));
+                        if (convertedUomData != null)
+                        {
+                            rc.Detail.ConvertedUomId = convertedUomData.CONVERTER_UOM_ID;
+                        }
 
                         rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();
                         foreach (var dataItem in dataJoined)
@@ -1391,7 +1416,7 @@ namespace Sampoerna.EMS.BLL
                     Total = g.Sum(p => p.CONVERTER_OUTPUT)
                 });
                 rc.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
-                    prodConverterGroup.Select(d => d.Total.Value.ToString("N0") + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
+                    prodConverterGroup.Select(d => String.Format("{0:n}", d.Total.Value) + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
             }
             if (dbData.PERIOD_FROM.HasValue)
             {
@@ -1402,10 +1427,10 @@ namespace Sampoerna.EMS.BLL
                 rc.Detail.PeriodTo = DateReportString(dbData.PERIOD_TO.Value);
             }
             // ReSharper disable once PossibleInvalidOperationException
-            rc.Detail.RequestQty = dbData.REQUEST_QTY.Value.ToString("N0");
+            rc.Detail.RequestQty = String.Format("{0:n}", dbData.REQUEST_QTY.Value);
             rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
             rc.Detail.RequestQtyUomName = dbData.UOM.UOM_DESC;
-            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = dbData.LATEST_SALDO.Value.ToString("N0");
+            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = String.Format("{0:n}", dbData.LATEST_SALDO.Value);
             rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
             rc.Detail.SupplierPlantName = dbData.SUPPLIER_PLANT;
             rc.Detail.SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS;
@@ -1415,21 +1440,30 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
             rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
 
-            var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
-            if (kppbcDetail != null)
+            if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
             {
-                //rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI_DETAIL;
-                if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
+                var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
+                if (kppbcDetail != null)
                 {
-                    var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
-                    List<string> stringList = strToSplit.Split('|').ToList();
-                    rc.Detail.SupplierKppbcMengetahui = stringList[0].Replace("<br />", Environment.NewLine);
-                    rc.Detail.SupplierKppbcMengetahui = rc.Detail.SupplierKppbcMengetahui.Replace("Mengetahui", string.Empty).Replace("mengetahui", string.Empty)
-                        .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
+                    //rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI_DETAIL;
+                    if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
+                    {
+                        var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
+                        List<string> stringList = strToSplit.Split('|').ToList();
+                        rc.Detail.SupplierKppbcMengetahui = stringList[0].Replace("<br />", Environment.NewLine);
+                        rc.Detail.SupplierKppbcMengetahui =
+                            rc.Detail.SupplierKppbcMengetahui.Replace("Mengetahui", string.Empty)
+                                .Replace("mengetahui", string.Empty)
+                                .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
+                    }
+
                 }
-
             }
-
+            else
+            {
+                rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
+            }
+            
             string supplierPortName;
             if (string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME))
                 supplierPortName = "-";
@@ -1447,7 +1481,8 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK1_TO_MONTH.Value, dbData.LACK1_TO_YEAR.Value);
 
             //Set ProdPlan
-            rc.ProdPlanList = (Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN)).OrderBy(c => c.MonthId).ToList();
+            rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN).ToList();
+            rc = SetPbck1ProdPlanList(rc);
 
             //set realisasi P3BKC
             rc = SetPbck1RealizationList(rc, new Lack1GetPbck1RealizationListParamInput()
@@ -1472,12 +1507,57 @@ namespace Sampoerna.EMS.BLL
             return rc;
         }
 
+        private Pbck1ReportDto SetPbck1ProdPlanList(Pbck1ReportDto reportData)
+        {
+            var prodPlanList = reportData.ProdPlanList;
+            var monthList = _monthBll.GetAll();
+            
+            var monthNotInRealizationData = from x in monthList
+                                            where !(prodPlanList.Select(d => d.MonthId).ToList().Contains(x.MONTH_ID))
+                                            select x;
+
+            prodPlanList.AddRange(monthNotInRealizationData.Select(month => new Pbck1ReportProdPlanDto()
+            {
+                MonthId = month.MONTH_ID,
+                MonthName = month.MONTH_NAME_IND,
+                ProdTypeCode = "-",
+                ProdTypeName = "-",
+                ProdAlias = "-",
+                Amount = null,
+                BkcRequired = null,
+                BkcRequiredUomId = string.Empty,
+                BkcRequiredUomName = string.Empty
+            }));
+            
+            //set summary
+            var groupedData = prodPlanList.GroupBy(p => new
+            {
+                p.ProdTypeCode,
+                p.ProdTypeName,
+                p.ProdAlias,
+                p.Amount,
+                p.BkcRequired
+            }).Select(g => new Pbck1ReportSummaryProdPlanDto()
+            {
+                ProdTypeCode = g.Key.ProdTypeCode,
+                ProdTypeName = g.Key.ProdTypeName,
+                ProdAlias = g.Key.ProdAlias,
+                TotalAmount = g.Sum(p => p.Amount.HasValue ? p.Amount.Value : 0),
+                TotalBkc = g.Sum(p => p.BkcRequired.HasValue ? p.BkcRequired.Value : 0)
+            });
+            reportData.SummaryProdPlantList = groupedData.ToList();
+            reportData.ProdPlanList = prodPlanList.OrderBy(o => o.MonthId).ToList();
+            return reportData;
+        }
+
         private Pbck1ReportDto SetPbck1RealizationList(Pbck1ReportDto reportData, Lack1GetPbck1RealizationListParamInput input)
         {
             var rc = new List<Pbck1RealisasiP3BkcDto>();
             var summaryProdList = new List<Pbck1RealisasiProductionDetailDto>();
             var monthList = _monthBll.GetAll();
             var realizationData = _lack1Bll.GetPbck1RealizationList(input);
+
+            if (realizationData == null || realizationData.Count <= 0) return reportData;
             
             foreach (var lack1 in realizationData)
             {
@@ -1503,8 +1583,8 @@ namespace Sampoerna.EMS.BLL
             }
 
             var monthNotInRealizationData = from x in monthList
-                                            where !(realizationData.Select(d => d.PeriodMonth).ToList().Contains(x.MONTH_ID))
-                                            select x;
+                where !(realizationData.Select(d => d.PeriodMonth).ToList().Contains(x.MONTH_ID))
+                select x;
 
             rc.AddRange(monthNotInRealizationData.Select(month => new Pbck1RealisasiP3BkcDto()
             {
@@ -1519,9 +1599,30 @@ namespace Sampoerna.EMS.BLL
                 Lack1UomName = string.Empty
             }));
             rc = rc.OrderBy(o => o.BulanId).ToList();
+
+            var selectFirstData = summaryProdList.FirstOrDefault(c => !string.IsNullOrEmpty(c.ExcisableGoodsTypeId));
+            if (selectFirstData != null)
+            {
+                reportData.Detail.RealisasiBkcExcisableGoodsTypeDesc = selectFirstData.ExcisableGoodsTypeDesc;
+                reportData.Detail.RealisasiBkcExcisableGoodsTypeId = selectFirstData.ExcisableGoodsTypeId;
+            }
+
+            var bkcUomSelected = summaryProdList.FirstOrDefault(c => !string.IsNullOrEmpty(c.UomId));
+            if (bkcUomSelected != null)
+            {
+                reportData.Detail.RealisasiBkcUomId = bkcUomSelected.UomId;
+            }
+
+            var realisasiUomData = realizationData.FirstOrDefault(c => !string.IsNullOrEmpty(c.Lack1UomId));
+            if (realisasiUomData != null)
+            {
+                reportData.Detail.RealisasiUomId = realisasiUomData.Lack1UomId;
+                reportData.Detail.RealisasiUomDesc = realisasiUomData.Lack1UomName;
+            }
+
             reportData.RealisasiP3Bkc = rc;
 
-            var groupedData = summaryProdList.GroupBy(p => new 
+            var groupedData = summaryProdList.GroupBy(p => new
             {
                 p.ProductCode,
                 p.ProductAlias,
@@ -1529,12 +1630,13 @@ namespace Sampoerna.EMS.BLL
                 p.Amount
             }).Select(g => new Pbck1SummaryRealisasiProductionDetailDto()
             {
-               ProductCode = g.Key.ProductCode,
-               ProductType = g.Key.ProductType,
-               ProductAlias = g.Key.ProductAlias,
-               Total = g.Sum(p => p.Amount != null ? p.Amount.Value : 0)
+                ProductCode = g.Key.ProductCode,
+                ProductType = g.Key.ProductType,
+                ProductAlias = g.Key.ProductAlias,
+                Total = g.Sum(p => p.Amount != null ? p.Amount.Value : 0)
             });
             reportData.SummaryRealisasiP3Bkc = groupedData.ToList();
+
             return reportData;
             
         }
@@ -1762,7 +1864,7 @@ namespace Sampoerna.EMS.BLL
                 p => ((input.Pbck1.Pbck1Id == null || p.PBCK1_ID != input.Pbck1.Pbck1Id) && p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId
                     && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodFrom
                     || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo || (p.PERIOD_FROM > input.Pbck1.PeriodFrom && p.PERIOD_TO < input.Pbck1.PeriodTo))
-                    && p.SUPPLIER_NPPBKC_ID == input.Pbck1.SupplierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
+                    && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
             );
 
             var data = Mapper.Map<List<Pbck1Dto>>(dbData);
@@ -1780,7 +1882,7 @@ namespace Sampoerna.EMS.BLL
                     && p.NPPBKC_ID == input.NppbkcId
                     && (p.PERIOD_FROM <= input.PeriodFrom && p.PERIOD_TO >= input.PeriodFrom
                     || p.PERIOD_FROM <= input.PeriodTo && p.PERIOD_TO >= input.PeriodTo)
-                    && p.SUPPLIER_NPPBKC_ID == input.SupllierNppbkcId && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && p.EXC_GOOD_TYP == input.GoodTypeId
+                    && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && p.EXC_GOOD_TYP == input.GoodTypeId
             ).FirstOrDefault();
             var data = Mapper.Map<Pbck1Dto>(dbData);
 

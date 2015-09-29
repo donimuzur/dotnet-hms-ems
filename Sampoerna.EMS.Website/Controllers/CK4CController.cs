@@ -334,7 +334,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             List<Ck4cItemData> listData;
 
-            listData = ck4cItemData;
+            listData = ck4cItemData.OrderBy(x => x.ProdDate).ToList();
 
             foreach(var item in listData)
             {
@@ -342,6 +342,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var plant = _plantBll.GetT001WById(item.Werks);
                 var prodType = _prodTypeBll.GetByCode(item.ProdCode);
 
+                if (item.ContentPerPack == 0)
+                    item.ContentPerPack = Convert.ToInt32(brand.BRAND_CONTENT);
+                if (item.PackedInPack == 0)
+                    item.PackedInPack = Convert.ToInt32(item.PackedQty) / Convert.ToInt32(brand.BRAND_CONTENT);
+                if (item.ProdQty == 0)
+                    item.ProdQty = item.PackedQty + item.UnpackedQty;
                 item.ProdDateName = item.ProdDate.ToString("dd MMM yyyy");
                 item.BrandDescription = brand.BRAND_CE;
                 item.PlantName = item.Werks + "-" + plant.NAME1;
@@ -786,6 +792,23 @@ namespace Sampoerna.EMS.Website.Controllers
             return File(stream, "application/pdf");
         }
 
+        [EncryptedParameter]
+        public ActionResult PrintOut(int? id)
+        {
+            //Get Report Source
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var ck4cData = _ck4CBll.GetCk4cReportDataById(id.Value);
+            if (ck4cData == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(ck4cData, "CK-4C");
+
+            return File(stream, "application/pdf");
+        }
+
         private Stream GetReport(Ck4cReportDto ck4cReport, string printTitle)
         {
             var dataSet = SetDataSetReport(ck4cReport, printTitle);
@@ -810,6 +833,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             dsCk4c = AddDataCk4cRow(dsCk4c, ck4cReportDto.Detail, printTitle);
             dsCk4c = AddDataCk4cItemsRow(dsCk4c, ck4cReportDto.Ck4cItemList);
+            dsCk4c = AddDataTotalCk4cRow(dsCk4c, ck4cReportDto.Ck4cTotal);
             dsCk4c = AddDataHeaderFooter(dsCk4c, ck4cReportDto.HeaderFooter);
 
             return dsCk4c;
@@ -868,6 +892,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 dsCk4c.Ck4cItem.AddCk4cItemRow(detailRow);
             }
+            return dsCk4c;
+        }
+
+        private dsCk4c AddDataTotalCk4cRow(dsCk4c dsCk4c, Ck4cTotalProd ck4cReportTotal)
+        {
+            var detailRow = dsCk4c.Ck4cTotalProd.NewCk4cTotalProdRow();
+
+            detailRow.ProdType = ck4cReportTotal.ProdType;
+            detailRow.ProdTotal = ck4cReportTotal.ProdTotal;
+            detailRow.ProdBtg = ck4cReportTotal.ProdBtg;
+
+            dsCk4c.Ck4cTotalProd.AddCk4cTotalProdRow(detailRow);
+
             return dsCk4c;
         }
 

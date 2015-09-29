@@ -1,0 +1,36 @@
+﻿@model List<Sampoerna.EMS.BusinessObject.DTOs.Pbck7AndPbck3Dto>
+
+<table id="pbck7-summary" class="table-condensed display compact nowrap">
+    <thead>
+        <tr>
+
+            <th class="toggle-row">Number</th>
+            <th>NPPBKC</th>
+            <th>Plant</th>
+            <th>Date</th>
+            <th>Doc.Type</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>@item.Pbck7Number</td>
+                    <td>@item.NppbkcId</td>
+                    <td>@(item.PlantId + "-" + item.PlantName)</td>
+                    <td>@item.Pbck7Date.ToString("dd MMM yyyy")</td>
+                    <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.DocumentType)</td>
+                    <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.Pbck7Status)</td>
+
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+

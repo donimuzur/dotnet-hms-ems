@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Drawing;
@@ -881,7 +884,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);
             }
-          
+            AddMessageInfo("Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
@@ -1002,6 +1005,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return RedirectToAction("ApprovePbck3", new { id = model.Id });
             }
+            
             return RedirectToAction("Index");
         }
 
@@ -1044,6 +1048,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             item.UploadItems = null;
             _pbck7AndPbck7And3Bll.InsertPbck7(item);
+            AddMessageInfo("Approve Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
@@ -1087,6 +1092,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             
             _pbck7AndPbck7And3Bll.InsertPbck3(item);
+            AddMessageInfo("Approve Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
@@ -1150,6 +1156,371 @@ namespace Sampoerna.EMS.Website.Controllers
             file.SaveAs(path);
 
             return sFileName;
+        }
+
+
+        public ActionResult Pbck7SummaryReport()
+        {
+
+            Pbck7SummaryReportModel model;
+            try
+            {
+
+                model = new Pbck7SummaryReportModel();
+
+               
+                InitSummaryReports(model);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck7SummaryReportModel();
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("Pbck7SummaryReport", model);
+        }
+
+        public ActionResult Pbck3SummaryReport()
+        {
+
+            Pbck3SummaryReportModel model;
+            try
+            {
+
+                model = new Pbck3SummaryReportModel();
+
+
+                InitSummaryReportsPbck3(model);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck3SummaryReportModel();
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("Pbck3SummaryReport", model);
+        }
+        private void InitSummaryReports(Pbck7SummaryReportModel model)
+        {
+            model.MainMenu = Enums.MenuList.PBCK7;
+            model.CurrentMenu = PageInfo;
+
+            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+            model.Pbck7List = GetAllPbck7No();
+            model.FromYear = GlobalFunctions.GetYearList();
+            model.ToYear = model.FromYear;
+            model.ReportItems = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
+        }
+        private void InitSummaryReportsPbck3(Pbck3SummaryReportModel model)
+        {
+            model.MainMenu = Enums.MenuList.PBCK3;
+            model.CurrentMenu = PageInfo;
+
+            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+            model.Pbck3List = GetAllPbck3No();
+            model.FromYear = GlobalFunctions.GetYearList();
+            model.ToYear = model.FromYear;
+            model.ReportItems = _pbck7AndPbck7And3Bll.GetPbck3SummaryReportsByParam(new Pbck3SummaryInput());
+        }
+
+        private SelectList GetAllPbck7No()
+        {
+            var pbck7List = _pbck7AndPbck7And3Bll.GetAllPbck7();
+            return new SelectList(pbck7List, "Pbck7Number", "Pbck7Number");
+
+        }
+        private SelectList GetAllPbck3No()
+        {
+            var pbck3List = _pbck7AndPbck7And3Bll.GetAllPbck3();
+            return new SelectList(pbck3List, "Pbck3Number", "Pbck3Number");
+
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterPbck7SummaryReport(Pbck7SummaryReportModel model)
+        {
+            var input = Mapper.Map<Pbck7SummaryInput>(model);
+            var result = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(input);
+            return PartialView("_Pbck7SummaryIndex", result);
+        }
+        [HttpPost]
+        public PartialViewResult FilterPbck3SummaryReport(Pbck3SummaryReportModel model)
+        {
+            var input = Mapper.Map<Pbck3SummaryInput>(model);
+            var result = _pbck7AndPbck7And3Bll.GetPbck3SummaryReportsByParam(input);
+            return PartialView("_Pbck3SummaryIndex", result);
+        }
+
+
+        [HttpPost]
+        public ActionResult Pbck7ExportSummaryReports(Pbck7SummaryReportModel model)
+        {
+            try
+            {
+                ExportSummaryReportsToExcel(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Pbck7SummaryReport");
+        }
+        [HttpPost]
+        public ActionResult Pbck3ExportSummaryReports(Pbck3SummaryReportModel model)
+        {
+            try
+            {
+                ExportSummaryReportsToExcelPbck3(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Pbck3SummaryReport");
+        }
+
+        public void ExportSummaryReportsToExcel(Pbck7SummaryReportModel model)
+        {
+            
+            var input = Mapper.Map<Pbck7SummaryInput>(model);
+            var result = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(input);
+            var src = (from b in result
+                select new Pbck7SummaryReportItem()
+                {
+
+                    Pbck7Number = b.Pbck7Number,
+                    Nppbkc = b.NppbkcId,
+                    PlantName = b.PlantId + "-" + b.PlantName,
+                    Pbck7Date =  b.Pbck7Date,
+                    Pbck7Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck7Status)
+                    
+                }).ToList();
+            var grid = new System.Web.UI.WebControls.GridView
+            {
+                DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
+                AutoGenerateColumns = false
+            };
+            if (model.ExportModel.IsSelectPbck7No)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck7Number",
+                    HeaderText = "Number"
+                });
+            }
+            if (model.ExportModel.IsSelectNppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Nppbkc",
+                    HeaderText = "Nppbkc"
+                });
+            }
+            if (model.ExportModel.IsSelectPlant)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PlantName",
+                    HeaderText = "Plant"
+                });
+            }
+            if (model.ExportModel.IsSelectDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck7Date",
+                    HeaderText = "Date"
+                });
+            }
+            if (model.ExportModel.IsSelectStatus)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck7Status",
+                    HeaderText = "Status"
+                });
+            }
+            if (src.Count == 0)
+            {
+                grid.ShowHeaderWhenEmpty = true;
+            }
+
+            grid.DataBind();
+
+            var fileName = "PBCK7" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
+
+        public void ExportSummaryReportsToExcelPbck3(Pbck3SummaryReportModel model)
+        {
+
+            var input = Mapper.Map<Pbck3SummaryInput>(model);
+            var result = _pbck7AndPbck7And3Bll.GetPbck3SummaryReportsByParam(input);
+            var src = (from b in result
+                       select new Pbck3SummaryReportItem()
+                       {
+                           Pbck3Number = b.Pbck3Number,
+                           Pbck7Number = b.Pbck7Number,
+                           Nppbkc = b.NppbckId,
+                           PlantName = b.Plant,
+                           Pbck3Date = b.Pbck3Date,
+                           Pbck3Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck3Status)
+
+                       }).ToList();
+            var grid = new System.Web.UI.WebControls.GridView
+            {
+                DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
+                AutoGenerateColumns = false
+            };
+            if (model.ExportModel.IsSelectPbck3No)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck3Number",
+                    HeaderText = "Number"
+                });
+            }
+            if (model.ExportModel.IsSelectPbck7)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck7Number",
+                    HeaderText = "PBCK-7"
+                });
+            }
+            if (model.ExportModel.IsSelectNppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Nppbkc",
+                    HeaderText = "Nppbkc"
+                });
+            }
+            if (model.ExportModel.IsSelectPlant)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PlantName",
+                    HeaderText = "Plant"
+                });
+            }
+            if (model.ExportModel.IsSelectDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck3Date",
+                    HeaderText = "Date"
+                });
+            }
+            if (model.ExportModel.IsSelectStatus)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck3Status",
+                    HeaderText = "Status"
+                });
+            }
+            if (src.Count == 0)
+            {
+                grid.ShowHeaderWhenEmpty = true;
+            }
+
+            grid.DataBind();
+
+            var fileName = "PBCK3" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
+        [HttpPost]
+        public ActionResult RejectDocumentPbck7(Pbck7Pbck3CreateViewModel model)
+        {
+            bool isSuccess = false;
+            try
+            {
+                var item = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+                item.Pbck7Status = Enums.DocumentStatus.Draft;
+                item.IsRejected = true;
+                item.Comment = model.Comment;
+                item.RejectedBy = CurrentUser.USER_ID;
+                item.RejectedDate = DateTime.Now;
+                item.UploadItems = null;
+                _pbck7AndPbck7And3Bll.InsertPbck7(item);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Detail", "Pbck7AndPbck3", new { id = model.Id });
+            AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public ActionResult RejectDocumentPbck3(Pbck7Pbck3CreateViewModel model)
+        {
+            bool isSuccess = false;
+            try
+            {
+                var item = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(model.Id);
+                item.Pbck3Status= Enums.DocumentStatus.Draft;
+                item.IsRejected = true;
+                item.Comment = model.Comment;
+                item.RejectedBy = CurrentUser.USER_ID;
+                item.RejectedDate = DateTime.Now;
+                
+                _pbck7AndPbck7And3Bll.InsertPbck3(item);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Detail", "Pbck7AndPbck3", new { id = model.Id });
+            AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
         }
 
     }

@@ -232,7 +232,7 @@
                                 <i class="down fa fa-caret-down"></i>
                             </a>
                             <ul class="child list">
-                                <li style="display:none;"><a id="MenuCK5FileDocuments" href="@Url.Action("CK5UploadFileDocuments", "CK5")"><i class="fa fa-angle-right"></i>Upload File</a></li>
+                                <li><a id="MenuCK5FileDocuments" href="@Url.Action("CK5UploadFileDocuments", "CK5")"><i class="fa fa-angle-right"></i>Upload File</a></li>
                                 <li><a id="MenuCK5Domestic" href="@Url.Action("Index", "CK5")"><i class="fa fa-angle-right"></i>Domestic</a></li>
                                 <li><a id="MenuCK5Import" href="@Url.Action("CK5Import", "CK5")"><i class="fa fa-angle-right"></i>Importer</a></li>
                                 <li><a id="MenuCK5Export" href="@Url.Action("CK5Export", "CK5")"><i class="fa fa-angle-right"></i>Export</a></li>
@@ -459,8 +459,7 @@
                                 <ul class="child list">
                                     <li><a id="MenuPBCK7Index" href="@Url.Action("Index", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-7 List </a></li>
                                     <li><a id="MenuPBCK3Index" href="@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-3 List</a></li>
-                                    <li><a href="4.2-lack1-list-completed.html"><i class="fa fa-angle-right"></i>Completed Document</a></li>
-                                </ul>
+                                 </ul>
                             </div>
                             <div class="collapse-menu">
                                 <a href="#" class="list-group-item list-parent">
@@ -469,8 +468,9 @@
                                     <i class="down fa fa-caret-down"></i>
                                 </a>
                                 <ul class="child list">
-                                    <li><a href="4.3-lack1-summary-report.html"><i class="fa fa-angle-right"></i>Summary</a></li>
-                                    <li><a href="4.4-lack1-detail-report.html"><i class="fa fa-angle-right"></i>Detail</a></li>
+                                    <li><a href="@Url.Action("Pbck7SummaryReport", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>Pbck-7 Summary</a></li>
+                                    <li><a href="@Url.Action("Pbck3SummaryReport", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>Pbck-3 Summary</a></li>
+
                                 </ul>
                             </div>
                             <div class="other">
