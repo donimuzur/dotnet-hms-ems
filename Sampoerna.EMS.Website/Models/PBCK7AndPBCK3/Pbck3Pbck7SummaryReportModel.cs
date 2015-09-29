@@ -55,6 +55,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public Enums.DocumentStatus Status { get; set; }
 
+       
+
         public int? FromYear { get; set; }
 
         public int? ToYear { get; set; }
@@ -69,6 +71,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public bool IsSelectStatus { get; set; }
 
+        public bool IsSelectDate { get; set; }
     }
 
     public class Pbck7SummaryReportItem

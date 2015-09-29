@@ -1234,7 +1234,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     Pbck7Number = b.Pbck7Number,
                     Nppbkc = b.NppbkcId,
                     PlantName = b.PlantId + "-" + b.PlantName,
-                    Pbck7Date =  b.Pbck7Date
+                    Pbck7Date =  b.Pbck7Date,
+                    Pbck7Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck7Status)
                     
                 }).ToList();
             var grid = new System.Web.UI.WebControls.GridView
@@ -1266,7 +1267,22 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Plant"
                 });
             }
-
+            if (model.ExportModel.IsSelectDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck7Date",
+                    HeaderText = "Date"
+                });
+            }
+            if (model.ExportModel.IsSelectStatus)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck7Status",
+                    HeaderText = "Status"
+                });
+            }
             if (src.Count == 0)
             {
                 grid.ShowHeaderWhenEmpty = true;

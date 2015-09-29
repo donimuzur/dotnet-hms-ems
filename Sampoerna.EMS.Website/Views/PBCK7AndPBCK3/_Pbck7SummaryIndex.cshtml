@@ -7,8 +7,8 @@
             <th>No</th>
             <th>NPPBKC</th>
             <th>Plant</th>
-            <th>Doc.Type</th>
             <th>Date</th>
+            <th>Doc.Type</th>
             <th>Status</th>
         </tr>
     </thead>
@@ -32,8 +32,8 @@
                     <td>@item.Pbck7Number</td>
                     <td>@item.NppbkcId</td>
                     <td>@(item.PlantId + "-" +item.PlantName)</td>
-                    <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.DocumentType)</td>
                     <td>@item.Pbck7Date.ToString("dd MMM yyyy")</td>
+                    <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.DocumentType)</td>
                     <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.Pbck7Status)</td>
                     
                 </tr>

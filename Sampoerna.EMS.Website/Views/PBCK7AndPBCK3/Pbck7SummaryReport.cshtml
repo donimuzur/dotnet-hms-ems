@@ -124,7 +124,12 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new {@id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Plant
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Plant
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectDate, new { @class = "checkbox checkexport", @datacolumn = "3" })Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
