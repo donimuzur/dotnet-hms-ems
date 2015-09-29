@@ -61,7 +61,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
                 Details = Mapper.Map<List<WasteDetail>>(_wasteBll.GetAllByParam(new WasteGetByParamInput()))
 
-                
+
             });
 
             return View("Index", data);
@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 try
                 {
-                    _wasteBll.Save(data,CurrentUser.USER_ID);
+                    _wasteBll.Save(data, CurrentUser.USER_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
                     return RedirectToAction("Index");
@@ -190,7 +190,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
-           
+
             return model;
         }
 
@@ -369,6 +369,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     item.CreatedDate = DateTime.Now;
 
+                    var existingData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
+                    Convert.ToDateTime(item.WasteProductionDate));
+
+                    if (existingData != null)
+                    {
+                        AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
+                        return RedirectToAction("UploadManualWaste");
+                    }
+
+
+
                     _wasteBll.SaveUpload(item);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
                        );
@@ -393,9 +404,14 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 foreach (var dataRow in data.DataRows)
                 {
+                    if (dataRow[0] == "")
+                    {
+                        continue;
+                    }
+
                     var item = new WasteUploadItems();
 
-                  
+
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
