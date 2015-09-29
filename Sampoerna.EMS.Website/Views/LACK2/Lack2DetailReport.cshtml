@@ -1,11 +1,11 @@
 ﻿@using Sampoerna.EMS.Core
 @using Sampoerna.EMS.Website.Helpers
-@model Sampoerna.EMS.Website.Models.LACK2.Lack2SummaryReportsViewModel
+@model Sampoerna.EMS.Website.Models.LACK2.Lack2DetailReportsViewModel
 
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3 id="lblTitle">Summary Report</h3>
+            <h3 id="lblTitle">LACK-2 Detail Report</h3>
         </div>
     </div>
 </div>
@@ -19,7 +19,7 @@
 
                 <div class="form-excise" role="form">
                     <div class="row">
-                        @using (Ajax.BeginForm("SearchSummaryReports", "LACK2",
+                        @using (Ajax.BeginForm("SearchDetailReports", "LACK2",
                             new AjaxOptions
                             {
                                 HttpMethod = "POST",
@@ -77,7 +77,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
@@ -98,93 +98,44 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Document Status</label>
-                                        <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.SearchView.DocumentStatus, Model.SearchView.DocumentStatusList, "All", new { @class = "form-control selectreset" })
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
-                            
+
+                           
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Created Date</label>
+                                        <label class="col-md-4">Gi Date From</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.SearchView.CreatedDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                           
+                                                @(Model.SearchView.DateFromList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.DateFrom, Model.SearchView.DateFromList, "All", new { @class = "form-control selectreset" }))
+                                                
+                                           
                                         </div>
                                     </div>
-                                     
+
                                 </div>
+                               
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Created By</label>
+                                        <label class="col-md-4">Gi Date To</label>
                                         <div class="col-md-8">
-                                            @(Model.SearchView.CreatedByList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                              : Html.DropDownListFor(model => model.SearchView.CreatedBy, Model.SearchView.CreatedByList, "All", new { @class = "form-control selectreset" }))
+                                         
+                                                @(Model.SearchView.DateToList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.DateTo, Model.SearchView.DateToList, "All", new { @class = "form-control selectreset" }))
 
+
+                                           
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Approved Date</label>
-                                        <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.SearchView.ApprovedDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                     
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Approved By</label>
-                                        <div class="col-md-8">
-                                            @(Model.SearchView.ApprovedByList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                              : Html.DropDownListFor(model => model.SearchView.ApprovedBy, Model.SearchView.ApprovedByList, "All", new { @class = "form-control selectreset" }))
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Creator</label>
-                                        <div class="col-md-8">
-                                            @(Model.SearchView.CreatorList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                  : Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" }))
+                           
 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Approver</label>
-                                        <div class="col-md-8">
-                                            @(Model.SearchView.ApproverList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                              : Html.DropDownListFor(model => model.SearchView.Approver, Model.SearchView.ApproverList, "All", new { @class = "form-control selectreset" }))
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
                             <div class="col-md-2 col-md-offset-8">
                                 <button class="btn btn-blue full">FILTER</button>
                             </div>
@@ -198,7 +149,7 @@
                 </div>
             </div>
 
-            @using (Html.BeginForm("ExportXlsSummaryReports", "LACK2", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+            @using (Html.BeginForm("ExportXlsDetailReports", "LACK2", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
             {
                 <div class="white-wrapper toggle-wrapper">
                     <div class="form-excise" role="form">
@@ -215,14 +166,9 @@
                                         @Html.HiddenFor(model => model.ExportModel.GoodType)
                                         @Html.HiddenFor(model => model.ExportModel.PeriodMonth)
                                         @Html.HiddenFor(model => model.ExportModel.PeriodYear)
-                                        @Html.HiddenFor(model => model.ExportModel.DocumentStatus)
-                                        @Html.HiddenFor(model => model.ExportModel.CreatedDate)
-                                        @Html.HiddenFor(model => model.ExportModel.CreatedBy)
-                                        @Html.HiddenFor(model => model.ExportModel.ApprovedDate)
-                                        @Html.HiddenFor(model => model.ExportModel.ApprovedBy)
-                                        @Html.HiddenFor(model => model.ExportModel.Creator)
-                                        @Html.HiddenFor(model => model.ExportModel.Approver)
-
+                                        @Html.HiddenFor(model => model.ExportModel.DateFrom)
+                                        @Html.HiddenFor(model => model.ExportModel.DateTo)
+                                        
                                         <div class="row toggle">
 
                                             <div class="toggle-title">
@@ -239,119 +185,75 @@
 
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BDocumentType, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Document Type
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCk5GiDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })CK-5 GI Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyCode, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Company Code
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCk5RegistrationNumber, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })CK-5 Registration Number
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyName, new { @class = "checkbox checkexport", @datacolumn = "4" })Company Name
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCk5RegistrationDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })CK-5 Registration Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BNppbkcId, new { @class = "checkbox checkexport", @datacolumn = "5" })NPPBKC ID
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCk5Total, new { @class = "checkbox checkexport", @datacolumn = "5" })CK-5 Total
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCk5SendingPlant, new { @class = "checkbox checkexport", @datacolumn = "6" })CK-5 Sending Plant
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingCompanyCode, new { @class = "checkbox checkexport", @datacolumn = "6" })Receiving Company Code
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BSendingPlantAddress, new { @class = "checkbox checkexport", @datacolumn = "7" })Sending Plant Address
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingCompanyName, new { @class = "checkbox checkexport", @datacolumn = "7" })Receiving Company Name
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BLack2Period, new {  @class = "checkbox checkexport", @datacolumn = "8" })LACK-2 Period
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingNppbkc, new { @class = "checkbox checkexport", @datacolumn = "8" })Receiving NPPBKC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BLack2Date, new { @class = "checkbox checkexport", @datacolumn = "9" })LACK-2 Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingAddress, new { @class = "checkbox checkexport", @datacolumn = "9" })Receiving Address
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BTypeExcisableGoods, new { @class = "checkbox checkexport", @datacolumn = "10" })Type of Excisable Goods
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCk5SendingPlant, new { @class = "checkbox checkexport", @datacolumn = "10" })CK-5 Sending Plant
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BTotalDeliveryExcisable, new { @class = "checkbox checkexport", @datacolumn = "11" })Total Delivered Excisable Goods (kg)
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BSendingPlantAddress, new { @class = "checkbox checkexport", @datacolumn = "11" })Sending Plant Address
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BUom, new { @class = "checkbox checkexport", @datacolumn = "12" })UOM
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyCode, new { @class = "checkbox checkexport", @datacolumn = "12" })Company Code
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BPoa, new { @class = "checkbox checkexport", @datacolumn = "13" })POA
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyName, new { @class = "checkbox checkexport", @datacolumn = "13" })Company Name
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BPoaManager, new { @class = "checkbox checkexport", @datacolumn = "14" })POA Manager
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BNppbkcId, new { @class = "checkbox checkexport", @datacolumn = "14" })NPPBKC ID
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreatedDate, new { @class = "checkbox checkexport", @datacolumn = "15" })Created Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BTypeExcisableGoods, new { @class = "checkbox checkexport", @datacolumn = "15" })Type of Excisable Goods
                                                     </label>
                                                 </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreatedTime, new { @class = "checkbox checkexport", @datacolumn = "16" })Created Time
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreatedBy, new { @class = "checkbox checkexport", @datacolumn = "17" })Created By
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprovedDate, new { @class = "checkbox checkexport", @datacolumn = "18" })Approved Date
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprovedTime, new { @class = "checkbox checkexport", @datacolumn = "19" })Approved Time
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprovedBy, new { @class = "checkbox checkexport", @datacolumn = "20" })Approved By
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BLastChangedDate, new { @class = "checkbox checkexport", @datacolumn = "21" })Last Change Date
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BLastChangedTime, new { @class = "checkbox checkexport", @datacolumn = "22" })Last Change Time
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BStatus, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "23" })Status
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BLegalizeData, new { @class = "checkbox checkexport", @datacolumn = "24" })Legaliize Data
-                                                    </label>
-                                                </div>
+                                               
                                             </div>
                                         </div>
 
@@ -370,7 +272,7 @@
         </div>
     </div>
     <div id="contenttable" class="table-container">
-        @Html.Partial("_Lack2ListSummaryReport")
+        @Html.Partial("_Lack2ListDetailReport")
 
     </div>
 </div>
@@ -384,13 +286,13 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript" class="init">
 
-        $(document).ready(function() {
+        $(document).ready(function () {
 
             setupDataTables(true);
 
             $('#MenuLack2OpenDocument').removeClass('open');
             $('#MenuLack2Report').addClass('open');
-            $('#MenuLack2SummaryReport').addClass('active');
+            $('#MenuLack2DetailReport').addClass('active');
 
 
         });
@@ -415,7 +317,7 @@
                 });
 
 
-            $('.checkexport').on('click', function(e) {
+            $('.checkexport').on('click', function (e) {
                 // e.preventDefault();
 
                 // Get the column API object
@@ -426,14 +328,14 @@
             });
 
             if (blFirst) {
-                for (var i = 1; i < 24; i++) {
+                for (var i = 1; i < 16; i++) {
                     table.column(i).visible(false);
                 }
 
                 table.column(1).visible(true);
                 table.column(2).visible(true);
                 table.column(3).visible(true);
-                table.column(23).visible(true);
+                table.column(4).visible(true);
             } else {
                 $('.checkexport').each(function () {
 
@@ -454,7 +356,7 @@
 
         function ReloadDataTables() {
             setupDataTables(false);
-          
+
         }
 
         function OnReset() {
@@ -462,7 +364,7 @@
             $(".selectreset").val($(".selectreset option:first").val());
         }
 
-        $("#btnExport").click(function() {
+        $("#btnExport").click(function () {
             GetSearchSummaryReports();
             $('#ExportSummaryReportsForms').submit();
         });
@@ -474,24 +376,10 @@
             $('#ExportModel_GoodType').val($('#SearchView_GoodType').find("option:selected").val());
             $('#ExportModel_PeriodMonth').val($('#SearchView_PeriodMonth').find("option:selected").val());
             $('#ExportModel_PeriodYear').val($('#SearchView_PeriodYear').find("option:selected").val());
-            $('#ExportModel_DocumentStatus').val($('#SearchView_DocumentStatus').find("option:selected").val());
-            $('#ExportModel_CreatedDate').val($('#SearchView_CreatedDate').find("option:selected").val());
-            
+            $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
+            $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
 
-            $('#ExportModel_CreatedBy').val($('#SearchView_CreatedBy').find("option:selected").val());
-            $('#ExportModel_ApprovedDate').val($('#SearchView_ApprovedDate').find("option:selected").val());
-            $('#ExportModel_ApprovedBy').val($('#SearchView_ApprovedBy').find("option:selected").val());
-            $('#ExportModel_Creator').val($('#SearchView_Creator').find("option:selected").val());
-            $('#ExportModel_Approver').val($('#SearchView_Approver').find("option:selected").val());
         }
-
-
-        $("#btnConfirm").click(function() {
-            GetSearchSummaryReports();
-            $('#ExportSummaryReportsForms').submit();
-
-
-        });
-
+        
     </script>
 }

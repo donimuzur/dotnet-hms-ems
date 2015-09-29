@@ -22,7 +22,6 @@ namespace Sampoerna.EMS.Contract
 
         Lack2Dto GetByIdAndItem(int id);
 
-
         Lack2Dto Insert(Lack2Dto item);
 
         void InsertDocument(LACK2_DOCUMENT document);
@@ -34,5 +33,7 @@ namespace Sampoerna.EMS.Contract
         void RemoveExistingItem(long id);
 
         List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
+
+        List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
     }
 }

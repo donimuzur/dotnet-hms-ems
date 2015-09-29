@@ -24,4 +24,18 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Approver { get; set; }
 
     }
+
+    public class Lack2GetDetailReportByParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string SendingPlantId { get; set; }
+        public string GoodType { get; set; }
+
+        public int? PeriodMonth { get; set; }
+        public int? PeriodYear { get; set; }
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+     
+    }
 }

@@ -42,5 +42,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         //search
         public string PeriodYear { get; set; }
+        public string TypeExcisableGoodsDesc { get; set; }
     }
 }

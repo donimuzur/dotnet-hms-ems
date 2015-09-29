@@ -460,10 +460,14 @@ namespace Sampoerna.EMS.BLL
 
                 summaryDto.Lack2Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.SUBMISSION_DATE);
 
-                summaryDto.TypeExcisableGoods = dtData.EX_TYP_DESC;
+                summaryDto.TypeExcisableGoods = dtData.EX_GOOD_TYP;
+                summaryDto.TypeExcisableGoodsDesc = dtData.EX_TYP_DESC;
 
                 summaryDto.TotalDeliveryExcisable = "0";
                 summaryDto.Uom = "";
+                summaryDto.Poa = "";
+                summaryDto.PoaManager = "";
+                summaryDto.LegalizeData = "";
 
                 summaryDto.CreatedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.CREATED_DATE);
                 summaryDto.CreatedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.CREATED_DATE);
@@ -482,6 +486,133 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.PeriodYear = dtData.PERIOD_YEAR.ToString();
                 result.Add(summaryDto);
 
+            }
+
+            return result;
+        }
+
+        public List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input)
+        {
+
+            Expression<Func<LACK2, bool>> queryFilter = PredicateHelper.True<LACK2>();
+
+            if (!string.IsNullOrEmpty(input.CompanyCode))
+            {
+                queryFilter = queryFilter.And(c => c.BUKRS.Contains(input.CompanyCode));
+            }
+
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID.Contains(input.NppbkcId));
+            }
+
+            if (!string.IsNullOrEmpty(input.SendingPlantId))
+            {
+                queryFilter = queryFilter.And(c => c.LEVEL_PLANT_ID.Contains(input.SendingPlantId));
+            }
+
+            if (!string.IsNullOrEmpty(input.GoodType))
+            {
+                queryFilter = queryFilter.And(c => c.EX_GOOD_TYP.Contains(input.GoodType));
+            }
+
+
+            if (input.PeriodMonth.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth.Value);
+
+            if (input.PeriodYear.HasValue)
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
+
+            //if (input.CreatedFrom.HasValue)
+            //{
+            //    queryFilter =
+            //        queryFilter.And(
+            //            c =>
+            //                c.CREATED_DATE.Year == input.CreatedDate.Value.Year &&
+            //                c.CREATED_DATE.Month == input.CreatedDate.Value.Month &&
+            //                c.CREATED_DATE.Day == input.CreatedDate.Value.Day);
+            //}
+         
+            //if (input.CreatedTo.HasValue)
+            //{
+            //    queryFilter =
+            //        queryFilter.And(
+            //            c =>
+            //                c.APPROVED_DATE.HasValue &&
+            //                c.APPROVED_DATE.Value.Year == input.ApprovedDate.Value.Year &&
+            //                c.APPROVED_DATE.Value.Month == input.ApprovedDate.Value.Month &&
+            //                c.APPROVED_DATE.Value.Day == input.ApprovedDate.Value.Day);
+            //}
+
+
+
+            var rc = _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5").ToList();
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            var result = SetDataDetailReport(rc);
+
+            if (input.DateFrom.HasValue)
+            {
+                input.DateFrom = new DateTime(input.DateFrom.Value.Year, input.DateFrom.Value.Month, input.DateFrom.Value.Day, 0, 0, 0);
+                result = result.Where(c => c.GiDate >= input.DateFrom).ToList();
+            }
+
+            if (input.DateTo.HasValue)
+            {
+                input.DateFrom = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
+                result = result.Where(c => c.GiDate <= input.DateTo).ToList();
+            }
+
+            return result;
+
+        }
+
+        private List<Lack2DetailReportDto> SetDataDetailReport(List<LACK2> listLack2)
+        {
+            var result = new List<Lack2DetailReportDto>();
+
+            foreach (var dtData in listLack2)
+            {
+                foreach (var lack2Item in dtData.LACK2_ITEM)
+                {
+                    var summaryDto = new Lack2DetailReportDto();
+
+                    summaryDto.Lack2Number = dtData.LACK2_NUMBER;
+
+                    if (lack2Item.CK5 != null)
+                    {
+                        summaryDto.GiDate = lack2Item.CK5.GI_DATE;
+                        summaryDto.Ck5GiDate = ConvertHelper.ConvertDateToStringddMMMyyyy(lack2Item.CK5.GI_DATE);
+                        summaryDto.Ck5RegistrationNumber = lack2Item.CK5.REGISTRATION_NUMBER;
+                        summaryDto.Ck5RegistrationDate = ConvertHelper.ConvertDateToStringddMMMyyyy(lack2Item.CK5.REGISTRATION_DATE);
+                        summaryDto.Ck5Total = ConvertHelper.ConvertDecimalToStringMoneyFormat(lack2Item.CK5.GRAND_TOTAL_EX);
+                        
+                        summaryDto.ReceivingCompanyCode = lack2Item.CK5.DEST_PLANT_COMPANY_CODE;
+                        summaryDto.ReceivingCompanyName = lack2Item.CK5.DEST_PLANT_COMPANY_NAME;
+                        summaryDto.ReceivingNppbkc = lack2Item.CK5.DEST_PLANT_NPPBKC_ID;
+                        summaryDto.ReceivingAddress = lack2Item.CK5.DEST_PLANT_ADDRESS;
+                    }
+
+                    summaryDto.Ck5SendingPlant = dtData.LEVEL_PLANT_ID;
+                    var dbPlant = _plantBll.GetT001WById(dtData.LEVEL_PLANT_ID);
+                    if (dbPlant != null)
+                    {
+                        summaryDto.SendingPlantAddress = dbPlant.ADDRESS;
+                    }
+                    summaryDto.CompanyCode = dtData.BUKRS;
+                    summaryDto.CompanyName = dtData.BUTXT;
+                    summaryDto.NppbkcId = dtData.NPPBKC_ID;
+                    summaryDto.TypeExcisableGoods = dtData.EX_GOOD_TYP;
+                    summaryDto.TypeExcisableGoodsDesc = dtData.EX_TYP_DESC;
+                    
+                    result.Add(summaryDto);
+
+                }
             }
 
             return result;

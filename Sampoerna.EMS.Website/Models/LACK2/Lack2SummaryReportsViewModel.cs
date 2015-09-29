@@ -63,6 +63,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public string Lack2Period { get; set; }
             public string Lack2Date { get; set; }
             public string TypeExcisableGoods { get; set; }
+            public string TypeExcisableGoodsDesc { get; set; }
 
             public string TotalDeliveryExcisable { get; set; }
             public string Uom { get; set; }

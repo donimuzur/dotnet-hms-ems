@@ -339,6 +339,7 @@
     <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
     <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DetailReportsViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexViewModel.cs" />
@@ -1166,6 +1167,8 @@
     <Content Include="Views\CK4C\_Ck4CListSummaryReport.cshtml" />
     <Content Include="Views\LACK2\Lack2SummaryReport.cshtml" />
     <Content Include="Views\LACK2\_Lack2ListSummaryReport.cshtml" />
+    <Content Include="Views\LACK2\Lack2DetailReport.cshtml" />
+    <Content Include="Views\LACK2\_Lack2ListDetailReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

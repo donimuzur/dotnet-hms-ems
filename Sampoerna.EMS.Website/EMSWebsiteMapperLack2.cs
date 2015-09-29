@@ -15,6 +15,12 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Lack2SearchSummaryReportsViewModel, Lack2GetSummaryReportByParamInput>().IgnoreAllNonExisting()
                 ;
+
+            Mapper.CreateMap<Lack2DetailReportDto, Lack2DetailReportsItem>().IgnoreAllNonExisting()
+                ;
+
+            Mapper.CreateMap<Lack2SearchDetailReportsViewModel, Lack2GetDetailReportByParamInput>().IgnoreAllNonExisting()
+                ;
         }
     }
 }
