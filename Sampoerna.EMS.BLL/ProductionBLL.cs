@@ -90,8 +90,9 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<ProductionDto>>(dtData);
         }
 
-        public void Save(ProductionDto productionDto, string userId)
+        public bool Save(ProductionDto productionDto, string userId)
         {
+            var isNewData = true;
             var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
 
             var origin = _repository.GetByID(dbProduction.COMPANY_CODE, dbProduction.WERKS, dbProduction.FA_CODE,
@@ -101,8 +102,11 @@ namespace Sampoerna.EMS.BLL
 
             //to do ask and to do refactor
             if(originDto != null)
+            {
                 SetChange(originDto, productionDto, userId);
-
+                isNewData = false;
+            }
+                
             if (dbProduction.UOM == "KG")
             {
                 dbProduction.UOM = "G";
@@ -120,6 +124,8 @@ namespace Sampoerna.EMS.BLL
 
             _repository.InsertOrUpdate(dbProduction);
             _uow.SaveChanges();
+
+            return isNewData;
         }
 
 
@@ -344,5 +350,20 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public void DeleteOldData(string companyCode, string plantWerk, string faCode, DateTime productionDate)
+        {
+            var dbData = _repository.GetByID(companyCode, plantWerk, faCode, productionDate);
+
+            if (dbData == null)
+            {
+                _logger.Error(new BLLException(ExceptionCodes.BLLExceptions.DataNotFound));
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            else
+            {
+                _repository.Delete(dbData);
+                _uow.SaveChanges();
+            }
+        }
     }
 }
