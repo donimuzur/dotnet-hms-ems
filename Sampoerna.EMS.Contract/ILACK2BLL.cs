@@ -32,5 +32,7 @@ namespace Sampoerna.EMS.Contract
         List<Lack2Dto> GetCompletedDocument();
 
         void RemoveExistingItem(long id);
+
+        bool IsSelectionCriteriaExist(Lack2Dto item);
     }
 }

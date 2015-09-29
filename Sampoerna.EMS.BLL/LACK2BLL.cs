@@ -339,5 +339,19 @@ namespace Sampoerna.EMS.BLL
             _repositoryItem.Delete(id);
             _uow.SaveChanges();
         }
+
+        public bool IsSelectionCriteriaExist(Lack2Dto item) {
+            Expression<Func<LACK2, bool>> queryFilter =
+                            c => c.BUKRS == item.Burks && c.NPPBKC_ID == item.NppbkcId
+                            && c.EX_GOOD_TYP == item.ExGoodTyp
+                            && c.LEVEL_PLANT_ID == item.LevelPlantId
+                            && c.PERIOD_MONTH == item.PeriodMonth && c.PERIOD_YEAR == item.PeriodYear;
+
+            var dataExist = _repository.Get(queryFilter).FirstOrDefault();
+            if (dataExist == null)
+                return false;
+            else
+                return true;
+        }
     }
 }

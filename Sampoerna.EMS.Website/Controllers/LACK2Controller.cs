@@ -142,36 +142,48 @@ namespace Sampoerna.EMS.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(LACK2CreateViewModel model)
         {
-
             Lack2Dto item = new Lack2Dto();
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
 
-            var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
-            var company = _companyBll.GetById(model.Lack2Model.Burks);
-            var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
+            //validate if selection criteria exist
+            var isExist = _lack2Bll.IsSelectionCriteriaExist(item);
 
-            item.ExTypDesc = goods.EXT_TYP_DESC;
-            item.Butxt = company.BUTXT;
-            item.LevelPlantName = plant.NAME1;
-            item.LevelPlantCity = plant.ORT01;
-            item.LevelPlantId = plant.WERKS;
-            item.PeriodMonth = model.Lack2Model.PeriodMonth;
-            item.PeriodYear = model.Lack2Model.PeriodYear;
-            item.CreatedBy = CurrentUser.USER_ID;
-            item.CreatedDate = DateTime.Now;
-            var inputDoc = new GenerateDocNumberInput();
-            inputDoc.Month = item.PeriodMonth;
-            inputDoc.Year = item.PeriodYear;
-            inputDoc.NppbkcId = item.NppbkcId;
-            item.Lack2Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
-            item.Items = model.Lack2Model.Items.Select(x=>Mapper.Map<Lack2ItemDto>(x)).ToList();
-            
-             item.Status = Enums.DocumentStatus.Draft;
-            
+            if (!isExist)
+            {
+                var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
+                var company = _companyBll.GetById(model.Lack2Model.Burks);
+                var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
-            _lack2Bll.Insert(item);
-            AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+                item.ExTypDesc = goods.EXT_TYP_DESC;
+                item.Butxt = company.BUTXT;
+                item.LevelPlantName = plant.NAME1;
+                item.LevelPlantCity = plant.ORT01;
+                item.LevelPlantId = plant.WERKS;
+                item.PeriodMonth = model.Lack2Model.PeriodMonth;
+                item.PeriodYear = model.Lack2Model.PeriodYear;
+                item.CreatedBy = CurrentUser.USER_ID;
+                item.CreatedDate = DateTime.Now;
+                var inputDoc = new GenerateDocNumberInput();
+                inputDoc.Month = item.PeriodMonth;
+                inputDoc.Year = item.PeriodYear;
+                inputDoc.NppbkcId = item.NppbkcId;
+                item.Lack2Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
+                item.Items = model.Lack2Model.Items.Select(x => Mapper.Map<Lack2ItemDto>(x)).ToList();
+
+                item.Status = Enums.DocumentStatus.Draft;
+
+
+
+                _lack2Bll.Insert(item);
+                AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+                
+            }
+            else 
+            {
+                AddMessageInfo("A record with same parameter is already exist", Enums.MessageInfoType.Error);
+               
+            }
             return RedirectToAction("Index");
         }
 
