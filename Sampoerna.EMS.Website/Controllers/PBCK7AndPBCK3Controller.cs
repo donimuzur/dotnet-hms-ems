@@ -1479,7 +1479,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var item = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
-                item.Pbck7Status = Enums.DocumentStatus.Draft;
+                item.Pbck7Status = Enums.DocumentStatus.Rejected;
                 item.IsRejected = true;
                 item.Comment = model.Comment;
                 item.RejectedBy = CurrentUser.USER_ID;
@@ -1504,7 +1504,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var item = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(model.Id);
-                item.Pbck3Status= Enums.DocumentStatus.Draft;
+                item.Pbck3Status= Enums.DocumentStatus.Rejected;
                 item.IsRejected = true;
                 item.Comment = model.Comment;
                 item.RejectedBy = CurrentUser.USER_ID;

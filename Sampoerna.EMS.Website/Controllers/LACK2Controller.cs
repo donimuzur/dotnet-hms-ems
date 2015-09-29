@@ -534,7 +534,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var item = _lack2Bll.GetByIdAndItem(model.Lack2Model.Lack2Id);
-                item.Status = Enums.DocumentStatus.Draft;
+                item.Status = Enums.DocumentStatus.Rejected;
                 item.IsRejected = true;
                 item.Comment = model.Lack2Model.Comment;
                 item.RejectedBy = CurrentUser.USER_ID;
