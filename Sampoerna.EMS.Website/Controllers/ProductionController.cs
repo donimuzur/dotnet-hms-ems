@@ -258,8 +258,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _productionBll.Save(dbPrductionNew, CurrentUser.USER_ID);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
+                var isNewData = _productionBll.Save(dbPrductionNew, CurrentUser.USER_ID);
+                var message = Constans.SubmitMessage.Updated;
+
+                if (isNewData) 
+                { 
+                    _productionBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
+               Convert.ToDateTime(model.ProductionDateX));
+                }
+
+                AddMessageInfo(message, Enums.MessageInfoType.Success
                     );
 
 
@@ -307,7 +315,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.ChangesHistoryList =
                 Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
-                    companyCode + plantWerk + faCode + productionDate.ToString("ddMMMyyyy")));
+                    companyCode + "_" + plantWerk + "_" + faCode + "_" + productionDate.ToString("ddMMMyyyy")));
 
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();

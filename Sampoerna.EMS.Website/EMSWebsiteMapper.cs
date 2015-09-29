@@ -25,7 +25,6 @@ using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.UserAuthorization;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
-using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.Waste;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.Settings;
@@ -813,7 +812,8 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ProductionDto, ProductionDetail>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ProductionDate,
                     opt => opt.MapFrom(src => src.ProductionDate.ToString("dd MMM yyyy")))
-                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName));
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.Qty == null ? src.QtyPacked + src.QtyUnpacked : src.Qty));
                 //.ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode));
                 
 

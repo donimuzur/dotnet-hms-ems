@@ -70,8 +70,8 @@
                     <td>
                         @item.SupplierAddress
                     </td>
-                    <td>
-                        @item.QtyApproved
+                    <td align="right">
+                        @String.Format("{0:n}", @item.QtyApproved)
                     </td>
                     <td>
                         @item.Pbck1Type
@@ -111,8 +111,8 @@
                     <td>
                          @item.Lack1ToMonthName @item.Lack1ToYear
                     </td>
-                    <td>
-                        @item.LatestSaldo
+                    <td align="right">
+                        @String.Format("{0:n}", @item.LatestSaldo)
                     </td>
                     <td>
                         @item.PeriodFrom
@@ -123,14 +123,14 @@
                     <td>
                         @item.ReportedOn
                     </td>
-                    <td>
-                        @item.RequestQty
+                    <td align="right">
+                        @String.Format("{0:n}", @item.RequestQty)
                     </td>
                     <td>
                         @item.StatusGov
                     </td>
-                    <td>
-                        @item.QtyApproved
+                    <td align="right">
+                        @String.Format("{0:n}", @item.QtyApproved)
                     </td>
                     <td>
                         @item.DecreeDate
