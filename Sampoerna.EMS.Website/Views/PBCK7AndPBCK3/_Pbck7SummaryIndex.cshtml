@@ -10,6 +10,10 @@
             <th>Date</th>
             <th>Doc.Type</th>
             <th>Status</th>
+            <th>Exec From</th>
+            <th>Exec To</th>
+            <th>Back-1 No</th>
+            <th>Back-1 Date</th>
         </tr>
     </thead>
     
@@ -26,7 +30,10 @@
                     <td>@item.Pbck7Date.ToString("dd MMM yyyy")</td>
                     <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.DocumentType)</td>
                     <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.Pbck7Status)</td>
-
+                    <td>@(item.ExecDateFrom.HasValue?item.ExecDateFrom.Value.ToString("dd MMM yyyy") : string.Empty)</td>
+                    <td>@(item.ExecDateTo.HasValue ? item.ExecDateTo.Value.ToString("dd MMM yyyy") : string.Empty)</td>
+                    <td>@(item.Back1Dto != null ? item.Back1Dto.Back1Number : string.Empty)</td>
+                    <td>@(item.Back1Dto != null ? item.Back1Dto.Back1Date.Value.ToString("dd MMM yyyy") : string.Empty)</td>
                 </tr>
             }
         }

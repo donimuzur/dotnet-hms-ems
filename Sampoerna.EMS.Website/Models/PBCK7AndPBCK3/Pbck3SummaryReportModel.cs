@@ -63,6 +63,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public bool IsSelectPbck3No { get; set; }
 
+     
         public bool IsSelectPlant { get; set; }
 
         public bool IsSelectDocType { get; set; }
@@ -87,6 +88,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string Nppbkc { get; set; }
 
+        
       
         public string Pbck3Status { get; set; }
     }
