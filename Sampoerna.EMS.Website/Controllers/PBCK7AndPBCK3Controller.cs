@@ -884,7 +884,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);
             }
-          
+            AddMessageInfo("Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
@@ -1005,6 +1005,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return RedirectToAction("ApprovePbck3", new { id = model.Id });
             }
+            
             return RedirectToAction("Index");
         }
 
@@ -1047,6 +1048,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             item.UploadItems = null;
             _pbck7AndPbck7And3Bll.InsertPbck7(item);
+            AddMessageInfo("Approve Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
@@ -1090,6 +1092,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             
             _pbck7AndPbck7And3Bll.InsertPbck3(item);
+            AddMessageInfo("Approve Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
 
@@ -1468,6 +1471,56 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.Flush();
 
             Response.End();
+        }
+        [HttpPost]
+        public ActionResult RejectDocumentPbck7(Pbck7Pbck3CreateViewModel model)
+        {
+            bool isSuccess = false;
+            try
+            {
+                var item = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+                item.Pbck7Status = Enums.DocumentStatus.Draft;
+                item.IsRejected = true;
+                item.Comment = model.Comment;
+                item.RejectedBy = CurrentUser.USER_ID;
+                item.RejectedDate = DateTime.Now;
+                item.UploadItems = null;
+                _pbck7AndPbck7And3Bll.InsertPbck7(item);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Detail", "Pbck7AndPbck3", new { id = model.Id });
+            AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public ActionResult RejectDocumentPbck3(Pbck7Pbck3CreateViewModel model)
+        {
+            bool isSuccess = false;
+            try
+            {
+                var item = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(model.Id);
+                item.Pbck3Status= Enums.DocumentStatus.Draft;
+                item.IsRejected = true;
+                item.Comment = model.Comment;
+                item.RejectedBy = CurrentUser.USER_ID;
+                item.RejectedDate = DateTime.Now;
+                
+                _pbck7AndPbck7And3Bll.InsertPbck3(item);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Detail", "Pbck7AndPbck3", new { id = model.Id });
+            AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
         }
 
     }
