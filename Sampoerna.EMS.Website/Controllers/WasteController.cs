@@ -223,21 +223,39 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         //
-        // POST: /Production/Edit
+        // POST: /Waste/Edit
         [HttpPost]
         public ActionResult Edit(WasteDetail model)
         {
 
-            var dbProduction = _wasteBll.GetById(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
+            var dbWaste = _wasteBll.GetById(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
                Convert.ToDateTime(model.WasteProductionDateX));
 
-            if (dbProduction == null)
+            if (dbWaste == null)
             {
                 ModelState.AddModelError("Waste", "Data is not Found");
                 model = IniEdit(model);
 
-                return View("Edit, model");
+                return View("Edit", model);
 
+            }
+
+            if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX
+                || model.FaCode != model.FaCodeX || Convert.ToDateTime(model.WasteProductionDate) != Convert.ToDateTime(model.WasteProductionDateX))
+            {
+                var existingData = _wasteBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
+                    Convert.ToDateTime(model.WasteProductionDate));
+                if (existingData != null)
+                {
+                    AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Edit", "Waste", new
+                    {
+                        companyCode = model.CompanyCode,
+                        plantWerk = model.PlantWerks,
+                        faCode = model.FaCode,
+                        wasteProductionDate = model.WasteProductionDate
+                    });
+                }
             }
 
             var dbWasteNew = Mapper.Map<WasteDto>(model);
