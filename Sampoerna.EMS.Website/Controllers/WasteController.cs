@@ -279,8 +279,7 @@ namespace Sampoerna.EMS.Website.Controllers
                Convert.ToDateTime(model.WasteProductionDateX));
                 }
 
-                AddMessageInfo(message, Enums.MessageInfoType.Success
-                    );
+                AddMessageInfo(message, Enums.MessageInfoType.Success);
 
 
                 return RedirectToAction("Index");

@@ -13,4 +13,10 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string PlantWerk { get; set; }
         public DateTime ProductionDate { get; set; }
     }
+
+    public class SaveProductionOutput : BLLBaseOutput
+    {
+        public bool isNewData { get; set; }
+        public bool isFromSap { get; set; }
+    }
 }
