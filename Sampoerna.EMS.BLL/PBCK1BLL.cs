@@ -304,6 +304,9 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("EXC_GOOD_TYP", origin.GoodType == data.GoodType);
             changesData.Add("SUPPLIER_PLANT", origin.SupplierPlant == data.SupplierPlant);
             changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId == data.SupplierPortId);
+            changesData.Add("SUPPLIER_COMPANY", origin.SupplierCompany == data.SupplierCompany);
+            changesData.Add("SUPPLIER_NPPBKC", origin.SupplierNppbkcId == data.SupplierNppbkcId);
+            changesData.Add("SUPPLIER_KPPBC", origin.SupplierKppbcName == data.SupplierKppbcName);
             changesData.Add("SUPPLIER_ADDRESS", origin.SupplierAddress == data.SupplierAddress);
             changesData.Add("SUPPLIER_PHONE", origin.SupplierPhone == data.SupplierPhone);
             changesData.Add("PLAN_PROD_FROM", origin.PlanProdFrom == data.PlanProdFrom);
@@ -396,6 +399,21 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.SupplierPortName;
                             changes.NEW_VALUE = data.SupplierPortName;
                             changes.FIELD_NAME = "Supplier Port";
+                            break;
+                        case "SUPPLIER_COMPANY":
+                            changes.OLD_VALUE = origin.SupplierCompany;
+                            changes.NEW_VALUE = data.SupplierCompany;
+                            changes.FIELD_NAME = "Supplier Company";
+                            break;
+                        case "SUPPLIER_NPPBKC":
+                            changes.OLD_VALUE = origin.SupplierNppbkcId;
+                            changes.NEW_VALUE = data.SupplierNppbkcId;
+                            changes.FIELD_NAME = "Supplier NPPBKC";
+                            break;
+                        case "SUPPLIER_KPPBC":
+                            changes.OLD_VALUE = origin.SupplierKppbcName;
+                            changes.NEW_VALUE = data.SupplierKppbcName;
+                            changes.FIELD_NAME = "Supplier KPPBC";
                             break;
                         case "SUPPLIER_ADDRESS":
                             changes.OLD_VALUE = origin.SupplierAddress;

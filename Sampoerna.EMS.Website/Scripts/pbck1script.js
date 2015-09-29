@@ -1,4 +1,18 @@
-﻿function setSupplierPlantEmpty() {
+﻿function setUpload() {
+    if ($("#Detail_GoodType").val() == "") {
+        $("#btn-prod-conv-upload").prop("disabled", true);
+        $("#ProdConvExcelfile").prop("disabled", true);
+        $("#btn-prod-plan-upload").prop("disabled", true);
+        $("#ProdPlanExcelfile").prop("disabled", true);
+    } else {
+        $("#btn-prod-conv-upload").prop("disabled", false);
+        $("#ProdConvExcelfile").prop("disabled", false);
+        $("#btn-prod-plan-upload").prop("disabled", false);
+        $("#ProdPlanExcelfile").prop("disabled", false);
+    }
+}
+
+function setSupplierPlantEmpty() {
     $('#Detail_SupplierNppbkcId').val('');
     $('#Detail_SupplierKppbcId').val('');
     $('#Detail_SupplierPhone').val('');
@@ -234,6 +248,7 @@ function prodPlanGenerateClick(url) {
     var totalFiles = document.getElementById("ProdPlanExcelfile").files.length;
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("ProdPlanExcelfile").files[i];
+        console.log(file);
         formData.append("prodPlanExcelFile", file);
     }
 
