@@ -1300,7 +1300,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     Nppbkc = b.NppbkcId,
                     PlantName = b.PlantId + "-" + b.PlantName,
                     Pbck7Date =  b.Pbck7Date,
-                    Pbck7Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck7Status)
+                    Pbck7Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck7Status),
+                    ExecFrom = b.ExecDateFrom,
+                    ExecTo = b.ExecDateTo,
+                    Back1No = b.Back1Dto != null ? b.Back1Dto.Back1Number : string.Empty,
+                    Back1Date  = b.Back1Dto != null ? b.Back1Dto.Back1Date : null
+
                     
                 }).ToList();
             var grid = new System.Web.UI.WebControls.GridView
@@ -1338,6 +1343,38 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "Pbck7Date",
                     HeaderText = "Date"
+                });
+            }
+            if (model.ExportModel.IsSelectExecFrom)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExecFrom",
+                    HeaderText = "Exec Date From"
+                });
+            }
+            if (model.ExportModel.IsSelectExecFrom)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExecTo",
+                    HeaderText = "Exec To From"
+                });
+            }
+            if (model.ExportModel.IsSelectBack1No)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Back1No",
+                    HeaderText = "Back-1 No"
+                });
+            }
+            if (model.ExportModel.IsSelectBack1Date)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Back1Date",
+                    HeaderText = "Back-1 Date"
                 });
             }
             if (model.ExportModel.IsSelectStatus)
@@ -1390,6 +1427,7 @@ namespace Sampoerna.EMS.Website.Controllers
                            PlantName = b.Plant,
                            Pbck3Date = b.Pbck3Date,
                            Pbck3Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck3Status)
+                          
 
                        }).ToList();
             var grid = new System.Web.UI.WebControls.GridView
@@ -1437,6 +1475,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Date"
                 });
             }
+         
             if (model.ExportModel.IsSelectStatus)
             {
                 grid.Columns.Add(new BoundField()
