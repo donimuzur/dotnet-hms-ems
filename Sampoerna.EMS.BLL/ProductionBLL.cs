@@ -90,9 +90,12 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<ProductionDto>>(dtData);
         }
 
-        public bool Save(ProductionDto productionDto, string userId)
+        public SaveProductionOutput Save(ProductionDto productionDto, string userId)
         {
-            var isNewData = true;
+            var output = new SaveProductionOutput();
+            output.isNewData = true;
+            output.isFromSap = false;
+
             var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
 
             var origin = _repository.GetByID(dbProduction.COMPANY_CODE, dbProduction.WERKS, dbProduction.FA_CODE,
@@ -104,7 +107,7 @@ namespace Sampoerna.EMS.BLL
             if(originDto != null)
             {
                 SetChange(originDto, productionDto, userId);
-                isNewData = false;
+                output.isNewData = false;
             }
                 
             if (dbProduction.UOM == "KG")
@@ -122,10 +125,13 @@ namespace Sampoerna.EMS.BLL
             }
             dbProduction.CREATED_DATE = DateTime.Now;
 
+            if(dbProduction.BATCH != null)
+                output.isFromSap = true;
+
             _repository.InsertOrUpdate(dbProduction);
             _uow.SaveChanges();
 
-            return isNewData;
+            return output;
         }
 
 
