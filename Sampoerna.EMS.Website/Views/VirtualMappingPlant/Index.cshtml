@@ -6,9 +6,9 @@
 }
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+   <script src="~/Scripts/js/custom.js"></script>>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterVirtualMappingPlant').addClass('active');
         $(document).ready(function () {
             
             // Setup - add a text input to each footer cell
@@ -36,7 +36,7 @@
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
 
-            $('#MenuMasterVirtualMappingPlant').addClass('active');
+           
 
             @if (TempData[Constans.SubmitType.Save] != null)
             {
@@ -107,8 +107,8 @@
                             {
                                 <tr>
                                     <td class="action">
-                                        <a href="@Url.Action("Details", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })"><i class="fa fa-eye"></i></a>
-                                        <a href="@Url.Action("Edit", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })"><i class="fa fa-pencil-square-o"></i></a>
+                                        <a href="@Url.Action("Details", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                        <a href="@Url.Action("Edit", "VirtualMappingPlant", new { id = item.VirtualPlantMapId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.CompanyName)
@@ -138,12 +138,12 @@
 <!--modal-->
 <input id="btn-virtualplant-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
 
-<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Success</h3>
+                <h4 class="modal-title">Success</h4>
             </div>
             <div class="modal-body" id="modal-virtualplant-message">
 

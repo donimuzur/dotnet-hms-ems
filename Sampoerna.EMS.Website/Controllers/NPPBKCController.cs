@@ -20,36 +20,38 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExKPPBCBLL _kppbcBll;
         private IPlantBLL _plantBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private Enums.MenuList _mainMenu;
 
-        public NPPBKCController(IZaidmExNPPBKCBLL nppbkcBll,IChangesHistoryBLL changesHistoryBll, ICompanyBLL companyBll, IMasterDataBLL masterData, IZaidmExKPPBCBLL kppbcBll,
+        public NPPBKCController(IZaidmExNPPBKCBLL nppbkcBll, IChangesHistoryBLL changesHistoryBll, ICompanyBLL companyBll, IMasterDataBLL masterData, IZaidmExKPPBCBLL kppbcBll,
             IPageBLL pageBLL, IPlantBLL plantBll)
-            : base(pageBLL, Enums.MenuList.MasterData)
+            : base(pageBLL, Enums.MenuList.NPPBKC)
         {
             _nppbkcBll = nppbkcBll;
             _masterDataBll = masterData;
             _companyBll = companyBll;
             _kppbcBll = kppbcBll;
             _plantBll = plantBll;
-             _changesHistoryBll = changesHistoryBll;
+            _changesHistoryBll = changesHistoryBll;
+            _mainMenu = Enums.MenuList.MasterData;
         }
 
         //
         // GET: /NPPBKC/
         public ActionResult Index()
         {
-            var plant = new NPPBKCIViewModels
+            var nppbkc = new NPPBKCIViewModels
             {
-                MainMenu = Enums.MenuList.MasterData,
+                MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<VirtualNppbckDetails>>(_nppbkcBll.GetAll()) 
+                Details = Mapper.Map<List<VirtualNppbckDetails>>(_nppbkcBll.GetAll())
             };
 
             //ViewBag.Message = TempData["message"];
-            return View("Index", plant);
+            return View("Index", nppbkc);
 
         }
 
-        public ActionResult Edit(long id)
+        public ActionResult Edit(string id)
         {
             var nppbkc = _nppbkcBll.GetById(id);
 
@@ -59,15 +61,15 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             if (nppbkc.IS_DELETED == true)
             {
-                return RedirectToAction("Detail", "NPPBKC", new {id = nppbkc.NPPBKC_ID});
+                return RedirectToAction("Detail", "NPPBKC", new { id = nppbkc.NPPBKC_ID });
             }
             var model = new NppbkcFormModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.Plant = Mapper.Map<List<T1001W>>(_plantBll.GetAll());
-        
+            model.Plant = _plantBll.Get(id);
 
-    ;
+
+            
 
             model.Detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
 
@@ -78,10 +80,10 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var changesData = new Dictionary<string, bool>();
 
-            changesData.Add("REGION_OFFICE_DGCE", (origin.RegionOfficeOfDGCE == null ? true : origin.RegionOfficeOfDGCE.Equals(nppbkc.REGION_OFFICE_DGCE)));
-            changesData.Add("CITY_ALIAS", (origin.CityAlias == null ? true : origin.CityAlias.Equals(nppbkc.CITY_ALIAS)));
-            changesData.Add("TEXT_TO", (origin.TextTo == null ? true : origin.TextTo.Equals(nppbkc.TEXT_TO)));
-           
+            changesData.Add("REGION_OFFICE_DGCE", origin.RegionOfficeOfDGCE == nppbkc.REGION_DGCE);
+            changesData.Add("CITY_ALIAS",origin.CityAlias == nppbkc.CITY_ALIAS);
+            changesData.Add("TEXT_TO", origin.TextTo == nppbkc.TEXT_TO);
+
 
             foreach (var listChange in changesData)
             {
@@ -97,7 +99,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         case "REGION_OFFICE_DGCE":
                             changes.OLD_VALUE = origin.RegionOfficeOfDGCE;
-                            changes.NEW_VALUE = nppbkc.REGION_OFFICE_DGCE;
+                            changes.NEW_VALUE = nppbkc.REGION_DGCE;
                             break;
 
                         case "CITY_ALIAS":
@@ -108,7 +110,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             changes.OLD_VALUE = origin.TextTo;
                             changes.NEW_VALUE = nppbkc.TEXT_TO;
                             break;
-                      }
+                    }
                     _changesHistoryBll.AddHistory(changes);
 
 
@@ -117,7 +119,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-        } 
+        }
         [HttpPost]
         public ActionResult Edit(NppbkcFormModel model)
         {
@@ -138,32 +140,38 @@ namespace Sampoerna.EMS.Website.Controllers
                 var nppbkcId = model.Detail.VirtualNppbckId;
                 var nppbkc = _nppbkcBll.GetById(nppbkcId);
                 var origin = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
-                 AutoMapper.Mapper.Map(model.Detail, nppbkc);
-                 SetChanges(origin,nppbkc);
+                AutoMapper.Mapper.Map(model.Detail, nppbkc);
+                SetChanges(origin, nppbkc);
+                AutoMapper.Mapper.Map(model.Detail, nppbkc);
+                _nppbkcBll.Save(nppbkc);
 
-                _nppbkcBll.Update(nppbkc);
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Saved;
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                       );
                 return RedirectToAction("Index");
 
             }
-            catch
+            catch(Exception ex)
             {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                       );
                 return View();
             }
 
         }
-        public ActionResult Detail(long id)
+        public ActionResult Detail(string id)
         {
             var nppbkc = _nppbkcBll.GetById(id);
             if (nppbkc == null)
             {
                 HttpNotFound();
             }
-            var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.NPPBKC);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.NPPBKC, id);
 
             var model = new NppbkcFormModel();
-            model.MainMenu = Enums.MenuList.MasterData;
+            model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            model.Plant = _plantBll.Get(id);
             var detail = AutoMapper.Mapper.Map<VirtualNppbckDetails>(nppbkc);
             model.Detail = detail;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
@@ -171,16 +179,18 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
 
         }
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
             try
             {
                 _nppbkcBll.Delete(id);
-                TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
+                AddMessageInfo(Constans.SubmitMessage.Deleted, Enums.MessageInfoType.Success
+                      );
             }
             catch (Exception ex)
             {
-                TempData[Constans.SubmitType.Delete] = ex.Message;
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
+                        );
             }
             return RedirectToAction("Index");
         }

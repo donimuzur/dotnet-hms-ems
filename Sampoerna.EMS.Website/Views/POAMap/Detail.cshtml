@@ -1,0 +1,117 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.POAMap.PoaMapDetailViewModel
+
+
+@{
+    ViewBag.Title = "Detail POA Map";
+}
+
+
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>POA Map</h3>
+                <div class="action-button">
+                    <a href="javascript:void(0);" onclick="confirmDeleteData()" class="btn btn-danger">Delete</a>
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                   Detail POA Map
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form class="form-excise" role="form">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-2">NPPBKC ID</label>
+                                                <div class="col-md-4">
+                                                    @Html.TextBox("nppbcklist", Model.PoaMap.NPPBKC_ID, new { @class = "form-control", @disabled = "disabled" })
+                                                    @Html.HiddenFor(x=>x.PoaMap.POA_MAP_ID)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-2">Plant</label>
+                                                <div class="col-md-4">
+                                                    @Html.TextBox("plantlist", Model.PoaMap.WERKS + Constans.DelimeterSelectItem + Model.PoaMap.PLANT_NAME, new { @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-2">POA</label>
+                                                <div class="col-md-4">
+                                                    @Html.TextBox("poalist", Model.PoaMap.POA_ID + Constans.DelimeterSelectItem + Model.PoaMap.POA_NAME, new { @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--delete-->
+    <input id="btn-delete-poa-map" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.poamap" value="delete">
+    <div class="modal ems-modal fade delete-modal poamap" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Delete</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="window.location.href ='@Url.Action("Delete", "POAMap", new { id = @Model.PoaMap.POA_MAP_ID})'">Delete</button>
+                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section scripts {
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function() {
+            $('#MenuPoaMap').addClass('active');
+
+            $('#btnCancel').click(function(e) {
+                location.href = '@Url.Action("Index", "POAMap")';
+            });
+
+        });
+        var confirmDeleteData = function() {
+            $('#btn-delete-poa-map').click();
+
+        };
+       
+    </script>
+}

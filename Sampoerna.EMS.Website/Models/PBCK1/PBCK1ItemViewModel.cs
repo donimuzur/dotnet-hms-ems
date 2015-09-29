@@ -1,22 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.PBCK1
 {
-    public class PBCK1ItemViewModel : BaseModel
+    public class Pbck1ItemViewModel : BaseModel
     {
-        public PBCK1ItemViewModel()
+        public Pbck1ItemViewModel()
         {
-            ProductConversions = new List<PBCK1ProdConvModel>();
-            ProductPlans = new List<PBCK1ProdPlanModel>();
+            WorkflowHistory = new List<WorkflowHistoryViewModel>();
+            ActionType = "Edit";
+            SupInfo = new Pbck1SupInfo();
         }
 
         public string SubmitType { get; set; }
 
-        public PBCK1Item Detail { get; set; }
+        public Pbck1Item Detail { get; set; }
 
-        public Enums.PBCK1Type PBCK1Types { get; set; }
+        public Enums.PBCK1Type Pbck1Types { get; set; }
 
         public SelectList PbckReferenceList { get; set; }
 
@@ -34,12 +36,24 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public SelectList YearList { get; set; }
 
-        public SelectList UOMList { get; set; }
+        public SelectList UomList { get; set; }
 
         public Enums.DocumentStatusGov StatusGovList { get; set; }
 
-        public List<PBCK1ProdConvModel> ProductConversions { get; set; }
-        public List<PBCK1ProdPlanModel> ProductPlans { get; set; }
+        public Enums.DocumentStatus? DocStatus { get; set; }
+        
+        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
+        public bool AllowApproveAndReject { get; set; }
+        
+        public bool AllowGovApproveAndReject { get; set; }
+
+        public bool AllowPrintDocument { get; set; }
+
+        public string ActionType { get; set; }
+
+        public bool AllowManagerReject { get; set; }
+
+        public Pbck1SupInfo SupInfo { get; set; }
     }
 }

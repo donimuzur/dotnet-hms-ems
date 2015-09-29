@@ -1,0 +1,73 @@
+﻿
+@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4SummaryReportsViewModel
+
+<table id="pbck4Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>PBCK-4 Date</th>
+            <th>PBCK-4 Number</th>
+            <th>KPPBC</th>
+            <th>Brand</th>
+            <th>Content</th>
+            <th>HJE</th>
+            <th>Tariff</th>
+            <th>Product Type</th>
+            <th>Fiscal Year</th>
+            <th>Series Code</th>
+            <th>Requested Qty</th>
+            <th>Excise Value</th>
+            <th>Remarks</th>
+            <th>BACK-1 Date</th>
+            <th>BACK-1 Number</th>
+            <th>CK-3 Date</th>
+            <th>CK-3 Number</th>
+            <th>CK-3 Value</th>
+            <th>Printing Cost</th>
+            <th>Compensated CK-1 Date</th>
+            <th>Compensated CK-1 Number</th>
+            <th>Payment Date</th>
+            <th>Status</th>
+            
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.Pbck4Date)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck4No)</td>
+                    <td>@Html.DisplayFor(model => item.CeOffice)</td>
+                    <td>@Html.DisplayFor(model => item.Brand)</td>
+                    <td>@Html.DisplayFor(model => item.Content)</td>
+                    <td>@Html.DisplayFor(model => item.Hje)</td>
+                    <td>@Html.DisplayFor(model => item.Tariff)</td>
+                    <td>@Html.DisplayFor(model => item.ProductType)</td>
+                    <td>@Html.DisplayFor(model => item.FiscalYear)</td>
+                    <td>@Html.DisplayFor(model => item.SeriesCode)</td>
+                    <td>@Html.DisplayFor(model => item.RequestedQty)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseValue)</td>
+                    <td>@Html.DisplayFor(model => item.Remarks)</td>
+                    <td>@Html.DisplayFor(model => item.Back1Date)</td>
+                    <td>@Html.DisplayFor(model => item.Back1Number)</td>
+                    <td>@Html.DisplayFor(model => item.Ck3Date)</td>
+                    <td>@Html.DisplayFor(model => item.Ck3Number)</td>
+                    <td>@Html.DisplayFor(model => item.Ck3Value)</td>
+                    <td>@Html.DisplayFor(model => item.PrintingCost)</td>
+                    <td>@Html.DisplayFor(model => item.CompensatedCk1Date)</td>
+                    <td>@Html.DisplayFor(model => item.CompensatedCk1Number)</td>
+                    <td>@Html.DisplayFor(model => item.PaymentDate)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Status)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+

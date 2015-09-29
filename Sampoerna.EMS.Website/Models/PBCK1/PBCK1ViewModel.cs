@@ -2,16 +2,16 @@
 
 namespace Sampoerna.EMS.Website.Models.PBCK1 
 {
-    public class PBCK1ViewModel : BaseModel
+    public class Pbck1ViewModel : BaseModel
     {
-        public PBCK1ViewModel()
+        public Pbck1ViewModel()
         {
-            Details = new List<PBCK1Item>();
-            SearchInput = new PBCK1FilterViewModel();
+            Details = new List<Pbck1Item>();
+            SearchInput = new Pbck1FilterViewModel();
         }
-        public List<PBCK1Item> Details { get; set; }
+        public List<Pbck1Item> Details { get; set; }
 
-        public PBCK1FilterViewModel SearchInput { get; set; }
+        public Pbck1FilterViewModel SearchInput { get; set; }
         
     }
     

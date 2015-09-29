@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -25,38 +26,61 @@ namespace Sampoerna.EMS.XMLReader
         }
        
 
-        public List<C1LFA1> Items
+        public List<LFA1> Items
         {
          get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
-                var items = new List<C1LFA1>();
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("E1LFA1M");
+                
+                var items = new List<LFA1>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new C1LFA1();
-                    var vendorCodeXml = xElement.Element("LIFNR").Value;
-
-                    var exsitingVendor = GetExVendor(vendorCodeXml);
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    item.LIFNR = vendorCodeXml;
-                    item.NAME1 = xElement.Element("NAME1").Value;
-                    item.NAME2 = xElement.Element("NAME2").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                    if (exsitingVendor != null)
+                    try
                     {
-                        if (dateXml > exsitingVendor.CREATED_DATE)
+                        var item = new LFA1();
+                        var vendorCodeXml = xElement.Element("LIFNR").Value;
+
+                        var exsitingVendor = GetExVendor(vendorCodeXml);
+                        var companyCode = vendorCodeXml.Substring(6, 4);
+                        var existingCompany = GetExCompany(companyCode);
+                        if (existingCompany != null)
                         {
+                            existingCompany.NPWP = _xmlMapper.GetElementValue(xElement.Element("STCEG"));
+                            existingCompany.SPRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
+                            _xmlMapper.InsertOrUpdate(existingCompany);
+                        }
+
+                        item.LIFNR = vendorCodeXml;
+                        item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
+                        item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
+                        item.STRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
+                        var isDeleted = _xmlMapper.GetElementValue(xElement.Element("LOEVM"));
+                        if (isDeleted != null)
+                        {
+                            item.IS_DELETED = true;
+                        }
+                        item.CREATED_BY = Constans.PI;
+
+                        if (exsitingVendor != null)
+                        {
+                            item.CREATED_DATE = exsitingVendor.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            item.CREATED_BY = exsitingVendor.CREATED_BY;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
+
                         }
                         else
                         {
-                            continue;
-                            
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        items.Add(item);
+                        _xmlMapper.Errors.Add(ex.Message);
+                        continue;
                     }
 
                 }
@@ -66,21 +90,30 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<C1LFA1>(Items);
+            return  _xmlMapper.InsertToDatabase<LFA1>(Items);
        
         }
 
-        public C1LFA1 GetExVendor(string vendorCode)
+        public List<string> GetErrorList()
         {
-            var exisitingPoa = _xmlMapper.uow.GetGenericRepository<C1LFA1>()
-                            .Get(p => p.LIFNR == vendorCode)
-                            .OrderByDescending(p => p.CREATED_DATE)
-                            .FirstOrDefault();
+            return _xmlMapper.Errors;
+        }
+
+        public LFA1 GetExVendor(string vendorCode)
+        {
+            var exisitingPoa = _xmlMapper.uow.GetGenericRepository<LFA1>()
+                .GetByID(vendorCode);
             return exisitingPoa;
         }
 
+        public T001 GetExCompany(string vendorCode)
+        {
+            var exisitingPoa = _xmlMapper.uow.GetGenericRepository<T001>()
+                .GetByID(vendorCode);
+            return exisitingPoa;
+        }
 
 
     }

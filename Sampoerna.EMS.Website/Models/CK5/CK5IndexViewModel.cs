@@ -17,19 +17,29 @@ namespace Sampoerna.EMS.Website.Models.CK5
             DetailsList = new List<CK5Item>();
 
         }
+
+        
+
         public CK5SearchViewModel SearchView { get; set; }
 
         public List<CK5Item> DetailsList { get; set; }
 
-        public List<CK5Item> DetailList2 { get; set; } 
+        public List<CK5Item> DetailList2 { get; set; }
+
+        public List<CK5Item> DetailList3 { get; set; } 
+
         public Enums.CK5Type Ck5Type { get; set; }
+
+        public bool IsCompletedType { get; set; }
     }
 
     public class CK5Item
     {
+        public long Ck5Id { get; set; }
+
         public string DocumentNumber { get; set; }
 
-        public decimal? Qty { get; set; }
+        public string Qty { get; set; }
 
         public string UOM { get; set; }
 
@@ -43,6 +53,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string Status { get; set; }
 
-
+        public Enums.CK5Type Ck5Type { get; set; }
     }
 }

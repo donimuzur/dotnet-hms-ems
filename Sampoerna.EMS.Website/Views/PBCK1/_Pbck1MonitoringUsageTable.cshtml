@@ -1,0 +1,58 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1MonitoringUsageViewModel
+@using Sampoerna.EMS.Core;
+
+<table id="pbckTable" class="table-condensed display compact nowrap" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>PBCK-1 Decree</th>
+            <th>Company</th>
+            <th>NPPBKC</th>
+            <th>KPPBC</th>
+            <th>PBCK-1 Period</th>
+            <th>Excisable Goods Quota</th>
+            <th>Additional Excisable Goods Quota</th>
+            <th>Previous Years Final Balance</th>
+            <th>Total PBCK-1 Quota</th>
+            <th>Received</th>
+            <th>Quota Remaining</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@item.Pbck1Number</td>
+                    <td>@item.NppbkcCompanyName</td>
+                    <td>@item.NppbkcId</td>
+                    <td>@item.NppbkcKppbcName</td>
+                    <td>@item.PeriodFrom.ToString("dd MMM yyyy") - @item.PeriodTo.Value.ToString("dd MMM yyyy")</td>
+                    <td align="right">@String.Format("{0:n}", @item.ExGoodsQuota.Value)</td>
+                    @{
+                if (@item.Pbck1Type == Enums.PBCK1Type.New)
+                {
+                    <td align="right">@String.Format("{0:n}", @item.AdditionalExGoodsQuota)</td>
+                }
+                else
+                {
+                    <td align="right">@String.Format("{0:n}", @item.AdditionalExGoodsQuota)</td>
+                }
+}
+                    
+                    <td align="right">@String.Format("{0:n}", @item.PreviousFinalBalance)</td>
+                    <td align="right">@String.Format("{0:n}", @item.TotalPbck1Quota)</td>
+                    <td align="right">@String.Format("{0:n}", @item.Received)</td>
+                    <td align="right">@String.Format("{0:n}", @item.QuotaRemaining)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+
+
+

@@ -1,0 +1,68 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+@using Sampoerna.EMS.Website.Helpers
+
+
+<div role="tabpanel" class="tab-pane" id="printoutpbck7">
+    <div class="panel-group" id="accordionPrint" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingPrint">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordionPrint" href="#collapsePrint" aria-expanded="true" aria-controls="collapsePrint">
+                        Print Out
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                </h4>
+            </div>
+            <div id="collapsePrint" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPrint">
+                <div class="panel-body">
+                    <div class="row">
+                        <form class="form-excise " role="form">
+                            <div class="last-form">
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <label class="col-md-5">PBCK-7 No</label>
+                                        <div class="col-md-7">
+                                            @Html.TextBox("pbck7_no", Model.Pbck7Number, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <label class="col-md-3">Date</label>
+                                        <div class="col-md-9">
+                                            @Html.TextBox("create_date", DateTime.Now.ToString("dd MMM yyy hh:mm:ss"), new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <label class="col-md-3">User</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" value="@Html.UserName()" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            @if (Model.AllowPrintDocument)
+                                            {
+                                                <a class="btn btn-blue full" onclick="PrintOutClick('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })', '@Url.Action("AddPrintHistoryPbck7", "Pbck7AndPbck3")', @Model.Id)">Print</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container" id="PrintOutHistoryTable">
+        @Html.Partial("_PrintHistoryTable")
+    </div>
+</div>
+
+

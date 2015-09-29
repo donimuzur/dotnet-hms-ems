@@ -1,8 +1,11 @@
-﻿@model Sampoerna.EMS.Website.Models.BrandRegistration.BrandRegistrationIndexViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.BrandRegistration.BrandRegistrationIndexViewModel
 
 
 @section scripts {
+<script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterBrandRegistration').addClass('active');
         $(document).ready(function () {
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
@@ -26,8 +29,24 @@
                         .draw();
                 });
             });
-            $("#mydata_filter").hide();
-            $('#mydata_length').hide();
+            @if (TempData[Constans.SubmitType.Save] != null)
+            {
+                @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Save]');
+                @: $('#btn-brand-modal').click();
+                @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Update]');
+                @: $('#btn-brand-modal').click();
+                @:TempData[Constans.SubmitType.Update] = null;
+            }
+            else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-brand-message').html('@TempData[Constans.SubmitType.Delete]');
+                @: $('#btn-brand-modal').click();
+                @:TempData[Constans.SubmitType.Delete] = null;
+            }
 
             $('#MenuMasterBrandRegistration').addClass('active');
         });
@@ -65,11 +84,12 @@
                             <th>Sticker Code</th>
                             <th>Plant</th>
                             <th>FA Code</th>
-                            <th>Brand Name Registration<br>by CE Office C</th>
+                            <th>Brand Name Registration<br>by KPPBC</th>
                             <th>Series Value</th>
                             <th>Conversion</th>
                             <th>Printing Price</th>
                             <th>Cut Filler Code</th>
+                            <th> Active </th>
                             <th> Deleted </th>
                         </tr>
 
@@ -80,11 +100,12 @@
                             <th>Sticker Code</th>
                             <th>Plant</th>
                             <th>FA Code</th>
-                            <th>Brand Name Registration<br>by CE Office C</th>
+                            <th>Brand Name Registration<br>by KBBPC</th>
                             <th>Series Value</th>
                             <th>Conversion</th>
                             <th>Printing Price</th>
                             <th>Cut Filler Code</th>
+                            <th> Active </th>
                             <th> Deleted </th>
                         </tr>
                     </thead>
@@ -95,8 +116,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "BrandRegistration", new { id = item.BrandId })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "BrandRegistration", new { id = item.BrandId })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.StickerCode)
@@ -123,6 +144,9 @@
                                     @Html.DisplayFor(modelItem => item.CutFilterCode)
                                 </td>
                                 <td>
+                                    @Html.DisplayFor(modelItem => item.IsActive)
+                                </td>
+                                <td>
                                     @Html.DisplayFor(modelItem => item.IsDeleted)
                                 </td>
                             </tr>
@@ -135,7 +159,22 @@
         </div>
     </div>
 </div>
+<!--modal-->
+<input id="btn-brand-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
 
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body" id="modal-brand-message">
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

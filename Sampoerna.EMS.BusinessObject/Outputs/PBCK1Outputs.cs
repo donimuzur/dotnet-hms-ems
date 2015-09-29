@@ -1,12 +1,18 @@
-﻿namespace Sampoerna.EMS.BusinessObject.Outputs
+﻿
+using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.DTOs;
+
+namespace Sampoerna.EMS.BusinessObject.Outputs
 {
-    public class SavePBCK1Output : BLLBaseOutput
+    public class SavePbck1Output : BLLBaseOutput
     {
         public long Id { get; set; }
+        public string Pbck1Number { get; set; }
     }
 
-    public class DeletePBCK1Output : BLLBaseOutput
+    public class DeletePbck1Output : BLLBaseOutput
     {
         
     }
+
 }

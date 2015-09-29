@@ -7,7 +7,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>Update Excisable Goods Type Group</h3>
+                <h3> Excisable Goods Type Group</h3>
                 <div class="action-button">
                     @*<input type="submit" class="btn btn-blue" value="Save" />*@
                     <button class="btn btn-blue">Save</button>
@@ -27,7 +27,7 @@
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Update Excisable Goods Type Group
+                                        Create Excisable Goods Type Group
                                         <i class="fa fa-caret-down"></i>
                                     </a>
                                 </h4>
@@ -39,17 +39,16 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <label class="col-md-2">Group Name</label>
+                                                    <label class="col-md-3">Group Name<span class="red">*</span></label>
                                                     <div class="col-md-4">
                                                         @Html.TextBoxFor(model => model.GroupName, new { @class = "form-control" })
-                                                        @Html.ValidationMessageFor(model => model.GroupName)
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <label class="col-md-2">Excise Group Type</label>
-                                                    <div class="col-md-4">
+                                                    <label class="col-md-3">Excise Group Type</label>
+                                                    <div class="col-md-9">
                                                         <div class="row">
                                                             @for (int i = 0; i < Model.Details.Count; i++)
                                                             {

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.CK5.CK5UploadViewModel>
+
+<table id="Ck5UploadTable" class="table table-bordered table-striped js-options-table">
+    <thead>
+        <tr>
+            <th>Action</th>
+            <th style="display: none"></th>
+            <th>Material Number</th>
+            <th>Qty</th>
+            <th>UOM</th>
+            <th>Convertion</th>
+            <th>Converted Qty</th>
+            <th>Converted UOM</th>
+            <th>HJE</th>
+            <th>Tariff</th>
+            <th>Excise Value</th>
+            <th>USD Value</th>
+            <th>Note</th>
+            <th>Message</th>
+            <th style="display: none"></th>
+            <th style="display: none"></th>
+            <th style="display: none"></th>
+            <th style="display: none"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int counter = 1;
+
+            if (Model != null)
+            {
+                foreach (var row in Model)
+                {
+                    <tr>
+                        <td class="action">
+                            <a href="#" onclick=" RemoveRow($(this));" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i></a>
+                            <a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                        </td>
+                        <td style="display: none">@counter</td>
+                        <td>@row.Brand</td>
+                        <td>@row.Qty</td>
+                        <td>@row.Uom</td>
+                        <td>@row.Convertion</td>
+                        <td>@row.ConvertedQty</td>
+                        <td>@row.ConvertedUom</td>
+                        <td>@row.Hje</td>
+                        <td>@row.Tariff</td>
+                        <td>@row.ExciseValue</td>
+                        <td>@row.UsdValue</td>
+                        <td>@row.Note</td>
+                        <td>@row.Message</td>
+                        <td style="display: none">@row.Total</td>
+                        <td style="display: none">@row.MaterialDesc</td>
+                        <td style="display: none">@row.ExciseQty</td>
+                        <td style="display: none">@row.ExciseUom</td>
+                        @{//===Fixing Bug CK5 no. 110====
+                        <td style="display: none">@row.Plant</td>
+                        //=============================
+                        }
+                    </tr>
+                    
+                    counter = counter + 1;
+                }
+            }
+        }
+    </tbody>
+</table>
+    
+

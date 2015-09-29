@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.GOODSTYPE.GoodsTypeGroupViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.GOODSTYPE.GoodsTypeGroupViewModel
 
 
 @section styles
@@ -6,15 +7,15 @@
     }
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+    <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterGoodType').addClass('active');
         $(document).ready(function () {
             
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 0) {
+                if (idx != 0 && idx != 4) {
                     var title = $('#mydata thead th').eq($(this).index()).text();
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
 
@@ -33,10 +34,26 @@
                         .draw();
                 });
             });
-            $("#mydata_filter").hide();
-            $('#mydata_length').hide();
+            @if (TempData[Constans.SubmitType.Save] != null)
+            {
+                @: $('#modal-good-message').html('@TempData[Constans.SubmitType.Save]');
+                @: $('#btn-good-modal').click();
+                @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: $('#modal-good-message').html('@TempData[Constans.SubmitType.Update]');
+                @: $('#btn-good-modal').click();
+                @:TempData[Constans.SubmitType.Update] = null;
+            }
+            else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-good-message').html('@TempData[Constans.SubmitType.Delete]');
+                @: $('#btn-good-modal').click();
+                @:TempData[Constans.SubmitType.Delete] = null;
+            }
 
-            $('#MenuMasterGoodType').addClass('active');
+           
         });
     </script>
 }
@@ -53,7 +70,9 @@
                 <a href="@Url.Action("Create", "GoodsTypeGroup")">
                     <button class="btn btn-blue">NEW</button>
                 </a>
-                @*<a data-toggle="modal" data-target=".menu-maping-type"><button class="btn btn-blue">NEW</button></a>*@
+                <a data-toggle="modal" data-target=".menu-maping-type">
+
+                </a>
             </div>
         </div>
     </div>
@@ -70,6 +89,7 @@
                             <th class="toggle-row"> Filter </th>
                             <th> Group Name </th>
                             <th> Excisable Group Type </th>
+                            <th> Inactive </th>
                         </tr>
                     </thead>
                     <thead class="filters">
@@ -77,6 +97,7 @@
                             <th> Action </th>
                             <th> Group Name </th>
                             <th> Excisable Group Type </th>
+                            <th> Inactive </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,14 +106,17 @@
                             <tr>
                                 @*<td></td>*@
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "GoodsTypeGroup", new { groupName = item.GroupName })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "GoodsTypeGroup", new { groupName = item.GroupName })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "GoodsTypeGroup", new { id = item.GoodsTypeId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "GoodsTypeGroup", new { id = item.GoodsTypeId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.GroupName)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.GroupTypeName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Inactive)
                                 </td>
                             </tr>
                         }
@@ -101,6 +125,20 @@
 
             </div>
 
+        </div>
+    </div>
+</div>
+<!--modal-->
+<input id="btn-good-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body" id="modal-good-message">
+            </div>
         </div>
     </div>
 </div>

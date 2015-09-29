@@ -12,7 +12,10 @@ namespace Sampoerna.EMS.Website.Models.GOODSTYPE
             GroupName = string.Empty;
             Details = new List<GoodsTypeDetails>();
         }
+        public int Id { get; set; }
         public string GroupName { get; set; }
+
+        public bool? isDeleted { get; set; }
 
         public List<GoodsTypeDetails> Details { get; set; }
        

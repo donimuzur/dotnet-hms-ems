@@ -15,10 +15,10 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class HEADER_FOOTER_FORM_MAP
     {
         public int HEADER_FOOTER_FORM_MAP_ID { get; set; }
-        public Sampoerna.EMS.Core.Enums.FormType FORM_TYPE_ID { get; set; }
+        public int HEADER_FOOTER_ID { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.FormType> FORM_TYPE_ID { get; set; }
         public Nullable<bool> IS_HEADER_SET { get; set; }
         public Nullable<bool> IS_FOOTER_SET { get; set; }
-        public int HEADER_FOOTER_ID { get; set; }
     
         public virtual HEADER_FOOTER HEADER_FOOTER { get; set; }
     }

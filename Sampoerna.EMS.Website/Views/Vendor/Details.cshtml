@@ -1,0 +1,92 @@
+﻿@model Sampoerna.EMS.Website.Models.Vendor.VendorDetailViewModel
+
+@{
+    ViewBag.Title = "Vendor Detail";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Vendor Detail</h3>
+            <div class="action-button">
+                <a href="@Url.Action("Index", "Vendor")" class="btn btn-grey">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="scroll">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Vendor Details
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <div class="form-excise">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <label class="col-md-2">Account Number</label>
+                                                    <div class="col-md-4">
+                                                        @Html.TextBoxFor(model => model.Detail.LIFNR, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <label class="col-md-2">Name One</label>
+                                                    <div class="col-md-4">
+                                                        @Html.TextBoxFor(model => model.Detail.NAME1, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <label class="col-md-2">Name Two</label>
+                                                    <div class="col-md-4">
+                                                        @Html.TextBoxFor(model => model.Detail.NAME2, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <label class="col-md-2">Deleted</label>
+                                                    <div class="col-md-4">
+                                                        @Html.CheckBoxFor(model => model.Detail.IS_DELETED.Value, new { @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuVendor').addClass('active');
+    </script>
+}

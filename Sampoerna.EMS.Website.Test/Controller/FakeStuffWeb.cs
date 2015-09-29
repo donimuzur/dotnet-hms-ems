@@ -6,10 +6,10 @@ namespace Sampoerna.EMS.Website.Test.Controller
 {
     public class FakeStuffWeb
     {
-        public static IEnumerable<T1001> GetCompany()
+        public static IEnumerable<T001> GetCompany()
         {
 
-            var compannyDummy = new List<T1001>();
+            var compannyDummy = new List<T001>();
             
             return compannyDummy;
         }

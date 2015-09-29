@@ -27,94 +27,156 @@ namespace Sampoerna.EMS.XMLReader
         {
          get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_BRAND");
                 var items = new List<ZAIDM_EX_BRAND>();
-                foreach (var xElement in xmlItems)
-                {
-                    var item = new ZAIDM_EX_BRAND();
-                    item.STICKER_CODE = xElement.Element("STICKER_CODE").Value;
-                    var pcodeCode = Convert.ToInt32(xElement.Element("PER_CODE").Value);
-                    var pCode = new XmlPCodeDataMapper(null).GetPCode(pcodeCode);
-                    if (pCode == null)
-                       throw  new Exception("no existing PCODE PER_ID " + pcodeCode);
-                    item.PER_ID = pCode.PER_ID;
-                    var plantCode = xElement.Element("PLANT_ID").Value;
-                    var plant = new XmlPlantDataMapper(null).GetPlant(plantCode);
-                    if(plant == null)
-                        throw  new Exception("no existing plant plant code " + plantCode);
-                    item.PLANT_ID = plant.PLANT_ID;
-                    var exGoodType = Convert.ToInt32(xElement.Element("EXC_GOOD_TYP").Value);
-                    var goodsType =
-                        new XmlGoodsTypeDataMapper(null).GetGoodsType(exGoodType);
-                    if(goodsType== null)
-                        throw new Exception("no existing goods type " + exGoodType);
-                    item.GOODTYP_ID = goodsType.GOODTYPE_ID;
-                    var marketId = Convert.ToInt32(xElement.Element("MARKET_ID").Value);
-                    var market =
-                        new XmlMarketDataMapper(null).GetMarket(marketId);
-                    if(market == null)
-                        throw new Exception("no existing market  market id" + marketId);
-                    item.MARKET_ID = market.MARKET_ID;
-                    var series_id = Convert.ToInt32(xElement.Element("SERIES_ID").Value);
-                    var series =
-                        new XmlSeriesDataMapper(null).GetSeries(series_id);
-                    if(series == null)
-                        throw new Exception("no existing series  series id" + series_id);
-                    item.SERIES_ID = series.SERIES_ID;
-                    item.HJE_IDR = Convert.ToDecimal(xElement.Element("HJE_IDR").Value);
-                    var prodCode = Convert.ToInt32(xElement.Element("PROD_CODE").Value);
-                    var prodType = new XmlProdTypeDataMapper(null).GetProdType(prodCode);
-                    if(prodType == null)
-                        throw new Exception("no existing product code " + prodCode);
-                    item.PRODUCT_ID = prodType.PRODUCT_ID;
-                    item.BRAND_CE = xElement.Element("BRAND_CE").Value;
-                    item.SKEP_NP = xElement.Element("SKEP_NP").Value;
-                    item.SKEP_DATE = Convert.ToDateTime(xElement.Element("SKEP_DATE").Value);
-                    item.COLOUR = xElement.Element("COLOUR").Value;
-                    item.CUT_FILLER_CODE = xElement.Element("CUT_FILLER_CODE").Value;
-                    item.PRINTING_PRICE = Convert.ToDecimal(xElement.Element("PRINTING_PRICE").Value);
-                    item.START_DATE = Convert.ToDateTime(xElement.Element("START_DATE").Value);
-                    item.END_DATE = Convert.ToDateTime(xElement.Element("END_DATE").Value);
-                    item.FA_CODE = xElement.Element("FA_CODE").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                   
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
-                    var existingMaterial = GetBrand(item.STICKER_CODE, item.PLANT_ID, item.FA_CODE);
-                    if (existingMaterial != null)
+                
+                    foreach (var xElement in xmlItems)
                     {
-                        if (dateXml > existingMaterial.CREATED_DATE)
+                        try
                         {
+                        var item = new ZAIDM_EX_BRAND();
+                        item.STICKER_CODE = xElement.Element("STICKER_CODE").Value;
+
+                        var plantCode = _xmlMapper.GetElementValue(xElement.Element("PLANT"));
+                        //var plant = new XmlPlantDataMapper(null).GetPlant(plantCode);
+                        //if (plant == null)
+                        //{
+                        //    //insert PLANT
+                        //    var plantToAdd = new T001W();
+                        //    plantToAdd.WERKS = plantCode;
+                        //    plantToAdd.CREATED_DATE = DateTime.Now;
+                        //    _xmlMapper.InsertToDatabase(plantToAdd);
+                        //}
+                        item.WERKS = plantCode;
+                        item.FA_CODE = _xmlMapper.GetElementValue(xElement.Element("FA_CODE"));
+                        item.COUNTRY = _xmlMapper.GetElementValue(xElement.Element("COUNTRY"));
+                        item.BRAND_CONTENT = _xmlMapper.GetElementValue(xElement.Element("CONTENT"));
+                        item.CREATED_BY = _xmlMapper.GetElementValue(xElement.Element("MODIFIED_BY"));
+                        var pcodeCode = _xmlMapper.GetElementValue(xElement.Element("PER_CODE"));
+                        //var pCode = new XmlPCodeDataMapper(null).GetPCode(pcodeCode);
+                        //if (pCode == null)
+                        //{
+                        //    var pCodeToAdd = new ZAIDM_EX_PCODE();
+                        //    pCodeToAdd.PER_CODE = pcodeCode;
+                        //    pCodeToAdd.PER_DESC = xElement.Element("PER_DESC") == null ? null : xElement.Element("PER_DESC").Value;
+                        //    pCodeToAdd.CREATED_DATE = DateTime.Now;
+                        //    _xmlMapper.InsertToDatabase(pCodeToAdd);
+                        //}
+                        item.PER_CODE = pcodeCode;
+                        item.BRAND_CE = _xmlMapper.GetElementValue(xElement.Element("BRAND_CE"));
+                        item.SKEP_NO = _xmlMapper.GetElementValue(xElement.Element("SKEP_NO"));
+                        item.SKEP_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("SKEP_DATE")));
+                        var prodCode = _xmlMapper.GetElementValue(xElement.Element("PROD_CODE"));
+                        //var prodType = new XmlProdTypeDataMapper(null).GetProdType(prodCode);
+                        //if (prodType == null)
+                        //{
+                        //    var prodTypeToAdd = new ZAIDM_EX_PRODTYP();
+                        //    prodTypeToAdd.PROD_CODE = prodCode;
+                        //    prodTypeToAdd.PRODUCT_TYPE = xElement.Element("PRODUCT_TYPE").Value;
+                        //    prodTypeToAdd.PRODUCT_ALIAS = xElement.Element("PRODUCT_ALIAS").Value;
+                        //    prodTypeToAdd.CREATED_DATE = DateTime.Now;
+                        //    _xmlMapper.InsertToDatabase(prodTypeToAdd);
+                        //}
+                        item.PROD_CODE = prodCode;
+                        var series_id = _xmlMapper.GetRomanNumeralValue(xElement.Element("SERIES_CODE"));
+                        //var series =
+                        //    new XmlSeriesDataMapper(null).GetSeries(series_id);
+                        //if (series == null)
+                        //{
+                        //    var seriesToAdd = new ZAIDM_EX_SERIES();
+                        //    seriesToAdd.SERIES_CODE = series_id;
+                        //    seriesToAdd.SERIES_VALUE = xElement.Element("SERIES_VALUE").Value;
+                        //    seriesToAdd.CREATED_DATE = DateTime.Now;
+                        //    _xmlMapper.InsertToDatabase(seriesToAdd);
+                        //}
+                        item.SERIES_CODE = series_id;
+                        var marketId = _xmlMapper.GetElementValue(xElement.Element("MARKET"));
+                        //var market =
+                        //    new XmlMarketDataMapper(null).GetMarket(marketId);
+                        //if (market == null)
+                        //{
+                        //    var marketToAdd = new ZAIDM_EX_MARKET();
+                        //    marketToAdd.MARKET_ID = marketId;
+                        //    marketToAdd.MARKET_DESC = xElement.Element("MARKET_DESC").Value;
+                        //    marketToAdd.CREATED_DATE = DateTime.Now;
+                        //    _xmlMapper.InsertToDatabase(marketToAdd);
+                        //}
+                        item.MARKET_ID = marketId;
+
+
+                        var exGoodType = _xmlMapper.GetElementValue(xElement.Element("EXC_GOOD_TYP"));
+                        //var goodsType =
+                        //    new XmlGoodsTypeDataMapper(null).GetGoodsType(exGoodType);
+                        //if (goodsType == null)
+                        //{
+                        //    var goodTypeToAdd = new ZAIDM_EX_GOODTYP();
+                        //    goodTypeToAdd.EXC_GOOD_TYP = exGoodType;
+                        //    goodTypeToAdd.EXT_TYP_DESC = xElement.Element("EXC_TYP_DESC").Value;
+                        //    goodTypeToAdd.CREATED_DATE = DateTime.Now;
+                        //    _xmlMapper.InsertToDatabase(goodTypeToAdd);
+                        //}
+                        item.EXC_GOOD_TYP = exGoodType;
+                        item.HJE_IDR = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("HJE_IDR")));
+                        item.HJE_CURR = _xmlMapper.GetElementValue(xElement.Element("HJE_CURR"));
+                        item.TARIFF = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("TARIFF")));
+                        item.TARIF_CURR = _xmlMapper.GetElementValue(xElement.Element("TARIFF_CURR"));
+                        item.COLOUR = _xmlMapper.GetElementValue(xElement.Element("COLOUR"));
+                        item.START_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("START_DATE")));
+                        item.END_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("END_DATE")));
+                        item.STATUS = _xmlMapper.GetElementValue(xElement.Element("STATUS")) == "X";
+                        item.IS_FROM_SAP = true;
+                        var existingMaterial = GetBrand(item.WERKS, item.FA_CODE);
+                        if (existingMaterial != null)
+                        {
+                            item.CONVERSION = existingMaterial.CONVERSION;
+                            item.PRINTING_PRICE = existingMaterial.PRINTING_PRICE;
+                            item.CUT_FILLER_CODE = existingMaterial.CUT_FILLER_CODE;
+                            item.CREATED_DATE = existingMaterial.CREATED_DATE;
+                            item.MODIFIED_BY = item.CREATED_BY;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            item.CREATED_BY = existingMaterial.CREATED_BY;
                             items.Add(item);
+
                         }
                         else
                         {
-                            continue;
-                            
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
                         }
+                        }
+                        catch (Exception ex)
+                        {
+                            _xmlMapper.Errors.Add(ex.Message);
+                            continue;
+                        }
+            
                     }
-                    else
-                    {
-                        items.Add(item);
-                    }
+                
 
-                }
+
+
                 return items;
             }
              
         }
 
 
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
        
         }
-        public ZAIDM_EX_BRAND GetBrand(string stickerCode, long?plant_id, string fa_code)
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
+        }
+
+        public ZAIDM_EX_BRAND GetBrand(string plant_id, string fa_code)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
-                          .Get(p => p.STICKER_CODE == stickerCode && plant_id == plant_id && p.FA_CODE == fa_code)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(plant_id, fa_code);
             return existingData;
         }
         

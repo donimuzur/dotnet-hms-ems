@@ -1,16 +1,17 @@
-﻿@model Sampoerna.EMS.Website.Models.PLANT.PlantFormModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.PLANT.PlantFormModel
 
 @{
     ViewBag.Title = "Edit Master Plant";
-    var isCheckYes = Model.Detail.IsMainPlant ? new { @checked = "checked"} : null;
-    var isCheckNo = Model.Detail.IsMainPlant ? null : new { @checked = "checked" };
+    var checkYes = Model.Detail.IsMainPlant ? new { @checked = "checked", id="CheckboxYes" } : null;
+    var checkNo = Model.Detail.IsMainPlant ? null : new { @checked = "checked" };
 }
 @using (Html.BeginForm("Edit", "Plant", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>Update Master Plan</h3>
+                <h3> Master Plant</h3>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
@@ -21,143 +22,202 @@
     <div class="container-wrap">
         <div class="row">
             <div class="col-sm-12">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingOne">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Update Master Plant
-                                        <i class="fa fa-caret-down"></i>
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                <div class="panel-body">
-                                    <form class="form-excise" role="form">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Plant Id</label>
-                                                    <div class="col-md-9">
-                                                        @Html.HiddenFor(model => model.Detail.PlantId)
-                                                        @Html.HiddenFor(model => model.Detail.Werks)
-                                                        @Html.HiddenFor(model => model.Detail.Name1)
-                                                        @Html.HiddenFor(model => model.Detail.PlantDescription)
-                                                        @Html.HiddenFor(model => model.Detail.Ort01)
-                                                        @Html.HiddenFor(model => model.Detail.CreatedDate)
-                                                        @Html.TextBoxFor(model => model.Detail.Werks, new { @class = "form-control", @disabled = "disabled" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">NPPBKC NO<span class="red">*</span></label>
-                                                    <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.Detail.NPPBCK_ID, Model.Nppbkc, "Select", new { @class = "form-control" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Plant Description</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextAreaFor(model => model.Detail.PlantDescription, new { @class = "form-control", rows = "5", @disabled = "disabled" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Plant Address</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Plant City</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", @maxlength = "50" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">SKEPTIS</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.Skeptis, new { @class = "form-control", @maxlength = "50" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-4">Main Plant</label>
-                                                    <div class="col-md-2">
-                                                        @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, isCheckYes)Yes
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, isCheckNo)No
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Recieve Material</label>
-                                                    <div class="col-md-9">
-                                                        <div class="row">
-                                                            @for (int i = 0; i < Model.Detail.ReceiveMaterials.Count; i++)
-                                                            {
-                                                                @Html.HiddenFor(x => x.Detail.ReceiveMaterials[i].PLANT_ID)
-                                                                @Html.HiddenFor(x => x.Detail.ReceiveMaterials[i].GOODTYPE_ID)
-                                                                @Html.HiddenFor(x => x.Detail.ReceiveMaterials[i].EXT_TYP_DESC)
-                                                                <div class="col-md-12">
-                                                                    @Html.EditorFor(x => x.Detail.ReceiveMaterials[i].IsChecked)
-                                                                    @Html.Label(Model.Detail.ReceiveMaterials[i].EXT_TYP_DESC)
-                                                                </div>
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Update Master Plant
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form class="form-excise" role="form">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Plant Id</label>
+                                                <div class="col-md-9">
 
-                                                            }
-                                                        </div>
+                                                    @Html.HiddenFor(model => model.Detail.Werks)
+                                                    @Html.HiddenFor(model => model.Detail.Name1)
+                                                    @Html.HiddenFor(model => model.Detail.PlantDescription)
+                                                    @Html.HiddenFor(model => model.Detail.CreatedDate)
+                                                    @Html.TextBoxFor(model => model.Detail.Werks, new { @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">NPPBKC ID<span class="red">*</span></label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.Detail.NPPBKC_ID, Model.Nppbkc, null, new { @class = "selectpicker form-control", id="dropdown_nppbkc" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Plant Description</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextAreaFor(model => model.Detail.PlantDescription, new { @class = "form-control", rows = "5", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Plant Address<span class="red">*</span></label>
+                                                <div class="col-md-9">
+                                                    @Html.TextAreaFor(model => model.Detail.Address, new { @class = "form-control", rows = "5" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                        
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Plant City<span class="red">*</span></label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.Ort01, new { @class = "form-control", @maxlength = "50" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">SKEPTIS</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.Skeptis, new { @class = "form-control", @maxlength = "50" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Main Plant</label>
+                                              
+                                                    <div class="col-md-2" id="isMainPlantCheck">
+                                                        @Html.RadioButtonFor(model => model.Detail.IsMainPlant, true, checkYes)Yes
+                                                    </div>
+                                                
+                                                <div class="col-md-2">
+                                                    @Html.RadioButtonFor(model => model.Detail.IsMainPlant, false, checkNo)No
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Recieve Material</label>
+                                                <div class="col-md-9">
+                                                    <div class="row">
+                                                        @for (int i = 0; i < Model.Detail.ReceiveMaterials.Count; i++)
+                                                        {
+                                                            @Html.HiddenFor(x => x.Detail.ReceiveMaterials[i].PLANT_ID)
+                                                            @Html.HiddenFor(x => x.Detail.ReceiveMaterials[i].EXC_GOOD_TYP)
+                                                            @Html.HiddenFor(x => x.Detail.ReceiveMaterials[i].EXT_TYP_DESC)
+                                                            <div class="col-md-12">
+                                                                @Html.CheckBoxFor(x => x.Detail.ReceiveMaterials[i].IsChecked)
+                                                                @Html.Label(Model.Detail.ReceiveMaterials[i].EXT_TYP_DESC)
+                                                            </div>
+
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-3">Phone</label>
-                                                    <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.Phone, new { @class = "form-control" })
-                                                    </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Phone<span class="red">*</span></label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Detail.Phone, new { @class = "form-control", @maxlength = "25" })
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <span class="red">*</span> ) This Field Required
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">NPPBKC Import</label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.Detail.NPPBKC_IMPORT_ID, Model.Nppbkc, null, new { @class = "selectpicker form-control", id = "dropdown_nppbkc" })
+                                                </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 }
+<!--modal-->
+<input id="btn-poa-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="DataExist">
+
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3 class="modal-title">Data Exist</h3>
+            </div>
+            <div class="modal-body" id="modal-poa-message">
+
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts
 {
-    <script type="text/javascript">
-        $('#MenuMasterPlant').addClass('active');
-        $('#btnCancel').click(function (e) {
-            location.href = '@Url.Action("Index", "Plant")';
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $(function () {
+            OnChangeUser($('#Detail_UserId option:selected').val());
         });
+
+        function OnChangeUser(id) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ShowMainPlant", "Plant")',
+                data: { userId: id },
+                success: function (data) {
+                    //$('#isMainPlantCheck').val(data);
+
+                }
+            });
+        }
+        $(document).ready(function () {
+
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("Index", "Plant")';
+            });
+
+            @if (TempData[Constans.SubmitType.DataExist] != null)
+            {
+                @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.DataExistPlant]');
+                                                    @: $('#btn-poa-modal').click();
+                                                    @:TempData[Constans.SubmitType.DataExistPlant] = null;
+                                                }
+            $('#MenuMasterPlant').addClass('active');
+        });
+
+       
     </script>
 }

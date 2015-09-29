@@ -8,6 +8,6 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
 {
     public class MaterialOutput : BLLBaseOutput
     {
-        public long materialId { get; set; }
+        public string materialId { get; set; }
     }
 }

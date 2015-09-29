@@ -1,0 +1,321 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1ItemViewModel
+@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+
+<div role="tabpanel" class="tab-pane active" id="information">
+    <div class="tab-wrapper">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            LACK-1 Detail
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">LACK-1 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Lack1Number, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Company<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Butxt)
+                                            @Html.DropDownListFor(model => model.Bukrs, Model.BukrList, "", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Period<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @Html.DropDownListFor(model => model.PeriodMonth, Model.MontList, "", new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @Html.DropDownListFor(model => model.PeriodYears, Model.YearsList, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                            Information
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Level<span class="red">*</span></label>
+                                        @Html.HiddenFor(model => model.Lack1Level)
+                                        <div class="col-md-8">
+                                            @if (Model.Lack1Level == Enums.Lack1Level.Nppbkc)
+                                            {
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <input type="radio" name="lackLevelName" checked="checked" value="1" disabled="disabled"> NPPBKC
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <input type="radio" name="lackLevelName" value="2" disabled="disabled"> Plant
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <input type="radio" name="lackLevelName" value="1" disabled="disabled"> NPPBKC
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <input type="radio" name="lackLevelName" checked="checked" value="2" disabled="disabled"> Plant
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">NPPBKC</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Submission Date<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Received Plant ID</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Lack1Level == Enums.Lack1Level.Plant)
+                                            {
+                                                @Html.DropDownListFor(model => model.LevelPlantId, Model.ReceivePlantList, "Select", new { @class = "form-control" })
+                                            }
+                                            else
+                                            {
+                                                @Html.DropDownListFor(model => model.LevelPlantId, Model.ReceivePlantList, "Select", new { @class = "form-control", @disabled = "disabled" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4 long">Excisable Goods Type<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.ExGoodsTypeDesc)
+                                            @Html.DropDownListFor(model => model.ExGoodsTypeId, Model.ExGoodTypeList, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Supplier<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SupplierPlantId, Model.SupplierList, "Select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Waste Amount</label>
+                                        <div class="col-md-8">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @Html.TextBoxFor(model => model.WasteQty, new { @class = "form-control", maxlength = "12" })
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @Html.DropDownListFor(model => model.WasteUom, Model.WasteUomList, "Select", new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Return Amount</label>
+                                        <div class="col-md-8">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @Html.TextBoxFor(model => model.ReturnQty, new { @class = "form-control", maxlength = "12" })
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @Html.DropDownListFor(model => model.ReturnUom, Model.ReturnUomList, "Select", new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Note</label>
+                                        <div class="col-md-8">
+                                            @Html.TextAreaFor(model => model.Noted, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-md-offset-4">
+                                    <input type="button" id="btn-generate-data" class="btn btn-blue full" value="Generate" onclick="generateDataClick(@Convert.ToInt32(Model.Lack1Level),'@Url.Action("Generate", "LACK1")');" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group not-upload" id="accordionThree" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionThree" href="#collapseThree" aria-expanded="true" aria-controls="collapse6">
+                            Table
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        <div class="table-container lack-table" id="generated-data-container">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionFour" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                            Status
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Status</label>
+                                        <div class="col-md-8">
+                                            @Html.EnumDropDownListFor(model => model.GovStatus, Model.DocGovStatusList, "Select", new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Decree Date</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date disabled">
+                                                @Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Decree Doc</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group disabled">
+                                                <input type="text" class="form-control" disabled="disabled">
+                                                <span class=" input-group-addon file-input btn btn-primary btn-file">
+                                                    Browse <input type="file" multiple disabled="disabled">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                            Workflow History
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
+        </div>
+    </div>
+</div>

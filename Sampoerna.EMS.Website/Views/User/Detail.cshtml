@@ -15,6 +15,8 @@
             });
             // DataTable
             $('#employeeTable').DataTable();
+            
+            $('#MenuMasterUser').addClass('active');
         });
 
     </script>
@@ -47,7 +49,7 @@
                         <div class="panel-heading" role="tab" id="headingOne">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    User Detail
+                                    Detail User 
                                     <i class="fa fa-caret-down"></i>
                                 </a>
                             </h4>
@@ -55,74 +57,58 @@
                         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                             <div class="panel-body">
                                 <form class="form-excise" role="form">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">User Id</label>
-                                            <div class="col-md-9">
-                                                @Html.DisplayFor(m => m.Detail.USER_ID)
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">User Id</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(m => m.Detail.USER_ID, new { @class = "form-control", @disabled = "disaled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">First Name</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(m => m.Detail.FIRST_NAME, new { @class = "form-control", @disabled = "disaled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Last Name</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(m => m.Detail.LAST_NAME, new { @class = "form-control", @disabled = "disaled" })
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Username</label>
-                                            <div class="col-md-9">
-                                                @Html.DisplayFor(m => m.Detail.USERNAME)
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Phone</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(m => m.Detail.PHONE, new { @class = "form-control", @disabled = "disaled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Email</label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(m => m.Detail.EMAIL, new { @class = "form-control", @disabled = "disaled" })
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">First Name</label>
-                                            <div class="col-md-9">
-                                                @Html.DisplayFor(m => m.Detail.FIRST_NAME)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Last Name</label>
-                                            <div class="col-md-9">
-                                                @Html.DisplayFor(m => m.Detail.LAST_NAME)
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Phone</label>
-                                            <div class="col-md-9">
-                                                @Html.DisplayFor(m => m.Detail.PHONE)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Email</label>
-                                            <div class="col-md-9">
-                                                @Html.DisplayFor(m => m.Detail.EMAIL)
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Group</label>
-                                            <div class="col-md-9">
-                                                @Html.DisplayFor(m => m.Detail.USER_GROUP.GROUP_NAME)
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                    </form>
+                                </form>
                             </div>
-                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

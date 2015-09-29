@@ -2,18 +2,12 @@
 @model Sampoerna.EMS.Website.Models.Material.MaterialListViewModel
 
 @section scripts {
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="../../Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>
+
+
+    <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterMaterial').addClass('active');
         $(document).ready(function () {
-            $('.toggle-row').click(function () {
-
-                var filter = $(".filters");
-                filter.slideToggle(100).promise().done(function () {
-
-                });
-            });
-
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
                 var idx = $(this).index();
@@ -39,7 +33,7 @@
             $("#mydata_filter").hide();
             $('#mydata_length').hide();
 
-            $('#MenuMasterMaterial').addClass('active');
+           
 
             @if (TempData[Constans.SubmitType.Save] != null)
             {
@@ -81,18 +75,19 @@
         <div class="col-sm-12">
 
 
-            <div class="table-container">
+            <div id="contenttable" class="table-container">
 
                 <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
                     <thead>
                         <tr>
                             <th class="toggle-row"> Filter </th>
                             <th> Plant </th>
-                            <th> Sticker Code </th>
+                            <th> Material Number </th>
                             <th> Material Desc</th>
                             <th> Good Type</th>
                             <th> UOM</th>
-                            <th> Deletion Status</th>
+                            <th> Plant Deletion </th>
+                            <th> Client Deletion </th>
                         </tr>
 
                     </thead>
@@ -100,11 +95,13 @@
                         <tr>
                             <th> Action </th>
                             <th> Plant </th>
-                            <th> Sticker Code </th>
+                            <th> Material Number </th>
                             <th> Material Desc</th>
                             <th> Good Type</th>
                             <th> UOM</th>
-                            <th> Deletion Status</th>
+
+                            <th> Plant Deletion </th>
+                            <th> Client Deletion </th>
                         </tr>
                     </thead>
 
@@ -114,8 +111,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "Material", new { id = item.MaterialId })"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "Material", new { id = item.MaterialId })"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "Material", new { mn = item.MaterialNumber, p= item.PlantId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "Material", new { mn = item.MaterialNumber, p = item.PlantId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PlantName)
@@ -133,9 +130,12 @@
                                     @Html.DisplayFor(modelItem => item.UomName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.IsDeletedString, new { @disabled = "disabled" })
+                                    @Html.DisplayFor(modelItem => item.PlantDeletion)
                                 </td>
-                                
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ClientDeletion)
+                                </td>
+
                             </tr>
                         }
                     </tbody>
@@ -150,12 +150,12 @@
 <!--modal-->
 <input id="btn-mastermaterial-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
 
-<div class="modal main-menu-child fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Success</h3>
+                <h4 class ="modal-title">Success</h4>
             </div>
             <div class="modal-body" id="modal-mastermaterial-message">
 

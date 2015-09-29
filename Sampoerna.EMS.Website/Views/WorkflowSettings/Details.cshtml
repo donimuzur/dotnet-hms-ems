@@ -1,0 +1,166 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.WorkflowSetting.WorkflowDetails
+
+@{
+    ViewBag.Title = "Workflow Settings Detail";
+}
+
+@using (Html.BeginForm("Edit", "WorkflowSettings", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3> Workflow Settings Detail</h3>
+                <div class="action-button">
+                    @*<input type="submit" class="btn btn-blue" value="Save" />*@
+                    <a href="@Url.Action("Index", "WorkflowSettings")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="scroll">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Workflow Settings Detail
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <form class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-2">Modul</label>
+                                                        <div class="col-md-6">
+                                                            @Html.TextBoxFor(model => model.Modul, new { @class = "form-control", @disabled = "disabled" })
+                                                            @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-md-2">Mapping</label>
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="table-container">
+
+                                                            <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="toggle-row"> Filter </th>
+                                                                        <th> State </th>
+                                                                        <th> Email Template </th>
+                                                                        <th> Sent to </th>
+                                                                    </tr>
+
+                                                                </thead>
+                                                                <thead class="filters">
+                                                                    <tr>
+                                                                        <th> Action </th>
+                                                                        <th> State </th>
+                                                                        <th> Email Template </th>
+                                                                        <th> Sent to </th>
+                                                                        @*<th> Deleted </th>*@
+                                                                    </tr>
+                                                                </thead>
+
+                                                                <tbody>
+
+                                                                    @foreach (var item in Model.Details)
+                                                                    {
+                                                                        <tr>
+                                                                            <td class="action">
+                                                                                <a href="@Url.Action("Details", "WorkflowSettings", new { id = item.StateMappingId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+
+                                                                            </td>
+                                                                            <td>
+                                                                                @Html.DisplayFor(modelItem => item.State)
+                                                                            </td>
+                                                                            <td>
+                                                                                @Html.DisplayFor(modelItem => item.EmailTemplateName)
+                                                                            </td>
+                                                                            <th>
+                                                                                @Html.DisplayFor(modelItem => item.SentTo)
+                                                                            </th>
+
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+
+
+
+
+
+
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuWorkflowSettings').addClass('active');
+        $(document).ready(function () {
+            $('#mydata .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 0) {
+                    var title = $('#mydata thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
+                }
+            });
+
+            // DataTable
+            var table = $('#mydata').DataTable();
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+            $("#mydata_filter").hide();
+            $('#mydata_length').hide();
+        });
+
+        function GetMapping(id, mode) {
+            $.get("../GetMapping" + "/" + id, {},
+                function (res) {
+                    $(".modal-body .form").html(res);
+                    $("#" + mode + "-" + id).click();
+                }
+            );
+        }
+    </script>
+}

@@ -1,0 +1,112 @@
+﻿@model Sampoerna.EMS.Website.Models.PRODUCTION.ProductionUploadViewModel
+
+@{
+    ViewBag.Title = "UploadManualProduction";
+}
+@using (Html.BeginForm("UploadManualProduction", "Production"))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Manual Upload Document </h3>
+                <div class="action-button">
+                    <button id="btnSave" class="btn btn-blue">Save</button>
+                    <a href="@Url.Action("Index", "Production")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" id="tab-upload" role="presentation"><a data-toggle="tab" role="tab" aria-controls="Upload" href="#Upload">Upload</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_Upload")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts
+{
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script type="text/javascript">
+        $('#MenuCk4cDailyProduction').addClass('active');
+
+        var uploaditems = [];
+
+        $('#btn-generate-upload').click(function () {
+            uploadXmlFile();
+        });
+        
+        $('#btnSave').prop('disabled', true);
+        
+       function createColumn(text) {
+            return '<td>' + text + '</td>';
+        }
+
+        function createColumnWithHiddenField(text, name) {
+            return '<td><input type="hidden" name="' + name + '" value="' + text + '">' + text + '</td>';
+        }
+        function uploadXmlFile() {
+
+            var postUrl = '@Url.Action("UploadFile", "Production")';
+            var fileName = $('[name="itemExcelFile"]').val().trim();
+            var pos = fileName.lastIndexOf('.');
+            var extension = (pos <= 0) ? '' : fileName.substring(pos);
+            if (extension != '.xlsx') {
+                alert('Please browse a correct excel file to upload');
+                return false;
+            }
+
+            var formData = new FormData();
+            var totalFiles = document.getElementById("itemExcelFile").files.length;
+           
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("itemExcelFile").files[i];
+                formData.append("itemExcelFile", file);
+               
+
+            }
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data: formData,
+                dataType: 'html',
+                contentType: false,
+                processData: false,
+
+                success: function (response) {
+
+                    $('#tb-upload-excel').html('');
+                    uploaditems = JSON.parse(response);
+
+                    for (var i = 0; i < uploaditems.length; i++) {
+                        var tr = '<tr>' +
+                    createColumn(i + 1) +
+                    createColumnWithHiddenField(uploaditems[i].CompanyCode, 'UploadItems[' + i + '].CompanyCode') +
+                    createColumnWithHiddenField(uploaditems[i].PlantWerks, 'UploadItems[' + i + '].PlantWerks') +
+                    createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems[' + i + '].FaCode') +
+                    createColumnWithHiddenField(uploaditems[i].BrandDescription, 'UploadItems[' + i + '].BrandDescription') +
+                    createColumnWithHiddenField(uploaditems[i].QtyUnpacked, 'UploadItems[' + i + '].QtyUnpacked') +
+                    createColumnWithHiddenField(uploaditems[i].QtyPacked, 'UploadItems[' + i + '].QtyPacked') +
+                    createColumnWithHiddenField(uploaditems[i].Uom, 'UploadItems[' + i + '].Uom') +
+                    createColumnWithHiddenField(uploaditems[i].ProductionDate, 'UploadItems[' + i + '].ProductionDate') + + '</tr>';
+                        $('#tb-upload-excel').append(tr);
+                    }
+                    $('#btnSave').enable();
+                }
+            });
+        };
+    </script>
+}
+

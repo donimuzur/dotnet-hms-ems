@@ -1,0 +1,339 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1ItemViewModel
+@{
+    ViewBag.Title = "LACK-1 Edit";
+}
+
+@section styles{
+    <link href="~/Content/css/print.css" rel="stylesheet" />
+}
+
+@using (Html.BeginForm(Model.ControllerAction, "LACK1", FormMethod.Post, new { @id = "EditLack1Form", enctype = "multipart/form-data" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>@ViewBag.Title</h3>
+                <label class="status">@Model.StatusDescription</label>
+                <div class="action-button">
+
+                    @if (Model.AllowGovApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                    }
+                    else
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" onclick="saveEditClick()" />
+                    }
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack1", new { id = @Model.Lack1Id })')" />
+                    @if (Model.Lack1Type == Enums.LACK1Type.ListByPlant)
+                    {
+                        /* LACK-1 Plant Level */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-plant-list" />
+                    }
+                    else if (Model.Lack1Type == Enums.LACK1Type.ListByNppbkc)
+                    {
+                        /* LACK-1 NPPBKC Level */
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-nppbkc-list" />
+                    }
+                    
+                    @if (Model.Status == Enums.DocumentStatus.Draft)
+                    {
+                        <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        }
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.HiddenFor(model => model.Lack1Id)
+                        @Html.HiddenFor(model => model.Lack1Number)
+                        @Html.HiddenFor(model => model.Lack1Type)
+                        @Html.HiddenFor(model => model.IsSaveSubmit)
+                        @Html.HiddenFor(model => model.CreateBy)
+                        @Html.HiddenFor(model => model.CreateDate)
+                        @Html.HiddenFor(model => model.EndingBalance)
+                        @Html.HiddenFor(model => model.BeginingBalance)
+                        @Html.HiddenFor(model => model.Lack1Level)
+                        @Html.HiddenFor(model => model.Lack1UomId)
+                        @Html.HiddenFor(model => model.Lack1UomName)
+                        @Html.HiddenFor(model => model.SupplierPlant)
+                        @Html.HiddenFor(model => model.SupplierPlantAddress)
+                        @Html.HiddenFor(model => model.SupplierCompanyCode)
+                        @Html.HiddenFor(model => model.SupplierCompanyName)
+                        @Html.HiddenFor(model => model.Status)
+                        @Html.HiddenFor(model => model.StatusDescription)
+                        @Html.HiddenFor(model => model.GovApprovalActionType)
+                        @if (Model.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+                        {
+                            @Html.Partial("_HomeGovApproval")
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.GovStatus)
+                            @Html.HiddenFor(model => model.GovStatusDescription)
+                            @Html.Partial("_HomeEdit")
+                        }
+                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        {
+                            @Html.Partial("_PrintOut")
+                        }
+                        @Html.Partial("_ChangeLog")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="Lack1Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Submit</h3>
+            </div>
+            <div class="modal-body">
+                Submit Documents  ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ModalValidation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Input selection criteria not valid</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script src="~/Scripts/lack1/Lack1GenerateTable.js"></script>
+    <script src="~/Scripts/lack1/Lack1Upload.js"></script>
+    <script src="~/Scripts/lack1/Lack1Scripts.js"></script>
+    <script type="text/javascript">
+
+        $('#MenuLack1CompletedDocument').addClass('@Model.MenuCompletedAddClassCss');
+        $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
+        $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
+
+        $(document).ready(function() {
+
+            $('#divComment').hide();
+
+            $("#btnSubmitConfirm").click(function() {
+                $('#IsSaveSubmit').val('submit');
+                $('#EditLack1Form').submit();
+            });
+
+            $("#btnSubmitDocument").click(function() {
+                $('#Lack1Modal').modal('show');
+            });
+
+            $('#btn-back-plant-list').click(function(e) {
+                location.href = '@Url.Action("ListByPlant", "LACK1")';
+            });
+
+            $('#btn-back-nppbkc-list').click(function(e) {
+                location.href = '@Url.Action("Index", "LACK1")';
+            });
+            
+            $('#generated-data-container').html('');
+
+            var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
+            console.log(jsonData);
+            var generateTableD = generateTable(jsonData);
+            $('#generated-data-container').append(generateTableD);
+
+            $('#Bukrs').on('change', function () {
+                BukrsOnChange();
+            });
+            $('#NppbkcId').on('change', function () {
+                NppbkcIdOnChange();
+            });
+            $('#ExGoodsTypeId').on('change', function () {
+                ExGoodsTypeOnChange();
+            });
+
+            $('#SupplierPlantId').on('change', function() {
+                onSupplierPlantChange();
+            });
+
+            $("#btnSaveGovStatus").click(function() {
+                if (ValidateGovInput()) {
+                    $('#EditLack1Form').submit();
+                }
+            });
+
+            $('#GovStatus').on('change', function() {
+                onGovStatusChange();
+            });
+            
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportClientsListToExcel", "Lack1", new { id = Model.Lack1Id })';
+            });
+            
+        });
+        
+        function BukrsOnChange() {
+            if ($("#Bukrs").length) {
+                var companyCode = $('#Bukrs').find("option:selected").val();
+                $('#NppbkcId option').remove();
+                console.log(companyCode);
+                if (companyCode == '' || $(this).find("option:selected").val() == '') {
+                    $('#NppbkcId').append('<option value="">Select</option>');
+                } else {
+                    $('#Butxt').val($('#Bukrs').find("option:selected").text());
+                    ajaxLoadNppbkcList('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { companyCode: companyCode });
+                }
+            }
+        }
+        
+        function ExGoodsTypeOnChange() {
+            if ($("#NppbkcId").length && $("#ExGoodsTypeId").length) {
+                var excisableGoodsType = $('#ExGoodsTypeId').find("option:selected").val();
+                var excisableGoodsTypeDesc = $('#ExGoodsTypeId').find("option:selected").text();
+                $('#ExGoodsTypeDesc').val(excisableGoodsTypeDesc);
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                console.log(excisableGoodsType + "," + nppbkcId);
+                /*load supplier list*/
+                $('#SupplierPlantId option').remove();
+                if (excisableGoodsType != '' && nppbkcId != '') {
+                    ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: excisableGoodsType });
+                } else {
+                    $('#SupplierPlantId').append('<option value="">Select</option>');
+                }
+            }
+        }
+
+        function NppbkcIdOnChange() {
+            if ($("#NppbkcId").length) {
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                var attr = $('#LevelPlantId').attr('disabled');
+                console.log(attr);
+                /* For some browsers, `attr` is undefined; for others,
+                 `attr` is false.  Check for both.
+                load plant if enable*/
+                if (!(typeof attr !== typeof undefined && attr !== false)) {
+                    // ...
+                    $('#LevelPlantId option').remove();
+                    console.log(nppbkcId);
+                    if (nppbkcId == '' || $(this).find("option:selected").val() == '') {
+                        $('#LevelPlantId').append('<option value="">Select</option>');
+                    } else {
+                        ajaxLoadPlantList('@Url.Action("GetPlantListByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+                    }
+                }
+
+                /*load excisablegoodstype*/
+                ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+
+                /*load supplier list*/
+                ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
+
+            }
+        }
+
+        function printPreview(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        }
+
+        function onSupplierPlantChange() {
+            if ($("#SupplierPlantId").length) {
+                var id = $('#SupplierPlantId').find("option:selected").val();
+                console.log(id);
+                ajaxLoadPlantDetail('@Url.Action("GetSupplierPlantDetail", "LACK1")', { werks: id });
+            }
+        }
+
+        function onGovStatusChange() {
+            if ($("#GovStatus").length) {
+                var statusGov = $('#GovStatus').find("option:selected").val();
+                console.log(statusGov);
+                $('#divComment').hide();
+                if (statusGov == 'Rejected') {
+                    $('#divComment').show();
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                } else if (statusGov == 'PartialApproved') {
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+                } else if (statusGov == 'FullApproved') {
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }
+            }
+        }
+        
+        function ValidateGovInput() {
+            var result = true;
+            var govStatus = $('#GovStatus').find("option:selected").val();
+    
+            if (govStatus == '') {
+                AddValidationClass(false, 'GovStatus');
+                result = false;
+            }
+
+            if ($('#DecreeDate').val() == '') {
+                AddValidationClass(false, 'DecreeDate');
+                result = false;
+            }
+
+            if ($('#GovStatus').val() == 'Rejected') {
+                if ($('#Comment').val() == '') {
+                    AddValidationClass(false, 'Comment');
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+        
+        function saveEditClick() {
+            var isValid = false;
+            if (generateInputValidation()) {
+                isValid = true;
+            }
+            if (isValid) {
+                isValid = saveInputValidation();
+            }
+            if (isValid) {
+                $('#EditLack1Form').submit();
+            } else {
+                $('#ModalValidation').modal('show');
+            }
+        }
+        
+    </script>
+}

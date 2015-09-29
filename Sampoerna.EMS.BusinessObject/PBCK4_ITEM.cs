@@ -15,15 +15,26 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class PBCK4_ITEM
     {
         public long PBCK4_ITEM_ID { get; set; }
-        public Nullable<long> PBCK4_ID { get; set; }
-        public Nullable<long> BRAND_ID { get; set; }
-        public Nullable<decimal> REQUEST_QTY { get; set; }
+        public int PBCK4_ID { get; set; }
+        public Nullable<long> CK1_ID { get; set; }
+        public Nullable<decimal> TOTAL_HJE { get; set; }
+        public Nullable<decimal> TOTAL_STAMPS { get; set; }
         public Nullable<decimal> APPROVED_QTY { get; set; }
-        public string CK1_NO { get; set; }
-        public Nullable<System.DateTime> CK1_DATE { get; set; }
-        public string NOTE { get; set; }
+        public string REMARKS { get; set; }
+        public string FA_CODE { get; set; }
+        public string PLANT_ID { get; set; }
+        public string STICKER_CODE { get; set; }
+        public string SERIES_CODE { get; set; }
+        public string BRAND_NAME { get; set; }
+        public string PRODUCT_ALIAS { get; set; }
+        public string BRAND_CONTENT { get; set; }
+        public Nullable<decimal> HJE { get; set; }
+        public Nullable<decimal> TARIFF { get; set; }
+        public string COLOUR { get; set; }
+        public Nullable<decimal> REQUESTED_QTY { get; set; }
+        public string NO_PENGAWAS { get; set; }
     
         public virtual PBCK4 PBCK4 { get; set; }
-        public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND { get; set; }
+        public virtual CK1 CK1 { get; set; }
     }
 }

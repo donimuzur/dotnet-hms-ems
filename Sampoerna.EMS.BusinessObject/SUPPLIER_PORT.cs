@@ -14,14 +14,7 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class SUPPLIER_PORT
     {
-        public SUPPLIER_PORT()
-        {
-            this.PBCK1 = new HashSet<PBCK1>();
-        }
-    
         public int SUPPLIER_PORT_ID { get; set; }
         public string PORT_NAME { get; set; }
-    
-        public virtual ICollection<PBCK1> PBCK1 { get; set; }
     }
 }

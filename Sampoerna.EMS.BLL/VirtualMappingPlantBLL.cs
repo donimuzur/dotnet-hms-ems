@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<VIRTUAL_PLANT_MAP> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private IGenericRepository<T1001> _repositoryT1001;
+        private IGenericRepository<T001> _repositoryT1001;
         private IChangesHistoryBLL _changesHistoryBll;
 
         public VirtualMappingPlantBLL(IUnitOfWork uow, ILogger logger)
@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<VIRTUAL_PLANT_MAP>();
-            _repositoryT1001 = _uow.GetGenericRepository<T1001>();
+            _repositoryT1001 = _uow.GetGenericRepository<T001>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
 
         }
@@ -33,34 +33,51 @@ namespace Sampoerna.EMS.BLL
             return _repository.GetByID(id);
         }
 
-        public VIRTUAL_PLANT_MAP GetByIdIncludeChild(long id)
+        public VIRTUAL_PLANT_MAP GetByCompany(string companyid) {
+            return _repository.Get(x => x.COMPANY_ID == companyid).SingleOrDefault();
+        }
+
+        public VIRTUAL_PLANT_MAP GetByIdIncludeChild(int id)
         {
-            return _repository.Get(a => a.VIRTUAL_PLANT_MAP_ID == id, null, "T1001,T1001W,T1001W1").FirstOrDefault();
+            return _repository.Get(a => a.VIRTUAL_PLANT_MAP_ID == id, null, "T001,T001W,T001W1").FirstOrDefault();
         }
 
         public List<VIRTUAL_PLANT_MAP> GetAll()
         {
-            return _repository.Get(null, null, "T1001,T1001W,T1001W1").ToList();
+            return _repository.Get(null, null, "T001,T001W,T001W1").ToList();
         }
-
-        public VIRTUAL_PLANT_MAP Save(VIRTUAL_PLANT_MAP virtualPlant)
+        
+        public bool Save(VIRTUAL_PLANT_MAP virtualPlant)
         {
-            _repository.InsertOrUpdate(virtualPlant);
+            bool success = false;
+            var isexist = _repository.Get(x => x.COMPANY_ID == virtualPlant.COMPANY_ID && x.EXPORT_PLANT_ID == virtualPlant.EXPORT_PLANT_ID && x.IMPORT_PLANT_ID == virtualPlant.IMPORT_PLANT_ID).Count() > 0;
+            if (!isexist && virtualPlant.VIRTUAL_PLANT_MAP_ID == 0)
+            {
+                _repository.Insert(virtualPlant);
+                success = true;
+            }
+            else if(!isexist){
+                _repository.Update(virtualPlant);
+                success = true;
+            }
+
+            //_repository.InsertOrUpdate(virtualPlant);
             _uow.SaveChanges();
-            return virtualPlant;
+            return success;
         }
 
-        public void Delete(int id, int userId) {
+        public void Delete(int id, string userId)
+        {
             var data = _repository.GetByID(id);
             data.IS_DELETED = true;
             _repository.Update(data);
-            
+
 
 
             var changes = new CHANGES_HISTORY
             {
                 FORM_TYPE_ID = Core.Enums.MenuList.VirtualMappingPlant,
-                FORM_ID = data.VIRTUAL_PLANT_MAP_ID,
+                FORM_ID = data.VIRTUAL_PLANT_MAP_ID.ToString(),
                 FIELD_NAME = "IS_DELETED",
                 MODIFIED_BY = userId,
                 MODIFIED_DATE = DateTime.Now,
@@ -73,14 +90,14 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-        private void SetChanges(VIRTUAL_PLANT_MAP origin, VIRTUAL_PLANT_MAP data, int userId)
+        private void SetChanges(VIRTUAL_PLANT_MAP origin, VIRTUAL_PLANT_MAP data, string userId)
         {
             var changesData = new Dictionary<string, bool>();
             changesData.Add("COMPANY_ID", origin.COMPANY_ID.Equals(data.COMPANY_ID));
             changesData.Add("IMPORT_PLANT_ID", origin.IMPORT_PLANT_ID.Equals(data.IMPORT_PLANT_ID));
             changesData.Add("EXPORT_PLANT_ID", origin.EXPORT_PLANT_ID.Equals(data.EXPORT_PLANT_ID));
             changesData.Add("IS_DELETED", origin.IS_DELETED.Equals(data.IS_DELETED));
-            
+
 
             foreach (var listChange in changesData)
             {
@@ -89,7 +106,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.HeaderFooter,
-                        FORM_ID = data.VIRTUAL_PLANT_MAP_ID,
+                        FORM_ID = data.VIRTUAL_PLANT_MAP_ID.ToString(),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
                         MODIFIED_DATE = DateTime.Now
@@ -97,16 +114,16 @@ namespace Sampoerna.EMS.BLL
                     switch (listChange.Key)
                     {
                         case "COMPANY_ID":
-                            changes.OLD_VALUE = origin.COMPANY_ID.HasValue ? origin.COMPANY_ID.Value.ToString() : "NULL";
-                            changes.NEW_VALUE = data.COMPANY_ID.HasValue ? data.COMPANY_ID.Value.ToString() : "NULL";
+                            changes.OLD_VALUE = origin.COMPANY_ID;
+                            changes.NEW_VALUE = data.COMPANY_ID;
                             break;
                         case "EXPORT_PLANT_ID":
-                            changes.OLD_VALUE = origin.EXPORT_PLANT_ID.ToString();
-                            changes.NEW_VALUE = data.EXPORT_PLANT_ID.ToString();
+                            changes.OLD_VALUE = origin.EXPORT_PLANT_ID;
+                            changes.NEW_VALUE = data.EXPORT_PLANT_ID;
                             break;
                         case "IMPORT_PLANT_ID":
-                            changes.OLD_VALUE = origin.IMPORT_PLANT_ID.ToString();
-                            changes.NEW_VALUE = data.IMPORT_PLANT_ID.ToString();
+                            changes.OLD_VALUE = origin.IMPORT_PLANT_ID;
+                            changes.NEW_VALUE = data.IMPORT_PLANT_ID;
                             break;
 
                         case "IS_DELETED":
@@ -119,71 +136,6 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        //public List<SaveVirtualMappingPlantOutput> GetAll()
-        //{
-        //    var repoVirtualPlantMap = _repository.Get().ToList();
-        //    var repoT1001 = _repositoryT1001.Get().ToList();
-
-        //    //var repoPlantMapTest = _repository.GetQuery();
-        //    //var repoT1001Test = _repositoryT1001.GetQuery();
-
-        //    var result = repoVirtualPlantMap.Join(repoT1001,
-        //        virtualMap => virtualMap.COMPANY_ID,
-        //        T1001 => T1001.COMPANY_ID,
-        //        (virtualMap, T1001) => new SaveVirtualMappingPlantOutput
-        //        {
-        //            Company = T1001.BUKRSTXT,
-        //            ImportVitualPlant = virtualMap.IMPORT_PLANT_ID,
-        //            ExportVirtualPlant = virtualMap.EXPORT_PLANT_ID
-        //        }).ToList();
-
-        //    //var test = from p in _repository.GetQuery()
-        //    //           join k in _repositoryT1001.GetQuery() on p.COMPANY_ID equals k.COMPANY_ID
-        //    //           select new
-        //    //    {
-        //    //        company = k.BUKRSTXT,
-        //    //        export = p.EXPORT_PLANT_ID,
-        //    //        import = p.IMPORT_PLANT_ID
-        //    //    };
-
-
-        //    return result;
-
-
-        //    //return _repository.Get().ToList();
-        //}
-
-
-
-        //public SaveVirtualMappingPlantOutput Save(VIRTUAL_PLANT_MAP virtualPlantMap)
-        //{
-        //    if (virtualPlantMap.VIRTUAL_PLANT_MAP_ID > 0)
-        //    {
-        //        //update
-        //        _repository.Update(virtualPlantMap);
-        //    }
-        //    else
-        //    {
-        //        //Insert
-        //        _repository.Insert(virtualPlantMap);
-        //    }
-
-        //    var output = new SaveVirtualMappingPlantOutput();
-
-        //    try
-        //    {
-        //        _uow.SaveChanges();
-        //        output.Success = true;
-        //        output.Id = virtualPlantMap.VIRTUAL_PLANT_MAP_ID;
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        _logger.Error(exception);
-        //        output.Success = false;
-        //        output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
-        //        output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
-        //    }
-        //    return output ;
-        //}
+      
     }
 }

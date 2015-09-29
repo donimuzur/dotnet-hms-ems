@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public EMAIL_TEMPLATE()
         {
-            this.WORKFLOW_EMAIL = new HashSet<WORKFLOW_EMAIL>();
+            this.WORKFLOW_STATE = new HashSet<WORKFLOW_STATE>();
         }
     
         public int EMAIL_TEMPLATE_ID { get; set; }
@@ -25,6 +25,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string BODY { get; set; }
         public Nullable<System.DateTime> CREATED_DATE { get; set; }
     
-        public virtual ICollection<WORKFLOW_EMAIL> WORKFLOW_EMAIL { get; set; }
+        public virtual ICollection<WORKFLOW_STATE> WORKFLOW_STATE { get; set; }
     }
 }

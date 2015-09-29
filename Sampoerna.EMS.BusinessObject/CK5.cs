@@ -17,28 +17,34 @@ namespace Sampoerna.EMS.BusinessObject
         public CK5()
         {
             this.CK5_MATERIAL = new HashSet<CK5_MATERIAL>();
+            this.CK5_FILE_UPLOAD = new HashSet<CK5_FILE_UPLOAD>();
+            this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
+            this.LACK2_ITEM = new HashSet<LACK2_ITEM>();
+            this.LACK1_INCOME_DETAIL = new HashSet<LACK1_INCOME_DETAIL>();
         }
     
         public long CK5_ID { get; set; }
         public Sampoerna.EMS.Core.Enums.CK5Type CK5_TYPE { get; set; }
-        public Nullable<long> KPPBC_CITY { get; set; }
+        public string KPPBC_CITY { get; set; }
+        public string CE_OFFICE_CODE { get; set; }
+        public string SUBMISSION_NUMBER { get; set; }
         public Nullable<System.DateTime> SUBMISSION_DATE { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
-        public Nullable<int> EX_GOODS_TYPE_ID { get; set; }
-        public Nullable<int> EX_SETTLEMENT_ID { get; set; }
-        public Nullable<int> EX_STATUS_ID { get; set; }
-        public Nullable<int> REQUEST_TYPE_ID { get; set; }
+        public string EX_GOODS_TYPE_DESC { get; set; }
+        public Sampoerna.EMS.Core.Enums.ExciseSettlement EX_SETTLEMENT_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.ExciseStatus EX_STATUS_ID { get; set; }
+        public Sampoerna.EMS.Core.Enums.RequestType REQUEST_TYPE_ID { get; set; }
         public string STO_SENDER_NUMBER { get; set; }
         public string STO_RECEIVER_NUMBER { get; set; }
         public string STOB_NUMBER { get; set; }
-        public Nullable<long> SOURCE_PLANT_ID { get; set; }
-        public Nullable<long> DEST_PLANT_ID { get; set; }
+        public string SOURCE_PLANT_ID { get; set; }
+        public string DEST_PLANT_ID { get; set; }
         public string INVOICE_NUMBER { get; set; }
         public Nullable<System.DateTime> INVOICE_DATE { get; set; }
-        public Nullable<long> PBCK1_DECREE_ID { get; set; }
-        public Nullable<int> CARRIAGE_METHOD_ID { get; set; }
+        public Nullable<int> PBCK1_DECREE_ID { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.CarriageMethod> CARRIAGE_METHOD_ID { get; set; }
         public Nullable<decimal> GRAND_TOTAL_EX { get; set; }
-        public Nullable<int> PACKAGE_UOM_ID { get; set; }
+        public string PACKAGE_UOM_ID { get; set; }
         public Nullable<int> DEST_COUNTRY_ID { get; set; }
         public string HARBOUR { get; set; }
         public string OFFICE_HARBOUR { get; set; }
@@ -57,26 +63,45 @@ namespace Sampoerna.EMS.BusinessObject
         public string FINAL_PORT { get; set; }
         public string FINAL_PORT_ID { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS_ID { get; set; }
-        public Nullable<int> CREATED_BY { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
-        public Nullable<int> APPROVED_BY { get; set; }
-        public Nullable<System.DateTime> APPROVED_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public string APPROVED_BY_POA { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_POA { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-        public string SUBMISSION_NUMBER { get; set; }
+        public string SOURCE_PLANT_NPWP { get; set; }
+        public string SOURCE_PLANT_NPPBKC_ID { get; set; }
+        public string SOURCE_PLANT_COMPANY_NAME { get; set; }
+        public string SOURCE_PLANT_ADDRESS { get; set; }
+        public string SOURCE_PLANT_KPPBC_NAME_OFFICE { get; set; }
+        public string DEST_PLANT_NPWP { get; set; }
+        public string DEST_PLANT_NPPBKC_ID { get; set; }
+        public string DEST_PLANT_COMPANY_NAME { get; set; }
+        public string DEST_PLANT_ADDRESS { get; set; }
+        public string DEST_PLANT_KPPBC_NAME_OFFICE { get; set; }
+        public Nullable<System.DateTime> REGISTRATION_DATE { get; set; }
+        public Nullable<System.DateTime> DN_DATE { get; set; }
+        public string SOURCE_PLANT_NAME { get; set; }
+        public string DEST_PLANT_NAME { get; set; }
+        public string FINAL_PORT_NAME { get; set; }
+        public string APPROVED_BY_MANAGER { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
+        public string SOURCE_PLANT_COMPANY_CODE { get; set; }
+        public string DEST_PLANT_COMPANY_CODE { get; set; }
+        public Sampoerna.EMS.Core.Enums.ExGoodsType EX_GOODS_TYPE { get; set; }
+        public string DEST_COUNTRY_CODE { get; set; }
+        public string DEST_COUNTRY_NAME { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.Ck5ManualType> CK5_MANUAL_TYPE { get; set; }
+        public Nullable<long> CK5_REF_ID { get; set; }
     
-        public virtual PBCK1 PBCK1 { get; set; }
-        public virtual CARRIAGE_METHOD CARRIAGE_METHOD { get; set; }
-        public virtual COUNTRY COUNTRY { get; set; }
-        public virtual ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
-        public virtual EX_SETTLEMENT EX_SETTLEMENT { get; set; }
-        public virtual EX_STATUS EX_STATUS { get; set; }
-        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
-        public virtual REQUEST_TYPE REQUEST_TYPE { get; set; }
-        public virtual UOM UOM { get; set; }
+        public virtual PBCK1 PBCK1 { get; set; }
+        public virtual ICollection<CK5_FILE_UPLOAD> CK5_FILE_UPLOAD { get; set; }
+        public virtual ICollection<PBCK1_QUOTA> PBCK1_QUOTA { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual T1001W T1001W { get; set; }
-        public virtual T1001W T1001W1 { get; set; }
+        public virtual USER USER2 { get; set; }
+        public virtual ICollection<LACK2_ITEM> LACK2_ITEM { get; set; }
+        public virtual UOM UOM { get; set; }
+        public virtual ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
     }
 }

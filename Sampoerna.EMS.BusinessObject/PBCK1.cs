@@ -17,22 +17,26 @@ namespace Sampoerna.EMS.BusinessObject
         public PBCK1()
         {
             this.CK5 = new HashSet<CK5>();
+            this.PBCK1_DECREE_DOC = new HashSet<PBCK1_DECREE_DOC>();
             this.PBCK11 = new HashSet<PBCK1>();
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
-            this.REALISASI_PEMASUKAN = new HashSet<REALISASI_PEMASUKAN>();
-            this.RENCANA_PRODUKSI = new HashSet<RENCANA_PRODUKSI>();
+            this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
+            this.LACK1_PBCK1_MAPPING = new HashSet<LACK1_PBCK1_MAPPING>();
         }
     
-        public long PBCK1_ID { get; set; }
+        public int PBCK1_ID { get; set; }
         public string NUMBER { get; set; }
-        public Nullable<long> PBCK1_REF { get; set; }
+        public Nullable<int> PBCK1_REF { get; set; }
         public Sampoerna.EMS.Core.Enums.PBCK1Type PBCK1_TYPE { get; set; }
         public Nullable<System.DateTime> PERIOD_FROM { get; set; }
         public Nullable<System.DateTime> PERIOD_TO { get; set; }
         public Nullable<System.DateTime> REPORTED_ON { get; set; }
-        public Nullable<long> NPPBKC_ID { get; set; }
-        public Nullable<int> GOODTYPE_ID { get; set; }
+        public string NPPBKC_ID { get; set; }
+        public string NPPBKC_BUKRS { get; set; }
+        public string NPPBCK_BUTXT { get; set; }
+        public string EXC_GOOD_TYP { get; set; }
+        public string EXC_TYP_DESC { get; set; }
         public string SUPPLIER_PLANT { get; set; }
         public Nullable<int> SUPPLIER_PORT_ID { get; set; }
         public string SUPPLIER_ADDRESS { get; set; }
@@ -40,38 +44,48 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> PLAN_PROD_FROM { get; set; }
         public Nullable<System.DateTime> PLAN_PROD_TO { get; set; }
         public Nullable<decimal> REQUEST_QTY { get; set; }
-        public Nullable<int> REQUEST_QTY_UOM { get; set; }
+        public string REQUEST_QTY_UOM { get; set; }
+        public Nullable<decimal> LATEST_SALDO { get; set; }
+        public string LATEST_SALDO_UOM { get; set; }
         public Nullable<int> LACK1_FROM_MONTH { get; set; }
         public Nullable<int> LACK1_FROM_YEAR { get; set; }
         public Nullable<int> LACK1_TO_MONTH { get; set; }
         public Nullable<int> LACK1_TO_YEAR { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
-        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS_GOV { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> STATUS_GOV { get; set; }
         public Nullable<decimal> QTY_APPROVED { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
-        public Nullable<System.DateTime> CREATED_DATE { get; set; }
-        public Nullable<int> CREATED_BY { get; set; }
-        public Nullable<int> APPROVED_BY { get; set; }
-        public Nullable<System.DateTime> APPROVED_DATE { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public string APPROVED_BY_POA { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_POA { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
-        public Nullable<decimal> LATEST_SALDO { get; set; }
-        public Nullable<int> LATEST_SALDO_UOM { get; set; }
+        public string SUPPLIER_PORT_NAME { get; set; }
+        public string SUPPLIER_NPPBKC_ID { get; set; }
+        public string SUPPLIER_KPPBC_ID { get; set; }
+        public string SUPPLIER_PLANT_WERKS { get; set; }
+        public string APPROVED_BY_MANAGER { get; set; }
+        public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
+        public Nullable<decimal> REMAINING_QUOTA { get; set; }
+        public string NPPBKC_KPPBC_ID { get; set; }
+        public string SUPPLIER_KPPBC_NAME { get; set; }
+        public string SUPPLIER_COMPANY { get; set; }
+        public Nullable<bool> IS_NPPBKC_IMPORT { get; set; }
     
         public virtual ICollection<CK5> CK5 { get; set; }
-        public virtual ICollection<PBCK1> PBCK11 { get; set; }
-        public virtual PBCK1 PBCK12 { get; set; }
         public virtual MONTH MONTH { get; set; }
         public virtual MONTH MONTH1 { get; set; }
+        public virtual ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
+        public virtual ICollection<PBCK1> PBCK11 { get; set; }
+        public virtual PBCK1 PBCK12 { get; set; }
         public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
-        public virtual SUPPLIER_PORT SUPPLIER_PORT { get; set; }
+        public virtual ICollection<PBCK1_QUOTA> PBCK1_QUOTA { get; set; }
+        public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
+        public virtual USER USER2 { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual UOM UOM1 { get; set; }
-        public virtual USER USER { get; set; }
-        public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
-        public virtual ICollection<REALISASI_PEMASUKAN> REALISASI_PEMASUKAN { get; set; }
-        public virtual ICollection<RENCANA_PRODUKSI> RENCANA_PRODUKSI { get; set; }
-        public virtual ZAIDM_EX_NPPBKC ZAIDM_EX_NPPBKC { get; set; }
-        public virtual ZAIDM_EX_POA ZAIDM_EX_POA { get; set; }
+        public virtual ICollection<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
     }
 }

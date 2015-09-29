@@ -2,6 +2,7 @@
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -9,13 +10,15 @@ namespace Sampoerna.EMS.Contract
     {
         List<USER> GetUsers(UserInput input);
 
-        UserTree GetUserTreeByUserID(int userID);
+        List<USER> GetUsers();
 
+        List<USER> GetUsersByListId(List<string> useridlist);
+        
         List<UserTree> GetUserTree();
 
         Login GetLogin(string userName);
 
-        USER GetUserById(int id);
-
+        USER GetUserById(string id);
+        
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -22,32 +23,41 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_PRODTYP");
                 var items = new List<ZAIDM_EX_PRODTYP>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new ZAIDM_EX_PRODTYP();
-                    item.PRODUCT_CODE = Convert.ToInt32(xElement.Element("PRODUCT_CODE").Value);
-                    item.PRODUCT_TYPE = xElement.Element("PRODUCT_TYPE").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var existingProdType = GetProdType(item.PRODUCT_CODE);
-                    if (existingProdType != null)
+                    try
                     {
-                        if (dateXml > existingProdType.CREATED_DATE)
+                        var item = new ZAIDM_EX_PRODTYP();
+                        item.PROD_CODE = xElement.Element("PROD_CODE").Value;
+                        item.PRODUCT_TYPE = _xmlMapper.GetElementValue(xElement.Element("PRODUCT_TYPE"));
+                        item.PRODUCT_ALIAS = _xmlMapper.GetElementValue(xElement.Element("PRODUCT_ALIAS"));
+                        item.CREATED_BY = Constans.PI;
+                        var existingProdType = GetProdType(item.PROD_CODE);
+                        if (existingProdType != null)
                         {
+                            item.CREATED_DATE = existingProdType.CREATED_DATE;
+                            item.MODIFIED_DATE = DateTime.Now;
+                            item.CREATED_BY = existingProdType.CREATED_BY;
+                            item.MODIFIED_BY = Constans.PI;
                             items.Add(item);
+
                         }
                         else
                         {
-                            continue;
-
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        items.Add(item);
+                        _xmlMapper.Errors.Add(ex.Message);
+                       continue;
+                        
                     }
+                 
 
                 }
                 return items;
@@ -56,17 +66,20 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_PRODTYP>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_PRODTYP>(Items);
         }
 
-        public ZAIDM_EX_PRODTYP GetProdType(int? ProdTypeCode)
+        public List<string> GetErrorList()
+        {
+            return  _xmlMapper.Errors;
+        }
+
+        public ZAIDM_EX_PRODTYP GetProdType(string ProdTypeCode)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_PRODTYP>()
-                          .Get(p => p.PRODUCT_CODE == ProdTypeCode)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(ProdTypeCode);
             return exisitingPlant;
         }
 

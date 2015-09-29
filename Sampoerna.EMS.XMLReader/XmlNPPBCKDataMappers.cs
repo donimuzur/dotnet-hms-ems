@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -22,65 +23,88 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_NPPBKC");
                 var items = new List<ZAIDM_EX_NPPBKC>();
-                foreach (var xElement in xmlItems)
-                {
-                    var item = new ZAIDM_EX_NPPBKC();
-                    item.NPPBKC_NO = xElement.Element("NPPBKC_NO").Value;
-                    item.ADDR1 = xElement.Element("ADDR1").Value;
-                    item.ADDR2 = xElement.Element("ADDR2").Value;
-                    item.CITY = xElement.Element("CITY").Value;
-                    var kppbcNo = xElement.Element("KPPBC_NO").Value;
-                    var kppbc = new XmlKPPBCDataMapper(null
-                        ).GetKPPBC(kppbcNo);
-                    if(kppbc == null)
-                        throw new Exception("no existing KPPBC NO " + kppbcNo);
-                    item.KPPBC_ID = kppbc.KPPBC_ID;
-                    var companyCode = xElement.Element("BUKRS").Value;
-                    var company = new XmlCompanyDataMapper(null).GetCompany(companyCode);
-                    if(company == null)
-                        throw new Exception("no existing Company Code " + companyCode);
-                    item.COMPANY_ID = company.COMPANY_ID;
-
-                    item.CREATED_DATE = DateTime.Now;
-                    var dateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var exisitingNppbkc = GetNPPBKC(item.NPPBKC_NO);
-                    if (exisitingNppbkc != null)
+              
+                 
+                    foreach (var xElement in xmlItems)
                     {
-                        if (dateXml > exisitingNppbkc.CREATED_DATE)
+                        try
                         {
-                            items.Add(item);
+                            var item = new ZAIDM_EX_NPPBKC();
+                            item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
+                            item.ADDR1 = _xmlMapper.GetElementValue(xElement.Element("ADDR1"));
+                            item.ADDR2 = _xmlMapper.GetElementValue(xElement.Element("ADDR2"));
+                            item.CITY = _xmlMapper.GetElementValue(xElement.Element("CITY"));
+                            item.REGION = _xmlMapper.GetElementValue(xElement.Element("REGION"));
+                            var kppbcNo = _xmlMapper.GetElementValue(xElement.Element("KPPBC_ID"));
+                            var kppbc = new XmlKPPBCDataMapper(null
+                                ).GetKPPBC(kppbcNo);
+                            if (kppbc == null)
+                            {
+                                //insert kppbc
+                                var kppbcItem = new ZAIDM_EX_KPPBC();
+                                kppbcItem.KPPBC_ID = kppbcNo;
+                                kppbcItem.CREATED_DATE = DateTime.Now;
+                                _xmlMapper.InsertToDatabase(kppbcItem);
+                            }
+                            item.KPPBC_ID = new XmlKPPBCDataMapper(null
+                                ).GetKPPBC(kppbcNo).KPPBC_ID;
+
+                            item.START_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("START_DATE")));
+                            item.END_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("END_DATE")));
+                           
+                            var exisitingNppbkc = GetNPPBKC(item.NPPBKC_ID);
+                            if (exisitingNppbkc != null)
+                            {
+                                item.CITY_ALIAS = exisitingNppbkc.CITY_ALIAS;
+                                item.TEXT_TO = exisitingNppbkc.TEXT_TO;
+                                item.REGION_DGCE = exisitingNppbkc.REGION_DGCE;
+                                item.CREATED_DATE = exisitingNppbkc.CREATED_DATE;
+                                item.MODIFIED_DATE = DateTime.Now;
+                                item.MODIFIED_BY = Constans.PI;
+                                item.CREATED_BY = exisitingNppbkc.CREATED_BY;
+                                items.Add(item);
+
+                            }
+                            else
+                            {
+                                item.CREATED_DATE = DateTime.Now;
+                                items.Add(item);
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
+                            _xmlMapper.Errors.Add(ex.Message);
                             continue;
-
+                            
                         }
-                    }
-                    else
-                    {
-                        items.Add(item);
-                    }
-
+                        
+                    
                 }
+                
+               
                 return items;
             }
              
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_NPPBKC>(Items);
+            return _xmlMapper.InsertToDatabase<ZAIDM_EX_NPPBKC>(Items);
+        }
+
+        public List<string> GetErrorList()
+        {
+            return _xmlMapper.Errors;
         }
 
         public ZAIDM_EX_NPPBKC GetNPPBKC(string Number)
         {
             var existing = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_NPPBKC>()
-                          .Get(p => p.NPPBKC_NO == Number)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(Number);
             return existing;
         }
 

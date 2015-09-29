@@ -8,7 +8,7 @@
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3>Update Master Plan</h3>
+            <h3> Master Plant</h3>
             <div class="action-button">
                 <a href="@Url.Action("Index", "Plant")" class="btn btn-grey">Back</a>
             </div>
@@ -36,7 +36,7 @@
                                     <div class="panel-heading" role="tab" id="headingOne">
                                         <h4 class="panel-title">
                                             <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                Details Master Plant
+                                                Detail Master Plant
                                                 <i class="fa fa-caret-down"></i>
                                             </a>
                                         </h4>
@@ -57,7 +57,7 @@
                                                         <div class="row">
                                                             <label class="col-md-3">NPPBKC NO</label>
                                                             <div class="col-md-9">
-                                                                @Html.TextBoxFor(model => model.Detail.NPPBKC_NO, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBoxFor(model => model.Detail.NPPBKC_ID, new { @class = "form-control", @disabled = "disabled" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -69,6 +69,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    
                                                     <div class="col-md-6">
                                                         <div class="row">
                                                             <label class="col-md-3">Plant Address</label>
@@ -81,7 +82,7 @@
                                                         <div class="row">
                                                             <label class="col-md-3">Plant City</label>
                                                             <div class="col-md-9">
-                                                                @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBoxFor(model => model.Detail.Ort01, new { @class = "form-control", @disabled = "disabled" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -126,9 +127,17 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="row">
-                                                            <label class="col-md-3">Plant Id</label>
+                                                            <label class="col-md-3">Phone</label>
                                                             <div class="col-md-9">
                                                                 @Html.TextBoxFor(model => model.Detail.Phone, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">NPPBKC Import</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextBoxFor(model => model.Detail.NPPBKC_IMPORT_ID, new { @class = "form-control", @disabled = "disabled" })
                                                             </div>
                                                         </div>
                                                     </div>

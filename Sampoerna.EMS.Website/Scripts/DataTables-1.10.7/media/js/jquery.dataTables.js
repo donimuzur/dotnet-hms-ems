@@ -14302,16 +14302,17 @@
 			    catch (e) { }
 				
 				attach( $(host).empty(), buttons );
-				$('#' + settings.sTableId + '_paginate').append(' <span id="goto_' + settings.sTableId + '" style="margin-left:5px"> <span>go to page</span><input style="width:50px; margin-left:5px" type="text" placeholder=""></span>');
-				$('.paginate_button, span .ellipsis').wrapAll('<div style="float:left"></div>');
-			    $('#goto_' + settings.sTableId + ' input').keyup(function (e) {
-			        if (e.keyCode == 13) {
-			            var m = $(this).val();
-			            if (!isNaN(m)) {
-			                _fnPageChange(settings, Number(m) - 1, true);
-			            }
-			        }
-			    });
+				    //$('#' + settings.sTableId + '_paginate').append(' <span id="goto_' + settings.sTableId + '" style="margin-left:5px"> <span>go to page</span><input style="width:50px; margin-left:5px" type="text" placeholder=""></span>');
+				    //$('.paginate_button, span .ellipsis').wrapAll('<div style="float:left"></div>');
+			        //$('#goto_' + settings.sTableId + ' input').keypress(function (e) {
+			        //    if (e.keyCode == 13) {
+			        //        e.preventDefault();
+			        //        var m = $(this).val();
+			        //        if (!isNaN(m)) {
+			        //            _fnPageChange(settings, Number(m) - 1, true);
+			        //        }
+			        //    }
+			        //});
 
 
 				if ( activeEl ) {
@@ -14319,8 +14320,38 @@
 				}
 				$('#' + settings.sTableId + '_filter').hide();
 				$('#' + settings.sTableId + '_length').hide();
-				
+								
+				var url = getCookie("url_active");
+				var url_active = window.location.href;
 
+				if (url_active != url){
+				    setCookie("page_active", "", 1);
+				}
+
+				var page = getCookie("page_active");
+
+				if (page != "") {
+				    _fnPageChange(settings, Number(page) - 1, true);
+				    setCookie("page_active", "", 1);
+				}
+
+				function getCookie(cname) {
+				    var name = cname + "=";
+				    var ca = document.cookie.split(';');
+				    for (var i = 0; i < ca.length; i++) {
+				        var c = ca[i];
+				        while (c.charAt(0) == ' ') c = c.substring(1);
+				        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+				    }
+				    return "";
+				}
+
+				function setCookie(cname, cvalue, exdays) {
+				    var d = new Date();
+				    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+				    var expires = "expires=" + d.toUTCString();
+				    document.cookie = cname + "=" + cvalue + "; " + expires;
+				}
 			}
 		}
 	} );

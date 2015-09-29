@@ -2,9 +2,17 @@
 {
     public class Constans
     {
-        public const string MasterDataHeaderFooterFolder = "~/Content/upload/header/";
+        public const string MasterDataHeaderFooterFolder = "~/files_upload/";
+        public const string UploadPath = "~/files_upload/";
+        public const string Pbck1DecreeDocFolderPath = "~/Content/upload/pbck1decreedoc/";
+        public const string CK5FolderPath = "~/Content/upload/CK5/";
+        public const string Ck4cDecreeDocFolderPath = "~/Content/upload/ck4cdecreedoc/";
+
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";
+        public static string DelimeterSelectItem = " - ";
+        public const string PI = "PI";
+
         /// <summary>
         /// list of SessionKey constanta
         /// </summary>
@@ -38,13 +46,18 @@
             public const string Update = "Update";
             public const string PrintPreview = "PrintPreview";
             public const string Delete = "Delete";
+            public const string DataExist = "DataExist";
+            public const string DataExistPlant = "Main Plant With NPPBKC ID is Already Exists";
         }
         public class SubmitMessage
         {
             public const string Saved = "Save Succefully";
             public const string Updated = "Update Succefully";
             public const string Deleted = "Delete Succefully";
+            public const string DataExist = "Data Already Exist";
+            public const string DataExistPlant = "Main Plant With NPPBKC ID is Already Exists";
         }
+
 
     }
 }

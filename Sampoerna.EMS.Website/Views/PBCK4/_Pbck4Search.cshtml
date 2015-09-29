@@ -1,0 +1,104 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4IndexViewModel
+
+@Html.HiddenFor(model => model.IsCompletedType)
+
+<div class="white-wrapper">
+    <div class="form-excise" role="form">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="row">
+
+                    @Html.LabelFor(model => model.SearchView.NppbkcId, new { @class = "col-md-4" })
+                    <div class="col-md-8">
+                        @if (Model.SearchView.NppbkcIdList == null)
+                        {
+                        @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                        }
+                        else
+                        {
+                        @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    @Html.LabelFor(model => model.SearchView.PlantId, new { @class = "col-md-4" })
+                    <div class="col-md-8">
+                        @if (Model.SearchView.PlantIdList == null)
+                        {
+                        @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                        }
+                        else
+                        {
+                        @Html.DropDownListFor(model => model.SearchView.PlantId, Model.SearchView.PlantIdList, "All", new { @class = "form-control selectreset" })
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    @Html.LabelFor(model => model.SearchView.ReportedOn, new { @class = "col-md-4" })
+                    <div class="col-md-8">
+                        <div class="input-group date">
+                            @Html.TextBoxFor(model => model.SearchView.ReportedOn, new { @class = "form-control" })
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+        <div class="row">
+            <div class="last-form">
+                <div class="col-md-4">
+                    <div class="row">
+                        @Html.LabelFor(model => model.SearchView.Poa, new { @class = "col-md-4" })
+                        <div class="col-md-8">
+                            @if (Model.SearchView.PoaList == null)
+                            {
+                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                            }
+                            else
+                            {
+                            @Html.DropDownListFor(model => model.SearchView.Poa, Model.SearchView.PoaList, "All", new { @class = "form-control selectreset" })
+                            }
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        @Html.LabelFor(model => model.SearchView.Creator, new { @class = "col-md-4" })
+                        <div class="col-md-8">
+                            @if (Model.SearchView.CreatorList == null)
+                                {
+                                @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                }
+                                else
+                                {
+                                @Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" })
+                                }
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button class="btn btn-blue full">FILTER</button>
+                        </div>
+                        <div class="col-md-6">
+                            <input class="btn btn-blue full" type="button" value="RESET" onclick="OnReset();" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

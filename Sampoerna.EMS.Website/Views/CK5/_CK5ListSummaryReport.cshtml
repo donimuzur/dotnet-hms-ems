@@ -1,0 +1,107 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5SummaryReportsViewModel
+
+<table id="ck5Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>CK5 Type</th>
+            <th>KPPBC City</th>
+            <th>Submission Number</th>
+            <th>Submission Date</th>
+            <th>Excise Goods Type</th>
+            <th>Excise Settlement</th>
+            <th>Excise Status</th>
+            <th>Request Type</th>
+            <th>Source Plant</th>
+            <th>Destination Plant</th>
+            <th>Unpaid Excise Facility Number</th>
+            
+            <th>Unpaid Excise Facility Date</th>
+            <th>Sealing Notification Date</th>
+            <th>Sealing Notification Number</th>
+            <th>UnSealing Notification Date</th>
+            <th>UnSealing Notification Number</th>
+            <th>Reported to LACK-1 Month</th>
+            <th>Reported to LACK-2 Month</th>
+            <th>Tanggal Aju</th>
+            <th>Nomer Aju</th>
+            <th>Tanggal Pendaftaran</th>
+            <th>Nomer Pendaftaran</th>
+            <th>Origin CE Office</th>
+            <th>Origin Company</th>
+            <th>Origin Company NPPBKC</th>
+            <th>Origin Company Address</th>
+            <th>Destination Country</th>
+            <th>Number Box</th>
+            <th>Contain per Box</th>
+            <th>Total of Excisable Goods</th>
+            <th>Banderol Price</th>
+            <th>Excise Tariff</th>
+            <th>Excise Value</th>
+            <th>Destination Ce Office</th>
+            <th>Last Storage Location</th>
+            <th>Last Storage Location's NPPBKC</th>
+            <th>Last Storage Location's CE Office</th>
+            <th>Loading Port</th>
+            <th>Loading Port Name</th>
+            
+        </tr>
+    </thead>
+   
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.Ck5TypeDescription)</td>
+                    <td>@Html.DisplayFor(model => item.KppbcCityName)</td>
+                    <td>@Html.DisplayFor(model => item.SubmissionNumber)</td>
+                    <td>@Html.DisplayFor(model => item.SubmissionDate)</td>
+                    <td>@Html.DisplayFor(model => item.ExGoodTypeDesc)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseSettlement)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseStatus)</td>
+                    <td>@Html.DisplayFor(model => item.RequestType)</td>
+                    <td>@Html.DisplayFor(model => item.SourcePlant)</td>
+                    <td>@Html.DisplayFor(model => item.DestinationPlant)</td>
+                    <td>@Html.DisplayFor(model => item.UnpaidExciseFacilityNumber)</td>
+                    
+                    <td>@Html.DisplayFor(model => item.UnpaidExciseFacilityDate)</td>
+                    <td>@Html.DisplayFor(model => item.SealingNotificationDate)</td>
+                    <td>@Html.DisplayFor(model => item.SealingNotificationNumber)</td>
+                    <td>@Html.DisplayFor(model => item.UnSealingNotificationDate)</td>
+                    <td>@Html.DisplayFor(model => item.UnSealingNotificationNumber)</td>
+                    <td>@Html.DisplayFor(model => item.Lack1)</td>
+                    <td>@Html.DisplayFor(model => item.Lack2)</td>
+                    <td>@Html.DisplayFor(model => item.TanggalAju)</td>
+                    <td>@Html.DisplayFor(model => item.NomerAju)</td>
+
+                    <td>@Html.DisplayFor(model => item.TanggalPendaftaran)</td>
+                    <td>@Html.DisplayFor(model => item.NomerPendaftaran)</td>
+                    <td>@Html.DisplayFor(model => item.OriginCeOffice)</td>
+                    <td>@Html.DisplayFor(model => item.OriginCompany)</td>
+                    <td>@Html.DisplayFor(model => item.OriginCompanyNppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.OriginCompanyAddress)</td>
+                    <td>@Html.DisplayFor(model => item.DestinationCountry)</td>
+                    <td>@Html.DisplayFor(model => item.NumberBox)</td>
+                    <td>@Html.DisplayFor(model => item.ContainPerBox)</td>
+
+                    <td>@Html.DisplayFor(model => item.TotalOfExcisableGoods)</td>
+                    <td>@Html.DisplayFor(model => item.BanderolPrice)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseTariff)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseValue)</td>
+                    <td>@Html.DisplayFor(model => item.DestinationCeOffice)</td>
+                    <td>@Html.DisplayFor(model => item.DestCompanyAddress)</td>
+                    <td>@Html.DisplayFor(model => item.DestCompanyNppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.DestCompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.LoadingPort)</td>
+                    <td class="last">@Html.DisplayFor(model => item.LoadingPortName)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+

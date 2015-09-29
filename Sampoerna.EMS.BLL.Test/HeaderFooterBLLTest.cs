@@ -42,14 +42,14 @@ namespace Sampoerna.EMS.BLL.Test
             var headerFooterData = new HEADER_FOOTER()
             {
                 HEADER_FOOTER_ID = 1,
-                COMPANY_ID = 1,
-                T1001 = new T1001() { COMPANY_ID = 1, BUKRS = "1001", BUKRSTXT = "HMS-E" },
+                BUKRS = "1001",
+                T001 = new T001() {  BUKRS = "1001", BUTXT = "HMS-E" },
                 HEADER_FOOTER_FORM_MAP = new List<HEADER_FOOTER_FORM_MAP>
             {
                 new HEADER_FOOTER_FORM_MAP()
                 {
                     HEADER_FOOTER_ID = 1,
-                    FORM_TYPE_ID = Enums.FormType.PBKC1,
+                    FORM_TYPE_ID = Enums.FormType.PBCK1,
                     IS_FOOTER_SET = true,
                     IS_HEADER_SET = false
                 },
@@ -81,14 +81,14 @@ namespace Sampoerna.EMS.BLL.Test
             var headerFooterData = new HEADER_FOOTER()
             {
                 HEADER_FOOTER_ID = 1,
-                COMPANY_ID = 1,
-                T1001 = new T1001() { COMPANY_ID = 1, BUKRS = "1001", BUKRSTXT = "HMS-E" },
+                BUKRS = "1001",
+                T001 = new T001() { BUKRS = "1001", BUTXT = "HMS-E" },
                 HEADER_FOOTER_FORM_MAP = new List<HEADER_FOOTER_FORM_MAP>
             {
                 new HEADER_FOOTER_FORM_MAP()
                 {
                     HEADER_FOOTER_ID = 1,
-                    FORM_TYPE_ID = Enums.FormType.PBKC1,
+                    FORM_TYPE_ID = Enums.FormType.PBCK1,
                     IS_FOOTER_SET = true,
                     IS_HEADER_SET = false
                 },

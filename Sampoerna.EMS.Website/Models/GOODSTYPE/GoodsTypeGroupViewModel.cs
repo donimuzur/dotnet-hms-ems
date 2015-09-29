@@ -25,5 +25,7 @@ namespace Sampoerna.EMS.Website.Models.GOODSTYPE
 
         public string GroupTypeName { get; set; }
 
+        public string Inactive { get; set; }
+
     }
 }

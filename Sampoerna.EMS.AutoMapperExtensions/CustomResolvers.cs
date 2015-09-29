@@ -2,6 +2,8 @@
 using System.Globalization;
 using AutoMapper;
 using AutoMapper.Internal;
+using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.AutoMapperExtensions
 {
@@ -101,18 +103,113 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+ public class SourcePlantTextResolver : ValueResolver<T001W, string>
+    {
+        protected override string ResolveCore(T001W value)
+        {
+            if (string.IsNullOrEmpty(value.ORT01))
+                return value.NAME1;
 
-    //public class VirtualPlantMapCompanyNameResolver : ValueResolver<object, string>
-    //{
-    //    protected override string ResolveCore(object value)
-    //    {
+            return value.NAME1 + " - " + value.ORT01;
+        }
+    }
+
+
+    public class PlantCityCodeResolver : ValueResolver<T001W, string>
+    {
+        protected override string ResolveCore(T001W value)
+        {
+            return "KPPBC " + value.ZAIDM_EX_NPPBKC.CITY + " - " + value.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_ID; 
             
-    //        string InputAsString = value.ToNullSafeString();
+        }
+    }
 
-    //        if (string.IsNullOrWhiteSpace(InputAsString))
-    //            return null;
+    public class CK5ListIndexQtyResolver : ValueResolver<CK5Dto, string>
+    {
+        protected override string ResolveCore(CK5Dto value)
+        {
+            string resultValue = "";
+            string resultUOM = "Boxes";
 
-    //        return int.Parse(InputAsString);
-    //    }
-    //}
+            if (value.GRAND_TOTAL_EX.HasValue)
+               resultValue = value.GRAND_TOTAL_EX.Value.ToString();
+        
+            if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
+                resultUOM = value.PackageUomName;
+
+            return resultValue + " " + resultUOM;
+        }
+    }
+
+    public class StringToDecimalResolver : ValueResolver<string, decimal>
+    {
+        protected override decimal ResolveCore(string value)
+        {
+            try
+            {
+                return Convert.ToDecimal(value);
+            }
+            catch (Exception ex)
+            {
+
+                return -1;
+            }
+
+        }
+    }
+
+    public class DecimalToStringResolver : ValueResolver<decimal?, string>
+    {
+        protected override string ResolveCore(decimal? value)
+        {
+            if (!value.HasValue)
+                return "0";
+
+            return value.Value.ToString();
+
+        }
+
+    }
+
+    /// <summary>
+    /// Resolve String as CultureInfo.InvariantCulture to a nullable DateTime
+    /// </summary>
+    public class StringToNullableDecimalResolver : ValueResolver<object, decimal?>
+    {
+        protected override decimal? ResolveCore(object value)
+        {
+            string InputAsString = value.ToNullSafeString();
+
+            if (string.IsNullOrWhiteSpace(InputAsString))
+                return null;
+
+            return decimal.Parse(InputAsString);
+        }
+    }
+
+    public class CK5ListIndexDestinationPlantResolver : ValueResolver<CK5Dto, string>
+    {
+        protected override string ResolveCore(CK5Dto value)
+        {
+           
+            if (value.IsCk5Export)
+                return value.DEST_COUNTRY_CODE + " - " + value.DEST_COUNTRY_NAME;
+
+            return value.DEST_PLANT_ID + " - " + value.DEST_PLANT_NAME;
+        }
+    }
+
+    public class CK5ListIndexPOAResolver : ValueResolver<CK5Dto, string>
+    {
+        protected override string ResolveCore(CK5Dto value)
+        {
+
+            if (! string.IsNullOrEmpty(value.APPROVED_BY_POA))
+                return value.APPROVED_BY_POA;
+            if (!string.IsNullOrEmpty(value.APPROVED_BY_MANAGER))
+                return value.APPROVED_BY_MANAGER;
+
+            return "";
+        }
+    }
 }

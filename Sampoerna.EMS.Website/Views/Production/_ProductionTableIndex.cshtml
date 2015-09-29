@@ -1,0 +1,75 @@
+﻿@model Sampoerna.EMS.Website.Models.PRODUCTION.ProductionViewModel
+
+<table id="DailyProduction" class="table table-striped table-hover" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Action </th>
+            <th> Company </th>
+            <th> Plant</th>
+            <th> Finish Goods </th>
+            <th> Description </th>
+            <th> Qty Packed </th>
+            <th> Qty Unpacked </th>
+            <th> Qty </th>
+            <th> Uom </th>
+            <th> Date </th>
+        </tr>
+
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th> Filter </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+            <th></th>
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.Details.OrderByDescending(x => x.ProductionDate))
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Detail", "production", new { companyCode = item.CompanyCode, plantWerk = item.PlantWerks, faCode = item.FaCode, productionDate = item.ProductionDate })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "production", new { companyCode = item.CompanyCode, plantWerk = item.PlantWerks, faCode = item.FaCode, productionDate = item.ProductionDate })" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlantName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FaCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BrandDescription)
+                </td>
+                <td class="number"> 
+                    @string.Format("{0:N2}", item.QtyPacked)
+                </td>
+                <td class="number">
+                    @string.Format("{0:N2}", item.QtyUnpacked)
+                </td>
+                <td class="number">
+                    @string.Format("{0:N2}", item.Qty)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Uom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductionDate)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

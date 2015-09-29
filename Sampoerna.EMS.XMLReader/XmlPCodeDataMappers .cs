@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
@@ -22,33 +23,40 @@ namespace Sampoerna.EMS.XMLReader
         {
             get
             {
-                var xmlItems = _xmlMapper.GetElements("ITEM");
+                var xmlRoot = _xmlMapper.GetElement("IDOC");
+                var xmlItems = xmlRoot.Elements("Z1A_PCODE");
                 var items = new List<ZAIDM_EX_PCODE>();
                 foreach (var xElement in xmlItems)
                 {
-                    var item = new ZAIDM_EX_PCODE();
-                    item.PER_CODE = Convert.ToInt32(xElement.Element("PER_CODE").Value);
-                    item.PER_DESC = xElement.Element("PER_DESC").Value;
-                    item.CREATED_DATE = DateTime.Now;
-                    var dateXml =  Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value); 
-                    var existingPCode = GetPCode(item.PER_CODE);
-                    if (existingPCode != null)
+                    try
                     {
-                        if (dateXml > existingPCode.CREATED_DATE)
+                        var item = new ZAIDM_EX_PCODE();
+                        item.PER_CODE = xElement.Element("PER_CODE").Value;
+                        item.PER_DESC = _xmlMapper.GetElementValue(xElement.Element("PER_DESC"));
+                        item.CREATED_DATE = DateTime.Now;
+                        item.CREATED_BY = Constans.PI;
+                        var existingPCode = GetPCode(item.PER_CODE);
+                        if (existingPCode != null)
                         {
+                            item.CREATED_DATE = existingPCode.CREATED_DATE;
+                            item.MODIFIED_BY = Constans.PI;
+                            item.MODIFIED_DATE = DateTime.Now;
                             items.Add(item);
+
                         }
                         else
                         {
-                            continue;
-
+                            
+                            item.CREATED_DATE = DateTime.Now;
+                            items.Add(item);
                         }
-                    }
-                    else
-                    {
-                        items.Add(item);
-                    }
 
+                    }
+                    catch (Exception ex)
+                    {
+                        _xmlMapper.Errors.Add(ex.Message);
+                        continue;
+                    }
                 }
                 return items;
             }
@@ -56,17 +64,20 @@ namespace Sampoerna.EMS.XMLReader
         }
 
       
-        public void InsertToDatabase()
+        public string InsertToDatabase()
         {
-            _xmlMapper.InsertToDatabase<ZAIDM_EX_PCODE>(Items);
+           return _xmlMapper.InsertToDatabase<ZAIDM_EX_PCODE>(Items);
         }
 
-        public ZAIDM_EX_PCODE GetPCode(int? PCode)
+        public List<string> GetErrorList()
+        {
+           return  _xmlMapper.Errors;
+        }
+
+        public ZAIDM_EX_PCODE GetPCode(string PCode)
         {
             var exisitingPlant = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_PCODE>()
-                          .Get(p => p.PER_CODE == PCode)
-                          .OrderByDescending(p => p.CREATED_DATE)
-                          .FirstOrDefault();
+                .GetByID(PCode);
             return exisitingPlant;
         }
 

@@ -13,8 +13,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <!-- Load the site CSS after Boostrap's to override -->
-    @Styles.Render("~/Content/css")
-    @Styles.Render("~/Content/jqueryui/autocomplete/css")
+    @Styles.Render("~/bundles/css")
+    @Styles.Render("~/bundles/jqueryui/autocomplete/css")
     <!-- Load Modernizr.js -->
     @Scripts.Render("~/bundles/modernizrmin")
     <link href="~/Content/css/loading.css" rel="stylesheet" />
@@ -49,7 +49,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="user-container">
                     <a href="#" class="user">
-                        Welcome, <strong>@Html.UserName()</strong>
+                        Welcome, <strong>@Html.UserName()</strong> (@Html.UserRole())
                     </a>
                 </li>
             </ul>
@@ -74,8 +74,9 @@
                                     <i class="down fa fa-caret-down"></i>
                                 </a>
                                 <ul class="child list">
-                                    <li><a id="MenuPBCK1OpenListDocument" class="active" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i>Open Document List</a></li>
-                                    <li><a id="MenuPBCK1CompletedListDocument" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
+                                    <li><a id="MenuPBCK1OpenListDocument" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i>Open Document List</a></li>
+                                    <li><a id="MenuPBCK1CompletedListDocument" href="@Url.Action("CompletedDocument", "PBCK1")"><i class="fa fa-angle-right"></i>Completed Document</a></li>
+
                                 </ul>
                             </div>
                             <div class="collapse-menu">
@@ -85,8 +86,8 @@
                                     <i class="down fa fa-caret-down"></i>
                                 </a>
                                 <ul class="child list">
-                                    <li><a href="#"><i class="fa fa-angle-right"></i> Summary</a></li>
-                                    <li><a href="#"><i class="fa fa-angle-right"></i> Monitoring Usage</a></li>
+                                    <li><a id="MenuPBCK1SummaryReports" href="@Url.Action("SummaryReports", "PBCK1")"><i class="fa fa-angle-right"></i>Summary Reports</a></li>
+                                    <li><a id="MenuPBCK1MonitoringUsage" href="@Url.Action("MonitoringUsage", "PBCK1")"><i class="fa fa-angle-right"></i>Monitoring Usage</a></li>
                                 </ul>
                             </div>
                             <div class="other">
@@ -95,14 +96,14 @@
                                     <span>Other Modules</span>
                                 </a>
                                 <ul class="child other-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
                                 </ul>
                             </div>
                             break;
@@ -116,9 +117,21 @@
                             </a>
                             <ul class="child list">
                                 <li>
+                                    <a id="MenuMasterUser" href="@Url.Action("Index", "User")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Master User
+                                    </a>
+                                </li>
+                                <li>
                                     <a id="MenuPOA" href="@Url.Action("Index", "POA")">
                                         <i class="fa fa-angle-right"></i>
                                         POA
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuPoaMap" href="@Url.Action("Index", "PoaMap")">
+                                        <i class="fa fa-angle-right"></i>
+                                        POA Map
                                     </a>
                                 </li>
                                 <li>
@@ -128,7 +141,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                   
+
                                     <a id="MenuNPPBKC" href="@Url.Action("Index", "NPPBKC")">
                                         <i class="fa fa-angle-right"></i>
                                         NPPBKC
@@ -141,15 +154,15 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a id="MenuMasterBrandRegistration" href="@Url.Action("Index", "BrandRegistration")">
-                                        <i class="fa fa-angle-right"></i>
-                                        Brand Registration
-                                    </a>
-                                </li>
-                                <li>
                                     <a id="MenuMasterMaterial" href="@Url.Action("Index", "Material")">
                                         <i class="fa fa-angle-right"></i>
                                         Material Master
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuMasterBrandRegistration" href="@Url.Action("Index", "BrandRegistration")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Brand Registration
                                     </a>
                                 </li>
                                 <li>
@@ -159,17 +172,30 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a id="MenuMasterGoodType" href="@Url.Action("Index", "GoodsTypeGroup")" > 
+                                    <a id="MenuMasterGoodType" href="@Url.Action("Index", "GoodsTypeGroup")">
                                         <i class="fa fa-angle-right"></i>
                                         Goods Type Group
                                     </a>
                                 </li>
                                 <li>
-                                    <a id="MenuMasterUser" href="@Url.Action("Index", "User")">
+                                    <a id="MenuUOM" href="@Url.Action("Index", "Uom")">
                                         <i class="fa fa-angle-right"></i>
-                                        User
+                                        UoM
                                     </a>
                                 </li>
+                                <li>
+                                    <a id="MenuVendor" href="@Url.Action("Index", "Vendor")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Vendor
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuKppbc" href="@Url.Action("Index", "KPPBC")">
+                                        <i class="fa fa-angle-right"></i>
+                                        KPPBC
+                                    </a>
+                                </li>
+
                             </ul>
                         </div>
                         <div class="other">
@@ -178,15 +204,15 @@
                                 <span>Other Modules</span>
                             </a>
                             <ul class="child other-menu">
-                                <li><a href="list.html"><i class="fa fa-angle-right"></i> PBCK-1</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                                <li><a href="@Url.Action("Index", "Pbck1")"><i class="fa fa-angle-right"></i>PBCK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
                             </ul>
                         </div>
                             break;
@@ -206,13 +232,14 @@
                                 <i class="down fa fa-caret-down"></i>
                             </a>
                             <ul class="child list">
-                                <li><a href="#"><i class="fa fa-angle-right"></i>Upload File</a></li>
-                                <li><a id="MenuCK5Domestic"  href="@Url.Action("Index", "CK5")"><i class="fa fa-angle-right"></i> Domestic</a></li>
+                                <li><a id="MenuCK5FileDocuments" href="@Url.Action("CK5UploadFileDocuments", "CK5")"><i class="fa fa-angle-right"></i>Upload File</a></li>
+                                <li><a id="MenuCK5Domestic" href="@Url.Action("Index", "CK5")"><i class="fa fa-angle-right"></i>Domestic</a></li>
                                 <li><a id="MenuCK5Import" href="@Url.Action("CK5Import", "CK5")"><i class="fa fa-angle-right"></i>Importer</a></li>
-                                <li><a id="MenuCK5Export" href="@Url.Action("CK5Export", "CK5")"><i class="fa fa-angle-right"></i>Export (Union)</a></li>
+                                <li><a id="MenuCK5Export" href="@Url.Action("CK5Export", "CK5")"><i class="fa fa-angle-right"></i>Export</a></li>
                                 <li><a id="MenuCK5Manual" href="@Url.Action("CK5Manual", "CK5")"><i class="fa fa-angle-right"></i>Manual</a></li>
-                                <li><a id="MenuCK5DomesticAlcohol" href="@Url.Action("CK5DomesticAlcohol", "CK5")"><i class="fa fa-angle-right"></i>Domestic Alcohol</a></li>
+                                @*<li><a id="MenuCK5DomesticAlcohol" href="@Url.Action("CK5DomesticAlcohol", "CK5")"><i class="fa fa-angle-right"></i>Domestic Alcohol</a></li>*@
                                 <li><a id="MenuCK5Completed" href="@Url.Action("CK5Completed", "CK5")"><i class="fa fa-angle-right"></i>Completed Document</a></li>
+
                             </ul>
                         </div>
                         <div class="collapse-menu">
@@ -222,8 +249,15 @@
                                 <i class="down fa fa-caret-down"></i>
                             </a>
                             <ul class="child list">
-                                <li><a href="report-summary.html"><i class="fa fa-angle-right"></i> Summary</a></li>
-                                <li><a href="report-monitoring.html"><i class="fa fa-angle-right"></i> Monitoring Usage</a></li>
+                                @*<li><a href="report-summary.html"><i class="fa fa-angle-right"></i> Summary</a></li>
+                                    <li><a href="report-monitoring.html"><i class="fa fa-angle-right"></i> Monitoring Usage</a></li>*@
+                                <li><a id="MenuCK5SummaryReports" href="@Url.Action("SummaryReports", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports</a></li>
+                                @*<li><a id="MenuCK5SummaryReportsIntercompany" href="@Url.Action("SummaryReportsIntercompany", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Intercompany</a></li>
+                                    <li><a id="MenuCK5SummaryReportsDomesticAlcohol" href="@Url.Action("SummaryReportsDomesticAlcohol", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Domestic Alcohol</a></li>
+                                    <li><a id="MenuCK5SummaryReportsExport" href="@Url.Action("SummaryReportsExport", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Export</a></li>
+                                    <li><a id="MenuCK5SummaryReportsPortToImporter" href="@Url.Action("SummaryReportsPortToImporter", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Port To Importer</a></li>
+                                    <li><a id="MenuCK5SummaryReportsImporterToPlant" href="@Url.Action("SummaryReportsImporterToPlant", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Importer To Plant</a></li>
+                                    <li><a id="MenuCK5SummaryReportsManual" href="@Url.Action("SummaryReportsManual", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Manual</a></li>*@
                             </ul>
                         </div>
                         <div class="other">
@@ -232,19 +266,325 @@
                                 <span>Other Modules</span>
                             </a>
                             <ul class="child other-menu">
-                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
                             </ul>
                         </div>
                             break;
 
+                        case Enums.MenuList.Settings:
+                        <div class="collapse-menu active open">
+                            <a href="#" class="list-group-item list-parent">
+                                <i class="fa fa-clipboard"></i>
+                                <span>Settings</span>
+                                <i class="down fa fa-caret-down"></i>
+                            </a>
 
+                            <ul class="child list">
+
+                                <li>
+                                    <a id="MenuUserPlantMap" href="@Url.Action("Index", "UserPlantMap")">
+                                        <i class="fa fa-angle-right"></i>
+                                        User Plant Map
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="MenuUserAuthorization" href="@Url.Action("Index", "UserAuthorization")">
+                                        <i class="fa fa-angle-right"></i>
+                                        User Authorization
+                                    </a>
+                                </li>
+                                <li style="display:none">
+                                    <a id="MenuWorkflowSettings" href="@Url.Action("Index", "WorkflowSettings")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Workflow Settings
+                                    </a>
+                                </li>
+                                <li style="display:none">
+                                    <a id="MenuEmailTemplate" href="@Url.Action("Index", "EmailTemplate")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Email Templates
+                                    </a>
+                                </li>
+                                <li style="display:none">
+                                    <a id="MenuDocumentSequence" href="@Url.Action("Index", "DocumentSequence")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Document Sequence
+                                    </a>
+                                </li>
+                                <li>
+
+                                    <a id="MenuGlobalSetting" href="@Url.Action("Index", "GlobalSettings")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Global Settings
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="other">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-th"></i>
+                                <span>Other Modules</span>
+                            </a>
+                            <ul class="child other-menu">
+                                <li><a href="@Url.Action("Index", "Pbck1")"><i class="fa fa-angle-right"></i>PBCK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
+                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
+                            </ul>
+                        </div>
+
+                            break;
+
+                        case Enums.MenuList.LACK1:
+                        <div class="list-group">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-tachometer"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <div id="MenuLack1OpenDocument" class="collapse-menu open">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Document List</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a id="Menulack1ListByNppbkc" href="@Url.Action("Index", "LACK1")"><i class="fa fa-angle-right"></i>List by NPPBKC Level</a></li>
+                                    <li><a id="MenuLack1ListByPlant" href="@Url.Action("ListByPlant", "LACK1")"><i class="fa fa-angle-right"></i>List by Plant Level</a></li>
+                                    <li><a id="MenuLack1CompletedDocument" href="@Url.Action("ListCompletedDocument", "LACK1")"><i class="fa fa-angle-right"></i>Completed Document</a></li>
+                                </ul>
+                            </div>
+                            <div id="MenuLack1Report" class="collapse-menu">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-signal"></i>
+                                    <span>Report</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a id="MenuLack1SummaryReport" href="@Url.Action("SummaryReport", "Lack1")"><i class="fa fa-angle-right"></i>Summary</a></li>
+                                    <li><a id="MenuLack1DetailReport" href="@Url.Action("DetailReport", "LACK1")"><i class="fa fa-angle-right"></i>Detail</a></li>
+                                </ul>
+                            </div>
+                            <div class="other">
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-th"></i>
+                                    <span>Other Modules</span>
+                                </a>
+                                <ul class="child other-menu">
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                            break;
+
+                        case Enums.MenuList.LACK2:
+                        <div class="list-group">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-tachometer"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <div class="collapse-menu active open">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Document List</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a id="MenuLack2OpenDocument" href="@Url.Action("Index","LACK2")"><i class="fa fa-angle-right"></i>Open Document</a></li>
+                                    <li><a id="MenuLack2CompletedDocument" href="@Url.Action("ListCompletedDoc","LACK2")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
+                                </ul>
+                            </div>
+                            <div class="collapse-menu">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-signal"></i>
+                                    <span>Report</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a href="4.3-lack1-summary-report.html"><i class="fa fa-angle-right"></i> Summary</a></li>
+                                    <li><a href="4.4-lack1-detail-report.html"><i class="fa fa-angle-right"></i> Detail</a></li>
+                                </ul>
+                            </div>
+                            <div class="other">
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-th"></i>
+                                    <span>Other Modules</span>
+                                </a>
+                                <ul class="child other-menu">
+                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                            break;
+
+                        case Enums.MenuList.PBCK7:
+                        <div class="list-group">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-tachometer"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <div class="collapse-menu active open">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Document List</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a id="MenuPBCK7Index" href="@Url.Action("Index", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-7 List </a></li>
+                                    <li><a id="MenuPBCK3Index" href="@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-3 List</a></li>
+                                    <li><a href="4.2-lack1-list-completed.html"><i class="fa fa-angle-right"></i>Completed Document</a></li>
+                                </ul>
+                            </div>
+                            <div class="collapse-menu">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-signal"></i>
+                                    <span>Report</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a href="4.3-lack1-summary-report.html"><i class="fa fa-angle-right"></i>Summary</a></li>
+                                    <li><a href="4.4-lack1-detail-report.html"><i class="fa fa-angle-right"></i>Detail</a></li>
+                                </ul>
+                            </div>
+                            <div class="other">
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-th"></i>
+                                    <span>Other Modules</span>
+                                </a>
+                                <ul class="child other-menu">
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                            break;
+                        case Enums.MenuList.CK4C:
+                        <div class="list-group">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-tachometer"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <div id="menuCk4COpenDocuments" class="collapse-menu open">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Document List</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a id="MenuCk4cDailyProduction" href="@Url.Action("Index","Production")"><i class="fa fa-angle-right"></i>Daily Production</a></li>
+                                    <li><a id="MenuCk4cWasteProduction" href="@Url.Action("Index","Waste")"><i class="fa fa-angle-right"></i>Waste Production</a></li>
+                                    <li><a id="MenuCk4cDocumentList" href="@Url.Action("DocumentList", "CK4C")"><i class="fa fa-angle-right"></i>CK-4C Document</a></li>
+                                    <li><a id="MenuCk4cCompleted" href="@Url.Action("CompletedDocument", "CK4C")"><i class="fa fa-angle-right"></i>Completed Document</a></li>
+                                </ul>
+                            </div>
+                            <div id="menuCk4CReport" class="collapse-menu">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-signal"></i>
+                                    <span>Report</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a id="MenuCk4CSummaryReports" href="@Url.Action("SummaryReports", "CK4C")"><i class="fa fa-angle-right"></i>Summary Reports</a></li>
+                                </ul>
+                            </div>
+                            <div class="other">
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-th"></i>
+                                    <span>Other Modules</span>
+                                </a>
+                                <ul class="child other-menu">
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                            break;
+
+                        case Enums.MenuList.PBCK4:
+                        <div class="list-group">
+                            @*<a href="#" class="list-group-item">
+                                <i class="fa fa-tachometer"></i>
+                                <span>Dashboard</span>
+                            </a>*@
+                            <div id="menuPbck4OpenDocuments" class="collapse-menu open">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Document List</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a id="liPbck4OpenDocument" class="active" href="@Url.Action("Index","PBCK4")"><i class="fa fa-angle-right"></i>Open Document</a></li>
+                                    <li><a id="liPbck4Completed" href="@Url.Action("Pbck4Completed", "PBCK4")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
+                                </ul>
+                            </div>
+                            <div id="menuPbck4Report" class="collapse-menu">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-signal"></i>
+                                    <span>Report</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a id="MenuPbck4SummaryReports" href="@Url.Action("SummaryReports", "PBCK4")"><i class="fa fa-angle-right"></i>Summary Reports</a></li>
+                                </ul>
+                            </div>
+                            @*<div class="other">
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-th"></i>
+                                    <span>Other Modules</span>
+                                </a>
+                                <ul class="child other-menu">
+                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                                </ul>
+                            </div>*@
+                        </div>
+                            break;
                     }
                 }
             </div>
@@ -279,7 +619,7 @@
 
 
     @RenderSection("styles", required: false)
-    
+
     <script type="text/javascript">
         $('.toggle-row').click(function () {
 
@@ -288,12 +628,11 @@
 
             });
         });
-       
+
         $(document).ready(function () {
             $(".selectpicker.form-control").attr('data-live-search', true);
 
-            if ($('#changesHistoryTable') != null)
-            {
+            if ($('#changesHistoryTable') != null) {
                 $('#changesHistoryTable .filters th').each(function () {
                     var idx = $(this).index();
                     var title = $('#changesHistoryTable thead th').eq($(this).index()).text();
@@ -301,28 +640,31 @@
 
 
                 });
-                var tableHistory = $('#changesHistoryTable').DataTable();
-                // Setup - add a text input to each footer cell
-                if (tableHistory.columns().eq(0) != null)
-                    {
-                tableHistory.columns().eq(0).each(function (colIdx) {
-                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                        tableHistory
-                            .column(colIdx)
-                            .search(this.value)
-                            .draw();
-                    });
+                var tableHistory = $('#changesHistoryTable').DataTable({
+                    "order": [[0, "desc"]]
                 });
-                    }
+                // Setup - add a text input to each footer cell
+                if (tableHistory.columns().eq(0) != null) {
+                    tableHistory.columns().eq(0).each(function (colIdx) {
+                        $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                            tableHistory
+                                .column(colIdx)
+                                .search(this.value)
+                                .draw();
+                        });
+                    });
+                }
 
             }
-            
+
         });
-        
+
     </script>
 
     @RenderSection("scripts", required: false)
 
+    @{ Html.RenderAction("MessageInfo", "Login");}
 
 </body>
 </html>
+

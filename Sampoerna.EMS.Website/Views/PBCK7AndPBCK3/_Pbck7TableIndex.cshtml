@@ -1,0 +1,56 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7IndexViewModel
+
+<table id="Pbck7" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>PBCK-7 No</th>
+            <th>Reported Date</th>
+            <th>NPPBKC</th>
+            <th>Plant</th>
+            <th>POA</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th>Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Detail)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Detail", "PBCK7AndPBCK3", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Edit", "PBCK7AndPBCK3", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                </td>
+                <td>
+                    @item.Pbck7Number
+                </td>
+                <td>
+                   @item.ReportedOn  
+                </td>
+                <td>
+                    @item.NppbkcId
+                </td>
+                <td>
+                    @item.PlantId
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Poa)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Status)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

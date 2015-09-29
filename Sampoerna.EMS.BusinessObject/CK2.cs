@@ -16,16 +16,16 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public CK2()
         {
-            this.PBCK3_7 = new HashSet<PBCK3_7>();
-            this.PBCK3_CK5 = new HashSet<PBCK3_CK5>();
+            this.CK2_DOCUMENT = new HashSet<CK2_DOCUMENT>();
         }
     
-        public long CK2_ID { get; set; }
+        public int CK2_ID { get; set; }
         public string CK2_NUMBER { get; set; }
         public Nullable<System.DateTime> CK2_DATE { get; set; }
-        public Nullable<int> STATUS_GOV { get; set; }
+        public Nullable<decimal> CK2_VALUE { get; set; }
+        public int PBCK3_ID { get; set; }
     
-        public virtual ICollection<PBCK3_7> PBCK3_7 { get; set; }
-        public virtual ICollection<PBCK3_CK5> PBCK3_CK5 { get; set; }
+        public virtual ICollection<CK2_DOCUMENT> CK2_DOCUMENT { get; set; }
+        public virtual PBCK3 PBCK3 { get; set; }
     }
 }

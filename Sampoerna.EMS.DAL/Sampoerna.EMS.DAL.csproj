@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbSetExtension.cs" />
     <Compile Include="EMSEntities.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -68,6 +69,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlGenericRepository.cs" />
+    <Compile Include="SqlSPRepository.cs" />
     <Compile Include="SqlUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
