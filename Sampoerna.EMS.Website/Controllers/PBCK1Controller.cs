@@ -208,7 +208,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Amount = datarow[2];
                         uploadItem.BkcRequired = datarow[3];
                         uploadItem.BkcRequiredUomId = datarow[4];
-
+                        
                         model.Detail.Pbck1ProdPlan.Add(uploadItem);
 
                     }
@@ -450,7 +450,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 workflowInput.FormType = Enums.FormType.PBCK1;
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
-
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
 
@@ -720,7 +719,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
             else if (CurrentUser.UserRole == Enums.UserRole.POA)
             {

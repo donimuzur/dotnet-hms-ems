@@ -273,6 +273,7 @@
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="EMSWebsiteMapperCK5.cs" />
     <Compile Include="EMSWebsiteMapperLack1.cs" />
+    <Compile Include="EMSWebsiteMapperLack2.cs" />
     <Compile Include="EMSWebsiteMapperPBCK1.cs" />
     <Compile Include="EMSWebsiteMapperPBCK4.cs" />
     <Compile Include="EMSWebsiteMapperPBCK7AndPBCK3.cs" />
@@ -338,6 +339,7 @@
     <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
     <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DetailReportsViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexViewModel.cs" />
@@ -347,6 +349,7 @@
     <Compile Include="Models\LACK2\LACK2PlantData.cs" />
     <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
     <Compile Include="Models\LACK2\Lack2SummaryReportModel.cs" />
+    <Compile Include="Models\LACK2\Lack2SummaryReportsViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
@@ -372,7 +375,8 @@
     <Compile Include="Models\PBCK4\Pbck4SummaryReportsViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
-    <Compile Include="Models\PBCK7AndPBCK3\Pbck3Pbck7SummaryReportModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7SummaryReportModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3CreateViewModel.cs" />
     <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
@@ -1163,8 +1167,14 @@
     <Content Include="Views\CK4C\Ck4CSummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTablePbck3.cshtml" />
     <Content Include="Views\CK4C\_Ck4CListSummaryReport.cshtml" />
+    <Content Include="Views\LACK2\Lack2SummaryReport.cshtml" />
+    <Content Include="Views\LACK2\_Lack2ListSummaryReport.cshtml" />
+    <Content Include="Views\LACK2\Lack2DetailReport.cshtml" />
+    <Content Include="Views\LACK2\_Lack2ListDetailReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Pbck7SummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck7SummaryIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Pbck3SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3SummaryIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

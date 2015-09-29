@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         
         public int Id { get; set; }
         public string Pbck7Number { get; set; }
+        public string Comment { get; set; }
 
         public string PlantId { get; set; }
 

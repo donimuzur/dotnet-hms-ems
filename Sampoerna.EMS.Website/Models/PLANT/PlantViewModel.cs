@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.Website.Models.PLANT
         public DetailPlantT1001W Detail { get; set; }
 
         public bool IsMainPlantExist     { get; set; }
+        public IEnumerable<SelectListItem> NppbkcImport { get; set; }
     }
 
     public class DetailPlantT1001W

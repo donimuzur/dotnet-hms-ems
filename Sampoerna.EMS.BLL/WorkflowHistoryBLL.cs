@@ -89,7 +89,7 @@ namespace Sampoerna.EMS.BLL
         public List<WorkflowHistoryDto> GetByFormNumber(GetByFormNumberInput input)
         {
             var dbData =
-                _repository.Get(c => c.FORM_NUMBER == input.FormNumber, null, includeTables)
+                _repository.Get(c => c.FORM_NUMBER == input.FormNumber, null, includeTables).OrderBy(c => c.ACTION_DATE)
                     .ToList();
             var result = Mapper.Map<List<WorkflowHistoryDto>>(dbData);
 
@@ -222,6 +222,17 @@ namespace Sampoerna.EMS.BLL
 
             return "";
 
+        }
+
+        public List<string> GetDocumentByListPOAId(List<string> poaId)
+        {
+            var dtData =
+                _repository.Get(
+                    c =>
+                        poaId.Contains(c.ACTION_BY) && (c.ACTION == Enums.ActionType.Submit || c.ACTION == Enums.ActionType.Approve) &&
+                        c.ROLE == Enums.UserRole.POA).Distinct().ToList();
+
+            return dtData.Select(s => s.FORM_NUMBER).ToList();
         }
 
         public void Delete(long id)
