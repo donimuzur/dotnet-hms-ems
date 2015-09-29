@@ -366,6 +366,7 @@ namespace Sampoerna.EMS.BLL
 
        }
 
+      
        private List<Pbck4ItemsOutput> ValidatePbck4Items(List<Pbck4ItemsInput> inputs)
        {
            var messageList = new List<string>();
@@ -898,6 +899,51 @@ namespace Sampoerna.EMS.BLL
 
        }
 
+       private bool IsCompletedWorkflow(PBCK4 pbck4)
+       {
+           if (string.IsNullOrEmpty(pbck4.BACK1_NO))
+               return false;
+
+           if (!pbck4.BACK1_DATE.HasValue)
+               return false;
+
+           if (string.IsNullOrEmpty(pbck4.CK3_NO))
+               return false;
+
+           if (!pbck4.CK3_DATE.HasValue)
+               return false;
+
+           if (!pbck4.CK3_OFFICE_VALUE.HasValue)
+               return false;
+           //back doc = 1
+           if (pbck4.PBCK4_DOCUMENT.Count(a => a.DOC_TYPE == 1) == 0)
+               return false;
+
+           //ck3 doc = 2
+           if (pbck4.PBCK4_DOCUMENT.Count(a => a.DOC_TYPE == 2) == 0)
+               return false;
+
+           return true;
+       }
+
+       private Pbck4Dto SetPrepareChangesLog(Pbck4WorkflowDocumentInput input, Pbck4Dto origin)
+       {
+           var data = new Pbck4Dto();
+           //only set field for gov approval
+
+           data = origin;
+           data.BACK1_NO = input.AdditionalDocumentData.Back1No;
+           data.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
+           data.CK3_NO = input.AdditionalDocumentData.Ck3No;
+           data.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
+           if (string.IsNullOrEmpty(input.AdditionalDocumentData.Ck3OfficeValue) ||
+               input.AdditionalDocumentData.Ck3OfficeValue == "0")
+               data.CK3_OFFICE_VALUE = null;
+           else 
+            data.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
+
+           return data;
+       }
        private void GovApproveDocument(Pbck4WorkflowDocumentInput input)
        {
            var dbData = _repository.GetByID(input.DocumentId);
@@ -908,12 +954,15 @@ namespace Sampoerna.EMS.BLL
            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-           //Add Changes
-           WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-           WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+           //prepare for set changes history
+           var origin = Mapper.Map<Pbck4Dto>(dbData);
+           var data = SetPrepareChangesLog(input, origin);
 
-           dbData.STATUS = Enums.DocumentStatus.Completed;
-         
+
+           //Add Changes
+           if (dbData.GOV_STATUS != Enums.DocumentStatusGov.FullApproved)
+               WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+           
            dbData.BACK1_NO = input.AdditionalDocumentData.Back1No;
            dbData.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
            
@@ -932,10 +981,21 @@ namespace Sampoerna.EMS.BLL
 
            dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
 
+           if (IsCompletedWorkflow(dbData))
+           {
+               dbData.STATUS = Enums.DocumentStatus.Completed;
+
+               WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+               AddWorkflowHistory(input);
+           }
+           else
+           {
+               //add to change log
+               SetChangesHistory(origin, data, input.UserId);
+           }
+
            input.DocumentNumber = dbData.PBCK4_NUMBER;
-
-           AddWorkflowHistory(input);
-
+           
        }
 
        private void GovPartialApproveDocument(Pbck4WorkflowDocumentInput input)
