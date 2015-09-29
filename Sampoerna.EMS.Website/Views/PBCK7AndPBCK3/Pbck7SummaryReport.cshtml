@@ -182,9 +182,7 @@
 
                    
                     function setupDataTables() {
-                        $('#btn-reset-filter').click(function () {
-                            $(".selectreset").val($(".selectreset option:first").val());
-                        });
+                        var table;
                         if ($.fn.dataTable.isDataTable('#pbck7-summary')) {
                             table = $('#pbck7-summary').DataTable();
                             table.destroy();
@@ -192,6 +190,7 @@
 
                         table = $('#pbck7-summary').DataTable(
                             {
+                                "order": [[0, 'asc'], [2, 'asc']],
                                 "sDom": "Rlfrtip",
                                 "language": {
                                     "zeroRecords": "No records found",
@@ -200,21 +199,21 @@
                             });
 
                         // Setup - add a text input to each footer cell
-                        $('#pbck7-summary .filters th').each(function () {
-                            var idx = $(this).index();
-                            $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                        //$('#pbck7-summary .filters th').each(function () {
+                        //    var idx = $(this).index();
+                        //    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
 
-                        });
+                        //});
 
-                        // Apply the search
-                        table.columns().eq(0).each(function (colIdx) {
-                            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                                table
-                                    .column(colIdx)
-                                    .search(this.value)
-                                    .draw();
-                            });
-                        });
+                        //// Apply the search
+                        //table.columns().eq(0).each(function (colIdx) {
+                        //    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                        //        table
+                        //            .column(colIdx)
+                        //            .search(this.value)
+                        //            .draw();
+                        //    });
+                        //});
                         
                         $('#btnFILTER').on('click', function (e) {
                             $('#selecctall').prop('checked', false);
