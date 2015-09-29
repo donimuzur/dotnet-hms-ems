@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.Contract
 
         void RemoveExistingItem(long id);
 
+        bool IsSelectionCriteriaExist(Lack2Dto item);
         List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
 
         List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
