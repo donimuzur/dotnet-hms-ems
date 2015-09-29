@@ -282,8 +282,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     message = Constans.SubmitMessage.Saved;
 
                 if (!output.isFromSap)
-                    _productionBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX, Convert.ToDateTime(model.ProductionDateX));
-
+                {
+                    if(model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX || model.FaCode != model.FaCodeX 
+                        || Convert.ToDateTime(model.ProductionDate) != Convert.ToDateTime(model.ProductionDateX))
+                    {
+                        _productionBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX, Convert.ToDateTime(model.ProductionDateX));
+                    }
+                }
+                    
                 AddMessageInfo(message, Enums.MessageInfoType.Success);
 
                 return RedirectToAction("Index");
