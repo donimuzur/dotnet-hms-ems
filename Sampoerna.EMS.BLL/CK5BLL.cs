@@ -1031,7 +1031,7 @@ namespace Sampoerna.EMS.BLL
             newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Draft);
           
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-
+            //input.ActionType = Enums.ActionType.Reject;
             AddWorkflowHistory(input);
 
             //set change history
