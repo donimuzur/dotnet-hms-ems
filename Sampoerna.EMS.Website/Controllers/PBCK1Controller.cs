@@ -447,6 +447,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 workflowInput.FormNumber = pbck1Data.Pbck1Number;
                 workflowInput.DocumentStatus = pbck1Data.Status;
                 workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+                workflowInput.FormType = Enums.FormType.PBCK1;
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -676,6 +677,7 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.FormNumber = pbck1Data.Pbck1Number;
             workflowInput.DocumentStatus = pbck1Data.Status;
             workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+            workflowInput.FormType = Enums.FormType.PBCK1;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -747,7 +749,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
             if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
+            {   
                 //can't create PBCK1 Document
                 AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
