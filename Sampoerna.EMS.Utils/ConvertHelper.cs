@@ -96,5 +96,10 @@ namespace Sampoerna.EMS.Utils
         {
             return value.HasValue ? value.Value.ToString("#,##0.#0") : string.Empty;
         }
+
+        public static string ConvertDateToStringHHmm(DateTime? value)
+        {
+            return value.HasValue ? value.Value.ToString("HH:mm") : string.Empty;
+        }
     }
 }

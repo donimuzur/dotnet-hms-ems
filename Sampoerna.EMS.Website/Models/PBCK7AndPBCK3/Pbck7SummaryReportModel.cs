@@ -72,6 +72,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public bool IsSelectStatus { get; set; }
 
         public bool IsSelectDate { get; set; }
+        public bool IsSelectExecFrom { get; set; }
+        public bool IsSelectExecTo { get; set; }
+
+        public bool IsSelectBack1No { get; set; }
+        public bool IsSelectBack1Date { get; set; }
+
     }
 
     public class Pbck7SummaryReportItem
@@ -86,7 +92,13 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string Nppbkc { get; set; }
 
-      
+        public DateTime? ExecFrom { get; set; }
+
+        public DateTime? ExecTo { get; set; }
+
+        public string Back1No { get; set; }
+
+        public DateTime? Back1Date { get; set; }
         public string Pbck7Status { get; set; }
     }
 }

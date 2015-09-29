@@ -33,5 +33,7 @@ namespace Sampoerna.EMS.Contract
 
         List<WorkflowHistoryDto> GetByFormId(GetByFormNumberInput input);
 
+        List<string> GetDocumentByListPOAId(List<string> poaID);
+
     }
 }
