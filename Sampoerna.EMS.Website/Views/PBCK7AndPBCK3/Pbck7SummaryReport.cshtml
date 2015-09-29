@@ -73,7 +73,7 @@
                                 <div class="col-md-4 col-md-offset-8">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <button class="btn btn-blue full">VIEW</button>
+                                            <button class="btn btn-blue full" id="btnFILTER">VIEW</button>
                                         </div>
                                         <div class="col-md-6">
                                             <button class="btn btn-blue full" id="btnExport">EXPORT</button>
@@ -98,6 +98,8 @@
                                         @Html.HiddenFor(model => model.ExportModel.Pbck7No)
                                         @Html.HiddenFor(model => model.ExportModel.NppbkcId)
                                         @Html.HiddenFor(model => model.ExportModel.Plant)
+                                        @Html.HiddenFor(model => model.ExportModel.Plant)
+                                        @Html.HiddenFor(model => model.ExportModel.DocType)
 
                                         <div class="row toggle">
                                             <div class="toggle-title">
@@ -122,7 +124,17 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Plant
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new {@id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Plant
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectDocType, new { @class = "checkbox checkexport", @datacolumn = "4" })Doc.Type
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectStatus, new { @class = "checkbox checkexport", @datacolumn = "5" })Status
                                                     </label>
                                                 </div>
                                             </div>
@@ -149,16 +161,25 @@
             @section scripts {
                 <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
                 <script type="text/javascript">
+                    // DataTable
+                    var table = null;
+
                     $(document).ready(function () {
                         setupDataTables();
+                        $('#selecctall').prop('checked', false);
+                        $('.checkexport').each(function () {
+                            this.checked = false;
+                        });
+                        $('#checkboxDefault1').prop('checked', true);
+                        $('#checkboxDefault2').prop('checked', true);
+                        $('#checkboxDefault3').prop('checked', true);
                     });
 
+                   
                     function setupDataTables() {
                         $('#btn-reset-filter').click(function () {
                             $(".selectreset").val($(".selectreset option:first").val());
                         });
-                        // DataTable
-                        var table = null;
                         if ($.fn.dataTable.isDataTable('#pbck7-summary')) {
                             table = $('#pbck7-summary').DataTable();
                             table.destroy();
@@ -188,6 +209,67 @@
                                     .search(this.value)
                                     .draw();
                             });
+                        });
+                        
+                        $('#btnFILTER').on('click', function (e) {
+                            $('#selecctall').prop('checked', false);
+                            $('.checkexport').each(function () {
+                                this.checked = false;
+                            });
+                            $('#checkboxDefault1').prop('checked', true);
+                            $('#checkboxDefault2').prop('checked', true);
+                            $('#checkboxDefault3').prop('checked', true);
+
+                        });
+
+
+                        $('.checkexport').on('click', function (e) {
+                            //e.preventDefault();
+                            var checked = document.querySelectorAll('input:checked');
+
+                            if (checked.length === 1) {
+                                for (var i = 0; i < 4; i++) {
+                                    table.column(i).visible(false);
+                                }
+                                //table.column(0).visible(true);
+
+                                // Get the column API object
+                                var column = table.column($(this).attr('datacolumn'));
+
+                                // Toggle the visibility
+                                column.visible(!column.visible());
+                                $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
+                            } else {
+                                // Get the column API object
+                                var column = table.column($(this).attr('datacolumn'));
+
+                                // Toggle the visibility
+                                column.visible(!column.visible());
+                            }
+
+
+                        });
+
+                        for (var i = 3; i < 6; i++) {
+                            table.column(i).visible(false);
+                        }
+
+                        $('#selecctall').change(function () {
+                            if ($(this).is(':checked')) {
+                                $('.checkexport').prop('checked', this.checked);
+                                // Show a column
+
+                                $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
+                                var table = $('#pbck7-summary').DataTable();
+                                for (var i = 0; i < 4; i++) {
+                                    table.column(i).visible(true);
+                                }
+                            } else {
+                                $('.checkexport').each(function () {
+                                    this.checked = false;
+                                });
+                                $('#pbck7-summary').parents('div.dataTables_wrapper').first().hide();
+                            }
                         });
 
 

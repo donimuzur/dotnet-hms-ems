@@ -1242,7 +1242,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
                 AutoGenerateColumns = false
             };
-            if (!model.ExportModel.IsSelectPbck7No)
+            if (model.ExportModel.IsSelectPbck7No)
             {
                 grid.Columns.Add(new BoundField()
                 {
@@ -1250,7 +1250,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Number"
                 });
             }
-            if (!model.ExportModel.IsSelectNppbkc)
+            if (model.ExportModel.IsSelectNppbkc)
             {
                 grid.Columns.Add(new BoundField()
                 {
@@ -1258,7 +1258,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Nppbkc"
                 });
             }
-            if (!model.ExportModel.IsSelectPlant)
+            if (model.ExportModel.IsSelectPlant)
             {
                 grid.Columns.Add(new BoundField()
                 {

@@ -51,6 +51,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string Plant { get; set; }
 
+        public Enums.DocumentTypePbck7AndPbck3? DocType { get; set; }
+
+        public Enums.DocumentStatus Status { get; set; }
+
         public int? FromYear { get; set; }
 
         public int? ToYear { get; set; }
@@ -61,7 +65,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public bool IsSelectPlant { get; set; }
 
+        public bool IsSelectDocType { get; set; }
 
+        public bool IsSelectStatus { get; set; }
 
     }
 
