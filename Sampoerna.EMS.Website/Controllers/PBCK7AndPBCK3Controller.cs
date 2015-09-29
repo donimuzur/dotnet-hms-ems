@@ -1180,9 +1180,44 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Pbck7SummaryReport", model);
         }
 
+        public ActionResult Pbck3SummaryReport()
+        {
+
+            Pbck3SummaryReportModel model;
+            try
+            {
+
+                model = new Pbck3SummaryReportModel();
+
+
+                InitSummaryReportsPbck3(model);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new Pbck3SummaryReportModel();
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("Pbck3SummaryReport", model);
+        }
         private void InitSummaryReports(Pbck7SummaryReportModel model)
         {
             model.MainMenu = Enums.MenuList.PBCK7;
+            model.CurrentMenu = PageInfo;
+
+            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+            model.Pbck7List = GetAllPbck7No();
+            model.FromYear = GlobalFunctions.GetYearList();
+            model.ToYear = model.FromYear;
+            model.ReportItems = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
+        }
+        private void InitSummaryReportsPbck3(Pbck3SummaryReportModel model)
+        {
+            model.MainMenu = Enums.MenuList.PBCK3;
             model.CurrentMenu = PageInfo;
 
             model.PlantList = GlobalFunctions.GetPlantAll();
@@ -1199,6 +1234,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(pbck7List, "Pbck7Number", "Pbck7Number");
 
         }
+        private SelectList GetAllPbck3No()
+        {
+            var pbck3List = _pbck7AndPbck7And3Bll.GetAllPbck3();
+            return new SelectList(pbck3List, "Pbck3Number", "Pbck3Number");
+
+        }
 
         [HttpPost]
         public PartialViewResult FilterPbck7SummaryReport(Pbck7SummaryReportModel model)
@@ -1207,6 +1248,14 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(input);
             return PartialView("_Pbck7SummaryIndex", result);
         }
+        [HttpPost]
+        public PartialViewResult FilterPbck3SummaryReport(Pbck3SummaryReportModel model)
+        {
+            var input = Mapper.Map<Pbck3SummaryInput>(model);
+            var result = _pbck7AndPbck7And3Bll.GetPbck3SummaryReportsByParam(input);
+            return PartialView("_Pbck3SummaryIndex", result);
+        }
+
 
         [HttpPost]
         public ActionResult Pbck7ExportSummaryReports(Pbck7SummaryReportModel model)

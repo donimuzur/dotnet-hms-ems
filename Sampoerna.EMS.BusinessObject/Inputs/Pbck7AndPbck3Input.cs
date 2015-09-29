@@ -37,5 +37,18 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
 
     }
+    public class Pbck3SummaryInput
+    {
+        public string NppbkcId { get; set; }
+        public string PlantId { get; set; }
+        public int? From { get; set; }
+        public int? To { get; set; }
+        public string Pbck3Number { get; set; }
+        public string ShortOrderColum { get; set; }
 
+
+
+
+
+    }
 }

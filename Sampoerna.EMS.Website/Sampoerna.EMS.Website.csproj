@@ -372,7 +372,8 @@
     <Compile Include="Models\PBCK4\Pbck4SummaryReportsViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
-    <Compile Include="Models\PBCK7AndPBCK3\Pbck3Pbck7SummaryReportModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7SummaryReportModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3CreateViewModel.cs" />
     <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
