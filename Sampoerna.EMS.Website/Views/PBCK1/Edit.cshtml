@@ -286,6 +286,8 @@
                 $("input[name='Detail.QtyApproved']:hidden").val(changeToNumber($(this).val()));
             });
         }
+
+        $("#Detail_PeriodTo").rules('add', { greaterThan: "#Detail_PeriodFrom" });
     });
 
     function openGovStatusBlock() {

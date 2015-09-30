@@ -544,10 +544,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (errors.Count > 0)
                     {
-                        //get error details
+                        if(model.Detail.Pbck1Type == Enums.PBCK1Type.Additional && model.Detail.Pbck1Reference == null){
+                            AddMessageInfo("Cannot save PBCK-1. There is no data for references number of PBCK-1", Enums.MessageInfoType.Error);
+                        }else{
+                            AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
+                        }
+                    }
+                    else {
+                        AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
                     }
 
-                    AddMessageInfo("Model error", Enums.MessageInfoType.Error);
+                    
                     model = ModelInitial(model);
                     model = SetHistory(model);
                     return View(model);
@@ -767,7 +774,24 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
+                    var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+
+                    if (errors.Count > 0)
+                    {
+                        if (model.Detail.Pbck1Type == Enums.PBCK1Type.Additional && model.Detail.Pbck1Reference == null)
+                        {
+                            AddMessageInfo("Cannot save PBCK-1. There is no data for references number of PBCK-1", Enums.MessageInfoType.Error);
+                        }
+                        else
+                        {
+                            AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
+                        }
+                    }
+                    else
+                    {
+                        AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
+                    }
+
                     return CreateInitial(model);
                 }
 
