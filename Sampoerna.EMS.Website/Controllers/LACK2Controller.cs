@@ -82,7 +82,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.IsOpenDocList = true;
-            var dbData = _lack2Bll.GetOpenDocument();
+            var dbData = _lack2Bll.GetOpenDocument(CurrentUser);
             
             model.Details = dbData;
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;

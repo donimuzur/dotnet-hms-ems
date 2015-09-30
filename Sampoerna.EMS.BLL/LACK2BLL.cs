@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -35,7 +36,7 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPOABLL _poabll;
         private IPlantBLL _plantBll;
-
+        private IZaidmExNPPBKCBLL _nppbkcbll;
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -48,6 +49,7 @@ namespace Sampoerna.EMS.BLL
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _poabll = new POABLL(_uow, _logger);
             _plantBll = new PlantBLL(_uow, _logger);
+            _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
         }
 
 
@@ -57,10 +59,35 @@ namespace Sampoerna.EMS.BLL
         }
 
        
-
-        public List<Lack2Dto> GetOpenDocument()
+       
+        public List<Lack2Dto> GetOpenDocument(Login user)
         {
-            return Mapper.Map<List<Lack2Dto>>(_repository.Get(x => x.STATUS != Enums.DocumentStatus.Completed, null, includeTables));
+            Expression<Func<LACK2, bool>> queryFilter = PredicateHelper.True<LACK2>();
+
+            if (user.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(user.USER_ID).Select(d => d.NPPBKC_ID).ToList();
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == user.USER_ID || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+
+
+            }
+            else if (user.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poabll.GetPOAIdByManagerId(user.USER_ID);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.LACK2_NUMBER));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == user.USER_ID);
+            }
+
+            queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+
+            
+            return Mapper.Map<List<Lack2Dto>>(_repository.Get(queryFilter, null, includeTables));
      
         }
 
