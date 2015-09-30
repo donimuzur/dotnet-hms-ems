@@ -94,7 +94,10 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
             }
             else if (input.UserRole == Enums.UserRole.Manager) {
-                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval);
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
             }else{
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
             }
@@ -304,6 +307,9 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("EXC_GOOD_TYP", origin.GoodType == data.GoodType);
             changesData.Add("SUPPLIER_PLANT", origin.SupplierPlant == data.SupplierPlant);
             changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId == data.SupplierPortId);
+            changesData.Add("SUPPLIER_COMPANY", origin.SupplierCompany == data.SupplierCompany);
+            changesData.Add("SUPPLIER_NPPBKC", origin.SupplierNppbkcId == data.SupplierNppbkcId);
+            changesData.Add("SUPPLIER_KPPBC", origin.SupplierKppbcName == data.SupplierKppbcName);
             changesData.Add("SUPPLIER_ADDRESS", origin.SupplierAddress == data.SupplierAddress);
             changesData.Add("SUPPLIER_PHONE", origin.SupplierPhone == data.SupplierPhone);
             changesData.Add("PLAN_PROD_FROM", origin.PlanProdFrom == data.PlanProdFrom);
@@ -397,6 +403,21 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.SupplierPortName;
                             changes.FIELD_NAME = "Supplier Port";
                             break;
+                        case "SUPPLIER_COMPANY":
+                            changes.OLD_VALUE = origin.SupplierCompany;
+                            changes.NEW_VALUE = data.SupplierCompany;
+                            changes.FIELD_NAME = "Supplier Company";
+                            break;
+                        case "SUPPLIER_NPPBKC":
+                            changes.OLD_VALUE = origin.SupplierNppbkcId;
+                            changes.NEW_VALUE = data.SupplierNppbkcId;
+                            changes.FIELD_NAME = "Supplier NPPBKC";
+                            break;
+                        case "SUPPLIER_KPPBC":
+                            changes.OLD_VALUE = origin.SupplierKppbcName;
+                            changes.NEW_VALUE = data.SupplierKppbcName;
+                            changes.FIELD_NAME = "Supplier KPPBC";
+                            break;
                         case "SUPPLIER_ADDRESS":
                             changes.OLD_VALUE = origin.SupplierAddress;
                             changes.NEW_VALUE = data.SupplierAddress;
@@ -433,9 +454,9 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "LACK-1 From Month";
                             break;
                         case "LACK1_FROM_YEAR":
-                            changes.OLD_VALUE = origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Value.ToString("N0") : "NULL";
-                            changes.NEW_VALUE = data.Lack1FormYear.Value.ToString("N0");
-                            changes.FIELD_NAME = "LACK-1 From Month Year";
+                            changes.OLD_VALUE = origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.Lack1FormYear.Value.ToString();
+                            changes.FIELD_NAME = "LACK-1 From Year";
                             break;
                         case "LACK1_TO_MONTH":
                             changes.OLD_VALUE = origin.Lack1ToMonthId.HasValue ? origin.Lack1ToMonthName : "NULL";
@@ -443,9 +464,9 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "LACK-1 To Month";
                             break;
                         case "LACK1_TO_YEAR":
-                            changes.OLD_VALUE = origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Value.ToString("N0") : "NULL";
-                            changes.NEW_VALUE = data.Lack1ToYear.Value.ToString("N0");
-                            changes.FIELD_NAME = "LACK-1 From Year";
+                            changes.OLD_VALUE = origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.Lack1ToYear.Value.ToString();
+                            changes.FIELD_NAME = "LACK-1 To Year";
                             break;
                         case "STATUS":
                             changes.OLD_VALUE = EnumHelper.GetDescription(origin.Status);
@@ -1693,7 +1714,7 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Submit:
                     if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var poaList = _poaBll.GetPoaByNppbkcId(pbck1Data.NppbkcId);
+                        var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
                         foreach (var poaDto in poaList)
                         {
                             rc.To.Add(poaDto.POA_EMAIL);
@@ -1704,8 +1725,16 @@ namespace Sampoerna.EMS.BLL
                     {
                         var managerId = _poaBll.GetManagerIdByPoaId(pbck1Data.CreatedById);
                         var managerDetail = _userBll.GetUserById(managerId);
+                        var poaData = _userBll.GetUserById(pbck1Data.CreatedById);
                         rc.To.Add(managerDetail.EMAIL);
-                        rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
+                        rc.CC.Add(poaData.EMAIL);
+                        
+                        var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                        foreach (var poaDto in poaList)
+                        {
+                            if (poaData.USER_ID != poaDto.POA_ID)
+                                rc.CC.Add(poaDto.POA_EMAIL);
+                        }
                     }
                     rc.IsCCExist = true;
                     break;
@@ -1713,6 +1742,15 @@ namespace Sampoerna.EMS.BLL
                     if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+
+                        var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                        foreach (var poaDto in poaList)
+                        {
+                            rc.CC.Add(poaDto.POA_EMAIL);
+                        }
+
+                        rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
+
                     }
                     else if (pbck1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -1721,19 +1759,40 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is poa user
                             rc.To.Add(poaData.POA_EMAIL);
+                            var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                            foreach (var poaDto in poaList)
+                            {
+                                if(poaData.POA_ID != poaDto.POA_ID)
+                                    rc.CC.Add(poaDto.POA_EMAIL);
+                            }
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(pbck1Data.CreatedById);
                             rc.To.Add(userData.EMAIL);
+                            var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.CC.Add(poaDto.POA_EMAIL);
+                            }
                         }
                     }
+                    rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(pbck1Data.CreatedById);
                     rc.To.Add(userDetail.EMAIL);
+                    
+                    var poa = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                    foreach (var poaDto in poa)
+                    {
+                        if(poaDto.POA_ID != userDetail.USER_ID)
+                            rc.CC.Add(poaDto.POA_EMAIL);
+                    }
+                    
+                    rc.IsCCExist = true;
                     break;
             }
             rc.Body = bodyMail.ToString();

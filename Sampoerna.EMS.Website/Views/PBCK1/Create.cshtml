@@ -105,6 +105,7 @@
             pbck1TypeOnchange();
 
             $('#Detail_GoodType').change(function() {
+                setUpload();
                 goodTypeOnChange();
             });
 
@@ -125,6 +126,8 @@
             $("#Detail_PeriodTo").change(function () {
                 getReference();
             });
+
+            setUpload();
         });
 
         $('#Detail_Lack1FromMonthId').change(function () {

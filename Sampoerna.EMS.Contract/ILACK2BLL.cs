@@ -1,4 +1,5 @@
 ﻿using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Core;
@@ -16,7 +17,7 @@ namespace Sampoerna.EMS.Contract
         
         List<Lack2Dto> GetDocumentByParam(Lack2GetByParamInput input);
 
-        List<Lack2Dto> GetOpenDocument();
+        List<Lack2Dto> GetOpenDocument(Login user);
 
         Lack2Dto GetById(int id);
 
@@ -32,6 +33,7 @@ namespace Sampoerna.EMS.Contract
 
         void RemoveExistingItem(long id);
 
+        bool IsSelectionCriteriaExist(Lack2Dto item);
         List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
 
         List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);

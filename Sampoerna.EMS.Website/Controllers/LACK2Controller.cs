@@ -82,7 +82,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.IsOpenDocList = true;
-            var dbData = _lack2Bll.GetOpenDocument();
+            var dbData = _lack2Bll.GetOpenDocument(CurrentUser);
+            
             model.Details = dbData;
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
@@ -97,6 +98,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             var dbData = _lack2Bll.GetCompletedDocument();
+            
             model.Details = dbData;
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
@@ -144,36 +146,48 @@ namespace Sampoerna.EMS.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(LACK2CreateViewModel model)
         {
-
             Lack2Dto item = new Lack2Dto();
 
             item = AutoMapper.Mapper.Map<Lack2Dto>(model.Lack2Model);
 
-            var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
-            var company = _companyBll.GetById(model.Lack2Model.Burks);
-            var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
+            //validate if selection criteria exist
+            var isExist = _lack2Bll.IsSelectionCriteriaExist(item);
 
-            item.ExTypDesc = goods.EXT_TYP_DESC;
-            item.Butxt = company.BUTXT;
-            item.LevelPlantName = plant.NAME1;
-            item.LevelPlantCity = plant.ORT01;
-            item.LevelPlantId = plant.WERKS;
-            item.PeriodMonth = model.Lack2Model.PeriodMonth;
-            item.PeriodYear = model.Lack2Model.PeriodYear;
-            item.CreatedBy = CurrentUser.USER_ID;
-            item.CreatedDate = DateTime.Now;
-            var inputDoc = new GenerateDocNumberInput();
-            inputDoc.Month = item.PeriodMonth;
-            inputDoc.Year = item.PeriodYear;
-            inputDoc.NppbkcId = item.NppbkcId;
-            item.Lack2Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
-            item.Items = model.Lack2Model.Items.Select(x=>Mapper.Map<Lack2ItemDto>(x)).ToList();
-            
-             item.Status = Enums.DocumentStatus.Draft;
-            
+            if (!isExist)
+            {
+                var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
+                var company = _companyBll.GetById(model.Lack2Model.Burks);
+                var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
-            _lack2Bll.Insert(item);
-            AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+                item.ExTypDesc = goods.EXT_TYP_DESC;
+                item.Butxt = company.BUTXT;
+                item.LevelPlantName = plant.NAME1;
+                item.LevelPlantCity = plant.ORT01;
+                item.LevelPlantId = plant.WERKS;
+                item.PeriodMonth = model.Lack2Model.PeriodMonth;
+                item.PeriodYear = model.Lack2Model.PeriodYear;
+                item.CreatedBy = CurrentUser.USER_ID;
+                item.CreatedDate = DateTime.Now;
+                var inputDoc = new GenerateDocNumberInput();
+                inputDoc.Month = item.PeriodMonth;
+                inputDoc.Year = item.PeriodYear;
+                inputDoc.NppbkcId = item.NppbkcId;
+                item.Lack2Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
+                item.Items = model.Lack2Model.Items.Select(x => Mapper.Map<Lack2ItemDto>(x)).ToList();
+
+                item.Status = Enums.DocumentStatus.Draft;
+
+
+
+                _lack2Bll.Insert(item);
+                AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+                
+            }
+            else 
+            {
+                AddMessageInfo("A record with same parameter is already exist", Enums.MessageInfoType.Error);
+               
+            }
             return RedirectToAction("Index");
         }
 
@@ -456,10 +470,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 item.Status = Enums.DocumentStatus.WaitingForApproval;
             }
-           
+            else if (item.Status == Enums.DocumentStatus.Rejected)
+            {
+                item.Status = Enums.DocumentStatus.Draft;
+            }
+
             item.Items = null;
-            item.ApprovedBy = CurrentUser.USER_ID;
-            item.ApprovedDate = DateTime.Now;
             _lack2Bll.Insert(item);
             return RedirectToAction("Index");
         }
@@ -664,7 +680,9 @@ namespace Sampoerna.EMS.Website.Controllers
             drow[5] = lack2.ExTypDesc;
             drow[6] = lack2.PeriodNameInd + " " + lack2.PeriodYear;
             drow[7] = lack2.LevelPlantCity;
-            drow[8] = lack2.SubmissionDate == null ? null : lack2.SubmissionDate.ToString("dd MMMM yyyy");
+
+
+            drow[8] = lack2.SubmissionDate == null ? null : string.Format("{0} {1} {2}", lack2.SubmissionDate.Day, _monthBll.GetMonth(lack2.SubmissionDate.Month).MONTH_NAME_IND, lack2.SubmissionDate.Year); 
             if (lack2.ApprovedBy != null)
             {
                 var poa = _poabll.GetDetailsById(lack2.ApprovedBy);
@@ -673,8 +691,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     drow[9] = poa.PRINTED_NAME;
                 }
             }
-            if (lack2.Status != Enums.DocumentStatus.WaitingGovApproval || lack2.Status != Enums.DocumentStatus.GovApproved
-                || lack2.Status != Enums.DocumentStatus.Completed)
+            if (lack2.Status != Enums.DocumentStatus.Completed)
             {
                 drow[10] = "PREVIEW LACK-2";
             }
@@ -687,6 +704,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     var lack2Month = _monthBll.GetMonth(lack2DecreeDate.Month).MONTH_NAME_IND;
 
                     drow[11] = string.Format("{0} {1} {2}", lack2DecreeDate.Day, lack2Month, lack2DecreeDate.Year);
+
                 }
             }
             dt.Rows.Add(drow);
