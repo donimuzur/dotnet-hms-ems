@@ -1426,7 +1426,12 @@ namespace Sampoerna.EMS.Website.Controllers
                            Nppbkc = b.NppbckId,
                            PlantName = b.Plant,
                            Pbck3Date = b.Pbck3Date,
-                           Pbck3Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck3Status)
+                           Pbck3Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck3Status),
+                           Back3No = b.Back3Dto != null ? b.Back3Dto.Back3Number : string.Empty,
+                           Back3Date = b.Back3Dto != null ? b.Back3Dto.Back3Date : null,
+                           Ck2No =  b.Ck2Dto != null ? b.Ck2Dto.Ck2Number : string.Empty,
+                           Ck2Date = b.Ck2Dto != null ? b.Ck2Dto.Ck2Date : null,
+                           Ck2Value = b.Ck2Dto != null ? b.Ck2Dto.Ck2Value : 0
                           
 
                        }).ToList();
@@ -1482,6 +1487,47 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "Pbck3Status",
                     HeaderText = "Status"
+                });
+            }
+
+            if (model.ExportModel.IsSelectBack3No)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Back3No",
+                    HeaderText = "BACK-3 No"
+                });
+            }
+            if (model.ExportModel.IsSelectBack3Date)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Back3Date",
+                    HeaderText = "BACK-3 Date"
+                });
+            }
+            if (model.ExportModel.IsSelectCk2No)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Ck2No",
+                    HeaderText = "CK-2 No"
+                });
+            }
+            if (model.ExportModel.IsSelectCk2Date)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Ck2Date",
+                    HeaderText = "CK-2 Date"
+                });
+            }
+            if (model.ExportModel.IsSelectCk2Value)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Ck2Value",
+                    HeaderText = "CK-2 Value"
                 });
             }
             if (src.Count == 0)

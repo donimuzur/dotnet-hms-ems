@@ -9,11 +9,21 @@
             <th>NPPBKC</th>
             <th>Plant</th>
             <th>Date</th>
-           <th>Status</th>
+            <th>Status</th>
+            <th>Back-3 No</th>
+            <th>Back-3 Date</th>
+            <th>CK-2 No</th>
+            <th>CK-2 Date</th>
+            <th>CK-2 Value</th>
         </tr>
     </thead>
     <thead class="filters">
         <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -35,7 +45,11 @@
                     <td>@item.Plant</td>
                     <td>@item.Pbck3Date.Value.ToString("dd MMM yyyy")</td>
                     <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.Pbck3Status)</td>
-                    
+                    <td>@(item.Back3Dto != null ? item.Back3Dto.Back3Number : string.Empty)</td>
+                    <td>@(item.Back3Dto != null ? item.Back3Dto.Back3Date : null)</td>
+                    <td>@(item.Ck2Dto != null ? item.Ck2Dto.Ck2Number : string.Empty)</td>
+                    <td>@(item.Ck2Dto != null ? item.Ck2Dto.Ck2Date : null)</td>
+                    <td>@(item.Ck2Dto != null ? item.Ck2Dto.Ck2Value : 0)</td>
                 </tr>
             }
         }
