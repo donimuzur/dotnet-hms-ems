@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string APPROVED_BY_MANAGER { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE_MANAGER { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
+        public string REMARKS { get; set; }
     
         public virtual USER USER { get; set; }
         public virtual MONTH MONTH { get; set; }

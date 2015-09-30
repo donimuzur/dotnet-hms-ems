@@ -426,17 +426,17 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var model = new Pbck1ItemViewModel();
-            model = ModelInitial(model);
-
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
-                //redirect to details for approval/rejected
-                return RedirectToAction("Details", new { id });
-            }
-
             try
             {
                 model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
+                
+                model = ModelInitial(model);
+
+                if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                {
+                    //redirect to details for approval/rejected
+                    return RedirectToAction("Details", new { id });
+                }
 
                 var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(

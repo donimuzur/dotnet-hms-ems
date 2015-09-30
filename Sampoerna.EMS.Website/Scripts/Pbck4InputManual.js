@@ -108,7 +108,7 @@ function ajaxGetBrandItems(url, formData) {
                     $("#uploadHje").val(data.Hje);
                     $("#uploadTariff").val(data.Tariff);
                     $("#uploadColour").val(data.Colour);
-                    $("#uploadBlockedStocked").val(data.BlockedStock);
+                    $("#uploadBlockedStocked").val(data.BlockedStockRemaining);
                 }
 
 
@@ -116,6 +116,34 @@ function ajaxGetBrandItems(url, formData) {
         });
     }
 }
+
+
+function ajaxGetBrandItemsForEdit(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+
+                if (data != null) {
+                    $("#uploadStickerCode").val(data.StickerCode);
+                    $("#uploadSeriesCode").val(data.SeriesCode);
+                    $("#uploadBrandName").val(data.BrandName);
+                    $("#uploadProductAlias").val(data.ProductAlias);
+                    $("#uploadContent").val(data.BrandContent);
+                    $("#uploadHje").val(data.Hje);
+                    $("#uploadTariff").val(data.Tariff);
+                    $("#uploadColour").val(data.Colour);
+                    $("#uploadBlockedStocked").val(data.BlockedStockRemaining);
+                }
+
+
+            }
+        });
+    }
+}
+
 
 function ajaxGetCk1Date(url, formData) {
     if (formData.ck1Id) {
