@@ -14,7 +14,7 @@
             <th>Original KPPBC</th>
             <th>Original Address</th>
             <th>Exc. Goods Amount</th>
-            <th>Type</th>
+            <th>PBCK Type</th>
             <th>Supplier Port</th>
             <th>Supplier Plant</th>
             <th>Exciseable Goods</th>
@@ -23,8 +23,8 @@
             <th>Supplier Phone</th>
             <th>POA</th>
             <th>PBCK-1 Reference</th>
-            <th>LACK From</th>
-            <th>LACK To</th>
+            <th>LACK-1 From</th>
+            <th>LACK-1 To</th>
             <th>Latest Saldo</th>
             <th>Period From</th>
             <th>Period To</th>
@@ -33,6 +33,8 @@
             <th>Status Gov</th>
             <th>Qty Approved</th>
             <th>Decree Date</th>
+            <th>PBCK For Import</th>
+            <th>External supplier port</th>
         </tr>
     </thead>
     <tbody>
@@ -124,16 +126,35 @@
                         @item.ReportedOn
                     </td>
                     <td align="right">
-                        @String.Format("{0:n}", @item.RequestQty)
+                        @String.Format("{0:n}", @item.RequestQty) @item.RequestQtyUomName
                     </td>
                     <td>
                         @item.StatusGov
                     </td>
                     <td align="right">
-                        @String.Format("{0:n}", @item.QtyApproved)
+                        @String.Format("{0:n}", @item.QtyApproved) @item.RequestQtyUomName
                     </td>
                     <td>
                         @item.DecreeDate
+                    </td>
+                    <td>
+                        @if (item.IsNppbkcImport)
+                        {
+                            <span>Yes</span>
+                        }
+                        else { 
+                            <span>No</span>                        
+                        }
+                    </td>
+                    <td>
+                        @if (item.IsExternalSupplier)
+                        {
+                            <span>Yes</span>
+                        }
+                        else
+                        {
+                            <span>No</span>
+                        }
                     </td>
                 </tr>
                             row = row + 1;
