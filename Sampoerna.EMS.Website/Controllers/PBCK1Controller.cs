@@ -538,6 +538,12 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
+                if (model.Detail.Pbck1ProdConverter.Count == 0)
+                {
+                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
+                    return CreateInitial(model);
+                }
+
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
@@ -772,6 +778,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
+                if(model.Detail.Pbck1ProdConverter.Count == 0){
+                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);                    
+                    return CreateInitial(model);
+                }
+
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();

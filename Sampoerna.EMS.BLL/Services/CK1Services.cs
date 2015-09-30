@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -41,5 +43,12 @@ namespace Sampoerna.EMS.BLL.Services
            return _repository.GetByID(ck1Id);
        }
 
+       public List<CK1> GetCk1ByPlant(string plant)
+       {
+        
+           return _repository.Get(c => c.PLANT_ID == plant, null, "CK1_ITEM").ToList();
+
+         
+       }
     }
 }
