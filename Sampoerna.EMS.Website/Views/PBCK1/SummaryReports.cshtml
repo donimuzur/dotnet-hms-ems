@@ -201,7 +201,7 @@
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBoxFor(model => model.ExportModel.Pbck1Type, new { @class = "checkbox checkexport", @datacolumn = "11" })Type
+                                            @Html.CheckBoxFor(model => model.ExportModel.Pbck1Type, new { @class = "checkbox checkexport", @datacolumn = "11" })PBCK Type
                                         </label>
                                     </div>
                                     <div class="checkbox">
@@ -246,12 +246,12 @@
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBoxFor(model => model.ExportModel.LACKFrom, new { @class = "checkbox checkexport", @datacolumn = "20" })LACK From
+                                            @Html.CheckBoxFor(model => model.ExportModel.LACKFrom, new { @class = "checkbox checkexport", @datacolumn = "20" })LACK-1 From
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBoxFor(model => model.ExportModel.LACKTo, new { @class = "checkbox checkexport", @datacolumn = "21" })LACK To
+                                            @Html.CheckBoxFor(model => model.ExportModel.LACKTo, new { @class = "checkbox checkexport", @datacolumn = "21" })LACK-1 To
                                         </label>
                                     </div>
                                     <div class="checkbox">
@@ -292,6 +292,16 @@
                                     <div class="checkbox">
                                         <label>
                                             @Html.CheckBoxFor(model => model.ExportModel.DecreeDate, new { @class = "checkbox checkexport", @datacolumn = "29" })Decree Date
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.IsNppbkcImport, new { @class = "checkbox checkexport", @datacolumn = "30" })PBCK For Import
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(model => model.ExportModel.IsExternalSupplier, new { @class = "checkbox checkexport", @datacolumn = "31" })External supplier port
                                         </label>
                                     </div>
                                 </div>
@@ -414,7 +424,7 @@
                         var checked = document.querySelectorAll('input:checked');
 
                         if (checked.length === 1) {
-                            for (var i = 1; i < 30; i++) {
+                            for (var i = 1; i < 32; i++) {
                                 table.column(i).visible(false);
                             }
                             table.column(0).visible(true);
@@ -436,7 +446,7 @@
                        
                     });
 
-                    for (var i = 6; i < 30; i++) {
+                    for (var i = 6; i < 32; i++) {
                         table.column(i).visible(false);
                     }
 
@@ -447,7 +457,7 @@
                             
                             $('#pbckTable').parents('div.dataTables_wrapper').first().show();
                             var table = $('#pbckTable').DataTable();
-                            for (var i = 0; i < 30; i++) {
+                            for (var i = 0; i < 32; i++) {
                                 table.column(i).visible(true);
                             }
                         } else {
