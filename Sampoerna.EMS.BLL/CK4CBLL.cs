@@ -734,10 +734,12 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            var nBatang = dtData.CK4C_ITEM.Where(c => c.UOM_PROD_QTY == "PC" || c.UOM_PROD_QTY == "PCE").Sum(c => c.PROD_QTY);
+            var nBatang = dtData.CK4C_ITEM.Where(c => c.UOM_PROD_QTY == "Btg").Sum(c => c.PROD_QTY);
             var nGram = dtData.CK4C_ITEM.Where(c => c.UOM_PROD_QTY == "G").Sum(c => c.PROD_QTY);
+            var nThousand = dtData.CK4C_ITEM.Where(c => c.UOM_PROD_QTY == "TH").Sum(c => c.PROD_QTY) * 1000;
             var nKGram = dtData.CK4C_ITEM.Where(c => c.UOM_PROD_QTY == "KG").Sum(c => c.PROD_QTY) * 1000;
             nGram = nGram + nKGram;
+            nBatang = nBatang + nThousand;
 
             result.Detail.NBatang = nBatang.ToString();
             result.Detail.NGram = nGram.ToString();
