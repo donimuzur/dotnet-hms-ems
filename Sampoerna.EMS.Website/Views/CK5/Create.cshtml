@@ -267,7 +267,7 @@
 
 
         });
-     
+
 
         $("#DestPlantId").change(function() {
             if ($("#DestPlantId").length) {
@@ -442,7 +442,7 @@
                     $("#uploadMaterialTariff").val('0');
 
                 } else {
-                    var sourcePlant = $("#uploadMaterialPlant").val();// $("#SourcePlantId").find("option:selected").val();
+                    var sourcePlant = $("#uploadMaterialPlant").val(); // $("#SourcePlantId").find("option:selected").val();
 
                     ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                 }
@@ -452,6 +452,14 @@
         $("#btnUpdateMaterial").click(function() {
 
             UpdateRow();
+        });
+
+        $("#Ck5RefId").change(function() {
+            var refId = $("#Ck5RefId").val();
+
+            if (refId != null) {
+                window.location.href = '@Url.Action("CreateImporterToPlant", "CK5")' + "?idPortToImporter=" + refId;
+            }
         });
 
     </script>

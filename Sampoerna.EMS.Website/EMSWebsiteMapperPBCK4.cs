@@ -69,6 +69,7 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.DocumentStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.POA_PRINTED_NAME))
                .ForMember(dest => dest.CK3_OFFICE_VALUE, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.CK3_OFFICE_VALUE))
+               .ForMember(dest => dest.GovStatus, opt => opt.MapFrom(src => src.GOV_STATUS))
                ;
 
             Mapper.CreateMap<Pbck4UploadViewModel, Pbck4ItemsInput>().IgnoreAllNonExisting();
