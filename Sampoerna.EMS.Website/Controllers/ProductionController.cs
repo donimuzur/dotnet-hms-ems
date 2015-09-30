@@ -147,6 +147,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
                 data.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
 
+                data.CreatedDate = DateTime.Now;
+
                 
                 try
                 {
@@ -227,8 +229,25 @@ namespace Sampoerna.EMS.Website.Controllers
                 ModelState.AddModelError("Production", "Data is not Found");
                 model = IniEdit(model);
 
-                return View("Edit, model");
+                return View("Edit", model);
+            }
 
+            if(model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX 
+                || model.FaCode != model.FaCodeX || Convert.ToDateTime(model.ProductionDate) != Convert.ToDateTime(model.ProductionDateX))
+            {
+                var existingData = _productionBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
+                    Convert.ToDateTime(model.ProductionDate));
+                if (existingData != null)
+                {
+                    AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Edit", "Production", new
+                    {
+                        companyCode = model.CompanyCode,
+                        plantWerk = model.PlantWerks,
+                        faCode = model.FaCode,
+                        productionDate = model.ProductionDate
+                    });
+                }
             }
 
             var dbPrductionNew = Mapper.Map<ProductionDto>(model);
@@ -256,15 +275,27 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _productionBll.Save(dbPrductionNew, CurrentUser.USER_ID);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                    );
+                var output = _productionBll.Save(dbPrductionNew, CurrentUser.USER_ID);
+                var message = Constans.SubmitMessage.Updated;
 
+                if (output.isNewData)
+                    message = Constans.SubmitMessage.Saved;
+
+                if (!output.isFromSap)
+                {
+                    if(model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX || model.FaCode != model.FaCodeX 
+                        || Convert.ToDateTime(model.ProductionDate) != Convert.ToDateTime(model.ProductionDateX))
+                    {
+                        _productionBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX, Convert.ToDateTime(model.ProductionDateX));
+                    }
+                }
+                    
+                AddMessageInfo(message, Enums.MessageInfoType.Success);
 
                 return RedirectToAction("Index");
 
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
                     );
@@ -305,7 +336,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.ChangesHistoryList =
                 Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
-                    companyCode + plantWerk + faCode + productionDate.ToString("ddMMMyyyy")));
+                    companyCode + "_" + plantWerk + "_" + faCode + "_" + productionDate.ToString("ddMMMyyyy")));
 
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
@@ -359,6 +390,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 item.CompanyName = company.BUTXT;
                 item.PlantName = plant.NAME1;
+                item.CreatedDate = DateTime.Now;
                 
                 _productionBll.SaveUpload(item, CurrentUser.USER_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
@@ -388,6 +420,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 foreach (var dataRow in data.DataRows)
                 {
+                    if (dataRow[0] == "")
+                    {
+                        continue;
+                    }
+
                     var item = new ProductionUploadItems();
 
                     item.CompanyCode = dataRow[0];
@@ -397,7 +434,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.QtyPacked = Convert.ToDecimal(dataRow[4]);
                     item.QtyUnpacked = Convert.ToDecimal(dataRow[5]);
                     item.Uom = dataRow[6];
-                    item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(data.DataRows[0][7])).ToString("dd MMM yyyy");
+                    item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
 
                     {
                         model.Add(item);

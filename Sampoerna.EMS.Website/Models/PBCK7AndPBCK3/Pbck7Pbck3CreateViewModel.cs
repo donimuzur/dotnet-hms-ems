@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
@@ -18,10 +19,14 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         {
             Back1Dto = new Back1Dto();
             Pbck3Dto =new Pbck3Dto();
+            Ck2Dto = new Ck2Dto();
+            Back3Dto = new Back3Dto();
         }
-
+        public List<PrintHistoryItemModel> PrintHistoryListPbck3 { get; set; }
+        
         public int Id { get; set; }
         public string Pbck7Number { get; set; }
+        public string Comment { get; set; }
 
         public string PlantId { get; set; }
 

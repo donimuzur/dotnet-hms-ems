@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public int Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }
         public long? Pbck1Reference { get; set; }
+        public string Pbck1ReferenceNumber { get; set; }
         public Enums.PBCK1Type Pbck1Type { get; set; }
         public DateTime PeriodFrom { get; set; }
         public DateTime? PeriodTo { get; set; }
@@ -73,6 +74,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string LatestSaldoUomId { get; set; }
         public string LatestSaldoUomName { get; set; }
         public List<T001WModel> NppbkcPlants { get; set; }
+        public List<string> PoaList { get; set; }
     }
 
     public class Pbck1ExportSummaryReportsViewModel
@@ -101,6 +103,17 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool PlanProdFrom { get; set; }
         public bool PlanProdTo { get; set; }
         public bool SupplierPhone { get; set; }
+        public bool Reference { get; set; }
+        public bool LACKFrom { get; set; }
+        public bool LACKTo { get; set; }
+        public bool LatestSaldo { get; set; }
+        public bool PeriodFrom { get; set; }
+        public bool PeriodTo { get; set; }
+        public bool ReportedOn { get; set; }
+        public bool RequestQty { get; set; }
+        public bool StatusGov { get; set; }
+        public bool QtyApproved { get; set; }
+        public bool DecreeDate { get; set; }
     }
 
     public class Pbck1FilterSummaryReportViewModel
@@ -138,7 +151,18 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string PlanProdFrom { get; set; }
         public string PlanProdTo { get; set; }
         public string SupplierPhone { get; set; }
-
+        public string Reference { get; set; }
+        public string LACKFrom { get; set; }
+        public string LACKTo { get; set; }
+        public string LatestSaldo { get; set; }
+        public string PeriodFrom { get; set; }
+        public string PeriodTo { get; set; }
+        public string ReportedOn { get; set; }
+        public string RequestQty { get; set; }
+        public string StatusGov { get; set; }
+        public string QtyApproved { get; set; }
+        public string DecreeDate { get; set; }
+        public string PoaList { get; set; }
     }
 
 }

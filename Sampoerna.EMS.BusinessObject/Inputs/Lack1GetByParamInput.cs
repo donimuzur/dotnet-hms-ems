@@ -122,4 +122,45 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.ActionType WorkflowActionType { get; set; }
     }
 
+    public class Lack1GetSummaryReportByParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string ReceivingPlantId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string SupplierPlantId { get; set; }
+        public int? PeriodMonth { get; set; }
+        public int? PeriodYear { get; set; }
+
+        public Enums.DocumentStatus? DocumentStatus { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ApprovedDate { get; set; }
+        public string ApprovedBy { get; set; }
+        public string Creator { get; set; }
+        public string Approver { get; set; }
+    }
+
+    public class Lack1GetDetailReportByParamInput
+    {
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string ReceivingPlantId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string SupplierPlantId { get; set; }
+        public int? PeriodMonthFrom { get; set; }
+        public int? PeriodYearFrom { get; set; }
+        public int? PeriodMonthTo { get; set; }
+        public int? PeriodYearTo { get; set; }
+    }
+
+    public class Lack1GetPbck1RealizationListParamInput
+    {
+        public int MonthFrom { get; set; }
+        public int MonthTo { get; set; }
+        public int Year { get; set; }
+        public string NppbkcId { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string ExcisableGoodsTypeId { get; set; }
+    }
 }

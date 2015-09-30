@@ -1,5 +1,18 @@
-﻿function setSupplierPlantEmpty() {
-    $('#Detail_SupplierPortName').val('');
+﻿function setUpload() {
+    if ($("#Detail_GoodType").val() == "") {
+        $("#btn-prod-conv-upload").prop("disabled", true);
+        $("#ProdConvExcelfile").prop("disabled", true);
+        $("#btn-prod-plan-upload").prop("disabled", true);
+        $("#ProdPlanExcelfile").prop("disabled", true);
+    } else {
+        $("#btn-prod-conv-upload").prop("disabled", false);
+        $("#ProdConvExcelfile").prop("disabled", false);
+        $("#btn-prod-plan-upload").prop("disabled", false);
+        $("#ProdPlanExcelfile").prop("disabled", false);
+    }
+}
+
+function setSupplierPlantEmpty() {
     $('#Detail_SupplierNppbkcId').val('');
     $('#Detail_SupplierKppbcId').val('');
     $('#Detail_SupplierPhone').val('');
@@ -235,6 +248,7 @@ function prodPlanGenerateClick(url) {
     var totalFiles = document.getElementById("ProdPlanExcelfile").files.length;
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("ProdPlanExcelfile").files[i];
+        console.log(file);
         formData.append("prodPlanExcelFile", file);
     }
 
@@ -458,6 +472,22 @@ function getReference() {
     });
 }
 
+function getKPPBCByNPPBKC(id) {
+    if ($("#Detail_IsExternalSupplier").is(':checked')) {
+        $.ajax({
+            type: 'POST',
+            url: kppbcUrl,
+            data: { nppbkcid: id },
+            success: function (data) {
+                $('input[name="Detail.SupplierKppbcName"]:text').val(data.kppbcname);
+                $('input[name="Detail.HiddenSupplierKppbcId"]:hidden').val(data.kppbcname);
+                $('input[name="Detail.SupplierKppbcId"]:hidden').val(data.kppbcid);
+            }
+        });
+    }
+
+}
+
 function changeToDecimalMaxFour(selector, type) {
     $(selector).each(function () {
         if (type == "val") {
@@ -472,3 +502,14 @@ function changeToDecimalMaxFour(selector, type) {
     });
 }
 
+function setLackYear() {
+    var date = $("#Detail_PeriodFrom").datepicker('getDate');
+    var year = date.getFullYear();
+
+    $("#Detail_Lack1FormYear").html("");
+    $("#Detail_Lack1ToYear").html("");
+    for (var i = 0; i < 4 ; i++) {
+        $("#Detail_Lack1FormYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
+        $("#Detail_Lack1ToYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
+    }
+}

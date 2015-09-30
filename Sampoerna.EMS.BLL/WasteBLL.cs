@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<ZAIDM_EX_GOODTYP> _repositoryGood;
         private IGenericRepository<UOM> _repositoryUom;
         private IGenericRepository<T001W> _repositoryPlant;
+        private ChangesHistoryBLL _changesHistoryBll;
 
         public WasteBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -34,6 +35,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryGood = _uow.GetGenericRepository<ZAIDM_EX_GOODTYP>();
             _repositoryUom = _uow.GetGenericRepository<UOM>();
             _repositoryPlant = _uow.GetGenericRepository<T001W>();
+            _changesHistoryBll = new ChangesHistoryBLL(uow, logger);
         }
         public List<WasteDto> GetAllByParam(WasteGetByParamInput input)
         {
@@ -77,13 +79,28 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public void Save(WasteDto wasteDto)
+        public bool Save(WasteDto wasteDto, string userId)
         {
-
+            var isNewData = true;
             var dbWaste = Mapper.Map<WASTE>(wasteDto);
+
+            var origin = _repository.GetByID(dbWaste.COMPANY_CODE, dbWaste.WERKS, dbWaste.FA_CODE,
+                dbWaste.WASTE_PROD_DATE);
+
+            var originDto = Mapper.Map<WasteDto>(origin);
+
+            dbWaste.CREATED_DATE = DateTime.Now;
+
+            if (originDto != null)
+            {
+                SetChange(originDto, wasteDto, userId);
+                isNewData = false;
+            }
 
             _repository.InsertOrUpdate(dbWaste);
             _uow.SaveChanges();
+
+            return isNewData;
         }
 
         public WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
@@ -114,7 +131,121 @@ namespace Sampoerna.EMS.BLL
         {
             var dbUpload = Mapper.Map<WASTE>(wasteUpload);
             _repository.InsertOrUpdate(dbUpload);
+            
+
             _uow.SaveChanges();
+        }
+
+        private void SetChange(WasteDto origin, WasteDto data, string userId)
+        {
+            var changeData = new Dictionary<string, bool>();
+            changeData.Add("COMPANY_CODE", origin.CompanyCode == data.CompanyCode);
+            changeData.Add("WERKS", origin.PlantWerks == data.PlantWerks);
+            changeData.Add("FA_CODE", origin.FaCode == data.FaCode);
+            changeData.Add("PRODUCTION_DATE", origin.WasteProductionDate == data.WasteProductionDate);
+            changeData.Add("BRAND_DESC", origin.BrandDescription == data.BrandDescription);
+            changeData.Add("PLANT_NAME", origin.PlantName == data.PlantName);
+            changeData.Add("COMPANY_NAME", origin.CompanyName == data.CompanyName);
+            changeData.Add("MARKER_REJECT_STICK_QTY", origin.MarkerRejectStickQty == data.MarkerRejectStickQty);
+            changeData.Add("PACKER_REJECT_STICK_QTY", origin.PackerRejectStickQty == data.PackerRejectStickQty);
+            changeData.Add("DUST_WASTE_GRAM_QTY", origin.DustWasteGramQty == data.DustWasteGramQty);
+            changeData.Add("FLOOR_WASTE_GRAM_QTY", origin.FloorWasteGramQty == data.FloorWasteGramQty);
+            changeData.Add("DUST_WASTE_STICK_QTY", origin.DustWasteStickQty == data.DustWasteStickQty);
+            changeData.Add("FLOOR_WASTE_STICK_QTY", origin.FloorWasteStickQty == data.FloorWasteStickQty);
+
+            foreach (var listChange in changeData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY()
+                    {
+                        FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
+                        FORM_ID =
+                            data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" +
+                            data.WasteProductionDate.ToString("ddMMMyyyy"),
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+
+                    switch (listChange.Key)
+                    {
+                        case "COMPANY_CODE":
+                            changes.OLD_VALUE = origin.CompanyCode;
+                            changes.NEW_VALUE = data.CompanyCode;
+                            break;
+                        case "WERKS":
+                            changes.OLD_VALUE = origin.PlantWerks;
+                            changes.NEW_VALUE = data.PlantWerks;
+                            break;
+                        case "FA_CODE":
+                            changes.OLD_VALUE = origin.FaCode;
+                            changes.NEW_VALUE = data.FaCode;
+                            break;
+                        case "PRODUCTION_DATE":
+                            changes.OLD_VALUE = origin.WasteProductionDate.ToString();
+                            changes.NEW_VALUE = data.WasteProductionDate.ToString();
+                            break;
+                        case "BRAND_DESC":
+                            changes.OLD_VALUE = origin.BrandDescription;
+                            changes.NEW_VALUE = data.BrandDescription;
+                            break;
+                        case "PLANT_NAME":
+                            changes.OLD_VALUE = origin.PlantName;
+                            changes.NEW_VALUE = data.PlantName;
+                            break;
+                        case "COMPANY_NAME":
+                            changes.OLD_VALUE = origin.CompanyName;
+                            changes.NEW_VALUE = data.CompanyName;
+                            break;
+                        case "MARKER_REJECT_STICK_QTY":
+                            changes.OLD_VALUE = origin.MarkerRejectStickQty.ToString();
+                            changes.NEW_VALUE = data.MarkerRejectStickQty.ToString();
+                            break;
+                        case "PACKER_REJECT_STICK_QTY":
+                            changes.OLD_VALUE = origin.PackerRejectStickQty.ToString();
+                            changes.NEW_VALUE = data.PackerRejectStickQty.ToString();
+                            break;
+                        case "DUST_WASTE_GRAM_QTY":
+                            changes.OLD_VALUE = origin.DustWasteGramQty.ToString();
+                            changes.NEW_VALUE = data.DustWasteGramQty.ToString();
+                            break;
+                        case "FLOOR_WASTE_GRAM_QTY":
+                            changes.OLD_VALUE = origin.FloorWasteGramQty.ToString();
+                            changes.NEW_VALUE = data.FloorWasteGramQty.ToString();
+                            break;
+                        case "DUST_WASTE_STICK_QTY":
+                            changes.OLD_VALUE = origin.DustWasteStickQty.ToString();
+                            changes.NEW_VALUE = data.DustWasteStickQty.ToString();
+                            break;
+                        case "FLOOR_WASTE_STICK_QTY":
+                            changes.OLD_VALUE = origin.FloorWasteStickQty.ToString();
+                            changes.NEW_VALUE = data.FloorWasteStickQty.ToString();
+                            break;
+                        default: break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+
+                }
+                
+            }
+
+        }
+
+        public void DeleteOldData(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
+        {
+            var dbData = _repository.GetByID(companyCode, plantWerk, faCode, wasteProductionDate);
+
+            if (dbData == null)
+            {
+                _logger.Error(new BLLException(ExceptionCodes.BLLExceptions.DataNotFound));
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            else
+            {
+                _repository.Delete(dbData);
+                _uow.SaveChanges();
+            }
         }
     }
 }

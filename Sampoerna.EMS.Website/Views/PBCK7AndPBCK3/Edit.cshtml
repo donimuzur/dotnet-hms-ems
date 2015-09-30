@@ -50,14 +50,13 @@
                     {
                         if (Model.AllowGovApproveAndReject)
                         {
-                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                            <input type="button" class="btn btn-blue" value="Save PBCK-7" id="btnSaveGovStatus" />
                         }
                         else if (Model.AllowEditAndSubmit)
                         {
-                            <input type="submit" class="btn btn-blue" value="Save" />
+                            <input type="button" class="btn btn-blue" value="Save PBCK-7" id="btn-save-pbck7"  />
                         }
 
-                        <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7Pbck3", new {id = @Model.Id})') " />
                         <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
 
                         if (Model.Pbck7Status == Enums.DocumentStatus.Draft
@@ -70,21 +69,26 @@
                     {
                         if (Model.AllowGovApproveAndRejectPbck3)
                         {
-                            <input type="button" class="btn btn-blue" value="Save PBCK3" id="btnSaveGovStatusPbck3" />
+                            <input type="button" class="btn btn-blue" value="Save PBCK-3" id="btnSaveGovStatusPbck3" />
                         }
                         else if (Model.AllowEditAndSubmitPbck3)
                         {
-                            <input type="submit" class="btn btn-blue" value="Save PBCK3" />
+                            <input type="button" class="btn btn-blue" id="btn-save-pbck3" value="Save PBCK-3" />
                         }
-
-                        <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7AndPbck3", new { id = @Model.Id })')" />
+    
+                       
                         <input type="button" value="Back" class="btn btn-grey" id="btnCancelPbck3" />
 
                         if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Draft
-                            && Model.AllowEditAndSubmitPbck3)
+                            && Model.AllowEditAndSubmitPbck3 && Model.Pbck3Dto.Pbck3Number != null)
                         {
                             <input type="button" id="btnSubmitDocumentPbck3" class="btn btn-blue" value="Submit PBCK3" />
                         }
+                    }
+                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
+                    @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                    {
+                        <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Id })')" />
                     }
                 </div>
             </div>
@@ -100,7 +104,6 @@
                     @Html.AntiForgeryToken()
                     <ul role="tablist" class="nav nav-tabs">
                         <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
-                        <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printout" href="#printout">Print Out</a></li>
                         <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
                         @*<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="changes" href="#changes">Changes Log</a></li>*@
                     </ul>
@@ -108,7 +111,6 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.Partial("_HomeEdit")
-                        @Html.Partial("_PrintOut")
                         @Html.Partial("_Upload")
                     </div>
                 </div>
@@ -167,10 +169,94 @@
                 $('#form-pbck7-edit').submit();
             }
         });
-        $("#btnSaveGovStatusPbck3").click(function () {
-               $('#form-pbck7-edit').submit();
-            
+        $("#btnSaveGovStatusPbck3").click(function() {
+
+            $('#form-pbck7-edit').submit();
+
         });
+        $("#btn-save-pbck7").click(function() {
+            if (ValidateBack1()) {
+                $('#form-pbck7-edit').submit();
+            }
+        });
+        $("#btn-save-pbck3").click(function () {
+            if (ValidatePbck3()) {
+                $('#form-pbck7-edit').submit();
+            }
+        });
+        function ValidateBack1() {
+            var status = '@Model.Pbck7Status';
+
+            if (status == 'GovApproved') {
+                var validCount = 0;
+                var back1No = $('#Back1Dto_Back1Number').val();
+                if (back1No == '') {
+                    AddValidationClass(false, 'Back1Dto_Back1Number');
+                    validCount++;
+                }
+                var back1Date = $('#Back1Dto_Back1Date').val();
+                if (back1Date == '') {
+                    AddValidationClass(false, 'Back1Dto_Back1Date');
+                    validCount++;
+                }
+                if (validCount > 0) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function ValidatePbck3() {
+            var value = $('#Pbck3Dto_Pbck3Date').val();
+            var status = '@Model.Pbck3Dto.Pbck3Status';
+
+            var validCount = 0;
+            if (value == '') {
+                AddValidationClass(false, 'Pbck3Dto_Pbck3Date');
+                validCount++;
+            }
+            if (status == 'GovApproved') {
+
+                var back3No = $('#Back3Dto_Back3Number').val();
+
+                if (back3No == '') {
+                    AddValidationClass(false, 'Back3Dto_Back3Number');
+                    validCount++;
+                }
+                var back3Date = $('#Back3Dto_Back3Date').val();
+
+                if (back3Date == '') {
+                    AddValidationClass(false, 'Back3Dto_Back3Date');
+                    validCount++;
+                }
+                var ck2No = $('#Ck2Dto_Ck2Number').val();
+
+                if (ck2No == '') {
+                    AddValidationClass(false, 'Ck2Dto_Ck2Number');
+                    validCount++;
+                }
+                var ck2Date = $('#Ck2Dto_Ck2Date').val();
+
+                if (ck2Date == '') {
+                    AddValidationClass(false, 'Ck2Dto_Ck2Date');
+                    validCount++;
+                }
+                var ck2Val = $('#Ck2Dto_Ck2Value').val();
+
+                if (ck2Val == '') {
+                    AddValidationClass(false, 'Ck2Dto_Ck2Value');
+                    validCount++;
+                }
+
+            }
+
+            if (validCount > 0) {
+                return false;
+            }
+            return true;
+        }
+
         function ValidateGovInput() {
             var result = true;
             var govStatus = $('#Pbck7GovStatus').find("option:selected").val();
@@ -196,10 +282,12 @@
             $('#IsSaveSubmit').val('true');
             $('#form-pbck7-edit').submit();
         });
-        
+
         $("#btnSubmitConfirmPbck3").click(function() {
             $('#IsSaveSubmitPbck3').val('true');
-            $('#form-pbck7-edit').submit();
+            if (ValidatePbck3()) {
+                $('#form-pbck7-edit').submit();
+            }
         });
         $('#btnSubmitDocument').click(function() {
 
@@ -375,6 +463,5 @@
 
         }
 
-        
     </script>
 }

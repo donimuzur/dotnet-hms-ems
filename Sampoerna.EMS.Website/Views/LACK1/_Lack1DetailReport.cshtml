@@ -1,0 +1,78 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailReportViewModel
+
+<table id="lack1Table" border="0" class="table table-bordered">
+    <thead>
+        <tr>
+            <th rowspan="2">Begining Balance</th>
+            <th colspan="5">Receiving</th>
+            <th colspan="5">Usage</th>
+            <th rowspan="2">Ending Balance</th>
+        </tr>
+        <tr>
+            <th>CK-5 Number</th>
+            <th>CK-5 Registration Number</th>
+            <th>CK-5 Registration Date</th>
+            <th>CK-5 GR Date</th>
+            <th>Qty</th>
+            <th>GI Date</th>
+            <th>Material Code</th>
+            <th>Usage Qty</th>
+            <th>Original Uom</th>
+            <th>Converted Uom</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DetailList)
+        {
+            if (item.TrackingConsolidations.Count > 0)
+            {
+                <tr>
+                    <td rowspan="@item.TrackingConsolidations.Count">@item.BeginingBalance.ToString("N2")</td>
+                    <td>@item.TrackingConsolidations[0].Ck5Number</td>
+                    <td>@item.TrackingConsolidations[0].Ck5RegistrationNumber</td>
+                    <td>@item.TrackingConsolidations[0].Ck5RegistrationDate</td>
+                    <td>@item.TrackingConsolidations[0].Ck5GrDate</td>
+                    <td>@item.TrackingConsolidations[0].Qty.ToString("N2")</td>
+                    <td>@item.TrackingConsolidations[0].GiDate</td>
+                    <td>@item.TrackingConsolidations[0].MaterialCode</td>
+                    <td>@item.TrackingConsolidations[0].UsageQty</td>
+                    <td>@item.TrackingConsolidations[0].OriginalUomId</td>
+                    <td>@item.TrackingConsolidations[0].ConvertedUomId</td>
+                    <td rowspan="@item.TrackingConsolidations.Count">@item.EndingBalance.ToString("N2")</td>
+                </tr>
+                for (int i = 1; i < item.TrackingConsolidations.Count; i++)
+                {
+                    <tr>
+                        <td>@item.TrackingConsolidations[i].Ck5Number</td>
+                        <td>@item.TrackingConsolidations[i].Ck5RegistrationNumber</td>
+                        <td>@item.TrackingConsolidations[i].Ck5RegistrationDate</td>
+                        <td>@item.TrackingConsolidations[i].Ck5GrDate</td>
+                        <td>@item.TrackingConsolidations[i].Qty.ToString("N2")</td>
+                        <td>@item.TrackingConsolidations[i].GiDate</td>
+                        <td>@item.TrackingConsolidations[i].MaterialCode</td>
+                        <td>@item.TrackingConsolidations[i].UsageQty</td>
+                        <td>@item.TrackingConsolidations[i].OriginalUomId</td>
+                        <td>@item.TrackingConsolidations[i].ConvertedUomId</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>@item.BeginingBalance.ToString("N2")</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>@item.EndingBalance.ToString("N2")</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

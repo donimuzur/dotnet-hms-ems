@@ -26,5 +26,15 @@ namespace Sampoerna.EMS.Contract
 
         SaveLack1Output SaveEdit(Lack1SaveEditInput input);
 
+        List<Lack1SummaryReportDto> GetSummaryReportByParam(Lack1GetSummaryReportByParamInput input);
+
+        List<int> GetYearList();
+
+        List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbckListByCompanyCode(string companyCode);
+
+        List<Lack1DetailReportDto> GetDetailReportByParam(Lack1GetDetailReportByParamInput input);
+
+        List<Lack1DetailsDto> GetPbck1RealizationList(Lack1GetPbck1RealizationListParamInput input);
+
     }
 }

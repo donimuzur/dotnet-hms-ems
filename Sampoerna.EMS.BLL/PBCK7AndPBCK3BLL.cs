@@ -49,6 +49,112 @@ namespace Sampoerna.EMS.BLL
             _repositoryCk2 = _uow.GetGenericRepository<CK2>();
         }
 
+        public List<Pbck7AndPbck3Dto> GetAllPbck7()
+        {
+            return Mapper.Map<List<Pbck7AndPbck3Dto>>(_repositoryPbck7.Get().ToList());
+        }
+
+        public List<Pbck3Dto> GetAllPbck3()
+        {
+            return Mapper.Map<List<Pbck3Dto>>(_repositoryPbck3.Get().ToList()); ;
+        }
+
+        public List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
+        {
+            Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC == input.NppbkcId);
+            }
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter = queryFilter.And(c => c.PLANT_ID == input.PlantId);
+            }
+            if (!string.IsNullOrEmpty(input.Pbck7Number))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK7_NUMBER == input.Pbck7Number);
+            }
+
+            if (input.From != null)
+            {
+                
+                queryFilter = queryFilter.And(c => c.PBCK7_DATE.Year >= input.From);
+            }
+            if (input.To != null)
+            {
+
+                queryFilter = queryFilter.And(c => c.PBCK7_DATE.Year <= input.To);
+            }
+
+
+            Func<IQueryable<PBCK7>, IOrderedQueryable<PBCK7>> orderBy = null;
+            if (!string.IsNullOrEmpty(input.ShortOrderColum))
+            {
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK7>(input.ShortOrderColum));
+            }
+
+            var dbData = _repositoryPbck7.Get(queryFilter, orderBy);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            var mapResult = Mapper.Map<List<Pbck7AndPbck3Dto>>(dbData.ToList());
+            foreach (var pbck7AndPbck3Dto in mapResult)
+            {
+                pbck7AndPbck3Dto.Back1Dto = GetBack1ByPbck7(pbck7AndPbck3Dto.Pbck7Id);
+            }
+            return mapResult;
+       
+        }
+
+        public List<Pbck3Dto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input)
+        {
+            Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK7.NPPBKC == input.NppbkcId);
+            }
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK7.PLANT_ID == input.PlantId);
+            }
+            if (!string.IsNullOrEmpty(input.Pbck3Number))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK3_NUMBER == input.Pbck3Number);
+            }
+
+            if (input.From != null)
+            {
+
+                queryFilter = queryFilter.And(c => c.PBCK3_DATE.Year >= input.From);
+            }
+            if (input.To != null)
+            {
+
+                queryFilter = queryFilter.And(c => c.PBCK3_DATE.Year <= input.To);
+            }
+
+
+            Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = null;
+            if (!string.IsNullOrEmpty(input.ShortOrderColum))
+            {
+                orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK3>(input.ShortOrderColum));
+            }
+
+            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7");
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            var mapResult = Mapper.Map<List<Pbck3Dto>>(dbData.ToList());
+            foreach (var pbck3Dto in mapResult)
+            {
+                pbck3Dto.Back3Dto = GetBack3ByPbck3Id(pbck3Dto.Pbck3Id);
+                pbck3Dto.Ck2Dto = GetCk2ByPbck3Id(pbck3Dto.Pbck3Id);
+            }
+            return mapResult;
+        }
+
         public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
@@ -222,13 +328,13 @@ namespace Sampoerna.EMS.BLL
 
         public Back3Dto GetBack3ByPbck3Id(int? id)
         {
-            var data = _repositoryBack3.Get(p => p.PBCK3_ID == id);
+            var data = _repositoryBack3.Get(p => p.PBCK3_ID == id, null, "BACK3_DOCUMENT");
             return Mapper.Map<Back3Dto>(data.LastOrDefault());
         }
 
         public Ck2Dto GetCk2ByPbck3Id(int? id)
         {
-            var data = _repositoryCk2.Get(p => p.PBCK3_ID == id);
+            var data = _repositoryCk2.Get(p => p.PBCK3_ID == id, null, "CK2_DOCUMENT");
             return Mapper.Map<Ck2Dto>(data.LastOrDefault());
         }
 
@@ -283,11 +389,11 @@ namespace Sampoerna.EMS.BLL
             }
             if (docStatus == Core.Enums.DocumentStatus.GovApproved)
             {
-                return Core.Enums.ActionType.GovPartialApprove;
+                return Core.Enums.ActionType.GovApprove;
             }
             if (docStatus == Core.Enums.DocumentStatus.Completed)
             {
-                return Core.Enums.ActionType.GovApprove;
+                return Core.Enums.ActionType.Completed;
             }
             return Core.Enums.ActionType.Reject;
         }
@@ -323,11 +429,11 @@ namespace Sampoerna.EMS.BLL
             }
             if (docStatus == Core.Enums.DocumentStatus.GovApproved)
             {
-                return Core.Enums.ActionType.GovPartialApprove;
+                return Core.Enums.ActionType.GovApprove;
             }
             if (docStatus == Core.Enums.DocumentStatus.Completed)
             {
-                return Core.Enums.ActionType.GovApprove;
+                return Core.Enums.ActionType.Completed;
             }
             return Core.Enums.ActionType.Reject;
         }

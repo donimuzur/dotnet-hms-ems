@@ -23,7 +23,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class Pbck1GetOpenDocumentByParamInput : Pbck1GetByParamInput
     {
-        
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Pbck1GetCompletedDocumentByParamInput : Pbck1GetByParamInput

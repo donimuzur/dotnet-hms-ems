@@ -1,0 +1,56 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2DetailReportsViewModel
+
+<table id="lack2Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>LACK-2 Number</th>
+            <th>CK-5 GI Date</th>
+            <th>CK-5 Registration Number</th>
+            <th>CK-5 Registration Date</th>
+            <th>CK-5 Total</th>
+            <th>Receiving Company Code</th>
+            <th>Receiving Company Name</th>
+            <th>Receiving NPPBKC</th>
+            <th>Receiving Address</th>
+            <th>CK-5 Sending Plant</th>
+            <th>Sending Plant Address</th>
+            <th>Company Code</th>
+            <th>Company Name</th>
+            <th>NPPBKC ID</th>
+            <th>Type of Excisable Goods</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.Lack2Number)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5GiDate)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5RegistrationNumber)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5RegistrationDate)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5Total)</td>
+                    <td>@Html.DisplayFor(model => item.ReceivingCompanyCode)</td>
+                    <td>@Html.DisplayFor(model => item.ReceivingCompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.ReceivingNppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.ReceivingAddress)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5SendingPlant)</td>
+                    <td>@Html.DisplayFor(model => item.SendingPlantAddress)</td>
+                    <td>@Html.DisplayFor(model => item.CompanyCode)</td>
+                    <td>@Html.DisplayFor(model => item.CompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.NppbkcId)</td>
+                    <td class="last">@Html.DisplayFor(model => item.TypeExcisableGoodsDesc)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+
+
+

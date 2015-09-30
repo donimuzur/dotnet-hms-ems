@@ -10,7 +10,15 @@
                 </a>
                 @if (Model.IsAllowDelete)
                 {
-                    <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Delete</a>
+                    if (Model.BoolIsDeleted.HasValue && Model.BoolIsDeleted.Value)
+                    {
+                        <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Un-Delete</a>
+                    }
+                    else
+                    {
+                        <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Delete</a>
+                    }
+                    
                 }
             </div>
         </div>

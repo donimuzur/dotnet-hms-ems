@@ -15,12 +15,14 @@ namespace Sampoerna.EMS.Contract
 
         List<WasteDto> GetAllWaste();
 
-        void Save(WasteDto wasteDto);
+        bool Save(WasteDto wasteDto, string userId);
 
         WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate);
 
         WASTE GetExistDto(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate);
 
         void SaveUpload(WasteUploadItems wasteUpload);
+
+        void DeleteOldData(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate);
     }
 }

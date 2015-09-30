@@ -27,6 +27,10 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<UOM> _repositoryUom;
         private IGenericRepository<T001W> _repositoryPlant;
         private ChangesHistoryBLL _changesHistoryBll;
+        private IGenericRepository<T001> _repositoryCompany;
+        private ICompanyBLL _companyBll;
+        private IPlantBLL _plantBll;
+        private IBrandRegistrationBLL _brandRegistrationBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -37,7 +41,10 @@ namespace Sampoerna.EMS.BLL
             _repositoryProd = _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
             _repositoryUom = _uow.GetGenericRepository<UOM>();
             _repositoryPlant = _uow.GetGenericRepository<T001W>();
-            _changesHistoryBll = new ChangesHistoryBLL(uow, logger);
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
+            _companyBll = new CompanyBLL(_uow, _logger);
+            _plantBll = new PlantBLL(_uow, _logger);
+            _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -83,12 +90,26 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<ProductionDto>>(dtData);
         }
 
-        public void Save(ProductionDto productionDto, string userId)
+        public SaveProductionOutput Save(ProductionDto productionDto, string userId)
         {
-            var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
-            SetChange(productionDto, productionDto, userId);
-            dbProduction.CREATED_DATE = DateTime.Now;
+            var output = new SaveProductionOutput();
+            output.isNewData = true;
+            output.isFromSap = false;
 
+            var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
+
+            var origin = _repository.GetByID(dbProduction.COMPANY_CODE, dbProduction.WERKS, dbProduction.FA_CODE,
+                dbProduction.PRODUCTION_DATE);
+
+            var originDto = Mapper.Map<ProductionDto>(origin);
+
+            //to do ask and to do refactor
+            if(originDto != null)
+            {
+                SetChange(originDto, productionDto, userId);
+                output.isNewData = false;
+            }
+                
             if (dbProduction.UOM == "KG")
             {
                 dbProduction.UOM = "G";
@@ -102,9 +123,15 @@ namespace Sampoerna.EMS.BLL
                 dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
                 dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
             }
+            dbProduction.CREATED_DATE = DateTime.Now;
+
+            if(dbProduction.BATCH != null)
+                output.isFromSap = true;
 
             _repository.InsertOrUpdate(dbProduction);
             _uow.SaveChanges();
+
+            return output;
         }
 
 
@@ -146,11 +173,13 @@ namespace Sampoerna.EMS.BLL
                              TobaccoProductType = g.PRODUCT_TYPE,
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
-                             QtyProduced = p.QTY == null ? 0 : p.QTY,
+                             QtyPacked = p.QTY_PACKED == null ? 0 : p.QTY_PACKED,
+                             QtyUnpacked = p.QTY_UNPACKED == null ? 0 : p.QTY_UNPACKED,
+                             QtyProduced = p.QTY == null ? p.QTY_PACKED + p.QTY_UNPACKED : p.QTY,
                              Uom = p.UOM,
-                             QtyPacked = p.QTY_PACKED,
-                             QtyUnpacked = p.QTY_UNPACKED,
-                             ProdCode = b.PROD_CODE
+                             ProdCode = b.PROD_CODE,
+                             ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
+                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
                          };
 
             if (nppbkc != string.Empty)
@@ -169,11 +198,13 @@ namespace Sampoerna.EMS.BLL
                              TobaccoProductType = g.PRODUCT_TYPE,
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
-                             QtyProduced = p.QTY == null ? 0 : p.QTY,
+                             QtyPacked = p.QTY_PACKED == null ? 0 : p.QTY_PACKED,
+                             QtyUnpacked = p.QTY_UNPACKED == null ? 0 : p.QTY_UNPACKED,
+                             QtyProduced = p.QTY == null ? p.QTY_PACKED + p.QTY_UNPACKED : p.QTY,
                              Uom = p.UOM,
-                             QtyPacked = p.QTY_PACKED,
-                             QtyUnpacked = p.QTY_UNPACKED,
-                             ProdCode = b.PROD_CODE
+                             ProdCode = b.PROD_CODE,
+                             ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
+                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
                          };
             }
 
@@ -181,7 +212,7 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            return dbData.OrderByDescending(x => x.ProductionDate).ToList();
+            return dbData.OrderBy(x => x.ProductionDate).ToList();
         }
 
 
@@ -202,8 +233,60 @@ namespace Sampoerna.EMS.BLL
             var dbUpload = Mapper.Map<PRODUCTION>(uploadItems);
 
             _repository.InsertOrUpdate(dbUpload);
-            dbUpload.CREATED_DATE = DateTime.Now;
+
             _uow.SaveChanges();
+        }
+
+        private List<ProductionUploadItems> ValidateProductionUpload(List<ProductionUploadItems> input)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<ProductionUploadItems>();
+
+            foreach (var productionUploadItems in input)
+            {
+                messageList.Clear();
+
+                var output = Mapper.Map<ProductionUploadItems>(productionUploadItems);
+
+                var dbCompany = _companyBll.GetById(productionUploadItems.CompanyCode);
+                if (dbCompany == null)
+                    messageList.Add("Company Code is Not valid");
+
+                var dbPlant = _plantBll.GetId(productionUploadItems.PlantWerks);
+                if (dbPlant == null)
+                    messageList.Add("Plant Id is not valid");
+
+                var dbBrand = _brandRegistrationBll.GetById(productionUploadItems.PlantWerks, productionUploadItems.FaCode);
+                if (dbBrand == null)
+                    messageList.Add("Fa Code is not Register");
+
+                if (string.IsNullOrEmpty(productionUploadItems.ProductionDate))
+                    messageList.Add("Daily Production Date is not valid");
+
+                var dbproduction = GetExistDto(productionUploadItems.CompanyCode, productionUploadItems.PlantWerks,
+                    productionUploadItems.FaCode, Convert.ToDateTime(productionUploadItems.ProductionDate));
+                if (dbproduction == null)
+                    messageList.Add("Production data all ready Exist");
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = " ";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+
+                }
+                     
+                else
+                {
+                    output.IsValid = true;
+
+                }
+                outputList.Add(output);
+            }
+            return outputList;
         }
 
         private void SetChange(ProductionDto origin, ProductionDto data, string userId)
@@ -225,7 +308,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
-                        FORM_ID = data.CompanyCode + data.PlantWerks + data.FaCode + data.ProductionDate,
+                        FORM_ID = data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" + data.ProductionDate.ToString("ddMMMyyyy"),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
                         MODIFIED_DATE = DateTime.Now
@@ -273,5 +356,20 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public void DeleteOldData(string companyCode, string plantWerk, string faCode, DateTime productionDate)
+        {
+            var dbData = _repository.GetByID(companyCode, plantWerk, faCode, productionDate);
+
+            if (dbData == null)
+            {
+                _logger.Error(new BLLException(ExceptionCodes.BLLExceptions.DataNotFound));
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            else
+            {
+                _repository.Delete(dbData);
+                _uow.SaveChanges();
+            }
+        }
     }
 }

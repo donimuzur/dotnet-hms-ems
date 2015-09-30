@@ -50,13 +50,13 @@
                         {
                             <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
 
-                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck7" />
                         }
                         else
                         {
                             if (Model.AllowManagerReject)
                             {
-                                <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                                <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck7" />
                             }
                         }
 
@@ -80,8 +80,11 @@
 
                     }
                   
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Pbck7AndPbck3", new { id = @Model.Id })')" />
-
+                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
+                    @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                    {
+                        <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Id })')" />
+                    }
                 </div>
             </div>
         </div>
@@ -96,15 +99,17 @@
                     @Html.AntiForgeryToken()
                     <ul role="tablist" class="nav nav-tabs">
                         <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
-                        <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printout" href="#printout">Print Out</a></li>
-                        <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
+                        <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck7" href="#printoutpbck7">Print Out PBCK-7</a></li>
+                        <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck3" href="#printoutpbck3">Print Out PBCK-3</a></li>
+                         <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
                         @*<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="changes" href="#changes">Changes Log</a></li>*@
                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.Partial("_HomeDetail")
-                        @Html.Partial("_PrintOut")
+                        @Html.Partial("_PrintOutPbck7")
+                        @Html.Partial("_PrintOutPbck3")    
                         @Html.Partial("_Upload")
                     </div>
                 </div>
@@ -131,8 +136,37 @@
             </div>
         </div>
     </div>
+    <div id="pbck7RejectModal" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Reject PBCK-7 document</h4>
+                </div>
+                @using (Html.BeginForm("RejectDocumentPbck7", "Pbck7AndPbck3"))
+                {
+                    <div class="modal-body">
+                        @Html.HiddenFor(model => model.Id)
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9" })
+                                </div>
+                            </div>
+                        </div>
 
-}else 
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                        <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmRejectPbck7" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
 {
     <div id="pbck3ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm">
@@ -151,7 +185,41 @@
             </div>
         </div>
     </div>
+    <div id="pbck3RejectModal" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Reject PBCK-3 document</h4>
+                </div>
+                @using (Html.BeginForm("RejectDocumentPbck3", "Pbck7AndPbck3"))
+                {
+                    <div class="modal-body">
+                        @Html.HiddenFor(model => model.Pbck3Dto.Pbck3Id)
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(model => model.Pbck3Dto.Comment, new { @rows = "5", @class = "col-md-9" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                        <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmRejectPbck3" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
 }
+
+
+
+
 
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -348,6 +416,68 @@
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
         }
+        
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
 
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+        }
+        $('#btnRejectPbck7').click(function () {
+            $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
+
+            $('#pbck7RejectModal').modal('show');
+        });
+        $('#btnRejectPbck3').click(function () {
+            $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
+
+            $('#pbck3RejectModal').modal('show');
+        });
+        $('#Comment').bind('input propertychange', function () {
+
+            $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
+           
+            if (this.value.length) {
+                $('#btnConfirmRejectPbck7').removeAttr('disabled');
+              
+            }
+        });
+        $('#Pbck3Dto_Comment').bind('input propertychange', function () {
+
+            $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
+
+            if (this.value.length) {
+                $('#btnConfirmRejectPbck3').removeAttr('disabled');
+
+            }
+        });
     </script>
 }

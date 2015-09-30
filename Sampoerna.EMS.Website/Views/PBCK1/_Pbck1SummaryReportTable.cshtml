@@ -21,6 +21,18 @@
             <th>Plan Prod From</th>
             <th>Plan Prod To</th>
             <th>Supplier Phone</th>
+            <th>POA</th>
+            <th>PBCK-1 Reference</th>
+            <th>LACK From</th>
+            <th>LACK To</th>
+            <th>Latest Saldo</th>
+            <th>Period From</th>
+            <th>Period To</th>
+            <th>Reported On</th>
+            <th>Request Qty</th>
+            <th>Status Gov</th>
+            <th>Qty Approved</th>
+            <th>Decree Date</th>
         </tr>
     </thead>
     <tbody>
@@ -40,7 +52,7 @@
                     <td>
                         @item.StatusName
                     </td>
-                    <td>
+                    <td style="padding:20px">
                         <ol>
                             @foreach (var plant in item.NppbkcPlants)
                             {
@@ -58,8 +70,8 @@
                     <td>
                         @item.SupplierAddress
                     </td>
-                    <td>
-                        @item.QtyApproved
+                    <td align="right">
+                        @String.Format("{0:n}", @item.QtyApproved)
                     </td>
                     <td>
                         @item.Pbck1Type
@@ -81,6 +93,47 @@
                     </td>
                     <td>
                         @item.SupplierPhone
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var poa in item.PoaList)
+                            {
+                                <li>@poa</li>
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        @item.Pbck1ReferenceNumber
+                    </td>
+                    <td>
+                        @item.Lack1FromMonthName  @item.Lack1FormYear
+                    </td>
+                    <td>
+                         @item.Lack1ToMonthName @item.Lack1ToYear
+                    </td>
+                    <td align="right">
+                        @String.Format("{0:n}", @item.LatestSaldo)
+                    </td>
+                    <td>
+                        @item.PeriodFrom
+                    </td>
+                    <td>
+                        @item.PeriodTo
+                    </td>
+                    <td>
+                        @item.ReportedOn
+                    </td>
+                    <td align="right">
+                        @String.Format("{0:n}", @item.RequestQty)
+                    </td>
+                    <td>
+                        @item.StatusGov
+                    </td>
+                    <td align="right">
+                        @String.Format("{0:n}", @item.QtyApproved)
+                    </td>
+                    <td>
+                        @item.DecreeDate
                     </td>
                 </tr>
                             row = row + 1;

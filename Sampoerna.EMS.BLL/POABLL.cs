@@ -119,6 +119,14 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
+        public List<string> GetPOAIdByManagerId(string managerId)
+        {
+            var dtData = _repository.Get(c => c.MANAGER_ID == managerId).Select(s => s.POA_ID).ToList();
+
+            return dtData;
+        }
+
+
         public List<POADto> GetPoaByNppbkcId(string nppbkcId)
         {
             Expression<Func<POA_MAP, bool>> queryFilter = c => c.NPPBKC_ID == nppbkcId;

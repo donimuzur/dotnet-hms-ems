@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.Contract
 
        List<CK5> GetCK5ByType(Enums.CK5Type ck5Type);
 
-       List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs);
+       List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType);
 
        CK5DetailsOutput GetDetailsCK5(long id);
 
@@ -61,5 +61,7 @@ namespace Sampoerna.EMS.Contract
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId,string plantNppbkcId, DateTime submissionDate, string destPlantNppbkcId, int? goodtypegroupid);
 
        List<CK5> GetByGIDate(int month, int year,string desPlantId, string goodTypeId);
+
+       List<int> GetAllYearsByGiDate();
    }
 }

@@ -1,0 +1,333 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck3SummaryReportModel
+@using Sampoerna.EMS.Website.Helpers
+@{
+    ViewBag.Title = "Pbck3SummaryReport";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Summary Report</h3>
+        </div>
+    </div>
+</div>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                @using (Ajax.BeginForm("FilterPbck3SummaryReport", "PBCK3_PBCK7",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables",
+                    }, new { @class = "form-excise", role = "form" }))
+                {
+                    <form class="form-excise" role="form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">PBCK No</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(x => x.SelectedNumber, Model.Pbck3List, "All", new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">NPPBKC</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(x => x.SelectedNppbkc, Model.NppbkcList, "All", new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">From-To</label>
+                                    <div class="col-md-8 year-from">
+                                        @Html.DropDownListFor(x => x.From, Model.FromYear, "All", new { @class = "form-control selectreset" })
+                                        @Html.DropDownListFor(x => x.To, Model.ToYear, "All", new { @class = "form-control selectreset" })
+
+
+                                    </div>
+                                    </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4 long">Plant</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(x => x.SelectedPlant, Model.PlantList, "All", new { @class = "form-control" })
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="last-form">
+                                <div class="col-md-4 col-md-offset-8">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <button class="btn btn-blue full" id="btnFILTER">VIEW</button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button class="btn btn-blue full" id="btnExport">EXPORT</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                }
+            </div>
+            <div>
+            @using (Html.BeginForm("Pbck3ExportSummaryReports", "Pbck7AndPbck3", FormMethod.Post, new {@id = "ExportSummaryReportsForms"}))
+            {
+                <div class="white-wrapper toggle-wrapper">
+                    <div class="form-excise" role="form">
+                        <div class="row">
+
+                            <div class="last-form">
+                                <div class="col-md-12">
+                                    <div>
+                                        @Html.HiddenFor(model => model.ExportModel.Pbck7No)
+                                        @Html.HiddenFor(model => model.ExportModel.NppbkcId)
+                                        @Html.HiddenFor(model => model.ExportModel.Plant)
+                                        @Html.HiddenFor(model => model.ExportModel.FromYear)
+                                        @Html.HiddenFor(model => model.ExportModel.ToYear)
+
+                                        <div class="row toggle">
+                                            <div class="toggle-title">
+                                                Toggle column <i class="fa fa-chevron-down"></i>
+                                            </div>
+
+                                            <div class="toggle-component">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPbck3No, new {@id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "0"})Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPbck7, new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })PBCK-7
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectNppbkc, new {@id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2"})NPPBKC
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Plant
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectDate, new { @class = "checkbox checkexport", @datacolumn = "4" })Date
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectStatus, new { @class = "checkbox checkexport", @datacolumn = "5" })Status
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3No, new { @class = "checkbox checkexport", @datacolumn = "6" })BACK-3 No
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3Date, new { @class = "checkbox checkexport", @datacolumn = "7" })BACK-3 Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2No, new { @class = "checkbox checkexport", @datacolumn = "8" })CK-2 No
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Date, new { @class = "checkbox checkexport", @datacolumn = "9" })CK-2 Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Value, new { @class = "checkbox checkexport", @datacolumn = "10" })CK-2 Value
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+                </div>
+            <div class="table-container">
+                <div id="contenttable" class="dataTables_wrapper no-footer">
+                    @Html.Partial("_Pbck3SummaryIndex", Model.ReportItems)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            
+            @section scripts {
+                <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+                <script type="text/javascript">
+                    // DataTable
+                    var table = null;
+
+                    $(document).ready(function () {
+                        setupDataTables();
+                        $('#selecctall').prop('checked', false);
+                        $('.checkexport').each(function () {
+                            this.checked = false;
+                        });
+                        $('#checkboxDefault1').prop('checked', true);
+                        $('#checkboxDefault2').prop('checked', true);
+                        $('#checkboxDefault3').prop('checked', true);
+                        $('#checkboxDefault4').prop('checked', true);
+                    });
+
+                   
+                    function setupDataTables() {
+                        $('#btn-reset-filter').click(function () {
+                            $(".selectreset").val($(".selectreset option:first").val());
+                        });
+                        if ($.fn.dataTable.isDataTable('#pbck3-summary')) {
+                            table = $('#pbck3-summary').DataTable();
+                            table.destroy();
+                        }
+
+                        table = $('#pbck3-summary').DataTable(
+                            {
+                                "sDom": "Rlfrtip",
+                                "language": {
+                                    "zeroRecords": "No records found",
+                                    "infoFiltered": "(filtered from _MAX_ total records)"
+                                }
+                            });
+
+                        // Setup - add a text input to each footer cell
+                        //$('#pbck3-summary .filters th').each(function () {
+                        //    var idx = $(this).index();
+                        //    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+
+                        //});
+
+                        //// Apply the search
+                        //table.columns().eq(0).each(function (colIdx) {
+                        //    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                        //        table
+                        //            .column(colIdx)
+                        //            .search(this.value)
+                        //            .draw();
+                        //    });
+                        //});
+                        
+                        $('#btnFILTER').on('click', function (e) {
+                            $('#selecctall').prop('checked', false);
+                            $('.checkexport').each(function () {
+                                this.checked = false;
+                            });
+                            $('#checkboxDefault1').prop('checked', true);
+                            $('#checkboxDefault2').prop('checked', true);
+                            $('#checkboxDefault3').prop('checked', true);
+                            $('#checkboxDefault4').prop('checked', true);
+
+                        });
+
+
+                        $('.checkexport').on('click', function (e) {
+                            //e.preventDefault();
+                            var checked = document.querySelectorAll('input:checked');
+
+                            if (checked.length === 1) {
+                                for (var i = 0; i < 9; i++) {
+                                    table.column(i).visible(false);
+                                }
+                                //table.column(0).visible(true);
+
+                                // Get the column API object
+                                var column = table.column($(this).attr('datacolumn'));
+
+                                // Toggle the visibility
+                                column.visible(!column.visible());
+                                $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
+                            } else {
+                                // Get the column API object
+                                var column = table.column($(this).attr('datacolumn'));
+
+                                // Toggle the visibility
+                                column.visible(!column.visible());
+                            }
+
+
+                        });
+
+                        for (var i = 3; i < 9; i++) {
+                            table.column(i).visible(false);
+                        }
+
+                        $('#selecctall').change(function () {
+                            if ($(this).is(':checked')) {
+                                $('.checkexport').prop('checked', this.checked);
+                                // Show a column
+
+                                $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
+                                var table = $('#pbck3-summary').DataTable();
+                                for (var i = 0; i < 9; i++) {
+                                    table.column(i).visible(true);
+                                }
+                            } else {
+                                $('.checkexport').each(function () {
+                                    this.checked = false;
+                                });
+                                $('#pbck3-summary').parents('div.dataTables_wrapper').first().hide();
+                            }
+                        });
+
+
+                    }
+
+                    function ReloadDataTables() {
+                        $('.toggle-row').click(function () {
+
+                            var filter = $(".filters");
+                            filter.slideToggle(100).promise().done(function () {
+
+                            });
+                        });
+                        setupDataTables();
+                    }
+                    
+
+                    $("#btnExport").click(function () {
+                        $('#ExportModel_Pbck3No').val($('#SelectedNumber').find("option:selected").val());
+                        $('#ExportModel_NppbkcId').val($('#SelectedNppbkc').find("option:selected").val());
+                        $('#ExportModel_Plant').val($('#SelectedPlant').find("option:selected").val());
+                        $('#ExportModel_FromYear').val($('#FromYear').find("option:selected").val());
+                        $('#ExportModel_ToYear').val($('#ToYear').find("option:selected").val());
+                        $('#ExportSummaryReportsForms').submit();
+                    });
+
+                </script>
+            }

@@ -111,7 +111,7 @@ function ChangeBasedOn(value) {
     $('#Details_NppbkcId').prop('disabled', IsDisabledNppbkc);
 }
 
-function ajaxSelectPlant(url, formData) {
+function ajaxSelectPlant(url, formData, plant) {
     if (formData.companyId) {
         $.ajax({
             type: 'POST',
@@ -123,14 +123,15 @@ function ajaxSelectPlant(url, formData) {
                     for (var i = 0; i < listPlant.length; i++) {
                         $('#Details_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
                     }
-                }
 
+                    $('#Details_PlantId').val(plant);
+                }
             }
         });
     }
 }
 
-function ajaxGetNppbkcByCompany(urlFunction, company) {
+function ajaxGetNppbkcByCompany(urlFunction, company, nppbkc) {
     $.ajax({
         type: 'POST',
         url: urlFunction,
@@ -139,6 +140,8 @@ function ajaxGetNppbkcByCompany(urlFunction, company) {
             for (var i = 0; i < data.length; i++) {
                 $('#Details_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
             }
+
+            $('#Details_NppbkcId').val(nppbkc);
         }
     });
 }
@@ -177,13 +180,17 @@ function getProductionData(urlFunction) {
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_UnpackedQty" name="Details.Ck4cItemData[' + i + '].UnpackedQty" value=' + data[i].QtyUnpacked + '></input>' + data[i].TobaccoProductType + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_HjeIdr" name="Details.Ck4cItemData[' + i + '].HjeIdr" value=' + data[i].Hje + '></input>' + data[i].Hje + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Tarif" name="Details.Ck4cItemData[' + i + '].Tarif" value=' + data[i].Tarif + '></input>' + data[i].Tarif + '</td>' +
+                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ContentPerPack" name="Details.Ck4cItemData[' + i + '].ContentPerPack" value=' + data[i].ContentPerPack + '></input>' + data[i].ContentPerPack + '</td>' +
+                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + data[i].QtyPacked + '</td>' +
+                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedInPack" name="Details.Ck4cItemData[' + i + '].PackedInPack" value=' + data[i].PackedInPack + '></input>' + data[i].PackedInPack + '</td>' +
+                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_UnpackedQty" name="Details.Ck4cItemData[' + i + '].UnpackedQty" value=' + data[i].QtyUnpacked + '></input>' + data[i].QtyUnpacked + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQty" name="Details.Ck4cItemData[' + i + '].ProdQty" value=' + data[i].QtyProduced + '></input>' + data[i].QtyProduced + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQtyUom" name="Details.Ck4cItemData[' + i + '].ProdQtyUom" value=' + data[i].Uom + '></input><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdCode" name="Details.Ck4cItemData[' + i + '].ProdCode" value=' + data[i].ProdCode + '></input>' + data[i].Uom + '</td></tr>';
                         $('#tb-body-ck4c').append(tableProdItem);
                     }
                 } else {
                     $('#tb-body-ck4c').html("");
-                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="9">no data<td></tr>');
+                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="13">no data<td></tr>');
                 }
             }
         });

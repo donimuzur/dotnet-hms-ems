@@ -273,6 +273,7 @@
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="EMSWebsiteMapperCK5.cs" />
     <Compile Include="EMSWebsiteMapperLack1.cs" />
+    <Compile Include="EMSWebsiteMapperLack2.cs" />
     <Compile Include="EMSWebsiteMapperPBCK1.cs" />
     <Compile Include="EMSWebsiteMapperPBCK4.cs" />
     <Compile Include="EMSWebsiteMapperPBCK7AndPBCK3.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CSummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
     <Compile Include="Models\CK5\CK5FileUploadViewModel.cs" />
     <Compile Include="Models\CK5\CK5FormViewModel.cs" />
@@ -324,6 +326,7 @@
     <Compile Include="Models\LACK1\Lack1BaseItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
     <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1GenerateInputModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexCompletedDocumentViewModel.cs" />
@@ -334,7 +337,9 @@
     <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
     <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
+    <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DetailReportsViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexViewModel.cs" />
@@ -344,6 +349,7 @@
     <Compile Include="Models\LACK2\LACK2PlantData.cs" />
     <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
     <Compile Include="Models\LACK2\Lack2SummaryReportModel.cs" />
+    <Compile Include="Models\LACK2\Lack2SummaryReportsViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
@@ -369,6 +375,8 @@
     <Compile Include="Models\PBCK4\Pbck4SummaryReportsViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7SummaryReportModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3CreateViewModel.cs" />
     <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
@@ -402,6 +410,13 @@
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\CK4C\DaftarRincian.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DaftarRincian.rpt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\CK4C\Preview.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1058,8 +1073,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_Pbck3TableIndex.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Create.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_HomeCreate.cshtml" />
-    <Content Include="Views\PBCK7AndPBCK3\_PrintOut.cshtml" />
-    <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTable.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck7.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
     <Content Include="Views\CK5\CK5InputMaterial.cshtml" />
@@ -1141,10 +1155,26 @@
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack1.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4ListSummaryReport.cshtml" />
     <Content Include="Views\Waste\UploadManualWaste.cshtml" />
+    <Content Include="Views\LACK1\_Lack1SummaryReport.cshtml" />
+    <Content Include="Views\LACK1\SummaryReport.cshtml" />
     <Content Include="Views\Waste\_Upload.cshtml" />
     <Content Include="Views\Waste\_UploadList.cshtml" />
+    <Content Include="Views\LACK1\DetailReport.cshtml" />
+    <Content Include="Views\LACK1\_Lack1DetailReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack3.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_FileUploadCk2.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck3.cshtml" />
+    <Content Include="Views\CK4C\Ck4CSummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTablePbck3.cshtml" />
+    <Content Include="Views\CK4C\_Ck4CListSummaryReport.cshtml" />
+    <Content Include="Views\LACK2\Lack2SummaryReport.cshtml" />
+    <Content Include="Views\LACK2\_Lack2ListSummaryReport.cshtml" />
+    <Content Include="Views\LACK2\Lack2DetailReport.cshtml" />
+    <Content Include="Views\LACK2\_Lack2ListDetailReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Pbck7SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7SummaryIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Pbck3SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3SummaryIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1259,6 +1289,11 @@
     <Content Include="Reports\CK4C\Preview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Preview.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK4C\DaftarRincian.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DaftarRincian.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
