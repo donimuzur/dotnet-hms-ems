@@ -454,9 +454,9 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "LACK-1 From Month";
                             break;
                         case "LACK1_FROM_YEAR":
-                            changes.OLD_VALUE = origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Value.ToString("N0") : "NULL";
-                            changes.NEW_VALUE = data.Lack1FormYear.Value.ToString("N0");
-                            changes.FIELD_NAME = "LACK-1 From Month Year";
+                            changes.OLD_VALUE = origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.Lack1FormYear.Value.ToString();
+                            changes.FIELD_NAME = "LACK-1 From Year";
                             break;
                         case "LACK1_TO_MONTH":
                             changes.OLD_VALUE = origin.Lack1ToMonthId.HasValue ? origin.Lack1ToMonthName : "NULL";
@@ -464,9 +464,9 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "LACK-1 To Month";
                             break;
                         case "LACK1_TO_YEAR":
-                            changes.OLD_VALUE = origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Value.ToString("N0") : "NULL";
-                            changes.NEW_VALUE = data.Lack1ToYear.Value.ToString("N0");
-                            changes.FIELD_NAME = "LACK-1 From Year";
+                            changes.OLD_VALUE = origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.Lack1ToYear.Value.ToString();
+                            changes.FIELD_NAME = "LACK-1 To Year";
                             break;
                         case "STATUS":
                             changes.OLD_VALUE = EnumHelper.GetDescription(origin.Status);
