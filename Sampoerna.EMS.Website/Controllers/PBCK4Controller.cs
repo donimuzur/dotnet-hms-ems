@@ -1521,6 +1521,16 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetListCk1Date(string plantId, string faCode)
+        {
+
+            var result = _pbck4Bll.GetListCk1ByPlantAndFaCode(plantId, faCode);
+
+            return Json(result);
+        }
+
+
+        [HttpPost]
         public JsonResult GetBrandItems(string plantId, string faCode)
         {
 
@@ -1534,9 +1544,14 @@ namespace Sampoerna.EMS.Website.Controllers
             brandOutput.BlockedStockUsed = blockedStockOutput.BlockedStockUsed;
             brandOutput.BlockedStockRemaining = blockedStockOutput.BlockedStockRemaining;
 
+            //list ck1
+            brandOutput.ListCk1Date = _pbck4Bll.GetListCk1ByPlantAndFaCode(plantId, faCode);
+
             return Json(brandOutput);
         }
 
+     
+      
         [HttpPost]
         public JsonResult GetBrandItemsForEdit(int pbck4Id, string plantId, string faCode, string plantIdOri, string faCodeOri)
         {
@@ -1556,6 +1571,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 brandOutput.BlockedStockRemaining =
                     (ConvertHelper.ConvertToDecimalOrZero(brandOutput.BlockedStockRemaining) + reqQty).ToString();
             }
+
+            //list ck1
+            brandOutput.ListCk1Date = _pbck4Bll.GetListCk1ByPlantAndFaCode(plantId, faCode);
 
             //brandOutput.BlockedStock = _pbck4Bll.GetBlockedStockByPlantAndFaCode(plantId, faCode).ToString();
 

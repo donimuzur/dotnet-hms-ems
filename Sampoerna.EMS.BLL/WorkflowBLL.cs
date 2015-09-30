@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowEditDocument(WorkflowAllowEditAndSubmitInput input)
         {
-            if (input.DocumentStatus != Enums.DocumentStatus.Draft)
+            if (input.DocumentStatus != Enums.DocumentStatus.Draft && input.DocumentStatus != Enums.DocumentStatus.Rejected)
                 return false;
 
             if (input.CreatedUser != input.CurrentUser)
@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.BLL
 
             return true;
         }
+
 
         public bool AllowEditDocumentPbck1(WorkflowAllowEditAndSubmitInput input)
         {

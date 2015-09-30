@@ -53,6 +53,8 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string BlockedStock { get; set; }
         public string BlockedStockUsed { get; set; }
         public string BlockedStockRemaining { get; set; }
+
+        public List<GetListCk1ByNppbkcOutput> ListCk1Date { get; set; }
     }
 
     public class BlockedStockQuotaOutput

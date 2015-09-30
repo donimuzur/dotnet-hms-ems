@@ -41,5 +41,6 @@ namespace Sampoerna.EMS.Contract
 
        decimal GetCurrentReqQtyByPbck4IdAndFaCode(int pbck4Id, string faCode);
 
+       List<GetListCk1ByNppbkcOutput> GetListCk1ByPlantAndFaCode(string plant, string faCode);
    }
 }
