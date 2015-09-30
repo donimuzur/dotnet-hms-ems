@@ -82,15 +82,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.IsOpenDocList = true;
-            var dbData = _lack2Bll.GetOpenDocument();
-            if (CurrentUser.UserRole == Enums.UserRole.POA)
-            {
-                dbData = dbData.Where(x => x.ApprovedBy == CurrentUser.USER_ID).ToList();
-            }
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
-                dbData = dbData.Where(x => x.ApprovedByManager == CurrentUser.USER_ID).ToList();
-            }
+            var dbData = _lack2Bll.GetOpenDocument(CurrentUser);
+            
             model.Details = dbData;
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
@@ -105,14 +98,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             var dbData = _lack2Bll.GetCompletedDocument();
-            if (CurrentUser.UserRole == Enums.UserRole.POA)
-            {
-                dbData = dbData.Where(x => x.ApprovedBy == CurrentUser.USER_ID).ToList();
-            }
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
-                dbData = dbData.Where(x => x.ApprovedByManager == CurrentUser.USER_ID).ToList();
-            }
+            
             model.Details = dbData;
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
