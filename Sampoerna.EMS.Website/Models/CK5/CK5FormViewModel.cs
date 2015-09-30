@@ -247,5 +247,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public Enums.Ck5ManualType Ck5ManualType { get; set; }
 
         public string Ck5ManualTypeString { get; set; }
+
+        public long Ck5RefId { get; set; }
+
+        public string Ck5RefNumber { get; set; }
+        public SelectList Ck5RefList { get; set; }
+        public bool IsCk5ImporterToPlant { get; set; }
     }
 }

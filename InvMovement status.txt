@@ -1,0 +1,6 @@
+261 - usage
+262 - reversal dari penggunaan
+101 - penerimaan barang produksi
+102 - reversal dari penerimaan barang produksi
+Z01 - penggunaan untuk project (mengambil dari inventory tapi tidak ada hasil produksinya)
+Z02 - reversal dari z01
