@@ -507,7 +507,14 @@ namespace Sampoerna.EMS.BLL
             }
             if (pbck3pbkc7.Pbck7Status == Core.Enums.DocumentStatus.WaitingForApprovalManager)
             {
-                return pbck3pbkc7.ApprovedBy;
+                if (pbck3pbkc7.ApprovedBy != null)
+                {
+                    return pbck3pbkc7.ApprovedBy;
+                }
+                else
+                {
+                    return pbck3pbkc7.CreatedBy;
+                }
             }
             if (pbck3pbkc7.Pbck7Status == Core.Enums.DocumentStatus.WaitingGovApproval)
             {
@@ -543,7 +550,14 @@ namespace Sampoerna.EMS.BLL
             }
             if (pbck3.Pbck3Status == Core.Enums.DocumentStatus.WaitingForApprovalManager)
             {
-                return pbck3.ApprovedBy;
+                if (pbck3.ApprovedBy != null)
+                {
+                    return pbck3.ApprovedBy;
+                }
+                else
+                {
+                    return pbck3.CreatedBy;
+                };
             }
             if (pbck3.Pbck3Status == Core.Enums.DocumentStatus.WaitingGovApproval)
             {
