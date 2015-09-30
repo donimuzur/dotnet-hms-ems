@@ -485,8 +485,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Pbck7Pbck3CreateViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.PoaList = GetPoaList(model.NppbkcId);
 
-            return View("Create", InitialModel(model));
+            return View("Create",model);
         }
 
         #endregion
