@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -27,7 +28,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<BACK1> _repositoryBack1;
         private IGenericRepository<BACK3> _repositoryBack3;
         private IGenericRepository<CK2> _repositoryCk2;
-       
+        private IZaidmExNPPBKCBLL _nppbkcbll;
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
         private IPOABLL _poabll;
@@ -47,6 +48,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryBack1 = _uow.GetGenericRepository<BACK1>();
             _repositoryBack3 = _uow.GetGenericRepository<BACK3>();
             _repositoryCk2 = _uow.GetGenericRepository<CK2>();
+            _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, logger);
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -155,9 +157,34 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input)
+        public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input, Login user)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
+
+            if (user.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(user.USER_ID).Select(d => d.NPPBKC_ID).ToList();
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == user.USER_ID || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC))));
+
+
+            }
+            else if (user.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poabll.GetPOAIdByManagerId(user.USER_ID);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK7_NUMBER));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == user.USER_ID);
+            }
+
+            //queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+
+
+
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
                 queryFilter = queryFilter.And(c => c.NPPBKC == input.NppbkcId);
@@ -197,9 +224,29 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input)
+        public List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input, Login user)
         {
             Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
+
+            if (user.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(user.USER_ID).Select(d => d.NPPBKC_ID).ToList();
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == user.USER_ID || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.PBCK7.NPPBKC))));
+
+
+            }
+            else if (user.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poabll.GetPOAIdByManagerId(user.USER_ID);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK3_NUMBER));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == user.USER_ID);
+            }
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
                 queryFilter = queryFilter.And(c => c.PBCK7.NPPBKC == input.NppbkcId);
