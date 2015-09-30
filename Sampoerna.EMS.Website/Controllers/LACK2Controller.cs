@@ -349,12 +349,25 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 item.Status = Enums.DocumentStatus.GovRejected;
             }
+            if (item.Status == Enums.DocumentStatus.Rejected)
+            {
+                item.Status = Enums.DocumentStatus.Draft;
+            }
             if (model.IsSaveSubmit)
             {
                 if (item.Status == Enums.DocumentStatus.Draft)
                 {
-                    item.Status = Enums.DocumentStatus.WaitingForApproval;
+                    if (CurrentUser.UserRole == Enums.UserRole.POA)
+                    {
+                        item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                    }
+                    else if (CurrentUser.UserRole == Enums.UserRole.User)
+                    {
+                        item.Status = Enums.DocumentStatus.WaitingForApproval;
+                    }
+
                 }
+                
 
             }
 
@@ -466,9 +479,18 @@ namespace Sampoerna.EMS.Website.Controllers
             if (uri != Request.UrlReferrer)
                 return HttpNotFound();
             var item = _lack2Bll.GetByIdAndItem(id);
+
             if (item.Status == Enums.DocumentStatus.Draft)
             {
-                item.Status = Enums.DocumentStatus.WaitingForApproval;
+                if (CurrentUser.UserRole == Enums.UserRole.POA)
+                {
+                    item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                }
+                else if(CurrentUser.UserRole == Enums.UserRole.User)
+                {
+                    item.Status = Enums.DocumentStatus.WaitingForApproval;
+                }
+                
             }
             else if (item.Status == Enums.DocumentStatus.Rejected)
             {
