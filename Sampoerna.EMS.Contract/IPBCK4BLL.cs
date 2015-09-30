@@ -36,5 +36,10 @@ namespace Sampoerna.EMS.Contract
        string GetCk1DateByCk1Id(long ck1Id);
 
        decimal GetBlockedStockByPlantAndFaCode(string plant, string faCode);
+
+       BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode);
+
+       decimal GetCurrentReqQtyByPbck4IdAndFaCode(int pbck4Id, string faCode);
+
    }
 }

@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Pbck7Type = Enums.Pbck7Type.Pbck7List,
 
                 Detail =
-                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input()))
+                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser))
             });
 
             return View("Index", data);
@@ -388,7 +388,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetPbck7ByParam(input);
+            var dbData = _pbck7AndPbck7And3Bll.GetPbck7ByParam(input, CurrentUser);
 
             var result = Mapper.Map<List<DataListIndexPbck7>>(dbData);
 
@@ -406,7 +406,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult ListPbck3Index()
         {
             var detail =
-                Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input()));
+                Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input(), CurrentUser));
           
             var data = InitPbck3ViewModel(new Pbck3IndexViewModel
             {
@@ -441,7 +441,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetPbck3ByParam(input);
+            var dbData = _pbck7AndPbck7And3Bll.GetPbck3ByParam(input, CurrentUser);
             var result = Mapper.Map<List<DataListIndexPbck3>>(dbData);
 
             var viewModel = new Pbck3IndexViewModel();
@@ -666,6 +666,26 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        private void SubmitPbck3(Pbck7Pbck3CreateViewModel model)
+        {
+            if (model.Pbck3Dto.Pbck3Status != Enums.DocumentStatus.Completed)
+            {
+                if (model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Draft)
+                {
+                    if (CurrentUser.UserRole == Enums.UserRole.POA)
+                    {
+                        model.Pbck3Dto.Pbck3Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                    }
+                    else if (CurrentUser.UserRole == Enums.UserRole.User)
+                    {
+                        model.Pbck3Dto.Pbck3Status = Enums.DocumentStatus.WaitingForApproval;
+                    }
+
+                }
+
+            }
+        }
+
         public void SavePbck3(Pbck7Pbck3CreateViewModel model)
         {
             var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
@@ -679,6 +699,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     pbck3 = existingData.Pbck3Dto;
                     pbck3.Pbck3Date = model.Pbck3Dto.Pbck3Date;
+
+                    //if submit
+                    if (model.IsSaveSubmitPbck3)
+                    {
+                        
+                        SubmitPbck3(model);
+                    }
+                    else
+                    {
+                        //if edit then save
+                        if (model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Rejected)
+                        {
+                            model.Pbck3Dto.Pbck3Status = Enums.DocumentStatus.Draft;
+                        }
+                    }
+
                     if (model.Pbck3Dto.Pbck3GovStatus != null)
                     {
                         if (model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
@@ -686,18 +722,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             pbck3.Pbck3Status = Enums.DocumentStatus.GovApproved;
                         }
                     }
-                    else if (model.IsSaveSubmitPbck3)
-                    {
-                        if (model.Pbck3Dto.Pbck3Status != Enums.DocumentStatus.Completed)
-                        {
-                            if (model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.Draft)
-                            {
-                                pbck3.Pbck3Status = Enums.DocumentStatus.WaitingForApproval;
-
-                            }
-                        }
-                       
-                    }
+                    
                    
                    
 
@@ -705,7 +730,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     
-
+                        //if new
                         pbck3.Pbck3Status = Enums.DocumentStatus.Draft;
 
                         var inputDoc = new GenerateDocNumberInput();
@@ -833,15 +858,25 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 item.Pbck7Status = Enums.DocumentStatus.GovRejected;
             }
+            if (item.Pbck7Status == Enums.DocumentStatus.Rejected)
+            {
+                item.Pbck7Status = Enums.DocumentStatus.Draft;
+            }
             if (model.IsSaveSubmit)
             {
-                if (item.Pbck7Status != Enums.DocumentStatus.Completed)
+                if (item.Pbck7Status == Enums.DocumentStatus.Draft)
                 {
-                    if (item.Pbck7Status == Enums.DocumentStatus.Draft)
+                    if (CurrentUser.UserRole == Enums.UserRole.POA)
+                    {
+                        item.Pbck7Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                    }
+                    else if (CurrentUser.UserRole == Enums.UserRole.User)
                     {
                         item.Pbck7Status = Enums.DocumentStatus.WaitingForApproval;
                     }
+
                 }
+               
 
             }
             item.ModifiedBy = CurrentUser.USER_ID;

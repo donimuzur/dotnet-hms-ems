@@ -544,10 +544,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (errors.Count > 0)
                     {
-                        //get error details
+                        if(model.Detail.Pbck1Type == Enums.PBCK1Type.Additional && model.Detail.Pbck1Reference == null){
+                            AddMessageInfo("Cannot save PBCK-1. There is no data for references number of PBCK-1", Enums.MessageInfoType.Error);
+                        }else{
+                            AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
+                        }
+                    }
+                    else {
+                        AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
                     }
 
-                    AddMessageInfo("Model error", Enums.MessageInfoType.Error);
+                    
                     model = ModelInitial(model);
                     model = SetHistory(model);
                     return View(model);
@@ -767,7 +774,24 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
+                    var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+
+                    if (errors.Count > 0)
+                    {
+                        if (model.Detail.Pbck1Type == Enums.PBCK1Type.Additional && model.Detail.Pbck1Reference == null)
+                        {
+                            AddMessageInfo("Cannot save PBCK-1. There is no data for references number of PBCK-1", Enums.MessageInfoType.Error);
+                        }
+                        else
+                        {
+                            AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
+                        }
+                    }
+                    else
+                    {
+                        AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
+                    }
+
                     return CreateInitial(model);
                 }
 
@@ -2143,19 +2167,49 @@ namespace Sampoerna.EMS.Website.Controllers
                         uomBkcId = "Kg";
                     }
 
-                    summaryUomBkc = string.Join(Environment.NewLine,
-                    summary.Select(d => uomBkcId).ToList());
+                    
                 }
 
-                var summaryJenis = string.Join(Environment.NewLine, summary.Select(d => d.ProdAlias).ToList());
+                var summaryJenis = summary.Select(c => c.ProdAlias).Distinct().ToList();
+                //var summaryJenisNewLine = string.Join(Environment.NewLine, summary.Select(d => d.ProdAlias).Distinct().ToList());
                 var summaryAmount = string.Join(Environment.NewLine,
                     summary.Select(d => d.TotalAmount.ToString("N2")).ToList());
-                var summaryUomAmount = string.Join(Environment.NewLine, summary.Select(d => uomAmount).ToList());
+                
                 var summaryBkc = string.Join(Environment.NewLine,
                     summary.Select(d => d.TotalBkc.ToString("N2")).ToList());
 
-                var totalAmount = 0m;
-                var totalSummaryBkc = 0m;
+                // Set Total Jumlah Produksi dan Kebutuhan Bkc
+                var SummaryJenisAmount = new Dictionary<string, decimal>();
+                var SummaryBkcRequired = new Dictionary<string, decimal>();
+
+                foreach (var prodAlias in summaryJenis) {
+                    SummaryJenisAmount.Add(prodAlias, prodPlan.Where(c => c.ProdAlias == prodAlias && c.Amount != null).Select(c => c.Amount.Value).Sum());
+                    SummaryBkcRequired.Add(prodAlias, prodPlan.Where(c => c.ProdAlias == prodAlias && c.BkcRequired != null).Select(c => c.BkcRequired.Value).Sum());
+                }
+
+                //set total jenis bkc
+                var summaryJenisNewLine = String.Join(Environment.NewLine, SummaryJenisAmount.Select(c => c.Key));
+
+                //set total jumlah produksi
+                List<string> amountSummary = new List<string>();
+                foreach (var item in SummaryJenisAmount.Select(c => c.Value)) {
+                    amountSummary.Add(String.Format("{0:n}", item));
+                }
+                var totalAmountNewLine = String.Join(Environment.NewLine, amountSummary);
+
+                //set kebutuhan bkc
+                List<string> bckSummary = new List<string>();
+                foreach (var item in SummaryBkcRequired.Select(c => c.Value))
+                {
+                    bckSummary.Add(String.Format("{0:n}", conversiBkc * item));
+                }
+                var totalBkcSummaryNewLine = String.Join(Environment.NewLine, bckSummary);
+
+                //set satuan total jumlah produksi
+                var summaryUomAmount = string.Join(Environment.NewLine, summary.Select(d => uomAmount).Take(SummaryJenisAmount.Keys.Count()));
+
+                //set satuan kebutuhan bkc
+                summaryUomBkc = string.Join(Environment.NewLine, summary.Select(d => uomBkcId).Take(SummaryJenisAmount.Keys.Count()));
 
                 foreach (var item in prodPlan)
                 {
@@ -2173,8 +2227,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (item.BkcRequired.HasValue)
                     {
                         detailRow.BkcRequired = conversiBkc * item.BkcRequired.Value;
-                        totalSummaryBkc += conversiBkc * item.BkcRequired.Value;
                     }
+
+                    detailRow.SummaryAmount = totalAmountNewLine;
                     detailRow.BkcRequiredUomId = uomBkcId;
                     detailRow.BkcRequiredUomName = uomBkc;
                     // ReSharper disable once SpecifyACultureInStringConversionExplicitly
@@ -2186,12 +2241,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.VisibilityUomAmount = visibilityUomAmount;
                     detailRow.UomAmount = uomAmount;
                     detailRow.VisibilityUomBkc = visibilityUomBkc;
-                    totalAmount += item.Amount == null ? 0m : item.Amount.Value;
-                    
-                    detailRow.SummaryAmount = String.Format("{0:n}", totalAmount);
-                    
-                    detailRow.SummaryBkcRequired = String.Format("{0:n}", totalSummaryBkc);
-                    detailRow.SummaryJenis = summaryJenis;
+
+                    detailRow.SummaryBkcRequired = totalBkcSummaryNewLine;
+                    detailRow.SummaryJenis = summaryJenisNewLine;
                     detailRow.SummaryUomAmount = summaryUomAmount;
                     detailRow.SummaryUomBkc = summaryUomBkc;
                     ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);

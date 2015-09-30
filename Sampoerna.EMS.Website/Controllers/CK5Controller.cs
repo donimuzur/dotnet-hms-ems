@@ -287,6 +287,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.CountryCodeList = GlobalFunctions.GetCountryList();
 
+            model.Ck5RefList = GlobalFunctions.GetCk5RefPortToImporter(_ck5Bll);
+
             return model;
         }
 
@@ -328,17 +330,18 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
-        public ActionResult CreateImporterToPlant()
-        {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
-                //can't create CK5 Document
-                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
-                return RedirectToAction("Index");
-            }
-            var model = InitCreateCK5(Enums.CK5Type.ImporterToPlant);
-            return View("Create", model);
-        }
+        //public ActionResult CreateImporterToPlant()
+        //{
+        //    if (CurrentUser.UserRole == Enums.UserRole.Manager)
+        //    {
+        //        //can't create CK5 Document
+        //        AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+        //        return RedirectToAction("Index");
+        //    }
+        //    var model = InitCreateCK5(Enums.CK5Type.ImporterToPlant);
+        //    model.IsCk5ImporterToPlant = true;
+        //    return View("Create", model);
+        //}
 
         public ActionResult CreateExport()
         {
@@ -2631,6 +2634,54 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index", "CK5");
             }
 
+        }
+
+        public ActionResult CreateImporterToPlant(long idPortToImporter = 0)
+        {
+            var model = InitCreateCK5(Enums.CK5Type.ImporterToPlant);
+            if (idPortToImporter > 0)
+            {
+                var ck5Details = _ck5Bll.GetDetailsCK5(idPortToImporter);
+                var portToImporterModel = new CK5FormViewModel();
+                Mapper.Map(ck5Details.Ck5Dto, portToImporterModel);
+
+                //var dbdata = _ck5Bll.GetById(idPortToImporter);
+                
+                if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                {
+                    //can't create CK5 Document
+                    AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
+
+                var plant = _plantBll.GetId(portToImporterModel.DestPlantId);
+
+                model.Ck5RefId = idPortToImporter;
+                model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
+                
+                model.SourceAddress = portToImporterModel.DestAddress;
+                model.SourceCompanyCode = portToImporterModel.DestCompanyCode;
+                model.SourceCompanyName = portToImporterModel.DestCompanyName;
+                
+                model.SourceKppbcName = portToImporterModel.DestKppbcName;
+                model.SourceNppbkcId = plant.NPPBKC_IMPORT_ID;
+                model.SourceNpwp = portToImporterModel.DestNpwp;
+                model.SourcePlantId = portToImporterModel.DestPlantId;
+                model.SourcePlantName = portToImporterModel.DestPlantName;
+
+                model.KppBcCity = plant.KPPBC_CITY;
+                model.CeOfficeCode = plant.KPPBC_NO;
+
+                model.GoodType = portToImporterModel.GoodType;
+                model.GoodTypeName = portToImporterModel.GoodTypeName;
+                model.GrandTotalEx = portToImporterModel.GrandTotalEx;
+            }
+            model.IsCk5ImporterToPlant = true;
+
+            return View("Create", model);
+
+
+            
         }
 
         #endregion
