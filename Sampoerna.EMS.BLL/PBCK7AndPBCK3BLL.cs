@@ -147,7 +147,11 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
             var mapResult = Mapper.Map<List<Pbck3Dto>>(dbData.ToList());
-            
+            foreach (var pbck3Dto in mapResult)
+            {
+                pbck3Dto.Back3Dto = GetBack3ByPbck3Id(pbck3Dto.Pbck3Id);
+                pbck3Dto.Ck2Dto = GetCk2ByPbck3Id(pbck3Dto.Pbck3Id);
+            }
             return mapResult;
         }
 
