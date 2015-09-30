@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Pbck7Type = Enums.Pbck7Type.Pbck7List,
 
                 Detail =
-                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input()))
+                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser))
             });
 
             return View("Index", data);
@@ -388,7 +388,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetPbck7ByParam(input);
+            var dbData = _pbck7AndPbck7And3Bll.GetPbck7ByParam(input, CurrentUser);
 
             var result = Mapper.Map<List<DataListIndexPbck7>>(dbData);
 
@@ -406,7 +406,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult ListPbck3Index()
         {
             var detail =
-                Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input()));
+                Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input(), CurrentUser));
           
             var data = InitPbck3ViewModel(new Pbck3IndexViewModel
             {
@@ -441,7 +441,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetPbck3ByParam(input);
+            var dbData = _pbck7AndPbck7And3Bll.GetPbck3ByParam(input, CurrentUser);
             var result = Mapper.Map<List<DataListIndexPbck3>>(dbData);
 
             var viewModel = new Pbck3IndexViewModel();
@@ -485,8 +485,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Pbck7Pbck3CreateViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.PoaList = GetPoaList(model.NppbkcId);
 
-            return View("Create", InitialModel(model));
+            return View("Create",model);
         }
 
         #endregion
@@ -1426,7 +1429,12 @@ namespace Sampoerna.EMS.Website.Controllers
                            Nppbkc = b.NppbckId,
                            PlantName = b.Plant,
                            Pbck3Date = b.Pbck3Date,
-                           Pbck3Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck3Status)
+                           Pbck3Status = Sampoerna.EMS.Utils.EnumHelper.GetDescription(b.Pbck3Status),
+                           Back3No = b.Back3Dto != null ? b.Back3Dto.Back3Number : string.Empty,
+                           Back3Date = b.Back3Dto != null ? b.Back3Dto.Back3Date : null,
+                           Ck2No =  b.Ck2Dto != null ? b.Ck2Dto.Ck2Number : string.Empty,
+                           Ck2Date = b.Ck2Dto != null ? b.Ck2Dto.Ck2Date : null,
+                           Ck2Value = b.Ck2Dto != null ? b.Ck2Dto.Ck2Value : 0
                           
 
                        }).ToList();
@@ -1482,6 +1490,47 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "Pbck3Status",
                     HeaderText = "Status"
+                });
+            }
+
+            if (model.ExportModel.IsSelectBack3No)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Back3No",
+                    HeaderText = "BACK-3 No"
+                });
+            }
+            if (model.ExportModel.IsSelectBack3Date)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Back3Date",
+                    HeaderText = "BACK-3 Date"
+                });
+            }
+            if (model.ExportModel.IsSelectCk2No)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Ck2No",
+                    HeaderText = "CK-2 No"
+                });
+            }
+            if (model.ExportModel.IsSelectCk2Date)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Ck2Date",
+                    HeaderText = "CK-2 Date"
+                });
+            }
+            if (model.ExportModel.IsSelectCk2Value)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Ck2Value",
+                    HeaderText = "CK-2 Value"
                 });
             }
             if (src.Count == 0)

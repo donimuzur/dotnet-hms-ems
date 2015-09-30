@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -23,6 +24,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string GeneratedXmlPath { get; set; }
 
+        public Enums.DocumentStatus Status { get; set; }
 
     }
 }

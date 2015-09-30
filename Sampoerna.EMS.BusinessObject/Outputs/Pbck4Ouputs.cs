@@ -51,5 +51,17 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Colour { get; set; }
 
         public string BlockedStock { get; set; }
+        public string BlockedStockUsed { get; set; }
+        public string BlockedStockRemaining { get; set; }
+    }
+
+    public class BlockedStockQuotaOutput
+    {
+        public string BlockedStock { get; set; }
+        public string BlockedStockUsed { get; set; }
+        public string BlockedStockRemaining { get; set; }
+
+        public string PlantId { get; set; }
+        public string FaCode { get; set; }
     }
 }
