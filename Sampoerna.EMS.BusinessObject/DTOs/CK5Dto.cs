@@ -101,9 +101,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Sampoerna.EMS.Core.Enums.Ck5ManualType CK5_MANUAL_TYPE { get; set; }
 
         public string RemainQuota;
+       public long CK5_REF_ID { get; set; }
+    
 
-      
-        public string GIDateStr { get; set; }
+
+       public string GIDateStr { get; set; }
         public string PbckUom { get; set; }
 
         public string NoDateWithFormat { get; set; } 

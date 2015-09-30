@@ -63,5 +63,6 @@ namespace Sampoerna.EMS.Contract
        List<CK5> GetByGIDate(int month, int year,string desPlantId, string goodTypeId);
 
        List<int> GetAllYearsByGiDate();
+       List<CK5> GetAllCompletedPortToImporter();
    }
 }

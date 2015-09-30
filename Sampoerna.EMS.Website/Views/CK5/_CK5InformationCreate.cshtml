@@ -1,4 +1,6 @@
-﻿@using Sampoerna.EMS.Website.Helpers
+﻿@using Microsoft.Ajax.Utilities
+@using Sampoerna.EMS.AutoMapperExtensions
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 
@@ -47,7 +49,17 @@
                                         <div class="row">
                                             <label class="col-md-4">Plant<span class="red">*</span></label>
                                             <div class="col-md-8">
-                                                @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
+                                                @if (!Model.IsCk5ImporterToPlant)
+                                                {
+                                                    @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new {@class = "form-control"})
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new {@class = "form-control", style="display : none"})
+                                                    var sourcePlantText = Model.SourcePlantId + " - " + Model.SourcePlantName;
+                                                    @Html.TextBox("plantname", sourcePlantText, new { @class = "form-control", @disabled = "true" })
+                                                }
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -302,7 +314,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                @if (Model.IsCk5ImporterToPlant)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Port to Importer Ref</label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Ck5RefId, Model.Ck5RefList,"Select", new { @class = "form-control" })
 
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Submission Date<span class="red">*</span></label>
