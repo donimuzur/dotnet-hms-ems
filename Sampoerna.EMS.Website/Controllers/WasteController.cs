@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.Waste;
 using Sampoerna.EMS.Website.Utility;
@@ -24,10 +25,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPlantBLL _plantBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
+        private IChangesHistoryBLL _changeHistoryBll;
 
         public WasteController(IPageBLL pageBll, IWasteBLL wasteBll, ICompanyBLL companyBll, IPlantBLL plantBll,
-            IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll)
+            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _wasteBll = wasteBll;
@@ -36,6 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _plantBll = plantBll;
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
+            _changeHistoryBll = changesHistoryBll;
         }
 
 
@@ -339,6 +341,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
 
             model = Mapper.Map<WasteDetail>(dbWaste);
+            model.ChangesHistoryList =
+               Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                   companyCode + "_" + plantWerk + "_" + faCode + "_" + wasteProductionDate.ToString("ddMMMyyyy")));
 
             //reject
             model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
