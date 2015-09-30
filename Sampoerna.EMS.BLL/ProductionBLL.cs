@@ -319,34 +319,42 @@ namespace Sampoerna.EMS.BLL
                         case "COMPANY_CODE":
                             changes.OLD_VALUE = origin.CompanyCode;
                             changes.NEW_VALUE = data.CompanyCode;
+                            changes.FIELD_NAME = "Company";
                             break;
                         case "WERKS":
                             changes.OLD_VALUE = origin.PlantWerks;
                             changes.NEW_VALUE = data.PlantWerks;
+                            changes.FIELD_NAME = "Plant";
                             break;
                         case "FA_CODE":
                             changes.OLD_VALUE = origin.FaCode;
                             changes.NEW_VALUE = data.FaCode;
+                            changes.FIELD_NAME = "Finish Goods";
                             break;
                         case "PRODUCTION_DATE":
                             changes.OLD_VALUE = origin.ProductionDate.ToString();
                             changes.NEW_VALUE = data.ProductionDate.ToString();
+                            changes.FIELD_NAME = "Daily Production Date";
                             break;
                         case "BRAND_DESC":
                             changes.OLD_VALUE = origin.BrandDescription;
                             changes.NEW_VALUE = data.BrandDescription;
+                            changes.FIELD_NAME = "Brand Description";
                             break;
                         case "QTY_PACKED":
                             changes.OLD_VALUE = origin.QtyPacked.ToString();
                             changes.NEW_VALUE = data.QtyPacked.ToString();
+                            changes.FIELD_NAME = "Qty Packed";
                             break;
                         case "QTY_UNPACKED":
                             changes.OLD_VALUE = origin.QtyUnpacked.ToString();
                             changes.NEW_VALUE = data.QtyUnpacked.ToString();
+                            changes.FIELD_NAME = "Qty Unpacked";
                             break;
                         case "UOM":
                             changes.OLD_VALUE = origin.Uom;
                             changes.NEW_VALUE = data.Uom;
+                            changes.FIELD_NAME = "Uom";
                             break;
                         default: break;
                     }
