@@ -258,7 +258,10 @@ namespace Sampoerna.EMS.BLL
                 //no change status for edit 2015-07-24
                 //dbData.STATUS_ID = Enums.DocumentStatus.Revised;
                 dbData.MODIFIED_DATE = DateTime.Now;
-
+                if (dbData.STATUS_ID == Enums.DocumentStatus.Rejected)
+                {
+                    dbData.STATUS_ID = Enums.DocumentStatus.Draft;
+                }
               
 
                 //delete child first
@@ -1027,11 +1030,11 @@ namespace Sampoerna.EMS.BLL
             string newValue = "";
 
             //change back to draft
-            dbData.STATUS_ID = Enums.DocumentStatus.Draft;
+            dbData.STATUS_ID = Enums.DocumentStatus.Rejected;
             newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Draft);
           
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-
+            //input.ActionType = Enums.ActionType.Reject;
             AddWorkflowHistory(input);
 
             //set change history

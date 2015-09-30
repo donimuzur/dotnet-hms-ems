@@ -94,7 +94,10 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
             }
             else if (input.UserRole == Enums.UserRole.Manager) {
-                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval);
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
             }else{
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
             }
@@ -1711,7 +1714,7 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Submit:
                     if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var poaList = _poaBll.GetPoaByNppbkcId(pbck1Data.NppbkcId);
+                        var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
                         foreach (var poaDto in poaList)
                         {
                             rc.To.Add(poaDto.POA_EMAIL);
@@ -1722,8 +1725,16 @@ namespace Sampoerna.EMS.BLL
                     {
                         var managerId = _poaBll.GetManagerIdByPoaId(pbck1Data.CreatedById);
                         var managerDetail = _userBll.GetUserById(managerId);
+                        var poaData = _userBll.GetUserById(pbck1Data.CreatedById);
                         rc.To.Add(managerDetail.EMAIL);
-                        rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
+                        rc.CC.Add(poaData.EMAIL);
+                        
+                        var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                        foreach (var poaDto in poaList)
+                        {
+                            if (poaData.USER_ID != poaDto.POA_ID)
+                                rc.CC.Add(poaDto.POA_EMAIL);
+                        }
                     }
                     rc.IsCCExist = true;
                     break;
@@ -1731,6 +1742,15 @@ namespace Sampoerna.EMS.BLL
                     if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+
+                        var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                        foreach (var poaDto in poaList)
+                        {
+                            rc.CC.Add(poaDto.POA_EMAIL);
+                        }
+
+                        rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
+
                     }
                     else if (pbck1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -1739,19 +1759,40 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is poa user
                             rc.To.Add(poaData.POA_EMAIL);
+                            var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                            foreach (var poaDto in poaList)
+                            {
+                                if(poaData.POA_ID != poaDto.POA_ID)
+                                    rc.CC.Add(poaDto.POA_EMAIL);
+                            }
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(pbck1Data.CreatedById);
                             rc.To.Add(userData.EMAIL);
+                            var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.CC.Add(poaDto.POA_EMAIL);
+                            }
                         }
                     }
+                    rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(pbck1Data.CreatedById);
                     rc.To.Add(userDetail.EMAIL);
+                    
+                    var poa = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+                    foreach (var poaDto in poa)
+                    {
+                        if(poaDto.POA_ID != userDetail.USER_ID)
+                            rc.CC.Add(poaDto.POA_EMAIL);
+                    }
+                    
+                    rc.IsCCExist = true;
                     break;
             }
             rc.Body = bodyMail.ToString();
