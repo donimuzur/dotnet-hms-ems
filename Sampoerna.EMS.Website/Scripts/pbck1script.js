@@ -1,4 +1,17 @@
-﻿function setUpload() {
+﻿jQuery.validator.addMethod("greaterThan",
+function (value, element, params) {
+
+    if (!/Invalid|NaN/.test(new Date(value))) {
+        return new Date(value) > new Date($(params).val());
+    }
+
+    return isNaN(value) && isNaN($(params).val())
+        || (Number(value) > Number($(params).val()));
+}, 'Must be greater than {0}.');
+
+
+
+function setUpload() {
     if ($("#Detail_GoodType").val() == "") {
         $("#btn-prod-conv-upload").prop("disabled", true);
         $("#ProdConvExcelfile").prop("disabled", true);
@@ -504,6 +517,9 @@ function changeToDecimalMaxFour(selector, type) {
 
 function setLackYear() {
     var date = $("#Detail_PeriodFrom").datepicker('getDate');
+    if (date == null)
+        return;
+
     var year = date.getFullYear();
 
     $("#Detail_Lack1FormYear").html("");

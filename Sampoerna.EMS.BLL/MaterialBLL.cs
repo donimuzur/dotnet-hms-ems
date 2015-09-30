@@ -140,7 +140,7 @@ namespace Sampoerna.EMS.BLL
                     PlantDeletion(data, userId);
                 }
                 SetChanges(originDto, data, userId);
-           
+                data.MATERIAL_UOM = origin.MATERIAL_UOM;
             }
             else {
                 data.CREATED_BY = userId;
@@ -148,7 +148,7 @@ namespace Sampoerna.EMS.BLL
 
                 
             }
-            data.MATERIAL_UOM = origin.MATERIAL_UOM;
+
             var dataToSave = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
            
             _repository.InsertOrUpdate(dataToSave);

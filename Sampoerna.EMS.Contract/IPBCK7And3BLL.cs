@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 
@@ -16,9 +17,9 @@ namespace Sampoerna.EMS.Contract
         List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input);
         List<Pbck3Dto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input);
 
-        List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input);
+        List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input, Login user);
 
-        List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input);
+        List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input, Login user);
 
 
         Pbck7AndPbck3Dto GetPbck7ById(int? id);

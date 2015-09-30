@@ -273,7 +273,14 @@ namespace Sampoerna.EMS.BLL
             }
             if (lack2.Status == Enums.DocumentStatus.WaitingForApprovalManager)
             {
-                return lack2.ApprovedBy;
+                if (lack2.ApprovedBy != null)
+                {
+                    return lack2.ApprovedBy;
+                }
+                else
+                {
+                    return lack2.CreatedBy;
+                }
             }
             if (lack2.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
