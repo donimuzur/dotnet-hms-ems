@@ -493,6 +493,12 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
+
+        public static SelectList GetCk5RefPortToImporter(ICK5BLL ck5Bll)
+        {
+            var data = ck5Bll.GetAllCompletedPortToImporter();
+            return  new SelectList(data,"CK5_ID","SUBMISSION_NUMBER");
+        }
     }
 
 }
