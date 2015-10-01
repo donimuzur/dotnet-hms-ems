@@ -1378,6 +1378,8 @@ namespace Sampoerna.EMS.BLL
             includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
             var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
 
+            var dbDataSuratKonversi = _repository.Get(c => c.NPPBKC_ID == dbData.NPPBKC_ID, null, includeTables).FirstOrDefault();
+
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1409,7 +1411,7 @@ namespace Sampoerna.EMS.BLL
                     if (dbData.PBCK1_PROD_CONVERTER != null && dbData.PBCK1_PROD_PLAN.Count > 0)
                     {
                         var dataJoined = (from brand in brandRegistrationDataByMainPlant
-                                          join prodConv in dbData.PBCK1_PROD_CONVERTER on brand.PROD_CODE equals prodConv.PROD_CODE
+                                          join prodConv in dbDataSuratKonversi.PBCK1_PROD_CONVERTER on brand.PROD_CODE equals prodConv.PROD_CODE
                                           select new Pbck1ReportBrandRegistrationDto()
                                           {
                                               Type = prodConv.PRODUCT_ALIAS,

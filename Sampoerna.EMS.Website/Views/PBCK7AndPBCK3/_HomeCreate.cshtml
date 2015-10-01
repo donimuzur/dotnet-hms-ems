@@ -33,7 +33,7 @@
                                         <label class="col-md-4">PBCK-7 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Pbck7Date, new {@class = "form-control"})
+                                                @Html.TextBoxFor(model => model.Pbck7Date, new { @class = "form-control", @Value = Model.Pbck7Date.Value.ToString("dd MMM yyyy") })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>

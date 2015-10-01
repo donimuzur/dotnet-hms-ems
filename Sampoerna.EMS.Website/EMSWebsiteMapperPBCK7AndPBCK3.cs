@@ -42,7 +42,10 @@ namespace Sampoerna.EMS.Website
             #region PBCK3
 
             Mapper.CreateMap<Pbck3Dto, DataListIndexPbck3>().IgnoreAllNonExisting()
-                  .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.Pbck7Id))
+                 .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.Pbck7Id))
+                 .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.Pbck3Number))
+                 .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.Pbck7Number))
+               
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbckId))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck3Date.HasValue ? src.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.Plant))

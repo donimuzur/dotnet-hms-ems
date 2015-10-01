@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -21,6 +22,7 @@ namespace Sampoerna.EMS.BLL
         private string includeTables = "T001W, MATERIAL_UOM, UOM,ZAIDM_EX_GOODTYP";
         private ChangesHistoryBLL _changesHistoryBll;
         private IGenericRepository<MATERIAL_UOM> _repositoryUoM;
+        private IExGroupTypeBLL _goodTypeGroupBLL;
         public MaterialBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -28,6 +30,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_MATERIAL>();
             _repositoryUoM = _uow.GetGenericRepository<MATERIAL_UOM>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
+            _goodTypeGroupBLL = new ExGroupTypeBLL(_uow, logger);
         }
 
         public MaterialDto getByID(string materialId, string plant)
@@ -140,7 +143,7 @@ namespace Sampoerna.EMS.BLL
                     PlantDeletion(data, userId);
                 }
                 SetChanges(originDto, data, userId);
-           
+                data.MATERIAL_UOM = origin.MATERIAL_UOM;
             }
             else {
                 data.CREATED_BY = userId;
@@ -148,7 +151,7 @@ namespace Sampoerna.EMS.BLL
 
                 
             }
-            data.MATERIAL_UOM = origin.MATERIAL_UOM;
+
             var dataToSave = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
            
             _repository.InsertOrUpdate(dataToSave);
@@ -414,6 +417,24 @@ namespace Sampoerna.EMS.BLL
 
             return AutoMapper.Mapper.Map<List<MaterialDto>>(data);
         }
+
+        public List<MaterialDto> GetMaterialByPlantIdAndGoodType(string plantId,int goodTypeGroup)
+        {
+            //var goodtypegroupidval = goodTypeGroup.HasValue ? goodTypeGroup.Value : 0;
+            
+            var dbGoodTypeList = _goodTypeGroupBLL.GetById(goodTypeGroup);
+            List<string> goodtypelist = new List<string>();
+            if (dbGoodTypeList != null)
+            {
+                goodtypelist = dbGoodTypeList.EX_GROUP_TYPE_DETAILS.Select(x => x.GOODTYPE_ID).ToList();
+            }
+
+            var data =
+                _repository.Get(p => p.WERKS == plantId && p.EXC_GOOD_TYP != null && goodtypelist.Contains(p.EXC_GOOD_TYP), null, includeTables);
+
+            return AutoMapper.Mapper.Map<List<MaterialDto>>(data);
+        }
+
         public MaterialDto GetMaterialByPlantIdAndMaterialNumber(string plantId, string materialNumber)
         {
             var data =
@@ -421,5 +442,7 @@ namespace Sampoerna.EMS.BLL
 
             return AutoMapper.Mapper.Map<MaterialDto>(data);
         }
+
+        
     }
 }

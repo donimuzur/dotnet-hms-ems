@@ -190,11 +190,15 @@ namespace Sampoerna.EMS.BLL
                SetChangesHistory(origin, input.Pbck4Dto, input.UserId);
 
                Mapper.Map<Pbck4Dto, PBCK4>(input.Pbck4Dto, dbData);
-               
+
+               if (dbData.STATUS == Enums.DocumentStatus.Rejected)
+               {
+                   dbData.STATUS = Enums.DocumentStatus.Draft;
+               }
+
                dbData.MODIFIED_DATE = DateTime.Now;
                dbData.MODIFIED_BY = input.UserId;
-
-
+               
                //delete child first
                foreach (var pbck4Item in dbData.PBCK4_ITEM.ToList())
                {
@@ -802,7 +806,7 @@ namespace Sampoerna.EMS.BLL
            if (dbData == null)
                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-           if (dbData.STATUS != Enums.DocumentStatus.Draft)
+           if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected)
                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
            string newValue = "";
@@ -898,8 +902,8 @@ namespace Sampoerna.EMS.BLL
            string newValue = "";
 
            //change back to draft
-           dbData.STATUS = Enums.DocumentStatus.Draft;
-           newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Draft);
+           dbData.STATUS = Enums.DocumentStatus.Rejected;
+           newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Rejected);
 
            dbData.REJECTED_BY = input.UserId;
            dbData.REJECTED_DATE = DateTime.Now;
@@ -1558,7 +1562,31 @@ namespace Sampoerna.EMS.BLL
            return result;
 
        }
-   
 
+       public List<GetListCk1ByNppbkcOutput> GetListCk1ByPlantAndFaCode(GetListCk1ByPlantAndFaCodeInput input)
+       {
+           var dbCk1 = _ck1Services.GetCk1ByNppbkc(input.NppbkcId);
+
+           var result = new List<GetListCk1ByNppbkcOutput>();
+
+           foreach (var ck1 in dbCk1)
+           {
+               foreach (var ck1Item in ck1.CK1_ITEM)
+               {
+                   if (ck1Item.WERKS == input.PlantId && ck1Item.FA_CODE == input.FaCode)
+                   {
+                       var found = new GetListCk1ByNppbkcOutput();
+                       found.Ck1Id = ck1.CK1_ID.ToString();
+                       found.Ck1No = ck1.CK1_NUMBER;
+                       found.Ck1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(ck1.CK1_DATE);
+
+                       result.Add(found);
+                   }
+               }
+
+           }
+
+           return result;
+       }
    }
 }

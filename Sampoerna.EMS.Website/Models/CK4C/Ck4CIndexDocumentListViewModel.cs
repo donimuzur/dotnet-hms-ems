@@ -76,7 +76,6 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public List<Ck4cDecreeDocModel> Ck4cDecreeDoc { get; set; }
         public string IsSaveSubmit { get; set; }
         public string Comment { get; set; }
-        public string Remarks { get; set; }
     }
     public class Ck4cItemData
     {
@@ -98,5 +97,6 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string ProdType { get; set; }
         public int ContentPerPack { get; set; }
         public int PackedInPack { get; set; }
+        public string Remarks { get; set; }
     }
 }

@@ -304,7 +304,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View(model);
             }
 
-            _ck4CBll.Save(item);
+            _ck4CBll.Save(item, CurrentUser.USER_ID);
             AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
             return RedirectToAction("DocumentList");
         }
@@ -555,6 +555,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dataToSave.CompanyName = company.BUTXT;
                 dataToSave.ModifiedBy = CurrentUser.USER_ID;
                 dataToSave.ModifiedDate = DateTime.Now;
+                dataToSave.MonthNameIndo = _monthBll.GetMonth(model.Details.ReportedMonth.Value).MONTH_NAME_IND;
 
                 List<Ck4cItem> list = dataToSave.Ck4cItem;
                 foreach(var item in list)
@@ -566,7 +567,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 bool isSubmit = model.Details.IsSaveSubmit == "submit";
 
-                var saveResult = _ck4CBll.Save(dataToSave);
+                var saveResult = _ck4CBll.Save(dataToSave, CurrentUser.USER_ID);
 
                 if (isSubmit)
                 {
