@@ -74,15 +74,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Remarks</label>
-                                        <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.Details.Remarks, new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-md-offset-6">
                                     <div class="row">
                                         <label class="col-md-4">Reported Year<span class="red">*</span></label>
                                         <div class="col-md-8">
@@ -142,6 +134,8 @@
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
                                     <tr>
+                                        <th>Action</th>
+                                        <th style="display: none"></th>
                                         <th>Production Date</th>
                                         <th>FA Code</th>
                                         <th>Brand Description</th>
@@ -155,10 +149,14 @@
                                         <th>Unpacked QTY</th>
                                         <th>Produced QTY</th>
                                         <th>UoM Produced QTY</th>
+                                        <th>Remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tb-body-ck4c">
                                     <tr>
+                                        <td> </td>
+                                        <td style="display: none"></td>
+                                        <td> </td>
                                         <td> </td>
                                         <td> </td>
                                         <td> </td>

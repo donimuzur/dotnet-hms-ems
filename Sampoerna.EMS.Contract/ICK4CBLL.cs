@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Ck4CDto> GetCompletedDocument();
 
-        Ck4CDto Save(Ck4CDto item);
+        Ck4CDto Save(Ck4CDto item, string userId);
 
         Ck4CDto GetById(long id);
 
