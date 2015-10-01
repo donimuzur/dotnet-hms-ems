@@ -1,6 +1,7 @@
 ﻿using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 using System.Collections.Generic;
 
 namespace Sampoerna.EMS.Contract
@@ -31,5 +32,7 @@ namespace Sampoerna.EMS.Contract
         List<MaterialDto> GetMaterialByPlantIdAndGoodTypeNotNull(string plantId);
 
         MaterialDto GetMaterialByPlantIdAndMaterialNumber(string plantId, string materialNumber);
+
+        List<MaterialDto> GetMaterialByPlantIdAndGoodType(string plantId, int goodTypeGroup);
     }
 }
