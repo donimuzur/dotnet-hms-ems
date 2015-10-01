@@ -99,7 +99,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(src => src.PackedQty, opt => opt.MapFrom(dest => dest.PACKED_QTY))
                 .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UNPACKED_QTY))
                 .ForMember(src => src.ContentPerPack, opt => opt.MapFrom(dest => dest.CONTENT_PER_PACK))
-                .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PACKED_IN_PACK));
+                .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PACKED_IN_PACK))
+                .ForMember(src => src.Remarks, opt => opt.MapFrom(dest => dest.REMARKS));
 
             Mapper.CreateMap<Ck4cItem, CK4C_ITEM>().IgnoreAllNonExisting()
                 .ForMember(src => src.CK4C_ITEM_ID, opt => opt.MapFrom(dest => dest.Ck4CItemId))
@@ -115,7 +116,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(src => src.PACKED_QTY, opt => opt.MapFrom(dest => dest.PackedQty))
                 .ForMember(src => src.UNPACKED_QTY, opt => opt.MapFrom(dest => dest.UnpackedQty))
                 .ForMember(src => src.CONTENT_PER_PACK, opt => opt.MapFrom(dest => dest.ContentPerPack))
-                .ForMember(src => src.PACKED_IN_PACK, opt => opt.MapFrom(dest => dest.PackedInPack));
+                .ForMember(src => src.PACKED_IN_PACK, opt => opt.MapFrom(dest => dest.PackedInPack))
+                .ForMember(src => src.REMARKS, opt => opt.MapFrom(dest => dest.Remarks));
 
             Mapper.CreateMap<Ck4cWorkflowDocumentInput, WorkflowHistoryDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => src.ActionType))

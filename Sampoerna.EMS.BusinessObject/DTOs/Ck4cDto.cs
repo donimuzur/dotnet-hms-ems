@@ -57,5 +57,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Decimal UnpackedQty { get; set; }
         public int ContentPerPack { get; set; }
         public int PackedInPack { get; set; }
+        public string Remarks { get; set; }
     }
 }
