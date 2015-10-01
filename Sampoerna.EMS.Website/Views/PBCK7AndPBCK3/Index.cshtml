@@ -1,4 +1,5 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7IndexViewModel
+@using System.Web.UI.WebControls
 @using Sampoerna.EMS.Helpers
 
 @{
@@ -44,9 +45,7 @@
                             <div class="row">
                                 <label class="col-md-4">Plant ID</label>
                                 <div class="col-md-8">
-                                    <select id="SearchInput_PlantId" name="PlantId" class="form-control selectreset">
-                                        <option value="">All</option>
-                                    </select>
+                                    @Html.DropDownListFor(x=>x.PlantId, Model.PlantList, "All", new {@class="form-control"})
                                 </div>
                             </div>
                         </div>
@@ -55,7 +54,7 @@
                                 <label class="col-md-4 long">Reported On</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control" name="ReportedOn">
+                                      @Html.TextBoxFor(x => x.ReportedOn, new { @class = "form-control" })
                                         <span class="input-group-addon" >
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -70,9 +69,9 @@
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
                                     <div id="divPoaList" class="col-md-8 ui-widget">
-                                        <select id="SearchInput_POA" name="Poa" class="form-control selectreset">
-                                            <option value="">All</option>
-                                        </select>
+                                        @Html.DropDownListFor(x => x.Poa, Model.PoaList, "All", new { @class = "form-control" })
+
+
                                     </div>
                                 </div>
                             </div>
@@ -109,11 +108,16 @@
 {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript">
+        var isCompleteView = '@Model.IsCompletedDoc';
+        if (isCompleteView=='False') {
+            $('#MenuPBCK7Index').addClass('active');
+        } else {
+            $('#MenuPBCK7CompleteIndex').addClass('active');
+        }
         
-        $('#MenuPBCK7Index').addClass('active');
-        
+
         function setupDataTables() {
-            $('#btn-reset-filter').click(function () {
+            $('#btn-reset-filter').click(function() {
                 $(".selectreset").val($(".selectreset option:first").val());
             });
             // DataTable
@@ -133,7 +137,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#Pbck7 .filters th').each(function () {
+            $('#Pbck7 .filters th').each(function() {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -141,8 +145,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+            table.columns().eq(0).each(function(colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -168,17 +172,17 @@
             }
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             setupDataTables();
         });
-        
+
         function ajaxSelectNppbck(url, formData) {
             if (formData.nppbkcId) {
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data.PoaList;
                         var listPlant = data.PlantList;
                         $('#SearchInput_POA').append('<option value="">All</option>');
@@ -203,10 +207,10 @@
         }
 
         function ReloadDataTables() {
-            $('.toggle-row').click(function () {
+            $('.toggle-row').click(function() {
 
                 var filter = $(".filters");
-                filter.slideToggle(100).promise().done(function () {
+                filter.slideToggle(100).promise().done(function() {
 
                 });
             });
