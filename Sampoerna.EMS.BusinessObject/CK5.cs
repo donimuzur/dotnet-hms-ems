@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
             this.LACK2_ITEM = new HashSet<LACK2_ITEM>();
             this.LACK1_INCOME_DETAIL = new HashSet<LACK1_INCOME_DETAIL>();
+            this.BACK1 = new HashSet<BACK1>();
         }
     
         public long CK5_ID { get; set; }
@@ -103,5 +104,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<LACK2_ITEM> LACK2_ITEM { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
+        public virtual ICollection<BACK1> BACK1 { get; set; }
     }
 }

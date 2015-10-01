@@ -284,7 +284,7 @@
           @*ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());*@
 
         
-          ajaxGetListCk1DateByPlantAndFaCode('@Url.Action("GetListCk1Date", "PBCK4")', { plantId: sourcePlant, faCode: faCode }, nRow.find("td").eq(4).html());
+          ajaxGetListCk1DateByPlantAndFaCode('@Url.Action("GetListCk1Date", "PBCK4")', { plantId: sourcePlant, faCode: faCode, nppbkcId : nppbkcId }, nRow.find("td").eq(4).html());
 
 
           //set value
@@ -359,9 +359,9 @@
                   listCk1.html(list);
                 
               } else {
-
+                  var nppbkcId = $("#NppbkcId").val();
                   var plant = $("#uploadPlant").val();
-                  ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode });
+                  ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode, nppbkcId: nppbkcId });
               }
           }
       });

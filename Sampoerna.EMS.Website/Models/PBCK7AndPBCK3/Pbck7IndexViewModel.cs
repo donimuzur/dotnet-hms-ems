@@ -28,7 +28,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         //Enums
         public Enums.Pbck7Type Pbck7Type { get; set; }
+
+        public bool IsCompletedDoc { get; set; }
     }
+    
     
     public class DataListIndexPbck7
     {

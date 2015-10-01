@@ -1563,9 +1563,9 @@ namespace Sampoerna.EMS.BLL
 
        }
 
-       public List<GetListCk1ByNppbkcOutput> GetListCk1ByPlantAndFaCode(string plant, string faCode)
+       public List<GetListCk1ByNppbkcOutput> GetListCk1ByPlantAndFaCode(GetListCk1ByPlantAndFaCodeInput input)
        {
-           var dbCk1 = _ck1Services.GetCk1ByPlant(plant);
+           var dbCk1 = _ck1Services.GetCk1ByNppbkc(input.NppbkcId);
 
            var result = new List<GetListCk1ByNppbkcOutput>();
 
@@ -1573,7 +1573,7 @@ namespace Sampoerna.EMS.BLL
            {
                foreach (var ck1Item in ck1.CK1_ITEM)
                {
-                   if (ck1Item.FA_CODE == faCode)
+                   if (ck1Item.WERKS == input.PlantId && ck1Item.FA_CODE == input.FaCode)
                    {
                        var found = new GetListCk1ByNppbkcOutput();
                        found.Ck1Id = ck1.CK1_ID.ToString();
