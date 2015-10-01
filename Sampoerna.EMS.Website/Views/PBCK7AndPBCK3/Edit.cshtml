@@ -57,8 +57,8 @@
                             <input type="button" class="btn btn-blue" value="Save PBCK-7" id="btn-save-pbck7"  />
                         }
 
-                        <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
-
+                        <a href="@Url.Action("Index", "Pbck7AndPbck3")" class="btn btn-grey">Back</a>
+                        
                         if (Model.Pbck7Status == Enums.DocumentStatus.Draft
                             && Model.AllowEditAndSubmit)
                         {

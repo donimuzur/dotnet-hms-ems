@@ -3,7 +3,7 @@
 @model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Detail";
 }
 
 @using (Html.BeginForm("Detail", "PBCK7AndPBCK3", FormMethod.Post, new {@id = "form-pbck7-detail", @class = "form-excise", role = "form", enctype = "multipart/form-data"}))
@@ -101,9 +101,10 @@
                         <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
                         <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck7" href="#printoutpbck7">Print Out PBCK-7</a></li>
                         <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck3" href="#printoutpbck3">Print Out PBCK-3</a></li>
-                         <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
-                        @*<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="changes" href="#changes">Changes Log</a></li>*@
-                    </ul>
+                        <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+
+                        </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
@@ -111,7 +112,16 @@
                         @Html.Partial("_PrintOutPbck7")
                         @Html.Partial("_PrintOutPbck3")    
                         @Html.Partial("_Upload")
+                        <div role="tabpanel" class="tab-pane" id="changes">
+                            <div class="table-container">
+                                @Html.Partial("_ChangesHistoryTable", Model)
+                            </div>
+                        </div>
+
+
+                       
                     </div>
+                   
                 </div>
             </div>
         </div>
