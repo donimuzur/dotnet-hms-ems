@@ -517,6 +517,75 @@ function ValidateGovInput() {
     return result;
 }
 
+function ValidateGovMarketReturn() {
+    var result = true;
+    
+
+    if ($('#GovStatus').val() == '') {
+        AddValidationClass(false, 'GovStatus');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#GovStatus').focus();
+    } else {
+        if ($('#GovStatus').val() == 'GovReject' || $('#GovStatus').val() == 'GovCancel') {
+            if ($('#Comment').val() == '') {
+                AddValidationClass(false, 'Comment');
+                result = false;
+                $('#collapseFour').removeClass('collapse');
+                $('#collapseFour').addClass('in');
+                $("#collapseFour").css({ height: "auto" });
+                $('#Comment').focus();
+            }
+        }
+
+    }
+
+    if ($('#Back1Number').val() != '') {
+
+        if ($('#Back1Date').val() == '') {
+            AddValidationClass(false, 'Back1Date');
+            result = false;
+            $('#collapseOne').removeClass('collapse');
+            $('#collapseOne').addClass('in');
+            $("#collapseOne").css({ height: "auto" });
+        }
+    }
+    
+    if ($('#Back1Date').val() != '') {
+
+        if ($('#Back1Number').val() == '') {
+            AddValidationClass(false, 'Back1Number');
+            result = false;
+            $('#collapseOne').removeClass('collapse');
+            $('#collapseOne').addClass('in');
+            $("#collapseOne").css({ height: "auto" });
+            $('#Back1Number').focus();
+        }
+    }
+    
+    if (result) {
+        if ($('#RegistrationNumber').val() != '') {
+
+            if ($('#RegistrationNumber').val().length < 6) {
+
+                AddValidationClass(false, 'RegistrationNumber');
+                result = false;
+                $('#collapseOne').removeClass('collapse');
+                $('#collapseOne').addClass('in');
+                $("#collapseOne").css({ height: "auto" });
+                $('#RegistrationNumber').focus();
+
+                $('#modalBodyMessage').text('Registration Number Length must be 6');
+                $('#ModalCk5ValidateGov').modal('show');
+            }
+        }
+    }
+
+    return result;
+}
+
 function AddValidationClass(isValid, objName) {
     if (isValid) {
         $('#' + objName).removeClass('input-validation-error');

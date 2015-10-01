@@ -92,6 +92,27 @@ namespace Sampoerna.EMS.Website.Controllers
             return Mapper.Map<List<CK5Item>>(dbData);
         }
 
+        private List<CK5Item> GetCk5MarketReturnCompletedItems(CK5SearchViewModel filter = null)
+        {
+            CK5GetByParamInput input;
+            List<CK5Dto> dbData;
+            if (filter == null)
+            {
+                
+                input = new CK5GetByParamInput();
+                
+                dbData = _ck5Bll.GetCK5MarketReturnCompletedByParam(input);
+                return Mapper.Map<List<CK5Item>>(dbData);
+            }
+
+            //getbyparams
+
+            input = Mapper.Map<CK5GetByParamInput>(filter);
+
+            dbData = _ck5Bll.GetCK5MarketReturnCompletedByParam(input);
+            return Mapper.Map<List<CK5Item>>(dbData);
+        }
+
         private CK5IndexViewModel CreateInitModelView(Enums.MenuList menulist, Enums.CK5Type ck5Type)
         {
             var model = new CK5IndexViewModel();
@@ -245,6 +266,38 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CK5MarketReturn", model);
         }
 
+
+        public ActionResult CK5MarketReturnCompleted()
+        {
+            var model = new CK5IndexViewModel();
+
+            model.MainMenu = Enums.MenuList.CK5MRETURN;
+            model.CurrentMenu = PageInfo;
+            model.Ck5Type = Enums.CK5Type.MarketReturn;
+            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsCompletedType = true;
+            var listCk5Dto = _ck5Bll.GetCk5ByType(Enums.CK5Type.MarketReturn); //only get based on the type
+        
+
+            model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
+
+            model.SearchView.POAList = GlobalFunctions.GetPoaAll(_poabll);
+            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
+
+            model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            model.DetailsList = GetCk5MarketReturnCompletedItems();
+           
+            return View(model);
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterMarketReturn(CK5IndexViewModel model)
+        {
+            model.DetailsList = GetCk5MarketReturnCompletedItems(model.SearchView);
+            return PartialView("_CK5TablePartial", model);
+        }
 
         #endregion
 
@@ -810,13 +863,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SourcePlantId = model.SourcePlantId + " - " + model.SourcePlantName;
                 model.DestPlantId = model.DestPlantId + " - " + model.DestPlantName;
 
-                model.MainMenu = model.Ck5Type == Enums.CK5Type.MarketReturn
-                    ? Enums.MenuList.CK5MRETURN
-                    : Enums.MenuList.CK5;
+                if (model.Ck5Type == Enums.CK5Type.MarketReturn)
+                {
+                    model.MainMenu = Enums.MenuList.CK5MRETURN;
+                    model.IsMarketReturn = true;
+
+                    var back1Data = _ck5Bll.GetBack1ByCk5Id(model.Ck5Id);
+
+                    model.Back1Number = back1Data.Back1Number;
+                    model.Back1Date = back1Data.Back1Date;
+                }
+                else
+                    model.MainMenu = Enums.MenuList.CK5;
 
                 model.CurrentMenu = PageInfo;
-
-
                 // model = GetInitDetailsData(model);
                 model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
@@ -1298,16 +1358,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 ActionType = Enums.ActionType.GovApprove,
                 UserRole = CurrentUser.UserRole,
                 UserId = CurrentUser.USER_ID,
+                Ck5Type = model.Ck5Type,
                 AdditionalDocumentData = new CK5WorkflowDocumentData()
                 {
                     RegistrationNumber = model.RegistrationNumber,
                     RegistrationDate = registrationDate,
-                    Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList)
+                    Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList),
+                    Back1Number = model.Back1Number,
+                    Back1Date =  model.Back1Date
                 }
             };
             _ck5Bll.CK5Workflow(input);
 
-            if (model.Ck5Type == Enums.CK5Type.Manual) return true;
+            if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn) return true;
             try
             {
                 //create xml file

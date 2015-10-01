@@ -403,7 +403,7 @@
                                         <div class="row">
                                             <label class="col-md-4">CK-5 Manual Type</label>
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.Ck5ManualTypeString, new { @class = "form-control", @disabled=false })
+                                                @Html.TextBoxFor(model => model.Ck5ManualTypeString, new { @class = "form-control", @disabled = false })
 
                                             </div>
                                         </div>
@@ -678,6 +678,31 @@
                                     </div>
                                 </div>
                             </div>
+
+                            @if (Model.IsMarketReturn)
+                            {
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.Back1Number, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Back1Number, new { @class = "form-control", @disabled = "true" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @Html.LabelFor(model => model.Back1Date, new { @class = "col-md-4" })
+                                            <div class="col-md-8">
+                                                @Html.EditorFor(model => model.Back1Date)
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
 
                             <div class="row">
 
