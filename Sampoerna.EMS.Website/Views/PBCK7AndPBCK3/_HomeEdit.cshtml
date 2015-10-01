@@ -36,7 +36,7 @@
                                         <label class="col-md-4">PBCK-7 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Pbck7Date, new {@class = "form-control"})
+                                                @Html.TextBoxFor(model => model.Pbck7Date, new {@class = "form-control", @Value = Model.Pbck7Date.HasValue ? Model.Pbck7Date.Value.ToString("dd MMM yyyy") : null})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -60,12 +60,12 @@
                                             <div class="input-group date">
                                                 @if(Model.Pbck7Status == Enums.DocumentStatus.Completed)
                                                 {
-                                                    @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control"})
+                                                    @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @Value = Model.Pbck3Dto.Pbck3Date.HasValue ? Model.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy") : null})
 
                                                 }
                                                 else
                                                 {
-                                                    @Html.TextBox("pbck3_date", Model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @disabled = "disabled"  })
+                                                    @Html.TextBox("pbck3_date", Model.Pbck3Dto.Pbck3Date.HasValue ?  Model.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy") : null, new { @class = "form-control", @disabled = "disabled"  })
 
                                                 }
                                                     <span class="input-group-addon">
@@ -88,7 +88,7 @@
                                         <label class="col-md-4">Exec Date From</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.ExecDateFrom, new {@class = "form-control"})
+                                                @Html.TextBoxFor(model => model.ExecDateFrom, new {@class = "form-control",@Value = Model.ExecDateFrom.HasValue ? Model.ExecDateFrom.Value.ToString("dd MMM yyyy") : null})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -101,7 +101,7 @@
                                         <label class="col-md-4">Exec Date To</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.ExecDateTo, new {@class = "form-control"})
+                                                @Html.TextBoxFor(model => model.ExecDateTo, new {@class = "form-control",@Value = Model.ExecDateTo.HasValue ? Model.ExecDateTo.Value.ToString("dd MMM yyyy") : null})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
