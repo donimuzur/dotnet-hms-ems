@@ -894,8 +894,8 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "Reported Period";
                             break;
                         case "REPORTED_MONTH":
-                            changes.OLD_VALUE = origin.REPORTED_MONTH.Value.ToString();
-                            changes.NEW_VALUE = data.ReportedMonth.ToString();
+                            changes.OLD_VALUE = origin.MONTH.MONTH_NAME_IND;
+                            changes.NEW_VALUE = data.MonthNameIndo;
                             changes.FIELD_NAME = "Reported Month";
                             break;
                         case "REPORTED_YEAR":

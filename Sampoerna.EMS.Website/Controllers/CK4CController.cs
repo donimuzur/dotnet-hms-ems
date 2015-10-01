@@ -555,6 +555,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dataToSave.CompanyName = company.BUTXT;
                 dataToSave.ModifiedBy = CurrentUser.USER_ID;
                 dataToSave.ModifiedDate = DateTime.Now;
+                dataToSave.MonthNameIndo = _monthBll.GetMonth(model.Details.ReportedMonth.Value).MONTH_NAME_IND;
 
                 List<Ck4cItem> list = dataToSave.Ck4cItem;
                 foreach(var item in list)

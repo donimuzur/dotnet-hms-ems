@@ -85,6 +85,30 @@
     </div>
 </div>
 
+<div id="Ck4cUploadModal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="lblTitleInputManual">Edit Remarks</span></h4>
+            </div>
+            <div class="modal-body form-excise">
+                <p></p>
+                <input id="uploadItemRow" type="hidden" value="">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Remarks</label>
+                        <textarea class="form-control" id="uploadRemarks" cols="20" rows="5" maxlength="100"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                <input type="button" class="btn btn-blue" value="Save" id="btnSaveRemarks" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts
 {
     <script src="~/Scripts/ck4cscript.js"></script>
@@ -149,6 +173,10 @@
             $("#btnSubmitConfirm").click(function () {
                 $('#Details_IsSaveSubmit').val('submit');
                 $('#EditForm').submit();
+            });
+
+            $("#btnSaveRemarks").click(function () {
+                UpdateRow();
             });
         });
 
