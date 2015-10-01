@@ -431,7 +431,7 @@ namespace Sampoerna.EMS.BLL
                         case "PLAN_PROD_FROM":
                             changes.OLD_VALUE = origin.PlanProdFrom.HasValue ? origin.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
                             changes.NEW_VALUE = data.PlanProdFrom.HasValue ? data.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
-                            changes.FIELD_NAME = "Plan Produtcion From";
+                            changes.FIELD_NAME = "Plan Production From";
                             break;
                         case "PLAN_PROD_TO":
                             changes.OLD_VALUE = origin.PlanProdTo.HasValue ? origin.PlanProdTo.Value.ToString("dd MMM yyyy") : "NULL";
