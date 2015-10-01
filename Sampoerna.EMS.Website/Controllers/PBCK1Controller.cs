@@ -591,7 +591,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK-1 dengan no " + checkUnique + " sudah ada", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 no " + checkUnique + " already exist", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
 
@@ -826,7 +826,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK-1 dengan no " + checkUnique +" sudah ada", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 no " + checkUnique + " already exist", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
 
@@ -2363,9 +2363,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetPBCK1Reference(DateTime periodFrom, DateTime periodTo, string nppbkcId, string supplierNppbkcId, string supplierPlantWerks, string goodType)
+        public JsonResult GetPBCK1Reference(DateTime periodFrom, DateTime periodTo, string nppbkcId, string supplierNppbkcId, string supplierPlantWerks, string supplierPlant, string goodType)
         {
-            var reference = _pbck1Bll.GetPBCK1Reference(new Pbck1ReferenceSearchInput() { NppbkcId = nppbkcId, PeriodFrom = periodFrom, PeriodTo = periodTo, SupllierNppbkcId = supplierNppbkcId, SupplierPlantWerks = supplierPlantWerks, GoodTypeId = goodType });
+            var reference = _pbck1Bll.GetPBCK1Reference(new Pbck1ReferenceSearchInput() { NppbkcId = nppbkcId, PeriodFrom = periodFrom, PeriodTo = periodTo, SupllierNppbkcId = supplierNppbkcId, SupplierPlantWerks = supplierPlantWerks, SupplierPlant = supplierPlant,GoodTypeId = goodType });
             if (reference == null)
             {
                 return Json(false);

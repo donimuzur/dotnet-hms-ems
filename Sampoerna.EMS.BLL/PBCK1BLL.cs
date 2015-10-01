@@ -46,6 +46,8 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationBLL _brandRegistrationBll;
         private ILACK1BLL _lack1Bll;
         private IT001KBLL _t001Kbll;
+        private IPlantBLL _plantBll;
+
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1, USER2";
 
@@ -74,6 +76,7 @@ namespace Sampoerna.EMS.BLL
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _lack1Bll = new LACK1BLL(_uow, _logger);
             _t001Kbll = new T001KBLL(_uow, _logger);
+            _plantBll = new PlantBLL(_uow, _logger);
 
         }
 
@@ -303,6 +306,9 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("PERIOD_TO", origin.PeriodTo == data.PeriodTo);
             changesData.Add("REPORTED_ON", origin.ReportedOn == data.ReportedOn);
             changesData.Add("NPPBKC_ID", origin.NppbkcId == data.NppbkcId);
+            changesData.Add("POA_LIST", origin.NppbkcId == data.NppbkcId);
+            changesData.Add("COMPANY", origin.NppbkcId == data.NppbkcId);
+
             changesData.Add("IS_NPPBKC_IMPORT", origin.IsNppbkcImport == data.IsNppbkcImport);
             changesData.Add("EXC_GOOD_TYP", origin.GoodType == data.GoodType);
             changesData.Add("SUPPLIER_PLANT", origin.SupplierPlant == data.SupplierPlant);
@@ -331,6 +337,7 @@ namespace Sampoerna.EMS.BLL
             {
                 if (!listChange.Value)
                 {
+                    var skip = false;
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Enums.MenuList.PBCK1,
@@ -383,6 +390,49 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.NppbkcId;
                             changes.FIELD_NAME = "NPPBKC ID";
                             break;
+                        case "POA_LIST":
+                            List<string> List_POA_OLD = new List<string>();
+                            List<string> List_POA_NEW = new List<string>();
+
+                            foreach (var old in _poaBll.GetPoaByNppbkcIdAndMainPlant(origin.NppbkcId))
+                            {
+                                List_POA_OLD.Add(old.PRINTED_NAME);
+                            }
+
+
+                            foreach (var n in _poaBll.GetPoaByNppbkcIdAndMainPlant(data.NppbkcId))
+                            {
+                                List_POA_NEW.Add(n.PRINTED_NAME);
+                            }
+
+                            string POA_OLD = string.Join(", ", List_POA_OLD.ToArray());
+                            string POA_NEW = string.Join(", ", List_POA_NEW.ToArray());
+
+                            if (POA_OLD == POA_NEW)
+                                skip = true;
+
+                            changes.OLD_VALUE = POA_OLD;
+                            changes.NEW_VALUE = POA_NEW;
+
+                            changes.FIELD_NAME = "POA";
+                            break;
+                        case "COMPANY":
+                            var data_old = _plantBll.GetMainPlantByNppbkcId(origin.NppbkcId);
+                            var data_new = _plantBll.GetMainPlantByNppbkcId(data.NppbkcId);
+
+                            if ((data_old == null && data_new == null))
+                                skip = true;
+
+                            if ((data_old != null && data_new != null) && (data_old.CompanyName == data_new.CompanyName))
+                                skip = true;
+
+                            if (!skip)
+                            {
+                                changes.OLD_VALUE = data_old == null? "" :data_old.CompanyName;
+                                changes.NEW_VALUE = data_new == null ? "" : data_new.CompanyName;
+                                changes.FIELD_NAME = "COMPANY";
+                            }
+                            break;
                         case "IS_NPPBKC_IMPORT":
                             changes.OLD_VALUE = origin.IsNppbkcImport != null ? origin.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
                             changes.NEW_VALUE = data.IsNppbkcImport != null ? data.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
@@ -394,8 +444,8 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "Exciseable Goods Description";
                             break;
                         case "SUPPLIER_PLANT":
-                            changes.OLD_VALUE = origin.SupplierPlant;
-                            changes.NEW_VALUE = data.SupplierPlant;
+                            changes.OLD_VALUE = origin.SupplierPlantWerks != null && origin.SupplierPlantWerks != "" ? origin.SupplierPlantWerks + "-" + origin.SupplierPlant : origin.SupplierPlant;
+                            changes.NEW_VALUE = data.SupplierPlantWerks != null && data.SupplierPlantWerks != ""? data.SupplierPlantWerks + "-"+ data.SupplierPlant:data.SupplierPlant;
                             changes.FIELD_NAME = "Supplier Plant";
                             break;
                         case "SUPPLIER_PORT_ID":
@@ -431,7 +481,7 @@ namespace Sampoerna.EMS.BLL
                         case "PLAN_PROD_FROM":
                             changes.OLD_VALUE = origin.PlanProdFrom.HasValue ? origin.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
                             changes.NEW_VALUE = data.PlanProdFrom.HasValue ? data.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
-                            changes.FIELD_NAME = "Plan Produtcion From";
+                            changes.FIELD_NAME = "Plan Production From";
                             break;
                         case "PLAN_PROD_TO":
                             changes.OLD_VALUE = origin.PlanProdTo.HasValue ? origin.PlanProdTo.Value.ToString("dd MMM yyyy") : "NULL";
@@ -445,7 +495,7 @@ namespace Sampoerna.EMS.BLL
                             break;
                         case "REQUEST_QTY_UOM":
                             changes.OLD_VALUE = !string.IsNullOrEmpty(origin.RequestQtyUomId) ? origin.RequestQtyUomName : "NULL";
-                            changes.NEW_VALUE = data.RequestQtyUomName;
+                            changes.NEW_VALUE = _uomBll.GetUomNameById(data.RequestQtyUomId);
                             changes.FIELD_NAME = "Request Qty UOM";
                             break;
                         case "LACK1_FROM_MONTH":
@@ -507,11 +557,12 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = !string.IsNullOrEmpty(origin.LatestSaldoUomId)
                                 ? origin.LatestSaldoUomName
                                 : "NULL";
-                            changes.NEW_VALUE = data.LatestSaldoUomName;
+                            changes.NEW_VALUE = _uomBll.GetUomNameById(data.LatestSaldoUomId);
                             changes.FIELD_NAME = "Latest Saldo UOM";
                             break;
                     }
-                    _changesHistoryBll.AddHistory(changes);
+                    if(!skip)
+                        _changesHistoryBll.AddHistory(changes);
                     changed = true;
                 }
             }
@@ -1925,7 +1976,7 @@ namespace Sampoerna.EMS.BLL
                 p => ((input.Pbck1.Pbck1Id == null || p.PBCK1_ID != input.Pbck1.Pbck1Id) && p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId
                     && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodFrom
                     || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo || (p.PERIOD_FROM > input.Pbck1.PeriodFrom && p.PERIOD_TO < input.Pbck1.PeriodTo))
-                    && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
+                    && ((input.Pbck1.SupplierPlantWerks != null && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks) || (input.Pbck1.SupplierPlantWerks == null && p.SUPPLIER_PLANT == input.Pbck1.SupplierPlant)) && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
             );
 
             var data = Mapper.Map<List<Pbck1Dto>>(dbData);
@@ -1939,12 +1990,14 @@ namespace Sampoerna.EMS.BLL
         public Pbck1Dto GetPBCK1Reference(Pbck1ReferenceSearchInput input)
         {
             var dbData = _repository.Get(
-                p => p.PBCK1_TYPE == Enums.PBCK1Type.New && p.STATUS == Enums.DocumentStatus.Completed
-                    && p.NPPBKC_ID == input.NppbkcId
-                    && (p.PERIOD_FROM <= input.PeriodFrom && p.PERIOD_TO >= input.PeriodFrom
-                    || p.PERIOD_FROM <= input.PeriodTo && p.PERIOD_TO >= input.PeriodTo)
-                    && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && p.EXC_GOOD_TYP == input.GoodTypeId
+            p => p.PBCK1_TYPE == Enums.PBCK1Type.New && p.STATUS == Enums.DocumentStatus.Completed
+                && p.NPPBKC_ID == input.NppbkcId
+                && (p.PERIOD_FROM <= input.PeriodFrom && p.PERIOD_TO >= input.PeriodFrom
+                || p.PERIOD_FROM <= input.PeriodTo && p.PERIOD_TO >= input.PeriodTo)
+                && ((input.SupplierPlantWerks != "" && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks) || (input.SupplierPlantWerks == "" && p.SUPPLIER_PLANT == input.SupplierPlant)) && p.EXC_GOOD_TYP == input.GoodTypeId
             ).FirstOrDefault();
+           
+            
             var data = Mapper.Map<Pbck1Dto>(dbData);
 
             return data;
