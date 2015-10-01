@@ -518,7 +518,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
             model.PoaList = GetPoaList(model.NppbkcId);
-
+            model.Pbck7Date = DateTime.Now;
             return View("Create",model);
         }
 
