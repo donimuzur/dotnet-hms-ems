@@ -47,7 +47,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MonthId, opt => opt.MapFrom(src => src.MONTH.MONTH_ID))
                 .ForMember(dest => dest.MonthNameEng, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_ENG))
                 .ForMember(dest => dest.MonthNameIndo, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_IND))
-                .ForMember(dest => dest.Ck4cItem, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItem>>(src.CK4C_ITEM)));
+                .ForMember(dest => dest.Ck4cItem, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItem>>(src.CK4C_ITEM)))
+                .ForMember(dest => dest.Ck4cDecreeDoc, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cDecreeDocDto>>(src.CK4C_DECREE_DOC)));
 
             Mapper.CreateMap<T001K, T001KDto>().IgnoreAllNonExisting()
                .ForMember(dest => dest.BWKEY, opt => opt.MapFrom(src => src.T001W.NAME1));
@@ -83,7 +84,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.REPORTED_YEAR, opt => opt.MapFrom(src => src.ReportedYears))
                 .ForMember(dest => dest.STATUS, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.GOV_STATUS, opt => opt.MapFrom(src => src.StatusGoverment))
-                .ForMember(dest => dest.CK4C_ITEM, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItem>>(src.Ck4cItem)));
+                .ForMember(dest => dest.CK4C_ITEM, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItem>>(src.Ck4cItem)))
+                .ForMember(dest => dest.CK4C_DECREE_DOC, opt => opt.MapFrom(src => Mapper.Map<List<CK4C_DECREE_DOC>>(src.Ck4cDecreeDoc)));
 
             Mapper.CreateMap<CK4C_ITEM, Ck4cItem>().IgnoreAllNonExisting()
                 .ForMember(src => src.Ck4CItemId, opt => opt.MapFrom(dest => dest.CK4C_ITEM_ID))
