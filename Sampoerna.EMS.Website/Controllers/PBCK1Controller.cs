@@ -591,7 +591,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK-1 dengan no " + checkUnique + " sudah ada", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 no " + checkUnique + " already exist", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
 
@@ -826,7 +826,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (checkUnique != null)
                 {
-                    AddMessageInfo("PBCK-1 dengan no " + checkUnique +" sudah ada", Enums.MessageInfoType.Error);
+                    AddMessageInfo("PBCK-1 no " + checkUnique + " already exist", Enums.MessageInfoType.Error);
                     return CreateInitial(modelOld);
                 }
 
