@@ -106,7 +106,7 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        public string GetUomNameById(int? id)
+        public string GetUomNameById(string id)
         {
             var dbData = _repository.GetByID(id);
 
