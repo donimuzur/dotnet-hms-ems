@@ -727,9 +727,9 @@ namespace Sampoerna.EMS.BLL
             var nppbkc = plant == null ? dtData.NPPBKC_ID : plant.NPPBKC_ID;
             result.Detail.Nppbkc = nppbkc;
 
-            if (dtData.APPROVED_BY_POA != null)
+            if (dtData.CREATED_BY != null)
             {
-                var poa = _poabll.GetDetailsById(dtData.APPROVED_BY_POA);
+                var poa = _poabll.GetDetailsById(dtData.CREATED_BY);
                 if (poa != null)
                 {
                     result.Detail.Poa = poa.PRINTED_NAME;
