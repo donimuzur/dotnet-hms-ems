@@ -41,7 +41,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.ReportedYears))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.StatusGoverment))
-                .ForMember(dest => dest.Remarks, opt => opt.MapFrom(src => src.Remarks))
                 .ForMember(dest => dest.ReportedMonthName, opt => opt.MapFrom(src => src.MonthNameEng))
                 .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.StatusGovName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.StatusGoverment)))
@@ -107,7 +106,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.ReportedYears))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.StatusGoverment))
-                .ForMember(dest => dest.Remarks, opt => opt.MapFrom(src => src.Remarks))
                 .ForMember(dest => dest.Ck4cItem, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItemData>>(src.Ck4cItemData)));
 
             Mapper.CreateMap<Ck4cItemData, Ck4cItem>().IgnoreAllNonExisting()
