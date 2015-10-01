@@ -36,7 +36,7 @@
                                         <label class="col-md-4">PBCK-7 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBox("pbck7_date",  Model.Pbck7Date, new {@class = "form-control", @disabled="disabled"})
+                                                @Html.TextBox("pbck7_date", Model.Pbck7Date, new { @class = "form-control", @disabled = "disabled", @Value = Model.Pbck7Date.Value.ToString("dd MMM yyyy") })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -57,7 +57,7 @@
                                         <label class="col-md-4">PBCK-3 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBox("pbck3_date", Model.Pbck3Dto.Pbck3Date, new {@class = "form-control",  @disabled="disabled"})
+                                                @Html.TextBox("pbck3_date", Model.Pbck3Dto.Pbck3Date, new {@class = "form-control",  @disabled="disabled", @Value = Model.Pbck3Dto.Pbck3Date.HasValue ? Model.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy") : null})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -79,7 +79,7 @@
                                         <div class="col-md-8">
                                             <div class="input-group date">
                                                 @Html.HiddenFor(x => x.ExecDateFrom)
-                                                @Html.TextBox("exec_date_from", Model.ExecDateFrom, new {@class = "form-control", @disabled="disabled"})
+                                                @Html.TextBox("exec_date_from", Model.ExecDateFrom, new {@class = "form-control", @disabled="disabled", @Value = Model.ExecDateFrom.HasValue ? Model.ExecDateFrom.Value.ToString("dd MMM yyyy") : null})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -93,7 +93,7 @@
                                         <div class="col-md-8">
                                             <div class="input-group date">
                                                 @Html.HiddenFor(x=>x.ExecDateTo)
-                                                @Html.TextBox("exec_date_to", Model.ExecDateTo, new {@class = "form-control", @disabled="disabled"})
+                                                @Html.TextBox("exec_date_to", Model.ExecDateTo, new {@class = "form-control", @disabled="disabled",@Value = Model.ExecDateFrom.HasValue ? Model.ExecDateFrom.Value.ToString("dd MMM yyyy") : null})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
