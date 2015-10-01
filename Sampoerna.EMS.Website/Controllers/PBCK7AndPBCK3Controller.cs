@@ -123,14 +123,27 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Pbck7Type = Enums.Pbck7Type.Pbck7List,
-
+                IsCompletedDoc = false,
                 Detail =
                     Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser))
             });
 
             return View("Index", data);
         }
+        public ActionResult Pbck7Completed()
+        {
+            var data = InitPbck7ViewModel(new Pbck7IndexViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Pbck7Type = Enums.Pbck7Type.Pbck7List,
+                IsCompletedDoc = true,
+                Detail =
+                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser, true))
+            });
 
+            return View("Index", data);
+        }
         #endregion
 
         private DataSet CreatePbck7Ds()
@@ -414,12 +427,29 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Pbck3Type = Enums.Pbck7Type.Pbck3List,
 
-                Detail = detail
+                Detail = detail,
+                IsCompletedDoc =  false
+            });
+            
+            return View("ListPbck3Index", data);
+        }
+        public ActionResult Pbck3Completed()
+        {
+            var detail =
+                Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input(), CurrentUser, true));
+
+            var data = InitPbck3ViewModel(new Pbck3IndexViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Pbck3Type = Enums.Pbck7Type.Pbck3List,
+
+                Detail = detail,
+                IsCompletedDoc = true
             });
 
             return View("ListPbck3Index", data);
         }
-
         private Pbck3IndexViewModel InitPbck3ViewModel(Pbck3IndexViewModel model)
         {
             model.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
@@ -488,7 +518,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
             model.PoaList = GetPoaList(model.NppbkcId);
-
+            model.Pbck7Date = DateTime.Now;
             return View("Create",model);
         }
 
@@ -912,23 +942,23 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.Year = modelDto.Pbck7Date.Year;
             inputDoc.NppbkcId = modelDto.NppbkcId;
             modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
-         
 
+            int? pbck7IdAfterSave= null;
             try
             {
-                _pbck7AndPbck7And3Bll.InsertPbck7(modelDto);
+                pbck7IdAfterSave = _pbck7AndPbck7And3Bll.InsertPbck7(modelDto);
             }
             catch (Exception ex)
             {
                AddMessageInfo(ex.ToString(), Enums.MessageInfoType.Error);
             }
-            AddMessageInfo("Success", Enums.MessageInfoType.Success);
-            return RedirectToAction("Index");
+            AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+            return RedirectToAction("Edit", new { id = pbck7IdAfterSave});
         }
 
         public string GetPoaList(string nppbkcid)
         {
-            var poaList = _poaBll.GetPoaByNppbkcId(nppbkcid);
+            var poaList = _poaBll.GetPoaByNppbkcId(nppbkcid).Distinct().ToList();
             var poaListStr = string.Empty;
             var poaLength = poaList.Count;
             
