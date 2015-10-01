@@ -2774,6 +2774,20 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetListMaterialByGroupType(string plantId, string goodTypeGroup)
+        {
+            List<MaterialDto> dbMaterial = new List<MaterialDto>();
+            if (!string.IsNullOrEmpty(goodTypeGroup))
+            {
+                Enums.ExGoodsType goodTypeGroupId = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroup);
+                dbMaterial = _materialBll.GetMaterialByPlantIdAndGoodType(plantId, (int)goodTypeGroupId);
+            } 
+            var model = Mapper.Map<List<CK5InputManualViewModel>>(dbMaterial);
+
+            return Json(model);
+        }
+
+        [HttpPost]
         public JsonResult GetMaterialHjeAndTariff(string plantId, string materialNumber)
         {
 
