@@ -40,7 +40,7 @@ namespace Sampoerna.EMS.BLL
         private IUserBLL _userBll;
         private IBrandRegistrationService _brandRegistrationService;
 
-        private string includeTables = "MONTH, CK4C_ITEM";
+        private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
         public CK4CBLL(ILogger logger, IUnitOfWork uow)
         {
