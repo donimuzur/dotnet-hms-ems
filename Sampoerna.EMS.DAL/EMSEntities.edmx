@@ -168,7 +168,6 @@
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
           <Property Name="DECREE_DATE" Type="datetime" />
-          <Property Name="REMARKS" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="CK4C_DECREE_DOC">
           <Key>
@@ -199,6 +198,7 @@
           <Property Name="UNPACKED_QTY" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CONTENT_PER_PACK" Type="int" />
           <Property Name="PACKED_IN_PACK" Type="int" />
+          <Property Name="REMARKS" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="CK5">
           <Key>
@@ -6571,7 +6571,6 @@
           <NavigationProperty Name="POA" Relationship="EMSModel.FK_CK4C_POA" FromRole="CK4C" ToRole="POA" />
           <NavigationProperty Name="CK4C_DECREE_DOC" Relationship="EMSModel.FK_CK4C_DECREE_DOC_CK4C" FromRole="CK4C" ToRole="CK4C_DECREE_DOC" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="REMARKS" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_CK4C_MODIFIED_BY">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -6792,6 +6791,7 @@
           <Property Name="UNPACKED_QTY" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="CONTENT_PER_PACK" Type="Int32" />
           <Property Name="PACKED_IN_PACK" Type="Int32" />
+          <Property Name="REMARKS" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_CK4C_ITEM_CK4C">
           <End Type="EMSModel.CK4C" Role="CK4C" Multiplicity="1" />
@@ -8682,7 +8682,6 @@
           <EntitySetMapping Name="CK4C">
             <EntityTypeMapping TypeName="EMSModel.CK4C">
               <MappingFragment StoreEntitySet="CK4C">
-                <ScalarProperty Name="REMARKS" ColumnName="REMARKS" />
                 <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
                 <ScalarProperty Name="APPROVED_DATE_MANAGER" ColumnName="APPROVED_DATE_MANAGER" />
                 <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
@@ -8784,6 +8783,7 @@
           <EntitySetMapping Name="CK4C_ITEM">
             <EntityTypeMapping TypeName="EMSModel.CK4C_ITEM">
               <MappingFragment StoreEntitySet="CK4C_ITEM">
+                <ScalarProperty Name="REMARKS" ColumnName="REMARKS" />
                 <ScalarProperty Name="PACKED_IN_PACK" ColumnName="PACKED_IN_PACK" />
                 <ScalarProperty Name="CONTENT_PER_PACK" ColumnName="CONTENT_PER_PACK" />
                 <ScalarProperty Name="UNPACKED_QTY" ColumnName="UNPACKED_QTY" />

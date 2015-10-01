@@ -546,6 +546,14 @@
 
             UpdateRow();
         });
+        
+        $("#Ck5RefId").change(function () {
+            var refId = $("#Ck5RefId").val();
+
+            if (refId != null) {
+                window.location.href = '@Url.Action("Edit", "CK5")' + "?refId=" + refId;
+            }
+        });
 
     </script>
 }

@@ -273,6 +273,24 @@ namespace Sampoerna.EMS.Website.Code
             var data = pbck1.GetCompletedDocumentByParam(input);
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
+
+        public static SelectList GetPlantImportList()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            IZaidmExNPPBKCBLL nppbkcBLL = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+
+            var nppbkcList = nppbkcBLL.GetAll().Where(x=> x.IS_DELETED != true).Select(x=> x.NPPBKC_ID).ToList();
+            List<T001W> plantIdList;
+            plantIdList = plantBll.GetAllPlant();
+            plantIdList =
+                plantIdList.Where(
+                    x => x.IS_DELETED != true && x.NPPBKC_IMPORT_ID != null && nppbkcList.Contains(x.NPPBKC_IMPORT_ID))
+                    .OrderBy(x => x.WERKS)
+                    .ToList();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
         public static SelectList GetPlantAll()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();

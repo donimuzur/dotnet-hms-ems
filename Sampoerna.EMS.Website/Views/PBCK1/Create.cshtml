@@ -128,6 +128,8 @@
             });
 
             setUpload();
+
+            $("#Detail_PeriodTo").rules('add', { greaterThan: "#Detail_PeriodFrom" });
         });
 
         $('#Detail_Lack1FromMonthId').change(function () {
