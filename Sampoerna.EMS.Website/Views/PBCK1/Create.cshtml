@@ -126,7 +126,10 @@
             $("#Detail_PeriodTo").change(function () {
                 getReference();
             });
-
+            
+            $("#Detail_SupplierPlant").keyup(function () {
+                getReference();
+            });
             setUpload();
 
             $("#Detail_PeriodTo").rules('add', { greaterThan: "#Detail_PeriodFrom" });
