@@ -386,9 +386,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var company = _companyBll.GetById(item.CompanyCode);
                     var plant = _plantBll.GetT001WById(item.PlantWerks);
+                    var brandCe = _brandRegistrationBll.GetById(item.PlantWerks, item.FaCode);
 
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
+
+                    if (item.BrandDescription != brandCe.BRAND_CE)
+                    {
+                        AddMessageInfo("Data Brand Description Is Not valid",Enums.MessageInfoType.Error);
+                        return RedirectToAction("UploadManualWaste");
+                    }
 
                     item.CreatedDate = DateTime.Now;
 
@@ -397,7 +404,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (existingData != null)
                     {
-                        AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
+                        AddMessageInfo("Data Already Exist, Please Check Data Company Code, Plant Code, Fa Code, and Production Date", Enums.MessageInfoType.Warning);
                         return RedirectToAction("UploadManualWaste");
                     }
 
