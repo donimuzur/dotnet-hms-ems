@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MonthNameEng { get; set; }
 
         public List<Ck4cItem> Ck4cItem { get; set; }
+        public List<Ck4cDecreeDocDto> Ck4cDecreeDoc { get; set; }
     }
 
     public class Ck4cItem
