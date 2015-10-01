@@ -199,12 +199,9 @@
         <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_ITEM_PBCK3_PBCK7" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7_USER1" />
-        <EntityTypeShape EntityType="EMSModel.BACK1" Width="1.5" PointX="13.125" PointY="59.625" />
         <EntityTypeShape EntityType="EMSModel.BACK1_DOCUMENT" Width="1.5" PointX="15.375" PointY="59.625" />
         <EntityTypeShape EntityType="EMSModel.PBCK3" Width="1.5" PointX="13.125" PointY="53.375" />
         <EntityTypeShape EntityType="EMSModel.PBCK7" Width="1.5" PointX="10.875" PointY="47.375" />
-        <AssociationConnector Association="EMSModel.FK_BACK1_DOCUMENT_BACK1" />
-        <AssociationConnector Association="EMSModel.FK_BACK1_PBCK7" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_MANAGER" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_MODIFIED_USER" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_PBCK7" />
@@ -238,6 +235,10 @@
         <EntityTypeShape EntityType="EMSModel.PBCK7_ITEM" Width="1.5" PointX="13.125" PointY="73" />
         <AssociationConnector Association="EMSModel.FK_PBCK7_ITEM_PBCK7" />
         <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="0.75" PointY="11.75" />
+        <EntityTypeShape EntityType="EMSModel.BACK1" Width="1.5" PointX="26" PointY="36.375" />
+        <AssociationConnector Association="EMSModel.FK_BACK1_CK5" />
+        <AssociationConnector Association="EMSModel.FK_BACK1_DOCUMENT_BACK1" />
+        <AssociationConnector Association="EMSModel.FK_BACK1_PBCK7" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

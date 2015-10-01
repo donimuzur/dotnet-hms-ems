@@ -16,9 +16,9 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public PBCK7()
         {
-            this.BACK1 = new HashSet<BACK1>();
             this.PBCK3 = new HashSet<PBCK3>();
             this.PBCK7_ITEM = new HashSet<PBCK7_ITEM>();
+            this.BACK1 = new HashSet<BACK1>();
         }
     
         public int PBCK7_ID { get; set; }
@@ -45,7 +45,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
     
-        public virtual ICollection<BACK1> BACK1 { get; set; }
         public virtual ICollection<PBCK3> PBCK3 { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
@@ -53,5 +52,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER2 { get; set; }
         public virtual USER USER3 { get; set; }
         public virtual ICollection<PBCK7_ITEM> PBCK7_ITEM { get; set; }
+        public virtual ICollection<BACK1> BACK1 { get; set; }
     }
 }
