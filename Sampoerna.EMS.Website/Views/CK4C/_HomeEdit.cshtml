@@ -80,15 +80,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Remarks</label>
-                                        <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.Details.Remarks, new { @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-md-offset-6">
                                     <div class="row">
                                         <label class="col-md-4">Reported Year<span class="red">*</span></label>
                                         <div class="col-md-8">
@@ -161,6 +153,7 @@
                                         <th>Unpacked QTY</th>
                                         <th>Produced QTY</th>
                                         <th>UoM Produced QTY</th>
+                                        <th>Remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tb-body-ck4c">
@@ -185,6 +178,7 @@
                                         <td><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" />@item.UnpackedQty</td>
                                         <td><input name="Details.Ck4cItemData[@i].ProdQty" type="hidden" value="@item.ProdQty" />@item.ProdQty</td>
                                         <td><input name="Details.Ck4cItemData[@i].ProdQtyUom" type="hidden" value="@item.ProdQtyUom" />@item.ProdQtyUom</td>
+                                        <td><input name="Details.Ck4cItemData[@i].Remarks" type="hidden" value="@item.Remarks" />@item.Remarks</td>
                                     </tr>
                                 }
                                 </tbody>

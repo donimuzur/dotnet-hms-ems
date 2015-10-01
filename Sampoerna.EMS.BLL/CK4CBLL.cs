@@ -77,7 +77,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Ck4CDto>>(dtData);
         }
 
-        public Ck4CDto Save(Ck4CDto item)
+        public Ck4CDto Save(Ck4CDto item, string userId)
         {
             CK4C model;
             if (item == null)
@@ -94,6 +94,8 @@ namespace Sampoerna.EMS.BLL
 
                     if (model == null)
                         throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                    SetChangesHistory(model, item, userId);
 
                     _ck4cItemBll.DeleteByCk4cId(item.Ck4CId);
 
@@ -817,16 +819,20 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            var brandType = prodTypeDistinct.Substring(1).Split('|');
             var prodAlias = string.Empty;
             var sumTotal = string.Empty;
             var btgTotal = string.Empty;
 
-            foreach(var data in brandType)
+            if(prodTypeDistinct != string.Empty)
             {
-                prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
-                sumTotal += dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY).ToString() + Environment.NewLine;
-                btgTotal += dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY).ToString() + Environment.NewLine;
+                var brandType = prodTypeDistinct.Substring(1).Split('|');
+
+                foreach (var data in brandType)
+                {
+                    prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
+                    sumTotal += dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY).ToString() + Environment.NewLine;
+                    btgTotal += dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY).ToString() + Environment.NewLine;
+                }
             }
 
             result.Ck4cTotal.ProdType = prodAlias;
@@ -834,6 +840,75 @@ namespace Sampoerna.EMS.BLL
             result.Ck4cTotal.ProdBtg = btgTotal;
 
             return result;
+        }
+
+        private void SetChangesHistory(CK4C origin, Ck4CDto data, string userId)
+        {
+            var changeData = new Dictionary<string, bool>();
+            changeData.Add("COMPANY_CODE", origin.COMPANY_ID == data.CompanyId);
+            changeData.Add("PLANT", origin.PLANT_ID == data.PlantId);
+            changeData.Add("NPPBKC", origin.NPPBKC_ID == data.NppbkcId);
+            changeData.Add("REPORTED_ON", origin.REPORTED_ON == data.ReportedOn);
+            changeData.Add("REPORTED_PERIOD", origin.REPORTED_PERIOD == data.ReportedPeriod);
+            changeData.Add("REPORTED_MONTH", origin.REPORTED_MONTH == data.ReportedMonth);
+            changeData.Add("REPORTED_YEAR", origin.REPORTED_YEAR == data.ReportedYears);
+
+            foreach (var listChange in changeData)
+            {
+                if (!listChange.Value)
+                {
+                    var changes = new CHANGES_HISTORY
+                    {
+                        FORM_TYPE_ID = Enums.MenuList.CK4C,
+                        FORM_ID = data.Ck4CId.ToString(),
+                        FIELD_NAME = listChange.Key,
+                        MODIFIED_BY = userId,
+                        MODIFIED_DATE = DateTime.Now
+                    };
+
+                    switch (listChange.Key)
+                    {
+                        case "COMPANY_CODE":
+                            changes.OLD_VALUE = origin.COMPANY_ID;
+                            changes.NEW_VALUE = data.CompanyId;
+                            changes.FIELD_NAME = "Company";
+                            break;
+                        case "PLANT":
+                            changes.OLD_VALUE = origin.PLANT_ID;
+                            changes.NEW_VALUE = data.PlantId;
+                            changes.FIELD_NAME = "Plant";
+                            break;
+                        case "NPPBKC":
+                            changes.OLD_VALUE = origin.NPPBKC_ID;
+                            changes.NEW_VALUE = data.NppbkcId;
+                            changes.FIELD_NAME = "Nppbkc";
+                            break;
+                        case "REPORTED_ON":
+                            changes.OLD_VALUE = origin.REPORTED_ON.Value.ToString("dd MMM yyyy");
+                            changes.NEW_VALUE = data.ReportedOn.Value.ToString("dd MMM yyyy");
+                            changes.FIELD_NAME = "Reported On";
+                            break;
+                        case "REPORTED_PERIOD":
+                            changes.OLD_VALUE = origin.REPORTED_PERIOD.ToString();
+                            changes.NEW_VALUE = data.ReportedPeriod.ToString();
+                            changes.FIELD_NAME = "Reported Period";
+                            break;
+                        case "REPORTED_MONTH":
+                            changes.OLD_VALUE = origin.REPORTED_MONTH.Value.ToString();
+                            changes.NEW_VALUE = data.ReportedMonth.ToString();
+                            changes.FIELD_NAME = "Reported Month";
+                            break;
+                        case "REPORTED_YEAR":
+                            changes.OLD_VALUE = origin.REPORTED_YEAR.ToString();
+                            changes.NEW_VALUE = data.ReportedYears.ToString();
+                            changes.FIELD_NAME = "Reported Year";
+                            break;
+                        default: break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+
         }
 
         #region SummaryReport

@@ -41,7 +41,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.ReportedYears))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.StatusGoverment))
-                .ForMember(dest => dest.Remarks, opt => opt.MapFrom(src => src.Remarks))
                 .ForMember(dest => dest.ReportedMonthName, opt => opt.MapFrom(src => src.MonthNameEng))
                 .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.StatusGovName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.StatusGoverment)))
@@ -66,7 +65,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(src => src.PackedQty, opt => opt.MapFrom(dest => dest.PackedQty))
                 .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty))
                 .ForMember(src => src.ContentPerPack, opt => opt.MapFrom(dest => dest.ContentPerPack))
-                .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PackedInPack));
+                .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PackedInPack))
+                .ForMember(src => src.Remarks, opt => opt.MapFrom(dest => dest.Remarks));
 
             Mapper.CreateMap<Ck4CIndexDocumentListViewModel, Ck4cGetOpenDocumentByParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Ck4cNumber))
@@ -107,7 +107,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReportedYears, opt => opt.MapFrom(src => src.ReportedYears))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.StatusGoverment, opt => opt.MapFrom(src => src.StatusGoverment))
-                .ForMember(dest => dest.Remarks, opt => opt.MapFrom(src => src.Remarks))
                 .ForMember(dest => dest.Ck4cItem, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItemData>>(src.Ck4cItemData)));
 
             Mapper.CreateMap<Ck4cItemData, Ck4cItem>().IgnoreAllNonExisting()
@@ -122,7 +121,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(src => src.PackedQty, opt => opt.MapFrom(dest => dest.PackedQty))
                 .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty))
                 .ForMember(src => src.ContentPerPack, opt => opt.MapFrom(dest => dest.ContentPerPack))
-                .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PackedInPack));
+                .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PackedInPack))
+                .ForMember(src => src.Remarks, opt => opt.MapFrom(dest => dest.Remarks));
 
             Mapper.CreateMap<Ck4cDecreeDocDto, Ck4cDecreeDocModel>().IgnoreAllNonExisting();
             Mapper.CreateMap<Ck4cDecreeDocModel, Ck4cDecreeDocDto>().IgnoreAllNonExisting();
