@@ -234,6 +234,13 @@ namespace Sampoerna.EMS.Website.Controllers
             return data;
         }
 
+        public ActionResult CK5MarketReturn()
+        {
+            var model = CreateInitModelView(Enums.MenuList.CK5MRETURN, Enums.CK5Type.MarketReturn);
+            return View("CK5MarketReturn", model);
+        }
+
+
         #endregion
 
         #region Save Edit
@@ -2786,5 +2793,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+
     }
 }

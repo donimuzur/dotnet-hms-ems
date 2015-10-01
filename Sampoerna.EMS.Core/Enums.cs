@@ -63,7 +63,9 @@ namespace Sampoerna.EMS.Core
             [Description("Domestic Alcohol")]
             DomesticAlcohol = 6,
             [Description("Completed")]
-            Completed = 7
+            Completed = 7,
+           [Description("Market Return")]
+            MarketReturn = 7
         }
 
        
