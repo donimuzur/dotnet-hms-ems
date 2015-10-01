@@ -994,6 +994,10 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
             }
+            if (item.Pbck7Status == Enums.DocumentStatus.Draft)
+            {
+                return RedirectToAction("Edit", new {id = item.Pbck7Id});
+            }
             return RedirectToAction("Index");
         }
 
