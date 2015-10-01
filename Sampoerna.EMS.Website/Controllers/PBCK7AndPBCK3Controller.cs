@@ -23,6 +23,7 @@ using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PBCK7AndPBCK3;
 using Sampoerna.EMS.Website.Models.PrintHistory;
@@ -46,9 +47,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IHeaderFooterBLL _headerFooterBll;
         private ILFA1BLL _lfa1Bll;
         private IPrintHistoryBLL _printHistoryBll;
-      
+        private IChangesHistoryBLL _changesHistoryBll;
         public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
-            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IPrintHistoryBLL printHistoryBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
+            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IChangesHistoryBLL changesHistoryBll, IPrintHistoryBLL printHistoryBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7AndPbck7And3Bll = pbck7AndPbck3Bll;
@@ -64,7 +65,69 @@ namespace Sampoerna.EMS.Website.Controllers
             _headerFooterBll = headerFooterBll;
             _lfa1Bll = lfa1Bll;
             _printHistoryBll = printHistoryBll;
+            _changesHistoryBll = changesHistoryBll;
         }
+
+        private void SetChanges(Pbck7AndPbck3Dto origin, Pbck7Pbck3CreateViewModel dataModified)
+        {
+            var changesData = new Dictionary<string, bool>();
+
+            changesData.Add("DATE", origin.Pbck7Date == dataModified.Pbck7Date);
+            changesData.Add("EXEC_FROM", origin.ExecDateFrom == dataModified.ExecDateFrom);
+            changesData.Add("EXEC_TO", origin.ExecDateTo == dataModified.ExecDateTo);
+            changesData.Add("LAMPIRAN", origin.Lampiran == dataModified.Lampiran);
+            changesData.Add("DOC_TYPE", origin.DocumentType == dataModified.DocumentType);
+           // changesData.Add("BACK1_NO", origin.Back1Dto.Back1Number == dataModified.Back1Dto.Back1Number);
+           // changesData.Add("BACK1_DATE", origin.Back1Dto.Back1Date == dataModified.Back1Dto.Back1Date);
+            
+
+            foreach (var listChange in changesData)
+            {
+                if (listChange.Value == false)
+                {
+                    var changes = new CHANGES_HISTORY();
+                    changes.FORM_TYPE_ID = Enums.MenuList.PBCK7;
+                    changes.FORM_ID = origin.Pbck7Id.ToString();
+                    changes.FIELD_NAME = listChange.Key;
+                    changes.MODIFIED_BY = CurrentUser.USER_ID;
+                    changes.MODIFIED_DATE = DateTime.Now;
+                    switch (listChange.Key)
+                    {
+                        case "DATE":
+                            changes.OLD_VALUE = origin.Pbck7Date.ToString("dd MMM yyyy");
+                            changes.NEW_VALUE = dataModified.Pbck7Date.Value.ToString("dd MMM yyyy");
+                            break;
+                        case "EXEC_FROM":
+                            changes.OLD_VALUE = origin.ExecDateFrom.Value.ToString("dd MMM yyyy");
+                            changes.NEW_VALUE = dataModified.ExecDateFrom.Value.ToString("dd MMM yyyy");
+                            break;
+                        case "EXEC_TO":
+                            changes.OLD_VALUE = origin.ExecDateTo.Value.ToString("dd MMM yyyy");
+                            changes.NEW_VALUE = dataModified.ExecDateTo.Value.ToString("dd MMM yyyy");
+                            break;
+                        case "LAMPIRAN":
+                            changes.OLD_VALUE = origin.Lampiran;
+                            changes.NEW_VALUE = dataModified.Lampiran;
+                            break;
+                        case "DOC_TYPE":
+                            changes.OLD_VALUE = EnumHelper.GetDescription(origin.DocumentType);
+                            changes.NEW_VALUE =EnumHelper.GetDescription(dataModified.DocumentType);
+                            break;
+                        //case "BACK1_NO":
+                        //    changes.OLD_VALUE = origin.Back1Dto.Back1Number;
+                        //    changes.NEW_VALUE = dataModified.Back1Dto.Back1Number;
+                        //    break;
+                        //case "BACK1_DATE":
+                        //    changes.OLD_VALUE = origin.Back1Dto.Back1Date.Value.ToString("dd MMM yyyy");
+                        //    changes.NEW_VALUE = dataModified.Back1Dto.Back1Date.Value.ToString("dd MMM yyyy");
+                        //    break;
+                     
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+        }
+
         [HttpPost]
         public ActionResult AddPrintHistoryPbck7(int id)
         {
@@ -555,9 +618,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Detail", new {id = id});
             }
             GetDetailPbck7(existingData);
-           
+            
           
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
+           
             return View("Edit", InitialModel(model));
         }
         public ActionResult Detail(int? id)
@@ -585,6 +649,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.PrintHistoryListPbck3 = printHistory;
                 }
             }
+            var changesHistoryPbck = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK7, id.Value.ToString());
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changesHistoryPbck);
+           
             return View("Detail", model);
         }
 
@@ -914,6 +981,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var plant = _plantBll.GetId(item.PlantId);
             item.PlantCity = plant.ORT01;
             item.PlantName = plant.NAME1;
+            var origin = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+            SetChanges(origin,model);
+
+
             _pbck7AndPbck7And3Bll.InsertPbck7(item);
             if(model.IsSaveSubmit)
             {
