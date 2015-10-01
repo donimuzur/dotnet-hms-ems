@@ -646,14 +646,14 @@ namespace Sampoerna.EMS.BLL
                    break;
                case Enums.ActionType.GovApprove:
                    GovApproveDocument(input);
-                   isNeedSendNotif = true;
+                   //isNeedSendNotif = true;
                    break;
                case Enums.ActionType.GovReject:
                    GovRejectedDocument(input);
                    break;
                case Enums.ActionType.GovPartialApprove:
                    GovPartialApproveDocument(input);
-                   isNeedSendNotif = true;
+                   //isNeedSendNotif = true;
                    break;
               
            }
@@ -672,9 +672,7 @@ namespace Sampoerna.EMS.BLL
            var pbck4Dto = Mapper.Map<Pbck4Dto>(_repository.Get(c => c.PBCK4_ID == input.DocumentId).FirstOrDefault());
 
            var mailProcess = ProsesMailNotificationBody(pbck4Dto, input);
-
-          // _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
-
+           
            //distinct double To email
            List<string> ListTo = mailProcess.To.Distinct().ToList();
 
@@ -829,7 +827,10 @@ namespace Sampoerna.EMS.BLL
                    if (input.UserRole == Enums.UserRole.Manager) //rejected by manager
                    {
                        //add cc poa
-                       rc.CC.Add(_userBll.GetUserById(pbck4Dto.APPROVED_BY_POA).EMAIL);
+                       if (pbck4Dto.APPROVED_BY_POA != null)
+                       {
+                           rc.CC.Add(_userBll.GetUserById(pbck4Dto.APPROVED_BY_POA).EMAIL);
+                       }
                    }
 
                    rc.IsCCExist = true;
