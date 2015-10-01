@@ -123,16 +123,17 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public List<CK5> GetCK5ByType(Enums.CK5Type ck5Type)
+        public List<CK5Dto> GetCk5ByType(Enums.CK5Type ck5Type)
         {
-            //includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1";
-            return _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
+            
+             var dtData = _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
+
+             return Mapper.Map<List<CK5Dto>>(dtData);
         }
 
         public List<CK5Dto> GetInitDataListIndex(Enums.CK5Type ck5Type)
         {
-           // includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
-
+          
             var dtData = _repository.Get(null, null, includeTables).ToList();
 
             return Mapper.Map<List<CK5Dto>>(dtData);

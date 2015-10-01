@@ -92,10 +92,10 @@ function OnReadyFunction(ck5Type) {
         $('#information').addClass('active');
         $('#upload').removeClass('active');
 
-        $('#collapse5').addClass('in');        
+        $('#collapse5').addClass('in');
 
-
-        if (ck5Type == 'Export' || ck5Type == 'PortToImporter' || ck5Type == 'Manual') {
+       
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter' || ck5Type == 'Manual' || ck5Type == 'MarketReturn') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
