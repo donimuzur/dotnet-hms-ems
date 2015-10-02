@@ -146,6 +146,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.BrandDescription = brandDesc.BRAND_CE;
                 data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
                 data.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
+                data.ProdQtyStick = Convert.ToDecimal(model.QtyPackedStr) + Convert.ToDecimal(model.QtyUnpackedStr);
 
                 data.CreatedDate = DateTime.Now;
 
@@ -261,7 +262,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
-
+            dbPrductionNew.ProdQtyStick = Convert.ToDecimal(model.QtyPackedStr) +
+                                          Convert.ToDecimal(model.QtyUnpackedStr);
             
 
             try
@@ -336,7 +338,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.ChangesHistoryList =
                 Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
-                    companyCode + "_" + plantWerk + "_" + faCode + "_" + productionDate.ToString("ddMMMyyyy")));
+                  "Daily_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + productionDate.ToString("ddMMMyyyy")));
 
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
