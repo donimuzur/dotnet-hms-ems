@@ -241,15 +241,10 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK3 Gov Status</label>
                                         <div class="col-md-8">
-                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
-                                            {
-                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
-                                            }
-                                            else
-                                            {
+                                            
                                                 @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
 
-                                            }
+                                            
                                         </div>
                                     </div>
                                 </div>
