@@ -525,8 +525,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval ||
-                (dbData.STATUS != Enums.DocumentStatus.Completed && dbData.DECREE_DATE == null))
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
@@ -555,8 +554,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval ||
-                (dbData.STATUS != Enums.DocumentStatus.Completed && dbData.DECREE_DATE == null))
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
