@@ -462,7 +462,7 @@
                                     <li><a id="MenuPBCK7CompleteIndex" href="@Url.Action("Pbck7Completed", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-7 Completed Doc </a></li>
                                     <li><a id="MenuPBCK3CompleteIndex" href="@Url.Action("Pbck3Completed", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-3 Completed Doc</a></li>
 
-                                 </ul>
+                                </ul>
                             </div>
                             <div class="collapse-menu">
                                 <a href="#" class="list-group-item list-parent">
@@ -547,9 +547,9 @@
                         case Enums.MenuList.PBCK4:
                         <div class="list-group">
                             @*<a href="#" class="list-group-item">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Dashboard</span>
-                            </a>*@
+                                    <i class="fa fa-tachometer"></i>
+                                    <span>Dashboard</span>
+                                </a>*@
                             <div id="menuPbck4OpenDocuments" class="collapse-menu open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
@@ -572,21 +572,40 @@
                                 </ul>
                             </div>
                             @*<div class="other">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-th"></i>
-                                    <span>Other Modules</span>
+                                    <a href="#" class="list-group-item">
+                                        <i class="fa fa-th"></i>
+                                        <span>Other Modules</span>
+                                    </a>
+                                    <ul class="child other-menu">
+                                        <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
+                                        <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                                    </ul>
+                                </div>*@
+                        </div>
+                            break;
+
+                        case Enums.MenuList.CK5MRETURN:
+                        <div class="list-group">
+                          
+                            <div id="menuCk5MarketReturnOpenDocuments" class="collapse-menu open">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Document List</span>
+                                    <i class="down fa fa-caret-down"></i>
                                 </a>
-                                <ul class="child other-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                                <ul class="child list">
+                                    <li><a id="liCK5MarketReturnOpenDocument"  href="@Url.Action("CK5MarketReturn", "CK5")"><i class="fa fa-angle-right"></i>Open Document</a></li>
+                                    <li><a id="liCK5MarketReturnCompleted" href="@Url.Action("CK5MarketReturnCompleted", "CK5")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
                                 </ul>
-                            </div>*@
+                            </div>
+                           
+
                         </div>
                             break;
                     }
