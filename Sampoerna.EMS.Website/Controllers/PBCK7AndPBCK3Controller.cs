@@ -956,6 +956,14 @@ namespace Sampoerna.EMS.Website.Controllers
             if (item.Pbck7GovStatus == Enums.DocumentStatusGov.FullApproved)
             {
                 item.Pbck7Status = Enums.DocumentStatus.GovApproved;
+                if (exItems != null)
+                {
+                    foreach (var itemUpload in exItems)
+                    {
+                        itemUpload.Back1Qty = itemUpload.Pbck7Qty;
+                        _pbck7AndPbck7And3Bll.InsertPbck7Item(itemUpload);
+                    }
+                }
             }
             if (item.Pbck7GovStatus == Enums.DocumentStatusGov.Rejected)
             {
@@ -982,6 +990,7 @@ namespace Sampoerna.EMS.Website.Controllers
                
 
             }
+           
             item.ModifiedBy = CurrentUser.USER_ID;
             item.ModifiedDate = DateTime.Now;
             var plant = _plantBll.GetId(item.PlantId);
@@ -1194,7 +1203,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
             
-
             item.UploadItems = null;
             _pbck7AndPbck7And3Bll.InsertPbck7(item);
             AddMessageInfo("Approve Success", Enums.MessageInfoType.Success);
