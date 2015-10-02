@@ -1976,7 +1976,7 @@ namespace Sampoerna.EMS.BLL
                 p => ((input.Pbck1.Pbck1Id == null || p.PBCK1_ID != input.Pbck1.Pbck1Id) && p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId
                     && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodFrom
                     || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo || (p.PERIOD_FROM > input.Pbck1.PeriodFrom && p.PERIOD_TO < input.Pbck1.PeriodTo))
-                    && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
+                    && ((input.Pbck1.SupplierPlantWerks != null && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks) || (input.Pbck1.SupplierPlantWerks == null && p.SUPPLIER_PLANT == input.Pbck1.SupplierPlant)) && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
             );
 
             var data = Mapper.Map<List<Pbck1Dto>>(dbData);
@@ -1990,12 +1990,14 @@ namespace Sampoerna.EMS.BLL
         public Pbck1Dto GetPBCK1Reference(Pbck1ReferenceSearchInput input)
         {
             var dbData = _repository.Get(
-                p => p.PBCK1_TYPE == Enums.PBCK1Type.New && p.STATUS == Enums.DocumentStatus.Completed
-                    && p.NPPBKC_ID == input.NppbkcId
-                    && (p.PERIOD_FROM <= input.PeriodFrom && p.PERIOD_TO >= input.PeriodFrom
-                    || p.PERIOD_FROM <= input.PeriodTo && p.PERIOD_TO >= input.PeriodTo)
-                    && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && p.EXC_GOOD_TYP == input.GoodTypeId
+            p => p.PBCK1_TYPE == Enums.PBCK1Type.New && p.STATUS == Enums.DocumentStatus.Completed
+                && p.NPPBKC_ID == input.NppbkcId
+                && (p.PERIOD_FROM <= input.PeriodFrom && p.PERIOD_TO >= input.PeriodFrom
+                || p.PERIOD_FROM <= input.PeriodTo && p.PERIOD_TO >= input.PeriodTo)
+                && ((input.SupplierPlantWerks != "" && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks) || (input.SupplierPlantWerks == "" && p.SUPPLIER_PLANT == input.SupplierPlant)) && p.EXC_GOOD_TYP == input.GoodTypeId
             ).FirstOrDefault();
+           
+            
             var data = Mapper.Map<Pbck1Dto>(dbData);
 
             return data;

@@ -541,7 +541,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (model.Detail.Pbck1ProdConverter.Count == 0)
                 {
                     AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
-                    return CreateInitial(model);
+                    model = ModelInitial(model);
+                    model = SetHistory(model);
+                    return View(model);
+                }
+
+                var validate = validationForm(model);
+
+                if (validate != "")
+                {
+                    AddMessageInfo(validate, Enums.MessageInfoType.Error);
+                    model = ModelInitial(model);
+                    model = SetHistory(model);
+                    return View(model);
                 }
 
                 if (!ModelState.IsValid)
@@ -783,6 +795,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     return CreateInitial(model);
                 }
 
+                var validate = validationForm(model);
+
+                if( validate != ""){
+                    AddMessageInfo(validate, Enums.MessageInfoType.Error);
+                    return CreateInitial(model);
+                }
+
                 if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
@@ -892,6 +911,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             });
             return View("CompletedDocument", model);
+        }
+
+        public string validationForm(Pbck1ItemViewModel model) { 
+            var message = "";
+
+            if (new DateTime(model.Detail.Lack1FormYear, model.Detail.Lack1FromMonthId, 1) > new DateTime(model.Detail.Lack1ToYear, model.Detail.Lack1ToMonthId, 1))
+            {
+                message = "Lack 1 From cannot be greater than Lack 1 To";
+            }
+
+            if (model.Detail.PlanProdFrom > model.Detail.PlanProdTo)
+            {
+                message = "Plan Production From cannot be greater than Plan Production To";
+            }
+
+            return message;
         }
 
         [HttpPost]
@@ -2363,9 +2398,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetPBCK1Reference(DateTime periodFrom, DateTime periodTo, string nppbkcId, string supplierNppbkcId, string supplierPlantWerks, string goodType)
+        public JsonResult GetPBCK1Reference(DateTime periodFrom, DateTime periodTo, string nppbkcId, string supplierNppbkcId, string supplierPlantWerks, string supplierPlant, string goodType)
         {
-            var reference = _pbck1Bll.GetPBCK1Reference(new Pbck1ReferenceSearchInput() { NppbkcId = nppbkcId, PeriodFrom = periodFrom, PeriodTo = periodTo, SupllierNppbkcId = supplierNppbkcId, SupplierPlantWerks = supplierPlantWerks, GoodTypeId = goodType });
+            var reference = _pbck1Bll.GetPBCK1Reference(new Pbck1ReferenceSearchInput() { NppbkcId = nppbkcId, PeriodFrom = periodFrom, PeriodTo = periodTo, SupllierNppbkcId = supplierNppbkcId, SupplierPlantWerks = supplierPlantWerks, SupplierPlant = supplierPlant,GoodTypeId = goodType });
             if (reference == null)
             {
                 return Json(false);

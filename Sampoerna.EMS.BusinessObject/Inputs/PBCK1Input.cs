@@ -121,6 +121,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime PeriodTo { get; set; }
         public string SupllierNppbkcId { get; set; }
         public string SupplierPlantWerks { get; set; }
+        public string SupplierPlant { get; set; }
         public string GoodTypeId { get; set; }
     }
 }

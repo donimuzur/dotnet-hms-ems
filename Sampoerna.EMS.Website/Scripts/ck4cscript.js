@@ -83,6 +83,44 @@ function ValidateGovInput() {
         }
     }
 
+    if ($("#poa-files .row").length == 0) {
+        $('#ModalCk4cDoc').modal('show');
+        result = false;
+    }
+
+    return result;
+}
+
+function ValidateCompletedInput() {
+    var result = true;
+    var govStatus = $('#Details_StatusGoverment').find("option:selected").val();
+
+    if (govStatus == '' && $('#Details_DecreeDate').val() == '' && $("#poa-files .row").length == 0) {
+        return true;
+    }
+
+    if (govStatus == '') {
+        AddValidationClass(false, 'Details_StatusGoverment');
+        result = false;
+    }
+
+    if ($('#Details_DecreeDate').val() == '') {
+        AddValidationClass(false, 'Details_DecreeDate');
+        result = false;
+    }
+
+    if ($('#Details_StatusGoverment').val() == 'Rejected') {
+        if ($('#Details_Comment').val() == '') {
+            AddValidationClass(false, 'Details_Comment');
+            result = false;
+        }
+    }
+
+    if ($("#poa-files .row").length == 0) {
+        $('#ModalCk4cDoc').modal('show');
+        result = false;
+    }
+
     return result;
 }
 
