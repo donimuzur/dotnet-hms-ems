@@ -885,7 +885,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 back1Dto.Back1Number = model.Back1Dto.Back1Number;
                 back1Dto.Back1Date = model.Back1Dto.Back1Date;
                 back1Dto.Pbck7Id = existingData.Pbck7Id;
-               
+                var uploadItem = model.UploadItems;
+                foreach (var pbck7ItemUpload in uploadItem)
+                {
+                    _pbck7AndPbck7And3Bll.InsertPbck7Item(pbck7ItemUpload);
+
+                }
+                
                 _pbck7AndPbck7And3Bll.InsertBack1(back1Dto);
                 if (existingData.Pbck7Status == Enums.DocumentStatus.GovApproved)
                 {
@@ -993,6 +999,10 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
+            }
+            if (item.Pbck7Status == Enums.DocumentStatus.Draft)
+            {
+                return RedirectToAction("Edit", new {id = item.Pbck7Id});
             }
             return RedirectToAction("Index");
         }
@@ -1247,10 +1257,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var item = new Pbck7ItemUpload();
                     item.FaCode = datarow[0];
+                    //item.Pbck7Qty = Convert.ToDecimal(datarow[1]);
+                    //item.Back1Qty = Convert.ToDecimal(datarow[2]);
+                    //item.FiscalYear = Convert.ToInt32(datarow[3]);
+                    //item.ExciseValue = Convert.ToDecimal(datarow[4]);
                     item.Pbck7Qty = Convert.ToDecimal(datarow[1]);
-                    item.Back1Qty = Convert.ToDecimal(datarow[2]);
-                    item.FiscalYear = Convert.ToInt32(datarow[3]);
-                    item.ExciseValue = Convert.ToDecimal(datarow[4]);
+                    item.FiscalYear = Convert.ToInt32(datarow[2]);
+                    
                     try
                     {
                         var existingBrand = _brandRegistration.GetByIdIncludeChild(plantId, item.FaCode);
@@ -1262,6 +1275,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             item.Content = Convert.ToInt32(existingBrand.BRAND_CONTENT);
                             item.Hje = existingBrand.HJE_IDR;
                             item.Tariff = existingBrand.TARIFF;
+                            item.ExciseValue = item.Content*item.Tariff*item.Pbck7Qty;
                         }
                     }
                     catch (Exception)
