@@ -376,7 +376,18 @@
                 success: function(response) {
 
                     $('#tb-upload-excel').html('');
+
+                    if (response == -1) {
+                        $('#btn-save-upload').attr("disabled", "disabled");
+                        return false;
+                    }
+
                     uploaditems = JSON.parse(response);
+                    if (uploaditems.length == 0) {
+                        $('#btn-save-upload').attr("disabled", "disabled");
+                        return false;
+                    }
+
 
                     for (var i = 0; i < uploaditems.length; i++) {
                         var tr = '<tr>' +

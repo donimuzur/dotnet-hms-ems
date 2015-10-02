@@ -97,7 +97,7 @@
 
         function createColumnWithHiddenField(text, name) {
             var displayText = text;
-            
+
             if (text == null) {
                 displayText = '';
             }
@@ -137,10 +137,19 @@
                 processData: false,
 
                 success: function(response) {
-
                     $('#tb-upload-excel').html('');
-                    uploaditems = JSON.parse(response);
 
+                    if (response == -1) {
+                        $('#btn-save-upload').attr("disabled", "disabled");
+                        return false;
+                    }
+
+                    uploaditems = JSON.parse(response);
+                    if (uploaditems.length == 0) {
+                        $('#btn-save-upload').attr("disabled", "disabled");
+                        return false;
+                    }
+                    
                     for (var i = 0; i < uploaditems.length; i++) {
                         var tr = '<tr>' +
                             createColumn(i + 1) +
