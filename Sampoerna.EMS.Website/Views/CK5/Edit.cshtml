@@ -17,7 +17,7 @@
                     <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
-                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                 </div>
             </div>
@@ -273,7 +273,27 @@
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script src="~/Scripts/CK5InputManual.js"></script>
     <script type="text/javascript">
-    $(document).ready(function () {
+        $(document).ready(function () {
+
+            $('#btnBack').click(function (e) {
+                //alert('@Enums.CK5Type.Domestic.ToString()');
+
+                if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                    location.href = '@Url.Action("CK5Export", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                    location.href = '@Url.Action("CK5Import", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                    location.href = '@Url.Action("CK5Manual", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+
+            });
+
+
         OnReadyFunction('@Model.Ck5Type.ToString()');
         //enable upload
         $('#btnUploadInfo').enable();

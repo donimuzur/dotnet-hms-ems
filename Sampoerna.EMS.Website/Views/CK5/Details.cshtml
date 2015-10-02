@@ -312,6 +312,8 @@
                     location.href = '@Url.Action("CK5Import", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
                     location.href = '@Url.Action("CK5Manual", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';
 
             });
             
