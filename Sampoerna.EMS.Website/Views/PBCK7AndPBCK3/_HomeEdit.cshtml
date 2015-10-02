@@ -12,7 +12,7 @@
                 <div id="headingOne" role="tab" class="panel-heading">
                     <h4 class="panel-title">
                         <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse" class="">
-                            PBCK-3 PBCK-7 Detail
+                            PBCK-7 Detail
                             <i class="fa fa-caret-down"></i>
                         </a>
                     </h4>
@@ -44,38 +44,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK-3 No</label>
-                                        <div class="col-md-8">
-                                            @Html.HiddenFor(x=>x.Pbck3Dto.Pbck3Number)
-                                            @Html.TextBox("pbck3_no", Model.Pbck3Dto.Pbck3Number, new {@class = "form-control", @disabled = "disabled"})
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK-3 Date</label>
-                                        <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @if(Model.Pbck7Status == Enums.DocumentStatus.Completed)
-                                                {
-                                                    @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @Value = Model.Pbck3Dto.Pbck3Date.HasValue ? Model.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy") : null})
-
-                                                }
-                                                else
-                                                {
-                                                    @Html.TextBox("pbck3_date", Model.Pbck3Dto.Pbck3Date.HasValue ?  Model.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy") : null, new { @class = "form-control", @disabled = "disabled"  })
-
-                                                }
-                                                    <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                               <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Document Type</label>
                                         <div class="col-md-8">
@@ -160,24 +129,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK3 Gov Status</label>
-                                        <div class="col-md-8">
-                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
-                                            {
-                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
-                                            }
-                                            else
-                                            {
-                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
-
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
+                           </div>
                         </div>
                     </div>
                 </div>
@@ -221,6 +173,7 @@
                                         {
                                             <tr>
                                                 <td>@Html.HiddenFor(x=>x.UploadItems[i].Id)
+                                                    @Html.HiddenFor(x=>x.UploadItems[i].Pbck7Id)
                                                     @(i+1)</td>
                                                 <td>
                                                     @Html.HiddenFor(x => x.UploadItems[i].FaCode)
@@ -242,8 +195,16 @@
                                                     @Model.UploadItems[i].Pbck7Qty
                                                 </td>
                                                 <td>
-                                                    @Html.HiddenFor(x => x.UploadItems[i].Back1Qty)
-                                                    @Model.UploadItems[i].Back1Qty
+                                                    @if (Model.Pbck7GovStatus == Sampoerna.EMS.Core.Enums.DocumentStatusGov.FullApproved
+                                                        || Model.Pbck7Status == Enums.DocumentStatus.WaitingGovApproval)
+                                                    {
+                                                        @Html.HiddenFor(x => x.UploadItems[i].Back1Qty)
+                                                        @Model.UploadItems[i].Back1Qty
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBoxFor(x=>x.UploadItems[i].Back1Qty)
+                                                    }
                                                 </td>
                                                 <td>
                                                     @Html.HiddenFor(x => x.UploadItems[i].SeriesValue)
@@ -277,6 +238,66 @@
             </div>
         </div>
         @Html.Partial("_Back1", Model)
+        <div aria-multiselectable="true" role="tablist" id="accordionSix" class="panel-group">
+            <div class="panel panel-default">
+                <div id="headingSix" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapseSix" aria-expanded="true" href="#collapseSix" data-parent="#accordion" data-toggle="collapse" class="">
+                            PBCK-3 Detail
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="headingSix" role="tabpanel" class="panel-collapse collapse in" id="collapseSix" style="">
+                    <div class="panel-body">
+                        <div role="form" class="form-excise">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Number, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Date</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @disabled = "disabled" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK3 Gov Status</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
+                                            }
+                                            else
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @Html.Partial("_Back", Model)
         @Html.Partial("_WorkflowHistoryPbck7", Model)
         @Html.Partial("_WorkflowHistoryPbck3", Model)

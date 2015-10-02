@@ -55,13 +55,18 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UnSealingNumber { get; set; }
         public DateTime? UnSealingDate { get; set; }
 
+        public Enums.CK5Type Ck5Type { get; set; }
+
     }
 
     public class CK5WorkflowDocumentData
     {
         public string RegistrationNumber { get; set; }
         public DateTime RegistrationDate { get; set; }
-        public List<CK5_FILE_UPLOADDto> Ck5FileUploadList { get; set; } 
+        public List<CK5_FILE_UPLOADDto> Ck5FileUploadList { get; set; }
+
+        public string Back1Number { get; set; }
+        public DateTime? Back1Date { get; set; }
     }
 
     public class CK5WorkflowHistoryInput
@@ -112,4 +117,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     }
 
+    public class Back1DataOutput
+    {
+        public string Back1Number { get; set; }
+        public DateTime? Back1Date { get; set; }
+   }
 }

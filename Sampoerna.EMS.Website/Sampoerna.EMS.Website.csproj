@@ -1175,7 +1175,10 @@
     <Content Include="Views\PBCK7AndPBCK3\_Pbck7SummaryIndex.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Pbck3SummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck3SummaryIndex.cshtml" />
+    <Content Include="Views\CK5\CK5MarketReturn.cshtml" />
     <Content Include="Views\CK4C\_HomeCompleted.cshtml" />
+    <Content Include="Views\CK5\_CK5GovApprovalMarketReturn.cshtml" />
+    <Content Include="Views\CK5\CK5MarketReturnCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

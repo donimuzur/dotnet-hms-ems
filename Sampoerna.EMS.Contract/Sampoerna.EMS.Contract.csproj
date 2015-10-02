@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBACK1BLL.cs" />
+    <Compile Include="IBack1Services.cs" />
     <Compile Include="IBlockStockBLL.cs" />
     <Compile Include="IBrandRegistrationBLL.cs" />
     <Compile Include="IChangesHistoryBLL.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="IPbck1ProdConverterBLL.cs" />
     <Compile Include="IPbck1ProdPlanBLL.cs" />
     <Compile Include="IPbck1QuotaBLL.cs" />
+    <Compile Include="IPbck3Services.cs" />
     <Compile Include="IPBCK4BLL.cs" />
     <Compile Include="IPBCK7And3BLL.cs" />
     <Compile Include="IPOASKBLL.cs" />
