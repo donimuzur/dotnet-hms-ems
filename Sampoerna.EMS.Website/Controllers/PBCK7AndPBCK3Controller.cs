@@ -1265,10 +1265,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var item = new Pbck7ItemUpload();
                     item.FaCode = datarow[0];
-                    //item.Pbck7Qty = Convert.ToDecimal(datarow[1]);
-                    //item.Back1Qty = Convert.ToDecimal(datarow[2]);
-                    //item.FiscalYear = Convert.ToInt32(datarow[3]);
-                    //item.ExciseValue = Convert.ToDecimal(datarow[4]);
                     item.Pbck7Qty = Convert.ToDecimal(datarow[1]);
                     item.FiscalYear = Convert.ToInt32(datarow[2]);
                     
@@ -1278,24 +1274,25 @@ namespace Sampoerna.EMS.Website.Controllers
                         if (existingBrand != null)
                         {
                             item.Brand = existingBrand.BRAND_CE;
-                            item.SeriesValue =  existingBrand.ZAIDM_EX_SERIES.SERIES_CODE;
+                            item.SeriesValue = existingBrand.ZAIDM_EX_SERIES.SERIES_CODE;
                             item.ProdTypeAlias = existingBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
                             item.Content = Convert.ToInt32(existingBrand.BRAND_CONTENT);
                             item.Hje = existingBrand.HJE_IDR;
                             item.Tariff = existingBrand.TARIFF;
                             item.ExciseValue = item.Content*item.Tariff*item.Pbck7Qty;
+                            model.Add(item);
                         }
+                        else
+                        {
+                            return Json(-1);
+                        }
+
                     }
                     catch (Exception)
                     {
-
-
+                        
                     }
-                    finally
-                    {
-                        model.Add(item);
-                    }
-
+                  
                    
                 }
             }
