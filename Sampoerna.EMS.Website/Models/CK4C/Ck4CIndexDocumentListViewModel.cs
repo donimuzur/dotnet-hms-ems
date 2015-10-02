@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool AllowManagerReject { get; set; }
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowPrintDocument { get; set; }
+        public bool AllowEditCompleted { get; set; }
         public string ActionType { get; set; }
 
         //selectlist
@@ -97,5 +98,6 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string ProdType { get; set; }
         public int ContentPerPack { get; set; }
         public int PackedInPack { get; set; }
+        public string Remarks { get; set; }
     }
 }

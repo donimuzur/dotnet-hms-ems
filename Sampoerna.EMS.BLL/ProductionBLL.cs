@@ -300,6 +300,7 @@ namespace Sampoerna.EMS.BLL
             changeData.Add("QTY_PACKED", origin.QtyPacked == data.QtyPacked);
             changeData.Add("QTY_UNPACKED", origin.QtyUnpacked == data.QtyUnpacked);
             changeData.Add("UOM", origin.Uom == data.Uom);
+            changeData.Add("PROD_QTY_STICK",origin.ProdQtyStick == data.ProdQtyStick);
 
             foreach (var listChange in changeData)
             {
@@ -308,7 +309,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
-                        FORM_ID = data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" + data.ProductionDate.ToString("ddMMMyyyy"),
+                        FORM_ID = "Daily_" + data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" + data.ProductionDate.ToString("ddMMMyyyy"),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
                         MODIFIED_DATE = DateTime.Now
@@ -319,34 +320,47 @@ namespace Sampoerna.EMS.BLL
                         case "COMPANY_CODE":
                             changes.OLD_VALUE = origin.CompanyCode;
                             changes.NEW_VALUE = data.CompanyCode;
+                            changes.FIELD_NAME = "Company";
                             break;
                         case "WERKS":
                             changes.OLD_VALUE = origin.PlantWerks;
                             changes.NEW_VALUE = data.PlantWerks;
+                            changes.FIELD_NAME = "Plant";
                             break;
                         case "FA_CODE":
                             changes.OLD_VALUE = origin.FaCode;
                             changes.NEW_VALUE = data.FaCode;
+                            changes.FIELD_NAME = "Finish Goods";
                             break;
                         case "PRODUCTION_DATE":
                             changes.OLD_VALUE = origin.ProductionDate.ToString();
                             changes.NEW_VALUE = data.ProductionDate.ToString();
+                            changes.FIELD_NAME = "Daily Production Date";
                             break;
                         case "BRAND_DESC":
                             changes.OLD_VALUE = origin.BrandDescription;
                             changes.NEW_VALUE = data.BrandDescription;
+                            changes.FIELD_NAME = "Brand Description";
                             break;
                         case "QTY_PACKED":
                             changes.OLD_VALUE = origin.QtyPacked.ToString();
                             changes.NEW_VALUE = data.QtyPacked.ToString();
+                            changes.FIELD_NAME = "Qty Packed";
                             break;
                         case "QTY_UNPACKED":
                             changes.OLD_VALUE = origin.QtyUnpacked.ToString();
                             changes.NEW_VALUE = data.QtyUnpacked.ToString();
+                            changes.FIELD_NAME = "Qty Unpacked";
                             break;
                         case "UOM":
                             changes.OLD_VALUE = origin.Uom;
                             changes.NEW_VALUE = data.Uom;
+                            changes.FIELD_NAME = "Uom";
+                            break;
+                        case "PROD_QTY_STICK":
+                            changes.OLD_VALUE = origin.ProdQtyStick.ToString();
+                            changes.NEW_VALUE = data.ProdQtyStick.ToString();
+                            changes.FIELD_NAME = "Product Qty Stick";
                             break;
                         default: break;
                     }

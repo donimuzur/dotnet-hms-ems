@@ -46,6 +46,8 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationBLL _brandRegistrationBll;
         private ILACK1BLL _lack1Bll;
         private IT001KBLL _t001Kbll;
+        private IPlantBLL _plantBll;
+
 
         private string includeTables = "UOM, UOM1, MONTH, MONTH1, USER, USER1, USER2";
 
@@ -74,6 +76,7 @@ namespace Sampoerna.EMS.BLL
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _lack1Bll = new LACK1BLL(_uow, _logger);
             _t001Kbll = new T001KBLL(_uow, _logger);
+            _plantBll = new PlantBLL(_uow, _logger);
 
         }
 
@@ -303,6 +306,9 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("PERIOD_TO", origin.PeriodTo == data.PeriodTo);
             changesData.Add("REPORTED_ON", origin.ReportedOn == data.ReportedOn);
             changesData.Add("NPPBKC_ID", origin.NppbkcId == data.NppbkcId);
+            changesData.Add("POA_LIST", origin.NppbkcId == data.NppbkcId);
+            changesData.Add("COMPANY", origin.NppbkcId == data.NppbkcId);
+
             changesData.Add("IS_NPPBKC_IMPORT", origin.IsNppbkcImport == data.IsNppbkcImport);
             changesData.Add("EXC_GOOD_TYP", origin.GoodType == data.GoodType);
             changesData.Add("SUPPLIER_PLANT", origin.SupplierPlant == data.SupplierPlant);
@@ -331,6 +337,7 @@ namespace Sampoerna.EMS.BLL
             {
                 if (!listChange.Value)
                 {
+                    var skip = false;
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Enums.MenuList.PBCK1,
@@ -383,6 +390,49 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.NppbkcId;
                             changes.FIELD_NAME = "NPPBKC ID";
                             break;
+                        case "POA_LIST":
+                            List<string> List_POA_OLD = new List<string>();
+                            List<string> List_POA_NEW = new List<string>();
+
+                            foreach (var old in _poaBll.GetPoaByNppbkcIdAndMainPlant(origin.NppbkcId))
+                            {
+                                List_POA_OLD.Add(old.PRINTED_NAME);
+                            }
+
+
+                            foreach (var n in _poaBll.GetPoaByNppbkcIdAndMainPlant(data.NppbkcId))
+                            {
+                                List_POA_NEW.Add(n.PRINTED_NAME);
+                            }
+
+                            string POA_OLD = string.Join(", ", List_POA_OLD.ToArray());
+                            string POA_NEW = string.Join(", ", List_POA_NEW.ToArray());
+
+                            if (POA_OLD == POA_NEW)
+                                skip = true;
+
+                            changes.OLD_VALUE = POA_OLD;
+                            changes.NEW_VALUE = POA_NEW;
+
+                            changes.FIELD_NAME = "POA";
+                            break;
+                        case "COMPANY":
+                            var data_old = _plantBll.GetMainPlantByNppbkcId(origin.NppbkcId);
+                            var data_new = _plantBll.GetMainPlantByNppbkcId(data.NppbkcId);
+
+                            if ((data_old == null && data_new == null))
+                                skip = true;
+
+                            if ((data_old != null && data_new != null) && (data_old.CompanyName == data_new.CompanyName))
+                                skip = true;
+
+                            if (!skip)
+                            {
+                                changes.OLD_VALUE = data_old == null? "" :data_old.CompanyName;
+                                changes.NEW_VALUE = data_new == null ? "" : data_new.CompanyName;
+                                changes.FIELD_NAME = "COMPANY";
+                            }
+                            break;
                         case "IS_NPPBKC_IMPORT":
                             changes.OLD_VALUE = origin.IsNppbkcImport != null ? origin.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
                             changes.NEW_VALUE = data.IsNppbkcImport != null ? data.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
@@ -394,8 +444,8 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "Exciseable Goods Description";
                             break;
                         case "SUPPLIER_PLANT":
-                            changes.OLD_VALUE = origin.SupplierPlant;
-                            changes.NEW_VALUE = data.SupplierPlant;
+                            changes.OLD_VALUE = origin.SupplierPlantWerks != null && origin.SupplierPlantWerks != "" ? origin.SupplierPlantWerks + "-" + origin.SupplierPlant : origin.SupplierPlant;
+                            changes.NEW_VALUE = data.SupplierPlantWerks != null && data.SupplierPlantWerks != ""? data.SupplierPlantWerks + "-"+ data.SupplierPlant:data.SupplierPlant;
                             changes.FIELD_NAME = "Supplier Plant";
                             break;
                         case "SUPPLIER_PORT_ID":
@@ -431,7 +481,7 @@ namespace Sampoerna.EMS.BLL
                         case "PLAN_PROD_FROM":
                             changes.OLD_VALUE = origin.PlanProdFrom.HasValue ? origin.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
                             changes.NEW_VALUE = data.PlanProdFrom.HasValue ? data.PlanProdFrom.Value.ToString("dd MMM yyyy") : "NULL";
-                            changes.FIELD_NAME = "Plan Produtcion From";
+                            changes.FIELD_NAME = "Plan Production From";
                             break;
                         case "PLAN_PROD_TO":
                             changes.OLD_VALUE = origin.PlanProdTo.HasValue ? origin.PlanProdTo.Value.ToString("dd MMM yyyy") : "NULL";
@@ -445,28 +495,28 @@ namespace Sampoerna.EMS.BLL
                             break;
                         case "REQUEST_QTY_UOM":
                             changes.OLD_VALUE = !string.IsNullOrEmpty(origin.RequestQtyUomId) ? origin.RequestQtyUomName : "NULL";
-                            changes.NEW_VALUE = data.RequestQtyUomName;
+                            changes.NEW_VALUE = _uomBll.GetUomNameById(data.RequestQtyUomId);
                             changes.FIELD_NAME = "Request Qty UOM";
                             break;
                         case "LACK1_FROM_MONTH":
                             changes.OLD_VALUE = origin.Lack1FromMonthId.HasValue ? origin.Lack1FromMonthName : "NULL";
-                            changes.NEW_VALUE = data.Lack1FromMonthName;
+                            changes.NEW_VALUE = _monthBll.GetMonth(data.Lack1FromMonthId.Value).MONTH_NAME_ENG;
                             changes.FIELD_NAME = "LACK-1 From Month";
                             break;
                         case "LACK1_FROM_YEAR":
-                            changes.OLD_VALUE = origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Value.ToString("N0") : "NULL";
-                            changes.NEW_VALUE = data.Lack1FormYear.Value.ToString("N0");
-                            changes.FIELD_NAME = "LACK-1 From Month Year";
+                            changes.OLD_VALUE = origin.Lack1FormYear.HasValue ? origin.Lack1FormYear.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.Lack1FormYear.Value.ToString();
+                            changes.FIELD_NAME = "LACK-1 From Year";
                             break;
                         case "LACK1_TO_MONTH":
                             changes.OLD_VALUE = origin.Lack1ToMonthId.HasValue ? origin.Lack1ToMonthName : "NULL";
-                            changes.NEW_VALUE = data.Lack1ToMonthName;
+                            changes.NEW_VALUE = _monthBll.GetMonth(data.Lack1ToMonthId.Value).MONTH_NAME_ENG;
                             changes.FIELD_NAME = "LACK-1 To Month";
                             break;
                         case "LACK1_TO_YEAR":
-                            changes.OLD_VALUE = origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Value.ToString("N0") : "NULL";
-                            changes.NEW_VALUE = data.Lack1ToYear.Value.ToString("N0");
-                            changes.FIELD_NAME = "LACK-1 From Year";
+                            changes.OLD_VALUE = origin.Lack1ToYear.HasValue ? origin.Lack1ToYear.Value.ToString() : "NULL";
+                            changes.NEW_VALUE = data.Lack1ToYear.Value.ToString();
+                            changes.FIELD_NAME = "LACK-1 To Year";
                             break;
                         case "STATUS":
                             changes.OLD_VALUE = EnumHelper.GetDescription(origin.Status);
@@ -507,11 +557,12 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = !string.IsNullOrEmpty(origin.LatestSaldoUomId)
                                 ? origin.LatestSaldoUomName
                                 : "NULL";
-                            changes.NEW_VALUE = data.LatestSaldoUomName;
+                            changes.NEW_VALUE = _uomBll.GetUomNameById(data.LatestSaldoUomId);
                             changes.FIELD_NAME = "Latest Saldo UOM";
                             break;
                     }
-                    _changesHistoryBll.AddHistory(changes);
+                    if(!skip)
+                        _changesHistoryBll.AddHistory(changes);
                     changed = true;
                 }
             }
@@ -939,15 +990,15 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovApprove:
                     GovApproveDocument(input);
-                    isNeedSendNotif = false;
+                    //isNeedSendNotif = false;
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
-                    isNeedSendNotif = false;
+                    //isNeedSendNotif = false;
                     break;
                 case Enums.ActionType.GovPartialApprove:
                     GovPartialApproveDocument(input);
-                    isNeedSendNotif = false;
+                    //isNeedSendNotif = false;
                     break;
             }
 
@@ -1078,8 +1129,8 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS = Enums.DocumentStatus.Rejected;
 
             //todo ask
-            dbData.APPROVED_BY_POA = null;
-            dbData.APPROVED_DATE_POA = null;
+            //dbData.APPROVED_BY_POA = null;
+            //dbData.APPROVED_DATE_POA = null;
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -1110,8 +1161,8 @@ namespace Sampoerna.EMS.BLL
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
             dbData.STATUS_GOV = Enums.DocumentStatusGov.FullApproved;
 
-            dbData.APPROVED_BY_POA = input.UserId;
-            dbData.APPROVED_DATE_POA = DateTime.Now;
+            //dbData.APPROVED_BY_POA = input.UserId;
+            //dbData.APPROVED_DATE_POA = DateTime.Now;
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
@@ -1145,8 +1196,8 @@ namespace Sampoerna.EMS.BLL
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
             dbData.STATUS_GOV = Enums.DocumentStatusGov.PartialApproved;
 
-            dbData.APPROVED_BY_POA = input.UserId;
-            dbData.APPROVED_DATE_POA = DateTime.Now;
+            //dbData.APPROVED_BY_POA = input.UserId;
+            //dbData.APPROVED_DATE_POA = DateTime.Now;
 
             AddWorkflowHistory(input);
         }
@@ -1168,8 +1219,8 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.STATUS_GOV = Enums.DocumentStatusGov.Rejected;
 
-            dbData.APPROVED_BY_POA = input.UserId;
-            dbData.APPROVED_DATE_POA = DateTime.Now;
+            //dbData.APPROVED_BY_POA = input.UserId;
+            //dbData.APPROVED_DATE_POA = DateTime.Now;
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -1224,7 +1275,7 @@ namespace Sampoerna.EMS.BLL
 
             var pbck1Data = Mapper.Map<Pbck1Dto>(_repository.Get(c => c.PBCK1_ID == input.DocumentId, null, includeTables).FirstOrDefault());
 
-            var mailProcess = ProsesMailNotificationBody(pbck1Data, input.ActionType);
+            var mailProcess = ProsesMailNotificationBody(pbck1Data, input.ActionType, input.Comment);
 
             //distinct double To email
             List<string> ListTo = mailProcess.To.Distinct().ToList();
@@ -1327,6 +1378,8 @@ namespace Sampoerna.EMS.BLL
             includeTables += ", PBCK12, PBCK11, PBCK1_PROD_CONVERTER, PBCK1_PROD_PLAN, PBCK1_PROD_PLAN.MONTH1, PBCK1_PROD_PLAN.UOM, PBCK1_PROD_CONVERTER.UOM, PBCK1_DECREE_DOC";
             var dbData = _repository.Get(c => c.PBCK1_ID == id, null, includeTables).FirstOrDefault();
 
+            var dbDataSuratKonversi = _repository.Get(c => c.NPPBKC_ID == dbData.NPPBKC_ID, null, includeTables).FirstOrDefault();
+
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1358,7 +1411,7 @@ namespace Sampoerna.EMS.BLL
                     if (dbData.PBCK1_PROD_CONVERTER != null && dbData.PBCK1_PROD_PLAN.Count > 0)
                     {
                         var dataJoined = (from brand in brandRegistrationDataByMainPlant
-                                          join prodConv in dbData.PBCK1_PROD_CONVERTER on brand.PROD_CODE equals prodConv.PROD_CODE
+                                          join prodConv in dbDataSuratKonversi.PBCK1_PROD_CONVERTER on brand.PROD_CODE equals prodConv.PROD_CODE
                                           select new Pbck1ReportBrandRegistrationDto()
                                           {
                                               Type = prodConv.PRODUCT_ALIAS,
@@ -1683,10 +1736,12 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        private Pbck1MailNotification ProsesMailNotificationBody(Pbck1Dto pbck1Data, Enums.ActionType actionType)
+        private Pbck1MailNotification ProsesMailNotificationBody(Pbck1Dto pbck1Data, Enums.ActionType actionType, String comment)
         {
             var bodyMail = new StringBuilder();
             var rc = new Pbck1MailNotification();
+            var rejected = _workflowHistoryBll.RejectedStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck1Data.Pbck1Id, FormType = Enums.FormType.PBCK1});
+            var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -1704,36 +1759,53 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-1</td></tr>");
             bodyMail.AppendLine();
+            if (actionType == Enums.ActionType.Reject)
+            {
+                bodyMail.Append("<tr><td>Comment</td><td> : " + comment + "</td></tr>");
+                bodyMail.AppendLine();
+            }
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Details/" + pbck1Data.Pbck1Id + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
+
+
             switch (actionType)
             {
                 case Enums.ActionType.Submit:
                     if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
-                        foreach (var poaDto in poaList)
+                        if (rejected != null)
                         {
-                            rc.To.Add(poaDto.POA_EMAIL);
+                            if (pbck1Data.ApprovedByPoaId != null)
+                            {
+                                rc.To.Add(_poaBll.GetById(pbck1Data.ApprovedByPoaId).POA_EMAIL);
+                            }
+                            else {
+                                rc.To.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
+                            }
                         }
+                        else
+                        {
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.To.Add(poaDto.POA_EMAIL);
+                            }
+                        }
+                        
                         rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
                     }
                     else if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var managerId = _poaBll.GetManagerIdByPoaId(pbck1Data.CreatedById);
-                        var managerDetail = _userBll.GetUserById(managerId);
-                        var poaData = _userBll.GetUserById(pbck1Data.CreatedById);
-                        rc.To.Add(managerDetail.EMAIL);
-                        rc.CC.Add(poaData.EMAIL);
+                        var poaData = _poaBll.GetById(pbck1Data.CreatedById);
+                        rc.To.Add(GetManagerEmail(pbck1Data.CreatedById));
+                        rc.CC.Add(poaData.POA_EMAIL);
                         
-                        var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
                         foreach (var poaDto in poaList)
                         {
-                            if (poaData.USER_ID != poaDto.POA_ID)
-                                rc.CC.Add(poaDto.POA_EMAIL);
+                            if (poaData.POA_ID != poaDto.POA_ID)
+                                rc.To.Add(poaDto.POA_EMAIL);
                         }
                     }
                     rc.IsCCExist = true;
@@ -1743,10 +1815,16 @@ namespace Sampoerna.EMS.BLL
                     {
                         rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
 
-                        var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
-                        foreach (var poaDto in poaList)
+                        if (rejected != null)
                         {
-                            rc.CC.Add(poaDto.POA_EMAIL);
+                            rc.CC.Add(_poaBll.GetById(pbck1Data.ApprovedByPoaId).POA_EMAIL);
+                        }
+                        else
+                        {
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.CC.Add(poaDto.POA_EMAIL);
+                            }
                         }
 
                         rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
@@ -1759,23 +1837,15 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is poa user
                             rc.To.Add(poaData.POA_EMAIL);
-                            var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
-                            foreach (var poaDto in poaList)
-                            {
-                                if(poaData.POA_ID != poaDto.POA_ID)
-                                    rc.CC.Add(poaDto.POA_EMAIL);
-                            }
+                            rc.CC.Add(GetManagerEmail(pbck1Data.CreatedById));
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(pbck1Data.CreatedById);
                             rc.To.Add(userData.EMAIL);
-                            var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
-                            foreach (var poaDto in poaList)
-                            {
-                                rc.CC.Add(poaDto.POA_EMAIL);
-                            }
+                            rc.CC.Add(_poaBll.GetById(pbck1Data.ApprovedByPoaId).POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
                         }
                     }
                     rc.IsCCExist = true;
@@ -1783,16 +1853,86 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(pbck1Data.CreatedById);
-                    rc.To.Add(userDetail.EMAIL);
-                    
-                    var poa = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
-                    foreach (var poaDto in poa)
+                    var poaData2 = _poaBll.GetById(pbck1Data.CreatedById);
+
+                    if (pbck1Data.ApprovedByPoaId != null || poaData2 != null)
                     {
-                        if(poaDto.POA_ID != userDetail.USER_ID)
-                            rc.CC.Add(poaDto.POA_EMAIL);
+                        if (poaData2 == null)
+                        {
+                            var poa = _poaBll.GetById(pbck1Data.ApprovedByPoaId);
+                            rc.To.Add(userDetail.EMAIL);
+                            rc.CC.Add(poa.POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+                        }
+                        else {
+                            rc.To.Add(poaData2.POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(pbck1Data.CreatedById));
+                        }
                     }
-                    
+                    else {
+                        rc.To.Add(userDetail.EMAIL);
+
+                        foreach (var poaDto in poaList)
+                        {
+                                rc.CC.Add(poaDto.POA_EMAIL);
+                        }
+                    }
+
                     rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.GovApprove:
+                     var poaData3 = _poaBll.GetById(pbck1Data.CreatedById);
+                        if (poaData3 != null)
+                        {
+                            //creator is poa user
+                            rc.To.Add(GetManagerEmail(pbck1Data.CreatedById));
+                            rc.CC.Add(poaData3.POA_EMAIL);
+                        }
+                        else
+                        {
+                            //creator is excise executive
+                            var userData = _userBll.GetUserById(pbck1Data.CreatedById);
+                            rc.To.Add(_poaBll.GetById(pbck1Data.ApprovedByPoaId).POA_EMAIL);
+                            rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+                            rc.CC.Add(userData.EMAIL);
+                        }
+                        rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.GovPartialApprove:
+                    var poaData4 = _poaBll.GetById(pbck1Data.CreatedById);
+                        if (poaData4 != null)
+                        {
+                            //creator is poa user
+                            rc.To.Add(GetManagerEmail(pbck1Data.CreatedById));
+                            rc.CC.Add(poaData4.POA_EMAIL);
+                        }
+                        else
+                        {
+                            //creator is excise executive
+                            var userData = _userBll.GetUserById(pbck1Data.CreatedById);
+                            rc.To.Add(_poaBll.GetById(pbck1Data.ApprovedByPoaId).POA_EMAIL);
+                            rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+                            rc.CC.Add(userData.EMAIL);
+                        }
+                        rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.GovReject:
+                    var poaData5 = _poaBll.GetById(pbck1Data.CreatedById);
+                        if (poaData5 != null)
+                        {
+                            //creator is poa user
+                            rc.To.Add(GetManagerEmail(pbck1Data.CreatedById));
+                            rc.CC.Add(poaData5.POA_EMAIL);
+                        }
+                        else
+                        {
+                            //creator is excise executive
+                            var userData = _userBll.GetUserById(pbck1Data.CreatedById);
+                            rc.To.Add(_poaBll.GetById(pbck1Data.ApprovedByPoaId).POA_EMAIL);
+                            rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+                            rc.CC.Add(userData.EMAIL);
+                        }
+                        rc.IsCCExist = true;
                     break;
             }
             rc.Body = bodyMail.ToString();
@@ -1923,7 +2063,7 @@ namespace Sampoerna.EMS.BLL
                 p => ((input.Pbck1.Pbck1Id == null || p.PBCK1_ID != input.Pbck1.Pbck1Id) && p.STATUS != Enums.DocumentStatus.Cancelled && p.NPPBKC_ID == input.Pbck1.NppbkcId
                     && (p.PERIOD_FROM <= input.Pbck1.PeriodFrom && p.PERIOD_TO >= input.Pbck1.PeriodFrom
                     || p.PERIOD_FROM <= input.Pbck1.PeriodTo && p.PERIOD_TO >= input.Pbck1.PeriodTo || (p.PERIOD_FROM > input.Pbck1.PeriodFrom && p.PERIOD_TO < input.Pbck1.PeriodTo))
-                    && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
+                    && ((input.Pbck1.SupplierPlantWerks != null && p.SUPPLIER_PLANT_WERKS == input.Pbck1.SupplierPlantWerks) || (input.Pbck1.SupplierPlantWerks == null && p.SUPPLIER_PLANT == input.Pbck1.SupplierPlant)) && p.EXC_GOOD_TYP == input.Pbck1.GoodType && p.PBCK1_TYPE == Enums.PBCK1Type.New)
             );
 
             var data = Mapper.Map<List<Pbck1Dto>>(dbData);
@@ -1937,12 +2077,14 @@ namespace Sampoerna.EMS.BLL
         public Pbck1Dto GetPBCK1Reference(Pbck1ReferenceSearchInput input)
         {
             var dbData = _repository.Get(
-                p => p.PBCK1_TYPE == Enums.PBCK1Type.New && p.STATUS == Enums.DocumentStatus.Completed
-                    && p.NPPBKC_ID == input.NppbkcId
-                    && (p.PERIOD_FROM <= input.PeriodFrom && p.PERIOD_TO >= input.PeriodFrom
-                    || p.PERIOD_FROM <= input.PeriodTo && p.PERIOD_TO >= input.PeriodTo)
-                    && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && p.EXC_GOOD_TYP == input.GoodTypeId
+            p => p.PBCK1_TYPE == Enums.PBCK1Type.New && p.STATUS == Enums.DocumentStatus.Completed
+                && p.NPPBKC_ID == input.NppbkcId
+                && (p.PERIOD_FROM <= input.PeriodFrom && p.PERIOD_TO >= input.PeriodFrom
+                || p.PERIOD_FROM <= input.PeriodTo && p.PERIOD_TO >= input.PeriodTo)
+                && ((input.SupplierPlantWerks != "" && p.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks) || (input.SupplierPlantWerks == "" && p.SUPPLIER_PLANT == input.SupplierPlant)) && p.EXC_GOOD_TYP == input.GoodTypeId
             ).FirstOrDefault();
+           
+            
             var data = Mapper.Map<Pbck1Dto>(dbData);
 
             return data;

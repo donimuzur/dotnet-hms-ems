@@ -142,7 +142,7 @@ namespace Sampoerna.EMS.BLL
             changeData.Add("COMPANY_CODE", origin.CompanyCode == data.CompanyCode);
             changeData.Add("WERKS", origin.PlantWerks == data.PlantWerks);
             changeData.Add("FA_CODE", origin.FaCode == data.FaCode);
-            changeData.Add("PRODUCTION_DATE", origin.WasteProductionDate == data.WasteProductionDate);
+            changeData.Add("WASTE_DATE", origin.WasteProductionDate == data.WasteProductionDate);
             changeData.Add("BRAND_DESC", origin.BrandDescription == data.BrandDescription);
             changeData.Add("PLANT_NAME", origin.PlantName == data.PlantName);
             changeData.Add("COMPANY_NAME", origin.CompanyName == data.CompanyName);
@@ -160,8 +160,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY()
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
-                        FORM_ID =
-                            data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" +
+                        FORM_ID = "Waste_"  + data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" +
                             data.WasteProductionDate.ToString("ddMMMyyyy"),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
@@ -173,54 +172,67 @@ namespace Sampoerna.EMS.BLL
                         case "COMPANY_CODE":
                             changes.OLD_VALUE = origin.CompanyCode;
                             changes.NEW_VALUE = data.CompanyCode;
+                            changes.FIELD_NAME = "Company";
                             break;
                         case "WERKS":
                             changes.OLD_VALUE = origin.PlantWerks;
                             changes.NEW_VALUE = data.PlantWerks;
+                            changes.FIELD_NAME = "Plant";
                             break;
                         case "FA_CODE":
                             changes.OLD_VALUE = origin.FaCode;
                             changes.NEW_VALUE = data.FaCode;
+                            changes.FIELD_NAME = "Finish Goods";
                             break;
-                        case "PRODUCTION_DATE":
+                        case "WASTE_DATE":
                             changes.OLD_VALUE = origin.WasteProductionDate.ToString();
                             changes.NEW_VALUE = data.WasteProductionDate.ToString();
+                            changes.FIELD_NAME = "Waste Production Date";
                             break;
                         case "BRAND_DESC":
                             changes.OLD_VALUE = origin.BrandDescription;
                             changes.NEW_VALUE = data.BrandDescription;
+                            changes.FIELD_NAME = "Brand Description";
                             break;
                         case "PLANT_NAME":
                             changes.OLD_VALUE = origin.PlantName;
                             changes.NEW_VALUE = data.PlantName;
+                            changes.FIELD_NAME = "Plant";
                             break;
                         case "COMPANY_NAME":
                             changes.OLD_VALUE = origin.CompanyName;
                             changes.NEW_VALUE = data.CompanyName;
+                            changes.FIELD_NAME = "Company";
                             break;
                         case "MARKER_REJECT_STICK_QTY":
                             changes.OLD_VALUE = origin.MarkerRejectStickQty.ToString();
                             changes.NEW_VALUE = data.MarkerRejectStickQty.ToString();
+                            changes.FIELD_NAME = "Maker Reject Cigarette(stick)";
                             break;
                         case "PACKER_REJECT_STICK_QTY":
                             changes.OLD_VALUE = origin.PackerRejectStickQty.ToString();
                             changes.NEW_VALUE = data.PackerRejectStickQty.ToString();
+                            changes.FIELD_NAME = "Packer Reject Cigarette(stick)";
                             break;
                         case "DUST_WASTE_GRAM_QTY":
                             changes.OLD_VALUE = origin.DustWasteGramQty.ToString();
                             changes.NEW_VALUE = data.DustWasteGramQty.ToString();
+                            changes.FIELD_NAME = "Dust Waste QTY (gram)";
                             break;
                         case "FLOOR_WASTE_GRAM_QTY":
                             changes.OLD_VALUE = origin.FloorWasteGramQty.ToString();
                             changes.NEW_VALUE = data.FloorWasteGramQty.ToString();
+                            changes.FIELD_NAME = "Floor Waste QTY (gram)";
                             break;
                         case "DUST_WASTE_STICK_QTY":
                             changes.OLD_VALUE = origin.DustWasteStickQty.ToString();
                             changes.NEW_VALUE = data.DustWasteStickQty.ToString();
+                            changes.FIELD_NAME = "Dust Waste QTY (Stick)";
                             break;
                         case "FLOOR_WASTE_STICK_QTY":
                             changes.OLD_VALUE = origin.FloorWasteStickQty.ToString();
                             changes.NEW_VALUE = data.FloorWasteStickQty.ToString();
+                            changes.FIELD_NAME = "Floor Waste QTY (Stick)";
                             break;
                         default: break;
                     }

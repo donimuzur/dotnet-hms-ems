@@ -57,8 +57,8 @@
                             <input type="button" class="btn btn-blue" value="Save PBCK-7" id="btn-save-pbck7"  />
                         }
 
-                        <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
-
+                        <a href="@Url.Action("Index", "Pbck7AndPbck3")" class="btn btn-grey">Back</a>
+                        
                         if (Model.Pbck7Status == Enums.DocumentStatus.Draft
                             && Model.AllowEditAndSubmit)
                         {
@@ -376,7 +376,18 @@
                 success: function(response) {
 
                     $('#tb-upload-excel').html('');
+
+                    if (response == -1) {
+                        $('#btn-save-upload').attr("disabled", "disabled");
+                        return false;
+                    }
+
                     uploaditems = JSON.parse(response);
+                    if (uploaditems.length == 0) {
+                        $('#btn-save-upload').attr("disabled", "disabled");
+                        return false;
+                    }
+
 
                     for (var i = 0; i < uploaditems.length; i++) {
                         var tr = '<tr>' +
