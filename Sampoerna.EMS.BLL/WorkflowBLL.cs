@@ -180,7 +180,7 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
             {
-                if (input.UserRole == Enums.UserRole.Manager)
+                if (input.UserRole == Enums.UserRole.Manager && input.ManagerApprove == input.CurrentUser)
                     return true;
             }
 
