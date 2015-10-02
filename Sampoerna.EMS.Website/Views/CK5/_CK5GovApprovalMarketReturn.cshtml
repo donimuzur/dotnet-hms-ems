@@ -391,7 +391,7 @@
                 <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                     <div class="panel-body">
                         <div class="form-excise" role="form">
-                            
+
                             <div class="col-md-6">
                                 <div class="row">
                                     @Html.LabelFor(model => model.SealingNotifNumber, new { @class = "col-md-4" })
@@ -508,8 +508,37 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
 
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">CK-5 Market Return Uploaded Doc</label>
+                                        <div class="col-md-8">
+                                            @*<input type="text" class="form-control" disabled>*@
+                                            @if (Model.Ck5FileUploadModelList != null)
+                                            {
+                                                foreach (var file in Model.Ck5FileUploadModelList)
+                                                {
+                                                    <div class="row" id="@file.CK5_FILE_UPLOAD_ID">
+                                                        <div class="col-sm-12">
+                                                            <div class="file-upload">
+                                                                <i class="fa fa-file"></i>
+                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                @*<div class="col-xs-4 col-sm-2 col-md-4 col-lg-2"><button type="button" class="btn btn-danger full" onclick='removeExistingDocument(this)'><i class="fa fa-times"></i></button>	</div>*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
 
+                            </div>
 
 
                         </div>

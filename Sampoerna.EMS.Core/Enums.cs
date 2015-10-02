@@ -248,6 +248,8 @@ namespace Sampoerna.EMS.Core
             CK4C = 7,
             [Description("PBCK-7")]
             PBCK7 = 8,
+            [Description("CK-5 Market Return")]
+            CK5MarketReturn = 9,
         }
 
         public enum ActionType

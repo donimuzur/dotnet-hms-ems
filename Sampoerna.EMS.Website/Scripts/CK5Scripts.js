@@ -871,3 +871,8 @@ function ajaxGetMaterialHjeAndTariff(url, formData) {
         });
     }
 }
+
+function removeExistingDocument(id) {
+   // alert(id);
+    $(id).parent().parent().parent().remove();
+}

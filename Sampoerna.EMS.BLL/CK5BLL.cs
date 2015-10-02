@@ -52,6 +52,7 @@ namespace Sampoerna.EMS.BLL
 
         private IUserBLL _userBll;
         private IBack1Services _back1Services;
+        private IPbck3Services _pbck3Services;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
@@ -87,6 +88,7 @@ namespace Sampoerna.EMS.BLL
             _virtualMappingBLL = new VirtualMappingPlantBLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
             _back1Services = new Back1Services(_uow, _logger);
+            _pbck3Services = new Pbck3Services(_uow,_logger);
         }
         
 
@@ -1113,10 +1115,22 @@ namespace Sampoerna.EMS.BLL
                 return false;
 
             if (input.AdditionalDocumentData.Ck5FileUploadList.Count <= 0)
-                return false;
+            {
+
+                //check in database
+                if (!IsExistDocumentByCk5Id(input.DocumentId))
+                    return false;
+            }
 
             return true;
         }
+
+        private bool IsExistDocumentByCk5Id(long ck5Id)
+        {
+            var ck5Doc = _repositoryCK5FileUpload.Get(c => c.CK5_ID == ck5Id).ToList();
+            return ck5Doc.Count != 0;
+        }
+
         private void GovApproveDocumentMarketReturn(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -1156,6 +1170,14 @@ namespace Sampoerna.EMS.BLL
                 dbData.STATUS_ID = Enums.DocumentStatus.Completed;
                
                 AddWorkflowHistory(input);
+
+                //insert to pbck3
+                var inputPbck3 = new InsertPbck3FromCk5MarketReturnInput();
+                inputPbck3.Ck5Id = dbData.CK5_ID;
+                inputPbck3.NppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
+                inputPbck3.UserId = input.UserId;
+                _pbck3Services.InsertPbck3FromCk5MarketReturn(inputPbck3);
+
             }
 
             

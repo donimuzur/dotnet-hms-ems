@@ -560,7 +560,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         var saveResult = SaveCk5ToDatabase(model);
                         
-                        AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
+                        if (model.Ck5Type == Enums.CK5Type.MarketReturn)
+                            AddMessageInfo("Success create CK-5 Market Return", Enums.MessageInfoType.Success);
+                        else 
+                            AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
                         
                         return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
@@ -872,6 +875,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     model.Back1Number = back1Data.Back1Number;
                     model.Back1Date = back1Data.Back1Date;
+
+                    if (!string.IsNullOrEmpty(model.Back1Number) || model.Back1Date.HasValue
+                        || !string.IsNullOrEmpty(model.RegistrationNumber)
+                        || model.RegistrationDate.HasValue)
+                        model.GovStatus = Enums.CK5GovStatus.GovApproved;
                 }
                 else
                     model.MainMenu = Enums.MenuList.CK5;
