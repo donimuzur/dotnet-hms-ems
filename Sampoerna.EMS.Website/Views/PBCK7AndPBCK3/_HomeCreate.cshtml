@@ -11,7 +11,7 @@
                 <div id="headingOne" role="tab" class="panel-heading">
                     <h4 class="panel-title">
                         <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse" class="">
-                            PBCK-3 PBCK-7 Detail
+                            PBCK-7 Detail
                             <i class="fa fa-caret-down"></i>
                         </a>
                     </h4>
@@ -41,33 +41,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK-3 No</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Number, new { @class = "form-control", @disabled = "disabled" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK-3 Date</label>
-                                        <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @disabled = "disabled" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
+                               
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Document Type</label>
                                         <div class="col-md-8">
                                             @Html.EnumDropDownListFor(model => model.DocumentType, Model.DocumentTypeList, "Select", new { @class = "form-control" })
-                                    </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -109,7 +90,7 @@
                                         <label class="col-md-4">Lampiran</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.Lampiran, new { @class = "form-control" })
-                                         </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -132,8 +113,12 @@
                         </div>
                     </div>
                 </div>
+               
+
             </div>
         </div>
+       
+
         <div aria-multiselectable="true" role="tablist" id="accordionThree" class="panel-group">
             <div class="panel panel-default">
                 <div id="headingThree" role="tab" class="panel-heading">
@@ -146,7 +131,7 @@
                 </div>
                 <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
                     <div class="panel-body">
-                        <a href="javascript:void(0)"  class="btn btn-blue" onclick="toUploadTab()">Upload</a>
+                        <a href="javascript:void(0)" class="btn btn-blue" onclick="toUploadTab()">Upload</a>
                         <div class="table-container" id="table-upload">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -217,9 +202,69 @@
         </div>
         
         @Html.Partial("_Back1", Model)
-        @Html.Partial("_Back", Model)
-        @Html.Partial("_WorkflowHistoryPbck7", Model)
-        @Html.Partial("_WorkflowHistoryPbck3", Model)
-    </div>
-</div>
+        <div aria-multiselectable="true" role="tablist" id="accordionSix" class="panel-group">
+            <div class="panel panel-default">
+                <div id="headingSix" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapseSix" aria-expanded="true" href="#collapseSix" data-parent="#accordion" data-toggle="collapse" class="">
+                            PBCK-3 Detail
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="headingSix" role="tabpanel" class="panel-collapse collapse in" id="collapseSix" style="">
+                    <div class="panel-body">
+                        <div role="form" class="form-excise">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Number, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Date</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @disabled = "disabled" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK3 Gov Status</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
+                                            }
+                                            else
+                                            {
+                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  
+      @Html.Partial("_Back", Model)
+                        @Html.Partial("_WorkflowHistoryPbck7", Model)
+                        @Html.Partial("_WorkflowHistoryPbck3", Model)
+                    </div>
+                </div>
 
