@@ -415,7 +415,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                 DocumentNumber = model.Details.Number,
-                NppbkcId = nppbkcId
+                NppbkcId = nppbkcId,
+                ManagerApprove = model.Details.ApprovedByManager
             };
 
             ////workflow

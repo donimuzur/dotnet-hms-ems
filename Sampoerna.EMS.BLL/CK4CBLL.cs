@@ -922,13 +922,13 @@ namespace Sampoerna.EMS.BLL
                     switch (listChange.Key)
                     {
                         case "COMPANY_CODE":
-                            changes.OLD_VALUE = origin.COMPANY_ID;
-                            changes.NEW_VALUE = data.CompanyId;
+                            changes.OLD_VALUE = origin.COMPANY_NAME;
+                            changes.NEW_VALUE = data.CompanyName;
                             changes.FIELD_NAME = "Company";
                             break;
                         case "PLANT":
-                            changes.OLD_VALUE = origin.PLANT_ID;
-                            changes.NEW_VALUE = data.PlantId;
+                            changes.OLD_VALUE = origin.PLANT_ID + "-" + origin.PLANT_NAME;
+                            changes.NEW_VALUE = data.PlantId + "-" + data.PlantName;
                             changes.FIELD_NAME = "Plant";
                             break;
                         case "NPPBKC":
