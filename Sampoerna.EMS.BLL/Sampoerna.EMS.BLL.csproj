@@ -80,6 +80,7 @@
     <Compile Include="PBCK4BLL.cs" />
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
     <Compile Include="ProductionBLL.cs" />
+    <Compile Include="Services\Back1Services.cs" />
     <Compile Include="Services\BrandRegistrationService.cs" />
     <Compile Include="Services\CK1Services.cs" />
     <Compile Include="Services\CK4CItemService.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Services\LACK1Service.cs" />
     <Compile Include="Services\Lack1TrackingService.cs" />
     <Compile Include="Services\PBCK1Service.cs" />
+    <Compile Include="Services\Pbck3Services.cs" />
     <Compile Include="Services\T001KService.cs" />
     <Compile Include="Services\T001WService.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
