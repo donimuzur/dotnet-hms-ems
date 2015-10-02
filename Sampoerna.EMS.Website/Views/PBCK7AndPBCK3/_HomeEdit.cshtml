@@ -221,6 +221,7 @@
                                         {
                                             <tr>
                                                 <td>@Html.HiddenFor(x=>x.UploadItems[i].Id)
+                                                    @Html.HiddenFor(x=>x.UploadItems[i].Pbck7Id)
                                                     @(i+1)</td>
                                                 <td>
                                                     @Html.HiddenFor(x => x.UploadItems[i].FaCode)
@@ -242,8 +243,15 @@
                                                     @Model.UploadItems[i].Pbck7Qty
                                                 </td>
                                                 <td>
-                                                    @Html.HiddenFor(x => x.UploadItems[i].Back1Qty)
-                                                    @Model.UploadItems[i].Back1Qty
+                                                    @if (Model.Pbck7Status != Sampoerna.EMS.Core.Enums.DocumentStatus.GovApproved)
+                                                    {
+                                                        @Html.HiddenFor(x => x.UploadItems[i].Back1Qty)
+                                                        @Model.UploadItems[i].Back1Qty
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBoxFor(x=>x.UploadItems[i].Back1Qty)
+                                                    }
                                                 </td>
                                                 <td>
                                                     @Html.HiddenFor(x => x.UploadItems[i].SeriesValue)

@@ -28,6 +28,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<BACK1> _repositoryBack1;
         private IGenericRepository<BACK3> _repositoryBack3;
         private IGenericRepository<CK2> _repositoryCk2;
+        private IGenericRepository<PBCK7_ITEM> _repositoryPbck7Item; 
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
@@ -49,6 +50,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryBack3 = _uow.GetGenericRepository<BACK3>();
             _repositoryCk2 = _uow.GetGenericRepository<CK2>();
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, logger);
+            _repositoryPbck7Item = _uow.GetGenericRepository<PBCK7_ITEM>();
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -61,6 +63,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck3Dto>>(_repositoryPbck3.Get().ToList()); ;
         }
 
+       
         public List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
@@ -351,6 +354,14 @@ namespace Sampoerna.EMS.BLL
             _workflowHistoryBll.AddHistory(history);
             _uow.SaveChanges();
             return dataToAdd.PBCK7_ID;
+        }
+
+        public void InsertPbck7Item(Pbck7ItemUpload item)
+        {
+            var uploadItemToAdd = Mapper.Map<PBCK7_ITEM>(item);
+            _repositoryPbck7Item.InsertOrUpdate(uploadItemToAdd);
+            _uow.SaveChanges();
+            
         }
 
         public void InsertBack1(Back1Dto back1)
