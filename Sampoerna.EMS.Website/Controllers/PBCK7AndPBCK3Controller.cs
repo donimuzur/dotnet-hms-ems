@@ -980,6 +980,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (CurrentUser.UserRole == Enums.UserRole.POA)
                     {
                         item.Pbck7Status = Enums.DocumentStatus.WaitingForApprovalManager;
+                        item.ApprovedBy = CurrentUser.USER_ID;
+                        item.ApprovedDate = DateTime.Now;
                     }
                     else if (CurrentUser.UserRole == Enums.UserRole.User)
                     {
