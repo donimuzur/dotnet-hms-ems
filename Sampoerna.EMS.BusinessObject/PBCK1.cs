@@ -19,10 +19,10 @@ namespace Sampoerna.EMS.BusinessObject
             this.CK5 = new HashSet<CK5>();
             this.PBCK1_DECREE_DOC = new HashSet<PBCK1_DECREE_DOC>();
             this.PBCK11 = new HashSet<PBCK1>();
-            this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
             this.PBCK1_PROD_PLAN = new HashSet<PBCK1_PROD_PLAN>();
             this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
             this.LACK1_PBCK1_MAPPING = new HashSet<LACK1_PBCK1_MAPPING>();
+            this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
         }
     
         public int PBCK1_ID { get; set; }
@@ -78,7 +78,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK1_DECREE_DOC> PBCK1_DECREE_DOC { get; set; }
         public virtual ICollection<PBCK1> PBCK11 { get; set; }
         public virtual PBCK1 PBCK12 { get; set; }
-        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual ICollection<PBCK1_PROD_PLAN> PBCK1_PROD_PLAN { get; set; }
         public virtual ICollection<PBCK1_QUOTA> PBCK1_QUOTA { get; set; }
         public virtual USER USER { get; set; }
@@ -87,5 +86,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual UOM UOM { get; set; }
         public virtual UOM UOM1 { get; set; }
         public virtual ICollection<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
+        public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
     }
 }
