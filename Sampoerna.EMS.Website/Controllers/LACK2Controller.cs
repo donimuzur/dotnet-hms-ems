@@ -200,7 +200,12 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (!id.HasValue)
                 return HttpNotFound();
+            
             var model = InitDetailModel(id);
+            if (model.Lack2Model.CreatedBy != CurrentUser.USER_ID)
+            {
+                return RedirectToAction("Detail", new {id = id});
+            }
             model.DocStatus = model.Lack2Model.Status;
             return View("Edit", model);
         }
