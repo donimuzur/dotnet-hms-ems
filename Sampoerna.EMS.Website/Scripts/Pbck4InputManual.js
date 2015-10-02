@@ -91,6 +91,40 @@ function ajaxGetListCk1(url, formData, selectedText) {
 }
 
 
+function ajaxGetListCk1DateByPlantAndFaCode(url, formData, selectedText) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                var listCk1 = $('#uploadCk1No');
+                listCk1.empty();
+
+                var list = '<option value>Select</option>';
+
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        list += "<option value='" + data[i].Ck1Id + "'>" + data[i].Ck1No + "</option>";
+                    }
+                }
+
+                listCk1.html(list);
+              
+                if (selectedText != '') {
+                    $("#uploadCk1No").each(function () {
+                        $('option', this).each(function () {
+                            if ($(this).text() == selectedText) {
+                                $(this).attr('selected', 'selected');
+                            };
+                        });
+                    });
+                }
+            }
+        });
+    }
+}
+
 function ajaxGetBrandItems(url, formData) {
     if (formData.plantId) {
         $.ajax({
@@ -108,7 +142,21 @@ function ajaxGetBrandItems(url, formData) {
                     $("#uploadHje").val(data.Hje);
                     $("#uploadTariff").val(data.Tariff);
                     $("#uploadColour").val(data.Colour);
-                    $("#uploadBlockedStocked").val(data.BlockedStock);
+                    $("#uploadBlockedStocked").val(data.BlockedStockRemaining);
+                    
+                    var listCk1 = $('#uploadCk1No');
+                    listCk1.empty();
+
+                    var list = '<option value>Select</option>';
+
+                    if (data.ListCk1Date != null) {
+                        for (var i = 0; i < data.ListCk1Date.length; i++) {
+                            list += "<option value='" + data.ListCk1Date[i].Ck1Id + "'>" + data.ListCk1Date[i].Ck1No + "</option>";
+                        }
+                    }
+                    
+                    listCk1.html(list);
+                    
                 }
 
 
@@ -116,6 +164,47 @@ function ajaxGetBrandItems(url, formData) {
         });
     }
 }
+
+
+function ajaxGetBrandItemsForEdit(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+
+                if (data != null) {
+                    $("#uploadStickerCode").val(data.StickerCode);
+                    $("#uploadSeriesCode").val(data.SeriesCode);
+                    $("#uploadBrandName").val(data.BrandName);
+                    $("#uploadProductAlias").val(data.ProductAlias);
+                    $("#uploadContent").val(data.BrandContent);
+                    $("#uploadHje").val(data.Hje);
+                    $("#uploadTariff").val(data.Tariff);
+                    $("#uploadColour").val(data.Colour);
+                    $("#uploadBlockedStocked").val(data.BlockedStockRemaining);
+                    
+                    var listCk1 = $('#uploadCk1No');
+                    listCk1.empty();
+
+                    var list = '<option value>Select</option>';
+
+                    if (data.ListCk1Date != null) {
+                        for (var i = 0; i < data.ListCk1Date.length; i++) {
+                            list += "<option value='" + data.ListCk1Date[i].Ck1Id + "'>" + data.ListCk1Date[i].Ck1No + "</option>";
+                        }
+                    }
+
+                    listCk1.html(list);
+                }
+
+
+            }
+        });
+    }
+}
+
 
 function ajaxGetCk1Date(url, formData) {
     if (formData.ck1Id) {
@@ -156,8 +245,13 @@ function ValidateManualPbck4() {
     if ($.isNumeric($('#uploadReqQty').val()) == false) {
         AddValidationClass(false, 'uploadReqQty');
         result = false;
+    } else {
+        if (parseFloat($('#uploadReqQty').val()) < 0) {
+            AddValidationClass(false, 'uploadReqQty');
+            result = false;
+        }
     }
-
+    
     if (result) {
         
         if (parseFloat($('#uploadReqQty').val()) > parseFloat($('#uploadBlockedStocked').val())) {
@@ -170,9 +264,7 @@ function ValidateManualPbck4() {
     if ($.isNumeric($('#uploadApprovedQty').val()) == false) {
         AddValidationClass(false, 'uploadApprovedQty');
         result = false;
-    }
-    
-
+    } 
     return result;
 }
 

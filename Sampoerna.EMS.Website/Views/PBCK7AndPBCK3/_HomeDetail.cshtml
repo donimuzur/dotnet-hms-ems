@@ -12,7 +12,7 @@
                 <div id="headingOne" role="tab" class="panel-heading">
                     <h4 class="panel-title">
                         <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse" class="">
-                            PBCK-3 PBCK-7 Detail
+                            PBCK-7 Detail
                             <i class="fa fa-caret-down"></i>
                         </a>
                     </h4>
@@ -36,7 +36,7 @@
                                         <label class="col-md-4">PBCK-7 Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBox("pbck7_date",  Model.Pbck7Date, new {@class = "form-control", @disabled="disabled"})
+                                                @Html.TextBox("pbck7_date", Model.Pbck7Date, new { @class = "form-control", @disabled = "disabled", @Value = Model.Pbck7Date.Value.ToString("dd MMM yyyy") })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -44,27 +44,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK-3 No</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBox("pbck3_no", Model.Pbck3Dto.Pbck3Number, new {@class = "form-control", @disabled = "disabled"})
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK-3 Date</label>
-                                        <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBox("pbck3_date", Model.Pbck3Dto.Pbck3Date, new {@class = "form-control",  @disabled="disabled"})
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
+                               
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Document Type</label>
@@ -79,7 +60,7 @@
                                         <div class="col-md-8">
                                             <div class="input-group date">
                                                 @Html.HiddenFor(x => x.ExecDateFrom)
-                                                @Html.TextBox("exec_date_from", Model.ExecDateFrom, new {@class = "form-control", @disabled="disabled"})
+                                                @Html.TextBox("exec_date_from", Model.ExecDateFrom, new {@class = "form-control", @disabled="disabled", @Value = Model.ExecDateFrom.HasValue ? Model.ExecDateFrom.Value.ToString("dd MMM yyyy") : null})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -93,7 +74,7 @@
                                         <div class="col-md-8">
                                             <div class="input-group date">
                                                 @Html.HiddenFor(x=>x.ExecDateTo)
-                                                @Html.TextBox("exec_date_to", Model.ExecDateTo, new {@class = "form-control", @disabled="disabled"})
+                                                @Html.TextBox("exec_date_to", Model.ExecDateTo, new {@class = "form-control", @disabled="disabled",@Value = Model.ExecDateFrom.HasValue ? Model.ExecDateFrom.Value.ToString("dd MMM yyyy") : null})
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -152,22 +133,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK3 Gov Status</label>
-                                        <div class="col-md-8">
-                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
-                                            {
-                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
-                                            }
-                                            else
-                                            {
-                                                @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
-
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
+                              
                             </div>
                         </div>
                     </div>
@@ -268,6 +234,59 @@
             </div>
         </div>
         @Html.Partial("_Back1", Model)
+        <div aria-multiselectable="true" role="tablist" id="accordionSix" class="panel-group">
+            <div class="panel panel-default">
+                <div id="headingSix" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapseSix" aria-expanded="true" href="#collapseSix" data-parent="#accordion" data-toggle="collapse" class="">
+                            PBCK-3 Detail
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="headingSix" role="tabpanel" class="panel-collapse collapse in" id="collapseSix" style="">
+                    <div class="panel-body">
+                        <div role="form" class="form-excise">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Number, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Date</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @disabled = "disabled" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK3 Gov Status</label>
+                                        <div class="col-md-8">
+                                           @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @Html.Partial("_Back", Model)
         @Html.Partial("_WorkflowHistoryPbck7", Model)
         @Html.Partial("_WorkflowHistoryPbck3", Model)

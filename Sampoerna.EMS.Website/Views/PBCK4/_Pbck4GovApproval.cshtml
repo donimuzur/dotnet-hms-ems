@@ -225,7 +225,7 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">BACK-1 No<span class="red">*</span></label>
+                                    <label class="col-md-4">BACK-1 No</label>
                                     <div class="col-md-8">
                                         @Html.TextBoxFor(model => model.BACK1_NO, new { @class = "form-control", @maxlength = "35" })
                                     </div>
@@ -233,7 +233,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">CK-3 No<span class="red">*</span></label>
+                                    <label class="col-md-4">CK-3 No</label>
                                     <div class="col-md-8">
                                         @Html.TextBoxFor(model => model.CK3_NO, new { @class = "form-control", @maxlength = "35" })
                                     </div>
@@ -244,7 +244,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">BACK-1 Date<span class="red">*</span></label>
+                                    <label class="col-md-4">BACK-1 Date</label>
                                     <div class="col-md-8">
                                         <div class="input-group date">
                                             @Html.TextBoxFor(model => model.BACK1_DATE, new { @class = "form-control" })
@@ -258,7 +258,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">CK-3 Date<span class="red">*</span></label>
+                                    <label class="col-md-4">CK-3 Date</label>
                                     <div class="col-md-8">
                                         <div class="input-group date">
                                             @Html.TextBoxFor(model => model.CK3_DATE, new { @class = "form-control" })
@@ -278,7 +278,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">CK-3 Office Value<span class="red">*</span></label>
+                                    <label class="col-md-4">CK-3 Office Value</label>
                                     <div class="col-md-8">
                                         @Html.TextBoxFor(model => model.CK3_OFFICE_VALUE, new { @class = "form-control", @maxlength = "50" })
                                     </div>
@@ -289,7 +289,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">BACK-1 Doc<span class="red">*</span></label>
+                                    <label class="col-md-4">BACK-1 Doc</label>
                                     <div class="col-md-8">
 
                                         <div class="row">
@@ -311,7 +311,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">CK-3 Doc<span class="red">*</span></label>
+                                    <label class="col-md-4">CK-3 Doc</label>
                                     <div class="col-md-8">
 
                                         <div class="row">
@@ -332,7 +332,52 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">BACK-1 Uploaded Doc</label>
+                                    <div class="col-md-8">
+                                        @*<input type="text" class="form-control" disabled>*@
+                                        @if (Model.Pbck4FileUploadModelList != null)
+                                        {
+                                            foreach (var file in Model.Pbck4FileUploadModelList)
+                                            {
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <i class="fa fa-file"></i>
+                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                    </div>
 
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">CK-3 Uploaded Doc</label>
+                                    <div class="col-md-8">
+                                        @*<input type="text" class="form-control" disabled>*@
+                                        @if (Model.Pbck4FileUploadModelList2 != null)
+                                        {
+                                            foreach (var file in Model.Pbck4FileUploadModelList2)
+                                            {
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <i class="fa fa-file"></i>
+                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                    </div>
+
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

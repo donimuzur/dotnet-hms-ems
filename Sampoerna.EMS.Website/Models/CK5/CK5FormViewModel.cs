@@ -50,10 +50,12 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("DateTime")]
         public DateTime? SubmissionDate { get; set; }
 
-        [RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationNumber")]
+        //[RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationNumber")]
+        [Display(Name = "RegistrationNumber")]
         public string RegistrationNumber { get; set; }
 
-        [RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationDate")]
+       // [RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationDate")]
+        [Display(Name = "RegistrationDate")]
         [UIHint("DateTime")]
         public DateTime? RegistrationDate { get; set; }
 
@@ -247,5 +249,20 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public Enums.Ck5ManualType Ck5ManualType { get; set; }
 
         public string Ck5ManualTypeString { get; set; }
+
+        public long Ck5RefId { get; set; }
+
+        public string Ck5RefNumber { get; set; }
+        public SelectList Ck5RefList { get; set; }
+        public bool IsCk5ImporterToPlant { get; set; }
+        public bool IsMarketReturn { get; set; }
+
+
+        [Display(Name = "BACK-1 Number")]
+        public string Back1Number { get; set; }
+
+        [Display(Name = "BACK-1 Date")]
+        [UIHint("DateTime")]
+        public DateTime? Back1Date { get; set; }
     }
 }

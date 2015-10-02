@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using AutoMapper;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -50,6 +51,8 @@ namespace Sampoerna.EMS.BLL
         private IVirtualMappingPlantBLL _virtualMappingBLL;
 
         private IUserBLL _userBll;
+        private IBack1Services _back1Services;
+        private IPbck3Services _pbck3Services;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
@@ -84,6 +87,8 @@ namespace Sampoerna.EMS.BLL
             _goodTypeGroupBLL = new ExGroupTypeBLL(_uow, logger);
             _virtualMappingBLL = new VirtualMappingPlantBLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
+            _back1Services = new Back1Services(_uow, _logger);
+            _pbck3Services = new Pbck3Services(_uow,_logger);
         }
         
 
@@ -123,16 +128,17 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public List<CK5> GetCK5ByType(Enums.CK5Type ck5Type)
+        public List<CK5Dto> GetCk5ByType(Enums.CK5Type ck5Type)
         {
-            //includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC, T1001W, T1001W1";
-            return _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
+            
+             var dtData = _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
+
+             return Mapper.Map<List<CK5Dto>>(dtData);
         }
 
         public List<CK5Dto> GetInitDataListIndex(Enums.CK5Type ck5Type)
         {
-           // includeTables = "T1001W.ZAIDM_EX_NPPBKC, T1001W1.ZAIDM_EX_NPPBKC";
-
+          
             var dtData = _repository.Get(null, null, includeTables).ToList();
 
             return Mapper.Map<List<CK5Dto>>(dtData);
@@ -187,6 +193,60 @@ namespace Sampoerna.EMS.BLL
             Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
             //Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.STATUS_ID).ThenBy(z=>z.APPROVED_BY_MANAGER);
 
+
+            var rc = _repository.Get(queryFilter, orderByFilter, includeTables);
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
+
+            return mapResult;
+
+
+        }
+
+        public List<CK5Dto> GetCK5MarketReturnCompletedByParam(CK5GetByParamInput input)
+        {
+          
+
+            Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
+
+            if (!string.IsNullOrEmpty(input.DocumentNumber))
+            {
+                queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.DocumentNumber));
+            }
+
+            if (!string.IsNullOrEmpty(input.POA))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA.Contains(input.POA));
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY.Contains(input.Creator));
+            }
+
+            if (!string.IsNullOrEmpty(input.NPPBKCOrigin))
+            {
+                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NPPBKCOrigin));
+
+            }
+
+            if (!string.IsNullOrEmpty(input.NPPBKCDestination))
+            {
+                queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NPPBKCDestination));
+
+            }
+
+            queryFilter = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.MarketReturn);
+            queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.Cancelled);
+
+         
+            //default case of ordering
+            Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
+           
 
             var rc = _repository.Get(queryFilter, orderByFilter, includeTables);
             if (rc == null)
@@ -670,8 +730,7 @@ namespace Sampoerna.EMS.BLL
                 _changesHistoryBll.AddHistory(changes);
             }
         }
-
-       
+        
         public CK5DetailsOutput GetDetailsCK5(long id)
         {
             var output = new CK5DetailsOutput();
@@ -791,7 +850,10 @@ namespace Sampoerna.EMS.BLL
                     isNeedSendNotif = true;
                     break;
                 case Enums.ActionType.GovApprove:
-                    GovApproveDocument(input);
+                    if (input.Ck5Type == Enums.CK5Type.MarketReturn)
+                        GovApproveDocumentMarketReturn(input);
+                    else 
+                        GovApproveDocument(input);
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
@@ -1041,6 +1103,85 @@ namespace Sampoerna.EMS.BLL
             SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
         }
 
+        private bool IsCompletedMarketReturnWorkflow(CK5WorkflowDocumentInput input)
+        {
+            if (string.IsNullOrEmpty(input.AdditionalDocumentData.RegistrationNumber))
+                return false;
+
+            if (string.IsNullOrEmpty(input.AdditionalDocumentData.Back1Number))
+                return false;
+
+            if (!input.AdditionalDocumentData.Back1Date.HasValue)
+                return false;
+
+            if (input.AdditionalDocumentData.Ck5FileUploadList.Count <= 0)
+            {
+
+                //check in database
+                if (!IsExistDocumentByCk5Id(input.DocumentId))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool IsExistDocumentByCk5Id(long ck5Id)
+        {
+            var ck5Doc = _repositoryCK5FileUpload.Get(c => c.CK5_ID == ck5Id).ToList();
+            return ck5Doc.Count != 0;
+        }
+
+        private void GovApproveDocumentMarketReturn(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            
+            dbData.REGISTRATION_NUMBER = input.AdditionalDocumentData.RegistrationNumber;
+            dbData.REGISTRATION_DATE = input.AdditionalDocumentData.RegistrationDate;
+
+            dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
+            
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            if (!string.IsNullOrEmpty(input.AdditionalDocumentData.Back1Number)
+                && input.AdditionalDocumentData.Back1Date.HasValue)
+            {
+                //insert/update back1 based on ck5_id
+                var inputBack1 = new SaveBack1ByCk5IdInput();
+                inputBack1.Ck5Id = dbData.CK5_ID;
+                inputBack1.Back1Number = input.AdditionalDocumentData.Back1Number;
+                inputBack1.Back1Date = input.AdditionalDocumentData.Back1Date.Value;
+
+                _back1Services.SaveBack1ByCk5Id(inputBack1);
+            }
+
+            if (IsCompletedMarketReturnWorkflow(input))
+            {
+                string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+                string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+                //set change history
+                SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+                
+                dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+               
+                AddWorkflowHistory(input);
+
+                //insert to pbck3
+                var inputPbck3 = new InsertPbck3FromCk5MarketReturnInput();
+                inputPbck3.Ck5Id = dbData.CK5_ID;
+                inputPbck3.NppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
+                inputPbck3.UserId = input.UserId;
+                _pbck3Services.InsertPbck3FromCk5MarketReturn(inputPbck3);
+
+            }
+
+            
+        }
 
         private void GovApproveDocument(CK5WorkflowDocumentInput input)
         {
@@ -1052,9 +1193,10 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+
             if (input.AdditionalDocumentData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
+            
             if (string.IsNullOrEmpty(input.AdditionalDocumentData.RegistrationNumber))
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
@@ -1553,7 +1695,7 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.PoaName = poaInfo.PRINTED_NAME;
                 result.ReportDetails.PoaAddress = poaInfo.POA_ADDRESS;
                 result.ReportDetails.PoaIdCard = poaInfo.ID_CARD;
-                result.ReportDetails.PoaCity = dtData.KPPBC_CITY;
+                result.ReportDetails.PoaCity = dtData.KPPBC_CITY.ToUpperInvariant();
             }
 
             //for export type
@@ -1592,7 +1734,7 @@ namespace Sampoerna.EMS.BLL
 
                 result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID;
                 if (dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
-                    result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID.Substring(0,4);
+                    result.ReportDetails.DestOfficeCode = "00" + dtData.DEST_PLANT_NPPBKC_ID.Substring(0,4);
 
                 result.ReportDetails.DestinationCountry = "-";
                 result.ReportDetails.DestinationCode = "-";
@@ -2345,6 +2487,30 @@ namespace Sampoerna.EMS.BLL
             var data = _repository.Get(x => x.GI_DATE.HasValue, null, "").Select(x => x.GI_DATE != null ? x.GI_DATE.Value.Year : 0).DistinctBy(x=> x).ToList();
 
             return data;
+        }
+
+        public List<CK5> GetAllCompletedPortToImporter()
+        {
+            var data =
+                _repository.Get(
+                    x => x.STATUS_ID == Enums.DocumentStatus.Completed && x.CK5_TYPE == Enums.CK5Type.PortToImporter,null,"").ToList();
+
+            return data;
+        }
+
+        public Back1DataOutput GetBack1ByCk5Id(long ck5Id)
+        {
+            var dbBack1 = _back1Services.GetBack1ByCk5Id(ck5Id);
+
+            var result = new Back1DataOutput();
+
+            if (dbBack1 != null)
+            {
+                result.Back1Number = dbBack1.BACK1_NUMBER;
+                result.Back1Date = dbBack1.BACK1_DATE;
+            }
+
+            return result;
         }
     }
 }

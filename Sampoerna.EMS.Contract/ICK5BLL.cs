@@ -22,9 +22,11 @@ namespace Sampoerna.EMS.Contract
 
        List<CK5Dto> GetCK5ByParam(CK5GetByParamInput input);
 
+       List<CK5Dto> GetCK5MarketReturnCompletedByParam(CK5GetByParamInput input);
+
        CK5Dto SaveCk5(CK5SaveInput input);
 
-       List<CK5> GetCK5ByType(Enums.CK5Type ck5Type);
+       List<CK5Dto> GetCk5ByType(Enums.CK5Type ck5Type);
 
        List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType);
 
@@ -63,5 +65,8 @@ namespace Sampoerna.EMS.Contract
        List<CK5> GetByGIDate(int month, int year,string desPlantId, string goodTypeId);
 
        List<int> GetAllYearsByGiDate();
+       List<CK5> GetAllCompletedPortToImporter();
+
+       Back1DataOutput GetBack1ByCk5Id(long ck5Id);
    }
 }
