@@ -1,6 +1,5 @@
 ﻿jQuery.validator.addMethod("greaterThan",
 function (value, element, params) {
-
     if (!/Invalid|NaN/.test(new Date(value))) {
         return new Date(value) > new Date($(params).val());
     }
@@ -8,8 +7,6 @@ function (value, element, params) {
     return isNaN(value) && isNaN($(params).val())
         || (Number(value) > Number($(params).val()));
 }, 'Must be greater than {0}.');
-
-
 
 function setUpload() {
     if ($("#Detail_GoodType").val() == "") {

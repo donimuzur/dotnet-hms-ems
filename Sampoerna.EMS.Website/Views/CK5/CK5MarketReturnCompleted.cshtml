@@ -1,0 +1,106 @@
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.CK5.CK5IndexViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Completed Document</h3>
+          
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="tab-wrapper">
+                @using (Ajax.BeginForm("FilterMarketReturn", "CK5",
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "POST",
+                                    InsertionMode = InsertionMode.Replace,
+                                    UpdateTargetId = "contenttable",
+                                    OnComplete = "ReloadDataTables"
+
+                                }))
+                {
+                    @Html.Partial("_CK5Search")
+                }
+
+                <div id="contenttable" class="table-container">
+                    @Html.Partial("_CK5TablePartial")
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function () {
+            $('#liCK5MarketReturnCompleted').addClass('active');
+
+            setupDataTables();
+
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#ck5Table')) {
+                table = $('#ck5Table').DataTable();
+                table.destroy();
+            }
+
+            table = $('#ck5Table').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#ck5Table .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+
+        function OnReset() {
+
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
+
+
+
+    </script>
+}

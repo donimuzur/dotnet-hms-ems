@@ -51,4 +51,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
 
     }
+
+    public class InsertPbck3FromCk5MarketReturnInput
+    {
+        public long Ck5Id { get; set; }
+        public string NppbkcId { get; set; }
+        public string UserId { get; set; }
+    }
 }

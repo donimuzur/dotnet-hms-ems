@@ -742,7 +742,7 @@
           <Property Name="PBCK3_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PBCK3_NUMBER" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="PBCK3_DATE" Type="date" Nullable="false" />
-          <Property Name="PBCK7_ID" Type="int" Nullable="false" />
+          <Property Name="PBCK7_ID" Type="int" />
           <Property Name="GOV_STATUS" Type="int" />
           <Property Name="STATUS" Type="int" />
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
@@ -2328,7 +2328,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK3_PBCK7">
-          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="1" />
+          <End Role="PBCK7" Type="Self.PBCK7" Multiplicity="0..1" />
           <End Role="PBCK3" Type="Self.PBCK3" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PBCK7">
@@ -7750,7 +7750,7 @@
           <Property Name="PBCK3_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PBCK3_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PBCK3_DATE" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="PBCK7_ID" Type="Int32" Nullable="false" />
+          <Property Name="PBCK7_ID" Type="Int32" />
           <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
           <Property Name="STATUS" Type="EMSModel.DocumentStatus" />
           <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -7835,7 +7835,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PBCK3_PBCK7">
-          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="1" />
+          <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="0..1" />
           <End Type="EMSModel.PBCK3" Role="PBCK3" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PBCK7">
