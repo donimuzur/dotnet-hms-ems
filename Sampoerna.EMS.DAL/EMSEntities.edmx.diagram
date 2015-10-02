@@ -24,7 +24,6 @@
         <AssociationConnector Association="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" />
         <AssociationConnector Association="EMSModel.FK_HEADER_FOOTER_FORM_MAP_HEADER_FOOTER" />
         <AssociationConnector Association="EMSModel.FK_PAGE_PAGE" />
-        <EntityTypeShape EntityType="EMSModel.PBCK1_PROD_CONVERTER" Width="1.5" PointX="15.75" PointY="31.875" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_BRAND" Width="1.5" PointX="23.25" PointY="40" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" />
         <EntityTypeShape EntityType="EMSModel.PBCK1_PROD_PLAN" Width="1.5" PointX="15.75" PointY="27.625" />
@@ -44,7 +43,6 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_MONTH" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_DECREE_DOC_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PBCK1" />
-        <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_PBCK1" />
         <EntityTypeShape EntityType="EMSModel.CK5_FILE_UPLOAD" Width="1.5" PointX="20.75" PointY="40.625" />
         <AssociationConnector Association="EMSModel.FK_CK5_FILE_UPLOAD_CK5_FILE_UPLOAD" />
@@ -143,7 +141,6 @@
         <AssociationConnector Association="EMSModel.FK_CK5_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_REQUEST_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_SALDO_UOM" />
-        <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_PLAN_UOM" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" />
         <EntityTypeShape EntityType="EMSModel.LACK1" Width="1.5" PointX="13.5" PointY="26.625" />
@@ -240,6 +237,9 @@
         <AssociationConnector Association="EMSModel.FK_PBCK3_POA" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_REJECT" />
         <AssociationConnector Association="EMSModel.FK_PBCK3_USER" />
+        <EntityTypeShape EntityType="EMSModel.PBCK1_PROD_CONVERTER" Width="1.5" PointX="15.75" PointY="32.875" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" />
+        <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
