@@ -640,6 +640,7 @@ namespace Sampoerna.EMS.BLL
         
         public Ck4cReportDto GetCk4cReportDataById(int id)
         {
+            var ck4cItemGroupByDate = new Dictionary<string, List<Ck4cReportItemDto>>();
             var dtData = _repository.Get(c => c.CK4C_ID == id, null, includeTables).FirstOrDefault();
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -677,7 +678,7 @@ namespace Sampoerna.EMS.BLL
             var address = string.Empty;
             string prodTypeDistinct = string.Empty;
             string currentProdType = string.Empty;
-
+            List<Ck4cReportItemDto> tempListck4c1 = new List<Ck4cReportItemDto>();
             //add data details of CK-4C sebelumnya
             foreach (var item in addressPlant)
             {
@@ -705,20 +706,22 @@ namespace Sampoerna.EMS.BLL
                     var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                     ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
 
-                    ck4cItem.SumBtg = "0";
-                    ck4cItem.BtgGr = "0";
+                    ck4cItem.SumBtg = "0.00";
+                    ck4cItem.BtgGr = "0.00";
 
                     var brand = _brandBll.GetById(item, data.FA_CODE);
                     ck4cItem.Merk = brand.BRAND_CE;
 
-                    ck4cItem.Isi = Int32.Parse(brand.BRAND_CONTENT).ToString();
-                    ck4cItem.Hje = plantDetail.HJE_IDR.ToString();
-                    ck4cItem.Total = "0";
-                    ck4cItem.ProdWaste = "0";
+                    ck4cItem.Isi = String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
+                    ck4cItem.Hje = plantDetail.HJE_IDR == null ? "0.00" : String.Format("{0:n}", plantDetail.HJE_IDR);
+                    ck4cItem.Total = "0.00";
+                    ck4cItem.ProdWaste = "0.00";
                     ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
 
-                    result.Ck4cItemList.Add(ck4cItem);
+                    //result.Ck4cItemList.Add(ck4cItem);
+                    tempListck4c1.Add(ck4cItem);
                 }
+                ck4cItemGroupByDate.Add(String.Empty, tempListck4c1);
             }
 
             result.Detail.CompanyAddress = address;
@@ -778,7 +781,7 @@ namespace Sampoerna.EMS.BLL
             for (var j = Convert.ToInt32(result.Detail.ReportedPeriodStart); j <= Convert.ToInt32(result.Detail.ReportedPeriodEnd); j++)
             {
                 i = i + 1;
-                var prodDate = j + "-" + result.Detail.ReportedMonth.Substring(0,3) + "-" + result.Detail.ReportedYear;
+                var prodDate = j + "-" + result.Detail.ReportedMonth.Substring(0, 3) + "-" + result.Detail.ReportedYear;
                 var prodDateFormat = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), j);
                 var dateStart = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), Convert.ToInt32(result.Detail.ReportedPeriodStart));
 
@@ -789,6 +792,8 @@ namespace Sampoerna.EMS.BLL
                     Int32 isInt;
                     var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
                     var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
+
+                    List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
 
                     foreach (var data in activeBrand)
                     {
@@ -805,18 +810,28 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.NoProd = i.ToString();
                         ck4cItem.ProdDate = prodDate;
                         ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
-                        ck4cItem.SumBtg = prodQty.ToString();
-                        ck4cItem.BtgGr = packedQty == null ? "0" : packedQty.ToString();
+                        ck4cItem.SumBtg = String.Format("{0:n}",prodQty);
+                        ck4cItem.BtgGr = packedQty == null ? "0.00" : String.Format("{0:n}", packedQty);
                         ck4cItem.Merk = brand.BRAND_CE;
-                        ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT).ToString();
-                        ck4cItem.Hje = plantDetail.HJE_IDR.ToString();
-                        ck4cItem.Total = total == null ? "0" : total.ToString();
-                        ck4cItem.ProdWaste = unpackedQty == null ? "0" : unpackedQty.ToString();
+                        ck4cItem.Isi = String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
+                        ck4cItem.Hje = plantDetail.HJE_IDR == null ? "0.00" : String.Format("{0:n}", plantDetail.HJE_IDR);
+                        ck4cItem.Total = total == null ? "0.00" : String.Format("{0:n}", total);
+                        ck4cItem.ProdWaste = unpackedQty == null ? "0.00" : String.Format("{0:n}", unpackedQty);
                         ck4cItem.Comment = "";
 
-                        result.Ck4cItemList.Add(ck4cItem);
+                        //result.Ck4cItemList.Add(ck4cItem);
+                        tempListck4c2.Add(ck4cItem);
                     }
+                    ck4cItemGroupByDate.Add(prodDate, tempListck4c2);
                 }
+            }
+
+             //order brand by prod alias using Dictionary<string, List<Ck4cReportItemDto>> each date
+            foreach (var item in ck4cItemGroupByDate)
+            {
+               //insert result.ck4itemList again ordered brand
+                var listItem = ck4cItemGroupByDate.Where(c => c.Key == item.Key).Select(c => c.Value.OrderBy(d => d.ProdType)).FirstOrDefault().ToList();
+                result.Ck4cItemList.AddRange(listItem);
             }
 
             var prodAlias = string.Empty;
@@ -825,13 +840,13 @@ namespace Sampoerna.EMS.BLL
 
             if(prodTypeDistinct != string.Empty)
             {
-                var brandType = prodTypeDistinct.Substring(1).Split('|');
+                var brandType = prodTypeDistinct.Substring(1).Split('|').Distinct();
 
                 foreach (var data in brandType)
                 {
                     prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
-                    sumTotal += dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY).ToString() + Environment.NewLine;
-                    btgTotal += dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY).ToString() + Environment.NewLine;
+                    sumTotal += String.Format("{0:n}", dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY)) + Environment.NewLine;
+                    btgTotal += String.Format("{0:n}", dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY)) + Environment.NewLine;
                 }
             }
 
