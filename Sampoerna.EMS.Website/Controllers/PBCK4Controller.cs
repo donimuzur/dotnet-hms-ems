@@ -229,6 +229,9 @@ namespace Sampoerna.EMS.Website.Controllers
           
             var dataToSave = Mapper.Map<Pbck4Dto>(model);
 
+            if (model.Poa.Length > 50)
+                model.Poa = model.Poa.Substring(0, 49);
+
             dataToSave.APPROVED_BY_POA = null;
 
             var input = new Pbck4SaveInput()
@@ -253,7 +256,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Poa = poa.PRINTED_NAME;
             else
             {
-                
+                model.Poa = _pbck4Bll.GetListPoaByNppbkcId(model.NppbkcId);
             }
             return Json(model);
         }
