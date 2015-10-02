@@ -1648,5 +1648,23 @@ namespace Sampoerna.EMS.BLL
 
            return result;
        }
+
+       public string GetListPoaByNppbkcId(string nppbkcId)
+       {
+           var dbPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(nppbkcId);
+           var result = "";
+
+           foreach (var poaDto in dbPoa)
+           {
+               result += poaDto.PRINTED_NAME + ",";
+           }
+
+           if (result.Length > 0)
+           {
+               result = result.Substring(0, result.Length - 1);
+           }
+
+           return result;
+       }
    }
 }

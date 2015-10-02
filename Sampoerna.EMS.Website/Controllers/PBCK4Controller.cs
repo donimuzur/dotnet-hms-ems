@@ -251,7 +251,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var poa = _poaBll.GetById(CurrentUser.USER_ID);
             if (poa != null)
                 model.Poa = poa.PRINTED_NAME;
-
+            else
+            {
+                
+            }
             return Json(model);
         }
 
