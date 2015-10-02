@@ -40,7 +40,7 @@ namespace Sampoerna.EMS.BLL
         private IUserBLL _userBll;
         private IBrandRegistrationService _brandRegistrationService;
 
-        private string includeTables = "MONTH, CK4C_ITEM";
+        private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
         public CK4CBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -222,6 +222,10 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
+                    isNeedSendNotif = false;
+                    break;
+                case Enums.ActionType.Completed:
+                    EditCompletedDocument(input);
                     isNeedSendNotif = false;
                     break;
             }
@@ -501,7 +505,8 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval ||
+                (dbData.STATUS != Enums.DocumentStatus.Completed && dbData.DECREE_DATE == null))
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
@@ -530,7 +535,8 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval ||
+                (dbData.STATUS != Enums.DocumentStatus.Completed && dbData.DECREE_DATE == null))
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
@@ -540,6 +546,33 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.GOV_STATUS = Enums.StatusGovCk4c.Rejected;
 
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void EditCompletedDocument(Ck4cWorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.Completed)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+
+            dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+
+            //todo: update remaining quota and necessary data
+            dbData.CK4C_DECREE_DOC = null;
+            dbData.DECREE_DATE = null;
+            dbData.GOV_STATUS = null;
+
+            //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 
             AddWorkflowHistory(input);
@@ -894,8 +927,8 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "Reported Period";
                             break;
                         case "REPORTED_MONTH":
-                            changes.OLD_VALUE = origin.REPORTED_MONTH.Value.ToString();
-                            changes.NEW_VALUE = data.ReportedMonth.ToString();
+                            changes.OLD_VALUE = origin.MONTH.MONTH_NAME_IND;
+                            changes.NEW_VALUE = data.MonthNameIndo;
                             changes.FIELD_NAME = "Reported Month";
                             break;
                         case "REPORTED_YEAR":
@@ -909,6 +942,16 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+        }
+
+        public bool AllowEditCompletedDocument(Ck4CDto item, string userId)
+        {
+            var isAllow = false;
+
+            if(item.CreatedBy == userId || item.ApprovedByPoa == userId)
+                isAllow = true;
+
+            return isAllow;
         }
 
         #region SummaryReport

@@ -1,6 +1,5 @@
 ﻿jQuery.validator.addMethod("greaterThan",
 function (value, element, params) {
-
     if (!/Invalid|NaN/.test(new Date(value))) {
         return new Date(value) > new Date($(params).val());
     }
@@ -8,8 +7,6 @@ function (value, element, params) {
     return isNaN(value) && isNaN($(params).val())
         || (Number(value) > Number($(params).val()));
 }, 'Must be greater than {0}.');
-
-
 
 function setUpload() {
     if ($("#Detail_GoodType").val() == "") {
@@ -452,7 +449,7 @@ function getReference() {
     $('input[name="Detail.Pbck1Reference"]:hidden').prop("disabled", true);
     $('input[name="Detail.Pbck1Reference"]:hidden').val("");
 
-    if ($('select[name="Detail.NppbkcId"]').val() == "" || $('input[name="Detail.PeriodFrom"]').val() == "" || $('input[name="Detail.PeriodTo"]').val() == "" || $('input[name="Detail.SupplierNppbkcId"]').val() == "" || $('input[name="Detail.SupplierPlantWerks"]').val() == "" || $('select[name="Detail.GoodType"]').val() == "")
+    if ($('select[name="Detail.NppbkcId"]').val() == "" || $('input[name="Detail.PeriodFrom"]').val() == "" || $('input[name="Detail.PeriodTo"]').val() == "" || ($('input[name="Detail.SupplierPlantWerks"]').val() == "" && $('input[name="Detail.SupplierPlant"]').val() == "") || $('select[name="Detail.GoodType"]').val() == "")
     {
         return false;
     }
@@ -463,6 +460,7 @@ function getReference() {
         periodTo: $('input[name="Detail.PeriodTo"]').val(),
         supplierNppbkcId: $('input[name="Detail.SupplierNppbkcId"]').val(),
         supplierPlantWerks: $('input[name="Detail.SupplierPlantWerks"]').val(),
+        supplierPlant:$('input[name="Detail.SupplierPlant"]').val(),
         goodType: $('select[name="Detail.GoodType"]').val()
 
     }

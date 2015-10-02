@@ -429,6 +429,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
 
+            model.AllowEditCompleted = _ck4CBll.AllowEditCompletedDocument(ck4cData, CurrentUser.USER_ID);
+
             return View(model);
         }
 
@@ -555,6 +557,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dataToSave.CompanyName = company.BUTXT;
                 dataToSave.ModifiedBy = CurrentUser.USER_ID;
                 dataToSave.ModifiedDate = DateTime.Now;
+                dataToSave.MonthNameIndo = _monthBll.GetMonth(model.Details.ReportedMonth.Value).MONTH_NAME_IND;
 
                 List<Ck4cItem> list = dataToSave.Ck4cItem;
                 foreach(var item in list)
@@ -671,55 +674,57 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Ck4CIndexDocumentListViewModel model)
         {
-            if (model.Details.Ck4cDecreeFiles == null)
-            {
-                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
-                return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
-            }
-
             bool isSuccess = false;
             var currentUserId = CurrentUser;
+            var message = "Document is " + EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+
             try
             {
-                model.Details.Ck4cDecreeDoc = new List<Ck4cDecreeDocModel>();
-                if (model.Details.Ck4cDecreeFiles != null)
+                if(model.Details.Status == Enums.DocumentStatus.WaitingGovApproval ||
+                    (model.Details.Status == Enums.DocumentStatus.Completed &&
+                    (model.Details.Ck4cDecreeFiles != null)))
                 {
-                    foreach (var item in model.Details.Ck4cDecreeFiles)
+                    model.Details.Ck4cDecreeDoc = new List<Ck4cDecreeDocModel>();
+                    if (model.Details.Ck4cDecreeFiles != null)
                     {
-                        if (item != null)
+                        foreach (var item in model.Details.Ck4cDecreeFiles)
                         {
-                            var filenamecheck = item.FileName;
-
-                            if (filenamecheck.Contains("\\"))
+                            if (item != null)
                             {
-                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                                var filenamecheck = item.FileName;
+
+                                if (filenamecheck.Contains("\\"))
+                                {
+                                    filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                                }
+
+                                var decreeDoc = new Ck4cDecreeDocModel()
+                                {
+                                    FILE_NAME = filenamecheck,
+                                    FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId),
+                                    CREATED_BY = currentUserId.USER_ID,
+                                    CREATED_DATE = DateTime.Now
+                                };
+                                model.Details.Ck4cDecreeDoc.Add(decreeDoc);
                             }
-
-                            var decreeDoc = new Ck4cDecreeDocModel()
+                            else
                             {
-                                FILE_NAME = filenamecheck,
-                                FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId),
-                                CREATED_BY = currentUserId.USER_ID,
-                                CREATED_DATE = DateTime.Now
-                            };
-                            model.Details.Ck4cDecreeDoc.Add(decreeDoc);
-                        }
-                        else
-                        {
-                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                            return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
+                                AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                                return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
+                            }
                         }
                     }
+
+                    var input = new Ck4cUpdateReportedOn()
+                    {
+                        Id = model.Details.Ck4CId,
+                        ReportedOn = model.Details.ReportedOn
+                    };
+
+                    _ck4CBll.UpdateReportedOn(input);
+
+                    message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
                 }
-
-
-                var input = new Ck4cUpdateReportedOn()
-                {
-                    Id = model.Details.Ck4CId,
-                    ReportedOn = model.Details.ReportedOn
-                };
-
-                _ck4CBll.UpdateReportedOn(input);
 
                 Ck4cWorkflowGovApprove(model.Details, model.Details.GovApprovalActionType, model.Details.Comment);
                 isSuccess = true;
@@ -730,7 +735,9 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
-            AddMessageInfo("Document " + EnumHelper.GetDescription(model.Details.StatusGoverment), Enums.MessageInfoType.Success);
+
+            AddMessageInfo(message, Enums.MessageInfoType.Success);
+            
             return RedirectToAction("DocumentList");
         }
 
@@ -762,14 +769,27 @@ namespace Sampoerna.EMS.Website.Controllers
                 ActionType = actionType,
                 UserRole = CurrentUser.UserRole,
                 UserId = CurrentUser.USER_ID,
-                DocumentNumber = ck4cData.Number,
-                Comment = comment,
-                AdditionalDocumentData = new Ck4cWorkflowDocumentData()
-                {
-                    DecreeDate = ck4cData.DecreeDate.Value,
-                    Ck4cDecreeDoc = Mapper.Map<List<Ck4cDecreeDocDto>>(ck4cData.Ck4cDecreeDoc)
-                }
+                DocumentNumber = ck4cData.Number
             };
+
+            if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                input = new Ck4cWorkflowDocumentInput()
+                {
+                    DocumentId = ck4cData.Ck4CId,
+                    ActionType = actionType,
+                    UserRole = CurrentUser.UserRole,
+                    UserId = CurrentUser.USER_ID,
+                    DocumentNumber = ck4cData.Number,
+                    Comment = comment,
+                    AdditionalDocumentData = new Ck4cWorkflowDocumentData()
+                    {
+                        DecreeDate = ck4cData.DecreeDate.Value,
+                        Ck4cDecreeDoc = Mapper.Map<List<Ck4cDecreeDocDto>>(ck4cData.Ck4cDecreeDoc)
+                    }
+                };
+            }
+
             _ck4CBll.Ck4cWorkflow(input);
         }
 

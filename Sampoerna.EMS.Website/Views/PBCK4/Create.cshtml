@@ -11,6 +11,7 @@
                 <label class="status">Draft</label>
                 <div class="action-button">
                     <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
                 </div>
             </div>
         </div>
@@ -221,6 +222,10 @@
   <script type="text/javascript">
 
     $(document).ready(function () {
+        
+        $('#btnBack').click(function (e) {
+            location.href = '@Url.Action("Index", "PBCK4")';
+        });
         
         $("#btnSave").click(function () {
 
