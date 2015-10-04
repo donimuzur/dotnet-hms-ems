@@ -160,8 +160,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY()
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
-                        FORM_ID =
-                            data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" +
+                        FORM_ID = "Waste_"  + data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" +
                             data.WasteProductionDate.ToString("ddMMMyyyy"),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,

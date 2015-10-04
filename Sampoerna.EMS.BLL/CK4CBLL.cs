@@ -40,7 +40,7 @@ namespace Sampoerna.EMS.BLL
         private IUserBLL _userBll;
         private IBrandRegistrationService _brandRegistrationService;
 
-        private string includeTables = "MONTH, CK4C_ITEM";
+        private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
         public CK4CBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -224,6 +224,10 @@ namespace Sampoerna.EMS.BLL
                     GovRejectedDocument(input);
                     isNeedSendNotif = false;
                     break;
+                case Enums.ActionType.Completed:
+                    EditCompletedDocument(input);
+                    isNeedSendNotif = false;
+                    break;
             }
 
             //todo sent mail
@@ -290,10 +294,16 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var managerId = _poabll.GetManagerIdByPoaId(ck4cData.CreatedBy);
-                        var managerDetail = _userBll.GetUserById(managerId);
-                        rc.To.Add(managerDetail.EMAIL);
-                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                        var userData = _userBll.GetUserById(ck4cData.CreatedBy);
+                        rc.To.Add(GetManagerEmail(ck4cData.CreatedBy));
+                        rc.CC.Add(userData.EMAIL);
+
+                        var poaList = _poabll.GetPoaByNppbkcIdAndMainPlant(nppbkc);
+                        foreach (var poaDto in poaList)
+                        {
+                            if (userData.USER_ID != poaDto.POA_ID)
+                                rc.CC.Add(poaDto.POA_EMAIL);
+                        }
                     }
                     rc.IsCCExist = true;
                     break;
@@ -301,6 +311,8 @@ namespace Sampoerna.EMS.BLL
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         rc.To.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+
+                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -309,19 +321,31 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is poa user
                             rc.To.Add(poaData.POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(ck4cData.CreatedBy));
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(ck4cData.CreatedBy);
+                            var poaApproved = _userBll.GetUserById(ck4cData.ApprovedByPoa);
+
                             rc.To.Add(userData.EMAIL);
+                            rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                            rc.CC.Add(poaApproved.EMAIL);
                         }
                     }
+                    rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
+                    var poaApprove = _userBll.GetUserById(ck4cData.ApprovedByPoa);
+
                     rc.To.Add(userDetail.EMAIL);
+                    rc.CC.Add(poaApprove.EMAIL);
+                    rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+
+                    rc.IsCCExist = true;
                     break;
             }
             rc.Body = bodyMail.ToString();
@@ -540,6 +564,33 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.GOV_STATUS = Enums.StatusGovCk4c.Rejected;
 
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void EditCompletedDocument(Ck4cWorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.Completed)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //Add Changes
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+
+            dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+
+            //todo: update remaining quota and necessary data
+            dbData.CK4C_DECREE_DOC = null;
+            dbData.DECREE_DATE = null;
+            dbData.GOV_STATUS = null;
+
+            //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 
             AddWorkflowHistory(input);
@@ -884,13 +935,13 @@ namespace Sampoerna.EMS.BLL
                     switch (listChange.Key)
                     {
                         case "COMPANY_CODE":
-                            changes.OLD_VALUE = origin.COMPANY_ID;
-                            changes.NEW_VALUE = data.CompanyId;
+                            changes.OLD_VALUE = origin.COMPANY_NAME;
+                            changes.NEW_VALUE = data.CompanyName;
                             changes.FIELD_NAME = "Company";
                             break;
                         case "PLANT":
-                            changes.OLD_VALUE = origin.PLANT_ID;
-                            changes.NEW_VALUE = data.PlantId;
+                            changes.OLD_VALUE = origin.PLANT_ID + "-" + origin.PLANT_NAME;
+                            changes.NEW_VALUE = data.PlantId + "-" + data.PlantName;
                             changes.FIELD_NAME = "Plant";
                             break;
                         case "NPPBKC":
@@ -924,6 +975,16 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+        }
+
+        public bool AllowEditCompletedDocument(Ck4CDto item, string userId)
+        {
+            var isAllow = false;
+
+            if(item.CreatedBy == userId || item.ApprovedByPoa == userId)
+                isAllow = true;
+
+            return isAllow;
         }
 
         #region SummaryReport

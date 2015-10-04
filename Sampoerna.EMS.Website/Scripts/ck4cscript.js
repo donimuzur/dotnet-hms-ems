@@ -83,6 +83,44 @@ function ValidateGovInput() {
         }
     }
 
+    if ($("#poa-files .row").length == 0) {
+        $('#ModalCk4cDoc').modal('show');
+        result = false;
+    }
+
+    return result;
+}
+
+function ValidateCompletedInput() {
+    var result = true;
+    var govStatus = $('#Details_StatusGoverment').find("option:selected").val();
+
+    if (govStatus == '' && $('#Details_DecreeDate').val() == '' && $("#poa-files .row").length == 0) {
+        return true;
+    }
+
+    if (govStatus == '') {
+        AddValidationClass(false, 'Details_StatusGoverment');
+        result = false;
+    }
+
+    if ($('#Details_DecreeDate').val() == '') {
+        AddValidationClass(false, 'Details_DecreeDate');
+        result = false;
+    }
+
+    if ($('#Details_StatusGoverment').val() == 'Rejected') {
+        if ($('#Details_Comment').val() == '') {
+            AddValidationClass(false, 'Details_Comment');
+            result = false;
+        }
+    }
+
+    if ($("#poa-files .row").length == 0) {
+        $('#ModalCk4cDoc').modal('show');
+        result = false;
+    }
+
     return result;
 }
 
@@ -234,4 +272,47 @@ function UpdateRow() {
     });
 
     $('#Ck4cUploadModal').modal('hide');
+}
+
+function ajaxLoadPoa(formData, url) {
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        success: function (data) {
+            var list = data.PoaList;
+            if (list.length > 0) {
+                var poalist = '';
+                for (var i = 0; i < list.length; i++) {
+                    poalist = poalist + ', ' + list[i].Text;
+                }
+                poalist = poalist.slice(2);
+                $('#Details_PoaList').val(poalist);
+                $('#displayPoaList').val(poalist);
+            } else {
+                $('#Details_PoaList').val('');
+                $('#displayPoaList').val('');
+            }
+        }
+    });
+}
+
+function nppbkcIdOnChange(url) {
+    $('#Details_PoaList').val('');
+    $('#displayPoaList').val('');
+
+    if ($("#Details_NppbkcId").length) {
+        var nppbkcid = $('#Details_NppbkcId').find("option:selected").val();
+        if (nppbkcid != '') {
+            ajaxSelectNppbck({ nppbkcid: nppbkcid }, url);
+        }
+    }
+}
+
+function ajaxSelectNppbck(formData, url) {
+    //debugger;
+    if (formData.nppbkcid) {
+        //Load POA
+        ajaxLoadPoa(formData, url);
+    }
 }
