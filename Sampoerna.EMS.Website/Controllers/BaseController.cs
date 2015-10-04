@@ -116,7 +116,7 @@ namespace Sampoerna.EMS.Website.Controllers
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
-
+            
             var descriptor = filterContext.ActionDescriptor;
             var actionName = descriptor.ActionName;
             var controllerName = descriptor.ControllerDescriptor.ControllerName;
@@ -127,7 +127,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (CurrentUser == null )
             {
                 filterContext.Result = new RedirectToRouteResult(
-                            new RouteValueDictionary { { "controller", "Error" }, { "action", "NotRegistered" } });
+                            new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } });
  
              
                 
