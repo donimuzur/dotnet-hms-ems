@@ -166,7 +166,6 @@
         <EntityTypeShape EntityType="EMSModel.CK4C_ITEM" Width="1.5" PointX="25.5" PointY="42.75" />
         <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_CK4C" />
         <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_UOM" />
-        <AssociationConnector Association="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" />
         <AssociationConnector Association="EMSModel.FK_CK4C_POA" />
         <EntityTypeShape EntityType="EMSModel.BLOCK_STOCK" Width="1.5" PointX="11.375" PointY="4.75" />
         <EntityTypeShape EntityType="EMSModel.PBCK4_DOCUMENT" Width="1.5" PointX="8.125" PointY="47.625" />
