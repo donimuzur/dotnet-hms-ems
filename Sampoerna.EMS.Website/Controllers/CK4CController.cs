@@ -247,9 +247,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetNppbkcByPlantId(string plantId)
+        public JsonResult GetPoaByPlantId(string plantId)
         {
-            return Json(_plantBll.GetT001WById(plantId).NPPBKC_ID);
+            var nppbkc = _plantBll.GetT001WById(plantId).NPPBKC_ID;
+
+            var listPoa = _poabll.GetPoaByNppbkcIdAndMainPlant(nppbkc);
+            var model = new Ck4CIndexDocumentListViewModel() { PoaList = new SelectList(listPoa, "POA_ID", "PRINTED_NAME") };
+
+            return Json(model);
         }
 
         #endregion
@@ -300,6 +305,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var company = _companyBll.GetById(model.Details.CompanyId);
             var nppbkcId = plant == null ? item.NppbkcId : plant.NPPBKC_ID;
 
+            item.NppbkcId = plant != null ? plant.NPPBKC_ID : item.NppbkcId;
             item.PlantName = plant == null ? "" : plant.NAME1;
             item.CompanyName = company.BUTXT;
             item.CreatedBy = CurrentUser.USER_ID;
@@ -390,7 +396,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
-            var nppbkcId = plant == null ? ck4cData.NppbkcId : plant.NPPBKC_ID;
+            var nppbkcId = ck4cData.NppbkcId;
 
             //workflow history
             var workflowInput = new GetByFormNumberInput();
@@ -488,7 +494,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
 
                 var plant = _plantBll.GetT001WById(ck4cData.PlantId);
-                var nppbkcId = plant == null ? ck4cData.NppbkcId : plant.NPPBKC_ID;
+                var nppbkcId = ck4cData.NppbkcId;
 
                 //workflow history
                 var workflowInput = new GetByFormNumberInput();
