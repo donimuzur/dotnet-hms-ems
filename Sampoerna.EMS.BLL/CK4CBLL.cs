@@ -258,7 +258,7 @@ namespace Sampoerna.EMS.BLL
             var bodyMail = new StringBuilder();
             var rc = new Ck4cMailNotification();
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
-            var nppbkc = plant == null ? ck4cData.NppbkcId : plant.NPPBKC_ID;
+            var nppbkc = ck4cData.NppbkcId;
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -450,7 +450,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             var plant = _plantBll.GetT001WById(dbData.PLANT_ID);
-            var nppbkcId = plant == null ? dbData.NPPBKC_ID : plant.NPPBKC_ID;
+            var nppbkcId = dbData.NPPBKC_ID;
 
             var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
             {
@@ -778,7 +778,7 @@ namespace Sampoerna.EMS.BLL
             result.Detail.CompanyAddress = address;
 
             var plant = _plantBll.GetT001WById(dtData.PLANT_ID);
-            var nppbkc = plant == null ? dtData.NPPBKC_ID : plant.NPPBKC_ID;
+            var nppbkc = dtData.NPPBKC_ID;
             result.Detail.Nppbkc = nppbkc;
 
             if (dtData.CREATED_BY != null)

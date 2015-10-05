@@ -78,7 +78,7 @@
         });
 
         $("#Details_PlantId").change(function () {
-            GetNppbkcByPlant($(this).find("option:selected").val());
+            GetNppbkcByPlant();
         });
 
         $('#btnCancel').click(function (e) {
@@ -118,8 +118,9 @@
             }
     }
 
-    function GetNppbkcByPlant(plant) {
-
+    function GetNppbkcByPlant() {
+        var plant = $('#Details_PlantId').find("option:selected").val();
+        var nppbkc = '';
     }
 
     </script>

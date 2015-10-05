@@ -159,7 +159,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     try
                     {
-                        var text = datarow[1];
+                        var text = datarow[2];
                         decimal value;
                         if (Decimal.TryParse(text, out value))
                         {
@@ -168,8 +168,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
 
                         uploadItem.ProductCode = datarow[0];
+                        uploadItem.BrandCE = datarow[1];
                         uploadItem.ConverterOutput = text;
-                        uploadItem.ConverterUom = datarow[2];
+                        uploadItem.ConverterUom = datarow[3];
 
                         model.Detail.Pbck1ProdConverter.Add(uploadItem);
 
@@ -191,7 +192,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile)
+        public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile, string goodType)
         {
             var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
             var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
@@ -221,7 +222,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan);
-            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input, goodType);
 
             model.Detail.Pbck1ProdPlan = Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult);
 
