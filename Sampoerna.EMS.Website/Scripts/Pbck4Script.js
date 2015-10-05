@@ -151,7 +151,7 @@ function ajaxGetPlantDetails(url, formData) {
                 $("input[name='CompanyName']").val(data.CompanyName);
                 $("input[name='CompanyId']").val(data.CompanyId);
                 $("*[name='PlantDesc']").val(data.PlantDesc);
-                $("input[name='Poa']").val(data.Poa);
+                $("*[name='Poa']").val(data.Poa);
                 $("input[name='NppbkcId']").val(data.NppbkcId);
                 $("input[name='NppbkcDesc']").val(data.NppbkcDescription);
                 
@@ -224,37 +224,34 @@ function GenerateXlsPbck4Items(url) {
     function ValidateGovInput() {
         var result = true;
 
-        if ($('#BACK1_NO').val() == '') {
-            AddValidationClass(false, 'BACK1_NO');
-            result = false;
+        //if ($('#BACK1_NO').val() == '') {
+        //    AddValidationClass(false, 'BACK1_NO');
+        //    result = false;
            
-        }
+        //}
 
-        if ($('#BACK1_DATE').val() == '') {
-            AddValidationClass(false, 'BACK1_DATE');
-            result = false;
-        }
+        //if ($('#BACK1_DATE').val() == '') {
+        //    AddValidationClass(false, 'BACK1_DATE');
+        //    result = false;
+        //}
         
-        if ($('#CK3_NO').val() == '') {
-            AddValidationClass(false, 'CK3_NO');
-            result = false;
-        }
+        //if ($('#CK3_NO').val() == '') {
+        //    AddValidationClass(false, 'CK3_NO');
+        //    result = false;
+        //}
         
-        if ($('#CK3_DATE').val() == '') {
-            AddValidationClass(false, 'CK3_DATE');
-            result = false;
-        }
+        //if ($('#CK3_DATE').val() == '') {
+        //    AddValidationClass(false, 'CK3_DATE');
+        //    result = false;
+        //}
         
-        //if ($('#CK3_OFFICE_VALUE').val() == '') {
+    
+        //if ($.isNumeric($('#CK3_OFFICE_VALUE').val()) == false) {
         //    AddValidationClass(false, 'CK3_OFFICE_VALUE');
         //    result = false;
         //}
-        if ($.isNumeric($('#CK3_OFFICE_VALUE').val()) == false) {
-            AddValidationClass(false, 'CK3_OFFICE_VALUE');
-            result = false;
-        }
         
-        // alert($('#GovStatus').val());
+       
 
         if ($('#GovStatus').val() == '') {
             AddValidationClass(false, 'GovStatus');
@@ -280,36 +277,36 @@ function GenerateXlsPbck4Items(url) {
 
         }
         
-        if ($('#poa_sk0').length == 0) {
-            AddValidationClass(false, 'poa-files');
+        //if ($('#poa_sk0').length == 0) {
+        //    AddValidationClass(false, 'poa-files');
 
-            if (result) {
-                $('#modalBodyMessage').text('Missing attach files BACK-1 Doc');
-                $('#ModalPbck4ValidateGov').modal('show');
+        //    if (result) {
+        //        $('#modalBodyMessage').text('Missing attach files BACK-1 Doc');
+        //        $('#ModalPbck4ValidateGov').modal('show');
 
-                $('#collapseFour').removeClass('collapse');
-                $('#collapseFour').addClass('in');
-                $("#collapseFour").css({ height: "auto" });
+        //        $('#collapseFour').removeClass('collapse');
+        //        $('#collapseFour').addClass('in');
+        //        $("#collapseFour").css({ height: "auto" });
 
-            }
-            result = false;
-        }
+        //    }
+        //    result = false;
+        //}
 
        
-        if ($('#poa_sk20').length == 0) {
-            AddValidationClass(false, 'poa-files2');
+        //if ($('#poa_sk20').length == 0) {
+        //    AddValidationClass(false, 'poa-files2');
 
-            if (result) {
-                $('#modalBodyMessage').text('Missing attach files CK-3 Doc');
-                $('#ModalPbck4ValidateGov').modal('show');
+        //    if (result) {
+        //        $('#modalBodyMessage').text('Missing attach files CK-3 Doc');
+        //        $('#ModalPbck4ValidateGov').modal('show');
 
-                $('#collapseFour').removeClass('collapse');
-                $('#collapseFour').addClass('in');
-                $("#collapseFour").css({ height: "auto" });
+        //        $('#collapseFour').removeClass('collapse');
+        //        $('#collapseFour').addClass('in');
+        //        $("#collapseFour").css({ height: "auto" });
 
-            }
-            result = false;
-        }
+        //    }
+        //    result = false;
+        //}
 
         return result;
     }

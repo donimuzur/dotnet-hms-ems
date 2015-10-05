@@ -46,6 +46,7 @@ namespace Sampoerna.EMS.BLL
 
 
             Mapper.CreateMap<Pbck7ItemUpload, PBCK7_ITEM>().IgnoreAllNonExisting()
+             .ForMember(dest => dest.PBCK7_ITEM_ID, opt => opt.MapFrom(src => src.Id))
              .ForMember(dest => dest.BRAND_CE, opt => opt.MapFrom(src => src.Brand))
              .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
              .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProdTypeAlias))
@@ -58,9 +59,11 @@ namespace Sampoerna.EMS.BLL
              .ForMember(dest => dest.EXCISE_VALUE, opt => opt.MapFrom(src => src.ExciseValue))
              .ForMember(dest => dest.PBCK7_QTY, opt => opt.MapFrom(src => src.Pbck7Qty))
              .ForMember(dest => dest.BACK1_QTY, opt => opt.MapFrom(src => src.Back1Qty))
+             .ForMember(dest => dest.PBCK7_ID, opt => opt.MapFrom(src => src.Pbck7Id))
                 ;
             Mapper.CreateMap<PBCK7_ITEM, Pbck7ItemUpload>().IgnoreAllNonExisting()
            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PBCK7_ITEM_ID))
+           .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID))
            .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.BRAND_CE))
            .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
            .ForMember(dest => dest.ProdTypeAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
@@ -131,6 +134,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PBCK3, Pbck3Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck3Id, opt => opt.MapFrom(src => src.PBCK3_ID))
                .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.PBCK3_NUMBER))
+               .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.PBCK7.PBCK7_NUMBER))
                .ForMember(dest => dest.Pbck3Date, opt => opt.MapFrom(src => src.PBCK3_DATE))
                .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID))
                .ForMember(dest => dest.Pbck3Status, opt => opt.MapFrom(src => src.STATUS))
@@ -144,9 +148,22 @@ namespace Sampoerna.EMS.BLL
              .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PBCK7.PLANT_ID + "-" + src.PBCK7.PLANT_NAME))
                ;
 
-            Mapper.CreateMap<BACK3, Back3Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<BACK3, Back3Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Back3ID, opt => opt.MapFrom(src => src.BACK3_ID))
+                .ForMember(dest => dest.Back3Number, opt => opt.MapFrom(src => src.BACK3_NUMBER))
+                .ForMember(dest => dest.Back3Date, opt => opt.MapFrom(src => src.BACK3_DATE))
+                .ForMember(dest => dest.Pbck3ID, opt => opt.MapFrom(src => src.PBCK3_ID))
+                .ForMember(dest => dest.Back3Document, opt => opt.MapFrom(src => src.BACK3_DOCUMENT));
+
+
             Mapper.CreateMap<Back3Dto, BACK3>().IgnoreAllNonExisting();
-            Mapper.CreateMap<CK2, Ck2Dto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<CK2, Ck2Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck2ID, opt => opt.MapFrom(src => src.CK2_ID))
+                .ForMember(dest => dest.Ck2Number, opt => opt.MapFrom(src => src.CK2_NUMBER))
+                .ForMember(dest => dest.Ck2Date, opt => opt.MapFrom(src => src.CK2_DATE))
+                .ForMember(dest => dest.Ck2Value, opt => opt.MapFrom(src => src.CK2_VALUE))
+                .ForMember(dest => dest.Ck2Document, opt => opt.MapFrom(src => src.CK2_DOCUMENT));
+
             Mapper.CreateMap<Ck2Dto, CK2>().IgnoreAllNonExisting();
 
             #endregion

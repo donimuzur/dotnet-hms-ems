@@ -11,6 +11,7 @@
                 <label class="status">Draft</label>
                 <div class="action-button">
                     <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
                 </div>
             </div>
         </div>
@@ -171,7 +172,7 @@
                     </div>
                     
                     <div class="col-md-4">
-                        <label>Approved Qty<span class="red">*</span></label>
+                        <label>BACK-1 Qty<span class="red">*</span></label>
                         @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadApprovedQty", @maxlength = "15" })
 
                     </div>
@@ -193,7 +194,11 @@
                         <textarea class="form-control" id="uploadRemarks" cols="20" rows="5"></textarea>
                     </div>
                   
+                    <div class="col-md-4">
+                        <label>Blocked Stock</label>
+                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadBlockedStocked", @disabled = "disabled" })
 
+                    </div>
 
                 </div>
             </div>
@@ -217,6 +222,10 @@
   <script type="text/javascript">
 
     $(document).ready(function () {
+        
+        $('#btnBack').click(function (e) {
+            location.href = '@Url.Action("Index", "PBCK4")';
+        });
         
         $("#btnSave").click(function () {
 
@@ -246,7 +255,7 @@
                 $("input[name='CompanyName']").val('');
                 $("input[name='CompanyId']").val('');
                 $("*[name='PlantDesc']").val('');
-                $("input[name='Poa']").val('');
+                $("*[name='Poa']").val('');
                 $("input[name='NppbkcId']").val('');
                 $("input[name='NppbkcDesc']").val('');
                 
@@ -271,13 +280,16 @@
 
           var sourcePlant = $("#PlantId").find("option:selected").val();
           var nppbkcId = $("#NppbkcId").val();
-
+          var faCode = nRow.find("td").eq(2).html();
           $("#uploadPlant").val(sourcePlant);
 
           ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant }, nRow.find("td").eq(2).html());
 
 
-          ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());
+          @*ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());*@
+
+        
+          ajaxGetListCk1DateByPlantAndFaCode('@Url.Action("GetListCk1Date", "PBCK4")', { plantId: sourcePlant, faCode: faCode, nppbkcId : nppbkcId }, nRow.find("td").eq(4).html());
 
 
           //set value
@@ -300,6 +312,7 @@
           $('#uploadNoPengawas').val(nRow.find("td").eq(16).html());
           $('#uploadRemarks').val(nRow.find("td").eq(18).html());
 
+          $('#uploadBlockedStocked').val(nRow.find("td").eq(21).html());
 
           $("#lblTitleInputManual").text('Edit Input');
 
@@ -317,7 +330,7 @@
           ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant },'');
 
          
-          ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId },'');
+          @*ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId },'');*@
           
           $('#btnSaveMaterial').show();
           $('#btnUpdateMaterial').hide();
@@ -343,11 +356,17 @@
                   $("#uploadHje").val('');
                   $("#uploadTariff").val('');
                   $("#uploadColour").val('');
+                  $("#uploadBlockedStocked").val('0');
+                  
+                  var listCk1 = $('#uploadCk1No');
+                  listCk1.empty();
+                  var list = '<option value>Select</option>';
+                  listCk1.html(list);
                 
               } else {
-
+                  var nppbkcId = $("#NppbkcId").val();
                   var plant = $("#uploadPlant").val();
-                  ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode });
+                  ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode, nppbkcId: nppbkcId });
               }
           }
       });

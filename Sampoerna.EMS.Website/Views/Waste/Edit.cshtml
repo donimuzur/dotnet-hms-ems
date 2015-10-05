@@ -50,10 +50,10 @@
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4">Company<span class="red">*</span></label>
+                                                                @Html.HiddenFor(model => model.CompanyCodeX)
                                                                 <div class="col-md-8">
-                                                                    @Html.HiddenFor(model => model.CompanyCodeX)
                                                                     @Html.HiddenFor(model => model.CompanyName)
-                                                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "All", new { @class = "form-control " })
+                                                                    @Html.DropDownListFor(model => model.CompanyCode, Model.CompanyCodeList, "Select", new { @class = "form-control " })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -61,10 +61,10 @@
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4">Plant<span class="red">*</span></label>
+                                                                @Html.HiddenFor(model => model.PlantWerksX)
                                                                 <div class="col-md-8">
-                                                                    @Html.HiddenFor(model => model.PlantWerksX)
                                                                     @Html.HiddenFor(model => model.PlantName)
-                                                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "All", new { @class = "form-control ", id = "SearchInput_PlantId" })
+                                                                    @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "Select", new { @class = "form-control ", id = "SearchInput_PlantId" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -73,11 +73,10 @@
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4"> Waste Production Date</label>
+                                                                @Html.HiddenFor(model => model.WasteProductionDateX)
                                                                 <div class="col-md-8">
                                                                     <div class="input-group date">
-                                                                        @Html.HiddenFor(model => model.WasteProductionDateX)
-                                                                        @*@Html.TextBoxFor(model => model.WasteProductionDate, new {@class="form-control"})*@
-                                                                        @Html.TextBox("WasteProductionDate", Model.WasteProductionDate == null ? null : Convert.ToDateTime(Model.WasteProductionDate).ToString("dd MMM yyyy"), new { @class = "form-control" })
+                                                                        @Html.TextBoxFor(model => model.WasteProductionDate, new { @class = "form-control" })
                                                                         <span class="input-group-addon">
                                                                             <i class="fa fa-calendar"></i>
                                                                         </span>
@@ -88,9 +87,9 @@
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4">Finish Good<span class="red">*</span></label>
+                                                                @Html.HiddenFor(model => model.FaCodeX)
                                                                 <div class="col-md-8">
-                                                                    @Html.HiddenFor(model => model.FaCodeX)
-                                                                    @Html.DropDownListFor(model => model.FaCode, Model.FacodeList, "All", new { @class = "form-control", id = "SearchInput_BrandCe" })
+                                                                    @Html.DropDownListFor(model => model.FaCode, Model.FacodeList, "Select", new { @class = "form-control", id = "SearchInput_BrandCe" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -110,7 +109,7 @@
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Maker Reject Cigarette (sticks)</label>
+                                                                <label class="col-md-4">Maker Reject Cigarette (stick)</label>
                                                                 <div class="col-md-8">
                                                                     @Html.TextBoxFor(model => model.MarkerStr, new { @class = "decimal form-control" })
                                                                 </div>
@@ -118,7 +117,7 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Packer Reject Cigarette (sticks)</label>
+                                                                <label class="col-md-4">Packer Reject Cigarette (stick)</label>
                                                                 <div class="col-md-8">
                                                                     @Html.TextBoxFor(model => model.PackerStr, new { @class = "decimal form-control" })
                                                                 </div>
@@ -187,7 +186,7 @@
 
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuCk4cWasteProduction').addClass('active');
-        
+
         $('#MarkerStr').val(ThausandSeperator($('#MarkerStr').val(), 2));
         $('#ParkerStr').val(ThausandSeperator($('#ParkerStr').val(), 2));
 
@@ -234,13 +233,13 @@
             }
 
         }
-        
+
         $("#CompanyCode").change(function () {
             if ($("#CompanyCode").length) {
                 var cpy = $(this).find("option:selected").val();
                 $('#SearchInput_PlantId option').remove();
                 if (cpy == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+                    $('#SearchInput_PlantId option').append('<option value="">Select</option>');
 
                 } else {
                     ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Waste")', { companyId: cpy });
@@ -256,7 +255,7 @@
                     data: formData,
                     success: function (data) {
                         var listPlant = data.PlantWerkList;
-                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        $('#SearchInput_PlantId').append('<option value="">Select</option>');
                         if (listPlant.length > 0) {
                             for (var i = 0; i < listPlant.length; i++) {
                                 $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
@@ -273,13 +272,13 @@
                 });
             }
         }
-        
+
         $("#SearchInput_PlantId").change(function () {
             if ($("#SearchInput_PlantId").length) {
                 var ce = $(this).find("option:selected").val();
                 $('#SearchInput_BrandCe option').remove();
                 if (ce == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_BrandCe option').append('<option value="">All</option>');
+                    $('#SearchInput_BrandCe option').append('<option value="">Select</option>');
 
                 } else {
                     ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Waste")', { plantWerk: ce });
@@ -295,7 +294,7 @@
                     data: formData,
                     success: function (data) {
                         var facodeList = data.FacodeList;
-                        $('#SearchInput_BrandCe').append('<option value="">All</option>');
+                        $('#SearchInput_BrandCe').append('<option value="">Select</option>');
                         if (facodeList.length > 0) {
                             for (var i = 0; i < facodeList.length; i++) {
                                 $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
@@ -310,6 +309,6 @@
         }
 
 
-        
+
     </script>
 }

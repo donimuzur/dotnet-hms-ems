@@ -140,6 +140,9 @@
                 <p></p>
                 <input id="uploadMaterialRow" type="hidden" value="">
                 <input id="uploadCk1Id" type="hidden" value="">
+                <input id="uploadMode" type="hidden" value="">
+                <input id="uploadPlantOri" type="hidden" value="">
+                <input id="uploadFaCodeOri" type="hidden" value="">
                 <div class="row">
                     <div class="col-md-4">
                         <label>Plant</label>
@@ -235,7 +238,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label>Approved Qty<span class="red">*</span></label>
+                        <label>BACK-1 Qty<span class="red">*</span></label>
                         @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadApprovedQty", @maxlength = "15" })
 
                     </div>
@@ -243,15 +246,21 @@
                     <div class="col-md-4">
                         <label>No Pengawas</label>
                         @Html.TextBoxFor(model => model.NoPengawas, new { @class = "form-control", @id = "uploadNoPengawas", @maxlength = "10" })
-
-
                     </div>
+                    
+
                 </div>
 
                 <div class="row">
                     <div class="col-md-4">
                         <label>Remarks</label>
                         <textarea class="form-control" id="uploadRemarks" cols="20" rows="5"></textarea>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label>Blocked Stock</label>
+                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadBlockedStocked", @disabled = "disabled" })
+
                     </div>
 
                 </div>
@@ -276,12 +285,11 @@
 
     <script type="text/javascript">
 
-
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#btnUploadInfo').enable();
             $('#Pbck4UploadSubmitBtn').enable();
-           // $('#Pbck4UploadSave').enable();
-            
+            // $('#Pbck4UploadSave').enable();
+
             $('#btnBack').click(function(e) {
                 location.href = '@Url.Action("Index", "PBCK4")';
             });
@@ -311,14 +319,14 @@
                     $('#EditPbck4Forms').submit();
                 }
             });
-            
-            $('#Pbck4UploadSubmitBtn').click(function () {
+
+            $('#Pbck4UploadSubmitBtn').click(function() {
                 GenerateXlsPbck4Items('@Url.Action("UploadFile", "PBCK4")');
             });
-            
+
             OnReadyFunction();
-            
-            $("#btnCancelDocument").click(function () {
+
+            $("#btnCancelDocument").click(function() {
                 $('#btnConfirmCancel').attr('disabled', 'disabled');
 
                 $('#Comment').val('');
@@ -327,7 +335,7 @@
 
             });
 
-            $('#Comment').bind('input propertychange', function () {
+            $('#Comment').bind('input propertychange', function() {
 
                 $('#btnConfirmCancel').attr('disabled', 'disabled');
 
@@ -335,7 +343,7 @@
                     $('#btnConfirmCancel').removeAttr('disabled');
                 }
             });
-            
+
         });
 
 
@@ -346,14 +354,14 @@
                 //remove table
                 try {
                     RemovePbck4ItemsTable();
-                } catch (e) {
+                } catch(e) {
 
                 }
                 if (plant == '') {
                     $("input[name='CompanyName']").val('');
                     $("input[name='CompanyId']").val('');
                     $("*[name='PlantDesc']").val('');
-                    $("input[name='Poa']").val('');
+                    $("*[name='Poa']").val('');
                     $("input[name='NppbkcId']").val('');
                     $("input[name='NppbkcDesc']").val('');
 
@@ -364,10 +372,11 @@
             }
         });
 
-      
+
         function EditRow(o) {
 
             var nRow = o.parents('tr');
+         
 
             $('#btnSaveMaterial').hide();
             $('#btnUpdateMaterial').show();
@@ -375,13 +384,16 @@
             var sourcePlant = $("#PlantId").find("option:selected").val();
             var nppbkcId = $("#NppbkcId").val();
 
+            var faCode = nRow.find("td").eq(2).html();
+            
             $("#uploadPlant").val(sourcePlant);
 
             ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant }, nRow.find("td").eq(2).html());
 
 
-            ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());
+            @*ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());*@
 
+            ajaxGetListCk1DateByPlantAndFaCode('@Url.Action("GetListCk1Date", "PBCK4")', { plantId: sourcePlant, faCode: faCode, nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());
 
             //set value
             $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
@@ -404,15 +416,22 @@
             $('#uploadRemarks').val(nRow.find("td").eq(18).html());
 
             $("#uploadCk1Id").val(nRow.find("td").eq(20).html());
-            
+
+            $('#uploadBlockedStocked').val(nRow.find("td").eq(21).html());
+
             $("#lblTitleInputManual").text('Edit Input');
+
+
+            $("#uploadMode").val('2');
+            $("#uploadPlantOri").val(sourcePlant);
+            $("#uploadFaCodeOri").val(nRow.find("td").eq(2).html());
 
             $('#Pbck4UploadModal').modal('show');
 
 
         }
 
-        $("#btnAddRow").click(function () {
+        $("#btnAddRow").click(function() {
             var sourcePlant = $("#PlantId").find("option:selected").val();
             var nppbkcId = $("#NppbkcId").val();
 
@@ -421,7 +440,7 @@
             ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant }, '');
 
 
-            ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, '');
+            @*ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, '');*@
 
             $('#btnSaveMaterial').show();
             $('#btnUpdateMaterial').hide();
@@ -430,10 +449,11 @@
             ClearValidation();
             $("#lblTitleInputManual").text('New Input');
 
+            $("#uploadMode").val('1');
             $('#Pbck4UploadModal').modal('show');
         });
 
-        $("#uploadFaCode").change(function () {
+        $("#uploadFaCode").change(function() {
             if ($("#uploadFaCode").length) {
                 var faCode = $(this).find("option:selected").val();
 
@@ -447,16 +467,35 @@
                     $("#uploadHje").val('');
                     $("#uploadTariff").val('');
                     $("#uploadColour").val('');
+                    
+                    var listCk1 = $('#uploadCk1No');
+                    listCk1.empty();
+                    var list = '<option value>Select</option>';
+                    listCk1.html(list);
+                    
 
                 } else {
 
                     var plant = $("#uploadPlant").val();
-                    ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode });
+                    var uploadMode = $("#uploadMode").val();
+                    var nppbkcId = $("#NppbkcId").val();
+                    
+                    if (uploadMode == '1') //new input
+                    {
+                        ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode, nppbkcId: nppbkcId });
+                    } else {
+                        //edit mode
+                        var pbckId = '@Model.Pbck4Id';
+                        var plantOri = $("#uploadPlantOri").val();
+                        var faCodeOri = $("#uploadFaCodeOri").val();
+                        
+                        ajaxGetBrandItemsForEdit('@Url.Action("GetBrandItemsForEdit", "PBCK4")', { pbck4Id: pbckId, plantId: plant, faCode: faCode, plantIdOri: plantOri, faCodeOri: faCodeOri, nppbkcId: nppbkcId });
+                    }
                 }
             }
         });
 
-        $("#uploadCk1No").change(function () {
+        $("#uploadCk1No").change(function() {
             if ($("#uploadCk1No").length) {
                 var ck1Id = $(this).find("option:selected").val();
 
@@ -472,15 +511,15 @@
             }
         });
 
-        $("#btnSaveMaterial").click(function () {
+        $("#btnSaveMaterial").click(function() {
             AddRowPbck4();
         });
 
-        $("#btnUpdateMaterial").click(function () {
+        $("#btnUpdateMaterial").click(function() {
 
             UpdateRowPbck4();
         });
-        
+
     </script>
 
 }

@@ -55,6 +55,10 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlCK1DataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("PAYMENT"))
+            {
+                return new XmlPaymentDataMapper(xmlfile);
+            }
             return null;
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)

@@ -1,4 +1,5 @@
-﻿@using Sampoerna.EMS.Core
+﻿@using iTextSharp.text.pdf.qrcode
+@using Sampoerna.EMS.Core
 @using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
@@ -7,7 +8,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>@Model.Ck5Type.ToString()</h3>
+                <h3>@Model.Ck5Type.ToString() &nbsp; #@Model.SubmissionNumber</h3>
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
                    
@@ -81,8 +82,15 @@
                             @Html.HiddenFor(model => model.GoodTypeName)
                             @Html.HiddenFor(model => model.SourcePlantId)
                             @Html.HiddenFor(model => model.DestPlantId)
-
-                            @Html.Partial("_CK5GovApproval")
+                            if (Model.IsMarketReturn)
+                            {
+                                @Html.Partial("_CK5GovApprovalMarketReturn")
+                            }
+                            else
+                            {
+                                @Html.Partial("_CK5GovApproval")
+                            }
+                            
                         }
                         else if (Model.AllowGiCreated || Model.AllowGrCreated)
                         {
@@ -304,13 +312,23 @@
                     location.href = '@Url.Action("CK5Import", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
                     location.href = '@Url.Action("CK5Manual", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';
 
             });
             
             $("#btnSaveGovStatus").click(function () {
-                if (ValidateGovInput()) {
-                    $('#GovApproveForm').submit();
+                if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
+                    if (ValidateGovMarketReturn()) {
+                        $('#GovApproveForm').submit();
+                        //alert('submit');
+                    }
+                } else {
+                    if (ValidateGovInput()) {
+                        $('#GovApproveForm').submit();
+                    }
                 }
+              
             });
             
             $('#divComment').hide();

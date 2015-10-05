@@ -26,6 +26,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string PROD_CODE { get; set; }
         public Nullable<decimal> PACKED_QTY { get; set; }
         public Nullable<decimal> UNPACKED_QTY { get; set; }
+        public Nullable<int> CONTENT_PER_PACK { get; set; }
+        public Nullable<int> PACKED_IN_PACK { get; set; }
+        public string REMARKS { get; set; }
     
         public virtual CK4C CK4C { get; set; }
         public virtual UOM UOM { get; set; }

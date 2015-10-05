@@ -92,10 +92,10 @@ function OnReadyFunction(ck5Type) {
         $('#information').addClass('active');
         $('#upload').removeClass('active');
 
-        $('#collapse5').addClass('in');        
+        $('#collapse5').addClass('in');
 
-
-        if (ck5Type == 'Export' || ck5Type == 'PortToImporter' || ck5Type == 'Manual') {
+       
+        if (ck5Type == 'Export' || ck5Type == 'PortToImporter' || ck5Type == 'Manual' || ck5Type == 'MarketReturn') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
@@ -189,6 +189,15 @@ function GenerateXlsCk5Material(url, ck5Type) {
             formData.append("plantId", $('#SourcePlantId').val());
         
     }
+    
+    var goodTypeGroupId = $("#GoodType").val();
+    if (goodTypeGroupId == "") {
+        $('#modalBodyMessage').text('Please fill the excisable good types for this CK-5 document');
+        $('#ModalCk5Material').modal('show');
+    } else {
+        formData.append("groupType", $('#GoodType').val());
+    }
+
     $.ajax({
         type: "POST",
         url: url,
@@ -508,6 +517,75 @@ function ValidateGovInput() {
     return result;
 }
 
+function ValidateGovMarketReturn() {
+    var result = true;
+    
+
+    if ($('#GovStatus').val() == '') {
+        AddValidationClass(false, 'GovStatus');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#GovStatus').focus();
+    } else {
+        if ($('#GovStatus').val() == 'GovReject' || $('#GovStatus').val() == 'GovCancel') {
+            if ($('#Comment').val() == '') {
+                AddValidationClass(false, 'Comment');
+                result = false;
+                $('#collapseFour').removeClass('collapse');
+                $('#collapseFour').addClass('in');
+                $("#collapseFour").css({ height: "auto" });
+                $('#Comment').focus();
+            }
+        }
+
+    }
+
+    if ($('#Back1Number').val() != '') {
+
+        if ($('#Back1Date').val() == '') {
+            AddValidationClass(false, 'Back1Date');
+            result = false;
+            $('#collapseOne').removeClass('collapse');
+            $('#collapseOne').addClass('in');
+            $("#collapseOne").css({ height: "auto" });
+        }
+    }
+    
+    if ($('#Back1Date').val() != '') {
+
+        if ($('#Back1Number').val() == '') {
+            AddValidationClass(false, 'Back1Number');
+            result = false;
+            $('#collapseOne').removeClass('collapse');
+            $('#collapseOne').addClass('in');
+            $("#collapseOne").css({ height: "auto" });
+            $('#Back1Number').focus();
+        }
+    }
+    
+    if (result) {
+        if ($('#RegistrationNumber').val() != '') {
+
+            if ($('#RegistrationNumber').val().length < 6) {
+
+                AddValidationClass(false, 'RegistrationNumber');
+                result = false;
+                $('#collapseOne').removeClass('collapse');
+                $('#collapseOne').addClass('in');
+                $("#collapseOne").css({ height: "auto" });
+                $('#RegistrationNumber').focus();
+
+                $('#modalBodyMessage').text('Registration Number Length must be 6');
+                $('#ModalCk5ValidateGov').modal('show');
+            }
+        }
+    }
+
+    return result;
+}
+
 function AddValidationClass(isValid, objName) {
     if (isValid) {
         $('#' + objName).removeClass('input-validation-error');
@@ -792,4 +870,9 @@ function ajaxGetMaterialHjeAndTariff(url, formData) {
             }
         });
     }
+}
+
+function removeExistingDocument(id) {
+   // alert(id);
+    $(id).parent().parent().parent().remove();
 }

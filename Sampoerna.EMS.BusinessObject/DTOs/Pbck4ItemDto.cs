@@ -30,5 +30,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string CK1_NUMBER { get; set; }
         public DateTime CK1_DATE { get; set; }
+
+        public string BlockedStock { get; set; }
     }
 }

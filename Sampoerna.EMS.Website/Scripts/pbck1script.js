@@ -1,5 +1,28 @@
-﻿function setSupplierPlantEmpty() {
-    $('#Detail_SupplierPortName').val('');
+﻿jQuery.validator.addMethod("greaterThan",
+function (value, element, params) {
+    if (!/Invalid|NaN/.test(new Date(value))) {
+        return new Date(value) > new Date($(params).val());
+    }
+
+    return isNaN(value) && isNaN($(params).val())
+        || (Number(value) > Number($(params).val()));
+}, 'Must be greater than {0}.');
+
+function setUpload() {
+    if ($("#Detail_GoodType").val() == "") {
+        $("#btn-prod-conv-upload").prop("disabled", true);
+        $("#ProdConvExcelfile").prop("disabled", true);
+        $("#btn-prod-plan-upload").prop("disabled", true);
+        $("#ProdPlanExcelfile").prop("disabled", true);
+    } else {
+        $("#btn-prod-conv-upload").prop("disabled", false);
+        $("#ProdConvExcelfile").prop("disabled", false);
+        $("#btn-prod-plan-upload").prop("disabled", false);
+        $("#ProdPlanExcelfile").prop("disabled", false);
+    }
+}
+
+function setSupplierPlantEmpty() {
     $('#Detail_SupplierNppbkcId').val('');
     $('#Detail_SupplierKppbcId').val('');
     $('#Detail_SupplierPhone').val('');
@@ -66,6 +89,7 @@ function goodTypeOnChange() {
         goodTypeName = goodTypeName.substr(3);
         $('#Detail_GoodTypeDesc').val(goodTypeName);
     }
+    prodPlanClear();
     getReference();
 }
 
@@ -86,7 +110,7 @@ function IsProdConverterValid() {
     var datarows = GetTableData($('#prod-conv-table'));
 
     for (var i = 0; i < datarows.length; i++) {
-        if (datarows[i][6].length > 0)
+        if (datarows[i][7].length > 0)
             return false;
     }
 
@@ -109,10 +133,12 @@ function prodConvSaveClick() {
                 + '].ProdTypeAlias" type="hidden" value = "' + datarows[i][2] + '" />' + datarows[i][2] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ProdTypeName" type="hidden" value = "' + datarows[i][3] + '" />' + datarows[i][3] + '</td>';
-            data += '<td class="number"><input name="Detail.Pbck1ProdConverter[' + i
-                + '].ConverterOutput" type="hidden" value = "' + changeToNumber(datarows[i][4]) + '" />' + datarows[i][4] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
-                + '].ConverterUomId" type="hidden" value = "' + datarows[i][5] + '" />' + datarows[i][5] + '</td>';
+                + '].BrandCE" type="hidden" value = "' + datarows[i][4] + '" />' + datarows[i][4] + '</td>';
+            data += '<td class="number"><input name="Detail.Pbck1ProdConverter[' + i
+                + '].ConverterOutput" type="hidden" value = "' + changeToNumber(datarows[i][5]) + '" />' + datarows[i][5] + '</td>';
+            data += '<td><input name="Detail.Pbck1ProdConverter[' + i
+                + '].ConverterUomId" type="hidden" value = "' + datarows[i][6] + '" />' + datarows[i][6] + '</td>';
 
         }
         
@@ -235,8 +261,10 @@ function prodPlanGenerateClick(url) {
     var totalFiles = document.getElementById("ProdPlanExcelfile").files.length;
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("ProdPlanExcelfile").files[i];
+        console.log(file);
         formData.append("prodPlanExcelFile", file);
     }
+    formData.append("goodType", $("#Detail_GoodType").val());
 
     $.ajax({
         url: url,
@@ -265,6 +293,32 @@ function prodPlanGenerateClick(url) {
         }
     });
     return false;
+}
+
+function prodPlanClear() {
+    var html_upload = "<table id=\"prod-plan-table\" class=\"table table-bordered table-striped js-options-table\"> \
+    <thead> \
+        <tr> \
+            <th style=\"display: none\"></th> \
+            <th style=\"display: none\"></th> \
+            <th style=\"display: none\"></th> \
+            <th>Month</th> \
+            <th>Product Type Alias</th> \
+            <th>Amount</th> \
+            <th>BKC Required</th> \
+            <th>BKC Required Uom</th> \
+            <th style=\"display: none\"></th> \
+            <th>Message Error</th> \
+        </tr> \
+    </thead>";
+
+    $('#prod-plan-save').attr('disabled', 'disabled');
+    
+    $('input[name="Detail.RequestQty"]:text').val("0.00");
+    $('input[name="Detail.RequestQty"]:hidden').val("");
+    $('#ProdPlanContent').html("");
+    $('#ProdPlanContent').html(html_upload);
+    $('#Detail_Pbck1ProdPlan tbody').html('');
 }
 
 function pbck1TypeOnchange() {
@@ -425,7 +479,7 @@ function getReference() {
     $('input[name="Detail.Pbck1Reference"]:hidden').prop("disabled", true);
     $('input[name="Detail.Pbck1Reference"]:hidden').val("");
 
-    if ($('select[name="Detail.NppbkcId"]').val() == "" || $('input[name="Detail.PeriodFrom"]').val() == "" || $('input[name="Detail.PeriodTo"]').val() == "" || $('input[name="Detail.SupplierNppbkcId"]').val() == "" || $('input[name="Detail.SupplierPlantWerks"]').val() == "" || $('select[name="Detail.GoodType"]').val() == "")
+    if ($('select[name="Detail.NppbkcId"]').val() == "" || $('input[name="Detail.PeriodFrom"]').val() == "" || $('input[name="Detail.PeriodTo"]').val() == "" || ($('input[name="Detail.SupplierPlantWerks"]').val() == "" && $('input[name="Detail.SupplierPlant"]').val() == "") || $('select[name="Detail.GoodType"]').val() == "")
     {
         return false;
     }
@@ -436,6 +490,7 @@ function getReference() {
         periodTo: $('input[name="Detail.PeriodTo"]').val(),
         supplierNppbkcId: $('input[name="Detail.SupplierNppbkcId"]').val(),
         supplierPlantWerks: $('input[name="Detail.SupplierPlantWerks"]').val(),
+        supplierPlant:$('input[name="Detail.SupplierPlant"]').val(),
         goodType: $('select[name="Detail.GoodType"]').val()
 
     }
@@ -458,6 +513,22 @@ function getReference() {
     });
 }
 
+function getKPPBCByNPPBKC(id) {
+    if ($("#Detail_IsExternalSupplier").is(':checked')) {
+        $.ajax({
+            type: 'POST',
+            url: kppbcUrl,
+            data: { nppbkcid: id },
+            success: function (data) {
+                $('input[name="Detail.SupplierKppbcName"]:text').val(data.kppbcname);
+                $('input[name="Detail.HiddenSupplierKppbcId"]:hidden').val(data.kppbcname);
+                $('input[name="Detail.SupplierKppbcId"]:hidden').val(data.kppbcid);
+            }
+        });
+    }
+
+}
+
 function changeToDecimalMaxFour(selector, type) {
     $(selector).each(function () {
         if (type == "val") {
@@ -472,3 +543,17 @@ function changeToDecimalMaxFour(selector, type) {
     });
 }
 
+function setLackYear() {
+    var date = $("#Detail_PeriodFrom").datepicker('getDate');
+    if (date == null)
+        return;
+
+    var year = date.getFullYear();
+
+    $("#Detail_Lack1FormYear").html("");
+    $("#Detail_Lack1ToYear").html("");
+    for (var i = 0; i < 4 ; i++) {
+        $("#Detail_Lack1FormYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
+        $("#Detail_Lack1ToYear").append("<option value='" + (year - i) + "' " + (i == 1 ? "selected='selected'" : "") + ">" + (year - i) + "</option>");
+    }
+}

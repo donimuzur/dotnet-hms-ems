@@ -105,6 +105,7 @@
             pbck1TypeOnchange();
 
             $('#Detail_GoodType').change(function() {
+                setUpload();
                 goodTypeOnChange();
             });
 
@@ -117,6 +118,7 @@
             });
 
             $("#Detail_PeriodFrom").change(function () {
+                setLackYear();
                 getReference();
             });
 
@@ -124,6 +126,13 @@
             $("#Detail_PeriodTo").change(function () {
                 getReference();
             });
+            
+            $("#Detail_SupplierPlant").keyup(function () {
+                getReference();
+            });
+            setUpload();
+
+            $("#Detail_PeriodTo").rules('add', { greaterThan: "#Detail_PeriodFrom" });
         });
 
         $('#Detail_Lack1FromMonthId').change(function () {
@@ -300,6 +309,5 @@
             
             ajaxLoadSupplierPlant({ isNppbkcImport: isNppbkcImport }, '@Url.Action("GetSupplierPlant", "PBCK1")');
         }
-
     </script>
 }

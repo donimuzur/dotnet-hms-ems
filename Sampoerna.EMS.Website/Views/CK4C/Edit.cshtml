@@ -85,6 +85,48 @@
     </div>
 </div>
 
+<div id="Ck4cUploadModal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="lblTitleInputManual">Edit Remarks</span></h4>
+            </div>
+            <div class="modal-body form-excise">
+                <p></p>
+                <input id="uploadItemRow" type="hidden" value="">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Remarks</label>
+                        <textarea class="form-control" id="uploadRemarks" cols="20" rows="5" maxlength="100"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                <input type="button" class="btn btn-blue" value="Save" id="btnSaveRemarks" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ModalCk4cDoc" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Decree Doc is required.</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts
 {
     <script src="~/Scripts/ck4cscript.js"></script>
@@ -94,7 +136,11 @@
     }
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
+            SetPoaList();
+
             SetBasedOn();
+
+            SetDataByCompany();
 
             $('#divComment').hide();
 
@@ -113,7 +159,15 @@
             });
 
             $("#Details_CompanyId").change(function () {
-                ChangeCompany($(this).find("option:selected").val());
+                ChangeCompany($(this).find("option:selected").val(), '', '');
+            });
+
+            $('#Details_NppbkcId').change(function () {
+                nppbkcIdOnChange('@Url.Action("PoaListPartial", "CK4C")');
+            });
+
+            $("#Details_PlantId").change(function () {
+                plantIdOnChange('@Url.Action("GetPoaByPlantId", "CK4C")');
             });
 
             $('#btnCancel').click(function (e) {
@@ -148,9 +202,13 @@
                 $('#Details_IsSaveSubmit').val('submit');
                 $('#EditForm').submit();
             });
+
+            $("#btnSaveRemarks").click(function () {
+                UpdateRow();
+            });
         });
 
-        function ChangeCompany(comp) {
+        function ChangeCompany(comp, plant, nppbkc) {
             $('#Details_PlantId').html('');
             $('#Details_PlantId').append('<option value="">select</option>');
             $('#Details_NppbkcId').html('');
@@ -158,12 +216,20 @@
             if ($("#Details_CompanyId").length) {
                 var cpy = comp;
                 if (cpy != '') {
-                    ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy });
-                    ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy);
+                    ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy }, plant);
+                    ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
                 }
             }
-            $('#Details_PlantId').val('');
-            $('#Details_NppbkcId').val('');
+        }
+
+        function SetPoaList() {
+            var poa = '@Model.Details.ApprovedByPoa';
+            var nppbkc = '@Model.Details.NppbkcId';
+            var url = '@Url.Action("PoaListPartial", "CK4C")';
+
+            if (poa == '') {
+                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+            }
         }
 
         function SetBasedOn() {
@@ -173,13 +239,19 @@
             var docStatus = '@Model.Details.Status.ToString()';
             var isAllow = '@Model.AllowGovApproveAndReject';
 
-            if (nppbkc != '') {
+            if (plantId == '') {
                 $('#basedNppbkc').prop('checked', true);
                 if (docStatus != '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() != 'true') {
                     $('#Details_NppbkcId').prop('disabled', false);
                     $('#Details_PlantId').prop('disabled', true);
                 }
             }
+        }
+
+        function SetDataByCompany() {
+            var nppbkc = '@Model.Details.NppbkcId';
+            var plant = '@Model.Details.PlantId';
+            ChangeCompany($("#Details_CompanyId").find("option:selected").val(), plant, nppbkc);
         }
 
         function printPreview(url) {

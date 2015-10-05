@@ -21,6 +21,8 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK1_QUOTA = new HashSet<PBCK1_QUOTA>();
             this.LACK2_ITEM = new HashSet<LACK2_ITEM>();
             this.LACK1_INCOME_DETAIL = new HashSet<LACK1_INCOME_DETAIL>();
+            this.BACK1 = new HashSet<BACK1>();
+            this.PBCK3 = new HashSet<PBCK3>();
         }
     
         public long CK5_ID { get; set; }
@@ -91,6 +93,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string DEST_COUNTRY_CODE { get; set; }
         public string DEST_COUNTRY_NAME { get; set; }
         public Nullable<Sampoerna.EMS.Core.Enums.Ck5ManualType> CK5_MANUAL_TYPE { get; set; }
+        public Nullable<long> CK5_REF_ID { get; set; }
     
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }
@@ -102,5 +105,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<LACK2_ITEM> LACK2_ITEM { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
+        public virtual ICollection<BACK1> BACK1 { get; set; }
+        public virtual ICollection<PBCK3> PBCK3 { get; set; }
     }
 }

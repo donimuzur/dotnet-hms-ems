@@ -9,21 +9,23 @@ namespace Sampoerna.EMS.Contract
         List<BrandRegistrationOutput> GetAll();
 
         ZAIDM_EX_BRAND GetById(string plant, string facode);
-
+        ZAIDM_EX_BRAND GetBrandByBrandCEAndProdCode(string brand, string prodCode);
         ZAIDM_EX_BRAND GetByIdIncludeChild(string plant, string facode);
 
         void Save(ZAIDM_EX_BRAND brandRegistration);
 
         List<ZAIDM_EX_BRAND> GetAllBrands();
 
-        void Delete(string plant, string facode);
+        bool Delete(string plant, string facode);
 
         ZAIDM_EX_BRAND GetByFaCode(string plantWerk, string faCode );
         
         List<ZAIDM_EX_BRAND> GetByPlantId(string plantId);
 
         List<ZAIDM_EX_BRAND> GetBrandCeBylant(string plantWerk);
-        
+
+        ZAIDM_EX_GOODTYP GetGoodTypeByProdCodeInBrandRegistration(string prodCode);
+
     }
 
 }

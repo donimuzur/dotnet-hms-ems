@@ -273,6 +273,24 @@ namespace Sampoerna.EMS.Website.Code
             var data = pbck1.GetCompletedDocumentByParam(input);
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
+
+        public static SelectList GetPlantImportList()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            IZaidmExNPPBKCBLL nppbkcBLL = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+
+            var nppbkcList = nppbkcBLL.GetAll().Where(x=> x.IS_DELETED != true).Select(x=> x.NPPBKC_ID).ToList();
+            List<T001W> plantIdList;
+            plantIdList = plantBll.GetAllPlant();
+            plantIdList =
+                plantIdList.Where(
+                    x => x.IS_DELETED != true && x.NPPBKC_IMPORT_ID != null && nppbkcList.Contains(x.NPPBKC_IMPORT_ID))
+                    .OrderBy(x => x.WERKS)
+                    .ToList();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
         public static SelectList GetPlantAll()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
@@ -361,10 +379,11 @@ namespace Sampoerna.EMS.Website.Code
 
 
         }
-
         public static SelectList GetYearList()
         {
             var selectItemSource = new List<SelectItemModel>();
+
+
             for (int i = 3; i > 0; i--)
             {
                 var item = new SelectItemModel();
@@ -373,7 +392,7 @@ namespace Sampoerna.EMS.Website.Code
                 item.ValueField = (DateTime.Now.Year - i).ToString();
                 selectItemSource.Add(item);
             }
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 5; i++)
             {
                 var item = new SelectItemModel();
 
@@ -381,6 +400,37 @@ namespace Sampoerna.EMS.Website.Code
                 item.ValueField = (DateTime.Now.Year + i).ToString();
                 selectItemSource.Add(item);
             }
+
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+        public static SelectList GetYearList(ICK5BLL ck5Bll)
+        {
+            var yearList = ck5Bll.GetAllYearsByGiDate();
+            var selectItemSource = new List<SelectItemModel>();
+
+            foreach (var year in yearList)
+            {
+                var item = new SelectItemModel();
+                item.TextField = year.ToString();
+                item.ValueField = year.ToString();
+                selectItemSource.Add(item);
+            }
+            //for (int i = 3; i > 0; i--)
+            //{
+            //    var item = new SelectItemModel();
+
+            //    item.TextField = (DateTime.Now.Year - i).ToString();
+            //    item.ValueField = (DateTime.Now.Year - i).ToString();
+            //    selectItemSource.Add(item);
+            //}
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    var item = new SelectItemModel();
+
+            //    item.TextField = (DateTime.Now.Year + i).ToString();
+            //    item.ValueField = (DateTime.Now.Year + i).ToString();
+            //    selectItemSource.Add(item);
+            //}
 
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
@@ -461,6 +511,12 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
+
+        public static SelectList GetCk5RefPortToImporter(ICK5BLL ck5Bll)
+        {
+            var data = ck5Bll.GetAllCompletedPortToImporter();
+            return  new SelectList(data,"CK5_ID","SUBMISSION_NUMBER");
+        }
     }
 
 }

@@ -16,14 +16,14 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public PBCK3()
         {
-            this.CK2 = new HashSet<CK2>();
             this.BACK3 = new HashSet<BACK3>();
+            this.CK2 = new HashSet<CK2>();
         }
     
         public int PBCK3_ID { get; set; }
         public string PBCK3_NUMBER { get; set; }
         public System.DateTime PBCK3_DATE { get; set; }
-        public int PBCK7_ID { get; set; }
+        public Nullable<int> PBCK7_ID { get; set; }
         public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
         public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatus> STATUS { get; set; }
         public string APPROVED_BY { get; set; }
@@ -36,14 +36,16 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> APPROVED_BY_MANAGER_DATE { get; set; }
         public string REJECTED_BY { get; set; }
         public Nullable<System.DateTime> REJECTED_DATE { get; set; }
+        public Nullable<long> CK5_ID { get; set; }
     
+        public virtual ICollection<BACK3> BACK3 { get; set; }
+        public virtual ICollection<CK2> CK2 { get; set; }
+        public virtual CK5 CK5 { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
         public virtual PBCK7 PBCK7 { get; set; }
         public virtual POA POA { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual USER USER3 { get; set; }
-        public virtual ICollection<CK2> CK2 { get; set; }
-        public virtual ICollection<BACK3> BACK3 { get; set; }
     }
 }

@@ -89,7 +89,7 @@ namespace Sampoerna.EMS.BLL
         public List<WorkflowHistoryDto> GetByFormNumber(GetByFormNumberInput input)
         {
             var dbData =
-                _repository.Get(c => c.FORM_NUMBER == input.FormNumber, null, includeTables)
+                _repository.Get(c => c.FORM_NUMBER == input.FormNumber, null, includeTables).OrderBy(c => c.ACTION_DATE)
                     .ToList();
             var result = Mapper.Map<List<WorkflowHistoryDto>>(dbData);
 
@@ -132,8 +132,13 @@ namespace Sampoerna.EMS.BLL
             {
                 if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
                 {
-                    var listPoa = _poaMapBll.GetPOAByNPPBKCID(input.NPPBKC_Id);
-                    displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
+                    if(input.FormType == Enums.FormType.PBCK1){
+                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NPPBKC_Id);
+                        displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
+                    }else{
+                        var listPoa = _poaMapBll.GetPOAByNPPBKCID(input.NPPBKC_Id);
+                        displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
+                    }
                     if (displayUserId.Length > 0)
                         displayUserId = displayUserId.Substring(0, displayUserId.Length - 1);
 
@@ -219,6 +224,17 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<string> GetDocumentByListPOAId(List<string> poaId)
+        {
+            var dtData =
+                _repository.Get(
+                    c =>
+                        poaId.Contains(c.ACTION_BY) && (c.ACTION == Enums.ActionType.Submit || c.ACTION == Enums.ActionType.Approve) &&
+                        c.ROLE == Enums.UserRole.POA).Distinct().ToList();
+
+            return dtData.Select(s => s.FORM_NUMBER).ToList();
+        }
+
         public void Delete(long id)
         {
             var dbData = _repository.GetByID(id);
@@ -300,6 +316,13 @@ namespace Sampoerna.EMS.BLL
             }
 
             return result;
+        }
+
+        public WorkflowHistoryDto RejectedStatusByDocumentNumber(GetByFormTypeAndFormIdInput input) {
+            var dbData =
+                _repository.Get(c => c.ACTION == Enums.ActionType.Reject && c.FORM_ID == input.FormId && c.FORM_TYPE_ID == input.FormType).OrderByDescending(o => o.ACTION_DATE).FirstOrDefault();
+
+            return Mapper.Map<WorkflowHistoryDto>(dbData);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Sampoerna.EMS.BLL
 
         public static void InitializeCk4C()
         {
-            #region Ck4c Daily Produxction
+            #region Ck4c
 
             Mapper.CreateMap<CK4C, Ck4CDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck4CId, opt => opt.MapFrom(src => src.CK4C_ID))
@@ -47,7 +47,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MonthId, opt => opt.MapFrom(src => src.MONTH.MONTH_ID))
                 .ForMember(dest => dest.MonthNameEng, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_ENG))
                 .ForMember(dest => dest.MonthNameIndo, opt => opt.MapFrom(src => src.MONTH.MONTH_NAME_IND))
-                .ForMember(dest => dest.Ck4cItem, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItem>>(src.CK4C_ITEM)));
+                .ForMember(dest => dest.Ck4cItem, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItem>>(src.CK4C_ITEM)))
+                .ForMember(dest => dest.Ck4cDecreeDoc, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cDecreeDocDto>>(src.CK4C_DECREE_DOC)));
 
             Mapper.CreateMap<T001K, T001KDto>().IgnoreAllNonExisting()
                .ForMember(dest => dest.BWKEY, opt => opt.MapFrom(src => src.T001W.NAME1));
@@ -83,7 +84,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.REPORTED_YEAR, opt => opt.MapFrom(src => src.ReportedYears))
                 .ForMember(dest => dest.STATUS, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.GOV_STATUS, opt => opt.MapFrom(src => src.StatusGoverment))
-                .ForMember(dest => dest.CK4C_ITEM, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItem>>(src.Ck4cItem)));
+                .ForMember(dest => dest.CK4C_ITEM, opt => opt.MapFrom(src => Mapper.Map<List<Ck4cItem>>(src.Ck4cItem)))
+                .ForMember(dest => dest.CK4C_DECREE_DOC, opt => opt.MapFrom(src => Mapper.Map<List<CK4C_DECREE_DOC>>(src.Ck4cDecreeDoc)));
 
             Mapper.CreateMap<CK4C_ITEM, Ck4cItem>().IgnoreAllNonExisting()
                 .ForMember(src => src.Ck4CItemId, opt => opt.MapFrom(dest => dest.CK4C_ITEM_ID))
@@ -97,7 +99,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(src => src.Tarif, opt => opt.MapFrom(dest => dest.TARIFF))
                 .ForMember(src => src.ProdCode, opt => opt.MapFrom(dest => dest.PROD_CODE))
                 .ForMember(src => src.PackedQty, opt => opt.MapFrom(dest => dest.PACKED_QTY))
-                .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UNPACKED_QTY));
+                .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UNPACKED_QTY))
+                .ForMember(src => src.ContentPerPack, opt => opt.MapFrom(dest => dest.CONTENT_PER_PACK))
+                .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PACKED_IN_PACK))
+                .ForMember(src => src.Remarks, opt => opt.MapFrom(dest => dest.REMARKS));
 
             Mapper.CreateMap<Ck4cItem, CK4C_ITEM>().IgnoreAllNonExisting()
                 .ForMember(src => src.CK4C_ITEM_ID, opt => opt.MapFrom(dest => dest.Ck4CItemId))
@@ -111,7 +116,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(src => src.TARIFF, opt => opt.MapFrom(dest => dest.Tarif))
                 .ForMember(src => src.PROD_CODE, opt => opt.MapFrom(dest => dest.ProdCode))
                 .ForMember(src => src.PACKED_QTY, opt => opt.MapFrom(dest => dest.PackedQty))
-                .ForMember(src => src.UNPACKED_QTY, opt => opt.MapFrom(dest => dest.UnpackedQty));
+                .ForMember(src => src.UNPACKED_QTY, opt => opt.MapFrom(dest => dest.UnpackedQty))
+                .ForMember(src => src.CONTENT_PER_PACK, opt => opt.MapFrom(dest => dest.ContentPerPack))
+                .ForMember(src => src.PACKED_IN_PACK, opt => opt.MapFrom(dest => dest.PackedInPack))
+                .ForMember(src => src.REMARKS, opt => opt.MapFrom(dest => dest.Remarks));
 
             Mapper.CreateMap<Ck4cWorkflowDocumentInput, WorkflowHistoryDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => src.ActionType))

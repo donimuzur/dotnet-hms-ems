@@ -56,7 +56,14 @@
                             @item.CreatedById
                         }
                     </td>
-                    <td class="last">@Html.DisplayFor(model => item.StatusName)</td>
+                    @if (item.Status == Enums.DocumentStatus.WaitingForApproval || item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        <td class="last">Waiting For Approval</td>
+                    }
+                    else
+                    {
+                        <td class="last">@Html.DisplayFor(model => item.StatusName)</td>
+                    }
                 </tr>
             }
         </tbody>

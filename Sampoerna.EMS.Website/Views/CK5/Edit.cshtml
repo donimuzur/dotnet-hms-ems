@@ -10,14 +10,14 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>@Model.Ck5Type.ToString()</h3>
+                <h3>@Model.Ck5Type.ToString()  &nbsp; #@Model.SubmissionNumber</h3>
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
                     
                     <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
                     <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelDocument" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
-                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
                     <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                 </div>
             </div>
@@ -273,212 +273,232 @@
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script src="~/Scripts/CK5InputManual.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            OnReadyFunction('@Model.Ck5Type.ToString()');
-            //enable upload
-            $('#btnUploadInfo').enable();
-            $('#CK5UploadSubmitBtn').enable();
+        $(document).ready(function () {
 
-            $("#KppBcCity option").each(function() {
-                if ($(this).text() == $("input[name='KppBcCityName']").val()) {
-                    $(this).attr('selected', 'selected');
-                }
-            });
+            $('#btnBack').click(function (e) {
+                //alert('@Enums.CK5Type.Domestic.ToString()');
 
-
-            $("#btnCancelDocument").click(function() {
-                $('#btnConfirmCancel').attr('disabled', 'disabled');
-
-                $('#Comment').val('');
-
-                $('#Ck5ModalCancel').modal('show');
+                if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                    location.href = '@Url.Action("CK5Export", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                    location.href = '@Url.Action("CK5Import", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                    location.href = '@Url.Action("CK5Manual", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';
 
             });
 
-            $('#Comment').bind('input propertychange', function() {
 
-                $('#btnConfirmCancel').attr('disabled', 'disabled');
+        OnReadyFunction('@Model.Ck5Type.ToString()');
+        //enable upload
+        $('#btnUploadInfo').enable();
+        $('#CK5UploadSubmitBtn').enable();
 
-                if (this.value.length) {
-                    $('#btnConfirmCancel').removeAttr('disabled');
-                }
-            });
-
-            $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
-            $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
-            $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
-            $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
-
-            $('#btn-changelog-export-xls').click(function() {
-                location.href = '@Url.Action("ExportXls", "CK5", new {ck5Id = Model.Ck5Id})';
-            });
-
-            $("#btnSave").click(function() {
-
-                if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
-                    $('#Command').val('Save');
-                    $('#EditCk5Forms').submit();
-                }
-
-            });
-
-            $('#CK5UploadSubmitBtn').click(function() {
-                GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
-            });
-
-            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-
-            $("#uploadMaterialPlant").val(sourcePlant);
-
-            ajaxGetListMaterial('@Url.Action("GetListMaterials", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
-
-        });
-
-        var plantOriginal = '@Model.SourcePlantId';
-
-        $("#DestPlantId").change(function() {
-            if ($("#DestPlantId").length) {
-                var destPlant = $(this).find("option:selected").val();
-                var isPortToImporter = false;
-                if ('@Model.Ck5Type.ToString()' == "PortToImporter") {
-                    isPortToImporter = true;
-                    RemoveTable();
-                }
-
-                if (destPlant == '') {
-                    $("input[name='DestNpwp']").val('');
-                    $("input[name='DestNppbkcId']").val('');
-                    $("input[name='DestCompanyCode']").val('');
-                    $("input[name='DestCompanyName']").val('');
-                    $("*[name='DestAddress']").val('');
-                    $("input[name='DestKppbcName']").val('');
-                    $("input[name='DestPlantName']").val('');
-
-                    $("input[name='PbckDecreeId']").val('');
-                    $("input[name='PbckDecreeNumber']").val('');
-                    $("input[name='PbckDecreeDate']").val('');
-                    $("input[name='Pbck1QtyApproved']").val('0');
-                    $("input[name='Ck5TotalExciseable']").val('0');
-                    $("input[name='RemainQuota']").val('0');
-
-                    $("input[name='PbckUom']").val('');
-
-                } else {
-
-                    if (isPortToImporter) {
-                        //alert(destPlant);
-                        ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant, ck5Type: '@Model.Ck5Type' });
-                    } else {
-                        var submissionDate = $('#SubmissionDate').val();
-                        if (submissionDate == '')
-                            submissionDate = '@DateTime.Now';
-
-                        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-                        var goodTypeGroupId = $("#GoodType").val();
-                        //var Ck5_Type = $("#Ck5Type").val();
-                        var sourceNppbkcId = $("#SourceNppbkcId").val();
-
-                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
-
-                    }
-                }
+        $("#KppBcCity option").each(function () {
+            if ($(this).text() == $("input[name='KppBcCityName']").val()) {
+                $(this).attr('selected', 'selected');
             }
         });
 
-        $("#GoodType").change(function() {
-            var goodTypeGroupId = $("#GoodType").val();
-            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-            var destPlant = $("#DestPlantId").find("option:selected").val();
-            var sourceNppbkcId = $("#SourceNppbkcId").val();
-            var Ck5_Type = $("#Ck5Type").val();
-            if (destPlant == '' || sourcePlant == '' || destPlant == '') {
-                $("input[name='PbckDecreeId']").val('');
-                $("input[name='PbckDecreeNumber']").val('');
-                $("input[name='PbckDecreeDate']").val('');
-                $("input[name='Pbck1QtyApproved']").val('0');
-                $("input[name='Ck5TotalExciseable']").val('0');
-                $("input[name='RemainQuota']").val('0');
-                $("input[name='PbckUom']").val('');
-            } else {
-                var submissionDate = $('#SubmissionDate').val();
-                if (submissionDate == '')
-                    submissionDate = '@DateTime.Now';
 
+        $("#btnCancelDocument").click(function () {
+            $('#btnConfirmCancel').attr('disabled', 'disabled');
 
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+            $('#Comment').val('');
 
+            $('#Ck5ModalCancel').modal('show');
+
+        });
+
+        $('#Comment').bind('input propertychange', function () {
+
+            $('#btnConfirmCancel').attr('disabled', 'disabled');
+
+            if (this.value.length) {
+                $('#btnConfirmCancel').removeAttr('disabled');
+            }
+        });
+
+        $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+        $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
+        $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+        $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
+
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXls", "CK5", new {ck5Id = Model.Ck5Id})';
+        });
+
+        $("#btnSave").click(function () {
+
+            if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+                $('#Command').val('Save');
+                $('#EditCk5Forms').submit();
             }
 
         });
 
-        $('#SubmissionDate').change(function() {
-            var goodTypeGroupId = $("#GoodType").val();
-            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-            var destPlant = $("#DestPlantId").find("option:selected").val();
-            var sourceNppbkcId = $("#SourceNppbkcId").val();
-            if (destPlant == '' || sourcePlant == '' || destPlant == '') {
-                $("input[name='PbckDecreeId']").val('');
-                $("input[name='PbckDecreeNumber']").val('');
-                $("input[name='PbckDecreeDate']").val('');
-                $("input[name='Pbck1QtyApproved']").val('0');
-                $("input[name='Ck5TotalExciseable']").val('0');
-                $("input[name='RemainQuota']").val('0');
-                $("input[name='PbckUom']").val('');
-            } else {
-                var submissionDate = $('#SubmissionDate').val();
-                if (submissionDate == '')
-                    submissionDate = '@DateTime.Now';
-
-
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
-
-            }
+        $('#CK5UploadSubmitBtn').click(function () {
+            GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
         });
 
-        $("#SourcePlantId").change(function() {
-            if ($("#SourcePlantId").length) {
-                var sourcePlant = $(this).find("option:selected").val();
-                //var submissionDate = $('#SubmissionDate').val();
-                //remove table
+        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+        $("#uploadMaterialPlant").val(sourcePlant);
+
+        ajaxGetListMaterial('@Url.Action("GetListMaterials", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+
+    });
+
+    var plantOriginal = '@Model.SourcePlantId';
+
+    $("#DestPlantId").change(function () {
+        if ($("#DestPlantId").length) {
+            var destPlant = $(this).find("option:selected").val();
+            var isPortToImporter = false;
+            if ('@Model.Ck5Type.ToString()' == "PortToImporter") {
+                isPortToImporter = true;
                 RemoveTable();
+            }
 
-                if (sourcePlant == '') {
-                    $("input[name='SourceNpwp']").val('');
-                    $("input[name='SourceNppbkcId']").val('');
-                    $("input[name='SourceCompanyCode']").val('');
-                    $("input[name='SourceCompanyName']").val('');
-                    $("*[name='SourceAddress']").val('');
-                    $("input[name='SourceKppbcName']").val('');
-                    $("input[name='SourcePlantName']").val('');
-                    //enable upload
-                    $('#btnUploadInfo').enable(false);
-                    $('#CK5UploadSubmitBtn').enable(false);
+            if (destPlant == '') {
+                $("input[name='DestNpwp']").val('');
+                $("input[name='DestNppbkcId']").val('');
+                $("input[name='DestCompanyCode']").val('');
+                $("input[name='DestCompanyName']").val('');
+                $("*[name='DestAddress']").val('');
+                $("input[name='DestKppbcName']").val('');
+                $("input[name='DestPlantName']").val('');
 
-                    $("input[name='KppBcCity']").val('');
-                    $("input[name='CeOfficeCode']").val('');
+                $("input[name='PbckDecreeId']").val('');
+                $("input[name='PbckDecreeNumber']").val('');
+                $("input[name='PbckDecreeDate']").val('');
+                $("input[name='Pbck1QtyApproved']").val('0');
+                $("input[name='Ck5TotalExciseable']").val('0');
+                $("input[name='RemainQuota']").val('0');
 
+                $("input[name='PbckUom']").val('');
 
+            } else {
+
+                if (isPortToImporter) {
+                    //alert(destPlant);
+                    ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant, ck5Type: '@Model.Ck5Type' });
                 } else {
+                    var submissionDate = $('#SubmissionDate').val();
+                    if (submissionDate == '')
+                        submissionDate = '@DateTime.Now';
 
+                    var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                    var goodTypeGroupId = $("#GoodType").val();
+                    //var Ck5_Type = $("#Ck5Type").val();
+                    var sourceNppbkcId = $("#SourceNppbkcId").val();
 
-                    ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
 
-                    ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
                 }
             }
-        });
+        }
+    });
+
+    $("#GoodType").change(function () {
+        var goodTypeGroupId = $("#GoodType").val();
+        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+        var destPlant = $("#DestPlantId").find("option:selected").val();
+        var sourceNppbkcId = $("#SourceNppbkcId").val();
+        var Ck5_Type = $("#Ck5Type").val();
+        if (destPlant == '' || sourcePlant == '' || destPlant == '') {
+            $("input[name='PbckDecreeId']").val('');
+            $("input[name='PbckDecreeNumber']").val('');
+            $("input[name='PbckDecreeDate']").val('');
+            $("input[name='Pbck1QtyApproved']").val('0');
+            $("input[name='Ck5TotalExciseable']").val('0');
+            $("input[name='RemainQuota']").val('0');
+            $("input[name='PbckUom']").val('');
+        } else {
+            var submissionDate = $('#SubmissionDate').val();
+            if (submissionDate == '')
+                submissionDate = '@DateTime.Now';
 
 
-        $("#btnSubmitDocument").click(function() {
-            if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
-                $('#Ck5Modal').modal('show');
+            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+
+        }
+
+    });
+
+    $('#SubmissionDate').change(function () {
+        var goodTypeGroupId = $("#GoodType").val();
+        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+        var destPlant = $("#DestPlantId").find("option:selected").val();
+        var sourceNppbkcId = $("#SourceNppbkcId").val();
+        if (destPlant == '' || sourcePlant == '' || destPlant == '') {
+            $("input[name='PbckDecreeId']").val('');
+            $("input[name='PbckDecreeNumber']").val('');
+            $("input[name='PbckDecreeDate']").val('');
+            $("input[name='Pbck1QtyApproved']").val('0');
+            $("input[name='Ck5TotalExciseable']").val('0');
+            $("input[name='RemainQuota']").val('0');
+            $("input[name='PbckUom']").val('');
+        } else {
+            var submissionDate = $('#SubmissionDate').val();
+            if (submissionDate == '')
+                submissionDate = '@DateTime.Now';
+
+
+            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+
+        }
+    });
+
+    $("#SourcePlantId").change(function () {
+        if ($("#SourcePlantId").length) {
+            var sourcePlant = $(this).find("option:selected").val();
+            //var submissionDate = $('#SubmissionDate').val();
+            //remove table
+            RemoveTable();
+
+            if (sourcePlant == '') {
+                $("input[name='SourceNpwp']").val('');
+                $("input[name='SourceNppbkcId']").val('');
+                $("input[name='SourceCompanyCode']").val('');
+                $("input[name='SourceCompanyName']").val('');
+                $("*[name='SourceAddress']").val('');
+                $("input[name='SourceKppbcName']").val('');
+                $("input[name='SourcePlantName']").val('');
+                //enable upload
+                $('#btnUploadInfo').enable(false);
+                $('#CK5UploadSubmitBtn').enable(false);
+
+                $("input[name='KppBcCity']").val('');
+                $("input[name='CeOfficeCode']").val('');
+
+
+            } else {
+
+
+                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+
+                ChangeBackSourceMaterial(sourcePlant, '@Url.Action("GetOriginalPlant", "CK5")');
             }
+        }
+    });
 
-        });
 
-        $("#btnSubmitConfirm").click(function() {
-                    @*window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";*@
-            if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+    $("#btnSubmitDocument").click(function () {
+        if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+            $('#Ck5Modal').modal('show');
+        }
+
+    });
+
+    $("#btnSubmitConfirm").click(function () {
+        @*window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";*@
+        if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
                 console.log('masuk');
                 $('#Command').val('Submit');
                 $('#EditCk5Forms').submit();
@@ -510,7 +530,8 @@
 
             $("#uploadMaterialPlant").val(sourcePlant);
 
-            ajaxGetListMaterial('@Url.Action("GetListMaterials", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+            var goodTypeGroupId = $("#GoodType").val();
+            ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
 
             $('#btnSaveMaterial').show();
             $('#btnUpdateMaterial').hide();
@@ -538,14 +559,22 @@
                     var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
                     ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
-                }
             }
-        });
+        }
+    });
 
-        $("#btnUpdateMaterial").click(function() {
+    $("#btnUpdateMaterial").click(function () {
 
-            UpdateRow();
-        });
+        UpdateRow();
+    });
+
+    $("#Ck5RefId").change(function () {
+        var refId = $("#Ck5RefId").val();
+
+        if (refId != null) {
+            window.location.href = '@Url.Action("Edit", "CK5")' + "?refId=" + refId;
+        }
+    });
 
     </script>
 }

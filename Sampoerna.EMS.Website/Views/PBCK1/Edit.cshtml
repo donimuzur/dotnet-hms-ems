@@ -25,7 +25,7 @@
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
 
-                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Draft)
+                    @if (Model.DocStatus.HasValue && ( Model.DocStatus.Value == Enums.DocumentStatus.Draft || Model.DocStatus.Value == Enums.DocumentStatus.Rejected))
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }
@@ -126,7 +126,7 @@
 
 @section scripts {
     <script type="text/javascript">
-            var referenceURL = "@Url.Action("GetPBCK1Reference", "PBCK1")";
+        var referenceURL = "@Url.Action("GetPBCK1Reference", "PBCK1")";
     </script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -235,6 +235,7 @@
         pbck1TypeOnchange();
 
         $('#Detail_GoodType').change(function () {
+            setUpload();
             goodTypeOnChange();
         });
 
@@ -261,11 +262,16 @@
         });
 
         $("#Detail_PeriodFrom").change(function () {
+            setLackYear();
             getReference();
         });
 
 
         $("#Detail_PeriodTo").change(function () {
+            getReference();
+        });
+
+        $("#Detail_SupplierPlant").keyup(function () {
             getReference();
         });
 
@@ -284,6 +290,8 @@
                 $("input[name='Detail.QtyApproved']:hidden").val(changeToNumber($(this).val()));
             });
         }
+
+        $("#Detail_PeriodTo").rules('add', { greaterThan: "#Detail_PeriodFrom" });
     });
 
     function openGovStatusBlock() {

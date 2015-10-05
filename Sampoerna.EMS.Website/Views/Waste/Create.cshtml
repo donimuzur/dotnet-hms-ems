@@ -12,7 +12,7 @@
                 <h3>Waste Production Create</h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
-                    <a href="@Url.Action("Index", "Waste")" class="btn btn-grey">Cancel</a>
+                    <a href="@Url.Action("Index", "Waste")" class="btn btn-grey">Back</a>
                 </div>
             </div>
         </div>
@@ -54,21 +54,23 @@
         $('#DustStickStr').val(ThausandSeperator($('#DustStickStr').val(), 2));
         $('#FloorStickStr').val(ThausandSeperator($('#FloorStickStr').val(), 2));
 
-        $("#SearchInput_BrandCe").change(function () {
+       $("#SearchInput_BrandCe").change(function () {
             if ($("#SearchInput_BrandCe").length) {
 
                 var FaDesc = $(this).find("option:selected").val();
+                var Plant = $('#SearchInput_PlantId').val();
+                console.log(FaDesc);
                 if (FaDesc == '') {
                     $('#test').val('');
                 } else {
-                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Waste")', { faCode: FaDesc });
+                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Waste")', { plantWerk: Plant, faCode: FaDesc });
                 }
             }
 
         });
 
         function ajaxFaCodeDescription(url, formData) {
-            if (formData.faCode) {
+            if (formData.plantWerk, formData.faCode) {
                 $.ajax({
                     type: 'POST',
                     url: url,
@@ -86,7 +88,7 @@
                 var cpy = $(this).find("option:selected").val();
                 $('#SearchInput_PlantId option').remove();
                 if (cpy == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+                    $('#SearchInput_PlantId option').append('<option value="">Select</option>');
 
                 } else {
                     ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Waste")', { companyId: cpy });
@@ -102,7 +104,7 @@
                     data: formData,
                     success: function (data) {
                         var listPlant = data.PlantWerkList;
-                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        $('#SearchInput_PlantId').append('<option value="">Select</option>');
                         if (listPlant.length > 0) {
                             for (var i = 0; i < listPlant.length; i++) {
                                 $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
@@ -119,7 +121,7 @@
                 var ce = $(this).find("option:selected").val();
                 $('#SearchInput_BrandCe option').remove();
                 if (ce == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_BrandCe option').append('<option value="">All</option>');
+                    $('#SearchInput_BrandCe option').append('<option value="">Select</option>');
 
                 } else {
                     ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Waste")', { plantWerk: ce });
@@ -135,7 +137,7 @@
                     data: formData,
                     success: function (data) {
                         var facodeList = data.FacodeList;
-                        $('#SearchInput_BrandCe').append('<option value="">All</option>');
+                        $('#SearchInput_BrandCe').append('<option value="">Select</option>');
                         if (facodeList.length > 0) {
                             for (var i = 0; i < facodeList.length; i++) {
                                 $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
@@ -147,5 +149,5 @@
             }
         }
 
-    </script>
+</script>
 }

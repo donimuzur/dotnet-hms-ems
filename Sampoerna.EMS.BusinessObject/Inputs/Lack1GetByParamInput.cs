@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     
     public class Lack1WorkflowDocumentInput
     {
-        public int DocumentId { get; set; }
+        public int? DocumentId { get; set; }
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
         public string Comment { get; set; }
@@ -152,5 +152,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int? PeriodYearFrom { get; set; }
         public int? PeriodMonthTo { get; set; }
         public int? PeriodYearTo { get; set; }
+    }
+
+    public class Lack1GetPbck1RealizationListParamInput
+    {
+        public int MonthFrom { get; set; }
+        public int MonthTo { get; set; }
+        public int Year { get; set; }
+        public string NppbkcId { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string ExcisableGoodsTypeId { get; set; }
     }
 }

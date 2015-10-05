@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.Waste;
 using Sampoerna.EMS.Website.Utility;
@@ -24,10 +25,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPlantBLL _plantBll;
         private IUnitOfMeasurementBLL _uomBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
+        private IChangesHistoryBLL _changeHistoryBll;
 
         public WasteController(IPageBLL pageBll, IWasteBLL wasteBll, ICompanyBLL companyBll, IPlantBLL plantBll,
-            IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll)
+            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _wasteBll = wasteBll;
@@ -36,6 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _plantBll = plantBll;
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
+            _changeHistoryBll = changesHistoryBll;
         }
 
 
@@ -61,7 +63,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
                 Details = Mapper.Map<List<WasteDetail>>(_wasteBll.GetAllByParam(new WasteGetByParamInput()))
 
-                
+
             });
 
             return View("Index", data);
@@ -165,7 +167,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 try
                 {
-                    _wasteBll.Save(data);
+                    _wasteBll.Save(data, CurrentUser.USER_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
                     return RedirectToAction("Index");
@@ -190,7 +192,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
-           
+
             return model;
         }
 
@@ -210,7 +212,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.FloorGramStr = model.FloorWasteGramQty == null ? string.Empty : model.FloorWasteGramQty.ToString();
             //Waste Stick
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
-            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
+            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
 
             model = IniEdit(model);
 
@@ -223,21 +225,39 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         //
-        // POST: /Production/Edit
+        // POST: /Waste/Edit
         [HttpPost]
         public ActionResult Edit(WasteDetail model)
         {
 
-            var dbProduction = _wasteBll.GetById(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
+            var dbWaste = _wasteBll.GetById(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
                Convert.ToDateTime(model.WasteProductionDateX));
 
-            if (dbProduction == null)
+            if (dbWaste == null)
             {
                 ModelState.AddModelError("Waste", "Data is not Found");
                 model = IniEdit(model);
 
-                return View("Edit, model");
+                return View("Edit", model);
 
+            }
+
+            if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX
+                || model.FaCode != model.FaCodeX || Convert.ToDateTime(model.WasteProductionDate) != Convert.ToDateTime(model.WasteProductionDateX))
+            {
+                var existingData = _wasteBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
+                    Convert.ToDateTime(model.WasteProductionDate));
+                if (existingData != null)
+                {
+                    AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Edit", "Waste", new
+                    {
+                        companyCode = model.CompanyCode,
+                        plantWerk = model.PlantWerks,
+                        faCode = model.FaCode,
+                        wasteProductionDate = model.WasteProductionDate
+                    });
+                }
             }
 
             var dbWasteNew = Mapper.Map<WasteDto>(model);
@@ -270,9 +290,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                _wasteBll.Save(dbWasteNew);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                    );
+                var isNewData = _wasteBll.Save(dbWasteNew, CurrentUser.USER_ID);
+                var message = Constans.SubmitMessage.Updated;
+
+                if (isNewData)
+                {
+                    _wasteBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
+               Convert.ToDateTime(model.WasteProductionDateX));
+                }
+
+                AddMessageInfo(message, Enums.MessageInfoType.Success);
 
 
                 return RedirectToAction("Index");
@@ -314,6 +341,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
 
             model = Mapper.Map<WasteDetail>(dbWaste);
+            model.ChangesHistoryList =
+               Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                   "Waste_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + wasteProductionDate.ToString("ddMMMyyyy")));
 
             //reject
             model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
@@ -325,7 +355,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //Waste Stick
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
-            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
+            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
 
             model = InitDetail(model);
             return View(model);
@@ -356,9 +386,29 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var company = _companyBll.GetById(item.CompanyCode);
                     var plant = _plantBll.GetT001WById(item.PlantWerks);
+                    var brandCe = _brandRegistrationBll.GetById(item.PlantWerks, item.FaCode);
 
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
+
+                    if (item.BrandDescription != brandCe.BRAND_CE)
+                    {
+                        AddMessageInfo("Data Brand Description Is Not valid",Enums.MessageInfoType.Error);
+                        return RedirectToAction("UploadManualWaste");
+                    }
+
+                    item.CreatedDate = DateTime.Now;
+
+                    var existingData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
+                    Convert.ToDateTime(item.WasteProductionDate));
+
+                    if (existingData != null)
+                    {
+                        AddMessageInfo("Data Already Exist, Please Check Data Company Code, Plant Code, Fa Code, and Production Date", Enums.MessageInfoType.Warning);
+                        return RedirectToAction("UploadManualWaste");
+                    }
+
+
 
                     _wasteBll.SaveUpload(item);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
@@ -384,19 +434,25 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 foreach (var dataRow in data.DataRows)
                 {
+                    if (dataRow[0] == "")
+                    {
+                        continue;
+                    }
+
                     var item = new WasteUploadItems();
+
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
-                    item.PackerRejectStickQty = Convert.ToDecimal(dataRow[4]);
-                    item.MarkerRejectStickQty = Convert.ToDecimal(dataRow[5]);
+                    item.MarkerRejectStickQty = Convert.ToDecimal(dataRow[4]);
+                    item.PackerRejectStickQty = Convert.ToDecimal(dataRow[5]);
                     item.DustWasteGramQty = Convert.ToDecimal(dataRow[6]);
                     item.FloorWasteGramQty = Convert.ToDecimal(dataRow[7]);
                     item.DustWasteStickQty = Convert.ToDecimal(dataRow[8]);
                     item.FloorWasteStickQty = Convert.ToDecimal(dataRow[9]);
-                    item.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(data.DataRows[0][10])).ToString("dd MMM yyyy");
+                    item.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[10])).ToString("dd MMM yyyy");
 
                     {
                         model.Add(item);

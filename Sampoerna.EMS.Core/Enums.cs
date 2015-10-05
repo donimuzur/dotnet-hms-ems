@@ -63,7 +63,9 @@ namespace Sampoerna.EMS.Core
             [Description("Domestic Alcohol")]
             DomesticAlcohol = 6,
             [Description("Completed")]
-            Completed = 7
+            Completed = 7,
+           [Description("Market Return")]
+            MarketReturn = 8
         }
 
        
@@ -122,9 +124,9 @@ namespace Sampoerna.EMS.Core
             Draft = 1,
             [Description("Revised")]
             Revised = 5,
-            [Description("Waiting for Approval")]
+            [Description("Waiting for Your Approval")]
             WaitingForApproval = 10,
-            [Description("Waiting for Approval")]
+            [Description("Waiting for Your Approval")]
             WaitingForApprovalManager = 11,
             [Description("Approved")]
             Approved = 15,
@@ -246,6 +248,8 @@ namespace Sampoerna.EMS.Core
             CK4C = 7,
             [Description("PBCK-7")]
             PBCK7 = 8,
+            [Description("CK-5 Market Return")]
+            CK5MarketReturn = 9,
         }
 
         public enum ActionType

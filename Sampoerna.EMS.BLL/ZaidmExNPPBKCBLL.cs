@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -19,12 +20,14 @@ namespace Sampoerna.EMS.BLL
         private string includeTables = "ZAIDM_EX_KPPBC,T001W, LFA1";
         private IChangesHistoryBLL _changesHistoryBll;
         private IGenericRepository<T001K> _repositoryT001k;
-        private IGenericRepository<T001W> _repositoryT001w; 
+        private IGenericRepository<T001W> _repositoryT001w;
+        private IGenericRepository<POA_MAP> _poaMapRepository;
         public ZaidmExNPPBKCBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_NPPBKC>();
+            _poaMapRepository = _uow.GetGenericRepository<POA_MAP>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
             
         }
@@ -150,10 +153,23 @@ namespace Sampoerna.EMS.BLL
                 join c
                     in _repositoryT001k.GetQuery()
                     on b.WERKS equals c.BWKEY
+                where
+                    c.BUKRS == companyId
                 select a
                 ).Distinct();
                 
             return data.ToList();
+        }
+        public List<ZAIDM_EX_NPPBKCDto> GetNppbkcsByPOA(string POAId)
+        {
+            //query by nppbkc, main plant and active poa
+            Expression<Func<POA_MAP, bool>> queryFilter = c => c.POA_ID == POAId
+                && c.T001W.IS_MAIN_PLANT.HasValue && c.T001W.IS_MAIN_PLANT.Value
+                && c.POA.IS_ACTIVE.HasValue && c.POA.IS_ACTIVE.Value;
+
+            var dbData = _poaMapRepository.Get(queryFilter, null, "ZAIDM_EX_NPPBKC");
+            var poaList = dbData.ToList().Select(d => d.ZAIDM_EX_NPPBKC);
+            return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(poaList.ToList());
         }
     }
 }

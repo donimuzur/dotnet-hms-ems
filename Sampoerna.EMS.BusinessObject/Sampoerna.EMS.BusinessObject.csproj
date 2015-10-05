@@ -128,6 +128,7 @@
     <Compile Include="DTOs\Ck4cDecreeDocDto.cs" />
     <Compile Include="DTOs\Ck4CDto.cs" />
     <Compile Include="DTOs\Ck4cReportDto.cs" />
+    <Compile Include="DTOs\Ck4CSummaryReportDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
@@ -148,7 +149,9 @@
     <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
     <Compile Include="DTOs\Lack1SummaryReportDto.cs" />
     <Compile Include="DTOs\Lack1TrackingDto.cs" />
+    <Compile Include="DTOs\Lack2DetailReportDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
+    <Compile Include="DTOs\Lack2SummaryReportDto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
@@ -209,6 +212,7 @@
     <Compile Include="HEADER_FOOTER_FORM_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Inputs\Back1Input.cs" />
     <Compile Include="Inputs\CK4CItemInput.cs" />
     <Compile Include="Inputs\Ck4CGetByParamInput.cs" />
     <Compile Include="Inputs\CK5Input.cs" />
@@ -220,6 +224,7 @@
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
     <Compile Include="Inputs\Lack1Input.cs" />
+    <Compile Include="Inputs\Lack2Input.cs" />
     <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />

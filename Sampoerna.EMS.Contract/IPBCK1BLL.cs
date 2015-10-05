@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs);
 
-        List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs);
+        List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs, string goodType);
 
         void Pbck1Workflow(Pbck1WorkflowDocumentInput input);
 
@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.Contract
 
         List<T001WCompositeDto> GetSupplierPlantByParam(Pbck1GetSupplierPlantByParamInput input);
 
-        bool checkUniquePBCK1(Pbck1SaveInput pbck1);
+        string checkUniquePBCK1(Pbck1SaveInput pbck1);
         Pbck1Dto GetPBCK1Reference(Pbck1ReferenceSearchInput input);
     }
 }

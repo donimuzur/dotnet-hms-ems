@@ -25,7 +25,6 @@ using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.UserAuthorization;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
-using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.Waste;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.Settings;
@@ -45,6 +44,7 @@ namespace Sampoerna.EMS.Website
             InitializeLACK1();
             InitializeCk4C();
             InitializePBCK4();
+            InitializeLACK2();
             //AutoMapper
             Mapper.CreateMap<USER, Login>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.USER_ID))
@@ -813,7 +813,8 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ProductionDto, ProductionDetail>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ProductionDate,
                     opt => opt.MapFrom(src => src.ProductionDate.ToString("dd MMM yyyy")))
-                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName));
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.Qty == null ? src.QtyPacked + src.QtyUnpacked : src.Qty));
                 //.ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode));
                 
 
@@ -846,7 +847,8 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => src.DustWasteGramQty + src.FloorWasteGramQty))
                 .ForMember(dest => dest.WasteQtyStick,
                     opt => opt.MapFrom(src => src.DustWasteStickQty + src.FloorWasteStickQty))
-                     .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WasteProductionDate.ToString("dd MMM yyyy"))); 
+                     .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WasteProductionDate.ToString("dd MMM yyyy")))
+                     .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName)); 
 
 
             Mapper.CreateMap<WasteViewModel, WasteGetByParamInput>().IgnoreAllNonExisting()

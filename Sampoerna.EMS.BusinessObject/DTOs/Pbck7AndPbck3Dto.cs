@@ -15,9 +15,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             Pbck3Status = Enums.DocumentStatus.Draft;
             Back3Dto = new Back3Dto();
             Ck2Dto = new Ck2Dto();
+           
         }
 
         public string Pbck3Number { get; set; }
+        public string Pbck7Number { get; set; }
+       
         public int Pbck7Id { get; set; }
         public int Pbck3Id { get; set; }
         public Enums.DocumentStatus Pbck3Status { get; set; }
@@ -46,6 +49,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string NppbckId { get; set; }
 
         public string Plant { get; set; }
+
+        
        
     }
 
@@ -135,6 +140,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Decimal? ExciseValue { get; set; }
 
         public string SeriesValue { get; set; }
+
+        public int? Pbck7Id { get; set; }
 
     }
 
