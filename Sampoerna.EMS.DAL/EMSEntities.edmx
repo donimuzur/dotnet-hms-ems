@@ -88,7 +88,7 @@
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FORM_TYPE_ID" Type="int" Nullable="false" />
-          <Property Name="FORM_ID" Type="varchar" MaxLength="50" />
+          <Property Name="FORM_ID" Type="nvarchar" MaxLength="50" />
           <Property Name="FIELD_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="OLD_VALUE" Type="nvarchar(max)" />
           <Property Name="NEW_VALUE" Type="nvarchar(max)" />
@@ -568,7 +568,7 @@
             <PropertyRef Name="LIFNR" />
           </Key>
           <Property Name="LIFNR" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="NAME1" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="NAME1" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="NAME2" Type="nvarchar" MaxLength="35" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
@@ -667,16 +667,16 @@
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY_POA" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_DATE_POA" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="SUPPLIER_PORT_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="SUPPLIER_NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="SUPPLIER_PLANT_WERKS" Type="nvarchar" MaxLength="4" />
-          <Property Name="APPROVED_BY_POA" Type="nvarchar" MaxLength="50" />
-          <Property Name="APPROVED_DATE_POA" Type="datetime" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
-          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="REMAINING_QUOTA" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="NPPBKC_KPPBC_ID" Type="nvarchar" MaxLength="10" />
           <Property Name="SUPPLIER_KPPBC_ID" Type="nvarchar" MaxLength="50" />
           <Property Name="SUPPLIER_COMPANY" Type="nvarchar" MaxLength="35" />
           <Property Name="IS_NPPBKC_IMPORT" Type="bit" />
@@ -837,7 +837,7 @@
           <Property Name="REJECTED_DATE" Type="datetime" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
-          <Property Name="POA_PRINTED_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="POA_PRINTED_NAME" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="PBCK4_DOCUMENT">
           <Key>
@@ -1024,11 +1024,11 @@
           <Property Name="BUKRS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="BUTXT" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="NPWP" Type="nvarchar" MaxLength="30" />
-          <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
-          <Property Name="SPRAS" Type="nvarchar" MaxLength="150" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="ORT01" Type="varchar" MaxLength="25" />
+          <Property Name="SPRAS" Type="varchar" MaxLength="150" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
           <Property Name="BUTXT_ALIAS" Type="nvarchar" MaxLength="10" />
@@ -1419,6 +1419,18 @@
             </Principal>
             <Dependent Role="BROLE_MAP">
               <PropertyRef Name="BROLE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CHANGES_HISTORY">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2037,6 +2049,30 @@
             <Dependent Role="MATERIAL_UOM">
               <PropertyRef Name="STICKER_CODE" />
               <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAGE_MAP_PAGE">
+          <End Role="PAGE" Type="Self.PAGE" Multiplicity="1" />
+          <End Role="PAGE_MAP" Type="Self.PAGE_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="PAGE_MAP">
+              <PropertyRef Name="PAGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAGE_MAP_USER_BROLE">
+          <End Role="USER_BROLE" Type="Self.USER_BROLE" Multiplicity="0..1" />
+          <End Role="PAGE_MAP" Type="Self.PAGE_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER_BROLE">
+              <PropertyRef Name="BROLE" />
+            </Principal>
+            <Dependent Role="PAGE_MAP">
+              <PropertyRef Name="BROLE" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2748,15 +2784,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_T001K_T1001">
-          <End Role="T001" Type="Self.T001" Multiplicity="1" />
-          <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
+        <Association Name="FK_T001K_T001W">
+          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
+          <End Role="T001K" Type="Self.T001K" Multiplicity="0..1" />
           <ReferentialConstraint>
-            <Principal Role="T001">
-              <PropertyRef Name="BUKRS" />
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
             </Principal>
             <Dependent Role="T001K">
-              <PropertyRef Name="BUKRS" />
+              <PropertyRef Name="BWKEY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3163,6 +3199,10 @@
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
+          </AssociationSet>
           <AssociationSet Name="FK_CK1_ITEM_CK1" Association="Self.FK_CK1_ITEM_CK1">
             <End Role="CK1" EntitySet="CK1" />
             <End Role="CK1_ITEM" EntitySet="CK1_ITEM" />
@@ -3366,6 +3406,14 @@
           <AssociationSet Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" Association="Self.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
             <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAGE_MAP_PAGE" Association="Self.FK_PAGE_MAP_PAGE">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAGE_MAP_USER_BROLE" Association="Self.FK_PAGE_MAP_USER_BROLE">
+            <End Role="USER_BROLE" EntitySet="USER_BROLE" />
+            <End Role="PAGE_MAP" EntitySet="PAGE_MAP" />
           </AssociationSet>
           <AssociationSet Name="FK_PAGE_PAGE" Association="Self.FK_PAGE_PAGE">
             <End Role="PAGE" EntitySet="PAGE" />
@@ -3603,8 +3651,8 @@
             <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
-          <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
-            <End Role="T001" EntitySet="T001" />
+          <AssociationSet Name="FK_T001K_T001W" Association="Self.FK_T001K_T001W">
+            <End Role="T001W" EntitySet="T001W" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
@@ -4404,7 +4452,7 @@
           </Key>
           <Property Name="CHANGES_HISTORY_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FORM_TYPE_ID" Type="EMSModel.MenuList" Nullable="false" />
-          <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FORM_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FIELD_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="OLD_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="NEW_VALUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -5756,7 +5804,7 @@
             <PropertyRef Name="LIFNR" />
           </Key>
           <Property Name="LIFNR" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="NAME1" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="NAME1" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="NAME2" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
@@ -5839,8 +5887,8 @@
           <Property Name="BUKRS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="BUTXT" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="NPWP" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ORT01" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="SPRAS" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
@@ -7326,7 +7374,7 @@
           <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
           <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
-          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK4_DOCUMENT" Relationship="EMSModel.FK_PBCK4_DOCUMENT_PBCK4" FromRole="PBCK4" ToRole="PBCK4_DOCUMENT" />
           <NavigationProperty Name="PBCK4_ITEM" Relationship="EMSModel.FK_PBCK4_ITEM_PBCK4" FromRole="PBCK4" ToRole="PBCK4_ITEM" />
           <NavigationProperty Name="POA" Relationship="EMSModel.FK_PBCK4_POA" FromRole="PBCK4" ToRole="POA" />
