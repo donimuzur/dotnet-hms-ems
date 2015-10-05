@@ -735,7 +735,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                 DocumentNumber = model.Detail.Pbck1Number,
-                NppbkcId = model.Detail.NppbkcId
+                NppbkcId = model.Detail.NppbkcId,
+                ManagerApprove = model.Detail.ApprovedByManagerId
             };
 
             ////workflow
@@ -745,7 +746,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
             else if (CurrentUser.UserRole == Enums.UserRole.POA)
             {
