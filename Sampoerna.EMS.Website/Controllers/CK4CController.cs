@@ -247,9 +247,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetNppbkcByPlantId(string plantId)
+        public JsonResult GetPoaByPlantId(string plantId)
         {
-            return Json(_plantBll.GetT001WById(plantId).NPPBKC_ID);
+            var nppbkc = _plantBll.GetT001WById(plantId).NPPBKC_ID;
+
+            var listPoa = _poabll.GetPoaByNppbkcIdAndMainPlant(nppbkc);
+            var model = new Ck4CIndexDocumentListViewModel() { PoaList = new SelectList(listPoa, "POA_ID", "PRINTED_NAME") };
+
+            return Json(model);
         }
 
         #endregion

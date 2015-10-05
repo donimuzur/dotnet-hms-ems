@@ -160,6 +160,8 @@
         $(document).ready(function () {
             SetBasedOn();
 
+            SetPoaList();
+
             $('#divComment').hide();
 
             $('#Details_StatusGoverment').on('change', function (e) {
@@ -211,6 +213,17 @@
                 }
             });
         });
+
+        function SetPoaList() {
+            var poa = '@Model.Details.ApprovedByPoa';
+            var nppbkc = '@Model.Details.NppbkcId';
+            var url = '@Url.Action("PoaListPartial", "CK4C")';
+
+            if (poa == '')
+            {
+                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+            }
+        }
 
         function SetBasedOn() {
             var nppbkc = '@Model.Details.NppbkcId';
