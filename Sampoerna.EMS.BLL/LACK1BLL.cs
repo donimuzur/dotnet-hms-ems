@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using CrystalDecisions.Shared.Json;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -169,6 +170,17 @@ namespace Sampoerna.EMS.BLL
 
             _lack1Service.Insert(data);
 
+            //add workflow history for create document
+            var getUserRole = _poaBll.GetUserRole(input.UserId);
+            AddWorkflowHistory(new Lack1WorkflowDocumentInput()
+            {
+                DocumentId = null,
+                DocumentNumber = data.LACK1_NUMBER,
+                ActionType = Enums.ActionType.Created,
+                UserId = input.UserId,
+                UserRole = getUserRole
+            });
+            
             _uow.SaveChanges();
 
             rc.Success = true;
@@ -374,33 +386,36 @@ namespace Sampoerna.EMS.BLL
 
         private void SubmitDocument(Lack1WorkflowDocumentInput input)
         {
-            var dbData = _lack1Service.GetById(input.DocumentId);
-
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-            if (dbData.STATUS != Enums.DocumentStatus.Draft)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-            if (dbData.CREATED_BY != input.UserId)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-            //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval);
-
-            switch (input.UserRole)
+            if (input.DocumentId != null)
             {
-                case Enums.UserRole.User:
-                    dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
-                    break;
-                case Enums.UserRole.POA:
-                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    break;
-                default:
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-            }
+                var dbData = _lack1Service.GetById(input.DocumentId.Value);
 
-            input.DocumentNumber = dbData.LACK1_NUMBER;
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                if (dbData.STATUS != Enums.DocumentStatus.Draft)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                if (dbData.CREATED_BY != input.UserId)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval);
+
+                switch (input.UserRole)
+                {
+                    case Enums.UserRole.User:
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
+                        break;
+                    case Enums.UserRole.POA:
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        break;
+                    default:
+                        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                }
+
+                input.DocumentNumber = dbData.LACK1_NUMBER;
+            }
 
             AddWorkflowHistory(input);
 
@@ -408,44 +423,47 @@ namespace Sampoerna.EMS.BLL
 
         private void ApproveDocument(Lack1WorkflowDocumentInput input)
         {
-            var dbData = _lack1Service.GetById(input.DocumentId);
-
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            if (input.DocumentId != null)
             {
-                CreatedUser = dbData.CREATED_BY,
-                CurrentUser = input.UserId,
-                DocumentStatus = dbData.STATUS,
-                UserRole = input.UserRole,
-                NppbkcId = dbData.NPPBKC_ID,
-                DocumentNumber = dbData.LACK1_NUMBER
-            });
+                var dbData = _lack1Service.GetById(input.DocumentId.Value);
 
-            if (!isOperationAllow)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
-            //dbData.APPROVED_BY_POA = input.UserId;
-            //dbData.APPROVED_DATE_POA = DateTime.Now;
-            //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+                {
+                    CreatedUser = dbData.CREATED_BY,
+                    CurrentUser = input.UserId,
+                    DocumentStatus = dbData.STATUS,
+                    UserRole = input.UserRole,
+                    NppbkcId = dbData.NPPBKC_ID,
+                    DocumentNumber = dbData.LACK1_NUMBER
+                });
 
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
+                if (!isOperationAllow)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
+                //dbData.APPROVED_BY_POA = input.UserId;
+                //dbData.APPROVED_DATE_POA = DateTime.Now;
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+
+                if (input.UserRole == Enums.UserRole.POA)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.APPROVED_BY_POA = input.UserId;
+                    dbData.APPROVED_DATE_POA = DateTime.Now;
+                }
+                else
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.APPROVED_BY_MANAGER = input.UserId;
+                    dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+                }
+
+                input.DocumentNumber = dbData.LACK1_NUMBER;
             }
-            else
-            {
-                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                dbData.APPROVED_BY_MANAGER = input.UserId;
-                dbData.APPROVED_DATE_MANAGER = DateTime.Now;
-            }
-
-            input.DocumentNumber = dbData.LACK1_NUMBER;
 
             AddWorkflowHistory(input);
 
@@ -453,27 +471,30 @@ namespace Sampoerna.EMS.BLL
 
         private void RejectDocument(Lack1WorkflowDocumentInput input)
         {
-            var dbData = _lack1Service.GetById(input.DocumentId);
+            if (input.DocumentId != null)
+            {
+                var dbData = _lack1Service.GetById(input.DocumentId.Value);
 
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
-                dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
+                    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
 
-            //change back to draft
-            dbData.STATUS = Enums.DocumentStatus.Draft;
+                //change back to draft
+                dbData.STATUS = Enums.DocumentStatus.Draft;
 
-            //todo ask
-            dbData.APPROVED_BY_POA = null;
-            dbData.APPROVED_DATE_POA = null;
+                //todo ask
+                dbData.APPROVED_BY_POA = null;
+                dbData.APPROVED_DATE_POA = null;
 
-            input.DocumentNumber = dbData.LACK1_NUMBER;
+                input.DocumentNumber = dbData.LACK1_NUMBER;
+            }
 
             AddWorkflowHistory(input);
 
@@ -481,28 +502,31 @@ namespace Sampoerna.EMS.BLL
 
         private void GovApproveDocument(Lack1WorkflowDocumentInput input)
         {
-            var dbData = _lack1Service.GetById(input.DocumentId);
+            if (input.DocumentId != null)
+            {
+                var dbData = _lack1Service.GetById(input.DocumentId.Value);
 
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
 
-            dbData.LACK1_DOCUMENT = null;
-            dbData.STATUS = Enums.DocumentStatus.Completed;
-            dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-            dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
-            dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
+                dbData.LACK1_DOCUMENT = null;
+                dbData.STATUS = Enums.DocumentStatus.Completed;
+                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
 
-            dbData.APPROVED_BY_POA = input.UserId;
-            dbData.APPROVED_DATE_POA = DateTime.Now;
+                dbData.APPROVED_BY_POA = input.UserId;
+                dbData.APPROVED_DATE_POA = DateTime.Now;
 
-            input.DocumentNumber = dbData.LACK1_NUMBER;
+                input.DocumentNumber = dbData.LACK1_NUMBER;
+            }
 
             AddWorkflowHistory(input);
 
@@ -510,55 +534,61 @@ namespace Sampoerna.EMS.BLL
 
         private void GovPartialApproveDocument(Lack1WorkflowDocumentInput input)
         {
-            var dbData = _lack1Service.GetById(input.DocumentId);
+            if (input.DocumentId != null)
+            {
+                var dbData = _lack1Service.GetById(input.DocumentId.Value);
 
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
 
-            input.DocumentNumber = dbData.LACK1_NUMBER;
+                input.DocumentNumber = dbData.LACK1_NUMBER;
 
-            dbData.LACK1_DOCUMENT = null;
-            dbData.STATUS = Enums.DocumentStatus.Completed;
-            dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-            dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
-            dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
+                dbData.LACK1_DOCUMENT = null;
+                dbData.STATUS = Enums.DocumentStatus.Completed;
+                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
 
-            dbData.APPROVED_BY_POA = input.UserId;
-            dbData.APPROVED_DATE_POA = DateTime.Now;
+                dbData.APPROVED_BY_POA = input.UserId;
+                dbData.APPROVED_DATE_POA = DateTime.Now;
 
-            input.DocumentNumber = dbData.LACK1_NUMBER;
+                input.DocumentNumber = dbData.LACK1_NUMBER;
+            }
 
             AddWorkflowHistory(input);
         }
 
         private void GovRejectedDocument(Lack1WorkflowDocumentInput input)
         {
-            var dbData = _lack1Service.GetById(input.DocumentId);
+            if (input.DocumentId != null)
+            {
+                var dbData = _lack1Service.GetById(input.DocumentId.Value);
 
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
-            WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.GovRejected;
-            dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
-            dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
-            dbData.APPROVED_BY_POA = input.UserId;
-            dbData.APPROVED_DATE_POA = DateTime.Now;
+                dbData.STATUS = Enums.DocumentStatus.GovRejected;
+                dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
+                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                dbData.APPROVED_BY_POA = input.UserId;
+                dbData.APPROVED_DATE_POA = DateTime.Now;
 
-            input.DocumentNumber = dbData.LACK1_NUMBER;
+                input.DocumentNumber = dbData.LACK1_NUMBER;
+            }
 
             AddWorkflowHistory(input);
 
@@ -607,12 +637,14 @@ namespace Sampoerna.EMS.BLL
             //var body = "this is body message for " + input.DocumentNumber;
             //var from = "a@gmail.com";
 
-            var lack1Data = Mapper.Map<Lack1DetailsDto>(_lack1Service.GetDetailsById(input.DocumentId));
+            if (input.DocumentId != null)
+            {
+                var lack1Data = Mapper.Map<Lack1DetailsDto>(_lack1Service.GetDetailsById(input.DocumentId.Value));
 
-            var mailProcess = ProsesMailNotificationBody(lack1Data, input.ActionType);
+                var mailProcess = ProsesMailNotificationBody(lack1Data, input.ActionType);
 
-            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
-
+                _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+            }
         }
 
         private Lack1MailNotification ProsesMailNotificationBody(Lack1DetailsDto lack1Data, Enums.ActionType actionType)
