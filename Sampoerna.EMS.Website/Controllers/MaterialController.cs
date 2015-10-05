@@ -72,6 +72,10 @@ namespace Sampoerna.EMS.Website.Controllers
             
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.MaterialMaster, mn+p));
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
+            model.HjeStr = model.Hje == null ? string.Empty : model.Hje.ToString();
+            model.TariffStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
+            
+
             model = InitDetailModel(model);
 
             if (model.IsDeleted.HasValue && model.IsDeleted.Value)
@@ -206,6 +210,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CurrentMenu = PageInfo;
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, mn+p));
                 model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
+                model.HjeStr = model.Hje == null ? string.Empty : model.Hje.ToString();
+                model.TariffStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
                 
                 InitEditModel(model);
 
@@ -248,6 +254,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = AutoMapper.Mapper.Map<MaterialDto>(model);
+                data.HJE = model.HjeStr == null ? 0 : Convert.ToDecimal(model.HjeStr);
+                data.TARIFF = model.TariffStr == null ? 0 : Convert.ToDecimal(model.TariffStr);
+              
 
                 var output = _materialBll.Save(data, CurrentUser.USER_ID);
                 if (!output.Success)

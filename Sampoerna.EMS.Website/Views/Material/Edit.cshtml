@@ -169,7 +169,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Tariff</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Tariff, new { @class = "form-control", maxlength = "15" })
+                                                            @Html.TextBoxFor(model => model.TariffStr, new { @class = "decimal form-control", maxlength = "15" })
 
                                                         </div>
                                                     </div>
@@ -178,7 +178,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">HJE</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.Hje, new { @class = "form-control", maxlength = "15" })
+                                                            @Html.TextBoxFor(model => model.HjeStr, new { @class = "decimal form-control", maxlength = "15" })
 
                                                         </div>
                                                     </div>
@@ -281,7 +281,8 @@
 
                                                                             </td>
                                                                             <td>
-                                                                                <span id="field2">@Html.Raw(Model.MaterialUom[i].UmrenStr)</span>
+                                                                                @*<span id="field2">@Html.Raw(Model.MaterialUom[i].UmrenStr)</span>*@
+                                                                                <span id="field2">@string.Format("{0:N4}", Model.MaterialUom[i].Umren)</span>
                                                                             </td>
                                                                         </tr>
 
@@ -376,6 +377,10 @@
 
         $('#MenuMasterMaterial').addClass('active');
 
+        $('#HjeStr').val(ThausandSeperator($('#HjeStr').val(), 2));
+        $('#TariffStr').val(ThausandSeperator($('#TariffStr').val(), 2));
+        $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
+        
        
         
         
