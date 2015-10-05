@@ -219,7 +219,7 @@
             var docStatus = '@Model.Details.Status.ToString()';
             var isAllow = '@Model.AllowGovApproveAndReject';
 
-            if (nppbkc != '') {
+            if (plantId == '') {
                 $('#basedNppbkc').prop('checked', true);
                 if (docStatus != '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() != 'true') {
                     $('#Details_NppbkcId').prop('disabled', false);
