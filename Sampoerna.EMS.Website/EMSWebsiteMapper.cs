@@ -847,7 +847,8 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => src.DustWasteGramQty + src.FloorWasteGramQty))
                 .ForMember(dest => dest.WasteQtyStick,
                     opt => opt.MapFrom(src => src.DustWasteStickQty + src.FloorWasteStickQty))
-                     .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WasteProductionDate.ToString("dd MMM yyyy"))); 
+                     .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WasteProductionDate.ToString("dd MMM yyyy")))
+                     .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName)); 
 
 
             Mapper.CreateMap<WasteViewModel, WasteGetByParamInput>().IgnoreAllNonExisting()

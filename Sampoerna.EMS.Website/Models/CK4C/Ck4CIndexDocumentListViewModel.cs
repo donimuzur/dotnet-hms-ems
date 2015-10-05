@@ -41,6 +41,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public SelectList YearList { get; set; }
         public SelectList PeriodList { get; set; }
         public SelectList PlanList { get; set; }
+        public SelectList PoaList { get; set; }
     }
     public class DataDocumentList
     {
