@@ -54,7 +54,7 @@
                 var cpy = $(this).find("option:selected").val();
                 $('#SearchInput_PlantId option').remove();
                 if (cpy == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_PlantId option').append('<option value="">All</option>');
+                    $('#SearchInput_PlantId option').append('<option value="">Select</option>');
 
                 } else {
                     ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
@@ -70,7 +70,7 @@
                     data: formData,
                     success: function (data) {
                         var listPlant = data.PlantWerkList;
-                        $('#SearchInput_PlantId').append('<option value="">All</option>');
+                        $('#SearchInput_PlantId').append('<option value="">Select</option>');
                         if (listPlant.length > 0) {
                             for (var i = 0; i < listPlant.length; i++) {
                                 $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
@@ -116,7 +116,7 @@
                 var ce = $(this).find("option:selected").val();
                 $('#SearchInput_BrandCe option').remove();
                 if (ce == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_BrandCe option').append('<option value="">All</option>');
+                    $('#SearchInput_BrandCe option').append('<option value="">Select</option>');
 
                 } else {
                     ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: ce });
@@ -132,7 +132,7 @@
                     data: formData,
                     success: function (data) {
                         var facodeList = data.FacodeList;
-                        $('#SearchInput_BrandCe').append('<option value="">All</option>');
+                        $('#SearchInput_BrandCe').append('<option value="">Select</option>');
                         if (facodeList.length > 0) {
                             for (var i = 0; i < facodeList.length; i++) {
                                 $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');

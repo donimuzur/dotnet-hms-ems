@@ -73,6 +73,14 @@
             ChangeCompany($(this).find("option:selected").val(), '', '');
         });
 
+        $('#Details_NppbkcId').change(function () {
+            nppbkcIdOnChange('@Url.Action("PoaListPartial", "CK4C")');
+        });
+
+        $("#Details_PlantId").change(function () {
+            GetNppbkcByPlant($(this).find("option:selected").val());
+        });
+
         $('#btnCancel').click(function (e) {
             location.href = '@Url.Action("DocumentList", "CK4C")';
         });
@@ -108,7 +116,11 @@
                 ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
                 }
             }
-        }
+    }
+
+    function GetNppbkcByPlant(plant) {
+
+    }
 
     </script>
 }

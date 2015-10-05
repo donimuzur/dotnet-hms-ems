@@ -238,6 +238,20 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(data);
         }
 
+        [HttpPost]
+        public JsonResult PoaListPartial(string nppbkcId)
+        {
+            var listPoa = _poabll.GetPoaByNppbkcIdAndMainPlant(nppbkcId);
+            var model = new Ck4CIndexDocumentListViewModel() { PoaList = new SelectList(listPoa, "POA_ID", "PRINTED_NAME") };
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetNppbkcByPlantId(string plantId)
+        {
+            return Json(_plantBll.GetT001WById(plantId).NPPBKC_ID);
+        }
+
         #endregion
 
         #region create Document List
