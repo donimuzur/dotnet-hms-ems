@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     
     public class Lack1WorkflowDocumentInput
     {
-        public int DocumentId { get; set; }
+        public int? DocumentId { get; set; }
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
         public string Comment { get; set; }
