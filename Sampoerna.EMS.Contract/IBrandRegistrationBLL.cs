@@ -9,7 +9,7 @@ namespace Sampoerna.EMS.Contract
         List<BrandRegistrationOutput> GetAll();
 
         ZAIDM_EX_BRAND GetById(string plant, string facode);
-
+        ZAIDM_EX_BRAND GetBrandByBrandCEAndProdCode(string brand, string prodCode);
         ZAIDM_EX_BRAND GetByIdIncludeChild(string plant, string facode);
 
         void Save(ZAIDM_EX_BRAND brandRegistration);

@@ -40,6 +40,7 @@ namespace Sampoerna.EMS.BLL
         private IMessageService _messageService;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IZaidmExKPPBCBLL _kppbcbll;
+        private IZaidmExGoodTypeBLL _goodTypeBll;
         private IHeaderFooterBLL _headerFooterBll;
         private IUserBLL _userBll;
         private ILFA1BLL _lfaBll;
@@ -77,7 +78,7 @@ namespace Sampoerna.EMS.BLL
             _lack1Bll = new LACK1BLL(_uow, _logger);
             _t001Kbll = new T001KBLL(_uow, _logger);
             _plantBll = new PlantBLL(_uow, _logger);
-
+            _goodTypeBll = new ZaidmExGoodTypeBLL(_uow, _logger);
         }
 
         public List<Pbck1Dto> GetAllByParam(Pbck1GetByParamInput input)
@@ -647,6 +648,14 @@ namespace Sampoerna.EMS.BLL
 
                 #endregion
 
+                #region -------------- Brand Validation --------------------
+                if (!ValidateBrand(output.BrandCE, prodTypeData.PROD_CODE, out messages))
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+                #endregion
+
                 #region -------------- Set Message Info if exists ---------------
 
                 if (messageList.Count > 0)
@@ -671,7 +680,7 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-        public List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs)
+        public List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs, string goodType)
         {
             var messageList = new List<string>();
             var outputList = new List<Pbck1ProdPlanOutput>();
@@ -746,7 +755,7 @@ namespace Sampoerna.EMS.BLL
                 string uomName;
                 string uomId;
                 //validate by Uom Id
-                if (!ValidateUomId(output.BkcRequiredUomId, out messages, out uomName, out uomId))
+                if (!ValidateUomId(output.BkcRequiredUomId, goodType, out messages, out uomName, out uomId))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -756,6 +765,7 @@ namespace Sampoerna.EMS.BLL
                     output.BkcRequiredUomName = uomName;
                     output.BkcRequiredUomId = uomId;
                 }
+
 
                 #endregion
 
@@ -943,6 +953,50 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
+
+        private bool ValidateUomId(string uom, string goodtype, out List<string> message, out string uomName, out string uomId)
+        {
+            var valResult = false;
+            var messageList = new List<string>();
+            uomName = string.Empty;
+            uomId = string.Empty;
+            if (!string.IsNullOrWhiteSpace(uom))
+            {
+                var uomData = _uomBll.GetById(uom);
+                var gtData = _goodTypeBll.GetById(goodtype);                
+                if (uomData != null)
+                {
+                    if (goodtype == "02" && uom == "G")
+                    {
+                        uomName = uomData.UOM_DESC;
+                        uomId = uomData.UOM_ID;
+                        valResult = true;
+                    }
+                    else if (goodtype == "04" && uom == "L")
+                    {
+                        uomName = uomData.UOM_DESC;
+                        uomId = uomData.UOM_ID;
+                        valResult = true;
+                    }
+                    else {
+                        messageList.Add("UOM Id [" + uom + "] not valid for " + gtData.EXT_TYP_DESC);
+                    }
+                }
+                else
+                {
+                    messageList.Add("UOM Id [" + uom + "] not valid for " + gtData.EXT_TYP_DESC);
+                }
+            }
+            else
+            {
+                messageList.Add("UOM is empty");
+            }
+
+            message = messageList;
+
+            return valResult;
+        }
+
         private bool ValidateUomName(string uomName, out List<string> message, out string uomNameFromDb,
             out string uomId)
         {
@@ -967,6 +1021,33 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 messageList.Add("UOM is empty");
+            }
+
+            message = messageList;
+
+            return valResult;
+        }
+
+        private bool ValidateBrand(string brand, string prodCode, out List<string> message)
+        {
+            var valResult = false;
+            var messageList = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(brand))
+            {
+                var brandData = _brandRegistrationBll.GetBrandByBrandCEAndProdCode(brand, prodCode);
+                if (brandData != null)
+                {
+                    valResult = true;
+                }
+                else
+                {
+                    messageList.Add("Brand [" + brand + "] not valid");
+                }
+            }
+            else
+            {
+                messageList.Add("Brand is empty");
             }
 
             message = messageList;
