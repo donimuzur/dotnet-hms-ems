@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
@@ -38,4 +34,22 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? DateTo { get; set; }
      
     }
+
+    public class Lack2WorkflowDocumentInput
+    {
+        public int? DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public string Comment { get; set; }
+        public Enums.ActionType ActionType { get; set; }
+        public string DocumentNumber { get; set; }
+
+    }
+
+    public class Lack2WorkflowDocumentData
+    {
+        public DateTime DecreeDate { get; set; }
+        public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
+    }
+
 }

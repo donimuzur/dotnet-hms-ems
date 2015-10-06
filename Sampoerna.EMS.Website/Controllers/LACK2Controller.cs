@@ -542,25 +542,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _lack2Bll.Insert(item);
             return RedirectToAction("Index");
         }
-
-       
-
-       
-
         
-
-
-
-
-      
-       
-        
-       
-        
-
-      
-       
-
         [HttpPost]
         public PartialViewResult FilterOpenDocument(LACK2FilterViewModel SearchInput)
         {

@@ -1,9 +1,6 @@
 ﻿using Sampoerna.EMS.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -50,6 +47,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<LACK2_DOCUMENT> Documents;
 
         public bool IsRejected { get; set; }
+
+        public string UserId { get; set; }
 
     }
 
