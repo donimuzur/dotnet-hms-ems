@@ -627,6 +627,15 @@ namespace Sampoerna.EMS.Website.Controllers
             input.ActionType = actionType;
             input.Comment = model.Comment;
             
+            input.UploadItemDto = new List<Pbck4ItemDto>();
+            foreach (var pbck4UploadItem in model.UploadItemModels)
+            {
+                if (pbck4UploadItem.IsUpdated)
+                    input.UploadItemDto.Add(Mapper.Map<Pbck4ItemDto>(pbck4UploadItem));
+                
+            }
+            
+
             input.AdditionalDocumentData = new Pbck4WorkflowDocumentData();
             input.AdditionalDocumentData.Back1No = model.BACK1_NO;
             input.AdditionalDocumentData.Back1Date = model.BACK1_DATE;

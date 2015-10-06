@@ -347,7 +347,8 @@ function AddRowPbck4() {
                   "<td>" + totalHje.toFixed(2) + "</td>" +
                   "<td>" + totalTariff.toFixed(2) + "</td>" +
                  "<td>" + $('#uploadNoPengawas').val() + "</td>" +
-                 "<td>" + $('#uploadApprovedQty').val() + "</td>" +
+                 //"<td>" + $('#uploadApprovedQty').val() + "</td>" +
+                 "<td>" + $('#uploadReqQty').val() + "</td>" +
                  "<td>" + $('#uploadRemarks').val() + "</td>" +
 
                 "<td></td>" +
@@ -400,7 +401,8 @@ function UpdateRowPbck4() {
                 $(this).find('td').eq(15).text(totalTariff.toFixed(3));
                 
                 $(this).find('td').eq(16).text($('#uploadNoPengawas').val());
-                $(this).find('td').eq(17).text($('#uploadApprovedQty').val());
+                //$(this).find('td').eq(17).text($('#uploadApprovedQty').val());
+                $(this).find('td').eq(17).text($('#uploadReqQty').val());
                 $(this).find('td').eq(18).text($('#uploadRemarks').val());
               
                 $(this).find('td').eq(20).text($('#uploadCk1Id').val());
@@ -464,6 +466,7 @@ function UpdateRowPbck4Detail() {
                 $(this).find('td').eq(20).text($('#uploadCk1Id').val());
                 $(this).find('td').eq(21).text($('#uploadBlockedStocked').val());
                 $(this).find('td').eq(22).text($('#uploadPbck4ItemId').val());
+                $(this).find('td').eq(23).text('True');
 
             }
         });

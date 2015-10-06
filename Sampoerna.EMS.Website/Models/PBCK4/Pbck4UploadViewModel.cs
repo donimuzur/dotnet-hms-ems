@@ -33,6 +33,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string BlockedStockRemaining { get; set; }
 
         public long PBCK4_ITEM_ID { get; set; }
+        public bool IsUpdated { get; set; }
        
     }
 }
