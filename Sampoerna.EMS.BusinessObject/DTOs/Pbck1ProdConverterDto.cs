@@ -7,6 +7,7 @@
         public string ProdTypeCode { get; set; }
         public string ProdTypeName { get; set; }
         public string ProdAlias { get; set; }
+        public string BrandCE { get; set; }
         public decimal? ConverterOutput { get; set; }
         public string ConverterOutputUomId { get; set; }
         public string ConverterOutputUomName { get; set; }

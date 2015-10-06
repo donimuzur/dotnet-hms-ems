@@ -28,13 +28,13 @@
             {
                 <tr>
                     <td rowspan="@item.TrackingConsolidations.Count">@item.BeginingBalance.ToString("N2")</td>
-                    <td>@item.TrackingConsolidations[0].Ck5Number</td>
-                    <td>@item.TrackingConsolidations[0].Ck5RegistrationNumber</td>
+                    <td class="cell-text">@item.TrackingConsolidations[0].Ck5Number</td>
+                    <td class="cell-text">@item.TrackingConsolidations[0].Ck5RegistrationNumber</td>
                     <td>@item.TrackingConsolidations[0].Ck5RegistrationDate</td>
                     <td>@item.TrackingConsolidations[0].Ck5GrDate</td>
                     <td>@item.TrackingConsolidations[0].Qty.ToString("N2")</td>
                     <td>@item.TrackingConsolidations[0].GiDate</td>
-                    <td>@item.TrackingConsolidations[0].MaterialCode</td>
+                    <td class="cell-text">@item.TrackingConsolidations[0].MaterialCode</td>
                     <td>@item.TrackingConsolidations[0].UsageQty</td>
                     <td>@item.TrackingConsolidations[0].OriginalUomId</td>
                     <td>@item.TrackingConsolidations[0].ConvertedUomId</td>
@@ -43,13 +43,13 @@
                 for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                 {
                     <tr>
-                        <td>@item.TrackingConsolidations[i].Ck5Number</td>
-                        <td>@item.TrackingConsolidations[i].Ck5RegistrationNumber</td>
+                        <td class="cell-text">@item.TrackingConsolidations[i].Ck5Number</td>
+                        <td class="cell-text">@item.TrackingConsolidations[i].Ck5RegistrationNumber</td>
                         <td>@item.TrackingConsolidations[i].Ck5RegistrationDate</td>
                         <td>@item.TrackingConsolidations[i].Ck5GrDate</td>
                         <td>@item.TrackingConsolidations[i].Qty.ToString("N2")</td>
                         <td>@item.TrackingConsolidations[i].GiDate</td>
-                        <td>@item.TrackingConsolidations[i].MaterialCode</td>
+                        <td class="cell-text">@item.TrackingConsolidations[i].MaterialCode</td>
                         <td>@item.TrackingConsolidations[i].UsageQty</td>
                         <td>@item.TrackingConsolidations[i].OriginalUomId</td>
                         <td>@item.TrackingConsolidations[i].ConvertedUomId</td>

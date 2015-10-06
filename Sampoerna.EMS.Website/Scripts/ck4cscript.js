@@ -273,3 +273,58 @@ function UpdateRow() {
 
     $('#Ck4cUploadModal').modal('hide');
 }
+
+function ajaxLoadPoa(formData, url) {
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        success: function (data) {
+            var list = data.PoaList;
+            if (list.length > 0) {
+                var poalist = '';
+                for (var i = 0; i < list.length; i++) {
+                    poalist = poalist + ', ' + list[i].Text;
+                }
+                poalist = poalist.slice(2);
+                $('#Details_PoaList').val(poalist);
+                $('#displayPoaList').val(poalist);
+            } else {
+                $('#Details_PoaList').val('');
+                $('#displayPoaList').val('');
+            }
+        }
+    });
+}
+
+function nppbkcIdOnChange(url) {
+    $('#Details_PoaList').val('');
+    $('#displayPoaList').val('');
+
+    if ($("#Details_NppbkcId").length) {
+        var nppbkcid = $('#Details_NppbkcId').find("option:selected").val();
+        if (nppbkcid != '') {
+            ajaxSelectNppbck({ nppbkcid: nppbkcid }, url);
+        }
+    }
+}
+
+function plantIdOnChange(url) {
+    $('#Details_PoaList').val('');
+    $('#displayPoaList').val('');
+
+    if ($("#Details_PlantId").length) {
+        var plant = $('#Details_PlantId').find("option:selected").val();
+        if (plant != '') {
+            ajaxSelectNppbck({ plantId: plant }, url);
+        }
+    }
+}
+
+function ajaxSelectNppbck(formData, url) {
+    //debugger;
+    if (formData) {
+        //Load POA
+        ajaxLoadPoa(formData, url);
+    }
+}

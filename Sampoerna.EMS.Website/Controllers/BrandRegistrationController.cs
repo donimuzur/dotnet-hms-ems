@@ -224,7 +224,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Edit(BrandRegistrationEditViewModel model)
         {
-            var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode);
+            var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode,model.StickerCode);
             if (dbBrand == null)
             {
                 ModelState.AddModelError("BrandName", "Data Not Found");
@@ -422,10 +422,10 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         } 
 
-        public ActionResult Delete(string plant, string facode)
+        public ActionResult Delete(string plant, string facode,string stickercode)
         {
             AddHistoryDelete(plant, facode);
-            var isDeleted = _brandRegistrationBll.Delete(plant, facode);
+            var isDeleted = _brandRegistrationBll.Delete(plant, facode,stickercode);
             
             if(isDeleted)
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
