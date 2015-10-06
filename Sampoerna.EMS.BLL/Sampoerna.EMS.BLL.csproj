@@ -98,6 +98,7 @@
     <Compile Include="Services\Pbck3Services.cs" />
     <Compile Include="Services\T001KService.cs" />
     <Compile Include="Services\T001WService.cs" />
+    <Compile Include="Services\ZaidmExNppbkcService.cs" />
     <Compile Include="Services\ZaidmExProdTypeService.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
     <Compile Include="LACK2BLL.cs" />

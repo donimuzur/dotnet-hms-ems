@@ -51,6 +51,7 @@ namespace Sampoerna.EMS.BLL
         private ILack1ProductionDetailService _lack1ProductionDetailService;
         private ILack1TrackingService _lack1TrackingService;
         private IZaidmExProdTypeService _prodTypeService;
+        private IZaidmExNppbkcService _nppbkcService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -82,10 +83,25 @@ namespace Sampoerna.EMS.BLL
             _lack1ProductionDetailService = new Lack1ProductionDetailService(_uow, _logger);
             _lack1TrackingService = new Lack1TrackingService(_uow, _logger);
             _prodTypeService = new ZaidmExProdTypeService(_uow, _logger);
+            _nppbkcService = new ZaidmExNppbkcService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
+                if (nppbkc != null && nppbkc.Count > 0)
+                {
+                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+                }
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+                input.DocumentNumberList = document;
+            }
             return Mapper.Map<List<Lack1Dto>>(_lack1Service.GetAllByParam(input));
         }
 

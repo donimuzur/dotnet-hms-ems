@@ -939,7 +939,7 @@
           <Property Name="PRINTED_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TITLE" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="LOGIN_AS" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="MANAGER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MANAGER_ID" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
@@ -2712,7 +2712,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="POA" Type="Self.POA" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="USER">
@@ -5596,7 +5596,7 @@
           <Property Name="PRINTED_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TITLE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="LOGIN_AS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MANAGER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MANAGER_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5680,7 +5680,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="USER">
