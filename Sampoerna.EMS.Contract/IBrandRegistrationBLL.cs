@@ -9,6 +9,7 @@ namespace Sampoerna.EMS.Contract
         List<BrandRegistrationOutput> GetAll();
 
         ZAIDM_EX_BRAND GetById(string plant, string facode);
+        ZAIDM_EX_BRAND GetById(string plant, string facode, string stickercode);
         ZAIDM_EX_BRAND GetBrandByBrandCEAndProdCode(string brand, string prodCode);
         ZAIDM_EX_BRAND GetByIdIncludeChild(string plant, string facode);
 
@@ -16,7 +17,7 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_BRAND> GetAllBrands();
 
-        bool Delete(string plant, string facode);
+        bool Delete(string plant, string facode,string stickercode);
 
         ZAIDM_EX_BRAND GetByFaCode(string plantWerk, string faCode );
         

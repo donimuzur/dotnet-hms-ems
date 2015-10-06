@@ -49,11 +49,30 @@ namespace Sampoerna.EMS.XMLReader
 
                             item.COMPANY_NAME = company.BUTXT;
                         }
+
+                        
+
                         var xmlItems = xElement.Elements("Z1A_EKPO_SSPCP");
-                        item.CK1_ITEM = new List<CK1_ITEM>();
+
+                        var existingData = GetCk1(item.CK1_NUMBER);
+                        if (existingData != null)
+                        {
+                            item.CK1_ITEM = existingData.CK1_ITEM;
+                        }
+                        else
+                        {
+                            item.CK1_ITEM = new List<CK1_ITEM>();
+                        }
+                        
                         foreach (var xElementItem in xmlItems)
                         {
                             var detail = new CK1_ITEM();
+                            //if (existingData != null)
+                            //{
+                            //    var existingCk1Item = GetCk1Item(existingData.CK1_ID)
+                            //}
+                            
+
                             detail.FA_CODE = _xmlMapper.GetElementValue(xElementItem.Element("FA_CODE"));
                             detail.MATERIAL_ID = _xmlMapper.GetElementValue(xElementItem.Element("MATNR"));
                             detail.WERKS = _xmlMapper.GetElementValue(xElementItem.Element("WERKS"));
@@ -61,7 +80,7 @@ namespace Sampoerna.EMS.XMLReader
                             detail.UOM = _xmlMapper.GetElementValue(xElementItem.Element("MEINS"));
                             item.CK1_ITEM.Add(detail);
                         }
-                        var existingData = GetCk1(item.CK1_NUMBER);
+                        
 
                         if (existingData != null)
                         {
