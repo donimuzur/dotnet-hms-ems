@@ -837,7 +837,7 @@
           <Property Name="REJECTED_DATE" Type="datetime" />
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
-          <Property Name="POA_PRINTED_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="POA_PRINTED_NAME" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="PBCK4_DOCUMENT">
           <Key>
@@ -939,7 +939,7 @@
           <Property Name="PRINTED_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TITLE" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="LOGIN_AS" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="MANAGER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MANAGER_ID" Type="nvarchar" MaxLength="50" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
@@ -1180,10 +1180,11 @@
           <Key>
             <PropertyRef Name="WERKS" />
             <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="STICKER_CODE" />
           </Key>
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
-          <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" />
+          <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PER_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="BRAND_CE" Type="nvarchar" MaxLength="65" Nullable="false" />
           <Property Name="SKEP_NO" Type="nvarchar" MaxLength="30" />
@@ -1422,6 +1423,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CHANGES_HISTORY">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CK1_ITEM_CK1">
           <End Role="CK1" Type="Self.CK1" Multiplicity="0..1" />
           <End Role="CK1_ITEM" Type="Self.CK1_ITEM" Multiplicity="*" />
@@ -1503,20 +1516,6 @@
             </Principal>
             <Dependent Role="CK4C_ITEM">
               <PropertyRef Name="UOM_PROD_QTY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND">
-          <End Role="ZAIDM_EX_BRAND" Type="Self.ZAIDM_EX_BRAND" Multiplicity="1" />
-          <End Role="CK4C_ITEM" Type="Self.CK4C_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="WERKS" />
-              <PropertyRef Name="FA_CODE" />
-            </Principal>
-            <Dependent Role="CK4C_ITEM">
-              <PropertyRef Name="WERKS" />
-              <PropertyRef Name="FA_CODE" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2713,7 +2712,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="POA" Type="Self.POA" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="USER">
@@ -3163,6 +3162,10 @@
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
+          </AssociationSet>
           <AssociationSet Name="FK_CK1_ITEM_CK1" Association="Self.FK_CK1_ITEM_CK1">
             <End Role="CK1" EntitySet="CK1" />
             <End Role="CK1_ITEM" EntitySet="CK1_ITEM" />
@@ -3189,10 +3192,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_CK4C_ITEM_UOM" Association="Self.FK_CK4C_ITEM_UOM">
             <End Role="UOM" EntitySet="UOM" />
-            <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND" Association="Self.FK_CK4C_ITEM_ZAIDM_EX_BRAND">
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
             <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
           </AssociationSet>
           <AssociationSet Name="FK_CK4C_MODIFIED_BY" Association="Self.FK_CK4C_MODIFIED_BY">
@@ -4173,10 +4172,6 @@
             <End Role="UOM" EntitySet="UOM" />
             <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
           </AssociationSet>
-          <AssociationSet Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND" Association="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND">
-            <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
-            <End Role="CK4C_ITEM" EntitySet="CK4C_ITEM" />
-          </AssociationSet>
           <AssociationSet Name="FK_CK4C_POA" Association="EMSModel.FK_CK4C_POA">
             <End Role="POA" EntitySet="POA" />
             <End Role="CK4C" EntitySet="CK4C" />
@@ -4630,10 +4625,11 @@
           <Key>
             <PropertyRef Name="WERKS" />
             <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="STICKER_CODE" />
           </Key>
           <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="STICKER_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="STICKER_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="PER_CODE" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="BRAND_CE" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
           <Property Name="SKEP_NO" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
@@ -4667,7 +4663,6 @@
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="ZAIDM_EX_BRAND" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
-          <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" FromRole="ZAIDM_EX_BRAND" ToRole="CK4C_ITEM" />
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
           <End Type="EMSModel.ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" Multiplicity="0..1" />
@@ -5601,7 +5596,7 @@
           <Property Name="PRINTED_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TITLE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="LOGIN_AS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MANAGER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MANAGER_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5685,7 +5680,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_POA_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="EMSModel.POA" Role="POA" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="USER">
@@ -6774,7 +6769,6 @@
           <Property Name="PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_ITEM_CK4C" FromRole="CK4C_ITEM" ToRole="CK4C" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_CK4C_ITEM_UOM" FromRole="CK4C_ITEM" ToRole="UOM" />
-          <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_CK4C_ITEM_ZAIDM_EX_BRAND" FromRole="CK4C_ITEM" ToRole="ZAIDM_EX_BRAND" />
           <Property Name="HJE_IDR" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="TARIFF" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="PROD_CODE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
@@ -6805,20 +6799,6 @@
             </Principal>
             <Dependent Role="CK4C_ITEM">
               <PropertyRef Name="UOM_PROD_QTY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CK4C_ITEM_ZAIDM_EX_BRAND">
-          <End Type="EMSModel.ZAIDM_EX_BRAND" Role="ZAIDM_EX_BRAND" Multiplicity="1" />
-          <End Type="EMSModel.CK4C_ITEM" Role="CK4C_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_BRAND">
-              <PropertyRef Name="WERKS" />
-              <PropertyRef Name="FA_CODE" />
-            </Principal>
-            <Dependent Role="CK4C_ITEM">
-              <PropertyRef Name="WERKS" />
-              <PropertyRef Name="FA_CODE" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7326,7 +7306,7 @@
           <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
           <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
-          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POA_PRINTED_NAME" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK4_DOCUMENT" Relationship="EMSModel.FK_PBCK4_DOCUMENT_PBCK4" FromRole="PBCK4" ToRole="PBCK4_DOCUMENT" />
           <NavigationProperty Name="PBCK4_ITEM" Relationship="EMSModel.FK_PBCK4_ITEM_PBCK4" FromRole="PBCK4" ToRole="PBCK4_ITEM" />
           <NavigationProperty Name="POA" Relationship="EMSModel.FK_PBCK4_POA" FromRole="PBCK4" ToRole="POA" />

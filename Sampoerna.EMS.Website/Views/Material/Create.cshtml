@@ -12,7 +12,7 @@
                 <h3> Master Material</h3>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
-                    <a href="@Url.Action("Index", "Material")" class="btn btn-grey">Cancel</a>
+                    <a href="@Url.Action("Index", "Material")" class="btn btn-grey">Back</a>
                 </div>
             </div>
         </div>
@@ -120,7 +120,7 @@
                                                 <div class="row">
                                                     <label class="col-md-4">Tariff</label>
                                                     <div class="col-md-8">
-                                                        @Html.TextBoxFor(model => model.Tariff, new { @class = "form-control", maxlength = "15" })
+                                                        @Html.TextBoxFor(model => model.TariffStr, new { @class = "decimal form-control", maxlength = "15" })
 
                                                     </div>
                                                 </div>
@@ -129,7 +129,7 @@
                                                 <div class="row">
                                                     <label class="col-md-4">HJE</label>
                                                     <div class="col-md-8">
-                                                        @Html.TextBoxFor(model => model.Hje, new { @class = "form-control", maxlength = "15" })
+                                                        @Html.TextBoxFor(model => model.HjeStr, new { @class = "decimal form-control", maxlength = "15" })
 
                                                     </div>
                                                 </div>
@@ -298,7 +298,9 @@
             $('#MenuMasterMaterial').addClass('active');
 
             $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
-
+            $('#HjeStr').val(ThausandSeperator($('#HjeStr').val(), 2));
+            $('#TariffStr').val(ThausandSeperator($('#TariffStr').val(), 2));
+           
 
            
 

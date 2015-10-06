@@ -229,8 +229,8 @@ namespace Sampoerna.EMS.Website.Controllers
           
             var dataToSave = Mapper.Map<Pbck4Dto>(model);
 
-            if (model.Poa.Length > 50)
-                model.Poa = model.Poa.Substring(0, 49);
+            if (dataToSave.POA_PRINTED_NAME.Length > 250)
+                dataToSave.POA_PRINTED_NAME = dataToSave.POA_PRINTED_NAME.Substring(0, 249);
 
             dataToSave.APPROVED_BY_POA = null;
 
@@ -626,6 +626,15 @@ namespace Sampoerna.EMS.Website.Controllers
             input.UserRole = CurrentUser.UserRole;
             input.ActionType = actionType;
             input.Comment = model.Comment;
+            
+            input.UploadItemDto = new List<Pbck4ItemDto>();
+            foreach (var pbck4UploadItem in model.UploadItemModels)
+            {
+                if (pbck4UploadItem.IsUpdated)
+                    input.UploadItemDto.Add(Mapper.Map<Pbck4ItemDto>(pbck4UploadItem));
+                
+            }
+            
 
             input.AdditionalDocumentData = new Pbck4WorkflowDocumentData();
             input.AdditionalDocumentData.Back1No = model.BACK1_NO;

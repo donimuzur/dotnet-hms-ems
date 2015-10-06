@@ -87,6 +87,7 @@
     <Compile Include="XmlCK1DataMappers.cs" />
     <Compile Include="XmlPaymentDataMappers.cs" />
     <Compile Include="XmlPBCK4DataWriter.cs" />
+    <Compile Include="XmlPoaMapDataMapper.cs" />
     <Compile Include="XmlProdOutputDataMappers.cs" />
     <Compile Include="XmlBlockStockDataMappers.cs" />
     <Compile Include="XmlBrandDataMappers.cs" />
