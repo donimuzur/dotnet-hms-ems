@@ -126,7 +126,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.END_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("END_DATE")));
                         item.STATUS = _xmlMapper.GetElementValue(xElement.Element("STATUS")) == "X";
                         item.IS_FROM_SAP = true;
-                        var existingMaterial = GetBrand(item.WERKS, item.FA_CODE);
+                        var existingMaterial = GetBrand(item.WERKS, item.FA_CODE,item.STICKER_CODE);
                         if (existingMaterial != null)
                         {
                             item.CONVERSION = existingMaterial.CONVERSION;
@@ -173,10 +173,10 @@ namespace Sampoerna.EMS.XMLReader
             return _xmlMapper.Errors;
         }
 
-        public ZAIDM_EX_BRAND GetBrand(string plant_id, string fa_code)
+        public ZAIDM_EX_BRAND GetBrand(string plantid, string facode,string stickercode)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
-                .GetByID(plant_id, fa_code);
+                .GetByID(plantid, facode,stickercode);
             return existingData;
         }
         
