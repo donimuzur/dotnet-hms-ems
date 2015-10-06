@@ -78,8 +78,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Lack1Type = Enums.LACK1Type.ListByNppbkc,
-                Details = Mapper.Map<List<Lack1NppbkcData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput() { Lack1Level = Enums.Lack1Level.Nppbkc, IsOpenDocumentOnly = true }))
-
+                Details = Mapper.Map<List<Lack1NppbkcData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput() { Lack1Level = Enums.Lack1Level.Nppbkc, IsOpenDocumentOnly = true })),
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
             });
 
             return View("Index", data);
@@ -130,7 +130,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     Lack1Level = Enums.Lack1Level.Plant,
                     IsOpenDocumentOnly = true
-                }))
+                })),
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
             });
 
             return View("ListByPlant", data);
@@ -234,14 +235,23 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction(lack1Level.Value == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
+            }
+
             var model = new Lack1CreateViewModel
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Lack1Level = lack1Level.Value,
                 MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
-                MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : ""
+                MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : "",
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
             };
+            
+
 
             return CreateInitial(model);
         }
@@ -256,6 +266,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     AddMessageInfo("Invalid input, please check the input.", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
+                }
+
+                if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                {
+                    AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                    return RedirectToAction(model.Lack1Level == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
                 }
 
                 var input = Mapper.Map<Lack1CreateParamInput>(model);

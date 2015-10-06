@@ -5,6 +5,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -25,7 +26,7 @@ namespace Sampoerna.EMS.BLL.Services
         {
             return _repository.Get(c => c.NPPBKC_ID == input.NppbkcId 
                 && c.NPPBKC_BUKRS == input.CompanyCode && c.EXC_GOOD_TYP == input.ExcisableGoodsTypeId 
-                && c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId, null, "").ToList();
+                && c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId && c.STATUS >= Enums.DocumentStatus.WaitingGovApproval, null, "").ToList();
         }
     }
 }

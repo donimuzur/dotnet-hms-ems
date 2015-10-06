@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
-using CrystalDecisions.Shared.Json;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -38,7 +37,6 @@ namespace Sampoerna.EMS.BLL
 
         //services
         private ICK4CItemService _ck4cItemService;
-        private IBrandRegistrationService _brandRegistrationService;
         private ICK5Service _ck5Service;
         private IPBCK1Service _pbck1Service;
         private IT001KService _t001KService;
@@ -52,6 +50,7 @@ namespace Sampoerna.EMS.BLL
         private ILack1PlantService _lack1PlantService;
         private ILack1ProductionDetailService _lack1ProductionDetailService;
         private ILack1TrackingService _lack1TrackingService;
+        private IZaidmExProdTypeService _prodTypeService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -69,7 +68,6 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
-            _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
             _ck5Service = new CK5Service(_uow, _logger);
             _pbck1Service = new PBCK1Service(_uow, _logger);
             _t001KService = new T001KService(_uow, _logger);
@@ -83,6 +81,7 @@ namespace Sampoerna.EMS.BLL
             _lack1PlantService = new Lack1PlantService(_uow, _logger);
             _lack1ProductionDetailService = new Lack1ProductionDetailService(_uow, _logger);
             _lack1TrackingService = new Lack1TrackingService(_uow, _logger);
+            _prodTypeService = new ZaidmExProdTypeService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -1206,19 +1205,17 @@ namespace Sampoerna.EMS.BLL
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
             ck4CItemInput.IsHigherFromApproved = true;
             var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
-            var faCodeList = ck4CItemData.Select(c => c.FA_CODE).Distinct().ToList();
 
-            //get prod_code by fa_code list on selected CK4C_ITEM by selection criteria
-            var brandDataSelected = _brandRegistrationService.GetByFaCodeList(faCodeList);
+            var prodTypeData = _prodTypeService.GetAll();
 
             //joined data
             var dataCk4CItemJoined = (from ck4CItem in ck4CItemData
-                                      join brandData in brandDataSelected on ck4CItem.FA_CODE equals brandData.FA_CODE
+                                      join prod in prodTypeData on ck4CItem.PROD_CODE equals prod.PROD_CODE
                                       select new Lack1GeneratedProductionDataDto()
                                       {
-                                          ProdCode = brandData.PROD_CODE,
-                                          ProductType = brandData.ZAIDM_EX_PRODTYP.PRODUCT_TYPE,
-                                          ProductAlias = brandData.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS,
+                                          ProdCode = prod.PROD_CODE,
+                                          ProductType = prod.PRODUCT_TYPE,
+                                          ProductAlias = prod.PRODUCT_ALIAS,
                                           Amount = ck4CItem.PROD_QTY,
                                           UomId = ck4CItem.UOM_PROD_QTY,
                                           UomDesc = ck4CItem.UOM != null ? ck4CItem.UOM.UOM_DESC : string.Empty
@@ -1335,8 +1332,7 @@ namespace Sampoerna.EMS.BLL
         private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list, decimal totalUsage, decimal totalUsageInCk5)
         {
             if (list.Count <= 0) return new List<Lack1GeneratedProductionDataDto>();
-            var totalAmount = list.Sum(c => c.Amount);
-
+            
             var groupedData = list.GroupBy(p => new
             {
                 p.ProdCode,
