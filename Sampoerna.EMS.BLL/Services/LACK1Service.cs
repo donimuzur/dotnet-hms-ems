@@ -9,6 +9,7 @@ using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -227,9 +228,26 @@ namespace Sampoerna.EMS.BLL.Services
                             c.SUBMISSION_DATE.Value == input.SubmissionDate.Value);
             }
 
-            if (input.IsOpenDocumentOnly)
+            if (!input.IsOpenDocumentOnly) return queryFilter;
+
+            queryFilter = queryFilter.And(c => c.STATUS <= Enums.DocumentStatus.WaitingGovApproval || c.STATUS == Enums.DocumentStatus.GovRejected);
+
+            switch (input.UserRole)
             {
-                queryFilter = queryFilter.And(c => c.STATUS <= Core.Enums.DocumentStatus.WaitingGovApproval || c.STATUS == Core.Enums.DocumentStatus.GovRejected);
+                case Enums.UserRole.POA:
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && input.NppbkcList.Contains(c.NPPBKC_ID))));
+                    break;
+                case Enums.UserRole.Manager:
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                c.STATUS != Enums.DocumentStatus.Draft &&
+                                c.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                                input.DocumentNumberList.Contains(c.LACK1_NUMBER));
+                    break;
+                default:
+                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+                    break;
             }
 
             return queryFilter;
