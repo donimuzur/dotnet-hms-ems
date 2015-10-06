@@ -27,5 +27,7 @@ namespace Sampoerna.EMS.Contract
         void SaveUpload(ProductionUploadItems uploadItems, string userId);
 
         void DeleteOldData(string companyCode, string plantWerk, string faCode, DateTime productionDate);
+
+        List<ProductionUploadItemsOutput> ValidationDailyUploadDocumentProcess(List<ProductionUploadItemsInput> inputs);
     }
 }
