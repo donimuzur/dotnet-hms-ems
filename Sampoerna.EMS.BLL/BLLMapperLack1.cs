@@ -84,6 +84,8 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Lack1GenerateDataParamInput, Pbck1GetDataForLack1ParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ExcisableGoodsTypeId, opt => opt.MapFrom(src => src.ExcisableGoodsType))
                 .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SupplierPlantId))
+                .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.PeriodMonth))
+                .ForMember(dest => dest.PeriodYear, opt => opt.MapFrom(src => src.PeriodYear))
                 ;
 
             Mapper.CreateMap<Lack1GeneratedPlantDto, LACK1_PLANT>().IgnoreAllNonExisting()

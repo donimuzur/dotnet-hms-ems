@@ -119,6 +119,8 @@
     <Compile Include="Services\IPBCK1Service.cs" />
     <Compile Include="Services\IT001KService.cs" />
     <Compile Include="Services\IT001WService.cs" />
+    <Compile Include="Services\IZaidmExNppbkcService.cs" />
+    <Compile Include="Services\IZaidmExProdTypeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">
