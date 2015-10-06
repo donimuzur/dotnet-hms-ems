@@ -22,25 +22,26 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Login/
         public ActionResult Index()
         {
-            var model = new LoginFormModel();
-            model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
-            return View(model);
+            //var model = new LoginFormModel();
+            //model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
+            //return View(model);
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         public ActionResult Index(LoginFormModel model)
         {
             
-            var loginResult = _userBll.GetLogin(model.Login.UserId);
+            //var loginResult = _userBll.GetLogin(model.Login.UserId);
 
-            if (loginResult != null)
-            {
-                CurrentUser = loginResult;
-                CurrentUser.UserRole = _poabll.GetUserRole(loginResult.USER_ID);
-                CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
-                CurrentUser.NppbckPlants = _userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
-                return RedirectToAction("Index", "Home");
-            }
+            //if (loginResult != null)
+            //{
+            //    CurrentUser = loginResult;
+            //    CurrentUser.UserRole = _poabll.GetUserRole(loginResult.USER_ID);
+            //    CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
+            //    CurrentUser.NppbckPlants = _userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
+            //    return RedirectToAction("Index", "Home");
+            //}
 
             return RedirectToAction("Unauthorized", "Error");
 
@@ -51,5 +52,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = GetListMessageInfo();
             return PartialView("_MessageInfo", model);
         }
-	}
+
+        public ActionResult Logout()
+        {
+            Session[Core.Constans.SessionKey.CurrentUser] = null;
+            return RedirectToAction("Index", "Home");
+        }
+    }
 }
