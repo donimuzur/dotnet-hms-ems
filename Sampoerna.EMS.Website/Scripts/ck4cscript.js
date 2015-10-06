@@ -309,9 +309,21 @@ function nppbkcIdOnChange(url) {
     }
 }
 
+function plantIdOnChange(url) {
+    $('#Details_PoaList').val('');
+    $('#displayPoaList').val('');
+
+    if ($("#Details_PlantId").length) {
+        var plant = $('#Details_PlantId').find("option:selected").val();
+        if (plant != '') {
+            ajaxSelectNppbck({ plantId: plant }, url);
+        }
+    }
+}
+
 function ajaxSelectNppbck(formData, url) {
     //debugger;
-    if (formData.nppbkcid) {
+    if (formData) {
         //Load POA
         ajaxLoadPoa(formData, url);
     }

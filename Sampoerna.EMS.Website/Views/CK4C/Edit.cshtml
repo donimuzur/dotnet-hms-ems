@@ -136,6 +136,8 @@
     }
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
+            SetPoaList();
+
             SetBasedOn();
 
             SetDataByCompany();
@@ -158,6 +160,14 @@
 
             $("#Details_CompanyId").change(function () {
                 ChangeCompany($(this).find("option:selected").val(), '', '');
+            });
+
+            $('#Details_NppbkcId').change(function () {
+                nppbkcIdOnChange('@Url.Action("PoaListPartial", "CK4C")');
+            });
+
+            $("#Details_PlantId").change(function () {
+                plantIdOnChange('@Url.Action("GetPoaByPlantId", "CK4C")');
             });
 
             $('#btnCancel').click(function (e) {
@@ -212,6 +222,16 @@
             }
         }
 
+        function SetPoaList() {
+            var poa = '@Model.Details.ApprovedByPoa';
+            var nppbkc = '@Model.Details.NppbkcId';
+            var url = '@Url.Action("PoaListPartial", "CK4C")';
+
+            if (poa == '') {
+                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+            }
+        }
+
         function SetBasedOn() {
             var nppbkc = '@Model.Details.NppbkcId';
             var plantId = $('#Details_PlantId').val();
@@ -219,7 +239,7 @@
             var docStatus = '@Model.Details.Status.ToString()';
             var isAllow = '@Model.AllowGovApproveAndReject';
 
-            if (nppbkc != '') {
+            if (plantId == '') {
                 $('#basedNppbkc').prop('checked', true);
                 if (docStatus != '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() != 'true') {
                     $('#Details_NppbkcId').prop('disabled', false);

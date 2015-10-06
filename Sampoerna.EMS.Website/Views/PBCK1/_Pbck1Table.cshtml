@@ -56,7 +56,7 @@
                             @item.CreatedById
                         }
                     </td>
-                    @if (item.Status == Enums.DocumentStatus.WaitingForApproval)
+                    @if (item.Status == Enums.DocumentStatus.WaitingForApproval || item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         <td class="last">Waiting For Approval</td>
                     }
