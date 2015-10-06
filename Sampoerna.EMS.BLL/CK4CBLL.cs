@@ -772,9 +772,9 @@ namespace Sampoerna.EMS.BLL
                     //result.Ck4cItemList.Add(ck4cItem);
                     tempListck4c1.Add(ck4cItem);
                 }
-                ck4cItemGroupByDate.Add(String.Empty, tempListck4c1);
+                
             }
-
+            ck4cItemGroupByDate.Add(String.Empty, tempListck4c1);
             result.Detail.CompanyAddress = address;
 
             var plant = _plantBll.GetT001WById(dtData.PLANT_ID);
@@ -835,7 +835,7 @@ namespace Sampoerna.EMS.BLL
                 var prodDate = j + "-" + result.Detail.ReportedMonth.Substring(0, 3) + "-" + result.Detail.ReportedYear;
                 var prodDateFormat = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), j);
                 var dateStart = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), Convert.ToInt32(result.Detail.ReportedPeriodStart));
-
+                List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
                 foreach (var item in addressPlant)
                 {
                     address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
@@ -844,7 +844,7 @@ namespace Sampoerna.EMS.BLL
                     var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
                     var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
 
-                    List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
+                    
 
                     foreach (var data in activeBrand)
                     {
@@ -873,8 +873,9 @@ namespace Sampoerna.EMS.BLL
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
                     }
-                    ck4cItemGroupByDate.Add(prodDate, tempListck4c2);
+                    
                 }
+                ck4cItemGroupByDate.Add(prodDate, tempListck4c2);
             }
 
              //order brand by prod alias using Dictionary<string, List<Ck4cReportItemDto>> each date
