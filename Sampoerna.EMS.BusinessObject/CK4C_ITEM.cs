@@ -32,6 +32,5 @@ namespace Sampoerna.EMS.BusinessObject
     
         public virtual CK4C CK4C { get; set; }
         public virtual UOM UOM { get; set; }
-        public virtual ZAIDM_EX_BRAND ZAIDM_EX_BRAND { get; set; }
     }
 }

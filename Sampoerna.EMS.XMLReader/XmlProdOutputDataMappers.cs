@@ -187,7 +187,7 @@ namespace Sampoerna.EMS.XMLReader
         public ZAIDM_EX_BRAND GetMaterialBrand(string materialNumber, string plant)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
-                .GetByID(plant, materialNumber);
+                .Get(x => x.FA_CODE == materialNumber && x.WERKS == plant).FirstOrDefault();
             return existingData;
         }
 

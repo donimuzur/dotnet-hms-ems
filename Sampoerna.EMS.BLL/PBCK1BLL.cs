@@ -589,7 +589,7 @@ namespace Sampoerna.EMS.BLL
                 var output = Mapper.Map<Pbck1ProdConverterOutput>(inputItem);
                 output.IsValid = true;
 
-                var checkCountDataProductCode = inputs.Where(c => c.ProductCode == output.ProductCode).ToList();
+                var checkCountDataProductCode = inputs.Where(c => c.ProductCode == output.ProductCode && c.BrandCE == output.BrandCE).ToList();
                 if (checkCountDataProductCode.Count > 1)
                 {
                     //double product code
@@ -649,7 +649,7 @@ namespace Sampoerna.EMS.BLL
                 #endregion
 
                 #region -------------- Brand Validation --------------------
-                if (!ValidateBrand(output.BrandCE, prodTypeData.PROD_CODE, out messages))
+                if (!ValidateBrand(output.BrandCE, prodTypeData.PROD_CODE, prodTypeData.PRODUCT_ALIAS, out messages))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -1028,7 +1028,7 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        private bool ValidateBrand(string brand, string prodCode, out List<string> message)
+        private bool ValidateBrand(string brand, string prodCode, string alias,out List<string> message)
         {
             var valResult = false;
             var messageList = new List<string>();
@@ -1042,7 +1042,7 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
-                    messageList.Add("Brand [" + brand + "] not valid");
+                    messageList.Add("Brand [" + brand + "] for [" + alias + "] not valid");
                 }
             }
             else

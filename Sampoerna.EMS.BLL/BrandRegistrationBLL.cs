@@ -4,6 +4,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.LinqExtensions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -41,7 +42,17 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_BRAND GetById(string plant, string facode)
         {
-            var dbData = _repository.GetByID(plant, facode);
+            var dbData = _repository.Get(a => a.WERKS == plant && a.FA_CODE == facode, null, "").FirstOrDefault();
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            return dbData;
+        }
+
+        public ZAIDM_EX_BRAND GetById(string plant, string facode,string stickercode)
+        {
+            var dbData = _repository.GetByID(plant,facode,stickercode);
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -91,9 +102,9 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public bool Delete(string plant, string facode)
+        public bool Delete(string plant, string facode,string stickercode)
         {
-            var dbBrand = _repository.GetByID(plant, facode);
+            var dbBrand = _repository.GetByID(plant, facode,stickercode);
             if (dbBrand == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
