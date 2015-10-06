@@ -454,6 +454,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.QtyUnpacked = Convert.ToDecimal(dataRow[5]);
                     item.Uom = dataRow[6];
                     item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
+                  
 
                     {
                         model.Add(item);
