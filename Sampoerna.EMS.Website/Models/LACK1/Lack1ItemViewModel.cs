@@ -98,8 +98,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public SelectList WasteUomList { get; set; }
         public SelectList ReturnUomList { get; set; }
         public Enums.DocumentStatusGov DocGovStatusList { get; set; }
-
-        [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Doc")]
+        
         public List<HttpPostedFileBase> DecreeFiles { get; set; }
         public Enums.ActionType GovApprovalActionType { get; set; }
         public string IsSaveSubmit { get; set; }

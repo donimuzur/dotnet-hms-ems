@@ -70,6 +70,5 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public Enums.DocumentStatusGov DocGovStatusList { get; set; }
 
-
     }
 }
