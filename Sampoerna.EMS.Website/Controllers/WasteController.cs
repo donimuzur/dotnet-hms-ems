@@ -265,9 +265,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var plant = _plantBll.GetT001WById(model.PlantWerks);
             var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
 
-            model.CompanyName = company.BUTXT;
-            model.PlantName = plant.NAME1;
-            model.BrandDescription = brandDesc.BRAND_CE;
+            dbWasteNew.CompanyName = company.BUTXT;
+            dbWasteNew.PlantName = plant.NAME1;
+            dbWasteNew.BrandDescription = brandDesc.BRAND_CE;
 
             //reject
             dbWasteNew.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);

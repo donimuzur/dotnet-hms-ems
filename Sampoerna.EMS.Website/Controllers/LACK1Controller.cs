@@ -72,14 +72,21 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /LACK1/
         public ActionResult Index()
         {
+            var curUser = CurrentUser;
             var data = InitLack1ViewModel(new Lack1IndexViewModel
             {
 
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Lack1Type = Enums.LACK1Type.ListByNppbkc,
-                Details = Mapper.Map<List<Lack1NppbkcData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput() { Lack1Level = Enums.Lack1Level.Nppbkc, IsOpenDocumentOnly = true }))
-
+                Details = Mapper.Map<List<Lack1NppbkcData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput()
+                {
+                    Lack1Level = Enums.Lack1Level.Nppbkc,
+                    IsOpenDocumentOnly = true,
+                    UserRole = curUser.UserRole,
+                    UserId = curUser.USER_ID
+                })),
+                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager
             });
 
             return View("Index", data);
@@ -101,10 +108,12 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult FilterListByNppbkc(Lack1Input model)
         {
-
+            var currUser = CurrentUser;
             var input = Mapper.Map<Lack1GetByParamInput>(model);
             input.Lack1Level = Enums.Lack1Level.Nppbkc;
             input.IsOpenDocumentOnly = true;
+            input.UserId = currUser.USER_ID;
+            input.UserRole = currUser.UserRole;
 
             var dbData = _lack1Bll.GetAllByParam(input);
 
@@ -121,6 +130,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult ListByPlant()
         {
+            var curUser = CurrentUser;
             var data = InitLack1LiistByPlant(new Lack1IndexPlantViewModel
             {
 
@@ -129,8 +139,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 Details = Mapper.Map<List<Lack1PlantData>>(_lack1Bll.GetAllByParam(new Lack1GetByParamInput()
                 {
                     Lack1Level = Enums.Lack1Level.Plant,
-                    IsOpenDocumentOnly = true
-                }))
+                    IsOpenDocumentOnly = true,
+                    UserRole = curUser.UserRole,
+                    UserId = curUser.USER_ID
+                })),
+                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager
             });
 
             return View("ListByPlant", data);
@@ -149,9 +162,12 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult FilterListByPlant(Lack1Input model)
         {
+            var curUser = CurrentUser;
             var inputPlant = Mapper.Map<Lack1GetByParamInput>(model);
             inputPlant.Lack1Level = Enums.Lack1Level.Plant;
             inputPlant.IsOpenDocumentOnly = true;
+            inputPlant.UserId = curUser.USER_ID;
+            inputPlant.UserRole = curUser.UserRole;
 
             var dbDataPlant = _lack1Bll.GetAllByParam(inputPlant);
 
@@ -234,14 +250,23 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction(lack1Level.Value == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
+            }
+
             var model = new Lack1CreateViewModel
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Lack1Level = lack1Level.Value,
                 MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
-                MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : ""
+                MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : "",
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
             };
+
+
 
             return CreateInitial(model);
         }
@@ -256,6 +281,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     AddMessageInfo("Invalid input, please check the input.", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
+                }
+
+                if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                {
+                    AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                    return RedirectToAction(model.Lack1Level == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
                 }
 
                 var input = Mapper.Map<Lack1CreateParamInput>(model);
@@ -487,7 +518,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = Mapper.Map<Lack1PrintOutModel>(lack1Data);
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);            
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
             model.PrintOutTitle = "Preview LACK-1";
             return View("PrintDocument", model);
         }
@@ -525,7 +556,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             var lack1Data = _lack1Bll.GetDetailsById(id.Value);
 
             if (lack1Data == null)
@@ -548,7 +579,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = InitDetailModel(lack1Data);
             model = InitDetailList(model);
-            
+
             if (!IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status))
             {
                 AddMessageInfo(
@@ -560,10 +591,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else if (lack1Data.Lack1Level == Enums.Lack1Level.Plant)
                 {
-                    return RedirectToAction("ListByPlant");    
+                    return RedirectToAction("ListByPlant");
                 }
             }
-            
+
             if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
                 model.ControllerAction = "GovApproveDocument";
@@ -571,7 +602,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            
+
             return View(model);
         }
 
@@ -600,7 +631,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         //get error details
                     }
-                    
+
                     model = InitDetailList(model);
                     model = SetHistory(model);
                     model.MainMenu = _mainMenu;
@@ -689,7 +720,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             var model = Mapper.Map<Lack1ItemViewModel>(lack1Data);
-            
+
             model = SetHistory(model);
 
             Enums.LACK1Type lack1Type;
@@ -731,7 +762,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
-            
+
             return model;
         }
 
@@ -746,7 +777,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
             model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
             model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
-            
+
             return model;
 
         }
@@ -846,7 +877,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Lack1ItemViewModel model)
         {
-            
+
             if (model.DecreeFiles == null)
             {
                 AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
@@ -885,7 +916,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                     }
                 }
-                
+
                 Lack1WorkflowGovApprove(model, model.GovApprovalActionType, model.Comment);
                 isSuccess = true;
             }
@@ -903,7 +934,7 @@ namespace Sampoerna.EMS.Website.Controllers
             AddMessageInfo("Document " + EnumHelper.GetDescription(model.GovStatus), Enums.MessageInfoType.Success);
             return RedirectToAction(model.Lack1Level == Enums.Lack1Level.Plant ? "ListByPlant" : "Index");
         }
-        
+
         #endregion
 
         [HttpPost]
@@ -979,7 +1010,7 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.End();
 
         }
-        
+
         #region ----------- Summary Report -------------
 
         public ActionResult SummaryReport()
@@ -990,7 +1021,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new Lack1SummaryReportViewModel()
                 {
                     MainMenu = _mainMenu,
-                    CurrentMenu = PageInfo, 
+                    CurrentMenu = PageInfo,
                     DetailsList = SearchSummaryReports()
                 };
                 model = InitSearchSummaryReportViewModel(model);
@@ -1029,11 +1060,12 @@ namespace Sampoerna.EMS.Website.Controllers
         private SelectList GetYearListInLack1Data()
         {
             var lack1YearList = from x in _lack1Bll.GetYearList()
-                                orderby x descending 
-                select new SelectItemModel()
-                {
-                    ValueField = x, TextField = x.ToString(CultureInfo.InvariantCulture)
-                };
+                                orderby x descending
+                                select new SelectItemModel()
+                                {
+                                    ValueField = x,
+                                    TextField = x.ToString(CultureInfo.InvariantCulture)
+                                };
 
             return new SelectList(lack1YearList, "ValueField", "TextField");
         }
@@ -1284,7 +1316,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = new Lack1DetailReportViewModel()
                 {
                     MainMenu = _mainMenu,
-                    CurrentMenu = PageInfo, 
+                    CurrentMenu = PageInfo,
                     DetailList = SearchDetailReport()
                 };
                 model = InitSearchDetilReportViewModel(model);
@@ -1319,7 +1351,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             //getbyparams
             var input = Mapper.Map<Lack1GetDetailReportByParamInput>(filter);
-            
+
             if (!string.IsNullOrEmpty(filter.PeriodFrom))
             {
                 var strList = filter.PeriodFrom.Split('-').ToList();
@@ -1368,7 +1400,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return new SelectList(selectListSource, "ValueField", "TextField");
         }
-        
+
         #endregion
 
     }
