@@ -461,7 +461,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
             }
-            
+            var input = Mapper.Map<List<ProductionUploadItemsInput>>(model);
+            var outputResult = _productionBll.ValidationDailyUploadDocumentProcess(input);
+
+            model = Mapper.Map<List<ProductionUploadItems>>(outputResult);
             return Json(model);
 
 

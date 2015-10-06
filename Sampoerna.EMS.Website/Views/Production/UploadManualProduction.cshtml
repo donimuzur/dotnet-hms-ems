@@ -100,9 +100,11 @@
                     createColumnWithHiddenField(uploaditems[i].QtyUnpacked, 'UploadItems[' + i + '].QtyUnpacked') +
                     createColumnWithHiddenField(uploaditems[i].QtyPacked, 'UploadItems[' + i + '].QtyPacked') +
                     createColumnWithHiddenField(uploaditems[i].Uom, 'UploadItems[' + i + '].Uom') +
-                    createColumnWithHiddenField(uploaditems[i].ProductionDate, 'UploadItems[' + i + '].ProductionDate') + + '</tr>';
+                    createColumnWithHiddenField(uploaditems[i].ProductionDate, 'UploadItems[' + i + '].ProductionDate') +
+                    createColumnWithHiddenField(uploaditems[i].ProductionDate, 'UploadItems[' + i + '].Message') + + '</tr>'; 
                         $('#tb-upload-excel').append(tr);
                     }
+                   
                     $('#btnSave').enable();
                 }
             });
