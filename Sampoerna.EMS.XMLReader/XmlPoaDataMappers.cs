@@ -31,29 +31,36 @@ namespace Sampoerna.EMS.XMLReader
                         var item = new POA();
                         var poaCodeXml = xElement.Element("POA_ID").Value;
                         var exisitingPoa = GetExPoa(poaCodeXml);
-                        var podDateXml = Convert.ToDateTime(xElement.Element("MODIFIED_DATE").Value);
+                        var podDateXml = _xmlMapper.GetDate(xElement.Element("MODIFIED_DATE").Value);
                         item.POA_ID = poaCodeXml;
                         item.ID_CARD = xElement.Element("POA_ID_CARD").Value;
                         item.PRINTED_NAME = xElement.Element("POA_PRINTED_NAME").Value;
                         item.POA_PHONE = xElement.Element("POA_PHONE").Value;
                         item.POA_ADDRESS = xElement.Element("POA_ADDRESS").Value;
+                        item.LOGIN_AS = poaCodeXml;
+
                         item.CREATED_DATE = DateTime.Now;
                         item.IS_ACTIVE = true;
                         if (exisitingPoa != null)
                         {
+                            item.POA_EMAIL = exisitingPoa.POA_EMAIL;
+                            item.TITLE = exisitingPoa.TITLE;
                             if (podDateXml > exisitingPoa.CREATED_DATE)
                             {
                                 items.Add(item);
                             }
                             else
                             {
+                                
                                 continue;
 
                             }
                         }
                         else
                         {
-
+                            item.CREATED_BY = "PI";
+                            item.POA_EMAIL = "";
+                            item.TITLE = "";
                             items.Add(item);
                         }
                     }
