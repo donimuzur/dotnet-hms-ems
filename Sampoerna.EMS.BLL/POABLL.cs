@@ -100,10 +100,10 @@ namespace Sampoerna.EMS.BLL
         {
             var poa = GetAll();
 
-            if (poa.Any(zaidmExPoa => zaidmExPoa.MANAGER_ID == userId))
+            if (poa.Any(zaidmExPoa => zaidmExPoa.MANAGER_ID.ToLowerInvariant() == userId.ToLowerInvariant()))
                 return Core.Enums.UserRole.Manager;
 
-            if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS == userId))
+            if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS.ToLowerInvariant() == userId.ToLowerInvariant()))
                 return Core.Enums.UserRole.POA;
 
             return Core.Enums.UserRole.User;
