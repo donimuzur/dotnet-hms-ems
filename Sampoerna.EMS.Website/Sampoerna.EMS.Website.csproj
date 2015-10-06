@@ -870,6 +870,7 @@
     <Content Include="Scripts\js\vendors\datatablesResponsive.js" />
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
+    <Content Include="Scripts\js\vendors\jquery.table2excel.js" />
     <Content Include="Scripts\lack1\Lack1GenerateTable.js" />
     <Content Include="Scripts\lack1\Lack1Upload.js" />
     <Content Include="Scripts\lack2\form.js" />
@@ -1333,7 +1334,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/Sampoerna.EMS.Website</IISUrl>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
           <IISAppRootUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
