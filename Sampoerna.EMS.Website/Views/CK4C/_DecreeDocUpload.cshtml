@@ -23,6 +23,24 @@
                                 <button type="button" class="btn btn-danger full">Remove</button>
                             </div>
                         </div>
+                        @if (Model.Details.Ck4cDecreeDoc != null)
+                        {
+                            var count = 0;
+                            foreach (var file in Model.Details.Ck4cDecreeDoc)
+                            {
+                                var idCount = "Details_Ck4cDecreeFiles_" + count + "_";
+                                var nameCount = "Details.Ck4cDecreeFiles[" + count + "]";
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <input type="file" id="@idCount" name="@nameCount" class="form-control">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-danger full">Remove</button>
+                                    </div>
+                                </div>
+                                count++;
+                            }
+                        }
                     </div>
                 </div>
             </div>

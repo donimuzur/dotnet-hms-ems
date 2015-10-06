@@ -32,7 +32,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Enums.StatusGovCk4c? StatusGoverment { get; set; }
         public string Comment { get; set; }
         public DateTime? DecreeDate { get; set; }
-        public string Remarks { get; set; }
 
         //Month
         public int MonthId { get; set; }
@@ -40,6 +39,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MonthNameEng { get; set; }
 
         public List<Ck4cItem> Ck4cItem { get; set; }
+        public List<Ck4cDecreeDocDto> Ck4cDecreeDoc { get; set; }
     }
 
     public class Ck4cItem
@@ -58,5 +58,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Decimal UnpackedQty { get; set; }
         public int ContentPerPack { get; set; }
         public int PackedInPack { get; set; }
+        public string Remarks { get; set; }
     }
 }

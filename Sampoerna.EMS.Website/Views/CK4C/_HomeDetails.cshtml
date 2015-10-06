@@ -58,6 +58,7 @@
                                     <div class="row">
                                         <label class="col-md-4">POA</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Details.PoaList)
                                             @Html.TextBoxFor(model => model.Details.ApprovedByPoa, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
                                         </div>
                                     </div>
@@ -70,15 +71,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Remarks</label>
-                                        <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.Details.Remarks, new { @class = "form-control", @disabled = "disabled" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-md-offset-6">
                                     <div class="row">
                                         <label class="col-md-4">Reported Year</label>
                                         <div class="col-md-8">
@@ -150,6 +143,7 @@
                                     <th>Unpacked QTY</th>
                                     <th>Produced QTY</th>
                                     <th>UoM Produced QTY</th>
+                                    <th>Remarks</th>
                                 </tr>
                             </thead>
                             <tbody id="tb-body-ck4c">
@@ -170,10 +164,68 @@
                                         <td>@item.UnpackedQty</td>
                                         <td>@item.ProdQty</td>
                                         <td>@item.ProdQtyUom</td>
+                                        <td>@item.Remarks</td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-group" id="accordion-4" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFour">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion-4" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                        Other
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                <div class="panel-body">
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Status Gov</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Details.StatusGoverment, new { @class = "form-control", @disabled = "disabled" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Decree Date</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Details.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Decree Doc</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            @if (Model.Details.Ck4cDecreeDoc != null)
+                                            {
+                                                foreach (var file in Model.Details.Ck4cDecreeDoc)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <i class="fa fa-file"></i>
+                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -68,11 +68,7 @@
                     {
                         case Enums.MenuList.PBCK1:
                             <div class="collapse-menu active open">
-                                <a href="#" class="list-group-item list-parent">
-                                    <i class="fa fa-clipboard"></i>
-                                    <span>Document List</span>
-                                    <i class="down fa fa-caret-down"></i>
-                                </a>
+
                                 <ul class="child list">
                                     <li><a id="MenuPBCK1OpenListDocument" href="@Url.Action("Index", "PBCK1")"><i class="fa fa-angle-right"></i>Open Document List</a></li>
                                     <li><a id="MenuPBCK1CompletedListDocument" href="@Url.Action("CompletedDocument", "PBCK1")"><i class="fa fa-angle-right"></i>Completed Document</a></li>
@@ -90,31 +86,12 @@
                                     <li><a id="MenuPBCK1MonitoringUsage" href="@Url.Action("MonitoringUsage", "PBCK1")"><i class="fa fa-angle-right"></i>Monitoring Usage</a></li>
                                 </ul>
                             </div>
-                            <div class="other">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-th"></i>
-                                    <span>Other Modules</span>
-                                </a>
-                                <ul class="child other-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
-                                </ul>
-                            </div>
+
                             break;
 
                         case Enums.MenuList.MasterData:
                         <div class="collapse-menu active open">
-                            <a href="#" class="list-group-item list-parent">
-                                <i class="fa fa-clipboard"></i>
-                                <span>Master Data</span>
-                                <i class="down fa fa-caret-down"></i>
-                            </a>
+
                             <ul class="child list">
                                 <li>
                                     <a id="MenuMasterUser" href="@Url.Action("Index", "User")">
@@ -198,33 +175,12 @@
 
                             </ul>
                         </div>
-                        <div class="other">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-th"></i>
-                                <span>Other Modules</span>
-                            </a>
-                            <ul class="child other-menu">
-                                <li><a href="@Url.Action("Index", "Pbck1")"><i class="fa fa-angle-right"></i>PBCK-1</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
-                            </ul>
-                        </div>
+
                             break;
 
                         case Enums.MenuList.CK5:
 
-                        <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </div>
+
                         <div class="collapse-menu active open">
                             <a href="#" class="list-group-item list-parent">
                                 <i class="fa fa-clipboard"></i>
@@ -249,33 +205,10 @@
                                 <i class="down fa fa-caret-down"></i>
                             </a>
                             <ul class="child list">
-                                @*<li><a href="report-summary.html"><i class="fa fa-angle-right"></i> Summary</a></li>
-                                    <li><a href="report-monitoring.html"><i class="fa fa-angle-right"></i> Monitoring Usage</a></li>*@
                                 <li><a id="MenuCK5SummaryReports" href="@Url.Action("SummaryReports", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports</a></li>
-                                @*<li><a id="MenuCK5SummaryReportsIntercompany" href="@Url.Action("SummaryReportsIntercompany", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Intercompany</a></li>
-                                    <li><a id="MenuCK5SummaryReportsDomesticAlcohol" href="@Url.Action("SummaryReportsDomesticAlcohol", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Domestic Alcohol</a></li>
-                                    <li><a id="MenuCK5SummaryReportsExport" href="@Url.Action("SummaryReportsExport", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Export</a></li>
-                                    <li><a id="MenuCK5SummaryReportsPortToImporter" href="@Url.Action("SummaryReportsPortToImporter", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Port To Importer</a></li>
-                                    <li><a id="MenuCK5SummaryReportsImporterToPlant" href="@Url.Action("SummaryReportsImporterToPlant", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Importer To Plant</a></li>
-                                    <li><a id="MenuCK5SummaryReportsManual" href="@Url.Action("SummaryReportsManual", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports Manual</a></li>*@
                             </ul>
                         </div>
-                        <div class="other">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-th"></i>
-                                <span>Other Modules</span>
-                            </a>
-                            <ul class="child other-menu">
-                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
-                            </ul>
-                        </div>
+
                             break;
 
                         case Enums.MenuList.Settings:
@@ -327,32 +260,13 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="other">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-th"></i>
-                                <span>Other Modules</span>
-                            </a>
-                            <ul class="child other-menu">
-                                <li><a href="@Url.Action("Index", "Pbck1")"><i class="fa fa-angle-right"></i>PBCK-1</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
-                                <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
-                            </ul>
-                        </div>
+
 
                             break;
 
                         case Enums.MenuList.LACK1:
                         <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Dashboard</span>
-                            </a>
+
                             <div id="MenuLack1OpenDocument" class="collapse-menu open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
@@ -376,31 +290,13 @@
                                     <li><a id="MenuLack1DetailReport" href="@Url.Action("DetailReport", "LACK1")"><i class="fa fa-angle-right"></i>Detail</a></li>
                                 </ul>
                             </div>
-                            <div class="other">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-th"></i>
-                                    <span>Other Modules</span>
-                                </a>
-                                <ul class="child other-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
-                                </ul>
-                            </div>
+
                         </div>
                             break;
 
                         case Enums.MenuList.LACK2:
                         <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Dashboard</span>
-                            </a>
+
                             <div id="MenuLack2OpenDocument" class="collapse-menu open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
@@ -424,32 +320,14 @@
 
                                 </ul>
                             </div>
-                            <div class="other">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-th"></i>
-                                    <span>Other Modules</span>
-                                </a>
-                                <ul class="child other-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
-                                </ul>
-                            </div>
+
                         </div>
 
                             break;
 
                         case Enums.MenuList.PBCK7:
                         <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Dashboard</span>
-                            </a>
+
                             <div class="collapse-menu active open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
@@ -457,9 +335,12 @@
                                     <i class="down fa fa-caret-down"></i>
                                 </a>
                                 <ul class="child list">
-                                    <li><a id="MenuPBCK7Index" href="@Url.Action("Index", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-7 List </a></li>
-                                    <li><a id="MenuPBCK3Index" href="@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-3 List</a></li>
-                                 </ul>
+                                    <li><a id="MenuPBCK7Index" href="@Url.Action("Index", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-7 Open Doc </a></li>
+                                    <li><a id="MenuPBCK3Index" href="@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-3 Open Doc</a></li>
+                                    <li><a id="MenuPBCK7CompleteIndex" href="@Url.Action("Pbck7Completed", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-7 Completed Doc </a></li>
+                                    <li><a id="MenuPBCK3CompleteIndex" href="@Url.Action("Pbck3Completed", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>PBCK-3 Completed Doc</a></li>
+
+                                </ul>
                             </div>
                             <div class="collapse-menu">
                                 <a href="#" class="list-group-item list-parent">
@@ -473,31 +354,13 @@
 
                                 </ul>
                             </div>
-                            <div class="other">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-th"></i>
-                                    <span>Other Modules</span>
-                                </a>
-                                <ul class="child other-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
-                                </ul>
-                            </div>
+
                         </div>
 
                             break;
                         case Enums.MenuList.CK4C:
                         <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Dashboard</span>
-                            </a>
+
                             <div id="menuCk4COpenDocuments" class="collapse-menu open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
@@ -521,32 +384,13 @@
                                     <li><a id="MenuCk4CSummaryReports" href="@Url.Action("SummaryReports", "CK4C")"><i class="fa fa-angle-right"></i>Summary Reports</a></li>
                                 </ul>
                             </div>
-                            <div class="other">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-th"></i>
-                                    <span>Other Modules</span>
-                                </a>
-                                <ul class="child other-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-5</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-1</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>LACK-2</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-4</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-7</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i>PBCK-3</a></li>
-                                </ul>
-                            </div>
+
                         </div>
 
                             break;
 
                         case Enums.MenuList.PBCK4:
                         <div class="list-group">
-                            @*<a href="#" class="list-group-item">
-                                <i class="fa fa-tachometer"></i>
-                                <span>Dashboard</span>
-                            </a>*@
                             <div id="menuPbck4OpenDocuments" class="collapse-menu open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
@@ -568,22 +412,26 @@
                                     <li><a id="MenuPbck4SummaryReports" href="@Url.Action("SummaryReports", "PBCK4")"><i class="fa fa-angle-right"></i>Summary Reports</a></li>
                                 </ul>
                             </div>
-                            @*<div class="other">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-th"></i>
-                                    <span>Other Modules</span>
+
+                        </div>
+                            break;
+
+                        case Enums.MenuList.CK5MRETURN:
+                        <div class="list-group">
+
+                            <div id="menuCk5MarketReturnOpenDocuments" class="collapse-menu open">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Document List</span>
+                                    <i class="down fa fa-caret-down"></i>
                                 </a>
-                                <ul class="child other-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-5</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-1</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> LACK-2</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> CK-4C</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-4</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-7</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> PBCK-3</a></li>
+                                <ul class="child list">
+                                    <li><a id="liCK5MarketReturnOpenDocument" href="@Url.Action("CK5MarketReturn", "CK5")"><i class="fa fa-angle-right"></i>Open Document</a></li>
+                                    <li><a id="liCK5MarketReturnCompleted" href="@Url.Action("CK5MarketReturnCompleted", "CK5")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
                                 </ul>
-                            </div>*@
+                            </div>
+
+
                         </div>
                             break;
                     }

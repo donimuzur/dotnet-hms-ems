@@ -5,7 +5,7 @@
     ViewBag.Title = "Details";
 }
 
-@using (Html.BeginForm("Ck4CCreateDocumentList", "CK4C", FormMethod.Post, new { @id = "CreateForm" }))
+@using (Html.BeginForm("GovApproveDocument", "CK4C", FormMethod.Post, new { @id = "DetailForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
@@ -26,6 +26,11 @@
                         {
                             <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                         }
+                    }
+
+                    @if (Model.Details.Status == Enums.DocumentStatus.Completed && Model.AllowEditCompleted)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                     }
 
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
@@ -58,7 +63,15 @@
 
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        @Html.Partial("_HomeDetails")
+                        @if (Model.Details.Status == Enums.DocumentStatus.Completed && Model.AllowEditCompleted)
+                        {
+                            @Html.Partial("_HomeCompleted")
+                        }
+                        else
+                        {
+                            @Html.Partial("_HomeDetails")
+                        }
+                        
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ChangeLog")
                     </div>
@@ -118,12 +131,55 @@
     </div>
 </div>
 
+<div id="ModalCk4cDoc" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Decree Doc is required.</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts
 {
     <script src="~/Scripts/ck4cscript.js"></script>
+    @if (Model.Details.Status == Enums.DocumentStatus.Completed && Model.AllowEditCompleted)
+    {
+        <script src="~/Scripts/ck4c/docupload.js"></script>
+    }
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
             SetBasedOn();
+
+            SetPoaList();
+
+            $('#divComment').hide();
+
+            $('#Details_StatusGoverment').on('change', function (e) {
+                var valueSelected = this.value;
+
+                $('#divComment').hide();
+
+                if (valueSelected == 'Rejected') {
+                    $('#divComment').show();
+                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                }
+                else if (valueSelected == 'Approved') {
+                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }
+                else if (valueSelected == '') {
+                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.Completed');
+                }
+            });
 
             $('#btnCancel').click(function (e) {
                 location.href = '@Url.Action("DocumentList", "CK4C")';
@@ -134,35 +190,47 @@
             });
             
             $("#btnApprove").click(function () {
-
                 $('#btnConfirm').show();
                 $('#btnConfirmGovApprove').hide();
                 $('#btnConfirmGovPartApprove').hide();
                 $("#lblTitleModal").text('Approval');
                 $("#lblMessageModal").text('Approve Documents ?');
                 $('#Pbck1Modal').modal('show');
-
             });
 
             $("#btnReject").click(function () {
-
                 $('#Detail_Comment').val('');
-
                 $('#Pbck1ModalReject').modal('show');
-
             });
 
             $("#btnConfirm").click(function () {
                 window.location = "@Url.Action("ApproveDocument", "CK4C", new { id = @Model.Details.Ck4CId })";
             });
+
+            $("#btnSaveGovStatus").click(function () {
+                if (ValidateCompletedInput()) {
+                    $('#DetailForm').submit();
+                }
+            });
         });
+
+        function SetPoaList() {
+            var poa = '@Model.Details.ApprovedByPoa';
+            var nppbkc = '@Model.Details.NppbkcId';
+            var url = '@Url.Action("PoaListPartial", "CK4C")';
+
+            if (poa == '')
+            {
+                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+            }
+        }
 
         function SetBasedOn() {
             var nppbkc = '@Model.Details.NppbkcId';
             var plantId = $('#Details_PlantId').val();
             var plantName = $('#Details_PlantName').val();
 
-            if(nppbkc != '')
+            if (plantId == '')
             {
                 $('#basedNppbkc').prop('checked', true);
             }

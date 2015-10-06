@@ -28,6 +28,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<BACK1> _repositoryBack1;
         private IGenericRepository<BACK3> _repositoryBack3;
         private IGenericRepository<CK2> _repositoryCk2;
+        private IGenericRepository<PBCK7_ITEM> _repositoryPbck7Item; 
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
@@ -49,6 +50,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryBack3 = _uow.GetGenericRepository<BACK3>();
             _repositoryCk2 = _uow.GetGenericRepository<CK2>();
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, logger);
+            _repositoryPbck7Item = _uow.GetGenericRepository<PBCK7_ITEM>();
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -61,6 +63,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck3Dto>>(_repositoryPbck3.Get().ToList()); ;
         }
 
+       
         public List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
@@ -157,7 +160,7 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input, Login user)
+        public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input, Login user, bool IsComplete=false)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
 
@@ -180,9 +183,14 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == user.USER_ID);
             }
-
-            //queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
-
+            if (IsComplete)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+            }
 
 
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -224,7 +232,7 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input, Login user)
+        public List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input, Login user, bool IsComplete=false)
         {
             Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
 
@@ -269,7 +277,14 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PBCK3_DATE == dt);
             }
 
-
+            if (IsComplete)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+            }
             Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = null;
             if (!string.IsNullOrEmpty(input.ShortOrderColum))
             {
@@ -319,7 +334,7 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-        public void InsertPbck7(Pbck7AndPbck3Dto pbck7AndPbck3Dto)
+        public int? InsertPbck7(Pbck7AndPbck3Dto pbck7AndPbck3Dto)
         {
             var dataToAdd = Mapper.Map<PBCK7>(pbck7AndPbck3Dto);
             _repositoryPbck7.InsertOrUpdate(dataToAdd);
@@ -338,6 +353,15 @@ namespace Sampoerna.EMS.BLL
             history.ROLE = getUserRole;
             _workflowHistoryBll.AddHistory(history);
             _uow.SaveChanges();
+            return dataToAdd.PBCK7_ID;
+        }
+
+        public void InsertPbck7Item(Pbck7ItemUpload item)
+        {
+            var uploadItemToAdd = Mapper.Map<PBCK7_ITEM>(item);
+            _repositoryPbck7Item.InsertOrUpdate(uploadItemToAdd);
+            _uow.SaveChanges();
+            
         }
 
         public void InsertBack1(Back1Dto back1)

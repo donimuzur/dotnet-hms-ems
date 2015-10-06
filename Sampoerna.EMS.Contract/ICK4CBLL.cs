@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Ck4CDto> GetCompletedDocument();
 
-        Ck4CDto Save(Ck4CDto item);
+        Ck4CDto Save(Ck4CDto item, string userId);
 
         Ck4CDto GetById(long id);
 
@@ -32,5 +32,7 @@ namespace Sampoerna.EMS.Contract
         Ck4cReportDto GetCk4cReportDataById(int id);
 
         List<Ck4CSummaryReportDto> GetSummaryReportsByParam(Ck4CGetSummaryReportByParamInput input);
+
+        bool AllowEditCompletedDocument(Ck4CDto item, string userId);
     }
 }

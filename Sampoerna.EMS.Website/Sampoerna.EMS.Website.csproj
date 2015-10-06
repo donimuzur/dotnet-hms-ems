@@ -870,6 +870,7 @@
     <Content Include="Scripts\js\vendors\datatablesResponsive.js" />
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
+    <Content Include="Scripts\js\vendors\jquery.table2excel.js" />
     <Content Include="Scripts\lack1\Lack1GenerateTable.js" />
     <Content Include="Scripts\lack1\Lack1Upload.js" />
     <Content Include="Scripts\lack2\form.js" />
@@ -1175,6 +1176,10 @@
     <Content Include="Views\PBCK7AndPBCK3\_Pbck7SummaryIndex.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Pbck3SummaryReport.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck3SummaryIndex.cshtml" />
+    <Content Include="Views\CK5\CK5MarketReturn.cshtml" />
+    <Content Include="Views\CK4C\_HomeCompleted.cshtml" />
+    <Content Include="Views\CK5\_CK5GovApprovalMarketReturn.cshtml" />
+    <Content Include="Views\CK5\CK5MarketReturnCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1329,7 +1334,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
           <IISAppRootUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

@@ -238,7 +238,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label>Approved Qty<span class="red">*</span></label>
+                        <label>BACK-1 Qty<span class="red">*</span></label>
                         @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadApprovedQty", @maxlength = "15" })
 
                     </div>
@@ -361,7 +361,7 @@
                     $("input[name='CompanyName']").val('');
                     $("input[name='CompanyId']").val('');
                     $("*[name='PlantDesc']").val('');
-                    $("input[name='Poa']").val('');
+                    $("*[name='Poa']").val('');
                     $("input[name='NppbkcId']").val('');
                     $("input[name='NppbkcDesc']").val('');
 
@@ -393,7 +393,7 @@
 
             @*ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());*@
 
-            ajaxGetListCk1DateByPlantAndFaCode('@Url.Action("GetListCk1Date", "PBCK4")', { plantId: sourcePlant, faCode: faCode }, nRow.find("td").eq(4).html());
+            ajaxGetListCk1DateByPlantAndFaCode('@Url.Action("GetListCk1Date", "PBCK4")', { plantId: sourcePlant, faCode: faCode, nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());
 
             //set value
             $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
@@ -478,18 +478,18 @@
 
                     var plant = $("#uploadPlant").val();
                     var uploadMode = $("#uploadMode").val();
-                   
+                    var nppbkcId = $("#NppbkcId").val();
                     
                     if (uploadMode == '1') //new input
                     {
-                        ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode });
+                        ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode, nppbkcId: nppbkcId });
                     } else {
                         //edit mode
                         var pbckId = '@Model.Pbck4Id';
                         var plantOri = $("#uploadPlantOri").val();
                         var faCodeOri = $("#uploadFaCodeOri").val();
                         
-                        ajaxGetBrandItemsForEdit('@Url.Action("GetBrandItemsForEdit", "PBCK4")', { pbck4Id : pbckId, plantId: plant, faCode: faCode , plantIdOri : plantOri, faCodeOri : faCodeOri});
+                        ajaxGetBrandItemsForEdit('@Url.Action("GetBrandItemsForEdit", "PBCK4")', { pbck4Id: pbckId, plantId: plant, faCode: faCode, plantIdOri: plantOri, faCodeOri: faCodeOri, nppbkcId: nppbkcId });
                     }
                 }
             }

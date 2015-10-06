@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool AllowManagerReject { get; set; }
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowPrintDocument { get; set; }
+        public bool AllowEditCompleted { get; set; }
         public string ActionType { get; set; }
 
         //selectlist
@@ -40,6 +41,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public SelectList YearList { get; set; }
         public SelectList PeriodList { get; set; }
         public SelectList PlanList { get; set; }
+        public SelectList PoaList { get; set; }
     }
     public class DataDocumentList
     {
@@ -76,7 +78,6 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public List<Ck4cDecreeDocModel> Ck4cDecreeDoc { get; set; }
         public string IsSaveSubmit { get; set; }
         public string Comment { get; set; }
-        public string Remarks { get; set; }
     }
     public class Ck4cItemData
     {
@@ -98,5 +99,6 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string ProdType { get; set; }
         public int ContentPerPack { get; set; }
         public int PackedInPack { get; set; }
+        public string Remarks { get; set; }
     }
 }

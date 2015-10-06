@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.BLL.Services
 
        public List<CK1> GetCk1ByNppbkc(string nppbkcId)
        {
-           return _repository.Get(c => c.NPPBKC_ID == nppbkcId ).ToList();
+           return _repository.Get(c => c.NPPBKC_ID == nppbkcId, null, "CK1_ITEM").ToList();
        }
 
        public CK1 GetCk1ByCk1Number(string ck1Number)
