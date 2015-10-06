@@ -12,7 +12,7 @@
                 <h3>Waste Production Create</h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
-                    <a href="@Url.Action("Index", "Waste")" class="btn btn-grey">Cancel</a>
+                    <a href="@Url.Action("Index", "Waste")" class="btn btn-grey">Back</a>
                 </div>
             </div>
         </div>
@@ -54,21 +54,23 @@
         $('#DustStickStr').val(ThausandSeperator($('#DustStickStr').val(), 2));
         $('#FloorStickStr').val(ThausandSeperator($('#FloorStickStr').val(), 2));
 
-        $("#SearchInput_BrandCe").change(function () {
+       $("#SearchInput_BrandCe").change(function () {
             if ($("#SearchInput_BrandCe").length) {
 
                 var FaDesc = $(this).find("option:selected").val();
+                var Plant = $('#SearchInput_PlantId').val();
+                console.log(FaDesc);
                 if (FaDesc == '') {
                     $('#test').val('');
                 } else {
-                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Waste")', { faCode: FaDesc });
+                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Waste")', { plantWerk: Plant, faCode: FaDesc });
                 }
             }
 
         });
 
         function ajaxFaCodeDescription(url, formData) {
-            if (formData.faCode) {
+            if (formData.plantWerk, formData.faCode) {
                 $.ajax({
                     type: 'POST',
                     url: url,
@@ -147,5 +149,5 @@
             }
         }
 
-    </script>
+</script>
 }

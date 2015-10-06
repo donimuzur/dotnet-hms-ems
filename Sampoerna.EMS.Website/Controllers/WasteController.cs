@@ -265,9 +265,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var plant = _plantBll.GetT001WById(model.PlantWerks);
             var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
 
-            model.CompanyName = company.BUTXT;
-            model.PlantName = plant.NAME1;
-            model.BrandDescription = brandDesc.BRAND_CE;
+            dbWasteNew.CompanyName = company.BUTXT;
+            dbWasteNew.PlantName = plant.NAME1;
+            dbWasteNew.BrandDescription = brandDesc.BRAND_CE;
 
             //reject
             dbWasteNew.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
@@ -343,7 +343,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model = Mapper.Map<WasteDetail>(dbWaste);
             model.ChangesHistoryList =
                Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
-                   companyCode + "_" + plantWerk + "_" + faCode + "_" + wasteProductionDate.ToString("ddMMMyyyy")));
+                   "Waste_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + wasteProductionDate.ToString("ddMMMyyyy")));
 
             //reject
             model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
@@ -386,9 +386,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var company = _companyBll.GetById(item.CompanyCode);
                     var plant = _plantBll.GetT001WById(item.PlantWerks);
+                    var brandCe = _brandRegistrationBll.GetById(item.PlantWerks, item.FaCode);
 
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
+
+                    if (item.BrandDescription != brandCe.BRAND_CE)
+                    {
+                        AddMessageInfo("Data Brand Description Is Not valid",Enums.MessageInfoType.Error);
+                        return RedirectToAction("UploadManualWaste");
+                    }
 
                     item.CreatedDate = DateTime.Now;
 
@@ -397,7 +404,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (existingData != null)
                     {
-                        AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
+                        AddMessageInfo("Data Already Exist, Please Check Data Company Code, Plant Code, Fa Code, and Production Date", Enums.MessageInfoType.Warning);
                         return RedirectToAction("UploadManualWaste");
                     }
 

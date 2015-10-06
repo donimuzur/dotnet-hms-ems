@@ -115,9 +115,9 @@ function ThausandSeparatorMaxFour(value, digit) {
 
     var result = "";
     var len = tempValue.length;
-    while (len > digit) {
-        result = thausandSepCh + tempValue.substr(len - digit, digit) + result;
-        len -= digit;
+    while (len > 3) {
+        result = thausandSepCh + tempValue.substr(len - 3, 3) + result;
+        len -= 3;
     }
     result = tempValue.substr(0, len) + result;
     return result + devValue;

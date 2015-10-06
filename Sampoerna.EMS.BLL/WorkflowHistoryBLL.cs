@@ -317,5 +317,20 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        public WorkflowHistoryDto RejectedStatusByDocumentNumber(GetByFormTypeAndFormIdInput input) {
+            var dbData =
+                _repository.Get(c => c.ACTION == Enums.ActionType.Reject && c.FORM_ID == input.FormId && c.FORM_TYPE_ID == input.FormType).OrderByDescending(o => o.ACTION_DATE).FirstOrDefault();
+
+            return Mapper.Map<WorkflowHistoryDto>(dbData);
+        }
+
+        public WorkflowHistoryDto GetApprovedOrRejectedPOAStatusByDocumentNumber(GetByFormTypeAndFormIdInput input)
+        {
+            var dbData =
+                _repository.Get(c => (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve) && c.FORM_ID == input.FormId && c.FORM_TYPE_ID == input.FormType && c.ROLE == Enums.UserRole.POA).OrderByDescending(o => o.ACTION_DATE).FirstOrDefault();
+
+            return Mapper.Map<WorkflowHistoryDto>(dbData);
+        }
     }
 }

@@ -39,6 +39,14 @@ namespace Sampoerna.EMS.XMLReader
                         item.PLANT = _xmlMapper.GetElementValue(xElement.Element("Plnt")); ;
                         item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("Material"));
                         item.SLOC = _xmlMapper.GetElementValue(xElement.Element("SLoc"));
+
+                        var existingdata = GetBlockStock(item.PLANT, item.MATERIAL_ID, item.SLOC);
+
+                        if (existingdata != null)
+                        {
+                            item.BLOCK_STOCK_ID = existingdata.BLOCK_STOCK_ID;
+                        }
+
                         item.BLOCKED = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Blocked")));
                         item.BUN = _xmlMapper.GetElementValue(xElement.Element("BUn"));
                         items.Add(item);
@@ -70,7 +78,19 @@ namespace Sampoerna.EMS.XMLReader
         {
             return _xmlMapper.Errors;
         }
-      
+
+
+        public BLOCK_STOCK GetBlockStock(string plantid, string materialid, string sloc)
+        {
+            var existingData =
+                _xmlMapper.uow.GetGenericRepository<BLOCK_STOCK>()
+                    .Get(x => x.MATERIAL_ID == materialid && x.PLANT == plantid && x.SLOC == sloc)
+                    .FirstOrDefault();
+            return existingData;
+        }
+
+    
+
 
 
 

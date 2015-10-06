@@ -271,6 +271,10 @@
             getReference();
         });
 
+        $("#Detail_SupplierPlant").keyup(function () {
+            getReference();
+        });
+
         changeToDecimal("input[name='Detail.LatestSaldo']:text", "val");
         changeToDecimal("input[name='Detail.RequestQty']:text", "val");
         changeToDecimal("input[name='Detail.QtyApproved']", "val");

@@ -35,5 +35,8 @@ namespace Sampoerna.EMS.Contract
 
         List<string> GetDocumentByListPOAId(List<string> poaID);
 
+        WorkflowHistoryDto RejectedStatusByDocumentNumber(GetByFormTypeAndFormIdInput input);
+
+        WorkflowHistoryDto GetApprovedOrRejectedPOAStatusByDocumentNumber(GetByFormTypeAndFormIdInput input);
     }
 }

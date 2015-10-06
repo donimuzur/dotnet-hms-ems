@@ -62,6 +62,9 @@ function OnReadyFunction() {
         $('#pbck4TableItem tbody').append(data);
 
      
+        $('#collapseThree').removeClass('collapse');
+        $('#collapseThree').addClass('in');
+        $("#collapseThree").css({ height: "auto" });
 
     });
 }
@@ -151,7 +154,7 @@ function ajaxGetPlantDetails(url, formData) {
                 $("input[name='CompanyName']").val(data.CompanyName);
                 $("input[name='CompanyId']").val(data.CompanyId);
                 $("*[name='PlantDesc']").val(data.PlantDesc);
-                $("input[name='Poa']").val(data.Poa);
+                $("*[name='Poa']").val(data.Poa);
                 $("input[name='NppbkcId']").val(data.NppbkcId);
                 $("input[name='NppbkcDesc']").val(data.NppbkcDescription);
                 

@@ -300,6 +300,7 @@ namespace Sampoerna.EMS.BLL
             changeData.Add("QTY_PACKED", origin.QtyPacked == data.QtyPacked);
             changeData.Add("QTY_UNPACKED", origin.QtyUnpacked == data.QtyUnpacked);
             changeData.Add("UOM", origin.Uom == data.Uom);
+            changeData.Add("PROD_QTY_STICK",origin.ProdQtyStick == data.ProdQtyStick);
 
             foreach (var listChange in changeData)
             {
@@ -308,7 +309,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
-                        FORM_ID = data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" + data.ProductionDate.ToString("ddMMMyyyy"),
+                        FORM_ID = "Daily_" + data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" + data.ProductionDate.ToString("ddMMMyyyy"),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
                         MODIFIED_DATE = DateTime.Now
@@ -355,6 +356,11 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.Uom;
                             changes.NEW_VALUE = data.Uom;
                             changes.FIELD_NAME = "Uom";
+                            break;
+                        case "PROD_QTY_STICK":
+                            changes.OLD_VALUE = origin.ProdQtyStick.ToString();
+                            changes.NEW_VALUE = data.ProdQtyStick.ToString();
+                            changes.FIELD_NAME = "Product Qty Stick";
                             break;
                         default: break;
                     }

@@ -238,9 +238,8 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label>Approved Qty<span class="red">*</span></label>
-                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadApprovedQty", @maxlength = "15" })
-
+                        <label>BACK-1 Qty</label>
+                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadApprovedQty", @disabled = "disabled" })    
                     </div>
 
                     <div class="col-md-4">
@@ -361,7 +360,7 @@
                     $("input[name='CompanyName']").val('');
                     $("input[name='CompanyId']").val('');
                     $("*[name='PlantDesc']").val('');
-                    $("input[name='Poa']").val('');
+                    $("*[name='Poa']").val('');
                     $("input[name='NppbkcId']").val('');
                     $("input[name='NppbkcDesc']").val('');
 
