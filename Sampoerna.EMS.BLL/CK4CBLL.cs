@@ -803,15 +803,15 @@ namespace Sampoerna.EMS.BLL
             var prodTotal = string.Empty;
             if (nBatang != 0 && nGram != 0)
             {
-                prodTotal = nBatang + " batang dan " + nGram + " gram";
+                prodTotal = String.Format("{0:n}",nBatang) + " batang dan " + String.Format("{0:n}",nGram) + " gram";
             }
             else if (nBatang == 0 && nGram != 0)
             {
-                prodTotal = nGram + " gram";
+                prodTotal = String.Format("{0:n}",nGram) + " gram";
             }
             else if (nBatang != 0 && nGram == 0)
             {
-                prodTotal = nBatang + " batang";
+                prodTotal = String.Format("{0:n}",nBatang) + " batang";
             }
 
             result.Detail.ProdTotal = prodTotal;
