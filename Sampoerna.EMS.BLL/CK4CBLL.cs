@@ -585,6 +585,7 @@ namespace Sampoerna.EMS.BLL
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
+            input.ActionType = Enums.ActionType.Modified;
 
             AddWorkflowHistory(input);
 
@@ -767,7 +768,46 @@ namespace Sampoerna.EMS.BLL
                 }
                 
             }
-            ck4cItemGroupByDate.Add(String.Empty, tempListck4c1);
+            //distinct var tempListck4c1
+            var tempCk4cDto = tempListck4c1.Select(c => new
+            {
+                c.CollumNo,
+                c.No,
+                c.NoProd,
+                c.ProdDate,
+                c.ProdType,
+                c.SumBtg,
+                c.BtgGr,
+                c.Merk,
+                c.Isi,
+                c.Hje,
+                c.Total,
+                c.ProdWaste,
+                c.Comment
+            });
+
+            var distinctTempCk4cDto = tempCk4cDto.Distinct().ToList();
+
+            var newDistinctCk4cReportItemDto = distinctTempCk4cDto.Select(c => new Ck4cReportItemDto
+            {
+                CollumNo = c.CollumNo,
+                No = c.No,
+                NoProd = c.NoProd,
+                ProdDate = c.ProdDate,
+                ProdType = c.ProdType,
+                SumBtg = c.SumBtg,
+                BtgGr = c.BtgGr,
+                Merk = c.Merk,
+                Isi = c.Isi,
+                Hje = c.Hje,
+                Total = c.Total,
+                ProdWaste = c.ProdWaste,
+                Comment = c.Comment
+
+            }).ToList();
+
+            //add to dictionary group by date empty
+            ck4cItemGroupByDate.Add(String.Empty, newDistinctCk4cReportItemDto);
             result.Detail.CompanyAddress = address;
 
             var plant = _plantBll.GetT001WById(dtData.PLANT_ID);
@@ -839,7 +879,7 @@ namespace Sampoerna.EMS.BLL
 
                     
 
-                    foreach (var data in activeBrand)
+                    foreach (var data in activeBrand.Distinct())
                     {
                         var ck4cItem = new Ck4cReportItemDto();
                         var brand = _brandBll.GetById(item, data.FA_CODE);
@@ -868,7 +908,46 @@ namespace Sampoerna.EMS.BLL
                     }
                     
                 }
-                ck4cItemGroupByDate.Add(prodDate, tempListck4c2);
+                //distinct var tempListck4c2
+                var tempCk4cDto2 = tempListck4c2.Select(c => new
+                {
+                    c.CollumNo,
+                    c.No,
+                    c.NoProd,
+                    c.ProdDate,
+                    c.ProdType,
+                    c.SumBtg,
+                    c.BtgGr,
+                    c.Merk,
+                    c.Isi,
+                    c.Hje,
+                    c.Total,
+                    c.ProdWaste,
+                    c.Comment
+                });
+
+                var distinctTempCk4cDto2 = tempCk4cDto2.Distinct().ToList();
+
+                var newDistinctCk4cReportItemDto2 = distinctTempCk4cDto2.Select(c => new Ck4cReportItemDto
+                {
+                    CollumNo = c.CollumNo,
+                    No = c.No,
+                    NoProd = c.NoProd,
+                    ProdDate = c.ProdDate,
+                    ProdType = c.ProdType,
+                    SumBtg = c.SumBtg,
+                    BtgGr = c.BtgGr,
+                    Merk = c.Merk,
+                    Isi = c.Isi,
+                    Hje = c.Hje,
+                    Total = c.Total,
+                    ProdWaste = c.ProdWaste,
+                    Comment = c.Comment
+
+                }).ToList();
+
+                //add to dictionary group by date
+                ck4cItemGroupByDate.Add(prodDate, newDistinctCk4cReportItemDto2);
             }
 
              //order brand by prod alias using Dictionary<string, List<Ck4cReportItemDto>> each date
@@ -979,6 +1058,17 @@ namespace Sampoerna.EMS.BLL
                 isAllow = true;
 
             return isAllow;
+        }
+
+        public Ck4CDto GetByItem(Ck4CDto item)
+        {
+            var dbData = _repository.Get(c => c.PLANT_ID == item.PlantId && c.NPPBKC_ID == item.NppbkcId
+                                            && c.REPORTED_PERIOD == item.ReportedPeriod && c.REPORTED_MONTH == item.ReportedMonth
+                                            && c.REPORTED_YEAR == item.ReportedYears, null, includeTables).FirstOrDefault();
+
+            var mapResult = Mapper.Map<Ck4CDto>(dbData);
+
+            return mapResult;
         }
 
         #region SummaryReport

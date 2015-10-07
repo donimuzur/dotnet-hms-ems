@@ -324,6 +324,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View(model);
             }
 
+            var existCk4c = _ck4CBll.GetByItem(item);
+            if (existCk4c != null)
+            {
+                AddMessageInfo("Data CK-4C already exists", Enums.MessageInfoType.Warning);
+                return RedirectToAction("Details", new { id = existCk4c.Ck4CId });
+            }
+
             _ck4CBll.Save(item, CurrentUser.USER_ID);
             AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
             return RedirectToAction("DocumentList");
@@ -486,11 +493,6 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.Details = Mapper.Map<DataDocumentList>(ck4cData);
 
-                if (!ValidateEditDocument(model))
-                {
-                    return RedirectToAction("DocumentList");
-                }
-
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
 
                 var plant = _plantBll.GetT001WById(ck4cData.PlantId);
@@ -538,6 +540,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "GovApproveDocument";
                 }
 
+                if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject))
+                {
+
+                }
+                else if (!ValidateEditDocument(model, false))
+                {
+                    return RedirectToAction("Details", new { id });
+                }
+
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
             }
             catch (Exception exception)
@@ -573,7 +584,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);
+                var nppbkcId = plant == null ? dataToSave.NppbkcId : plant.NPPBKC_ID;
 
+                dataToSave.NppbkcId = nppbkcId;
                 dataToSave.PlantName = plant == null ? "" : plant.NAME1;
                 dataToSave.CompanyName = company.BUTXT;
                 dataToSave.ModifiedBy = CurrentUser.USER_ID;
@@ -669,7 +682,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck4CBll.Ck4cWorkflow(input);
         }
 
-        private bool ValidateEditDocument(Ck4CIndexDocumentListViewModel model)
+        private bool ValidateEditDocument(Ck4CIndexDocumentListViewModel model, bool message = true)
         {
 
             //check is Allow Edit Document
