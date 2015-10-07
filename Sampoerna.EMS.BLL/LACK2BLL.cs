@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Configuration;
+using System.Text;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -26,6 +28,8 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<LACK2_ITEM> _repositoryItem;
         private IGenericRepository<LACK2_DOCUMENT> _repositoryDocument;
         private IMonthBLL _monthBll;
+        private IPOABLL _poaBll;
+        private IUserBLL _userBll;
 
         private IChangesHistoryBLL _changesHistoryBll;
         private string includeTables = "MONTH";
@@ -52,6 +56,8 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _messageService = new MessageService(_logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
+            _poaBll = new POABLL(_uow, _logger);
+            _userBll = new UserBLL(_uow, _logger);
         }
 
         public List<Lack2Dto> GetAll()
@@ -165,11 +171,10 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
-            if (input.Status != null || input.Status != 0)
+            if (input.Status.HasValue)
             {
                 queryFilter = queryFilter.And(c => c.STATUS == input.Status);
             }
-
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
 
@@ -946,13 +951,16 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK2_DOCUMENT = null;
                 dbData.STATUS = Enums.DocumentStatus.Completed;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
 
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
+                //dbData.APPROVED_BY_POA = input.UserId;
+                //dbData.APPROVED_DATE_POA = DateTime.Now;
 
-                input.DocumentNumber = dbData.LACK1_NUMBER;
+                dbData.APPROVED_BY = input.UserId;
+                dbData.APPROVED_DATE = DateTime.Now;
+
+                input.DocumentNumber = dbData.LACK2_NUMBER;
             }
 
             AddWorkflowHistory(input);
@@ -963,7 +971,7 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.DocumentId != null)
             {
-                var dbData = _lack1Service.GetById(input.DocumentId.Value);
+                var dbData = _repository.GetByID(input.DocumentId.Value);
 
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -975,18 +983,18 @@ namespace Sampoerna.EMS.BLL
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
 
-                input.DocumentNumber = dbData.LACK1_NUMBER;
+                input.DocumentNumber = dbData.LACK2_NUMBER;
 
-                dbData.LACK1_DOCUMENT = null;
+                dbData.LACK2_DOCUMENT = null;
                 dbData.STATUS = Enums.DocumentStatus.Completed;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
 
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
+                dbData.APPROVED_BY = input.UserId;
+                dbData.APPROVED_DATE = DateTime.Now;
 
-                input.DocumentNumber = dbData.LACK1_NUMBER;
+                input.DocumentNumber = dbData.LACK2_NUMBER;
             }
 
             AddWorkflowHistory(input);
@@ -996,7 +1004,7 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.DocumentId != null)
             {
-                var dbData = _lack1Service.GetById(input.DocumentId.Value);
+                var dbData = _repository.GetByID(input.DocumentId.Value);
 
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -1010,11 +1018,11 @@ namespace Sampoerna.EMS.BLL
 
                 dbData.STATUS = Enums.DocumentStatus.GovRejected;
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
-                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
+                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
+                dbData.APPROVED_BY = input.UserId;
+                dbData.APPROVED_DATE = DateTime.Now;
 
-                input.DocumentNumber = dbData.LACK1_NUMBER;
+                input.DocumentNumber = dbData.LACK2_NUMBER;
             }
 
             AddWorkflowHistory(input);
@@ -1066,9 +1074,9 @@ namespace Sampoerna.EMS.BLL
 
             if (input.DocumentId != null)
             {
-                var lack1Data = Mapper.Map<Lack1DetailsDto>(_lack1Service.GetDetailsById(input.DocumentId.Value));
+                var lack2Data = Mapper.Map<Lack2Dto>(_repository.GetByID(input.DocumentId.Value));
 
-                var mailProcess = ProsesMailNotificationBody(lack1Data, input.ActionType);
+                var mailProcess = ProsesMailNotificationBody(lack2Data, input.ActionType);
 
                 _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
             }
@@ -1080,7 +1088,92 @@ namespace Sampoerna.EMS.BLL
             var managerDetail = _userBll.GetUserById(managerId);
             return managerDetail.EMAIL;
         }
-        
+
+        private Lack2MailNotification ProsesMailNotificationBody(Lack2Dto lackData, Enums.ActionType actionType)
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new Lack2MailNotification();
+
+            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+
+            rc.Subject = "LACK-2 " + lackData.Lack2Number + " is " + EnumHelper.GetDescription(lackData.Status);
+            bodyMail.Append("Dear Team,<br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("<table><tr><td>Company Code </td><td>: " + lackData.Burks + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>NPPBKC </td><td>: " + lackData.NppbkcId + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Number</td><td> : " + lackData.Lack2Number + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Type</td><td> : LACK-2</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Lack2/Detail/" + lackData.Lack2Id + "'>link</a> to show detailed information</i></td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+            switch (actionType)
+            {
+                case Enums.ActionType.Submit:
+                    if (lackData.Status == Enums.DocumentStatus.WaitingForApproval)
+                    {
+                        var poaList = _poaBll.GetPoaByNppbkcId(lackData.NppbkcId);
+                        foreach (var poaDto in poaList)
+                        {
+                            rc.To.Add(poaDto.POA_EMAIL);
+                        }
+                    }
+                    else if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        var managerId = _poaBll.GetManagerIdByPoaId(lackData.CreatedBy);
+                        var managerDetail = _userBll.GetUserById(managerId);
+                        rc.To.Add(managerDetail.EMAIL);
+                    }
+                    break;
+                case Enums.ActionType.Approve:
+                    if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+                    }
+                    else if (lackData.Status == Enums.DocumentStatus.WaitingGovApproval)
+                    {
+                        var poaData = _poaBll.GetById(lackData.CreatedBy);
+                        if (poaData != null)
+                        {
+                            //creator is poa user
+                            rc.To.Add(poaData.POA_EMAIL);
+                        }
+                        else
+                        {
+                            //creator is excise executive
+                            var userData = _userBll.GetUserById(lackData.CreatedBy);
+                            rc.To.Add(userData.EMAIL);
+                        }
+                    }
+                    break;
+                case Enums.ActionType.Reject:
+                    //send notification to creator
+                    var userDetail = _userBll.GetUserById(lackData.CreatedBy);
+                    rc.To.Add(userDetail.EMAIL);
+                    break;
+            }
+            rc.Body = bodyMail.ToString();
+            return rc;
+        }
+
+        private class Lack2MailNotification
+        {
+            public Lack2MailNotification()
+            {
+                To = new List<string>();
+            }
+            public string Subject { get; set; }
+            public string Body { get; set; }
+            public List<string> To { get; set; }
+        }
+
         #endregion
 
     }

@@ -17,7 +17,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Creator { get; set; }
         public DateTime? SubmissionDate { get; set; }
 
-        public Enums.DocumentStatus Status { get; set; }
+        public Enums.DocumentStatus? Status { get; set; }
 
         /// <summary>
         /// optional if want to sorting from query

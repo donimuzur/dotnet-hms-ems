@@ -2,12 +2,7 @@
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
-using Sampoerna.EMS.Core;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -37,5 +32,8 @@ namespace Sampoerna.EMS.Contract
         List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
 
         List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
+
+        void Lack2Workflow(Lack2WorkflowDocumentInput input);
+
     }
 }

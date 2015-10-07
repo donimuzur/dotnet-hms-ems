@@ -17,7 +17,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string LevelPlantId { get; set; }
         public string LevelPlantName { get; set; }
         public string LevelPlantCity { get; set; }
-        public DateTime SubmissionDate { get; set; }
+        public DateTime? SubmissionDate { get; set; }
         public string ExGoodTyp { get; set; }
         public string ExTypDesc { get; set; }
         public Enums.DocumentStatusGov GovStatus { get; set; }
@@ -68,4 +68,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string CompanyAddress { get; set; }
     }
+
+    public class Lack2DocumentDto
+    {
+        public long LACK2_DOCUMENT_ID { get; set; }
+        public int LACK2_ID { get; set; }
+        public string FILE_NAME { get; set; }
+        public string FILE_PATH { get; set; }
+    
+    }
+
 }

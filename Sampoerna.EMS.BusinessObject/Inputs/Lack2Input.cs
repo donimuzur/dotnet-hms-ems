@@ -1,5 +1,7 @@
 ﻿using System;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
+using System.Collections.Generic;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -44,12 +46,13 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.ActionType ActionType { get; set; }
         public string DocumentNumber { get; set; }
 
+        public Lack2WorkflowDocumentData AdditionalDocumentData { get; set; }
     }
 
     public class Lack2WorkflowDocumentData
     {
         public DateTime DecreeDate { get; set; }
-        public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
+        public List<Lack2DocumentDto> Lack2DecreeDoc { get; set; }
     }
 
 }
