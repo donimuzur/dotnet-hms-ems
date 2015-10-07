@@ -58,7 +58,7 @@ namespace Sampoerna.EMS.XMLReader
                         var shift = _xmlMapper.GetElementValue(xElement.Element("Shift"));
                         item.LAST_SHIFT = GetShift(shift);
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
-                        var qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
+                        var qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")).Replace(",",""));
                         //var prodQty = qty;
                         var existingBrand = GetMaterialBrand(item.FA_CODE, item.WERKS);
                         if (existingBrand != null)
