@@ -326,109 +326,94 @@ namespace Sampoerna.EMS.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(LACK2CreateViewModel model)
         {
-            
-            var item = Mapper.Map<Lack2Dto>(model.Lack2Model);
-            if (item.CreatedBy != CurrentUser.USER_ID)
+
+            try
             {
-                return RedirectToAction("Detail", new { id = item.Lack2Id });
-            }
-            var exItems = new Lack2ItemDto[item.Items.Count];
-            item.Items.CopyTo(exItems);
-            item.Items = new List<Lack2ItemDto>();
-            foreach (var items in exItems)
-            {
-                if (items.Id == 0)
+                var item = Mapper.Map<Lack2Dto>(model.Lack2Model);
+                if (item.CreatedBy != CurrentUser.USER_ID)
+                {
+                    return RedirectToAction("Detail", new { id = item.Lack2Id });
+                }
+                var exItems = new Lack2ItemDto[item.Items.Count];
+                item.Items.CopyTo(exItems);
+                item.Items = new List<Lack2ItemDto>();
+                foreach (var items in exItems.Where(items => items.Id == 0))
                 {
                     item.Items.Add(items);
                 }
-            }
 
-            var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
-            var company = _companyBll.GetById(model.Lack2Model.Burks);
-            var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
+                var plant = _plantBll.GetT001WById(model.Lack2Model.LevelPlantId);
+                var company = _companyBll.GetById(model.Lack2Model.Burks);
+                var goods = _exGroupBll.GetById(model.Lack2Model.ExGoodTyp);
 
-            item.ExTypDesc = goods.EXT_TYP_DESC;
+                item.ExTypDesc = goods.EXT_TYP_DESC;
 
-            item.Butxt = company.BUTXT;
-            item.LevelPlantName = plant.NAME1;
-            item.LevelPlantCity = plant.ORT01;
-            item.PeriodMonth = model.Lack2Model.PeriodMonth;
-            item.PeriodYear = model.Lack2Model.PeriodYear;
+                item.Butxt = company.BUTXT;
+                item.LevelPlantName = plant.NAME1;
+                item.LevelPlantCity = plant.ORT01;
+                item.PeriodMonth = model.Lack2Model.PeriodMonth;
+                item.PeriodYear = model.Lack2Model.PeriodYear;
 
-            item.ModifiedBy = CurrentUser.USER_ID;
-            item.ModifiedDate = DateTime.Now;
+                item.ModifiedBy = CurrentUser.USER_ID;
+                item.ModifiedDate = DateTime.Now;
 
-            item.Status = Enums.DocumentStatus.Draft;
-
-
-            if (item.GovStatus == Enums.DocumentStatusGov.PartialApproved)
-            {
-                item.Status = Enums.DocumentStatus.GovApproved;
-            }
-            if (item.GovStatus == Enums.DocumentStatusGov.FullApproved)
-            {
-                item.Status = Enums.DocumentStatus.Completed;
-            }
-            if (item.GovStatus == Enums.DocumentStatusGov.Rejected)
-            {
-                item.Status = Enums.DocumentStatus.GovRejected;
-            }
-            if (item.Status == Enums.DocumentStatus.Rejected)
-            {
                 item.Status = Enums.DocumentStatus.Draft;
-            }
-            if (model.IsSaveSubmit)
-            {
-                if (item.Status == Enums.DocumentStatus.Draft)
+                
+                if (item.GovStatus == Enums.DocumentStatusGov.PartialApproved)
                 {
-                    if (CurrentUser.UserRole == Enums.UserRole.POA)
-                    {
-                        item.Status = Enums.DocumentStatus.WaitingForApprovalManager;
-                    }
-                    else if (CurrentUser.UserRole == Enums.UserRole.User)
-                    {
-                        item.Status = Enums.DocumentStatus.WaitingForApproval;
-                    }
-
+                    item.Status = Enums.DocumentStatus.GovApproved;
+                }
+                if (item.GovStatus == Enums.DocumentStatusGov.FullApproved)
+                {
+                    item.Status = Enums.DocumentStatus.Completed;
+                }
+                if (item.GovStatus == Enums.DocumentStatusGov.Rejected)
+                {
+                    item.Status = Enums.DocumentStatus.GovRejected;
+                }
+                if (item.Status == Enums.DocumentStatus.Rejected)
+                {
+                    item.Status = Enums.DocumentStatus.Draft;
                 }
 
-
-            }
-
-            if (model.Documents != null)
-            {
-                item.Documents = new List<LACK2_DOCUMENT>();
-                foreach (var sk in model.Documents)
+                if (model.Documents != null)
                 {
-                    if (sk != null)
+                    item.Documents = new List<LACK2_DOCUMENT>();
+                    foreach (var sk in model.Documents)
                     {
+                        if (sk == null) continue;
                         var document = new LACK2_DOCUMENT();
                         var filenamecheck = sk.FileName;
-                        if (filenamecheck.Contains("\\"))
-                        {
-                            document.FILE_NAME = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
-                        }
-                        else
-                        {
-                            document.FILE_NAME = sk.FileName;
-                        }
+                        document.FILE_NAME = filenamecheck.Contains("\\") ? filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1] : sk.FileName;
                         document.LACK2_ID = item.Lack2Id;
                         document.FILE_PATH = SaveUploadedFile(sk, item.Lack2Number.Substring(0, 10));
                         item.Documents.Add(document);
                         _lack2Bll.InsertDocument(document);
                     }
                 }
+
+                item.UserId = CurrentUser.USER_ID;
+
+                _lack2Bll.Insert(item);
+
+                if (model.IsSaveSubmit)
+                {
+                    Lack2Workflow(model.Lack2Model.Lack2Id, Enums.ActionType.Submit, string.Empty);
+                    AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
+                    return RedirectToAction("Detail", "Lack2", new { id = model.Lack2Model.Lack2Id });
+                }
+
+                AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
+                return RedirectToAction(item.Status == Enums.DocumentStatus.Completed ? "ListCompletedDoc" : "Index");
+
             }
-
-            item.UserId = CurrentUser.USER_ID;
-
-            _lack2Bll.Insert(item);
-            AddMessageInfo("Update Success", Enums.MessageInfoType.Success);
-            if (item.Status == Enums.DocumentStatus.Completed)
+            catch (Exception)
             {
-                return RedirectToAction("ListCompletedDoc");
+                AddMessageInfo(model.IsSaveSubmit ? "Submit Failed" : "Update Failed", Enums.MessageInfoType.Success);
             }
+
             return RedirectToAction("Index");
+            
         }
 
         #endregion
