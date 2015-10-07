@@ -6,8 +6,6 @@
     int i = 0;
 }
 
-
-
 @using (@Html.BeginForm("Create", "LACK2"))
 {  @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
@@ -31,7 +29,7 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                     </ul>
+                    </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
@@ -152,10 +150,6 @@
                                                                 <label class="col-md-4 long">Excisable Goods Type</label>
                                                                 <div class="col-md-8">
                                                                     @Html.DropDownListFor(m => m.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "select", new { @class = "form-control" })
-
-
-
-
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -290,32 +284,33 @@
                                 @Html.Partial("_WorkflowHistory", Model)
                             </div>
 
-                            </div>
                         </div>
-                       
-                                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-    
+    </div>
+
 }
 @section Scripts {
-   
+
 
     <script type="text/javascript">
-        $(function() {
+        $('#MenuLack2OpenDocument').addClass('active');
+        $(function () {
             openPanel();
             $('#Lack2Model_LevelPlantId').html('');
             $('#Lack2Model_NppbkcId').html('');
 
             $('#Lack2Model_ExGoodTyp').html('');
-            
-            
+
+
         });
         $('#btnCancel').click(function (e) {
             location.href = '@Url.Action("Index", "Lack2")';
         });
-        $('#Lack2Model_NppbkcId').change(function() {
+        $('#Lack2Model_NppbkcId').change(function () {
 
             if ($(this).length) {
                 var nppbkc = $(this).find("option:selected").val();
@@ -330,7 +325,7 @@
 
         });
 
-        $('#Lack2Model_Burks').change(function() {
+        $('#Lack2Model_Burks').change(function () {
 
             if ($(this).length) {
                 var company = $(this).find("option:selected").val();
@@ -348,7 +343,7 @@
                 type: 'POST',
                 url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
                 data: { companyId: company },
-                success: function(data) {
+                success: function (data) {
                     $('#Lack2Model_NppbkcId').html('');
                     $('#Lack2Model_NppbkcId').append('<option>select</option>');
                     for (var i = 0; i < data.length; i++) {
@@ -365,7 +360,7 @@
                     type: 'POST',
                     url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
                     data: { nppbkcid: nppbkc },
-                    success: function(data) {
+                    success: function (data) {
                         $('#Lack2Model_LevelPlantId').html('');
 
                         for (var i = 0; i < data.length; i++) {
@@ -385,7 +380,7 @@
                 type: 'POST',
                 url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
                 data: { nppbkcid: nppbkc },
-                success: function(data) {
+                success: function (data) {
                     $('#displayPoaList').html('');
                     var poalist = '';
                     for (var i = 0; i < data.length; i++) {
@@ -407,7 +402,7 @@
                 type: 'POST',
                 url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
                 data: { nppbkcid: nppbkc },
-                success: function(data) {
+                success: function (data) {
 
                     $('#Lack2Model_ExGoodTyp').html('');
                     for (var i = 0; i < data.length; i++) {
@@ -432,7 +427,7 @@
                 type: 'POST',
                 url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
                 data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
-                success: function(data) {
+                success: function (data) {
 
                     if (data.length > 0) {
                         $('#tb-body-ck5-lack2').html("");
