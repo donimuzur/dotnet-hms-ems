@@ -585,6 +585,7 @@ namespace Sampoerna.EMS.BLL
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
+            input.ActionType = Enums.ActionType.Modified;
 
             AddWorkflowHistory(input);
 
