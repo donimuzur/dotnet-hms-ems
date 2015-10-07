@@ -56,12 +56,7 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<CK5, CK5ReportDetailsDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.OfficeName, opt => opt.MapFrom(src => src.KPPBC_CITY))
-                //.ForMember(dest => dest.OfficeCode, opt => opt.MapFrom(src => src.CE_OFFICE_CODE))
                 .ForMember(dest => dest.SubmissionNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
-                //.ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue?src.SUBMISSION_DATE.Value.ToString("dd MMMM yyyy") : ""))
-                //.ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
-                //.ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : ""))
-                //.ForMember(dest => dest.ExGoodType, opt => opt.MapFrom(src => src.EX_GOODS_TYPE_DESC))//todo add 1 field to get id
                 .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => (Convert.ToInt32(src.EX_SETTLEMENT_ID)).ToString()))
                 .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => (Convert.ToInt32(src.EX_STATUS_ID)).ToString()))
                 .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => (Convert.ToInt32(src.REQUEST_TYPE_ID)).ToString()))
@@ -70,20 +65,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.SourcePlantNppbkc, opt => opt.MapFrom(src => src.SOURCE_PLANT_NPPBKC_ID))
                 .ForMember(dest => dest.SourcePlantName, opt => opt.MapFrom(src => src.SOURCE_PLANT_NAME))
                 .ForMember(dest => dest.SourcePlantAddress, opt => opt.MapFrom(src => src.SOURCE_PLANT_ADDRESS))
-                .ForMember(dest => dest.SourceOfficeName, opt => opt.MapFrom(src => src.SOURCE_PLANT_COMPANY_NAME))
-                .ForMember(dest => dest.SourceOfficeCode, opt => opt.MapFrom(src => src.SOURCE_PLANT_COMPANY_CODE))
-
-                //.ForMember(dest => dest.DestPlantNpwp, opt => opt.MapFrom(src => src.DEST_PLANT_NPWP))
-                //.ForMember(dest => dest.DestPlantNppbkc, opt => opt.MapFrom(src => src.DEST_PLANT_NPPBKC_ID))
-                //.ForMember(dest => dest.DestPlantName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
-                //.ForMember(dest => dest.DestPlantAddress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
-                //.ForMember(dest => dest.DestOfficeName, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_NAME))
-                //.ForMember(dest => dest.DestOfficeCode, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_CODE))
-
                 .ForMember(dest => dest.FacilityNumber, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
-               // .ForMember(dest => dest.FacilityDate, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE.HasValue ? src.PBCK1.DECREE_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
-
                 .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => (Convert.ToInt32(src.CARRIAGE_METHOD_ID)).ToString()))
 
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.HasValue ? src.GRAND_TOTAL_EX.Value.ToString("#,##0.#0") : "0"))

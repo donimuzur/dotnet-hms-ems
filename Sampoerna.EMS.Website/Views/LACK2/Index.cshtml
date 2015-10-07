@@ -5,20 +5,20 @@
 }
 
 <div class="container-wrap title-page">
-        <div class="row">
-            <div class="col-sm-12">
-                <h3>@ViewBag.Title</h3>
-                <div class="action-button new">
-                    <a href="@Url.Action("Create","LACK2")">
-                        @if (Model.IsShowNewButton)
-                        {
-                            <input type="button" class="btn btn-blue" value="NEW" />
-                        }
-                    </a>
-                </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create","LACK2")">
+                    @if (Model.IsShowNewButton)
+                    {
+                        <input type="button" class="btn btn-blue" value="NEW" />
+                    }
+                </a>
             </div>
         </div>
     </div>
+</div>
 
 <div class="container-wrap">
     <div class="row">
@@ -38,7 +38,6 @@
                             <div class="row">
                                 <label class="col-md-4">NPPBKC ID</label>
                                 <div class="col-md-8">
-                                    @Html.HiddenFor(x=>x.IsOpenDocList)
                                     @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcIdList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
@@ -49,7 +48,7 @@
                                 <label class="col-md-4">Submission Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        @Html.TextBoxFor(m=>m.ReportedOn, new { @class = "form-control" })
+                                        @Html.TextBoxFor(m => m.ReportedOn, new { @class = "form-control" })
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -67,15 +66,15 @@
                         </div>
                     </div>
                     <div class="row">
-                      <div class="last-form">
-                          <div class="col-md-4">
-                              <div class="row">
-                                  <label class="col-md-4">Sender Plant </label>
-                                  <div class="col-md-8">
-                                      @Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control" })
-                                  </div>
-                              </div>
-                          </div>
+                        <div class="last-form">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Sender Plant </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-4">
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
@@ -97,7 +96,7 @@
                         </div>
                     </div>
 
-    }
+                }
             </div>
 
             <div id="contenttable" class="table-container">
@@ -108,74 +107,69 @@
     </div>
 </div>
 
-    @section Scripts
-    {
-        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-        <script type="text/javascript">
-            var isOpenDoc = '@Model.IsOpenDocList';
-            if (isOpenDoc == 'True') {
-                $('#MenuLack2OpenDocument').addClass('active');
-            } else {
-                $('#MenuLack2CompletedDocument').addClass('active');
+@section Scripts
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+        
+        $('#MenuLack2OpenDocument').addClass('@Model.MenuLack2OpenDocument');
+        $('#MenuLack2CompletedDocument').addClass('@Model.MenuLack2CompletedDocument');
+        
+        $(document).ready(function () {
+            setupDataTables();
+        });
+
+        function setupDataTables() {
+
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
+            });
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#lack1Table')) {
+                table = $('#lack1Table').DataTable();
+                table.destroy();
             }
 
-            function setupDataTables() {
-                $('#btn-reset-filter').click(function() {
-                    $(".selectreset").val($(".selectreset option:first").val());
-                });
-                // DataTable
-                var table = null;
-                if ($.fn.dataTable.isDataTable('#lack1Table')) {
-                    table = $('#lack1Table').DataTable();
-                    table.destroy();
-                }
-
-                table = $('#lack1Table').DataTable(
-                    {
-                        "sDom": "Rlfrtip",
-                        "language": {
-                            "zeroRecords": "No records found",
-                            "infoFiltered": "(filtered from _MAX_ total records)"
-                        }
-                    });
-
-                // Setup - add a text input to each footer cell
-                $('#lack1Table .filters th').each(function() {
-                    var idx = $(this).index();
-                    if (idx != 0) {
-                        $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+            table = $('#lack1Table').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
                     }
                 });
 
-                // Apply the search
-                table.columns().eq(0).each(function(colIdx) {
-                    $('input', $('.filters th')[colIdx]).on('keyup change', function() {
-                        table
-                            .column(colIdx)
-                            .search(this.value)
-                            .draw();
-                    });
-                });
-
-                $('#Menulack1ListByNppbkc').addClass('active');
-            }
-
-
-            $(document).ready(function() {
-                setupDataTables();
+            // Setup - add a text input to each footer cell
+            $('#lack1Table .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
             });
 
-
-            function ReloadDataTables() {
-                $('.toggle-row').click(function() {
-
-                    var filter = $(".filters");
-                    filter.slideToggle(100).promise().done(function() {
-
-                    });
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
                 });
-                setupDataTables();
-            }
-        </script>
-    }
+            });
+        }
+        
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            setupDataTables();
+        }
+
+    </script>
+}
 

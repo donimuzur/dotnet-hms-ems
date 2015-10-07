@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Sampoerna.EMS.Website.Models.LACK2
+﻿namespace Sampoerna.EMS.Website.Models.LACK2
 {
     public class LACK2PlantData
     {
@@ -14,5 +9,6 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string Supplier { get; set; }
         public string Period { get; set; }
         public string Status { get; set; }
+        public string StatusName { get; set; }
     }
 }

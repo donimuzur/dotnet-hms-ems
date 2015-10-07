@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.BLL
         private IMessageService _messageService;
         private IUserBLL _userBll;
         private IBrandRegistrationService _brandRegistrationService;
+        private ICK4CDecreeDocBLL _ck4cDecreeDocBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -61,6 +62,7 @@ namespace Sampoerna.EMS.BLL
             _messageService = new MessageService(_logger);
             _userBll = new UserBLL(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
+            _ck4cDecreeDocBll = new CK4CDecreeDocBLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -240,7 +242,7 @@ namespace Sampoerna.EMS.BLL
         {
             var ck4cData = Mapper.Map<Ck4CDto>(_repository.Get(c => c.CK4C_ID == input.DocumentId, null, includeTables).FirstOrDefault());
 
-            var mailProcess = ProsesMailNotificationBody(ck4cData, input.ActionType);
+            var mailProcess = ProsesMailNotificationBody(ck4cData, input.ActionType, input.Comment);
 
             //distinct double To email
             List<string> ListTo = mailProcess.To.Distinct().ToList();
@@ -253,19 +255,20 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private Ck4cMailNotification ProsesMailNotificationBody(Ck4CDto ck4cData, Enums.ActionType actionType)
+        private Ck4cMailNotification ProsesMailNotificationBody(Ck4CDto ck4cData, Enums.ActionType actionType, string comment)
         {
             var bodyMail = new StringBuilder();
             var rc = new Ck4cMailNotification();
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
             var nppbkc = ck4cData.NppbkcId;
+            var firstText = actionType == Enums.ActionType.Reject ? " Document" : string.Empty;
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
             rc.Subject = "CK-4C " + ck4cData.Number + " is " + EnumHelper.GetDescription(ck4cData.Status);
             bodyMail.Append("Dear Team,<br />");
             bodyMail.AppendLine();
-            bodyMail.Append("Kindly be informed, CK-4C is " + EnumHelper.GetDescription(ck4cData.Status) + ". <br />");
+            bodyMail.Append("Kindly be informed, CK-4C" + firstText + " is " + EnumHelper.GetDescription(ck4cData.Status) + ". <br />");
             bodyMail.AppendLine();
             bodyMail.Append("<table><tr><td>Company Code </td><td>: " + ck4cData.CompanyId + "</td></tr>");
             bodyMail.AppendLine();
@@ -275,6 +278,11 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : CK-4C</td></tr>");
             bodyMail.AppendLine();
+            if (actionType == Enums.ActionType.Reject)
+            {
+                bodyMail.Append("<tr><td>Comment</td><td> : " + comment + "</td></tr>");
+                bodyMail.AppendLine();
+            }
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK4C/Details/" + ck4cData.Ck4CId + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
@@ -503,14 +511,9 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
-            //change back to draft
-            dbData.STATUS = Enums.DocumentStatus.Draft;
-
-            //todo ask
-            dbData.APPROVED_BY_POA = null;
-            dbData.APPROVED_DATE_POA = null;
+            dbData.STATUS = Enums.DocumentStatus.Rejected;
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -524,9 +527,6 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
@@ -553,9 +553,6 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
@@ -590,8 +587,11 @@ namespace Sampoerna.EMS.BLL
             dbData.DECREE_DATE = null;
             dbData.GOV_STATUS = null;
 
+            _ck4cDecreeDocBll.DeleteByCk4cId(dbData.CK4C_ID);
+
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
+            input.ActionType = Enums.ActionType.Modified;
 
             AddWorkflowHistory(input);
 
@@ -772,9 +772,48 @@ namespace Sampoerna.EMS.BLL
                     //result.Ck4cItemList.Add(ck4cItem);
                     tempListck4c1.Add(ck4cItem);
                 }
-                ck4cItemGroupByDate.Add(String.Empty, tempListck4c1);
+                
             }
+            //distinct var tempListck4c1
+            var tempCk4cDto = tempListck4c1.Select(c => new
+            {
+                c.CollumNo,
+                c.No,
+                c.NoProd,
+                c.ProdDate,
+                c.ProdType,
+                c.SumBtg,
+                c.BtgGr,
+                c.Merk,
+                c.Isi,
+                c.Hje,
+                c.Total,
+                c.ProdWaste,
+                c.Comment
+            });
 
+            var distinctTempCk4cDto = tempCk4cDto.Distinct().ToList();
+
+            var newDistinctCk4cReportItemDto = distinctTempCk4cDto.Select(c => new Ck4cReportItemDto
+            {
+                CollumNo = c.CollumNo,
+                No = c.No,
+                NoProd = c.NoProd,
+                ProdDate = c.ProdDate,
+                ProdType = c.ProdType,
+                SumBtg = c.SumBtg,
+                BtgGr = c.BtgGr,
+                Merk = c.Merk,
+                Isi = c.Isi,
+                Hje = c.Hje,
+                Total = c.Total,
+                ProdWaste = c.ProdWaste,
+                Comment = c.Comment
+
+            }).ToList();
+
+            //add to dictionary group by date empty
+            ck4cItemGroupByDate.Add(String.Empty, newDistinctCk4cReportItemDto);
             result.Detail.CompanyAddress = address;
 
             var plant = _plantBll.GetT001WById(dtData.PLANT_ID);
@@ -835,7 +874,7 @@ namespace Sampoerna.EMS.BLL
                 var prodDate = j + "-" + result.Detail.ReportedMonth.Substring(0, 3) + "-" + result.Detail.ReportedYear;
                 var prodDateFormat = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), j);
                 var dateStart = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), Convert.ToInt32(result.Detail.ReportedPeriodStart));
-
+                List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
                 foreach (var item in addressPlant)
                 {
                     address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
@@ -844,9 +883,9 @@ namespace Sampoerna.EMS.BLL
                     var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
                     var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
 
-                    List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
+                    
 
-                    foreach (var data in activeBrand)
+                    foreach (var data in activeBrand.Distinct())
                     {
                         var ck4cItem = new Ck4cReportItemDto();
                         var brand = _brandBll.GetById(item, data.FA_CODE);
@@ -873,8 +912,48 @@ namespace Sampoerna.EMS.BLL
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
                     }
-                    ck4cItemGroupByDate.Add(prodDate, tempListck4c2);
+                    
                 }
+                //distinct var tempListck4c2
+                var tempCk4cDto2 = tempListck4c2.Select(c => new
+                {
+                    c.CollumNo,
+                    c.No,
+                    c.NoProd,
+                    c.ProdDate,
+                    c.ProdType,
+                    c.SumBtg,
+                    c.BtgGr,
+                    c.Merk,
+                    c.Isi,
+                    c.Hje,
+                    c.Total,
+                    c.ProdWaste,
+                    c.Comment
+                });
+
+                var distinctTempCk4cDto2 = tempCk4cDto2.Distinct().ToList();
+
+                var newDistinctCk4cReportItemDto2 = distinctTempCk4cDto2.Select(c => new Ck4cReportItemDto
+                {
+                    CollumNo = c.CollumNo,
+                    No = c.No,
+                    NoProd = c.NoProd,
+                    ProdDate = c.ProdDate,
+                    ProdType = c.ProdType,
+                    SumBtg = c.SumBtg,
+                    BtgGr = c.BtgGr,
+                    Merk = c.Merk,
+                    Isi = c.Isi,
+                    Hje = c.Hje,
+                    Total = c.Total,
+                    ProdWaste = c.ProdWaste,
+                    Comment = c.Comment
+
+                }).ToList();
+
+                //add to dictionary group by date
+                ck4cItemGroupByDate.Add(prodDate, newDistinctCk4cReportItemDto2);
             }
 
              //order brand by prod alias using Dictionary<string, List<Ck4cReportItemDto>> each date
@@ -985,6 +1064,17 @@ namespace Sampoerna.EMS.BLL
                 isAllow = true;
 
             return isAllow;
+        }
+
+        public Ck4CDto GetByItem(Ck4CDto item)
+        {
+            var dbData = _repository.Get(c => c.PLANT_ID == item.PlantId && c.NPPBKC_ID == item.NppbkcId
+                                            && c.REPORTED_PERIOD == item.ReportedPeriod && c.REPORTED_MONTH == item.ReportedMonth
+                                            && c.REPORTED_YEAR == item.ReportedYears, null, includeTables).FirstOrDefault();
+
+            var mapResult = Mapper.Map<Ck4CDto>(dbData);
+
+            return mapResult;
         }
 
         #region SummaryReport

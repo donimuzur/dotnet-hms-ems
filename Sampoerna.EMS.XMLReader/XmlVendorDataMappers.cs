@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.XMLReader
 
                         item.LIFNR = vendorCodeXml;
                         item.NAME1 = _xmlMapper.GetElementValue(xElement.Element("NAME1"));
+                        item.NAME2 = _xmlMapper.GetElementValue(xElement.Element("NAME2"));
                         item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
                         item.STRAS = _xmlMapper.GetElementValue(xElement.Element("STRAS"));
                         var isDeleted = _xmlMapper.GetElementValue(xElement.Element("LOEVM"));
