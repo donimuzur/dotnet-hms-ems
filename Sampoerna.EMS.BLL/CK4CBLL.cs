@@ -1059,6 +1059,17 @@ namespace Sampoerna.EMS.BLL
             return isAllow;
         }
 
+        public Ck4CDto GetByItem(Ck4CDto item)
+        {
+            var dbData = _repository.Get(c => c.PLANT_ID == item.PlantId && c.NPPBKC_ID == item.NppbkcId
+                                            && c.REPORTED_PERIOD == item.ReportedPeriod && c.REPORTED_MONTH == item.ReportedMonth
+                                            && c.REPORTED_YEAR == item.ReportedYears, null, includeTables).FirstOrDefault();
+
+            var mapResult = Mapper.Map<Ck4CDto>(dbData);
+
+            return mapResult;
+        }
+
         #region SummaryReport
 
         public List<Ck4CSummaryReportDto> GetSummaryReportsByParam(Ck4CGetSummaryReportByParamInput input)
