@@ -1893,7 +1893,7 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.PoaName = poaInfo.PRINTED_NAME;
                 result.ReportDetails.PoaAddress = poaInfo.POA_ADDRESS;
                 result.ReportDetails.PoaIdCard = poaInfo.ID_CARD;
-                result.ReportDetails.PoaCity = dtData.KPPBC_CITY.ToUpperInvariant();
+                result.ReportDetails.PoaCity = dtData.KPPBC_CITY.ToLowerInvariant();
             }
 
             //for export type

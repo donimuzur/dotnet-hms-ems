@@ -324,6 +324,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View(model);
             }
 
+            var existCk4c = _ck4CBll.GetByItem(item);
+            if (existCk4c != null)
+            {
+                AddMessageInfo("Data CK-4C already exists", Enums.MessageInfoType.Warning);
+                return RedirectToAction("Details", new { id = existCk4c.Ck4CId });
+            }
+
             _ck4CBll.Save(item, CurrentUser.USER_ID);
             AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
             return RedirectToAction("DocumentList");
@@ -577,7 +584,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);
+                var nppbkcId = plant == null ? dataToSave.NppbkcId : plant.NPPBKC_ID;
 
+                dataToSave.NppbkcId = nppbkcId;
                 dataToSave.PlantName = plant == null ? "" : plant.NAME1;
                 dataToSave.CompanyName = company.BUTXT;
                 dataToSave.ModifiedBy = CurrentUser.USER_ID;
