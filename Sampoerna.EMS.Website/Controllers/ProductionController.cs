@@ -57,10 +57,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
                 ProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
-                
+
                 Details = Mapper.Map<List<ProductionDetail>>(_productionBll.GetAllByParam(new ProductionGetByParamInput()))
             });
-           
+
 
             return View("Index", data);
         }
@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantAll();
-           
+
             return model;
         }
 
@@ -150,11 +150,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 data.CreatedDate = DateTime.Now;
 
-                
+
                 try
                 {
 
-                    _productionBll.Save(data,CurrentUser.USER_ID);
+                    _productionBll.Save(data, CurrentUser.USER_ID);
 
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
                          );
@@ -233,7 +233,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View("Edit", model);
             }
 
-            if(model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX 
+            if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX
                 || model.FaCode != model.FaCodeX || Convert.ToDateTime(model.ProductionDate) != Convert.ToDateTime(model.ProductionDateX))
             {
                 var existingData = _productionBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
@@ -264,7 +264,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbPrductionNew.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
             dbPrductionNew.ProdQtyStick = Convert.ToDecimal(model.QtyPackedStr) +
                                           Convert.ToDecimal(model.QtyUnpackedStr);
-            
+
 
             try
             {
@@ -285,13 +285,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (!output.isFromSap)
                 {
-                    if(model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX || model.FaCode != model.FaCodeX 
+                    if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX || model.FaCode != model.FaCodeX
                         || Convert.ToDateTime(model.ProductionDate) != Convert.ToDateTime(model.ProductionDateX))
                     {
                         _productionBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX, Convert.ToDateTime(model.ProductionDateX));
                     }
                 }
-                    
+
                 AddMessageInfo(message, Enums.MessageInfoType.Success);
 
                 return RedirectToAction("Index");
@@ -324,7 +324,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return model;
         }
-        
+
 
         //
         // GET: /Production/Detail
@@ -366,68 +366,67 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult UploadManualProduction(ProductionUploadViewModel model)
         {
             var modelDto = Mapper.Map<ProductionDto>(model);
-            
+
             try
-
             {
-            foreach (var item in modelDto.UploadItems)
-            {
-                var company = _companyBll.GetById(item.CompanyCode);
-                var plant = _plantBll.GetT001WById(item.PlantWerks);
-                var brandCe = _brandRegistrationBll.GetById(item.PlantWerks, item.FaCode);
-                
-                if (item.Uom == "TH")
+                foreach (var item in modelDto.UploadItems)
                 {
-                    item.Uom = "Btg";
-                    item.QtyPacked = item.QtyPacked*1000;
-                    item.QtyUnpacked = item.QtyUnpacked*1000;
-                }
+                    var company = _companyBll.GetById(item.CompanyCode);
+                    var plant = _plantBll.GetT001WById(item.PlantWerks);
+                    var brandCe = _brandRegistrationBll.GetById(item.PlantWerks, item.FaCode);
 
-                if (item.Uom == "KG")
-                {
-                    item.Uom = "G";
-                    item.QtyPacked = item.QtyPacked*1000;
-                    item.QtyUnpacked = item.QtyUnpacked*1000;
-                }
-               
+                    if (item.Uom == "TH")
+                    {
+                        item.Uom = "Btg";
+                        item.QtyPacked = item.QtyPacked * 1000;
+                        item.QtyUnpacked = item.QtyUnpacked * 1000;
+                    }
 
-                item.CompanyName = company.BUTXT;
-                item.PlantName = plant.NAME1;
+                    if (item.Uom == "KG")
+                    {
+                        item.Uom = "G";
+                        item.QtyPacked = item.QtyPacked * 1000;
+                        item.QtyUnpacked = item.QtyUnpacked * 1000;
+                    }
 
-                if (item.BrandDescription != brandCe.BRAND_CE)
-                {
-                    AddMessageInfo("Data Brand Description Is Not valid", Enums.MessageInfoType.Error);
-                    return RedirectToAction("UploadManualProduction");
-                }
 
-                item.CreatedDate = DateTime.Now;
+                    item.CompanyName = company.BUTXT;
+                    item.PlantName = plant.NAME1;
 
-                var existingData = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
-                    Convert.ToDateTime(item.ProductionDate));
+                    if (item.BrandDescription != brandCe.BRAND_CE)
+                    {
+                        AddMessageInfo("Data Brand Description Is Not valid", Enums.MessageInfoType.Error);
+                        return RedirectToAction("UploadManualProduction");
+                    }
 
-                if (existingData != null)
-                {
-                    AddMessageInfo("Data Already Exist, Please Check Data Company Code, Plant Code, Fa Code, and Waste Production Date", Enums.MessageInfoType.Warning);
-                    return RedirectToAction("UploadManualProduction");
-                }
-                
-                _productionBll.SaveUpload(item, CurrentUser.USER_ID);
+                    item.CreatedDate = DateTime.Now;
+
+                    var existingData = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
+                        Convert.ToDateTime(item.ProductionDate));
+
+                    if (existingData != null)
+                    {
+                        AddMessageInfo("Data Already Exist, Please Check Data Company Code, Plant Code, Fa Code, and Waste Production Date", Enums.MessageInfoType.Warning);
+                        return RedirectToAction("UploadManualProduction");
+                    }
+
+                    _productionBll.SaveUpload(item, CurrentUser.USER_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
                        );
                 }
-                
+
             }
-            
+
             catch (Exception ex)
             {
-               
+
                 AddMessageInfo("Error, Data is not Valid", Enums.MessageInfoType.Error);
                 return RedirectToAction("UploadManualProduction");
-               
+
             }
 
             return RedirectToAction("Index");
-                       
+
         }
 
         [HttpPost]
@@ -443,18 +442,19 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         continue;
                     }
-
+                  
+                  
                     var item = new ProductionUploadItems();
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
-                    item.QtyPacked = Convert.ToDecimal(dataRow[4]);
-                    item.QtyUnpacked = Convert.ToDecimal(dataRow[5]);
+                    item.QtyPacked = dataRow[4] == "" ? 0 : Convert.ToDecimal(dataRow[4]);
+                    item.QtyUnpacked = dataRow[5] == "" ? 0  : Convert.ToDecimal(dataRow[5]);
                     item.Uom = dataRow[6];
                     item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
-                  
+
 
                     {
                         model.Add(item);
