@@ -1100,11 +1100,11 @@ namespace Sampoerna.EMS.BLL
                             List<POADto> poaList;
                             switch (ck5Dto.CK5_TYPE)
                             {
-                                case Enums.CK5Type.Export:
-                                    poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                                case Enums.CK5Type.PortToImporter:
+                                    poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     break;
                                 default:
-                                    poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                    poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
                                     break;
                             }
 
