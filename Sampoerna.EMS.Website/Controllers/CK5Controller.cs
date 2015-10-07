@@ -903,9 +903,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUser = CurrentUser.USER_ID;
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.SubmissionNumber;
-                input.NppbkcId = model.DestNppbkcId;
-                if (model.Ck5Type == Enums.CK5Type.Export)
-                    input.NppbkcId = model.SourceNppbkcId;
+                input.NppbkcId = model.SourceNppbkcId;
+                if (model.Ck5Type == Enums.CK5Type.PortToImporter)
+                    input.NppbkcId = model.DestNppbkcId;
                 
 
                 //workflow
