@@ -998,8 +998,12 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.GovApprove:
                     if (input.Ck5Type == Enums.CK5Type.MarketReturn)
                         GovApproveDocumentMarketReturn(input);
-                    else 
+                    else
+                    {
                         GovApproveDocument(input);
+                        isNeedSendNotif = true;
+                    } 
+                        
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
@@ -1107,10 +1111,12 @@ namespace Sampoerna.EMS.BLL
                             foreach (var poaDto in poaList)
                             {
                                 rc.To.Add(poaDto.POA_EMAIL);
-                            }    
+                            }
+                            
                         }
-                       
-                        
+
+                        var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                        rc.CC.Add(userData.EMAIL);
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
@@ -1123,6 +1129,12 @@ namespace Sampoerna.EMS.BLL
                     if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         rc.To.Add(GetManagerEmail(ck5Dto.APPROVED_BY_POA));
+                        var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                        var creatorData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                        if(poaData != null)
+                            rc.CC.Add(poaData.EMAIL);
+                        if(creatorData != null)
+                            rc.CC.Add(creatorData.EMAIL);
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -1136,7 +1148,11 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                            var poaUserData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                            
                             rc.To.Add(userData.EMAIL);
+                            if (poaUserData != null)
+                                rc.CC.Add(poaUserData.EMAIL);
                         }
                     }
                     break;
@@ -1144,6 +1160,19 @@ namespace Sampoerna.EMS.BLL
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
                     rc.To.Add(userDetail.EMAIL);
+                    break;
+                case Enums.ActionType.GovApprove:
+                    var creatorDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                    var poaSender = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                    var poaReceiverList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
+
+                    rc.CC.Add(poaSender.EMAIL);
+                    rc.CC.Add(creatorDetail.EMAIL);
+
+                    foreach (var poaDto in poaReceiverList)
+                    {
+                        rc.To.Add(poaDto.POA_EMAIL);
+                    }
                     break;
             }
             rc.Body = bodyMail.ToString();
