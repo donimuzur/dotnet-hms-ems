@@ -242,7 +242,7 @@ namespace Sampoerna.EMS.BLL
         {
             var ck4cData = Mapper.Map<Ck4CDto>(_repository.Get(c => c.CK4C_ID == input.DocumentId, null, includeTables).FirstOrDefault());
 
-            var mailProcess = ProsesMailNotificationBody(ck4cData, input.ActionType);
+            var mailProcess = ProsesMailNotificationBody(ck4cData, input.ActionType, input.Comment);
 
             //distinct double To email
             List<string> ListTo = mailProcess.To.Distinct().ToList();
@@ -255,19 +255,20 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private Ck4cMailNotification ProsesMailNotificationBody(Ck4CDto ck4cData, Enums.ActionType actionType)
+        private Ck4cMailNotification ProsesMailNotificationBody(Ck4CDto ck4cData, Enums.ActionType actionType, string comment)
         {
             var bodyMail = new StringBuilder();
             var rc = new Ck4cMailNotification();
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
             var nppbkc = ck4cData.NppbkcId;
+            var firstText = actionType == Enums.ActionType.Reject ? " Document" : string.Empty;
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
             rc.Subject = "CK-4C " + ck4cData.Number + " is " + EnumHelper.GetDescription(ck4cData.Status);
             bodyMail.Append("Dear Team,<br />");
             bodyMail.AppendLine();
-            bodyMail.Append("Kindly be informed, CK-4C is " + EnumHelper.GetDescription(ck4cData.Status) + ". <br />");
+            bodyMail.Append("Kindly be informed, CK-4C" + firstText + " is " + EnumHelper.GetDescription(ck4cData.Status) + ". <br />");
             bodyMail.AppendLine();
             bodyMail.Append("<table><tr><td>Company Code </td><td>: " + ck4cData.CompanyId + "</td></tr>");
             bodyMail.AppendLine();
@@ -277,6 +278,11 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : CK-4C</td></tr>");
             bodyMail.AppendLine();
+            if (actionType == Enums.ActionType.Reject)
+            {
+                bodyMail.Append("<tr><td>Comment</td><td> : " + comment + "</td></tr>");
+                bodyMail.AppendLine();
+            }
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK4C/Details/" + ck4cData.Ck4CId + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
