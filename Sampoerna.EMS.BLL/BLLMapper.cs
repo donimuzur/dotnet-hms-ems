@@ -325,6 +325,16 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.LACK2_ID, opt => opt.MapFrom(src => src.Lack2Id))
                 .ForMember(dest => dest.CK5_ID, opt => opt.MapFrom(src => src.Ck5Id));
 
+            Mapper.CreateMap<Lack2DocumentDto, LACK2_DOCUMENT>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack2WorkflowDocumentInput, WorkflowHistoryDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => src.ActionType))
+                .ForMember(dest => dest.FORM_NUMBER, opt => opt.MapFrom(src => src.DocumentNumber))
+                .ForMember(dest => dest.FORM_ID, opt => opt.MapFrom(src => src.DocumentId))
+                .ForMember(dest => dest.COMMENT, opt => opt.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.ACTION_BY, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.ROLE, opt => opt.MapFrom(src => src.UserRole))
+                ;
+
             Mapper.CreateMap<LACK2_ITEM, Lack2ItemDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.LACK2_ITEM_ID))
                 .ForMember(dest => dest.Lack2Id, opt => opt.MapFrom(src => src.LACK2_ID))
