@@ -868,6 +868,10 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+
+            Mapper.CreateMap<COUNTRY, SelectItemModel>().IgnoreAllNonExisting()
+             .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.COUNTRY_CODE))
+             .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.COUNTRY_CODE + "-" + src.COUNTRY_NAME));
         }
     }
 
