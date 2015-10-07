@@ -324,6 +324,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View(model);
             }
 
+            var existCk4c = _ck4CBll.GetByItem(item);
+            if (existCk4c != null)
+            {
+                AddMessageInfo("Data CK-4C already exists", Enums.MessageInfoType.Warning);
+                return RedirectToAction("Details", new { id = existCk4c.Ck4CId });
+            }
+
             _ck4CBll.Save(item, CurrentUser.USER_ID);
             AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
             return RedirectToAction("DocumentList");
