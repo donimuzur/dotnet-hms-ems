@@ -72,6 +72,7 @@
     <Compile Include="BlockStockBLL.cs" />
     <Compile Include="ChangesHistoryBLL.cs" />
     <Compile Include="CK1BLL.cs" />
+    <Compile Include="CK4CDecreeDocBLL.cs" />
     <Compile Include="CK4CItemBLL.cs" />
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />

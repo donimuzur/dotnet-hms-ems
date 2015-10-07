@@ -631,6 +631,7 @@
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
     <Content Include="Scripts\chosen.jquery.min.js" />
     <Content Include="Scripts\ck4cscript.js" />
+    <Content Include="Scripts\ck4c\doccompleted.js" />
     <Content Include="Scripts\ck4c\docupload.js" />
     <Content Include="Scripts\CK5InputManual.js" />
     <Content Include="Scripts\CK5Scripts.js" />
@@ -1180,6 +1181,7 @@
     <Content Include="Views\CK4C\_HomeCompleted.cshtml" />
     <Content Include="Views\CK5\_CK5GovApprovalMarketReturn.cshtml" />
     <Content Include="Views\CK5\CK5MarketReturnCompleted.cshtml" />
+    <Content Include="Views\CK4C\_DecreeDocCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
