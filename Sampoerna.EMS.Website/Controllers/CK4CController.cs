@@ -486,11 +486,6 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.Details = Mapper.Map<DataDocumentList>(ck4cData);
 
-                if (!ValidateEditDocument(model))
-                {
-                    return RedirectToAction("DocumentList");
-                }
-
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
 
                 var plant = _plantBll.GetT001WById(ck4cData.PlantId);
@@ -536,6 +531,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (model.Details.Status == Enums.DocumentStatus.WaitingGovApproval)
                 {
                     model.ActionType = "GovApproveDocument";
+                }
+
+                if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject))
+                {
+
+                }
+                else if (!ValidateEditDocument(model, false))
+                {
+                    return RedirectToAction("Details", new { id });
                 }
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
@@ -669,7 +673,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck4CBll.Ck4cWorkflow(input);
         }
 
-        private bool ValidateEditDocument(Ck4CIndexDocumentListViewModel model)
+        private bool ValidateEditDocument(Ck4CIndexDocumentListViewModel model, bool message = true)
         {
 
             //check is Allow Edit Document
