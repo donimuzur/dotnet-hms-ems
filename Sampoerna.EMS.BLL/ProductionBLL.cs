@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -407,19 +408,18 @@ namespace Sampoerna.EMS.BLL
                 {
                     //double Daily Production Data
                     output.IsValid = false;
-                    messageList.Add("Duplicate Daily Production Data  [" + output.CompanyCode + output.PlantWerks + output.FaCode + output.ProductionDate + "]");
+                    messageList.Add("Duplicate Daily Production Data  [" + output.CompanyCode + ", " + output.PlantWerks + ", " + output.FaCode +", " + output.ProductionDate + "]");
                 }
+
                 //Company Code Validation
                 #region -------------- Company Code Validation --------------
                 List<string> messages;
                 T001 companyTypeData = null;
-                //if (ValidateProductCode(output.ProductCode, out messages, out prodTypeData))
 
-                //use product alias instead of product code
                 if (ValidateCompanyCode(output.CompanyCode, out messages, out companyTypeData))
                 {
                     output.CompanyCode = companyTypeData.BUKRS;
-                   }
+                }
                 else
                 {
                     output.IsValid = false;
@@ -427,6 +427,53 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
+
+                //Plant Code Validation
+                #region -------------- Plant Code Validation --------------
+
+                Plant plantTypeData = null;
+                if (ValidatePlantCode(output.PlantWerks, out messages, out plantTypeData))
+                {
+                    output.PlantWerks = plantTypeData.WERKS;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+
+                #region ---------------FaCode validation-----------------
+                ZAIDM_EX_BRAND brandTypeData ;
+                
+                if (ValidateFaCode(output.PlantWerks, output.FaCode, out messages, out brandTypeData))
+                {
+                    output.FaCode = brandTypeData.FA_CODE ;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+               
+                #region -------------Brand Description--------------------
+                ZAIDM_EX_BRAND brandCeTypeData = null;
+                if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandCeTypeData))
+                {
+                    output.BrandDescription = brandCeTypeData.BRAND_CE;
+                    output.PlantWerks = plantTypeData.WERKS;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+                
                 //Message
                 #region -------------- Set Message Info if exists ---------------
 
@@ -485,5 +532,102 @@ namespace Sampoerna.EMS.BLL
 
             return valResult;
         }
+
+        private bool ValidatePlantCode(string plantCode, out List<string> message,
+          out Plant plantData)
+        {
+            plantData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+
+            #region ------------Plant Code Validation-------------
+            if (!string.IsNullOrWhiteSpace(plantCode))
+            {
+                plantData = _plantBll.GetId(plantCode);
+                if (plantData == null)
+                {
+                    messageList.Add("Plant Code/WERKS [" + plantCode + "] not valid");
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add("Plant Code/WERKS is empty");
+            }
+
+            #endregion
+
+            message = messageList;
+
+            return valResult;
+        }
+
+        private bool ValidateFaCode(string plantWerks, string faCode, out List<string> message,
+            out ZAIDM_EX_BRAND brandData)
+        {
+            brandData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+
+            #region ----------FA Code Validation--------------
+
+            if (!string.IsNullOrWhiteSpace(faCode))
+            {
+                brandData = _brandRegistrationBll.GetByFaCode(plantWerks, faCode);
+                if (brandData == null)
+                {
+                    messageList.Add("Finish Goods [" + faCode + "] not valid");
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add("Finish Goods Code is empty");
+            }
+
+            #endregion
+
+            message = messageList;
+            return valResult;
+        }
+
+        private bool ValidateBrandCe(string plantWerk, string faCode, string brandCe, out List<string> message,
+            out ZAIDM_EX_BRAND brandData)
+        {
+            brandData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+
+            #region ----------BrandCE Validation--------------
+
+            if (!string.IsNullOrWhiteSpace(brandCe))
+            {
+                brandData = _brandRegistrationBll.GetByFaCode(plantWerk,brandCe);
+                if (brandData == null)
+                {
+                    messageList.Add("Brand Description [" + brandCe + "] not registered yet in plant [" + plantWerk + "]");
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add("Finish Goods Code is empty");
+            }
+
+            #endregion
+
+            message = messageList;
+            return valResult;
+        }
+        
     }
 }
