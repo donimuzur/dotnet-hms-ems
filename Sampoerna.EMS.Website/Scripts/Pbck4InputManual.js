@@ -347,7 +347,8 @@ function AddRowPbck4() {
                   "<td>" + totalHje.toFixed(2) + "</td>" +
                   "<td>" + totalTariff.toFixed(2) + "</td>" +
                  "<td>" + $('#uploadNoPengawas').val() + "</td>" +
-                 "<td>" + $('#uploadApprovedQty').val() + "</td>" +
+                 //"<td>" + $('#uploadApprovedQty').val() + "</td>" +
+                 "<td>" + $('#uploadReqQty').val() + "</td>" +
                  "<td>" + $('#uploadRemarks').val() + "</td>" +
 
                 "<td></td>" +
@@ -400,7 +401,8 @@ function UpdateRowPbck4() {
                 $(this).find('td').eq(15).text(totalTariff.toFixed(3));
                 
                 $(this).find('td').eq(16).text($('#uploadNoPengawas').val());
-                $(this).find('td').eq(17).text($('#uploadApprovedQty').val());
+                //$(this).find('td').eq(17).text($('#uploadApprovedQty').val());
+                $(this).find('td').eq(17).text($('#uploadReqQty').val());
                 $(this).find('td').eq(18).text($('#uploadRemarks').val());
               
                 $(this).find('td').eq(20).text($('#uploadCk1Id').val());
@@ -412,4 +414,64 @@ function UpdateRowPbck4() {
 
         $('#Pbck4UploadSave').enable();
     }
+}
+
+function UpdateRowPbck4Detail() {
+   
+    AddValidationClass(true, 'uploadApprovedQty');
+    if ($.isNumeric($('#uploadApprovedQty').val()) == false) {
+        AddValidationClass(false, 'uploadApprovedQty');
+        return;
+    } else {
+        if (parseFloat($('#uploadApprovedQty').val()) < 0) {
+            AddValidationClass(false, 'uploadApprovedQty');
+            return;
+        }
+    }
+    
+        var row = $('#uploadMaterialRow').val();
+
+        var totalHje = parseFloat($('#uploadHje').val()) * parseFloat($('#uploadReqQty').val());
+        var totalTariff = parseFloat($('#uploadTariff').val()) * parseFloat($('#uploadReqQty').val()) * parseFloat($('#uploadContent').val());
+
+
+
+        $('#Ck5UploadTable tr').each(function () {
+
+            if ($(this).find('td').eq(1).text() == row) {
+
+                $(this).find('td').eq(2).text($('#uploadFaCode').val());
+                $(this).find('td').eq(3).text($('#uploadStickerCode').val());
+                //$(this).find('td').eq(4).text($('#uploadCk1No').val());
+                $(this).find('td').eq(4).text($("#uploadCk1No option:selected").text());
+
+                $(this).find('td').eq(5).text($('#uploadCk1Date').val());
+                $(this).find('td').eq(6).text($('#uploadSeriesCode').val());
+                $(this).find('td').eq(7).text($('#uploadBrandName').val());
+                $(this).find('td').eq(8).text($('#uploadProductAlias').val());
+                $(this).find('td').eq(9).text($('#uploadContent').val());
+                $(this).find('td').eq(10).text($('#uploadHje').val());
+                $(this).find('td').eq(11).text($('#uploadTariff').val());
+                $(this).find('td').eq(12).text($('#uploadColour').val());
+                $(this).find('td').eq(13).text($('#uploadReqQty').val());
+
+
+                $(this).find('td').eq(14).text(totalHje.toFixed(3));
+                $(this).find('td').eq(15).text(totalTariff.toFixed(3));
+
+                $(this).find('td').eq(16).text($('#uploadNoPengawas').val());
+                $(this).find('td').eq(17).text($('#uploadApprovedQty').val());
+                $(this).find('td').eq(18).text($('#uploadRemarks').val());
+
+                $(this).find('td').eq(20).text($('#uploadCk1Id').val());
+                $(this).find('td').eq(21).text($('#uploadBlockedStocked').val());
+                $(this).find('td').eq(22).text($('#uploadPbck4ItemId').val());
+                $(this).find('td').eq(23).text('True');
+
+            }
+        });
+        $('#Pbck4UploadModal').modal('hide');
+
+        $('#Pbck4UploadSave').enable();
+    
 }

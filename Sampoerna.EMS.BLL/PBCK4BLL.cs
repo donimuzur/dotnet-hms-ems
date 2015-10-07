@@ -690,7 +690,7 @@ namespace Sampoerna.EMS.BLL
            var bodyMail = new StringBuilder();
            var rc = new MailNotification();
 
-           var rejected = _workflowHistoryBll.RejectedStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck4Dto.PBCK4_ID, FormType = Enums.FormType.PBCK4 });
+           var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck4Dto.PBCK4_ID, FormType = Enums.FormType.PBCK4 });
            var poaList = _poaBll.GetPoaByNppbkcId(pbck4Dto.NppbkcId);
 
            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
@@ -746,13 +746,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         if (rejected != null)
                         {
-                            if (pbck4Dto.APPROVED_BY_POA != null)
-                            {
-                                rc.To.Add(_poaBll.GetById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
-                            }
-                            else {
-                                rc.To.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
-                            }
+                            rc.To.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
                         }
                         else
                         {
@@ -785,7 +779,7 @@ namespace Sampoerna.EMS.BLL
 
                         if (rejected != null)
                         {
-                            rc.CC.Add(_poaBll.GetById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
+                            rc.CC.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
                         }
                         else
                         {
@@ -1186,6 +1180,13 @@ namespace Sampoerna.EMS.BLL
            return pbck4Doc.Count != 0;
        }
 
+       private void UpdatePbck4ItemApprovedQtyById(long id, decimal? approvedQty)
+       {
+           var dbData = _repositoryPbck4Items.GetByID(id);
+           if (dbData == null) return;
+           dbData.APPROVED_QTY = approvedQty;
+           _repositoryPbck4Items.Update(dbData);
+       }
        private void GovApproveDocument(Pbck4WorkflowDocumentInput input)
        {
            var dbData = _repository.GetByID(input.DocumentId);
@@ -1224,6 +1225,12 @@ namespace Sampoerna.EMS.BLL
            pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
 
            dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+
+           //update item updated
+           foreach (var pbck4ItemDto in input.UploadItemDto)
+           {
+               UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
+           }
 
            if (IsCompletedWorkflow(dbData))
            {
@@ -1277,6 +1284,12 @@ namespace Sampoerna.EMS.BLL
            pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
 
            dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+
+           //update item updated
+           foreach (var pbck4ItemDto in input.UploadItemDto)
+           {
+               UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
+           }
 
            if (IsCompletedWorkflow(dbData))
            {

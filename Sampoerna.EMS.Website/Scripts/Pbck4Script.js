@@ -62,6 +62,9 @@ function OnReadyFunction() {
         $('#pbck4TableItem tbody').append(data);
 
      
+        $('#collapseThree').removeClass('collapse');
+        $('#collapseThree').addClass('in');
+        $("#collapseThree").css({ height: "auto" });
 
     });
 }

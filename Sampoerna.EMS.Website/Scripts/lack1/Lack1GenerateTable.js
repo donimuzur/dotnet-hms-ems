@@ -40,6 +40,7 @@ function generateTable(data) {
                 '<input name="IncomeList[' + i + '].Ck5Id" type="hidden" value = "' + data.IncomeList[i].Ck5Id + '" />' +
                 '<input name="IncomeList[' + i + '].RegistrationDate" type="hidden" value = "' + data.IncomeList[i].RegistrationDate + '" />'
                 + '<input name="IncomeList[' + i + '].RegistrationNumber" type="hidden" value = "' + data.IncomeList[i].RegistrationNumber + '" />'
+                + '<input name="IncomeList[' + i + '].StringRegistrationDate" type="hidden" value = "' + data.IncomeList[i].StringRegistrationDate + '" />'
                 + rowIndex + '</td><td>' + data.IncomeList[i].RegistrationNumber + ' - ' + data.IncomeList[i].StringRegistrationDate + '</td>' +
                         '<td>' + '<input name="IncomeList[' + i + '].Amount" type="hidden" value = "' + data.IncomeList[i].Amount + '" />' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
             /*rc.append(item);*/

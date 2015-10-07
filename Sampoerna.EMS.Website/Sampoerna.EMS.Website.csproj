@@ -1182,6 +1182,7 @@
     <Content Include="Views\CK5\_CK5GovApprovalMarketReturn.cshtml" />
     <Content Include="Views\CK5\CK5MarketReturnCompleted.cshtml" />
     <Content Include="Views\CK4C\_DecreeDocCompleted.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadListDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

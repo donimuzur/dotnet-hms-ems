@@ -53,7 +53,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string DocumentNumber { get; set; }
 
         public Pbck4WorkflowDocumentData AdditionalDocumentData { get; set; }
-        
+
+        public List<Pbck4ItemDto> UploadItemDto { get; set; }
     }
 
     public class Pbck4WorkflowDocumentData
