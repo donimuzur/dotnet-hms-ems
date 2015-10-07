@@ -8,8 +8,6 @@
     
 }
 
-
-
 @using (@Html.BeginForm("Edit", "LACK2", FormMethod.Post,  new { @id="form-lack2-edit", @class = "form-excise", role = "form",enctype = "multipart/form-data"  }))
 {
     @Html.AntiForgeryToken()
@@ -406,6 +404,13 @@
             var initialEditNppbkc = true;
             var initialEditPlant = true;
             var initialEditGoodtype = true;
+
+            $('#MenuLack2OpenDocument').addClass('active');
+            
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportClientsListToExcel", "Lack2", new { id = Model.Lack2Model.Lack2Id })';
+            });
+            
             $(function() {
                 openPanel();
                 //$('#Lack2Model_LevelPlantId').html('');
