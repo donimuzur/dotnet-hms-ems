@@ -756,6 +756,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.TobaccoGoodType, opt => opt.MapFrom(src => src.ExGoodTyp + "-" + src.ExTypDesc))
                 .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.LevelPlantName))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.NppbkcId))
                 .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PeriodYear + "-" + src.PeriodMonth.ToString("00")));
 
@@ -765,7 +766,9 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.LevelPlantName))
                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.LevelPlantId))
-               .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PeriodYear + "-" + src.PeriodMonth.ToString("00")));
+               .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+               .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PeriodYear + "-" + src.PeriodMonth.ToString("00")))
+               ;
 
             Mapper.CreateMap<LACK2Model, Lack2Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Lack2Number, opt => opt.MapFrom(src => src.Lack2Number))
@@ -865,6 +868,10 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+
+            Mapper.CreateMap<COUNTRY, SelectItemModel>().IgnoreAllNonExisting()
+             .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.COUNTRY_CODE))
+             .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.COUNTRY_CODE + "-" + src.COUNTRY_NAME));
         }
     }
 

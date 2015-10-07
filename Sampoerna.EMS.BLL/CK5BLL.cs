@@ -324,8 +324,31 @@ namespace Sampoerna.EMS.BLL
                 {
                     dbData.STATUS_ID = Enums.DocumentStatus.Draft;
                 }
-              
 
+                //dest country name
+                if (!string.IsNullOrEmpty(dbData.DEST_COUNTRY_CODE))
+                {
+                    var dbCountry = _countryBll.GetCountryByCode(dbData.DEST_COUNTRY_CODE);
+                    if (dbCountry != null)
+                        dbData.DEST_COUNTRY_NAME = dbCountry.COUNTRY_NAME;
+                }
+
+                //set change material
+                foreach (var ck5MaterialDto in input.Ck5Material)
+                {
+                    if (ck5MaterialDto.CK5_MATERIAL_ID != 0)
+                    {
+                        //find in db ck5_material
+                        foreach (var ck5Material in dbData.CK5_MATERIAL)
+                        {
+                            if (ck5MaterialDto.CK5_MATERIAL_ID == ck5Material.CK5_MATERIAL_ID)
+                            {
+                                var originMaterial = Mapper.Map<CK5MaterialDto>(ck5Material);
+                                SetChangesHistory(originMaterial, ck5MaterialDto, input.UserId);
+                            }
+                        }
+                    }
+                }
                 //delete child first
                 foreach (var ck5Material in dbData.CK5_MATERIAL.ToList())
                 {
@@ -619,119 +642,62 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        //private void SetChangesHistory(CK5MaterialDto origin, CK5MaterialDto data, string userId)
-        //{
-        //    //todo check the new value
-        //    var changesData = new Dictionary<string, bool>();
+        private void SetChangesHistory(CK5MaterialDto origin, CK5MaterialDto data, string userId)
+        {
+            //todo check the new value
+            var changesData = new Dictionary<string, bool>();
 
-        //    changesData.Add("KPPBC_CITY", origin.KPPBC_CITY == data.KPPBC_CITY);
-        //    changesData.Add("REGISTRATION_NUMBER", origin.REGISTRATION_NUMBER == data.REGISTRATION_NUMBER);
-
-        //    changesData.Add("EX_GOODS_TYPE", origin.EX_GOODS_TYPE == data.EX_GOODS_TYPE);
-
-        //    changesData.Add("EX_SETTLEMENT_ID", origin.EX_SETTLEMENT_ID == data.EX_SETTLEMENT_ID);
-        //    changesData.Add("EX_STATUS_ID", origin.EX_STATUS_ID == data.EX_STATUS_ID);
-        //    changesData.Add("REQUEST_TYPE_ID", origin.REQUEST_TYPE_ID == data.REQUEST_TYPE_ID);
-        //    changesData.Add("SOURCE_PLANT_ID", origin.SOURCE_PLANT_ID == (data.SOURCE_PLANT_ID));
-        //    changesData.Add("DEST_PLANT_ID", origin.DEST_PLANT_ID == (data.DEST_PLANT_ID));
-
-        //    changesData.Add("INVOICE_NUMBER", origin.INVOICE_NUMBER == data.INVOICE_NUMBER);
-        //    changesData.Add("INVOICE_DATE", origin.INVOICE_DATE == (data.INVOICE_DATE));
-
-        //    changesData.Add("PBCK1_DECREE_ID", origin.PBCK1_DECREE_ID == (data.PBCK1_DECREE_ID));
-        //    changesData.Add("CARRIAGE_METHOD_ID", origin.CARRIAGE_METHOD_ID == (data.CARRIAGE_METHOD_ID));
-
-        //    changesData.Add("GRAND_TOTAL_EX", origin.GRAND_TOTAL_EX == (data.GRAND_TOTAL_EX));
-
-        //    changesData.Add("PACKAGE_UOM_ID", origin.PACKAGE_UOM_ID == data.PACKAGE_UOM_ID);
-
-        //    changesData.Add("DESTINATION_COUNTRY", origin.DEST_COUNTRY_NAME == data.DEST_COUNTRY_NAME);
-
-        //    changesData.Add("SUBMISSION_DATE", origin.SUBMISSION_DATE == data.SUBMISSION_DATE);
-
-        //    foreach (var listChange in changesData)
-        //    {
-        //        if (listChange.Value) continue;
-        //        var changes = new CHANGES_HISTORY();
-        //        changes.FORM_TYPE_ID = Enums.MenuList.CK5;
-        //        changes.FORM_ID = origin.CK5_ID.ToString();
-        //        changes.FIELD_NAME = listChange.Key;
-        //        changes.MODIFIED_BY = userId;
-        //        changes.MODIFIED_DATE = DateTime.Now;
-        //        switch (listChange.Key)
-        //        {
-        //            case "KPPBC_CITY":
-        //                changes.OLD_VALUE = origin.KPPBC_CITY;
-        //                changes.NEW_VALUE = data.KPPBC_CITY;
-        //                break;
-        //            case "REGISTRATION_NUMBER":
-        //                changes.OLD_VALUE = origin.REGISTRATION_NUMBER;
-        //                changes.NEW_VALUE = data.REGISTRATION_NUMBER;
-        //                break;
-        //            case "EX_GOODS_TYPE":
-        //                changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_GOODS_TYPE);
-        //                changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_GOODS_TYPE);
-        //                break;
-        //            case "EX_SETTLEMENT_ID":
-        //                changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_SETTLEMENT_ID);
-        //                changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_SETTLEMENT_ID);
-        //                break;
-        //            case "EX_STATUS_ID":
-        //                changes.OLD_VALUE = EnumHelper.GetDescription(origin.EX_STATUS_ID);
-        //                changes.NEW_VALUE = EnumHelper.GetDescription(data.EX_STATUS_ID);
-        //                break;
-        //            case "REQUEST_TYPE_ID":
-        //                changes.OLD_VALUE = EnumHelper.GetDescription(origin.REQUEST_TYPE_ID);
-        //                changes.NEW_VALUE = EnumHelper.GetDescription(data.REQUEST_TYPE_ID);
-        //                break;
-        //            case "SOURCE_PLANT_ID":
-        //                changes.OLD_VALUE = origin.SOURCE_PLANT_ID;
-        //                changes.NEW_VALUE = data.SOURCE_PLANT_ID;
-        //                break;
-        //            case "DEST_PLANT_ID":
-        //                changes.OLD_VALUE = origin.DEST_PLANT_ID;
-        //                changes.NEW_VALUE = data.DEST_PLANT_ID;
-        //                break;
-        //            case "INVOICE_NUMBER":
-        //                changes.OLD_VALUE = origin.INVOICE_NUMBER;
-        //                changes.NEW_VALUE = data.INVOICE_NUMBER;
-        //                break;
-        //            case "INVOICE_DATE":
-        //                changes.OLD_VALUE = origin.INVOICE_DATE != null ? origin.INVOICE_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
-        //                changes.NEW_VALUE = data.INVOICE_DATE != null ? data.INVOICE_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
-        //                break;
-        //            case "PBCK1_DECREE_ID":
-
-        //                changes.OLD_VALUE = origin.PbckNumber;
-        //                changes.NEW_VALUE = data.PbckNumber;
-        //                break;
-
-        //            case "CARRIAGE_METHOD_ID":
-        //                changes.OLD_VALUE = origin.CARRIAGE_METHOD_ID.HasValue ? EnumHelper.GetDescription(origin.CARRIAGE_METHOD_ID) : "NULL";
-        //                changes.NEW_VALUE = data.CARRIAGE_METHOD_ID.HasValue ? EnumHelper.GetDescription(data.CARRIAGE_METHOD_ID) : "NULL";
-        //                break;
-
-        //            case "GRAND_TOTAL_EX":
-        //                changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
-        //                changes.NEW_VALUE = data.GRAND_TOTAL_EX.ToString();
-        //                break;
-
-        //            case "PACKAGE_UOM_ID":
-        //                changes.OLD_VALUE = origin.PackageUomName;
-        //                changes.NEW_VALUE = data.PackageUomName;
-        //                break;
-        //            case "DESTINATION_COUNTRY":
-        //                changes.OLD_VALUE = origin.DEST_COUNTRY_NAME;
-        //                changes.NEW_VALUE = data.DEST_COUNTRY_NAME;
-        //                break;
-        //            case "SUBMISSION_DATE":
-        //                changes.OLD_VALUE = origin.SUBMISSION_DATE != null ? origin.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
-        //                changes.NEW_VALUE = data.SUBMISSION_DATE != null ? data.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
-        //                break;
-        //        }
-        //        _changesHistoryBll.AddHistory(changes);
-        //    }
-        //}
+            changesData.Add("MATERIAL_NUMBER", origin.BRAND == data.BRAND);
+            changesData.Add("QTY", origin.QTY == data.QTY);
+            changesData.Add("UOM", origin.UOM == data.UOM);
+            changesData.Add("CONVERTION", origin.CONVERTION == data.CONVERTION);
+            changesData.Add("CONVERTED_UOM", origin.CONVERTED_UOM == data.CONVERTED_UOM);
+            changesData.Add("USD_VALUE", origin.USD_VALUE == data.USD_VALUE);
+            changesData.Add("NOTE", origin.NOTE == (data.NOTE));
+           
+            foreach (var listChange in changesData)
+            {
+                if (listChange.Value) continue;
+                var changes = new CHANGES_HISTORY();
+                changes.FORM_TYPE_ID = Enums.MenuList.CK5;
+                changes.FORM_ID = origin.CK5_ID.ToString();
+                changes.FIELD_NAME = listChange.Key;
+                changes.MODIFIED_BY = userId;
+                changes.MODIFIED_DATE = DateTime.Now;
+                switch (listChange.Key)
+                {
+                    case "MATERIAL_NUMBER":
+                        changes.OLD_VALUE = origin.BRAND;
+                        changes.NEW_VALUE = data.BRAND;
+                        break;
+                    case "QTY":
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.QTY);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.QTY);
+                        break;
+                    case "UOM":
+                        changes.OLD_VALUE = origin.UOM;
+                        changes.NEW_VALUE = data.UOM;
+                        break;
+                    case "CONVERTION":
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.CONVERTION);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.CONVERTION);
+                        break;
+                    case "CONVERTED_UOM":
+                        changes.OLD_VALUE = origin.CONVERTED_UOM;
+                        changes.NEW_VALUE = data.CONVERTED_UOM;
+                        break;
+                    case "USD_VALUE":
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.USD_VALUE);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.USD_VALUE);
+                        break;
+                    case "NOTE":
+                        changes.OLD_VALUE = origin.NOTE;
+                        changes.NEW_VALUE = data.NOTE;
+                        break;
+                }
+                _changesHistoryBll.AddHistory(changes);
+            }
+        }
 
         private void SetChangesHistory(CK5Dto origin, CK5Dto data, string userId)
         {
@@ -968,8 +934,12 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.GovApprove:
                     if (input.Ck5Type == Enums.CK5Type.MarketReturn)
                         GovApproveDocumentMarketReturn(input);
-                    else 
+                    else
+                    {
                         GovApproveDocument(input);
+                        isNeedSendNotif = true;
+                    } 
+                        
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
@@ -1066,21 +1036,23 @@ namespace Sampoerna.EMS.BLL
                             List<POADto> poaList;
                             switch (ck5Dto.CK5_TYPE)
                             {
-                                case Enums.CK5Type.Export:
-                                    poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                                case Enums.CK5Type.PortToImporter:
+                                    poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     break;
                                 default:
-                                    poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                    poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
                                     break;
                             }
 
                             foreach (var poaDto in poaList)
                             {
                                 rc.To.Add(poaDto.POA_EMAIL);
-                            }    
+                            }
+                            
                         }
-                       
-                        
+
+                        var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                        rc.CC.Add(userData.EMAIL);
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
@@ -1093,6 +1065,12 @@ namespace Sampoerna.EMS.BLL
                     if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         rc.To.Add(GetManagerEmail(ck5Dto.APPROVED_BY_POA));
+                        var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                        var creatorData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                        if(poaData != null)
+                            rc.CC.Add(poaData.EMAIL);
+                        if(creatorData != null)
+                            rc.CC.Add(creatorData.EMAIL);
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -1106,7 +1084,11 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                            var poaUserData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                            
                             rc.To.Add(userData.EMAIL);
+                            if (poaUserData != null)
+                                rc.CC.Add(poaUserData.EMAIL);
                         }
                     }
                     break;
@@ -1114,6 +1096,19 @@ namespace Sampoerna.EMS.BLL
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
                     rc.To.Add(userDetail.EMAIL);
+                    break;
+                case Enums.ActionType.GovApprove:
+                    var creatorDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                    var poaSender = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                    var poaReceiverList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
+
+                    rc.CC.Add(poaSender.EMAIL);
+                    rc.CC.Add(creatorDetail.EMAIL);
+
+                    foreach (var poaDto in poaReceiverList)
+                    {
+                        rc.To.Add(poaDto.POA_EMAIL);
+                    }
                     break;
             }
             rc.Body = bodyMail.ToString();
@@ -1834,7 +1829,7 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.PoaName = poaInfo.PRINTED_NAME;
                 result.ReportDetails.PoaAddress = poaInfo.POA_ADDRESS;
                 result.ReportDetails.PoaIdCard = poaInfo.ID_CARD;
-                result.ReportDetails.PoaCity = dtData.KPPBC_CITY.ToUpperInvariant();
+                result.ReportDetails.PoaCity = dtData.KPPBC_CITY.ToLowerInvariant();
             }
 
             //for export type
@@ -1844,8 +1839,9 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.DestPlantNppbkc = "-";
                 result.ReportDetails.DestPlantName = "-";
                 result.ReportDetails.DestPlantAddress = "-";
-                result.ReportDetails.DestOfficeName = "-";
-                result.ReportDetails.DestOfficeCode = "-";
+
+                result.ReportDetails.DestOfficeName = result.ReportDetails.SourceOfficeName;
+                result.ReportDetails.DestOfficeCode = result.ReportDetails.SourceOfficeCode;
 
                 result.ReportDetails.DestinationCountry = dtData.DEST_COUNTRY_NAME;
                 result.ReportDetails.DestinationCode = dtData.DEST_COUNTRY_CODE;
@@ -2238,6 +2234,14 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS_ID = Enums.DocumentStatus.Draft;
 
             inputWorkflowHistory.ActionType = Enums.ActionType.Created;
+
+            //dest country name
+            if (!string.IsNullOrEmpty(dbData.DEST_COUNTRY_CODE))
+            {
+                var dbCountry = _countryBll.GetCountryByCode(dbData.DEST_COUNTRY_CODE);
+                if (dbCountry != null)
+                    dbData.DEST_COUNTRY_NAME = dbCountry.COUNTRY_NAME;
+            }
 
             foreach (var ck5Item in input.Ck5Material)
             {

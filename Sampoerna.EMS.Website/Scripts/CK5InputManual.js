@@ -59,6 +59,8 @@ function EditRow(o) {
     $('#uploadMaterialPlant').val(nRow.find("td").eq(18).html());
     //=============================
     
+    $('#uploadMaterialId').val(nRow.find("td").eq(19).html());
+    
     ClearValidation();
     
     $("#lblTitleInputManual").text('Edit Input');
@@ -132,8 +134,11 @@ function UpdateRow() {
         var exciseQty = convertedQty;
         var exciseUOM = $('#uploadConvertedUom').val();
 
+        var materialId = $('#uploadMaterialId').val();
+        if ($.isNumeric(materialId) == false) {
+            materialId = 0;
+        }
         
-
         if (exciseUOM == "KG") {
             exciseUOM = "G";
             exciseQty = convertedQty * 1000;
@@ -159,6 +164,8 @@ function UpdateRow() {
                 
                 $(this).find('td').eq(16).text(exciseQty);
                 $(this).find('td').eq(17).text(exciseUOM);
+
+                $(this).find('td').eq(19).text(materialId);
                
             }
         });

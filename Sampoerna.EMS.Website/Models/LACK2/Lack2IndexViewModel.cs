@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject.DTOs;
-using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
 {
@@ -34,8 +30,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         // for the completed documents
         public LACK2FilterViewModel SearchInput { get; set; }
 
-        public bool IsOpenDocList { get; set; }
-
+        public string MenuLack2OpenDocument { get; set; }
+        public string MenuLack2CompletedDocument { get; set; }
 
     }
 }
