@@ -577,7 +577,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);
+                var nppbkcId = plant == null ? dataToSave.NppbkcId : plant.NPPBKC_ID;
 
+                dataToSave.NppbkcId = nppbkcId;
                 dataToSave.PlantName = plant == null ? "" : plant.NAME1;
                 dataToSave.CompanyName = company.BUTXT;
                 dataToSave.ModifiedBy = CurrentUser.USER_ID;
