@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.BLL
         private IMessageService _messageService;
         private IUserBLL _userBll;
         private IBrandRegistrationService _brandRegistrationService;
+        private ICK4CDecreeDocBLL _ck4cDecreeDocBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -61,6 +62,7 @@ namespace Sampoerna.EMS.BLL
             _messageService = new MessageService(_logger);
             _userBll = new UserBLL(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
+            _ck4cDecreeDocBll = new CK4CDecreeDocBLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -503,14 +505,9 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
-            //change back to draft
-            dbData.STATUS = Enums.DocumentStatus.Draft;
-
-            //todo ask
-            dbData.APPROVED_BY_POA = null;
-            dbData.APPROVED_DATE_POA = null;
+            dbData.STATUS = Enums.DocumentStatus.Rejected;
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -524,9 +521,6 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
@@ -553,9 +547,6 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
@@ -589,6 +580,8 @@ namespace Sampoerna.EMS.BLL
             dbData.CK4C_DECREE_DOC = null;
             dbData.DECREE_DATE = null;
             dbData.GOV_STATUS = null;
+
+            _ck4cDecreeDocBll.DeleteByCk4cId(dbData.CK4C_ID);
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
