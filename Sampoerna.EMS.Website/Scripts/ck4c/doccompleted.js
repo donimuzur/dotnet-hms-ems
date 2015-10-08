@@ -1,4 +1,4 @@
-﻿var file_sk = $('.file_upload').length - 1;
+﻿var file_sk = 0;
 
 $('#upload-file-sk').click(function () {
 

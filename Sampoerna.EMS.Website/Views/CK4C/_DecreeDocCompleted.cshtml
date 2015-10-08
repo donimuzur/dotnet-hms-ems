@@ -20,13 +20,10 @@
                             var count = 0;
                             foreach (var file in Model.Details.Ck4cDecreeDoc)
                             {
-                                var idCount = "Details_Ck4cDecreeFiles_" + count + "_";
-                                var nameCount = "Details.Ck4cDecreeFiles[" + count + "]";
-                                <div class="row file_upload">
+                                <div class="row">
                                     <div class="col-sm-9">
                                         <i class="fa fa-file"></i>
                                         <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                        <input type="file" id="@idCount" name="@nameCount">
                                     </div>
                                     <div class="col-sm-3">
                                         <button class="btn btn-danger full" type="button" onclick="removeUploadButton(@count, $(this).closest('.row'))">Remove</button>

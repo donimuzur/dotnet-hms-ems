@@ -528,6 +528,9 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
+            //delete data doc first
+            _ck4cDecreeDocBll.DeleteByCk4cId(dbData.CK4C_ID);
+
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.StatusGovCk4c.Approved);
@@ -553,6 +556,9 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            //delete data doc first
+            _ck4cDecreeDocBll.DeleteByCk4cId(dbData.CK4C_ID);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
