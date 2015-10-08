@@ -68,5 +68,7 @@ namespace Sampoerna.EMS.Contract
        List<CK5> GetAllCompletedPortToImporter();
 
        Back1DataOutput GetBack1ByCk5Id(long ck5Id);
+
+       void CK5CompletedAttachment(CK5WorkflowDocumentInput input);
    }
 }

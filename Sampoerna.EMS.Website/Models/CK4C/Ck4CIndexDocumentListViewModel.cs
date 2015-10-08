@@ -76,6 +76,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public List<Ck4cItemData> Ck4cItemData { get; set; }
         public List<HttpPostedFileBase> Ck4cDecreeFiles { get; set; }
         public List<Ck4cDecreeDocModel> Ck4cDecreeDoc { get; set; }
+        public List<string> Ck4cUploadedDoc { get; set; }
         public string IsSaveSubmit { get; set; }
         public string Comment { get; set; }
     }
