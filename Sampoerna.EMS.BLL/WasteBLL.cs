@@ -6,8 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
@@ -131,7 +133,7 @@ namespace Sampoerna.EMS.BLL
         {
             var dbUpload = Mapper.Map<WASTE>(wasteUpload);
             _repository.InsertOrUpdate(dbUpload);
-            
+
 
             _uow.SaveChanges();
         }
@@ -160,7 +162,7 @@ namespace Sampoerna.EMS.BLL
                     var changes = new CHANGES_HISTORY()
                     {
                         FORM_TYPE_ID = Core.Enums.MenuList.CK4C,
-                        FORM_ID = "Waste_"  + data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" +
+                        FORM_ID = "Waste_" + data.CompanyCode + "_" + data.PlantWerks + "_" + data.FaCode + "_" +
                             data.WasteProductionDate.ToString("ddMMMyyyy"),
                         FIELD_NAME = listChange.Key,
                         MODIFIED_BY = userId,
@@ -239,7 +241,7 @@ namespace Sampoerna.EMS.BLL
                     _changesHistoryBll.AddHistory(changes);
 
                 }
-                
+
             }
 
         }
@@ -258,6 +260,11 @@ namespace Sampoerna.EMS.BLL
                 _repository.Delete(dbData);
                 _uow.SaveChanges();
             }
+        }
+
+        public List<WasteUploadItemsOuput> ValidationWasteUploadDocumentProcess(List<WasteUploadItemsInput> inputs)
+        {
+            throw new NotImplementedException();
         }
     }
 }
