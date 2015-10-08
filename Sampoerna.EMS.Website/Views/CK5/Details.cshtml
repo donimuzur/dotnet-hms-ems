@@ -39,6 +39,11 @@
                         {
                             <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelSAP" />
                         }
+                        
+                          if (Model.IsCompleted)
+                        {
+                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveAttachment" />
+                        }
                     }
 
                 </div>
@@ -280,11 +285,13 @@
 
 @section scripts {
     <script src="~/Scripts/CK5Scripts.js"></script>
-    @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+    @if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject) 
+        || Model.IsCompleted)
     {
         <script src="~/Scripts/jquery.form.min.js"></script>
         <script src="~/Scripts/UploadExcel.js"></script>
         <script src="~/Scripts/CK5ScriptUploadGovFile.js"></script>
+      
     }
 
 
@@ -496,5 +503,12 @@
             window.location = "@Url.Action("CancelSAPDocument", "CK5", new {id = @Model.Ck5Id})";
         });
 
+        $("#btnSaveAttachment").click(function () {
+
+
+            $('#GovApproveForm').submit();                
+            
+
+        });
     </script>
 }
