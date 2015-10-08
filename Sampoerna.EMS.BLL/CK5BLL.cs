@@ -1124,16 +1124,22 @@ namespace Sampoerna.EMS.BLL
                     rc.To.Add(userDetail.EMAIL);
                     break;
                 case Enums.ActionType.GovApprove:
-                    var creatorDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    var poaSender = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
-                    var poaReceiverList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
-
-                    rc.CC.Add(poaSender.EMAIL);
-                    rc.CC.Add(creatorDetail.EMAIL);
-
-                    foreach (var poaDto in poaReceiverList)
+                    if (ck5Dto.CK5_TYPE != Enums.CK5Type.Export && ck5Dto.CK5_TYPE != Enums.CK5Type.PortToImporter)
                     {
-                        rc.To.Add(poaDto.POA_EMAIL);
+                        var creatorDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                        var poaSender = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+
+
+                        rc.CC.Add(poaSender.EMAIL);
+                        rc.CC.Add(creatorDetail.EMAIL);
+
+
+                        var poaReceiverList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
+                        foreach (var poaDto in poaReceiverList)
+                        {
+                            rc.To.Add(poaDto.POA_EMAIL);
+                        }
+
                     }
                     break;
             }
