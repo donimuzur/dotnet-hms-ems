@@ -235,6 +235,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year)
         {
             var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).ToList();
+
+            var result = _productionBll.GetExactResult(data);
+
             return Json(data);
         }
 
@@ -388,6 +391,57 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Details
 
+        public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var ck4cData = _ck4CBll.GetById(id.Value);
+
+            if (ck4cData == null)
+            {
+                return HttpNotFound();
+            }
+
+            var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+            var nppbkcId = ck4cData.NppbkcId;
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = ck4cData.Number;
+            workflowInput.DocumentStatus = ck4cData.Status;
+            workflowInput.NPPBKC_Id = nppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            var changesHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                    id.Value.ToString()));
+
+            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
+
+            var model = new Ck4CIndexDocumentListViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Details = Mapper.Map<DataDocumentList>(ck4cData),
+                WorkflowHistory = workflowHistory,
+                ChangesHistoryList = changesHistory,
+                PrintHistoryList = printHistory
+            };
+
+            model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
+
+            model.AllowEditCompleted = _ck4CBll.AllowEditCompletedDocument(ck4cData, CurrentUser.USER_ID);
+
+            return View(model);
+        }
+
         public ActionResult Details(int? id)
         {
             if (!id.HasValue)
@@ -483,7 +537,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Ck4CIndexDocumentListViewModel();
             model = InitialModel(model);
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || (CurrentUser.UserRole == Enums.UserRole.POA && ck4cData.Status == Enums.DocumentStatus.WaitingForApproval))
             {
                 //redirect to details for approval/rejected
                 return RedirectToAction("Details", new { id });
@@ -739,11 +793,6 @@ namespace Sampoerna.EMS.Website.Controllers
                                 };
                                 model.Details.Ck4cDecreeDoc.Add(decreeDoc);
                             }
-                            else
-                            {
-                                AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                                return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
-                            }
                         }
                     }
 
@@ -807,11 +856,6 @@ namespace Sampoerna.EMS.Website.Controllers
                                     CREATED_DATE = DateTime.Now
                                 };
                                 model.Details.Ck4cDecreeDoc.Add(decreeDoc);
-                            }
-                            else
-                            {
-                                AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                                return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
                             }
                         }
                     }

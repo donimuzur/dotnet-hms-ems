@@ -7,9 +7,9 @@ using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.LACK1
 {
-    public class Lack1ItemViewModel : Lack1BaseItemModel
+    public class Lack1EditViewModel : Lack1BaseItemModel
     {
-        public Lack1ItemViewModel()
+        public Lack1EditViewModel()
         {
             WorkflowHistory = new List<WorkflowHistoryViewModel>();
         }
@@ -64,8 +64,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public DateTime? ApprovedManagerDate { get; set; }
         public List<Lack1DocumentItemModel> Lack1Document { get; set; }
         public List<Lack1IncomeDetailItemModel> IncomeList { get; set; }
-        public List<Lack1Pbck1MappingItemModel> Lack1Pbck1Mapping { get; set; }
-        public List<Lack1PlantItemModel> Lack1Plant { get; set; }
+        //public List<Lack1PlantItemModel> Lack1Plant { get; set; }
         public List<Lack1ProductionDetailItemModel> ProductionList { get; set; }
         public List<Lack1SummaryProductionItemModel> SummaryProductionList { get; set; }//todo: set manually from controller to create summary of ProductionList
         public string Noted { get; set; }
@@ -105,66 +104,4 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
     }
-
-
-    #region ------------ Class Definition related with Lack1ItemViewModel -----------------
-    public class Lack1SummaryProductionItemModel
-    {
-        public decimal Amount { get; set; }
-        public string UomId { get; set; }
-        public string UomDesc { get; set; }
-    }
-
-    public class Lack1ProductionDetailItemModel
-    {
-        public long Lack1ProductionDetailId { get; set; }
-        public int Lack1Id { get; set; }
-        public string ProdCode { get; set; }
-        public string ProductType { get; set; }
-        public string ProductAlias { get; set; }
-        public decimal Amount { get; set; }
-        public string UomId { get; set; }
-        public string UomDesc { get; set; }
-    }
-
-    public class Lack1PlantItemModel
-    {
-        public long Lack1PlantId { get; set; }
-        public int Lack1Id { get; set; }
-        public string Werks { get; set; }
-        public string Name1 { get; set; }
-        public string Address { get; set; }
-    }
-
-    public class Lack1Pbck1MappingItemModel
-    {
-        public long LACK1_PBCK1_MAPPING_ID { get; set; }
-        public int LACK1_ID { get; set; }
-        public int PBCK1_ID { get; set; }
-        public string PBCK1_NUMBER { get; set; }
-        public DateTime? DECREE_DATE { get; set; }
-        public string DisplayDecreeDate { get; set; }
-    }
-
-    public class Lack1IncomeDetailItemModel
-    {
-        public long Lack1IncomeDetailId { get; set; }
-        public int Lack1Id { get; set; }
-        public long Ck5Id { get; set; }
-        public decimal Amount { get; set; }
-        public string RegistrationNumber { get; set; }
-        public DateTime? RegistrationDate { get; set; }
-        public string StringRegistrationDate { get; set; }
-    }
-
-    public class Lack1DocumentItemModel
-    {
-        public int LACK1_DOCUMENT_ID { get; set; }
-        public int LACK1_ID { get; set; }
-        public string FILE_NAME { get; set; }
-        public string FILE_PATH { get; set; }
-    }
-
-    #endregion
-
 }

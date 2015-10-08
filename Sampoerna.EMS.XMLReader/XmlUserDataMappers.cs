@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.XMLReader
                         roleMap.END_DATE = _xmlMapper.GetDate(xElement.Element("ENDDAT").Value);
 
                         var user = new USER();
-                        user.USER_ID = roleMap.MSACCT;
+                        user.USER_ID = roleMap.MSACCT.ToUpper();
                         user.FIRST_NAME = _xmlMapper.GetElementValue(xElement.Element("NACHN_EN")).Trim();
                         user.LAST_NAME = _xmlMapper.GetElementValue(xElement.Element("VORNA_EN")).Trim();
                         user.EMAIL = _xmlMapper.GetElementValue(xElement.Element("WKEMAIL")).Trim();
