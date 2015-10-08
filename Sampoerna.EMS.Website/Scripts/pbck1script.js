@@ -10,13 +10,9 @@ function (value, element, params) {
 
 function setUpload() {
     if ($("#Detail_GoodType").val() == "") {
-        $("#btn-prod-conv-upload").prop("disabled", true);
-        $("#ProdConvExcelfile").prop("disabled", true);
         $("#btn-prod-plan-upload").prop("disabled", true);
         $("#ProdPlanExcelfile").prop("disabled", true);
     } else {
-        $("#btn-prod-conv-upload").prop("disabled", false);
-        $("#ProdConvExcelfile").prop("disabled", false);
         $("#btn-prod-plan-upload").prop("disabled", false);
         $("#ProdPlanExcelfile").prop("disabled", false);
     }
@@ -205,6 +201,10 @@ function prodPlanSaveClick() {
 }
 
 function prodConvGenerateClick(url) {
+    if ($("#Detail_NppbkcId").val() == "") {
+        alert("Please Fill field NPPBKC");
+        return false;
+    }
     var fileName = $('[name="ProdConvExcelfile"]').val().trim();
     var pos = fileName.lastIndexOf('.');
     var extension = (pos <= 0) ? '' : fileName.substring(pos);
@@ -218,6 +218,7 @@ function prodConvGenerateClick(url) {
         var file = document.getElementById("ProdConvExcelfile").files[i];
         formData.append("prodConvExcelFile", file);
     }
+    formData.append("nppbkc", $("#Detail_NppbkcId").val());
 
     $.ajax({
         url: url,
@@ -319,6 +320,13 @@ function prodPlanClear() {
     $('#ProdPlanContent').html("");
     $('#ProdPlanContent').html(html_upload);
     $('#Detail_Pbck1ProdPlan tbody').html('');
+}
+
+function prodConvClear() {
+    $('#prod-conv-save').attr('disabled', 'disabled');
+
+    $('#ProdConvContent tbody').html("");
+    $('#Detail_Pbck1ProdConverter tbody').html('');
 }
 
 function pbck1TypeOnchange() {

@@ -332,7 +332,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationDetailsViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
-                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T001W.WERKS))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.WERKS))
                 .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
                 .ForMember(dest => dest.PersonalizationCode, opt => opt.MapFrom(src => src.PER_CODE))
                 .ForMember(dest => dest.PersonalizationCodeDescription,
@@ -829,10 +829,17 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
                
             Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting();
-
-
+            
             Mapper.CreateMap<ProductionUploadViewModel, ProductionDto>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<ProductionUploadItemsInput, ProductionUploadItems>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ProductionUploadItems, ProductionUploadItemsInput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ProductionUploadItemsOutput, ProductionUploadItemsInput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ProductionUploadItemsInput, ProductionUploadItemsOutput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ProductionUploadItemsOutput, ProductionUploadItems>().IgnoreAllNonExisting();
+            //Mapper.CreateMap<ProductionUploadViewModel, ProductionUploadItemsOutput>().IgnoreAllNonExisting();
 
             #endregion
 
@@ -868,6 +875,10 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+
+            Mapper.CreateMap<COUNTRY, SelectItemModel>().IgnoreAllNonExisting()
+             .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.COUNTRY_CODE))
+             .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.COUNTRY_CODE + "-" + src.COUNTRY_NAME));
         }
     }
 
