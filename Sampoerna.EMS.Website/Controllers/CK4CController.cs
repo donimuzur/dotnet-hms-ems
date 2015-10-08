@@ -435,29 +435,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
 
-            //validate approve and reject
-            var input = new WorkflowAllowApproveAndRejectInput
-            {
-                DocumentStatus = model.Details.Status,
-                FormView = Enums.FormViewType.Detail,
-                UserRole = CurrentUser.UserRole,
-                CreatedUser = ck4cData.CreatedBy,
-                CurrentUser = CurrentUser.USER_ID,
-                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
-                DocumentNumber = model.Details.Number,
-                NppbkcId = nppbkcId,
-                ManagerApprove = model.Details.ApprovedByManager
-            };
-
-            ////workflow
-            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
-            model.AllowApproveAndReject = allowApproveAndReject;
-
-            if (!allowApproveAndReject)
-            {
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
-            }
-
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
 
             model.AllowEditCompleted = _ck4CBll.AllowEditCompletedDocument(ck4cData, CurrentUser.USER_ID);
@@ -816,11 +793,6 @@ namespace Sampoerna.EMS.Website.Controllers
                                 };
                                 model.Details.Ck4cDecreeDoc.Add(decreeDoc);
                             }
-                            else
-                            {
-                                AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                                return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
-                            }
                         }
                     }
 
@@ -884,11 +856,6 @@ namespace Sampoerna.EMS.Website.Controllers
                                     CREATED_DATE = DateTime.Now
                                 };
                                 model.Details.Ck4cDecreeDoc.Add(decreeDoc);
-                            }
-                            else
-                            {
-                                AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                                return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
                             }
                         }
                     }
