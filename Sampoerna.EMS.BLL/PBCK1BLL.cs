@@ -1966,16 +1966,16 @@ namespace Sampoerna.EMS.BLL
                         if (poaData3 != null)
                         {
                             //creator is poa user
-                            rc.To.Add(GetManagerEmail(pbck1Data.CreatedById));
-                            rc.CC.Add(_userBll.GetUserById(poaData3.POA_ID).EMAIL);
+                            rc.CC.Add(GetManagerEmail(pbck1Data.CreatedById));
+                            rc.To.Add(_userBll.GetUserById(poaData3.POA_ID).EMAIL);
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(pbck1Data.CreatedById);
-                            rc.To.Add(_userBll.GetUserById(pbck1Data.ApprovedByPoaId).EMAIL);
-                            rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
-                            rc.CC.Add(userData.EMAIL);
+                            rc.CC.Add(_userBll.GetUserById(pbck1Data.ApprovedByPoaId).EMAIL);
+                            rc.CC.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+                            rc.To.Add(userData.EMAIL);
                         }
                         rc.IsCCExist = true;
                     break;
@@ -1984,16 +1984,16 @@ namespace Sampoerna.EMS.BLL
                         if (poaData4 != null)
                         {
                             //creator is poa user
-                            rc.To.Add(GetManagerEmail(pbck1Data.CreatedById));
-                            rc.CC.Add(_userBll.GetUserById(poaData4.POA_ID).EMAIL);
+                            rc.CC.Add(GetManagerEmail(pbck1Data.CreatedById));
+                            rc.To.Add(_userBll.GetUserById(poaData4.POA_ID).EMAIL);
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(pbck1Data.CreatedById);
-                            rc.To.Add(_userBll.GetUserById(pbck1Data.ApprovedByPoaId).EMAIL);
-                            rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
-                            rc.CC.Add(userData.EMAIL);
+                            rc.CC.Add(_userBll.GetUserById(pbck1Data.ApprovedByPoaId).EMAIL);
+                            rc.CC.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+                            rc.To.Add(userData.EMAIL);
                         }
                         rc.IsCCExist = true;
                     break;
@@ -2002,16 +2002,16 @@ namespace Sampoerna.EMS.BLL
                         if (poaData5 != null)
                         {
                             //creator is poa user
-                            rc.To.Add(GetManagerEmail(pbck1Data.CreatedById));
-                            rc.CC.Add(_userBll.GetUserById(poaData5.POA_ID).EMAIL);
+                            rc.CC.Add(GetManagerEmail(pbck1Data.CreatedById));
+                            rc.To.Add(_userBll.GetUserById(poaData5.POA_ID).EMAIL);
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(pbck1Data.CreatedById);
-                            rc.To.Add(_userBll.GetUserById(pbck1Data.ApprovedByPoaId).EMAIL);
-                            rc.To.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
-                            rc.CC.Add(userData.EMAIL);
+                            rc.CC.Add(_userBll.GetUserById(pbck1Data.ApprovedByPoaId).EMAIL);
+                            rc.CC.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
+                            rc.To.Add(userData.EMAIL);
                         }
                         rc.IsCCExist = true;
                     break;
