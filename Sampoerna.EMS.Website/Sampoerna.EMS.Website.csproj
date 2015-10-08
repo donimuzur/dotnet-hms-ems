@@ -1080,13 +1080,6 @@
     <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
     <Content Include="Views\CK5\CK5InputMaterial.cshtml" />
     <Content Include="Views\CK5\_CK5SealingInput.cshtml" />
-    <Content Include="Views\CK4C\Index.cshtml" />
-    <Content Include="Views\CK4C\_CreateDailyProduction.cshtml" />
-    <Content Include="Views\CK4C\_Ck4CTableIndex.cshtml" />
-    <Content Include="Views\CK4C\WasteProductionIndex.cshtml" />
-    <Content Include="Views\CK4C\_CK4CTableWasteProduction.cshtml" />
-    <Content Include="Views\CK4C\Ck4CCreateDailyProduction.cshtml" />
-    <Content Include="Views\CK4C\Ck4CCreateWasteProduction.cshtml" />
     <Content Include="Views\LACK2\Edit.cshtml" />
     <Content Include="Views\LACK2\Detail.cshtml" />
     <Content Include="Views\CK4C\DocumentList.cshtml" />
@@ -1184,6 +1177,7 @@
     <Content Include="Views\CK4C\_DecreeDocCompleted.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadListDetail.cshtml" />
     <Content Include="Views\Error\NotRegistered.cshtml" />
+    <Content Include="Views\CK4C\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

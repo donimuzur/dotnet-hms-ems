@@ -423,10 +423,7 @@ namespace Sampoerna.EMS.BLL
                 //validate
                 var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
                 if (dbMaterial == null)
-                {
                     messageList.Add("Material Number Not Exist");
-                    continue;
-                }
                 else
                 {
                     if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
@@ -458,11 +455,11 @@ namespace Sampoerna.EMS.BLL
                         messageList.Add("Selected UOM must be in KG / G / L");
                     else
                     {
-                        
+
                         var material = _materialBll.getByID(ck5MaterialInput.Brand, ck5MaterialInput.Plant);
-                        if(ck5MaterialInput.ConvertedUom == material.BASE_UOM_ID)
+                        if (ck5MaterialInput.ConvertedUom == material.BASE_UOM_ID)
                             continue;
-                        
+
                         var matUom = material.MATERIAL_UOM;
 
                         var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Any();
@@ -483,7 +480,6 @@ namespace Sampoerna.EMS.BLL
                             messageList.Add("convertion to SAP Base UOM in material master not exist");
                         }
                     }
-
                 }
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
@@ -2409,15 +2405,13 @@ namespace Sampoerna.EMS.BLL
                 dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
             }
 
-            
-
             foreach (var ck5MaterialDto in dataXmlDto.Ck5Material)
             {
-                var material = _materialBll.getByID(ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID);
+                var material = _materialBll.getByID(ck5MaterialDto.BRAND, dataXmlDto.SOURCE_PLANT_ID);
 
-                if(ck5MaterialDto.CONVERTED_UOM == material.BASE_UOM_ID)
+                if (ck5MaterialDto.CONVERTED_UOM == material.BASE_UOM_ID)
                     continue;
-                
+
                 var matUom = material.MATERIAL_UOM;
 
                 var isConvertionExist = matUom.Any(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM);
@@ -2427,7 +2421,7 @@ namespace Sampoerna.EMS.BLL
                     //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
                     var umren = matUom.Single(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).UMREN;
                     if (umren != null)
-                        ck5MaterialDto.CONVERTED_QTY = ck5MaterialDto.CONVERTED_QTY*umren.Value;
+                        ck5MaterialDto.CONVERTED_QTY = ck5MaterialDto.CONVERTED_QTY * umren.Value;
                     else
                     {
                         Exception ex = new Exception("convertion value in material master is null");
