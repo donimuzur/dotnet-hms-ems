@@ -21,7 +21,9 @@ namespace Sampoerna.EMS.XMLReader
         public string _xmlName = null;
         public ILogger logger;
         public IUnitOfWork uow;
-        public List<String> Errors; 
+        public List<String> Errors;
+        private int _errorCount;
+    
         public XmlDataMapper(string xmlName)
         {
             
@@ -32,6 +34,10 @@ namespace Sampoerna.EMS.XMLReader
             Errors = new List<string>();
         }
 
+        public void AddError(int error)
+        {
+            this._errorCount += error;
+        }
 
         private XElement ReadXMLFile()
         {
@@ -42,6 +48,8 @@ namespace Sampoerna.EMS.XMLReader
                 return null;
             return XElement.Load(_xmlName);
         }
+
+
 
         public XElement GetElement(string elementName)
         {
@@ -115,7 +123,7 @@ namespace Sampoerna.EMS.XMLReader
             //    fileName = MoveFile();
             //    return fileName;
             //}
-            if (errorCount == 0 && itemToInsert > 0)
+            if (errorCount == 0 && itemToInsert > 0 && Errors.Count == 0)
             {
                 fileName = MoveFile();
                 return fileName;
