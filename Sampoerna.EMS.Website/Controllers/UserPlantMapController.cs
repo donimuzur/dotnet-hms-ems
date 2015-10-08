@@ -172,6 +172,26 @@ namespace Sampoerna.EMS.Website.Controllers
                         
                     }
 
+                    //check if model plant have less than current plant then delete other plant
+                    var savePlant = model.Plants.Select(c => c.WERKS).ToList();
+                    var currentPlant = currenPlant.Select(c => c.PLANT_ID).ToList();
+
+                    //get the other plant to delete
+                    var exceptPlant = currentPlant.Except(savePlant).ToList();
+                    
+                    if (exceptPlant.Any())
+                    {
+                        foreach (var plant in exceptPlant)
+                        {
+                            var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,plant);
+                            if (existingPlantMap != null)
+                            {
+
+                                _userPlantMapBll.Delete(existingPlantMap.USER_PLANT_MAP_ID);
+                            }
+                        }
+
+                    }
                 }
            
 
