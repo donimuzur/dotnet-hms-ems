@@ -327,6 +327,7 @@
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
     <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1EditViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1GenerateInputModel.cs" />
     <Compile Include="Models\LACK1\Lack1IndexCompletedDocumentViewModel.cs" />
@@ -1186,6 +1187,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\upload\Lack1\" />
     <Folder Include="Models\WorkflowHistory\" />
     <Folder Include="Views\AspxReportViewer\" />
     <Folder Include="Views\SettingsGlobal\" />
