@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<ZAIDM_EX_GOODTYP> _repositoryGood;
         private IGenericRepository<UOM> _repositoryUom;
         private IGenericRepository<T001W> _repositoryPlant;
+        private IGenericRepository<T001> _repositoryCompany;
         private ChangesHistoryBLL _changesHistoryBll;
 
         public WasteBLL(ILogger logger, IUnitOfWork uow)
@@ -36,7 +37,8 @@ namespace Sampoerna.EMS.BLL
             _repositoryBrand = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryGood = _uow.GetGenericRepository<ZAIDM_EX_GOODTYP>();
             _repositoryUom = _uow.GetGenericRepository<UOM>();
-            _repositoryPlant = _uow.GetGenericRepository<T001W>();
+            _repositoryPlant = uow.GetGenericRepository<T001W>();
+            _repositoryCompany = _uow.GetGenericRepository<T001>();
             _changesHistoryBll = new ChangesHistoryBLL(uow, logger);
         }
         public List<WasteDto> GetAllByParam(WasteGetByParamInput input)
@@ -264,7 +266,84 @@ namespace Sampoerna.EMS.BLL
 
         public List<WasteUploadItemsOuput> ValidationWasteUploadDocumentProcess(List<WasteUploadItemsInput> inputs)
         {
-            throw new NotImplementedException();
+            var messageList = new List<string>();
+            var outputList = new List<WasteUploadItemsOuput>();
+
+            foreach (var inputItem in inputs)
+            {
+                messageList.Clear();
+                var output = Mapper.Map<WasteUploadItemsOuput>(inputItem);
+
+                output.IsValid = true;
+
+                var checkCountdataWasteProduction =
+                    inputs.Where(
+                        c =>
+                            c.CompanyCode == output.CompanyCode && c.PlantWerks == output.PlantWerks &&
+                            c.FaCode == output.FaCode && c.WasteProductionDate == output.WasteProductionDate).ToList();
+
+                if (checkCountdataWasteProduction.Count > 1)
+                {
+                    //Existing Waste Production data
+                    output.IsValid = false;
+                    messageList.Add("Duplicate Waste Production Data  [" + output.CompanyCode + ", " + output.PlantWerks + ", "
+                        + output.FaCode + ", " + output.WasteProductionDate + "]");
+                }
+
+                List<string> messages;
+
+                //Company Code Validation
+                #region -------------- Company Code Validation ---------------
+
+                T001 companyTypedata = null;
+                if (ValidateCompanyCode(output.CompanyCode,out messages, out companyTypedata))
+                {
+                    output.CompanyCode = companyTypedata.BUKRS;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+                #endregion
+
+                outputList.Add(output);
+            }
+
+            return outputList;
+        }
+
+        private bool ValidateCompanyCode(string companyCode, out List<string> message, out T001 companyData)
+        {
+            companyData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+
+            #region --------------Company Code Validation-------------
+
+            if (!string.IsNullOrWhiteSpace(companyCode))
+            {
+                companyData = _repositoryCompany.GetByID(companyCode);
+                if (companyData == null)
+                {
+                    messageList.Add("Company Code [" + companyCode + "] not Valid");
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add("Company Code is Empty");
+            }
+
+            #endregion
+
+            message = messageList;
+
+            return valResult;
+
         }
     }
 }

@@ -36,6 +36,7 @@
 }
 @section Scripts
 {
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
@@ -54,8 +55,26 @@
             return '<td>' + text + '</td>';
         }
 
+        function changeToDecimal(selector, type) {
+            $(selector).each(function () {
+                if (type == "val") {
+                    var val = $(this).val();
+                    val = parseFloat(Math.round(val * 100) / 100).toFixed(2);
+                    $(this).val(ThausandSeperator(val, 2));
+
+                } else {
+                    var val = $(this).html();
+                    val = parseFloat(Math.round(val * 100) / 100).toFixed(2);
+                    $(this).html(ThausandSeperator(val, 2));
+                }
+            });
+        }
+
         function createColumnWithHiddenField(text, name) {
             return '<td><input type="hidden" name="' + name + '" value="' + text + '">' + text + '</td>';
+        }
+        function createColumnWithHiddenFieldDecimal(text, name) {
+            return '<td><input type="hidden" name="' + name + '" value="' + text + '"><span class="decimal">' + text + '</span></td>';
         }
         function uploadXmlFile() {
 
@@ -97,16 +116,20 @@
                     createColumnWithHiddenField(uploaditems[i].PlantWerks, 'UploadItems[' + i + '].PlantWerks') +
                     createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems[' + i + '].FaCode') +
                     createColumnWithHiddenField(uploaditems[i].BrandDescription, 'UploadItems[' + i + '].BrandDescription') +
-                    createColumnWithHiddenField(uploaditems[i].MarkerRejectStickQty, 'UploadItems[' + i + '].MarkerRejectStickQty') +
+                    createColumnWithHiddenFieldDecimal(uploaditems[i].MarkerRejectStickQty, 'UploadItems[' + i + '].MarkerRejectStickQty') +
                     createColumnWithHiddenField(uploaditems[i].PackerRejectStickQty, 'UploadItems[' + i + '].PackerRejectStickQty') +
                     createColumnWithHiddenField(uploaditems[i].DustWasteGramQty, 'UploadItems[' + i + '].DustWasteGramQty') +
                     createColumnWithHiddenField(uploaditems[i].FloorWasteGramQty, 'UploadItems[' + i + '].FloorWasteGramQty') +
                     createColumnWithHiddenField(uploaditems[i].DustWasteStickQty, 'UploadItems[' + i + '].DustWasteStickQty') +
                     createColumnWithHiddenField(uploaditems[i].FloorWasteStickQty, 'UploadItems[' + i + '].FloorWasteStickQty') +
-                    createColumnWithHiddenField(uploaditems[i].WasteProductionDate, 'UploadItems[' + i + '].WasteProductionDate') + + '</tr>';
+                    createColumnWithHiddenField(uploaditems[i].WasteProductionDate, 'UploadItems[' + i + '].WasteProductionDate') +
+                    createColumnWithHiddenField(uploaditems[i].Message, 'UploadItems[' + i + '].Message') + + '</tr>';
+
                         $('#tb-upload-excel').append(tr);
                     }
                     $('#btnSave').enable();
+                    
+                    changeToDecimal('.decimal', 'html');
                 }
             });
         };

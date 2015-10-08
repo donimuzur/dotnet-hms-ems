@@ -394,12 +394,12 @@ namespace Sampoerna.EMS.BLL
                 var output = Mapper.Map<ProductionUploadItemsOutput>(inputItem);
                 output.IsValid = true;
 
-                var checkCountdataProduction =
+                var checkCountdataDailyProduction =
                     inputs.Where(
                         c =>
                             c.CompanyCode == output.CompanyCode && c.PlantWerks == output.PlantWerks &&
                             c.FaCode == output.FaCode && c.ProductionDate == output.ProductionDate).ToList();
-                if (checkCountdataProduction.Count > 1)
+                if (checkCountdataDailyProduction.Count > 1)
                 {
                     //double Daily Production Data
                     output.IsValid = false;
@@ -616,7 +616,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                messageList.Add("Finish Goods Code is empty");
+                messageList.Add("Brand Description  is empty");
             }
 
             #endregion
