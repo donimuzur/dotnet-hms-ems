@@ -26,8 +26,18 @@ namespace Sampoerna.EMS.XMLReader
 
         private IXmlDataReader XmlReaderFactoryDaily(string xmlfile)
         {
+            if (xmlfile.Contains("POA"))
+            {
+                if (xmlfile.Contains("POAMAP"))
+                {
+                    return new XmlPoaMapDataMapper(xmlfile);
+                }
+                
+                return new XmlPoaDataMapper(xmlfile);
+                
 
-            if (xmlfile.Contains("BRANDREG"))
+            }
+            else if (xmlfile.Contains("BRANDREG"))
             {
                 return new XmlBrandDataMapper(xmlfile);
             }
@@ -63,11 +73,7 @@ namespace Sampoerna.EMS.XMLReader
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)
         {
-            if (xmlfile.Contains("POA"))
-            {
-                return new XmlPoaDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("COY"))
+            if (xmlfile.Contains("COY"))
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }

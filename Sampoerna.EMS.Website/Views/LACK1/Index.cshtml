@@ -9,9 +9,12 @@
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
-                <a href="@Url.Action("Create", "LACK1", new { lack1Level = Sampoerna.EMS.Core.Enums.Lack1Level.Nppbkc })">
-                    <input type="button" class="btn btn-blue" value="NEW" />
-                </a>
+                @if (Model.IsShowNewButton)
+                {
+                    <a href="@Url.Action("Create", "LACK1", new { lack1Level = Sampoerna.EMS.Core.Enums.Lack1Level.Nppbkc })">
+                        <input type="button" class="btn btn-blue" value="NEW" />
+                    </a>
+                }
             </div>
         </div>
     </div>
@@ -100,7 +103,7 @@
     <script type="text/javascript">
 
         function setupDataTables() {
-            $('#btn-reset-filter').click(function() {
+            $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
                 $('#SubmissionDate').val('');
             });
@@ -121,7 +124,7 @@
                 });
 
             // Setup - add a text input to each footer cell
-            $('#lack1Table .filters th').each(function() {
+            $('#lack1Table .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -129,8 +132,8 @@
             });
 
             // Apply the search
-            table.columns().eq(0).each(function(colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -140,7 +143,7 @@
 
             $('#Menulack1ListByNppbkc').addClass('active');
         }
-        
+
         $("#NppbkcId").change(function () {
             if ($("#NppbkcId").length) {
                 var nbck = $(this).find("option:selected").text();
@@ -151,15 +154,15 @@
                     $('#SearchInput_POA').append('<option value="">All</option>');
                     $('#SearchInput_PlantId').append('<option value="">All</option>');
                 } else {
-                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', {nppbkcId: nbck});
-                } 
+                    ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', { nppbkcId: nbck });
+                }
             }
         });
-        
+
         $(document).ready(function () {
             setupDataTables();
         });
-        
+
         function ajaxSelectNppbck(url, formData) {
             if (formData.nppbkcId) {
                 $.ajax({
@@ -178,7 +181,7 @@
                 });
             }
         }
-        
+
         function ReloadDataTables() {
             $('.toggle-row').click(function () {
 
@@ -190,4 +193,4 @@
             setupDataTables();
         }
     </script>
-    }
+}

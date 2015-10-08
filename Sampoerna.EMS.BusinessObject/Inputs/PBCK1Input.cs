@@ -75,19 +75,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         
     }
 
-    public class Lack2WorkflowDocumentInput
-    {
-        public long DocumentId { get; set; }
-        public string UserId { get; set; }
-        public Enums.UserRole UserRole { get; set; }
-        public string Comment { get; set; }
-        public Enums.ActionType ActionType { get; set; }
-        public string DocumentNumber { get; set; }
-
-        
-
-    }
-
     public class Pbck1WorkflowDocumentData
     {
         public decimal QtyApproved { get; set; }
@@ -107,6 +94,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
         public string ExcisableGoodsTypeId { get; set; }
         public string SupplierPlantId { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
     }
 
     public class Pbck1GetSupplierPlantByParamInput

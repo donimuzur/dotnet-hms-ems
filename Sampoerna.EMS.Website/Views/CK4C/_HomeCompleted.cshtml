@@ -62,6 +62,7 @@
                                     <div class="row">
                                         <label class="col-md-4">POA</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Details.PoaList)
                                             @Html.TextBoxFor(model => model.Details.ApprovedByPoa, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
                                         </div>
                                     </div>
@@ -282,4 +283,4 @@
     </div>
 </div>
 
-@Html.Partial("_DecreeDocUpload")
+@Html.Partial("_DecreeDocCompleted")

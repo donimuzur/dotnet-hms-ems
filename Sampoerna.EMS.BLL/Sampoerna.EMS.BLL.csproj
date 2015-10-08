@@ -72,6 +72,7 @@
     <Compile Include="BlockStockBLL.cs" />
     <Compile Include="ChangesHistoryBLL.cs" />
     <Compile Include="CK1BLL.cs" />
+    <Compile Include="CK4CDecreeDocBLL.cs" />
     <Compile Include="CK4CItemBLL.cs" />
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
@@ -98,6 +99,8 @@
     <Compile Include="Services\Pbck3Services.cs" />
     <Compile Include="Services\T001KService.cs" />
     <Compile Include="Services\T001WService.cs" />
+    <Compile Include="Services\ZaidmExNppbkcService.cs" />
+    <Compile Include="Services\ZaidmExProdTypeService.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
     <Compile Include="LACK2BLL.cs" />
     <Compile Include="Pbck1DecreeDocBLL.cs" />

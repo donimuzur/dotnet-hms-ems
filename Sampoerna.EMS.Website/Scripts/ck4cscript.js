@@ -195,7 +195,7 @@ function getProductionData(urlFunction) {
     var isNppbkc = $('#Details_NppbkcId').is(":disabled");
     if (comp == "" || (plant == "" && isNppbkc) || (nppbkc == "" && isPlant) || period == "" || month == "" || year == "") {
         $('#tb-body-ck4c').html("");
-        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="9">no data<td></tr>');
+        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
     }
     else {
         $.ajax({
@@ -241,7 +241,7 @@ function getProductionData(urlFunction) {
                     }
                 } else {
                     $('#tb-body-ck4c').html("");
-                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="13">no data<td></tr>');
+                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
                 }
             }
         });
@@ -309,9 +309,21 @@ function nppbkcIdOnChange(url) {
     }
 }
 
+function plantIdOnChange(url) {
+    $('#Details_PoaList').val('');
+    $('#displayPoaList').val('');
+
+    if ($("#Details_PlantId").length) {
+        var plant = $('#Details_PlantId').find("option:selected").val();
+        if (plant != '') {
+            ajaxSelectNppbck({ plantId: plant }, url);
+        }
+    }
+}
+
 function ajaxSelectNppbck(formData, url) {
     //debugger;
-    if (formData.nppbkcid) {
+    if (formData) {
         //Load POA
         ajaxLoadPoa(formData, url);
     }

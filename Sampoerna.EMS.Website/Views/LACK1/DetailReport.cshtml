@@ -83,13 +83,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2 col-md-offset-8">
                                     <button class="btn btn-blue full">FILTER</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <input id="btn-export-to-excel" type="button" class="btn btn-blue full" value="EXPORT" />
                                 </div>
                             </div>
                         }
@@ -105,6 +108,7 @@
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/js/vendors/jquery.table2excel.js"></script>
     <script type="text/javascript" language="javascript" class="init">
 
         $('#MenuLack1OpenDocument').removeClass('open');
@@ -112,9 +116,9 @@
         $('#MenuLack1DetailReport').addClass('active');
 
         $(document).ready(function () {
-            
+
             //setupDataTables();
-            
+
             $('#SearchView_CompanyCode').on('change', function () {
                 OnCompanyCodeChange();
             });
@@ -126,8 +130,18 @@
             $('#SearchView_ExcisableGoodsType').on('change', function () {
                 OnExcisableGoodsTypeChange();
             });
+
+            var now = new Date();
+
+            $('#btn-export-to-excel').click(function () {
+                $("#lack1Table").table2excel({
+                    name: "Worksheet Name",
+                    filename: "lack1_detailreport_" + now.format('ddMMyyyyHHmmss') //do not include extension
+                });
+            });
+
         });
-        
+
         function setupDataTables() {
 
             // DataTable
@@ -147,7 +161,7 @@
                 });
 
         }
-        
+
         function OnCompanyCodeChange() {
             if ($("#SearchView_CompanyCode").length) {
                 var companyCode = $('#SearchView_CompanyCode').find("option:selected").val();

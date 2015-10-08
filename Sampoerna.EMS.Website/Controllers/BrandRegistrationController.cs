@@ -52,12 +52,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        public ActionResult Details(string plant, string facode)
+        public ActionResult Details(string plant, string facode,string stickercode)
         {
             var model = new BrandRegistrationDetailsViewModel();
-            
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
+
+            var dbBrand = _brandRegistrationBll.GetById(plant, facode, stickercode);
             model = Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);
             model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.MainMenu = Enums.MenuList.MasterData;
@@ -200,13 +200,13 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        public ActionResult Edit(string plant, string facode)
+        public ActionResult Edit(string plant, string facode,string stickercode)
         {
            
             var model = new BrandRegistrationEditViewModel();
 
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
+            var dbBrand = _brandRegistrationBll.GetById(plant, facode,stickercode);
           
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
                 return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE });
@@ -224,7 +224,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Edit(BrandRegistrationEditViewModel model)
         {
-            var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode);
+            var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode,model.StickerCode);
             if (dbBrand == null)
             {
                 ModelState.AddModelError("BrandName", "Data Not Found");
@@ -422,10 +422,10 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         } 
 
-        public ActionResult Delete(string plant, string facode)
+        public ActionResult Delete(string plant, string facode,string stickercode)
         {
             AddHistoryDelete(plant, facode);
-            var isDeleted = _brandRegistrationBll.Delete(plant, facode);
+            var isDeleted = _brandRegistrationBll.Delete(plant, facode,stickercode);
             
             if(isDeleted)
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;

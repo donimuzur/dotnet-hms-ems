@@ -78,7 +78,7 @@
         });
 
         $("#Details_PlantId").change(function () {
-            GetNppbkcByPlant();
+            plantIdOnChange('@Url.Action("GetPoaByPlantId", "CK4C")');
         });
 
         $('#btnCancel').click(function (e) {
@@ -116,11 +116,6 @@
                 ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
                 }
             }
-    }
-
-    function GetNppbkcByPlant() {
-        var plant = $('#Details_PlantId').find("option:selected").val();
-        var nppbkc = '';
     }
 
     </script>
