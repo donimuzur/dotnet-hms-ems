@@ -2420,12 +2420,12 @@ namespace Sampoerna.EMS.BLL
                 
                 var matUom = material.MATERIAL_UOM;
 
-                var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).Any();
+                var isConvertionExist = matUom.Any(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM);
 
                 if (isConvertionExist)
                 {
                     //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                    var umren = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).Single().UMREN;
+                    var umren = matUom.Single(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).UMREN;
                     if (umren != null)
                         ck5MaterialDto.CONVERTED_QTY = ck5MaterialDto.CONVERTED_QTY*umren.Value;
                     else
