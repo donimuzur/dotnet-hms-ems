@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<T001W> _repositoryPlantT001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
+        private IPlantBLL _plantBll;
         // private IChangesHistoryBLL _changesHistoryBll;
 
         public BrandRegistrationBLL(IUnitOfWork uow, ILogger logger)
@@ -25,6 +26,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryPlantT001W = _uow.GetGenericRepository<T001W>();
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
+            _plantBll = new PlantBLL(_uow, _logger);
             //_changesHistoryBll = changesHistoryBll;
         }
 
@@ -33,9 +35,11 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, "T001W,ZAIDM_EX_SERIES").ToList();
         }
 
-        public ZAIDM_EX_BRAND GetBrandByBrandCEAndProdCode(string brand, string prodCode)
+        public ZAIDM_EX_BRAND GetBrandForProdConv(string brand, string prodCode, string nppbkc)
         {
-            var dbData = _repository.Get(c => c.BRAND_CE == brand && c.PROD_CODE == prodCode).FirstOrDefault();
+            var plant = _plantBll.GetPlantByNppbkc(nppbkc).Select(s => s.WERKS).ToList();
+ 
+            var dbData = _repository.Get(c => c.BRAND_CE == brand && c.PROD_CODE == prodCode && plant.Contains(c.WERKS)).FirstOrDefault();
 
             return dbData;
         }
