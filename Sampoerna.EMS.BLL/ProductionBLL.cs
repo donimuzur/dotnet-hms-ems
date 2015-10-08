@@ -412,9 +412,17 @@ namespace Sampoerna.EMS.BLL
 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
-                var unpackedQty = oldUnpacked + item.QtyProduced - item.QtyPacked - oldWaste;
+                var unpackedWaste = oldWaste > item.QtyProduced ? oldWaste : 0;
+
+                var prodWaste = oldWaste < item.QtyProduced ? oldWaste : 0;
+
+                var unpackedQty = oldUnpacked + item.QtyProduced - item.QtyPacked - unpackedWaste;
+
+                var prodQty = item.QtyProduced - prodWaste;
 
                 item.QtyUnpacked = unpackedQty;
+
+                item.QtyProduced = prodQty;
 
                 list.Add(item);
 
