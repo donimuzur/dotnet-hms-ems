@@ -66,8 +66,16 @@ namespace Sampoerna.EMS.Core.Exceptions
             MissingProductionList,
 
             [Description("Total Usage less than or equals to zero ")]
-            TotalUsageLessThanEqualTpZero
+            TotalUsageLessThanEqualTpZero,
 
+            [Description("Generate Number error : The company data has not be set")]
+            GenerateNumberCompanyDataHasNotSet,
+            [Description("Generate Number error : The company alias has not be set")]
+            GenerateNumberCompanyAliasHasNotSet,
+            [Description("Generate Number error : The plant data has not be set")]
+            GenerateNumberPlantDataHasNotSet,
+            [Description("Generate Number error : The city alias has not be set")]
+            GenerateNumberCityAliasHasNotSet
         }
         
         /// <summary>
