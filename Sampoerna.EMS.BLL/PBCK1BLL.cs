@@ -1886,7 +1886,7 @@ namespace Sampoerna.EMS.BLL
                         foreach (var poaDto in poaList)
                         {
                             if (poaData.POA_ID != poaDto.POA_ID)
-                                rc.To.Add(_userBll.GetUserById(poaDto.POA_ID).EMAIL);
+                                rc.CC.Add(_userBll.GetUserById(poaDto.POA_ID).EMAIL);
                         }
                     }
                     rc.IsCCExist = true;
