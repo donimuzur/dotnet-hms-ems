@@ -10,7 +10,7 @@ namespace Sampoerna.EMS.Contract
 
         ZAIDM_EX_BRAND GetById(string plant, string facode);
         ZAIDM_EX_BRAND GetById(string plant, string facode, string stickercode);
-        ZAIDM_EX_BRAND GetBrandByBrandCEAndProdCode(string brand, string prodCode);
+        ZAIDM_EX_BRAND GetBrandForProdConv(string brand, string prodCode, string nppbkc);
         ZAIDM_EX_BRAND GetByIdIncludeChild(string plant, string facode);
 
         void Save(ZAIDM_EX_BRAND brandRegistration);

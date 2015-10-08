@@ -577,7 +577,7 @@ namespace Sampoerna.EMS.BLL
             return dbData == null ? string.Empty : dbData.NUMBER;
         }
 
-        public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs)
+        public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs, string nppbkc)
         {
             var messageList = new List<string>();
             var outputList = new List<Pbck1ProdConverterOutput>();
@@ -649,7 +649,7 @@ namespace Sampoerna.EMS.BLL
                 #endregion
 
                 #region -------------- Brand Validation --------------------
-                if (!ValidateBrand(output.BrandCE, prodTypeData.PROD_CODE, prodTypeData.PRODUCT_ALIAS, out messages))
+                if (!ValidateBrand(output.BrandCE, prodTypeData.PROD_CODE, nppbkc, prodTypeData.PRODUCT_ALIAS, out messages))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -1028,21 +1028,21 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        private bool ValidateBrand(string brand, string prodCode, string alias,out List<string> message)
+        private bool ValidateBrand(string brand, string prodCode, string nppbkc,string alias,out List<string> message)
         {
             var valResult = false;
             var messageList = new List<string>();
 
             if (!string.IsNullOrWhiteSpace(brand))
             {
-                var brandData = _brandRegistrationBll.GetBrandByBrandCEAndProdCode(brand, prodCode);
+                var brandData = _brandRegistrationBll.GetBrandForProdConv(brand, prodCode, nppbkc);
                 if (brandData != null)
                 {
                     valResult = true;
                 }
                 else
                 {
-                    messageList.Add("Brand [" + brand + "] for [" + alias + "] not valid");
+                    messageList.Add("Brand [" + brand + "] for [" + alias + "] and NPPBKC [" + nppbkc + "] not valid");
                 }
             }
             else
