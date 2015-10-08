@@ -1735,8 +1735,8 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
 
-            if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
-            {
+            //if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
+            //{
                 if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
                     && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
                     && dbData.SEALING_NOTIF_DATE.HasValue
@@ -1750,7 +1750,7 @@ namespace Sampoerna.EMS.BLL
 
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
                 }
-            }
+            //}
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);
