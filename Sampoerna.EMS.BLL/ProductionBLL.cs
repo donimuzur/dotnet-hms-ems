@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.BLL
         private ICompanyBLL _companyBll;
         private IPlantBLL _plantBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
+        private IWasteBLL _wasteBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -46,6 +47,7 @@ namespace Sampoerna.EMS.BLL
             _companyBll = new CompanyBLL(_uow, _logger);
             _plantBll = new PlantBLL(_uow, _logger);
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
+            _wasteBll = new WasteBLL(_logger, _uow);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -166,6 +168,7 @@ namespace Sampoerna.EMS.BLL
                          join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
                          select new ProductionDto()
                          {
+                             CompanyCode = p.COMPANY_CODE,
                              ProductionDate = p.PRODUCTION_DATE,
                              FaCode = p.FA_CODE,
                              PlantWerks = p.WERKS,
@@ -191,6 +194,7 @@ namespace Sampoerna.EMS.BLL
                          join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
                          select new ProductionDto()
                          {
+                             CompanyCode = p.COMPANY_CODE,
                              ProductionDate = p.PRODUCTION_DATE,
                              FaCode = p.FA_CODE,
                              PlantWerks = p.WERKS,
@@ -336,6 +340,48 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
+        public List<ProductionDto> GetExactResult(List<ProductionDto> listItem)
+        {
+            List<ProductionDto> list = new List<ProductionDto>();
+
+            var unpacked = Convert.ToDecimal(0);
+
+            foreach(var item in listItem)
+            {
+                if(unpacked == 0)
+                {
+                    var oldData = _repository.Get(p => p.COMPANY_CODE == item.CompanyCode && p.WERKS == item.PlantWerks
+                                                        && p.FA_CODE == item.FaCode && p.PRODUCTION_DATE < item.ProductionDate).LastOrDefault();
+
+                    unpacked = oldData == null ? 0 : oldData.QTY_UNPACKED.Value;
+                }
+
+                var wasteData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate);
+
+                var oldUnpacked = unpacked;
+
+                var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
+
+                var unpackedWaste = oldWaste > item.QtyProduced ? oldWaste : 0;
+
+                var prodWaste = oldWaste < item.QtyProduced ? oldWaste : 0;
+
+                var unpackedQty = oldUnpacked + item.QtyProduced - item.QtyPacked - unpackedWaste;
+
+                var prodQty = item.QtyProduced - prodWaste;
+
+                item.QtyUnpacked = unpackedQty;
+
+                item.QtyProduced = prodQty;
+
+                list.Add(item);
+
+                unpacked = unpackedQty.Value;
+            }
+
+            return list;
+        }
+
         public List<ProductionUploadItemsOutput> ValidationDailyUploadDocumentProcess(List<ProductionUploadItemsInput> inputs)
         {
             var messageList = new List<string>();
@@ -393,7 +439,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-
+                //Fa Code Validation
                 #region ---------------FaCode validation-----------------
                 ZAIDM_EX_BRAND brandTypeData ;
                 
@@ -408,7 +454,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-               
+                //Brand Description Validation
                 #region -------------Brand Description--------------------
                 ZAIDM_EX_BRAND brandCeTypeData = null;
                

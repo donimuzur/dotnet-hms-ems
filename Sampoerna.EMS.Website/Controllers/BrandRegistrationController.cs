@@ -52,12 +52,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        public ActionResult Details(string plant, string facode)
+        public ActionResult Details(string plant, string facode,string stickercode)
         {
             var model = new BrandRegistrationDetailsViewModel();
-            
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
+
+            var dbBrand = _brandRegistrationBll.GetById(plant, facode, stickercode);
             model = Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);
             model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.MainMenu = Enums.MenuList.MasterData;
@@ -200,13 +200,13 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        public ActionResult Edit(string plant, string facode)
+        public ActionResult Edit(string plant, string facode,string stickercode)
         {
            
             var model = new BrandRegistrationEditViewModel();
 
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
+            var dbBrand = _brandRegistrationBll.GetById(plant, facode,stickercode);
           
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
                 return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE });

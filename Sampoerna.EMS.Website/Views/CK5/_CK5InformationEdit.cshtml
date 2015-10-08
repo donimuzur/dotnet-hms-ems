@@ -600,6 +600,7 @@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].UsdValue)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Note)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].MaterialDesc)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].CK5_MATERIAL_ID)
                                         <tr>
                                             @*<td style="display: none"></td>*@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>
@@ -615,6 +616,7 @@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Note)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Message)</td>
                                             <td style="display: none">@Html.DisplayFor(model => model.UploadItemModels[i].Total)</td>
+                                           
                                         </tr>
                                     }
 
