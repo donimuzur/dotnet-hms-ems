@@ -2407,7 +2407,7 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var ck5MaterialDto in dataXmlDto.Ck5Material)
             {
-                var material = _materialBll.getByID(ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID);
+                var material = _materialBll.getByID(ck5MaterialDto.BRAND, dataXmlDto.SOURCE_PLANT_ID);
 
                 if (ck5MaterialDto.CONVERTED_UOM == material.BASE_UOM_ID)
                     continue;
