@@ -50,15 +50,48 @@ namespace Sampoerna.EMS.XMLReader
                         }
 
                         item.BATCH = _xmlMapper.GetElementValue(xElement.Element("Batch"));
-                        item.BUNDLE = Convert.ToInt32(_xmlMapper.GetElementValue(xElement.Element("Bundle")));
+                        var bundle = _xmlMapper.GetElementValue(xElement.Element("Bundle"));
+                        if (String.IsNullOrEmpty(bundle))
+                        {
+                            _xmlMapper.Errors.Add("Bundle not having a value");
+                        }
+                        else
+                        {
+                            item.BUNDLE = Convert.ToInt32(bundle);
+                        }
+                        
                         item.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
                         item.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
                         item.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
                         item.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
                         var shift = _xmlMapper.GetElementValue(xElement.Element("Shift"));
-                        item.LAST_SHIFT = GetShift(shift);
+                        if (!string.IsNullOrEmpty(shift))
+                            item.LAST_SHIFT = GetShift(shift);
+                        else
+                            item.LAST_SHIFT = 0;
+
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
-                        var qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")).Replace(",",""));
+
+                        decimal qty;
+                        try
+                        {
+                            qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")).Replace(",",""));
+                        }
+                        catch (Exception ex)
+                        {
+                            string reason = "";
+                            var qtyString = _xmlMapper.GetElementValue(xElement.Element("Quantity"));
+                            if (ex.GetType() == typeof(FormatException))
+                                reason = "format not handled";
+                            else
+                            {
+                                reason = "reason unknown";
+                            }
+                            _xmlMapper.Errors.Add(String.Format("failed to get qty : {0} value {1}", reason,qtyString));
+
+                            continue;
+                        }
+                        //var qty = 
                         //var prodQty = qty;
                         var existingBrand = GetMaterialBrand(item.FA_CODE, item.WERKS);
                         if (existingBrand != null)

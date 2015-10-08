@@ -68,8 +68,10 @@ function generateTable(data) {
         + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.SummaryProductionList) + '</td><td colspan="2"></td></tr>' +
         '</tbody></table>';
     
-    rc = rc + generatePlant(data.Lack1Plant);
-    rc = rc + generatePbck1Mapping(data.Lack1Pbck1Mapping);
+    //rc = rc + generatePlant(data.Lack1Plant);
+    //if (data.Lack1Pbck1Mapping) {
+    //    rc = rc + generatePbck1Mapping(data.Lack1Pbck1Mapping);
+    //}
 
     return rc;
 }
