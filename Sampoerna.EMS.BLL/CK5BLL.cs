@@ -963,7 +963,8 @@ namespace Sampoerna.EMS.BLL
                     else
                     {
                         GovApproveDocument(input);
-                        isNeedSendNotif = true;
+                        if (input.Ck5Type != Enums.CK5Type.Export && input.Ck5Type != Enums.CK5Type.PortToImporter)
+                            isNeedSendNotif = true;
                     } 
                         
                     break;
@@ -1124,23 +1125,22 @@ namespace Sampoerna.EMS.BLL
                     rc.To.Add(userDetail.EMAIL);
                     break;
                 case Enums.ActionType.GovApprove:
-                    if (ck5Dto.CK5_TYPE != Enums.CK5Type.Export && ck5Dto.CK5_TYPE != Enums.CK5Type.PortToImporter)
+                    
+                    var creatorDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                    var poaSender = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+
+
+                    rc.CC.Add(poaSender.EMAIL);
+                    rc.CC.Add(creatorDetail.EMAIL);
+
+
+                    var poaReceiverList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
+                    foreach (var poaDto in poaReceiverList)
                     {
-                        var creatorDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                        var poaSender = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
-
-
-                        rc.CC.Add(poaSender.EMAIL);
-                        rc.CC.Add(creatorDetail.EMAIL);
-
-
-                        var poaReceiverList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
-                        foreach (var poaDto in poaReceiverList)
-                        {
-                            rc.To.Add(poaDto.POA_EMAIL);
-                        }
-
+                        rc.To.Add(poaDto.POA_EMAIL);
                     }
+
+                    
                     break;
             }
             rc.Body = bodyMail.ToString();
