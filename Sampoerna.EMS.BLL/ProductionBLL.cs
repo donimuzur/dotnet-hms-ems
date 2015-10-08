@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -106,12 +107,12 @@ namespace Sampoerna.EMS.BLL
             var originDto = Mapper.Map<ProductionDto>(origin);
 
             //to do ask and to do refactor
-            if(originDto != null)
+            if (originDto != null)
             {
                 SetChange(originDto, productionDto, userId);
                 output.isNewData = false;
             }
-                
+
             if (dbProduction.UOM == "KG")
             {
                 dbProduction.UOM = "G";
@@ -127,7 +128,7 @@ namespace Sampoerna.EMS.BLL
             }
             dbProduction.CREATED_DATE = DateTime.Now;
 
-            if(dbProduction.BATCH != null)
+            if (dbProduction.BATCH != null)
                 output.isFromSap = true;
 
             _repository.InsertOrUpdate(dbProduction);
@@ -241,57 +242,6 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-        private List<ProductionUploadItems> ValidateProductionUpload(List<ProductionUploadItems> input)
-        {
-            var messageList = new List<string>();
-            var outputList = new List<ProductionUploadItems>();
-
-            foreach (var productionUploadItems in input)
-            {
-                messageList.Clear();
-
-                var output = Mapper.Map<ProductionUploadItems>(productionUploadItems);
-
-                var dbCompany = _companyBll.GetById(productionUploadItems.CompanyCode);
-                if (dbCompany == null)
-                    messageList.Add("Company Code is Not valid");
-
-                var dbPlant = _plantBll.GetId(productionUploadItems.PlantWerks);
-                if (dbPlant == null)
-                    messageList.Add("Plant Id is not valid");
-
-                var dbBrand = _brandRegistrationBll.GetById(productionUploadItems.PlantWerks, productionUploadItems.FaCode);
-                if (dbBrand == null)
-                    messageList.Add("Fa Code is not Register");
-
-                if (string.IsNullOrEmpty(productionUploadItems.ProductionDate))
-                    messageList.Add("Daily Production Date is not valid");
-
-                var dbproduction = GetExistDto(productionUploadItems.CompanyCode, productionUploadItems.PlantWerks,
-                    productionUploadItems.FaCode, Convert.ToDateTime(productionUploadItems.ProductionDate));
-                if (dbproduction == null)
-                    messageList.Add("Production data all ready Exist");
-
-                if (messageList.Count > 0)
-                {
-                    output.IsValid = false;
-                    output.Message = " ";
-                    foreach (var message in messageList)
-                    {
-                        output.Message += message + ";";
-                    }
-
-                }
-                     
-                else
-                {
-                    output.IsValid = true;
-
-                }
-                outputList.Add(output);
-            }
-            return outputList;
-        }
 
         private void SetChange(ProductionDto origin, ProductionDto data, string userId)
         {
@@ -304,7 +254,7 @@ namespace Sampoerna.EMS.BLL
             changeData.Add("QTY_PACKED", origin.QtyPacked == data.QtyPacked);
             changeData.Add("QTY_UNPACKED", origin.QtyUnpacked == data.QtyUnpacked);
             changeData.Add("UOM", origin.Uom == data.Uom);
-            changeData.Add("PROD_QTY_STICK",origin.ProdQtyStick == data.ProdQtyStick);
+            changeData.Add("PROD_QTY_STICK", origin.ProdQtyStick == data.ProdQtyStick);
 
             foreach (var listChange in changeData)
             {
@@ -431,5 +381,249 @@ namespace Sampoerna.EMS.BLL
 
             return list;
         }
+
+        public List<ProductionUploadItemsOutput> ValidationDailyUploadDocumentProcess(List<ProductionUploadItemsInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<ProductionUploadItemsOutput>();
+
+            foreach (var inputItem in inputs)
+            {
+                messageList.Clear();
+
+                var output = Mapper.Map<ProductionUploadItemsOutput>(inputItem);
+                output.IsValid = true;
+
+                var checkCountdataProduction =
+                    inputs.Where(
+                        c =>
+                            c.CompanyCode == output.CompanyCode && c.PlantWerks == output.PlantWerks &&
+                            c.FaCode == output.FaCode && c.ProductionDate == output.ProductionDate).ToList();
+                if (checkCountdataProduction.Count > 1)
+                {
+                    //double Daily Production Data
+                    output.IsValid = false;
+                    messageList.Add("Duplicate Daily Production Data  [" + output.CompanyCode + ", " + output.PlantWerks + ", " 
+                        + output.FaCode +", " + output.ProductionDate + "]");
+                }
+
+                //Company Code Validation
+                #region -------------- Company Code Validation --------------
+                List<string> messages;
+                T001 companyTypeData = null;
+
+                if (ValidateCompanyCode(output.CompanyCode, out messages, out companyTypeData))
+                {
+                    output.CompanyCode = companyTypeData.BUKRS;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+
+                //Plant Code Validation
+                #region -------------- Plant Code Validation --------------
+
+                Plant plantTypeData = null;
+                if (ValidatePlantCode(output.PlantWerks, out messages, out plantTypeData))
+                {
+                    output.PlantWerks = plantTypeData.WERKS;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+                //Fa Code Validation
+                #region ---------------FaCode validation-----------------
+                ZAIDM_EX_BRAND brandTypeData ;
+                
+                if (ValidateFaCode(output.PlantWerks, output.FaCode, out messages, out brandTypeData))
+                {
+                    output.FaCode = brandTypeData.FA_CODE ;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+                //Brand Description Validation
+                #region -------------Brand Description--------------------
+                ZAIDM_EX_BRAND brandCeTypeData = null;
+               
+                if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandCeTypeData))
+                {
+                    output.BrandDescription = brandCeTypeData.BRAND_CE;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+                
+                //Message
+                #region -------------- Set Message Info if exists ---------------
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                #endregion
+
+                outputList.Add(output);
+            }
+
+            return outputList;
+
+        }
+
+        private bool ValidateCompanyCode(string companyCode, out List<string> message,
+           out T001 companyData)
+        {
+            companyData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+
+            #region ------------Company Code Validation-------------
+            if (!string.IsNullOrWhiteSpace(companyCode))
+            {
+
+                companyData = _companyBll.GetById(companyCode);
+                if (companyData == null)
+                {
+                    messageList.Add("Company Code [" + companyCode + "] not valid");
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add("Company Code is empty");
+            }
+
+            #endregion
+
+            message = messageList;
+
+            return valResult;
+        }
+
+        private bool ValidatePlantCode(string plantCode, out List<string> message,
+          out Plant plantData)
+        {
+            plantData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+
+            #region ------------Plant Code Validation-------------
+            if (!string.IsNullOrWhiteSpace(plantCode))
+            {
+                plantData = _plantBll.GetId(plantCode);
+                if (plantData == null)
+                {
+                    messageList.Add("Plant Code/WERKS [" + plantCode + "] not valid");
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add("Plant Code/WERKS is empty");
+            }
+
+            #endregion
+
+            message = messageList;
+
+            return valResult;
+        }
+
+        private bool ValidateFaCode(string plantWerks, string faCode, out List<string> message,
+            out ZAIDM_EX_BRAND brandData)
+        {
+            brandData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+
+            #region ----------FA Code Validation--------------
+
+            if (!string.IsNullOrWhiteSpace(faCode))
+            {
+                brandData = _brandRegistrationBll.GetByFaCode(plantWerks, faCode);
+                if (brandData == null)
+                {
+                    messageList.Add("Finish Goods [" + faCode + "] not valid");
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add("Finish Goods Code is empty");
+            }
+
+            #endregion
+
+            message = messageList;
+            return valResult;
+        }
+
+        private bool ValidateBrandCe(string plantWerk, string faCode, string brandCe, out List<string> message,
+            out ZAIDM_EX_BRAND brandData)
+        {
+            brandData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+
+            #region ----------BrandCE Validation--------------
+
+            if (!string.IsNullOrWhiteSpace(brandCe))
+            {
+                brandData = _brandRegistrationBll.GetBrandCe(plantWerk, faCode, brandCe);
+                if (brandData == null)
+                {
+                    messageList.Add("Brand Description [" + brandCe + "] not registered yet in plant [" + plantWerk + "]");
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add("Finish Goods Code is empty");
+            }
+
+            #endregion
+
+            message = messageList;
+            return valResult;
+        }
+        
     }
 }
