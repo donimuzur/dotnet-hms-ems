@@ -442,16 +442,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         continue;
                     }
-                  
-                  
+
+
                     var item = new ProductionUploadItems();
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
-                    item.QtyPacked = dataRow[4] == "" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    item.QtyUnpacked = dataRow[5] == "" ? 0  : Convert.ToDecimal(dataRow[5]);
+                    item.QtyPacked = dataRow[4] == "" || dataRow[4]=="-" ? 0 : Convert.ToDecimal(dataRow[4]);
+                    item.QtyUnpacked = dataRow[5] == "" || dataRow[5]=="-" ? 0  : Convert.ToDecimal(dataRow[5]);
                     item.Uom = dataRow[6];
                     item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
 

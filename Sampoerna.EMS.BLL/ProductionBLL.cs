@@ -411,10 +411,10 @@ namespace Sampoerna.EMS.BLL
                
                 #region -------------Brand Description--------------------
                 ZAIDM_EX_BRAND brandCeTypeData = null;
+               
                 if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandCeTypeData))
                 {
                     output.BrandDescription = brandCeTypeData.BRAND_CE;
-                    output.PlantWerks = plantTypeData.WERKS;
                 }
                 else
                 {
@@ -558,7 +558,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrWhiteSpace(brandCe))
             {
-                brandData = _brandRegistrationBll.GetByFaCode(faCode, brandCe);
+                brandData = _brandRegistrationBll.GetBrandCe(plantWerk, faCode, brandCe);
                 if (brandData == null)
                 {
                     messageList.Add("Brand Description [" + brandCe + "] not registered yet in plant [" + plantWerk + "]");

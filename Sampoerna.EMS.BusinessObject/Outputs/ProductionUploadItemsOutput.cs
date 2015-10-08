@@ -11,6 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string CompanyCode { get; set; }
         public string PlantWerks { get; set; }
         public string FaCode { get; set; }
+        public string StickerCode { get; set; }
         public string BrandDescription { get; set; }
         public decimal? QtyUnpacked { get; set; }
         public decimal? QtyPacked { get; set; }
