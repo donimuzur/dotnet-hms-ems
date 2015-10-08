@@ -56,7 +56,11 @@ namespace Sampoerna.EMS.XMLReader
                         item.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
                         item.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
                         var shift = _xmlMapper.GetElementValue(xElement.Element("Shift"));
-                        item.LAST_SHIFT = GetShift(shift);
+                        if (shift != null)
+                            item.LAST_SHIFT = GetShift(shift);
+                        else
+                            item.LAST_SHIFT = 0;
+
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
                         var qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")).Replace(",",""));
                         //var prodQty = qty;
