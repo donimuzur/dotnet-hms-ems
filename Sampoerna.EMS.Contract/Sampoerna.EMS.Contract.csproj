@@ -50,6 +50,7 @@
     <Compile Include="ICK1BLL.cs" />
     <Compile Include="ICK1Services.cs" />
     <Compile Include="ICK4CBLL.cs" />
+    <Compile Include="ICK4CDecreeDocBLL.cs" />
     <Compile Include="ICK4CItemBLL.cs" />
     <Compile Include="ICK5BLL.cs" />
     <Compile Include="ICountryBLL.cs" />
@@ -119,6 +120,8 @@
     <Compile Include="Services\IPBCK1Service.cs" />
     <Compile Include="Services\IT001KService.cs" />
     <Compile Include="Services\IT001WService.cs" />
+    <Compile Include="Services\IZaidmExNppbkcService.cs" />
+    <Compile Include="Services\IZaidmExProdTypeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">

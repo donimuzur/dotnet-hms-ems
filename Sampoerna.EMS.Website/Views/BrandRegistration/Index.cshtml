@@ -116,8 +116,8 @@
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Details", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Details", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode, stickercode = item.StickerCode })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode, stickercode = item.StickerCode })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.StickerCode)

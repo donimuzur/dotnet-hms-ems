@@ -108,7 +108,7 @@
                 <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                     <div class="panel-body">
 
-                        <input type="button" class="btn btn-blue" id="btnUploadInfo" value="Upload" disabled />
+                        <input type="button" class="btn btn-blue" id="btnUploadInfo" value="Upload" />
 
                         <div class="table-container">
                             <table id="pbck4TableItem" class="table table-bordered table-striped js-options-table">
@@ -155,7 +155,8 @@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].ApprovedQty)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Remark)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].CK1_ID)
-
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].PBCK4_ITEM_ID)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].IsUpdated)
                                         <tr>
 
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].FaCode)</td>

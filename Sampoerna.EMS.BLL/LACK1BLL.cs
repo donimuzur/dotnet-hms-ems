@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
-using CrystalDecisions.Shared.Json;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
@@ -38,7 +38,6 @@ namespace Sampoerna.EMS.BLL
 
         //services
         private ICK4CItemService _ck4cItemService;
-        private IBrandRegistrationService _brandRegistrationService;
         private ICK5Service _ck5Service;
         private IPBCK1Service _pbck1Service;
         private IT001KService _t001KService;
@@ -52,6 +51,8 @@ namespace Sampoerna.EMS.BLL
         private ILack1PlantService _lack1PlantService;
         private ILack1ProductionDetailService _lack1ProductionDetailService;
         private ILack1TrackingService _lack1TrackingService;
+        private IZaidmExProdTypeService _prodTypeService;
+        private IZaidmExNppbkcService _nppbkcService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -69,7 +70,6 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
-            _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
             _ck5Service = new CK5Service(_uow, _logger);
             _pbck1Service = new PBCK1Service(_uow, _logger);
             _t001KService = new T001KService(_uow, _logger);
@@ -83,10 +83,26 @@ namespace Sampoerna.EMS.BLL
             _lack1PlantService = new Lack1PlantService(_uow, _logger);
             _lack1ProductionDetailService = new Lack1ProductionDetailService(_uow, _logger);
             _lack1TrackingService = new Lack1TrackingService(_uow, _logger);
+            _prodTypeService = new ZaidmExProdTypeService(_uow, _logger);
+            _nppbkcService = new ZaidmExNppbkcService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
+                if (nppbkc != null && nppbkc.Count > 0)
+                {
+                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+                }
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+                input.DocumentNumberList = document;
+            }
             return Mapper.Map<List<Lack1Dto>>(_lack1Service.GetAllByParam(input));
         }
 
@@ -355,7 +371,7 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovApprove:
                     GovApproveDocument(input);
-                    isNeedSendNotif = false;
+                    //isNeedSendNotif = false;
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
@@ -363,7 +379,7 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovPartialApprove:
                     GovPartialApproveDocument(input);
-                    isNeedSendNotif = false;
+                    //isNeedSendNotif = false;
                     break;
             }
 
@@ -637,24 +653,35 @@ namespace Sampoerna.EMS.BLL
             //var body = "this is body message for " + input.DocumentNumber;
             //var from = "a@gmail.com";
 
-            if (input.DocumentId != null)
-            {
-                var lack1Data = Mapper.Map<Lack1DetailsDto>(_lack1Service.GetDetailsById(input.DocumentId.Value));
+            if (input.DocumentId == null) return;
 
-                var mailProcess = ProsesMailNotificationBody(lack1Data, input.ActionType);
+            var lack1Data = Mapper.Map<Lack1DetailsDto>(_lack1Service.GetDetailsById(input.DocumentId.Value));
 
-                _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
-            }
+            if ((input.ActionType == Enums.ActionType.GovApprove || input.ActionType == Enums.ActionType.GovPartialApprove)
+                && lack1Data.Status != Enums.DocumentStatus.Completed)
+                return;
+
+            var mailProcess = ProsesMailNotificationBody(lack1Data, input);
+
+            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
         }
 
-        private Lack1MailNotification ProsesMailNotificationBody(Lack1DetailsDto lack1Data, Enums.ActionType actionType)
+        private MailNotification ProsesMailNotificationBody(Lack1DetailsDto lack1Data, Lack1WorkflowDocumentInput input)
         {
             var bodyMail = new StringBuilder();
-            var rc = new Lack1MailNotification();
+            var rc = new MailNotification();
+
+            var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput()
+            {
+                FormId = lack1Data.Lack1Id,
+                FormType = Enums.FormType.LACK1
+            });
+
+            var poaList = _poaBll.GetPoaByNppbkcId(lack1Data.NppbkcId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
-            rc.Subject = "LACK1-1 " + lack1Data.Lack1Number + " is " + EnumHelper.GetDescription(lack1Data.Status);
+            rc.Subject = "LACK-1 " + lack1Data.Lack1Number + " is " + EnumHelper.GetDescription(lack1Data.Status);
             bodyMail.Append("Dear Team,<br />");
             bodyMail.AppendLine();
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
@@ -667,33 +694,68 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : LACK-1</td></tr>");
             bodyMail.AppendLine();
+            if (input.ActionType == Enums.ActionType.Reject)
+            {
+                bodyMail.Append("<tr><td>Comment</td><td> : " + input.Comment + "</td></tr>");
+                bodyMail.AppendLine();
+            }
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Lack1/Details/" + lack1Data.Lack1Id + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
-            switch (actionType)
+            switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var poaList = _poaBll.GetPoaByNppbkcId(lack1Data.NppbkcId);
-                        foreach (var poaDto in poaList)
+                        if (rejected != null)
                         {
-                            rc.To.Add(poaDto.POA_EMAIL);
+                            rc.To.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
                         }
+                        else
+                        {
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.To.Add(poaDto.POA_EMAIL);
+                            }
+                        }
+
+                        rc.CC.Add(_userBll.GetUserById(lack1Data.CreateBy).EMAIL);
                     }
                     else if (lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var managerId = _poaBll.GetManagerIdByPoaId(lack1Data.CreateBy);
-                        var managerDetail = _userBll.GetUserById(managerId);
-                        rc.To.Add(managerDetail.EMAIL);
+                        var poaData = _poaBll.GetById(lack1Data.CreateBy);
+                        rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
+                        rc.CC.Add(poaData.POA_EMAIL);
+
+                        foreach (var poaDto in poaList)
+                        {
+                            if (poaData.POA_ID != poaDto.POA_ID)
+                                rc.To.Add(poaDto.POA_EMAIL);
+                        }
                     }
+                    rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Approve:
                     if (lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         rc.To.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
+
+                        if (rejected != null)
+                        {
+                            rc.CC.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
+                        }
+                        else
+                        {
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.CC.Add(poaDto.POA_EMAIL);
+                            }
+                        }
+
+                        rc.CC.Add(_userBll.GetUserById(lack1Data.CreateBy).EMAIL);
+
                     }
                     else if (lack1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -702,20 +764,125 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is poa user
                             rc.To.Add(poaData.POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(lack1Data.CreateBy));
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(lack1Data.CreateBy);
                             rc.To.Add(userData.EMAIL);
+                            rc.CC.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
                         }
                     }
+                    rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Reject:
+                    ////send notification to creator
+                    //var userDetail = _userBll.GetUserById(pbck4Dto.CREATED_BY);
+                    //rc.To.Add(userDetail.EMAIL);
+
+                    ////rejected by poa or manager
+                    //rc.CC.Add(_userBll.GetUserById(input.UserId).EMAIL);
+
+                    //if (input.UserRole == Enums.UserRole.Manager) //rejected by manager
+                    //{
+                    //    //add cc poa
+                    //    if (pbck4Dto.APPROVED_BY_POA != null)
+                    //    {
+                    //        rc.CC.Add(_userBll.GetUserById(pbck4Dto.APPROVED_BY_POA).EMAIL);
+                    //    }
+                    //}
+
+                    //rc.IsCCExist = true;
+                    //break;
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(lack1Data.CreateBy);
-                    rc.To.Add(userDetail.EMAIL);
+                    var poaData2 = _poaBll.GetById(lack1Data.CreateBy);
+
+                    if (lack1Data.ApprovedByPoa != null || poaData2 != null)
+                    {
+                        if (poaData2 == null)
+                        {
+                            var poa = _poaBll.GetById(lack1Data.ApprovedByPoa);
+                            rc.To.Add(userDetail.EMAIL);
+                            rc.CC.Add(poa.POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
+                        }
+                        else
+                        {
+                            rc.To.Add(poaData2.POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(lack1Data.CreateBy));
+                        }
+                    }
+                    else
+                    {
+                        rc.To.Add(userDetail.EMAIL);
+
+                        foreach (var poaDto in poaList)
+                        {
+                            rc.CC.Add(poaDto.POA_EMAIL);
+                        }
+                    }
+
+                    rc.IsCCExist = true;
                     break;
+
+                case Enums.ActionType.GovApprove:
+                    var poaData3 = _poaBll.GetById(lack1Data.CreateBy);
+                    if (poaData3 != null)
+                    {
+                        //creator is poa user
+                        rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
+                        rc.CC.Add(poaData3.POA_EMAIL);
+                    }
+                    else
+                    {
+                        //creator is excise executive
+                        var userData = _userBll.GetUserById(lack1Data.CreateBy);
+                        rc.To.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
+                        rc.To.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
+                        rc.CC.Add(userData.EMAIL);
+                    }
+                    rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.GovPartialApprove:
+                    var poaData4 = _poaBll.GetById(lack1Data.CreateBy);
+                    if (poaData4 != null)
+                    {
+                        //creator is poa user
+                        rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
+                        rc.CC.Add(poaData4.POA_EMAIL);
+                    }
+                    else
+                    {
+                        //creator is excise executive
+                        var userData = _userBll.GetUserById(lack1Data.CreateBy);
+                        rc.To.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
+                        rc.To.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
+                        rc.CC.Add(userData.EMAIL);
+                    }
+                    rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.GovReject:
+                    var poaData5 = _poaBll.GetById(lack1Data.CreateBy);
+                    if (poaData5 != null)
+                    {
+                        //creator is poa user
+                        rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
+                        rc.CC.Add(poaData5.POA_EMAIL);
+                    }
+                    else
+                    {
+                        //creator is excise executive
+                        var userData = _userBll.GetUserById(lack1Data.CreateBy);
+                        rc.To.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
+                        rc.To.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
+                        rc.CC.Add(userData.EMAIL);
+                    }
+                    rc.IsCCExist = true;
+                    break;
+
             }
             rc.Body = bodyMail.ToString();
             return rc;
@@ -726,17 +893,6 @@ namespace Sampoerna.EMS.BLL
             var managerId = _poaBll.GetManagerIdByPoaId(poaId);
             var managerDetail = _userBll.GetUserById(managerId);
             return managerDetail.EMAIL;
-        }
-
-        private class Lack1MailNotification
-        {
-            public Lack1MailNotification()
-            {
-                To = new List<string>();
-            }
-            public string Subject { get; set; }
-            public string Body { get; set; }
-            public List<string> To { get; set; }
         }
 
         #endregion
@@ -1206,19 +1362,17 @@ namespace Sampoerna.EMS.BLL
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
             ck4CItemInput.IsHigherFromApproved = true;
             var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
-            var faCodeList = ck4CItemData.Select(c => c.FA_CODE).Distinct().ToList();
 
-            //get prod_code by fa_code list on selected CK4C_ITEM by selection criteria
-            var brandDataSelected = _brandRegistrationService.GetByFaCodeList(faCodeList);
+            var prodTypeData = _prodTypeService.GetAll();
 
             //joined data
             var dataCk4CItemJoined = (from ck4CItem in ck4CItemData
-                                      join brandData in brandDataSelected on ck4CItem.FA_CODE equals brandData.FA_CODE
+                                      join prod in prodTypeData on ck4CItem.PROD_CODE equals prod.PROD_CODE
                                       select new Lack1GeneratedProductionDataDto()
                                       {
-                                          ProdCode = brandData.PROD_CODE,
-                                          ProductType = brandData.ZAIDM_EX_PRODTYP.PRODUCT_TYPE,
-                                          ProductAlias = brandData.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS,
+                                          ProdCode = prod.PROD_CODE,
+                                          ProductType = prod.PRODUCT_TYPE,
+                                          ProductAlias = prod.PRODUCT_ALIAS,
                                           Amount = ck4CItem.PROD_QTY,
                                           UomId = ck4CItem.UOM_PROD_QTY,
                                           UomDesc = ck4CItem.UOM != null ? ck4CItem.UOM.UOM_DESC : string.Empty
@@ -1335,8 +1489,7 @@ namespace Sampoerna.EMS.BLL
         private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list, decimal totalUsage, decimal totalUsageInCk5)
         {
             if (list.Count <= 0) return new List<Lack1GeneratedProductionDataDto>();
-            var totalAmount = list.Sum(c => c.Amount);
-
+            
             var groupedData = list.GroupBy(p => new
             {
                 p.ProdCode,

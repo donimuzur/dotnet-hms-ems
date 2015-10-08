@@ -517,6 +517,15 @@ namespace Sampoerna.EMS.Website.Code
             var data = ck5Bll.GetAllCompletedPortToImporter();
             return  new SelectList(data,"CK5_ID","SUBMISSION_NUMBER");
         }
+
+        public static SelectList GetCountryListCodeAndName()
+        {
+            IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
+            var data = masterBll.GetAllDataCountry();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+            //return new SelectList(data, "COUNTRY_CODE", "COUNTRY_CODE");
+        }
     }
 
 }

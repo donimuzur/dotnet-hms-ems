@@ -265,9 +265,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var plant = _plantBll.GetT001WById(model.PlantWerks);
             var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
 
-            model.CompanyName = company.BUTXT;
-            model.PlantName = plant.NAME1;
-            model.BrandDescription = brandDesc.BRAND_CE;
+            dbWasteNew.CompanyName = company.BUTXT;
+            dbWasteNew.PlantName = plant.NAME1;
+            dbWasteNew.BrandDescription = brandDesc.BRAND_CE;
 
             //reject
             dbWasteNew.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
@@ -446,12 +446,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
-                    item.MarkerRejectStickQty = Convert.ToDecimal(dataRow[4]);
-                    item.PackerRejectStickQty = Convert.ToDecimal(dataRow[5]);
-                    item.DustWasteGramQty = Convert.ToDecimal(dataRow[6]);
-                    item.FloorWasteGramQty = Convert.ToDecimal(dataRow[7]);
-                    item.DustWasteStickQty = Convert.ToDecimal(dataRow[8]);
-                    item.FloorWasteStickQty = Convert.ToDecimal(dataRow[9]);
+                    item.MarkerRejectStickQty = dataRow[4] == "" || dataRow[4] =="-" ? 0 : Convert.ToDecimal(dataRow[4]);
+                    item.PackerRejectStickQty = dataRow[5] == "" || dataRow[5] =="-"? 0: Convert.ToDecimal(dataRow[5]);
+                    item.DustWasteGramQty = dataRow[6] == "" || dataRow[6] =="-" ? 0 : Convert.ToDecimal(dataRow[6]);
+                    item.FloorWasteGramQty = dataRow[7] == "" || dataRow[7] == "-" ? 0 : Convert.ToDecimal(dataRow[7]);
+                    item.DustWasteStickQty = dataRow[8] == "" || dataRow[8] == "-" ? 0 : Convert.ToDecimal(dataRow[8]);
+                    item.FloorWasteStickQty = dataRow[9] == "" || dataRow[9] == "-" ? 0 : Convert.ToDecimal(dataRow[9]);
                     item.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[10])).ToString("dd MMM yyyy");
 
                     {

@@ -10,9 +10,11 @@
             <h3>@ViewBag.Title</h3>
             <div class="action-button new">
                 <div class="action-button new">
+                    @if (Model.IsShowNewButton) {
                     <a href="@Url.Action("Create", "LACK1", new { lack1Level = Sampoerna.EMS.Core.Enums.Lack1Level.Plant })">
                         <input type="button" class="btn btn-blue" value="NEW" />
-                    </a>
+                    </a>    
+                    }
                 </div>
             </div>
         </div>

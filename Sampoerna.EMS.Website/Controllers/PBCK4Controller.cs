@@ -626,6 +626,15 @@ namespace Sampoerna.EMS.Website.Controllers
             input.UserRole = CurrentUser.UserRole;
             input.ActionType = actionType;
             input.Comment = model.Comment;
+            
+            input.UploadItemDto = new List<Pbck4ItemDto>();
+            foreach (var pbck4UploadItem in model.UploadItemModels)
+            {
+                if (pbck4UploadItem.IsUpdated)
+                    input.UploadItemDto.Add(Mapper.Map<Pbck4ItemDto>(pbck4UploadItem));
+                
+            }
+            
 
             input.AdditionalDocumentData = new Pbck4WorkflowDocumentData();
             input.AdditionalDocumentData.Back1No = model.BACK1_NO;
@@ -722,13 +731,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (file == null || file.FileName == "")
                 return "";
-
+            
             string sFileName = "";
-
+            
             //initialize folders in case deleted by an test publish profile
             if (!Directory.Exists(Server.MapPath(Constans.CK5FolderPath)))
                 Directory.CreateDirectory(Server.MapPath(Constans.CK5FolderPath));
 
+           
             sFileName = Constans.CK5FolderPath + Path.GetFileName(pbck4Id.ToString("'ID'-##") + type + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 

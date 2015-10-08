@@ -29,5 +29,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string ExciseUom { get; set; }
 
         public Enums.ExGoodsType ExGoodsType { get; set; }
+        public long? CK5_MATERIAL_ID { get; set; }
     }
 }

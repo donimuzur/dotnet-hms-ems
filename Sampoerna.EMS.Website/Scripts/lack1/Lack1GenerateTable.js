@@ -40,6 +40,7 @@ function generateTable(data) {
                 '<input name="IncomeList[' + i + '].Ck5Id" type="hidden" value = "' + data.IncomeList[i].Ck5Id + '" />' +
                 '<input name="IncomeList[' + i + '].RegistrationDate" type="hidden" value = "' + data.IncomeList[i].RegistrationDate + '" />'
                 + '<input name="IncomeList[' + i + '].RegistrationNumber" type="hidden" value = "' + data.IncomeList[i].RegistrationNumber + '" />'
+                + '<input name="IncomeList[' + i + '].StringRegistrationDate" type="hidden" value = "' + data.IncomeList[i].StringRegistrationDate + '" />'
                 + rowIndex + '</td><td>' + data.IncomeList[i].RegistrationNumber + ' - ' + data.IncomeList[i].StringRegistrationDate + '</td>' +
                         '<td>' + '<input name="IncomeList[' + i + '].Amount" type="hidden" value = "' + data.IncomeList[i].Amount + '" />' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
             /*rc.append(item);*/
@@ -67,8 +68,10 @@ function generateTable(data) {
         + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.SummaryProductionList) + '</td><td colspan="2"></td></tr>' +
         '</tbody></table>';
     
-    rc = rc + generatePlant(data.Lack1Plant);
-    rc = rc + generatePbck1Mapping(data.Lack1Pbck1Mapping);
+    //rc = rc + generatePlant(data.Lack1Plant);
+    //if (data.Lack1Pbck1Mapping) {
+    //    rc = rc + generatePbck1Mapping(data.Lack1Pbck1Mapping);
+    //}
 
     return rc;
 }
