@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.XMLReader
             logger = new NLogLogger();
             uow = new SqlUnitOfWork(logger);
             Errors = new List<string>();
+            logger.Info(String.Format("Processing file {0}", _xmlName));
         }
 
         public void AddError(int error)
@@ -41,11 +42,12 @@ namespace Sampoerna.EMS.XMLReader
 
         private XElement ReadXMLFile()
         {
-
+            
             if (_xmlName == null)
                 return null;
             if (!File.Exists(_xmlName))
                 return null;
+            
             return XElement.Load(_xmlName);
         }
 
@@ -96,27 +98,33 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         item.GetType().GetProperty("IS_DELETED").SetValue(item, true);
                         repo.Update(item);
-                        uow.SaveChanges();
+                        //uow.SaveChanges();
                     }
 
                    
                 }
+
                 foreach (var item in items)
                 {
                     itemToInsert++;
                     repo.InsertOrUpdate(item);
                     
-                    uow.SaveChanges();
+                    
                 }
+
+                if (Errors.Count == 0)
+                {
+                    uow.SaveChanges();    
+                }
+                
               
             }
-            
             catch (Exception ex)
             {
                 errorCount++;
                 logger.Error(ex.ToString());
                 this.Errors.Add(ex.Message);
-                uow.RevertChanges();
+                //uow.RevertChanges();
             }
             //if (errorCount == 0 && itemToInsert > 0)
             //{
@@ -223,8 +231,10 @@ namespace Sampoerna.EMS.XMLReader
         }
         public string GetElementValue(XElement element)
         {
+            
             if (element == null)
                 return null;
+            logger.Debug(String.Format("processing field : {0} value = {1}", element.Name.LocalName, element.Value));
             if (element.Value == "/")
                 return null;
             return element.Value;
