@@ -945,9 +945,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
-                model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
-
+                if (model.Ck5Type == Enums.CK5Type.PortToImporter)
+                {
+                    model.AllowTfPostedPortToImporter = _workflowBll.AllowTfPostedPortToImporter(input);
+                }
+                else
+                {
+                    model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
+                    model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
+                }
+               
                 model.AllowCancelSAP = _workflowBll.AllowCancelSAP(input);
 
                 if (model.AllowGovApproveAndReject)
@@ -956,7 +963,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "CK5GICreated";
                 else if (model.AllowGrCreated)
                     model.ActionType = "CK5GRCreated";
-
+                else if (model.AllowTfPostedPortToImporter)
+                    model.ActionType = "CK5TfPostedPortToImporter";
+                else if (model.IsCompleted)
+                    model.ActionType = "CK5CompletedAttachment";
                 
 
             }
@@ -1345,6 +1355,98 @@ namespace Sampoerna.EMS.Website.Controllers
                 _ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
+        public ActionResult CK5TfPostedPortToImporter(CK5FormViewModel model)
+        {
+
+            try
+            {
+                //CK5Workflow(model.Ck5Id, Enums.ActionType.Submit, string.Empty);
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                input.ActionType = Enums.ActionType.TFPosted;
+                
+                input.SealingNumber = model.SealingNotifNumber;
+                input.SealingDate = model.SealingNotifDate;
+
+                input.UnSealingNumber = model.UnSealingNotifNumber;
+                input.UnSealingDate = model.UnsealingNotifDate;
+
+                _ck5Bll.CK5Workflow(input);
+
+                AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
+        public ActionResult CK5CompletedAttachment(CK5FormViewModel model)
+        {
+           
+            try
+            {
+                var currentUserId = CurrentUser.USER_ID;
+
+                model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
+                if (model.Ck5FileUploadFileList != null)
+                {
+                    foreach (var item in model.Ck5FileUploadFileList)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var ck5UploadFile = new CK5FileUploadViewModel
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                                CREATED_DATE = DateTime.Now,
+                                CREATED_BY = currentUserId
+                            };
+                            model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                        }
+
+                    }
+                }
+                else
+                {
+                    AddMessageInfo("Empty File", Enums.MessageInfoType.Error);
+                    RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
+                if (model.Ck5FileUploadModelList.Count > 0)
+                {
+                    var input = new CK5WorkflowDocumentInput()
+                    {
+                        DocumentId = model.Ck5Id,
+                        UserRole = CurrentUser.UserRole,
+                        UserId = CurrentUser.USER_ID,
+                        Ck5Type = model.Ck5Type,
+                        AdditionalDocumentData = new CK5WorkflowDocumentData()
+                        {
+                            Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList),
+
+                        }
+                    };
+
+                    _ck5Bll.CK5CompletedAttachment(input);
+                }
             }
             catch (Exception ex)
             {

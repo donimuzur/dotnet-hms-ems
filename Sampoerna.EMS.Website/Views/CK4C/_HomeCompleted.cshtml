@@ -160,13 +160,13 @@
                                             <td>@item.BrandDescription</td>
                                             <td>@item.PlantName</td>
                                             <td>@item.ProdType</td>
-                                            <td>@item.HjeIdr</td>
-                                            <td>@item.Tarif</td>
-                                            <td>@item.ContentPerPack</td>
-                                            <td>@item.PackedQty</td>
-                                            <td>@item.PackedInPack</td>
-                                            <td>@item.UnpackedQty</td>
-                                            <td>@item.ProdQty</td>
+                                            <td class="number">@string.Format("{0:N2}", item.HjeIdr)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.Tarif)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.ContentPerPack)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.PackedQty)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.PackedInPack)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.UnpackedQty)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.ProdQty)</td>
                                             <td>@item.ProdQtyUom</td>
                                             <td>@item.Remarks</td>
                                         </tr>
@@ -232,11 +232,13 @@
                                                     var count = 0;
                                                     foreach (var file in Model.Details.Ck4cDecreeDoc)
                                                     {
-                                                        var idCount = "poa_sk" + count;
-                                                        <div class="row" id="@idCount">
+                                                        var idDoc = "Details_Ck4cUploadedDoc_" + count + "_";
+                                                        var nameDoc = "Details.Ck4cUploadedDoc[" + count + "]";
+                                                        <div class="row">
                                                             <div class="col-sm-10">
                                                                 <i class="fa fa-file"></i>
                                                                 <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                <input type="hidden" id="@idDoc" name="@nameDoc" value="@Url.Content(file.FILE_PATH)|@file.FILE_NAME" />
                                                             </div>
                                                             <div class="col-sm-2">
                                                                 <button class="btn btn-danger full" type="button" onclick="removeUploadButton(@count, $(this).closest('.row'))"><i class="fa fa-times"></i></button>

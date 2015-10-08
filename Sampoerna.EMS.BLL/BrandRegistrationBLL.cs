@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<T001W> _repositoryPlantT001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
+        private IPlantBLL _plantBll;
         // private IChangesHistoryBLL _changesHistoryBll;
 
         public BrandRegistrationBLL(IUnitOfWork uow, ILogger logger)
@@ -25,6 +26,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryPlantT001W = _uow.GetGenericRepository<T001W>();
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
+            _plantBll = new PlantBLL(_uow, _logger);
             //_changesHistoryBll = changesHistoryBll;
         }
 
@@ -33,10 +35,12 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, "T001W,ZAIDM_EX_SERIES").ToList();
         }
 
-        public ZAIDM_EX_BRAND GetBrandByBrandCEAndProdCode(string brand, string prodCode)
+        public ZAIDM_EX_BRAND GetBrandForProdConv(string brand, string prodCode, string nppbkc)
         {
-            var dbData = _repository.Get(c => c.BRAND_CE == brand && c.PROD_CODE == prodCode).FirstOrDefault();
+            var plant = _plantBll.GetPlantByNppbkc(nppbkc).Select(s => s.WERKS).ToList();
  
+            var dbData = _repository.Get(c => c.BRAND_CE == brand && c.PROD_CODE == prodCode && plant.Contains(c.WERKS)).FirstOrDefault();
+
             return dbData;
         }
 
@@ -50,9 +54,9 @@ namespace Sampoerna.EMS.BLL
             return dbData;
         }
 
-        public ZAIDM_EX_BRAND GetById(string plant, string facode,string stickercode)
+        public ZAIDM_EX_BRAND GetById(string plant, string facode, string stickercode)
         {
-            var dbData = _repository.GetByID(plant,facode,stickercode);
+            var dbData = _repository.GetByID(plant, facode, stickercode);
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -102,9 +106,9 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public bool Delete(string plant, string facode,string stickercode)
+        public bool Delete(string plant, string facode, string stickercode)
         {
-            var dbBrand = _repository.GetByID(plant, facode,stickercode);
+            var dbBrand = _repository.GetByID(plant, facode, stickercode);
             if (dbBrand == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -117,7 +121,7 @@ namespace Sampoerna.EMS.BLL
                 dbBrand.IS_DELETED = true;
             }
 
-            
+
             //_repository.Update(dbBrand);
             _uow.SaveChanges();
 
@@ -128,11 +132,11 @@ namespace Sampoerna.EMS.BLL
         public ZAIDM_EX_BRAND GetByFaCode(string plantWerk, string faCode)
         {
             //var dbData = _repository.Get(b => b.FA_CODE.Equals(faCode)).FirstOrDefault();
-            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.FA_CODE == faCode && b.IS_DELETED !=true).FirstOrDefault();
+            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.FA_CODE == faCode && b.IS_DELETED != true).FirstOrDefault();
             return dbData;
         }
 
-        
+
 
         public List<ZAIDM_EX_BRAND> GetByPlantId(string plantId)
         {
@@ -145,7 +149,7 @@ namespace Sampoerna.EMS.BLL
         public List<ZAIDM_EX_BRAND> GetBrandCeBylant(string plantWerk)
         {
             //var dbData = _repository.Get(c => c.WERKS == plantWerk).ToList();
-            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true && b.STATUS == true ).ToList();
+            var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true && b.STATUS == true).ToList();
             //var dbData = _repository.Get(b => b.WERKS == plantWerk && b.IS_DELETED != true && b.STATUS == true).ToList();
             return dbData;
         }
@@ -159,6 +163,16 @@ namespace Sampoerna.EMS.BLL
                 return dbData.ZAIDM_EX_GOODTYP;
             }
             return null;
+        }
+
+        public ZAIDM_EX_BRAND GetBrandCe(string plant, string facode,string brandCe)
+        {
+            var dbData =
+                _repository.Get(
+                    x =>
+                        x.WERKS == plant && x.FA_CODE == facode && x.BRAND_CE == brandCe).FirstOrDefault();
+
+            return dbData;
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using AutoMapper;
+using CrystalDecisions.CrystalReports.Engine;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
@@ -132,17 +133,66 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-
+                if (model.Plants == null)
+                {
+                    AddMessageInfo("Please fill User Plant Map at least one record", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
                 var currenPlant = _userPlantMapBll.GetByUserId(model.UserPlantMap.UserId);
 
                 if (model.Plants != null)
                 {
+                    var savePlant = model.Plants.Select(c => c.WERKS).ToList();
+                    var currentPlant = currenPlant.Select(c => c.PLANT_ID).ToList();
+
+                    //check if user delete all mapping then return error message
+                    var intersectBoth = savePlant.Intersect(currentPlant);
+
+                    if (intersectBoth.Any())
+                    {
+                        var listCmd = new List<bool>();
+                        foreach (var plant1 in intersectBoth)
+                        {
+                            listCmd.Add(model.Plants.Where(c => c.WERKS == plant1).Select(c => c.IsChecked).FirstOrDefault()); 
+                        }
+                        if (listCmd.All(c => c != true))
+                        {
+                            AddMessageInfo("Please fill User Plant Map at least one record", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Index");
+                        }
+                    }
+
+                    //check if model plant have less than current plant then delete other plant
+                    //get the other plant to delete
+                    var exceptPlant = currentPlant.Except(savePlant).ToList();
+
+                    if (exceptPlant.Any())
+                    {
+                        foreach (var plant in exceptPlant)
+                        {
+                            var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId, plant);
+                            if (existingPlantMap != null)
+                            {
+
+                                _userPlantMapBll.Delete(existingPlantMap.USER_PLANT_MAP_ID);
+                            }
+                        }
+
+                    }
+
                     foreach (var plant in model.Plants)
                     {
                         if (currenPlant.Any(x => x.PLANT_ID == plant.WERKS))
                         {
+
                             if (!plant.IsChecked)
                             {
+                                //var currentPlantUpdated = _userPlantMapBll.GetByUserId(model.UserPlantMap.UserId);
+                                //if (currentPlantUpdated.Count() == 1)
+                                //{
+                                //    AddMessageInfo("Please fill User Plant Map at least one record", Enums.MessageInfoType.Error);
+                                //    return RedirectToAction("Index");
+                                //}
                                 var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
                                     plant.WERKS);
                                 if (existingPlantMap != null)
