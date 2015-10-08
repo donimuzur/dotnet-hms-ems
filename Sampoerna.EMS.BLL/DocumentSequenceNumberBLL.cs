@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using System.Collections.Generic;
@@ -60,14 +60,29 @@ namespace Sampoerna.EMS.BLL
                             c.T001W.NPPBKC_ID == input.NppbkcId && c.T001W.IS_MAIN_PLANT.HasValue &&
                             c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
 
+                if (t001Data == null || t001Data.T001 == null)
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCompanyDataHasNotSet);
+                }
+                
+                if (string.IsNullOrEmpty(t001Data.T001.BUTXT_ALIAS))
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCompanyAliasHasNotSet);
+                }
+
+                if (t001Data.T001W == null || t001Data.T001W.ZAIDM_EX_NPPBKC == null)
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberPlantDataHasNotSet);
+                }
+
+                if (string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS))
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCityAliasHasNotSet);
+                }
+
                 //generate number
-                docNumber = docNumber + "/" +
-                            ((t001Data != null && t001Data.T001 != null && !string.IsNullOrEmpty(t001Data.T001.BUTXT_ALIAS)) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" +
-                            (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null &&
-                             !string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS)
-                                ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS
-                                : "-") + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" +
-                            input.Year.ToString();
+                docNumber = docNumber + "/" + t001Data.T001.BUTXT_ALIAS + "/" + t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS 
+                    + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year;
 
             }
             
