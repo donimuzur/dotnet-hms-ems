@@ -731,13 +731,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (file == null || file.FileName == "")
                 return "";
-
+            
             string sFileName = "";
-
+            
             //initialize folders in case deleted by an test publish profile
             if (!Directory.Exists(Server.MapPath(Constans.CK5FolderPath)))
                 Directory.CreateDirectory(Server.MapPath(Constans.CK5FolderPath));
 
+           
             sFileName = Constans.CK5FolderPath + Path.GetFileName(pbck4Id.ToString("'ID'-##") + type + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
