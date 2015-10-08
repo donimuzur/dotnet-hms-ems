@@ -828,13 +828,14 @@ namespace Sampoerna.EMS.Website.Controllers
             bool isSuccess = false;
             var currentUserId = CurrentUser;
             var message = "Document is " + EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+            var actionResult = "DocumentList";
 
             try
             {
-                if ((model.Details.Status == Enums.DocumentStatus.Completed &&
-                    (model.Details.Ck4cDecreeFiles != null)))
+                if (model.Details.Status == Enums.DocumentStatus.Completed)
                 {
                     model.Details.Ck4cDecreeDoc = new List<Ck4cDecreeDocModel>();
+                    
                     if (model.Details.Ck4cDecreeFiles != null)
                     {
                         foreach (var item in model.Details.Ck4cDecreeFiles)
@@ -858,9 +859,33 @@ namespace Sampoerna.EMS.Website.Controllers
                                 model.Details.Ck4cDecreeDoc.Add(decreeDoc);
                             }
                         }
+
+                        message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
+                        actionResult = "CompletedDocument";
                     }
 
-                    message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
+                    if (model.Details.Ck4cUploadedDoc != null)
+                    {
+                        foreach (var item in model.Details.Ck4cUploadedDoc)
+                        {
+                            if (item != null)
+                            {
+                                var valueDoc = item.Split('|').ToArray();
+
+                                var decreeDoc = new Ck4cDecreeDocModel()
+                                {
+                                    FILE_NAME = valueDoc[1],
+                                    FILE_PATH = valueDoc[0],
+                                    CREATED_BY = currentUserId.USER_ID,
+                                    CREATED_DATE = DateTime.Now
+                                };
+                                model.Details.Ck4cDecreeDoc.Add(decreeDoc);
+                            }
+                        }
+
+                        message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
+                        actionResult = "CompletedDocument";
+                    }
                 }
 
                 Ck4cWorkflowCompleted(model.Details, model.Details.GovApprovalActionType, model.Details.Comment);
@@ -875,7 +900,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             AddMessageInfo(message, Enums.MessageInfoType.Success);
 
-            return RedirectToAction("DocumentList");
+            return RedirectToAction(actionResult);
         }
 
         private string SaveUploadedFile(HttpPostedFileBase file, int ck4cId)
@@ -923,34 +948,42 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private void Ck4cWorkflowCompleted(DataDocumentList ck4cData, Enums.ActionType actionType, string comment)
         {
-            var input = new Ck4cWorkflowDocumentInput()
+            if (ck4cData.Status == Enums.DocumentStatus.Completed)
             {
-                DocumentId = ck4cData.Ck4CId,
-                ActionType = actionType,
-                UserRole = CurrentUser.UserRole,
-                UserId = CurrentUser.USER_ID,
-                DocumentNumber = ck4cData.Number
-            };
+                var input = new Ck4cWorkflowDocumentInput();
 
-            if (ck4cData.Status == Enums.DocumentStatus.Completed && ck4cData.Ck4cDecreeFiles != null)
-            {
-                input = new Ck4cWorkflowDocumentInput()
+                if(ck4cData.Ck4cDecreeDoc.Count == 0)
                 {
-                    DocumentId = ck4cData.Ck4CId,
-                    ActionType = actionType,
-                    UserRole = CurrentUser.UserRole,
-                    UserId = CurrentUser.USER_ID,
-                    DocumentNumber = ck4cData.Number,
-                    Comment = comment,
-                    AdditionalDocumentData = new Ck4cWorkflowDocumentData()
+                    input = new Ck4cWorkflowDocumentInput()
                     {
-                        DecreeDate = ck4cData.DecreeDate.Value,
-                        Ck4cDecreeDoc = Mapper.Map<List<Ck4cDecreeDocDto>>(ck4cData.Ck4cDecreeDoc)
-                    }
-                };
+                        DocumentId = ck4cData.Ck4CId,
+                        ActionType = actionType,
+                        UserRole = CurrentUser.UserRole,
+                        UserId = CurrentUser.USER_ID,
+                        DocumentNumber = ck4cData.Number,
+                        Comment = comment
+                    };
+                }
+                else
+                {
+                    input = new Ck4cWorkflowDocumentInput()
+                    {
+                        DocumentId = ck4cData.Ck4CId,
+                        ActionType = actionType,
+                        UserRole = CurrentUser.UserRole,
+                        UserId = CurrentUser.USER_ID,
+                        DocumentNumber = ck4cData.Number,
+                        Comment = comment,
+                        AdditionalDocumentData = new Ck4cWorkflowDocumentData()
+                        {
+                            DecreeDate = ck4cData.DecreeDate.Value,
+                            Ck4cDecreeDoc = Mapper.Map<List<Ck4cDecreeDocDto>>(ck4cData.Ck4cDecreeDoc)
+                        }
+                    };
+                }
+                
+                _ck4CBll.Ck4cWorkflow(input);
             }
-
-            _ck4CBll.Ck4cWorkflow(input);
         }
 
         #endregion

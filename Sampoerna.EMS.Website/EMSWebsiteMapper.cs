@@ -829,10 +829,17 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
                
             Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting();
-
-
+            
             Mapper.CreateMap<ProductionUploadViewModel, ProductionDto>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<ProductionUploadItemsInput, ProductionUploadItems>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ProductionUploadItems, ProductionUploadItemsInput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ProductionUploadItemsOutput, ProductionUploadItemsInput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ProductionUploadItemsInput, ProductionUploadItemsOutput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ProductionUploadItemsOutput, ProductionUploadItems>().IgnoreAllNonExisting();
+            //Mapper.CreateMap<ProductionUploadViewModel, ProductionUploadItemsOutput>().IgnoreAllNonExisting();
 
             #endregion
 

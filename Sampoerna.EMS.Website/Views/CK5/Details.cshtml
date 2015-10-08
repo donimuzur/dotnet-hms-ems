@@ -26,7 +26,7 @@
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
-                        else if (Model.AllowGiCreated || Model.AllowGrCreated)
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated || Model.AllowTfPostedPortToImporter)
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnGiCreated" />
                         }
@@ -38,6 +38,11 @@
                          if (Model.AllowCancelSAP)
                         {
                             <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelSAP" />
+                        }
+                        
+                          if (Model.IsCompleted)
+                        {
+                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveAttachment" />
                         }
                     }
 
@@ -92,7 +97,7 @@
                             }
                             
                         }
-                        else if (Model.AllowGiCreated || Model.AllowGrCreated)
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated || Model.AllowTfPostedPortToImporter)
                         {
                             @Html.HiddenFor(model => model.KppBcCity)
                             @Html.HiddenFor(model => model.GoodTypeName)
@@ -102,6 +107,7 @@
                             
                              @Html.Partial("_CK5SealingInput")
                         }
+                       
                         else
                         {
                             @Html.Partial("_CK5InformationDetails")
@@ -280,11 +286,13 @@
 
 @section scripts {
     <script src="~/Scripts/CK5Scripts.js"></script>
-    @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+    @if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject) 
+        || Model.IsCompleted)
     {
         <script src="~/Scripts/jquery.form.min.js"></script>
         <script src="~/Scripts/UploadExcel.js"></script>
         <script src="~/Scripts/CK5ScriptUploadGovFile.js"></script>
+      
     }
 
 
@@ -353,7 +361,8 @@
                         $('#GovApproveForm').submit();
                     }
                 }
-                else if ('@Model.AllowGrCreated' == "True") {
+                else if ('@Model.AllowGrCreated' == "True"
+                || '@Model.AllowTfPostedPortToImporter' == "True") {
                     
                     if (ValidateGRCreated()) {
                         $('#GovApproveForm').submit();
@@ -496,5 +505,12 @@
             window.location = "@Url.Action("CancelSAPDocument", "CK5", new {id = @Model.Ck5Id})";
         });
 
+        $("#btnSaveAttachment").click(function () {
+
+
+            $('#GovApproveForm').submit();                
+            
+
+        });
     </script>
 }
