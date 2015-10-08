@@ -200,9 +200,17 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.CreatedUser != input.CurrentUser)
                 return false;
-
+            
             return input.DocumentStatus == Enums.DocumentStatus.GRCreated ||
                     input.DocumentStatus == Enums.DocumentStatus.GRCompleted;
+        }
+
+        public bool AllowTfPostedPortToImporter(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.TFPosted;
         }
 
         public bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input)

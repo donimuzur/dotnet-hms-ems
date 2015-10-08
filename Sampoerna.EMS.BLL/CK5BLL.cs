@@ -990,6 +990,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.CancelSTOCreated:
                     CancelSTOCreated(input);
                     break;
+                case Enums.ActionType.TFPosted:
+                    TfPostedPortToImporterDocument(input);
+                    break;
             }
 
             //todo sent mail
@@ -1686,6 +1689,72 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
         }
 
+        private void TfPostedPortToImporterDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.CK5_TYPE != Enums.CK5Type.PortToImporter)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.TFPosted)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+          
+
+            string oldValue = dbData.SEALING_NOTIF_NUMBER;
+            string newValue = input.SealingNumber;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "SEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
+            dbData.SEALING_NOTIF_NUMBER = input.SealingNumber;
+
+            oldValue = dbData.SEALING_NOTIF_DATE.HasValue ? dbData.SEALING_NOTIF_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+            newValue = input.SealingDate.HasValue ? input.SealingDate.Value.ToString("dd MMM yyyy") : string.Empty;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "SEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
+            dbData.SEALING_NOTIF_DATE = input.SealingDate;
+
+            oldValue = dbData.UNSEALING_NOTIF_NUMBER;
+            newValue = input.UnSealingNumber;
+
+            //string oldValue = dbData.UNSEALING_NOTIF_NUMBER;
+            //string newValue = input.UnSealingNumber;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
+            dbData.UNSEALING_NOTIF_NUMBER = input.UnSealingNumber;
+
+            oldValue = dbData.UNSEALING_NOTIF_DATE.HasValue ? dbData.UNSEALING_NOTIF_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+            newValue = input.UnSealingDate.HasValue ? input.UnSealingDate.Value.ToString("dd MMM yyyy") : string.Empty;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
+            dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
+
+            if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
+            {
+                if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
+                    && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
+                    && dbData.SEALING_NOTIF_DATE.HasValue
+                    && dbData.UNSEALING_NOTIF_DATE.HasValue)
+                {
+
+                    oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+                    //set change history
+                    SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+
+                    dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                }
+            }
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            AddWorkflowHistory(input);
+        }
         #endregion
 
         public List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input)
