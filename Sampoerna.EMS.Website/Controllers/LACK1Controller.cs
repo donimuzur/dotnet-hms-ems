@@ -266,8 +266,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
             };
 
-
-
             return CreateInitial(model);
         }
 
@@ -410,6 +408,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
             model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
             model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
+
+            model.MenuPlantAddClassCss = model.Lack1Level == Enums.Lack1Level.Plant ? "active" : "";
+            model.MenuNppbkcAddClassCss = model.Lack1Level == Enums.Lack1Level.Nppbkc ? "active" : "";
 
             return (model);
 
