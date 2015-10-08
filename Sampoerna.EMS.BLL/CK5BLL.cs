@@ -1043,6 +1043,8 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : CK-5</td></tr>");
             bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>CK-5 Type</td><td> : " + EnumHelper.GetDescription(ck5Dto.CK5_TYPE) + "</td></tr>");
+            bodyMail.AppendLine();
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK5/Details/" + ck5Dto.CK5_ID + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
@@ -1855,7 +1857,9 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.PoaName = poaInfo.PRINTED_NAME;
                 result.ReportDetails.PoaAddress = poaInfo.POA_ADDRESS;
                 result.ReportDetails.PoaIdCard = poaInfo.ID_CARD;
-                result.ReportDetails.PoaCity = dtData.KPPBC_CITY.ToLowerInvariant();
+                result.ReportDetails.PoaCity = ConvertHelper.ToTitleCase(dtData.KPPBC_CITY);
+
+
             }
 
             //for export type
