@@ -11,6 +11,18 @@
                 <h3>Brand Registration</h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
+                    @if (Model.IsAllowDelete)
+                    {
+                        if (Model.BoolIsDeleted.HasValue && Model.BoolIsDeleted.Value)
+                        {
+                            <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Un-Delete</a>
+                        }
+                        else
+                        {
+                            <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Delete</a>
+                        }
+
+                    }
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
 
                 </div>
@@ -448,6 +460,25 @@
         </div>
     </div>
 
+    <!--delete-->
+    <input id="btn-delete-brand" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.brand" value="delete">
+    <div class="modal ems-modal fade delete-modal brand" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Delete</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="window.location.href = '@Url.Action("Delete", "BrandRegistration", new { plant = @Model.PlantId, facode = @Url.Encode(Model.FaCode), stickercode = @Url.Encode(Model.StickerCode) })'">Delete</button>
+                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 @section scripts {
     <script src="~/Scripts/thousand-separator.js"></script>
@@ -473,6 +504,9 @@
             });
         });
         
+        var confirmDeleteBrand = function () {
+            $('#btn-delete-brand').click();
+        };
 
         function PersonalizationCodeOnChange() {
             if ($("#PersonalizationCode").length) {

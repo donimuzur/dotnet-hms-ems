@@ -945,9 +945,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
-                model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
-
+                if (model.Ck5Type == Enums.CK5Type.PortToImporter)
+                {
+                    model.AllowTfPostedPortToImporter = _workflowBll.AllowTfPostedPortToImporter(input);
+                }
+                else
+                {
+                    model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
+                    model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
+                }
+               
                 model.AllowCancelSAP = _workflowBll.AllowCancelSAP(input);
 
                 if (model.AllowGovApproveAndReject)
@@ -956,6 +963,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "CK5GICreated";
                 else if (model.AllowGrCreated)
                     model.ActionType = "CK5GRCreated";
+                else if (model.AllowTfPostedPortToImporter)
+                    model.ActionType = "CK5TfPostedPortToImporter";
                 else if (model.IsCompleted)
                     model.ActionType = "CK5CompletedAttachment";
                 
@@ -1337,6 +1346,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
 
+                input.SealingNumber = model.SealingNotifNumber;
+                input.SealingDate = model.SealingNotifDate;
+
+                input.UnSealingNumber = model.UnSealingNotifNumber;
+                input.UnSealingDate = model.UnsealingNotifDate;
+
+                _ck5Bll.CK5Workflow(input);
+
+                AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
+        public ActionResult CK5TfPostedPortToImporter(CK5FormViewModel model)
+        {
+
+            try
+            {
+                //CK5Workflow(model.Ck5Id, Enums.ActionType.Submit, string.Empty);
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                input.ActionType = Enums.ActionType.TFPosted;
+                
                 input.SealingNumber = model.SealingNotifNumber;
                 input.SealingDate = model.SealingNotifDate;
 
