@@ -40,6 +40,7 @@ namespace Sampoerna.EMS.BLL
         private IUserBLL _userBll;
         private IBrandRegistrationService _brandRegistrationService;
         private ICK4CDecreeDocBLL _ck4cDecreeDocBll;
+        private IWasteBLL _wasteBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -63,6 +64,7 @@ namespace Sampoerna.EMS.BLL
             _userBll = new UserBLL(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
             _ck4cDecreeDocBll = new CK4CDecreeDocBLL(_uow, _logger);
+            _wasteBll = new WasteBLL(_logger, _uow);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -318,9 +320,15 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Approve:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        rc.To.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                        var poaUser = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
+                        var poaApproveId = _userBll.GetUserById(ck4cData.ApprovedByPoa);
 
-                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                        rc.To.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+
+                        if (poaApproveId != null)
+                            rc.CC.Add(poaApproveId.EMAIL);
+
+                        rc.CC.Add(GetManagerEmail(poaUser));
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -348,10 +356,12 @@ namespace Sampoerna.EMS.BLL
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
                     var poaApprove = _userBll.GetUserById(ck4cData.ApprovedByPoa);
+                    var poaId = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
 
                     rc.To.Add(userDetail.EMAIL);
-                    rc.CC.Add(poaApprove.EMAIL);
-                    rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                    if (poaApprove != null)
+                        rc.CC.Add(poaApprove.EMAIL);
+                    rc.CC.Add(GetManagerEmail(poaId));
 
                     rc.IsCCExist = true;
                     break;
@@ -898,8 +908,19 @@ namespace Sampoerna.EMS.BLL
                         var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                         var prodQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PROD_QTY);
                         var packedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PACKED_QTY);
-                        var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && (c.PROD_DATE <= prodDateFormat && c.PROD_DATE >= dateStart)).Sum(x => x.UNPACKED_QTY);
+                        var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.UNPACKED_QTY);
                         var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
+
+                        if (unpackedQty == 0)
+                        {
+                            var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
+
+                            var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
+
+                            var lastUnpacked = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE < prodDateFormat).LastOrDefault();
+
+                            unpackedQty = (lastUnpacked == null ? 0 : lastUnpacked.UNPACKED_QTY) - oldWaste;
+                        }
 
                         ck4cItem.CollumNo = i;
                         ck4cItem.No = i.ToString();
