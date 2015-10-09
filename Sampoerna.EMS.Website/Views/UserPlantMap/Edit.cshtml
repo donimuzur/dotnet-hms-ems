@@ -69,7 +69,7 @@
                                                     <label class="col-md-4">Plant</label>
                                                     <div class="col-md-8">
                                                         <div class="page-role" id="plant-list">
-
+                                                            
 
 
 
@@ -110,13 +110,21 @@
                 location.href = '@Url.Action("Index", "UserPlantMap")';
             });
 
+            $('#selecctall').change(function() {
+                $('input[type="checkbox"]').prop('checked', this.checked);
+                var isCheck = $('#selecctall').prop('checked');
+                for (var c = 0; c < selectedPlant.length; c++) {
+                    $('#Plants_' + c + '__IsChecked').val(isCheck);
+                }
+            });
 
         });
 
-        $('#plant-list').html('');
+
+        $('#plant-list').html('<input type="checkbox" id="selecctall" /><b>Select All</b>');
 
         var GetPlantByNppbkc = (function(nppbkcId) {
-          
+
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetPlantByNppbkc", "UserPlantMap")',
@@ -125,8 +133,8 @@
                     PushPlantList(data);
                 }
             });
-           
-        
+
+
         });
 
 
@@ -136,22 +144,22 @@
         });
 
         var plantLength = 0;
-        function PushPlantList(data) {
 
+        function PushPlantList(data) {
             for (var i = 0; i < data.length; i++) {
                 plantlist.push(data[i]);
                 $('#plant-list').append(SetPlantList(data[i], plantLength));
                 for (var q = 0; q < selectedPlant.length; q++) {
-                        if (data[i].WERKS == selectedPlant[q].WERKS) {
-                          
-                            $('#plants_' + plantLength + '__checkbox').prop('checked', true);
-                            $('#Plants_' + plantLength + '__IsChecked').val(true); 
-                        }
+                    if (data[i].WERKS == selectedPlant[q].WERKS) {
+
+                        $('#plants_' + plantLength + '__checkbox').prop('checked', true);
+                        $('#Plants_' + plantLength + '__IsChecked').val(true);
                     }
-                    plantLength++;
-                
+                }
+                plantLength++;
+
             }
-           
+
 
         }
 
@@ -175,7 +183,20 @@
                     }
                 }
                 plantlist = tempArray;
-                $('#plant-list').html('');
+
+                if (plantlist.length > 0) {
+                    $('#plant-list').html('<input type="checkbox" id="selecctall" /><b>Select All</b>');
+                    $('#selecctall').change(function() {
+                        $('input[type="checkbox"]').prop('checked', this.checked);
+                        var isCheck = $('#selecctall').prop('checked');
+                        for (var c = 0; c < plantlist.length; c++) {
+                            $('#Plants_' + c + '__IsChecked').val(isCheck);
+                        }
+                    });
+                } else {
+                    $('#plant-list').html('');
+                }
+
                 for (var l = 0; l < plantlist.length; l++) {
                     $('#plant-list').append(SetPlantList(plantlist[l], l));
                     for (var f = 0; f < selectedPlant.length; f++) {
@@ -201,9 +222,20 @@
 
                         for (var i = 0; i < data.length; i++) {
                             plantlist.push(data[i]);
-                            
+
                         }
-                        $('#plant-list').html('');
+                        if (plantlist.length > 0) {
+                            $('#plant-list').html('<input type="checkbox" id="selecctall" /><b>Select All</b>');
+                            $('#selecctall').change(function() {
+                                $('input[type="checkbox"]').prop('checked', this.checked);
+                                var isCheck = $('#selecctall').prop('checked');
+                                for (var c = 0; c < plantlist.length; c++) {
+                                    $('#Plants_' + c + '__IsChecked').val(isCheck);
+                                }
+                            });
+                        } else {
+                            $('#plant-list').html('');
+                        }
                         for (var k = 0; k < plantlist.length; k++) {
                             $('#plant-list').append(SetPlantList(plantlist[k], k));
                             for (var g = 0; g < selectedPlant.length; g++) {
