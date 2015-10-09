@@ -320,9 +320,15 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Approve:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        rc.To.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                        var poaUser = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
+                        var poaApproveId = _userBll.GetUserById(ck4cData.ApprovedByPoa);
 
-                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                        rc.To.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+
+                        if (poaApproveId != null)
+                            rc.CC.Add(poaApproveId.EMAIL);
+
+                        rc.CC.Add(GetManagerEmail(poaUser));
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
