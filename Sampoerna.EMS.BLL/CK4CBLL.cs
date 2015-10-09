@@ -40,6 +40,7 @@ namespace Sampoerna.EMS.BLL
         private IUserBLL _userBll;
         private IBrandRegistrationService _brandRegistrationService;
         private ICK4CDecreeDocBLL _ck4cDecreeDocBll;
+        private IWasteBLL _wasteBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -63,6 +64,7 @@ namespace Sampoerna.EMS.BLL
             _userBll = new UserBLL(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
             _ck4cDecreeDocBll = new CK4CDecreeDocBLL(_uow, _logger);
+            _wasteBll = new WasteBLL(_logger, _uow);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -318,9 +320,15 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Approve:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        rc.To.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                        var poaUser = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
+                        var poaApproveId = _userBll.GetUserById(ck4cData.ApprovedByPoa);
 
-                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                        rc.To.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+
+                        if (poaApproveId != null)
+                            rc.CC.Add(poaApproveId.EMAIL);
+
+                        rc.CC.Add(GetManagerEmail(poaUser));
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -348,10 +356,12 @@ namespace Sampoerna.EMS.BLL
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
                     var poaApprove = _userBll.GetUserById(ck4cData.ApprovedByPoa);
+                    var poaId = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
 
                     rc.To.Add(userDetail.EMAIL);
-                    rc.CC.Add(poaApprove.EMAIL);
-                    rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                    if (poaApprove != null)
+                        rc.CC.Add(poaApprove.EMAIL);
+                    rc.CC.Add(GetManagerEmail(poaId));
 
                     rc.IsCCExist = true;
                     break;
@@ -528,6 +538,9 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
+            //delete data doc first
+            _ck4cDecreeDocBll.DeleteByCk4cId(dbData.CK4C_ID);
+
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.StatusGovCk4c.Approved);
@@ -553,6 +566,9 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            //delete data doc first
+            _ck4cDecreeDocBll.DeleteByCk4cId(dbData.CK4C_ID);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
@@ -866,6 +882,7 @@ namespace Sampoerna.EMS.BLL
 
             result.HeaderFooter = headerFooterData;
             var i = 0;
+            List<Ck4cUnpacked> unpackedList = new List<Ck4cUnpacked>();
 
             //add data details of current CK-4C
             for (var j = Convert.ToInt32(result.Detail.ReportedPeriodStart); j <= Convert.ToInt32(result.Detail.ReportedPeriodEnd); j++)
@@ -873,6 +890,7 @@ namespace Sampoerna.EMS.BLL
                 i = i + 1;
                 var prodDate = j + "-" + result.Detail.ReportedMonth.Substring(0, 3) + "-" + result.Detail.ReportedYear;
                 var prodDateFormat = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), j);
+                var lastProdDate = prodDateFormat.AddDays(-1);
                 var dateStart = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), Convert.ToInt32(result.Detail.ReportedPeriodStart));
                 List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
                 foreach (var item in addressPlant)
@@ -883,8 +901,6 @@ namespace Sampoerna.EMS.BLL
                     var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
                     var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
 
-                    
-
                     foreach (var data in activeBrand.Distinct())
                     {
                         var ck4cItem = new Ck4cReportItemDto();
@@ -892,8 +908,19 @@ namespace Sampoerna.EMS.BLL
                         var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                         var prodQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PROD_QTY);
                         var packedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PACKED_QTY);
-                        var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && (c.PROD_DATE <= prodDateFormat && c.PROD_DATE >= dateStart)).Sum(x => x.UNPACKED_QTY);
+                        var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.UNPACKED_QTY);
                         var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
+
+                        if (unpackedQty == 0)
+                        {
+                            var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
+
+                            var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
+
+                            var lastUnpacked = unpackedList.Where(c => c.PlantId == item && c.Facode == data.FA_CODE && c.ProdDate == lastProdDate).Sum(x => x.Unpacked);
+
+                            unpackedQty = lastUnpacked - oldWaste;
+                        }
 
                         ck4cItem.CollumNo = i;
                         ck4cItem.No = i.ToString();
@@ -911,6 +938,14 @@ namespace Sampoerna.EMS.BLL
 
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
+
+                        var unpackedItem = new Ck4cUnpacked();
+                        unpackedItem.PlantId = item;
+                        unpackedItem.Facode = data.FA_CODE;
+                        unpackedItem.ProdDate = prodDateFormat;
+                        unpackedItem.Unpacked = unpackedQty == null ? 0 : unpackedQty.Value;
+
+                        unpackedList.Add(unpackedItem);
                     }
                     
                 }

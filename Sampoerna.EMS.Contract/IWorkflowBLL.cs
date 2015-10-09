@@ -23,6 +23,11 @@ namespace Sampoerna.EMS.Contract
 
         bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input);
 
+        bool AllowTfPostedPortToImporter(WorkflowAllowApproveAndRejectInput input);
+
         bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowAttachmentCompleted(WorkflowAllowApproveAndRejectInput input);
+
     }
 }

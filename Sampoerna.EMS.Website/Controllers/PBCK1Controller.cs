@@ -147,7 +147,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile)
+        public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile, string nppbkc)
         {
             var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
             var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
@@ -184,7 +184,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<List<Pbck1ProdConverterInput>>(model.Detail.Pbck1ProdConverter);
-            var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input, nppbkc);
 
             model.Detail.Pbck1ProdConverter = Mapper.Map<List<Pbck1ProdConvModel>>(outputResult);
 
@@ -453,6 +453,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
+
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(pbck1Data.Pbck1Number));
+                model.PrintHistoryList = printHistory;
 
                 model.DocStatus = model.Detail.Status;
 
