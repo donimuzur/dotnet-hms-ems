@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
@@ -115,6 +116,16 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public List<string> StoNumberList { get; set; }
 
+    }
+
+    public class Ck5GetForLack2ByParamInput
+    {
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+        public string SourcePlantId { get; set; }
+        public int ExGroupTypeId { get; set; }
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
     }
 
     public class Back1DataOutput

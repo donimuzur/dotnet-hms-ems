@@ -2681,19 +2681,7 @@ namespace Sampoerna.EMS.BLL
 
             return qtyCk5;
         }
-
-        public List<CK5> GetByGIDate(int month,  int year, string sourcePlantId, string goodTypeId)
-        {
-            var goodTypeGroup = _goodTypeGroupBLL.GetGroupByExGroupType(goodTypeId);
-            var data =   _repository.Get(
-                    p =>
-                        p.GI_DATE.HasValue && p.GI_DATE.Value.Month == month && p.GI_DATE.Value.Year == year &&
-                        p.SOURCE_PLANT_ID == sourcePlantId && (int) p.EX_GOODS_TYPE == goodTypeGroup.EX_GROUP_TYPE_ID).ToList();
-
-            return data;
-
-        }
-
+        
         public List<int> GetAllYearsByGiDate()
         {
             var data = _repository.Get(x => x.GI_DATE.HasValue, null, "").Select(x => x.GI_DATE != null ? x.GI_DATE.Value.Year : 0).DistinctBy(x=> x).ToList();

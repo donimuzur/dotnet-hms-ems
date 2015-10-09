@@ -55,4 +55,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<Lack2DocumentDto> Lack2DecreeDoc { get; set; }
     }
 
+    public class Lack2GenerateDataParamInput
+    {
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+        public string SourcePlantId { get; set; }
+        public int ExGroupTypeId { get; set; }
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+    }
+
 }

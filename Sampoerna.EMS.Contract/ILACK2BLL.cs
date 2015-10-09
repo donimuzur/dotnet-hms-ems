@@ -9,31 +9,7 @@ namespace Sampoerna.EMS.Contract
     public interface ILACK2BLL
     {
         List<Lack2Dto> GetAll();
-        
         List<Lack2Dto> GetDocumentByParam(Lack2GetByParamInput input);
-
-        List<Lack2Dto> GetOpenDocument(Login user);
-
-        Lack2Dto GetById(int id);
-
-        Lack2Dto GetByIdAndItem(int id);
-
-        Lack2Dto Insert(Lack2Dto item);
-
-        void InsertDocument(LACK2_DOCUMENT document);
-
-        int RemoveDoc(int docId);
-
-        List<Lack2Dto> GetCompletedDocument();
-
-        void RemoveExistingItem(long id);
-
-        bool IsSelectionCriteriaExist(Lack2Dto item);
-        List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
-
-        List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
-
         void Lack2Workflow(Lack2WorkflowDocumentInput input);
-
     }
 }

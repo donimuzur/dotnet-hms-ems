@@ -190,7 +190,6 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 AddMessageInfo("A record with same parameter is already exist", Enums.MessageInfoType.Error);
-
             }
             return RedirectToAction("Index");
         }
@@ -318,7 +317,6 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult RemoveDoc(int docid)
         {
-
             return Json(_lack2Bll.RemoveDoc(docid));
         }
 
@@ -438,16 +436,6 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (!id.HasValue)
                 return HttpNotFound();
-            //var urlBuilder =
-            //      new System.UriBuilder(Request.Url.AbsoluteUri)
-            //      {
-            //          Path = Url.Action("Index", "LACK2"),
-            //          Query = null,
-            //      };
-
-            //Uri uri = urlBuilder.Uri;
-            //if (uri != Request.UrlReferrer)
-            //    return HttpNotFound();
             var model = InitDetailModel(id);
             var periodMonth = _monthBll.GetMonth(Convert.ToInt32(model.Lack2Model.PeriodMonth));
             if (periodMonth != null)
@@ -514,8 +502,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = dbData;
             return PartialView("_Lack2OpenDoc", model);
         }
-
-
+        
         public ActionResult RejectDocument(LACK2CreateViewModel model)
         {
             bool isSuccess = false;
