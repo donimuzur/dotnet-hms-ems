@@ -78,6 +78,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 //input = new CK5Input { Ck5Type = ck5Type };
                 input = new CK5GetByParamInput();
                 input.Ck5Type = ck5Type;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
 
                 dbData = _ck5Bll.GetCK5ByParam(input);
                 return Mapper.Map<List<CK5Item>>(dbData);
@@ -87,6 +89,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             input = Mapper.Map<CK5GetByParamInput>(filter);
             input.Ck5Type = ck5Type;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             dbData = _ck5Bll.GetCK5ByParam(input);
             return Mapper.Map<List<CK5Item>>(dbData);
