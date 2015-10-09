@@ -31,17 +31,22 @@
                     <td>@item.NppbkcId</td>
                     <td>@item.NppbkcKppbcName</td>
                     <td>@item.PeriodFrom.ToString("dd MMM yyyy") - @item.PeriodTo.Value.ToString("dd MMM yyyy")</td>
-                    <td align="right">@String.Format("{0:n}", @item.ExGoodsQuota.Value)</td>
-                    @{
-                if (@item.Pbck1Type == Enums.PBCK1Type.New)
-                {
-                    <td align="right">@String.Format("{0:n}", @item.AdditionalExGoodsQuota)</td>
+                    @if (item.ExGoodsQuota == null)
+                    {
+                        <td align="right"></td>
+                    }else{
+                        <td align="right">@String.Format("{0:n}", @item.ExGoodsQuota.Value)</td>
+                    }
+                @{
+                    if (@item.Pbck1Type == Enums.PBCK1Type.New)
+                    {
+                        <td align="right">@String.Format("{0:n}", @item.AdditionalExGoodsQuota)</td>
+                    }
+                    else
+                    {
+                        <td align="right">@String.Format("{0:n}", @item.AdditionalExGoodsQuota)</td>
+                    }
                 }
-                else
-                {
-                    <td align="right">@String.Format("{0:n}", @item.AdditionalExGoodsQuota)</td>
-                }
-}
                     
                     <td align="right">@String.Format("{0:n}", @item.PreviousFinalBalance)</td>
                     <td align="right">@String.Format("{0:n}", @item.TotalPbck1Quota)</td>
