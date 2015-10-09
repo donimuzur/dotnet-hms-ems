@@ -75,7 +75,9 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("Generate Number error : The plant data has not be set")]
             GenerateNumberPlantDataHasNotSet,
             [Description("Generate Number error : The city alias has not be set")]
-            GenerateNumberCityAliasHasNotSet
+            GenerateNumberCityAliasHasNotSet,
+            [Description("A record with same parameter is already exist")]
+            Lack2DuplicateSelectionCriteria,
         }
         
         /// <summary>

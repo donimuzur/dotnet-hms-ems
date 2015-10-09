@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Linq;
 using System.Text;
 using AutoMapper;
 using Sampoerna.EMS.BLL.Services;
@@ -14,9 +15,6 @@ using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Linq.Expressions;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -27,39 +25,39 @@ namespace Sampoerna.EMS.BLL
 
         private ILogger _logger;
         private IUnitOfWork _uow;
-        private IMonthBLL _monthBll;
         private IPOABLL _poaBll;
         private IUserBLL _userBll;
 
         private IChangesHistoryBLL _changesHistoryBll;
-        private string includeTables = "MONTH";
         private IWorkflowHistoryBLL _workflowHistoryBll;
-        private IPOABLL _poabll;
-        private IPlantBLL _plantBll;
-        private IZaidmExNPPBKCBLL _nppbkcbll;
         private IMessageService _messageService;
         private IWorkflowBLL _workflowBll;
+        private IMonthBLL _monthBll;
 
         private ILack2Service _lack2Service;
-        
+        private IZaidmExNppbkcService _nppbkcService;
+        private IExGroupTypeService _exGroupTypeService;
+        private ICK5Service _ck5Service;
+        private IT001WService _t001WService;
+
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
-            
-            _lack2Service = new Lack2Service(_uow, _logger);
 
-            _monthBll = new MonthBLL(_uow, _logger);
+            _lack2Service = new Lack2Service(_uow, _logger);
+            _nppbkcService = new ZaidmExNppbkcService(_uow, _logger);
+            _exGroupTypeService = new ExGroupTypeService(_uow, _logger);
+            _ck5Service = new CK5Service(_uow, _logger);
+            _t001WService = new T001WService(_uow, _logger);
 
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
-            _poabll = new POABLL(_uow, _logger);
-            _plantBll = new PlantBLL(_uow, _logger);
-            _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _messageService = new MessageService(_logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
             _poaBll = new POABLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
+            _monthBll = new MonthBLL(_uow,_logger);
         }
 
         public List<Lack2Dto> GetAll()
@@ -68,6 +66,529 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Lack2Dto>>(data);
         }
 
+        public List<Lack2Dto> GetByParam(Lack2GetByParamInput input)
+        {
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
+                if (nppbkc != null && nppbkc.Count > 0)
+                {
+                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+                }
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+                input.DocumentNumberList = document;
+            }
+            
+            return Mapper.Map<List<Lack2Dto>>(_lack2Service.GetByParam(input));
+        }
+        
+        public List<Lack2Dto> GetCompletedByParam(Lack2GetByParamInput input)
+        {
+            var dbData = _lack2Service.GetCompletedByParam(input);
+            var mapResult = Mapper.Map<List<Lack2Dto>>(dbData.ToList());
+            return mapResult;
+        }
+
+        public Lack2Dto GetById(int id)
+        {
+            return Mapper.Map<Lack2Dto>(_lack2Service.GetById(id));
+        }
+
+        public Lack2DetailsDto GetDetailsById(int id)
+        {
+            return Mapper.Map<Lack2DetailsDto>(_lack2Service.GetDetailsById(id));
+        }
+
+        public Lack2CreateOutput Create(Lack2CreateParamInput input)
+        {
+            return null;
+        }
+
+        public Lack2GeneratedOutput GenerateLack2DataByParam(Lack2GenerateDataParamInput input)
+        {
+            return GenerateLack2Data(input);
+        }
+
+        public Lack2SaveEditOutput SaveEdit(Lack2SaveEditInput input)
+        {
+            return null;
+        }
+        
+        #region workflow
+
+        public void Lack2Workflow(Lack2WorkflowDocumentInput input)
+        {
+            var isNeedSendNotif = true;
+            switch (input.ActionType)
+            {
+                case Enums.ActionType.Submit:
+                    SubmitDocument(input);
+                    break;
+                case Enums.ActionType.Approve:
+                    ApproveDocument(input);
+                    break;
+                case Enums.ActionType.Reject:
+                    RejectDocument(input);
+                    break;
+                case Enums.ActionType.GovApprove:
+                    GovApproveDocument(input);
+                    isNeedSendNotif = false;
+                    break;
+                case Enums.ActionType.GovReject:
+                    GovRejectedDocument(input);
+                    isNeedSendNotif = false;
+                    break;
+                case Enums.ActionType.GovPartialApprove:
+                    GovPartialApproveDocument(input);
+                    isNeedSendNotif = false;
+                    break;
+            }
+
+            //todo sent mail
+            if (isNeedSendNotif)
+                SendEmailWorkflow(input);
+            _uow.SaveChanges();
+        }
+
+        private void AddWorkflowHistory(Lack2WorkflowDocumentInput input)
+        {
+            var dbData = Mapper.Map<WorkflowHistoryDto>(input);
+
+            dbData.ACTION_DATE = DateTime.Now;
+            dbData.FORM_TYPE_ID = Enums.FormType.LACK2;
+
+            _workflowHistoryBll.Save(dbData);
+
+        }
+
+        private void SubmitDocument(Lack2WorkflowDocumentInput input)
+        {
+            if (input.DocumentId != null)
+            {
+                //var dbData = _lack1Service.GetById(input.DocumentId.Value);
+                var dbData = _lack2Service.GetById(input.DocumentId.Value);
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                if (dbData.STATUS != Enums.DocumentStatus.Draft)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                if (dbData.CREATED_BY != input.UserId)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval);
+
+                switch (input.UserRole)
+                {
+                    case Enums.UserRole.User:
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
+                        break;
+                    case Enums.UserRole.POA:
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        break;
+                    default:
+                        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                }
+
+                input.DocumentNumber = dbData.LACK2_NUMBER;
+            }
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void ApproveDocument(Lack2WorkflowDocumentInput input)
+        {
+            if (input.DocumentId != null)
+            {
+                //var dbData = _lack1Service.GetById(input.DocumentId.Value);
+
+                var dbData = _lack2Service.GetById(input.DocumentId.Value);
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+                {
+                    CreatedUser = dbData.CREATED_BY,
+                    CurrentUser = input.UserId,
+                    DocumentStatus = dbData.STATUS,
+                    UserRole = input.UserRole,
+                    NppbkcId = dbData.NPPBKC_ID,
+                    DocumentNumber = dbData.LACK2_NUMBER
+                });
+
+                if (!isOperationAllow)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
+                //dbData.APPROVED_BY_POA = input.UserId;
+                //dbData.APPROVED_DATE_POA = DateTime.Now;
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+
+                if (input.UserRole == Enums.UserRole.POA)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    //dbData.APPROVED_BY_POA = input.UserId;
+                    //dbData.APPROVED_DATE_POA = DateTime.Now;
+                    dbData.APPROVED_BY = input.UserId;
+                    dbData.APPROVED_DATE = DateTime.Now;
+                }
+                else
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.APPROVED_BY_MANAGER = input.UserId;
+                    dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+                }
+
+                input.DocumentNumber = dbData.LACK2_NUMBER;
+            }
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void RejectDocument(Lack2WorkflowDocumentInput input)
+        {
+            if (input.DocumentId != null)
+            {
+                var dbData = _lack2Service.GetById(input.DocumentId.Value);
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
+                    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+
+                //change back to draft
+                dbData.STATUS = Enums.DocumentStatus.Draft;
+
+                //todo ask
+                dbData.APPROVED_BY = null;
+                dbData.APPROVED_DATE = null;
+
+                input.DocumentNumber = dbData.LACK2_NUMBER;
+            }
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void GovApproveDocument(Lack2WorkflowDocumentInput input)
+        {
+            if (input.DocumentId != null)
+            {
+                var dbData = _lack2Service.GetById(input.DocumentId.Value);
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+
+                dbData.LACK2_DOCUMENT = null;
+                dbData.STATUS = Enums.DocumentStatus.Completed;
+                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
+                dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
+
+                //dbData.APPROVED_BY_POA = input.UserId;
+                //dbData.APPROVED_DATE_POA = DateTime.Now;
+
+                dbData.APPROVED_BY = input.UserId;
+                dbData.APPROVED_DATE = DateTime.Now;
+
+                input.DocumentNumber = dbData.LACK2_NUMBER;
+            }
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void GovPartialApproveDocument(Lack2WorkflowDocumentInput input)
+        {
+            if (input.DocumentId != null)
+            {
+                var dbData = _lack2Service.GetById(input.DocumentId.Value);
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
+
+                input.DocumentNumber = dbData.LACK2_NUMBER;
+
+                dbData.LACK2_DOCUMENT = null;
+                dbData.STATUS = Enums.DocumentStatus.Completed;
+                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
+                dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
+
+                dbData.APPROVED_BY = input.UserId;
+                dbData.APPROVED_DATE = DateTime.Now;
+
+                input.DocumentNumber = dbData.LACK2_NUMBER;
+            }
+
+            AddWorkflowHistory(input);
+        }
+
+        private void GovRejectedDocument(Lack2WorkflowDocumentInput input)
+        {
+            if (input.DocumentId != null)
+            {
+                var dbData = _lack2Service.GetById(input.DocumentId.Value);
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
+
+                dbData.STATUS = Enums.DocumentStatus.GovRejected;
+                dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
+                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
+                dbData.APPROVED_BY = input.UserId;
+                dbData.APPROVED_DATE = DateTime.Now;
+
+                input.DocumentNumber = dbData.LACK2_NUMBER;
+            }
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void WorkflowStatusAddChanges(Lack2WorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
+        {
+            //set changes log
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Enums.MenuList.LACK2,
+                FORM_ID = input.DocumentId.ToString(),
+                FIELD_NAME = "STATUS",
+                NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                OLD_VALUE = EnumHelper.GetDescription(oldStatus),
+                MODIFIED_BY = input.UserId,
+                MODIFIED_DATE = DateTime.Now
+            };
+            _changesHistoryBll.AddHistory(changes);
+        }
+
+        private void WorkflowStatusGovAddChanges(Lack2WorkflowDocumentInput input, Enums.DocumentStatusGov? oldStatus, Enums.DocumentStatusGov newStatus)
+        {
+            //set changes log
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Enums.MenuList.LACK2,
+                FORM_ID = input.DocumentId.ToString(),
+                FIELD_NAME = "GOV_STATUS",
+                NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                OLD_VALUE = oldStatus.HasValue ? EnumHelper.GetDescription(oldStatus) : "NULL",
+                MODIFIED_BY = input.UserId,
+                MODIFIED_DATE = DateTime.Now
+            };
+
+            _changesHistoryBll.AddHistory(changes);
+        }
+
+        private void SendEmailWorkflow(Lack2WorkflowDocumentInput input)
+        {
+            //todo: body message from email template
+            //todo: to = ?
+            //todo: subject = from email template
+            //var to = "irmansulaeman41@gmail.com";
+            //var subject = "this is subject for " + input.DocumentNumber;
+            //var body = "this is body message for " + input.DocumentNumber;
+            //var from = "a@gmail.com";
+
+            if (input.DocumentId != null)
+            {
+                var lack2Data = Mapper.Map<Lack2Dto>(_lack2Service.GetById(input.DocumentId.Value));
+
+                var mailProcess = ProsesMailNotificationBody(lack2Data, input.ActionType);
+
+                _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+            }
+        }
+
+        private string GetManagerEmail(string poaId)
+        {
+            var managerId = _poaBll.GetManagerIdByPoaId(poaId);
+            var managerDetail = _userBll.GetUserById(managerId);
+            return managerDetail.EMAIL;
+        }
+
+        private MailNotification ProsesMailNotificationBody(Lack2Dto lackData, Enums.ActionType actionType)
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new MailNotification();
+
+            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+
+            rc.Subject = "LACK-2 " + lackData.Lack2Number + " is " + EnumHelper.GetDescription(lackData.Status);
+            bodyMail.Append("Dear Team,<br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("<table><tr><td>Company Code </td><td>: " + lackData.Burks + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>NPPBKC </td><td>: " + lackData.NppbkcId + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Number</td><td> : " + lackData.Lack2Number + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Type</td><td> : LACK-2</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Lack2/Detail/" + lackData.Lack2Id + "'>link</a> to show detailed information</i></td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+            switch (actionType)
+            {
+                case Enums.ActionType.Submit:
+                    if (lackData.Status == Enums.DocumentStatus.WaitingForApproval)
+                    {
+                        var poaList = _poaBll.GetPoaByNppbkcId(lackData.NppbkcId);
+                        foreach (var poaDto in poaList)
+                        {
+                            rc.To.Add(poaDto.POA_EMAIL);
+                        }
+                    }
+                    else if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        var managerId = _poaBll.GetManagerIdByPoaId(lackData.CreatedBy);
+                        var managerDetail = _userBll.GetUserById(managerId);
+                        rc.To.Add(managerDetail.EMAIL);
+                    }
+                    break;
+                case Enums.ActionType.Approve:
+                    if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+                    }
+                    else if (lackData.Status == Enums.DocumentStatus.WaitingGovApproval)
+                    {
+                        var poaData = _poaBll.GetById(lackData.CreatedBy);
+                        if (poaData != null)
+                        {
+                            //creator is poa user
+                            rc.To.Add(poaData.POA_EMAIL);
+                        }
+                        else
+                        {
+                            //creator is excise executive
+                            var userData = _userBll.GetUserById(lackData.CreatedBy);
+                            rc.To.Add(userData.EMAIL);
+                        }
+                    }
+                    break;
+                case Enums.ActionType.Reject:
+                    //send notification to creator
+                    var userDetail = _userBll.GetUserById(lackData.CreatedBy);
+                    rc.To.Add(userDetail.EMAIL);
+                    break;
+            }
+            rc.Body = bodyMail.ToString();
+            return rc;
+        }
+        
+        #endregion
+
+        #region private method
+
+        private Lack2GeneratedOutput GenerateLack2Data(Lack2GenerateDataParamInput input)
+        {
+            var rc = new Lack2GeneratedOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
+
+            #region validation
+
+            //Check Excisable Group Type if exists
+            var checkExcisableGroupType = _exGroupTypeService.GetGroupTypeDetailByGoodsType(input.ExcisableGoodsType);
+            if (checkExcisableGroupType == null)
+            {
+                return new Lack2GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound),
+                    Data = null
+                };
+            }
+
+            if (checkExcisableGroupType.EX_GROUP_TYPE_ID.HasValue)
+                input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
+
+            //check if already exists with same selection criteria
+            var lackCheck = _lack2Service.GetBySelectionCriteria(new Lack2GetBySelectionCriteriaParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+                NppbkcId = input.NppbkcId,
+                SourcePlantId = input.SourcePlantId,
+                ExGoodTypeId = input.ExcisableGoodsType,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear
+            });
+
+            if (lackCheck != null)
+            {
+                return new Lack2GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria),
+                    Data = null
+                };
+            }
+
+            #endregion
+
+            //get ck5 data
+            rc.Data = new Lack2GeneratedDto();
+            var ck5Selected = _ck5Service.GetForLack2ByParam(new Ck5GetForLack2ByParamInput()
+            {
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                SourcePlantId = input.SourcePlantId,
+                ExGroupTypeId = input.ExGroupTypeId,
+                CompanyCode = input.CompanyCode,
+                NppbkcId = input.NppbkcId
+            });
+
+            rc.Data.Ck5Items = Mapper.Map<List<Lack2GeneratedItemDto>>(ck5Selected);
+
+            return rc;
+        }
+        
         private void SetChangesHistory(Lack2Dto origin, Lack2Dto data, string userId)
         {
             var changesData = new Dictionary<string, bool>
@@ -155,436 +676,165 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        #region workflow
+        #endregion
 
-        public void Lack2Workflow(Lack2WorkflowDocumentInput input)
+        #region Summary Report 
+
+        public List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input)
         {
-            var isNeedSendNotif = true;
-            switch (input.ActionType)
-            {
-                case Enums.ActionType.Submit:
-                    SubmitDocument(input);
-                    break;
-                case Enums.ActionType.Approve:
-                    ApproveDocument(input);
-                    break;
-                case Enums.ActionType.Reject:
-                    RejectDocument(input);
-                    break;
-                case Enums.ActionType.GovApprove:
-                    GovApproveDocument(input);
-                    isNeedSendNotif = false;
-                    break;
-                case Enums.ActionType.GovReject:
-                    GovRejectedDocument(input);
-                    isNeedSendNotif = false;
-                    break;
-                case Enums.ActionType.GovPartialApprove:
-                    GovPartialApproveDocument(input);
-                    isNeedSendNotif = false;
-                    break;
-            }
-
-            //todo sent mail
-            if (isNeedSendNotif)
-                SendEmailWorkflow(input);
-            _uow.SaveChanges();
+            var rc = _lack2Service.GetSummaryReportsByParam(input);
+            return SetDataSummaryReport(rc);
         }
 
-        private void AddWorkflowHistory(Lack2WorkflowDocumentInput input)
+        private List<Lack2SummaryReportDto> SetDataSummaryReport(IEnumerable<LACK2> listLack2)
         {
-            var dbData = Mapper.Map<WorkflowHistoryDto>(input);
+            var result = new List<Lack2SummaryReportDto>();
 
-            dbData.ACTION_DATE = DateTime.Now;
-            dbData.FORM_TYPE_ID = Enums.FormType.LACK2;
-
-            _workflowHistoryBll.Save(dbData);
-
-        }
-
-        private void SubmitDocument(Lack2WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
+            foreach (var dtData in listLack2)
             {
-                //var dbData = _lack1Service.GetById(input.DocumentId.Value);
-                var dbData = _repository.GetByID(input.DocumentId.Value);
 
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                if (dbData.STATUS != Enums.DocumentStatus.Draft)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                if (dbData.CREATED_BY != input.UserId)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval);
-
-                switch (input.UserRole)
+                var summaryDto = new Lack2SummaryReportDto
                 {
-                    case Enums.UserRole.User:
-                        dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
-                        break;
-                    case Enums.UserRole.POA:
-                        dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                        break;
-                    default:
-                        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                    Lack2Number = dtData.LACK2_NUMBER,
+                    DocumentType = EnumHelper.GetDescription(Enums.FormType.LACK2),
+                    CompanyCode = dtData.BUKRS,
+                    CompanyName = dtData.BUTXT,
+                    NppbkcId = dtData.NPPBKC_ID,
+                    Ck5SendingPlant = dtData.LEVEL_PLANT_ID
+                };
+
+                //var dbPlant = _plantBll.GetT001WById(dtData.LEVEL_PLANT_ID);
+                var dbPlant = _t001WService.GetById(dtData.LEVEL_PLANT_ID);
+                if (dbPlant != null)
+                {
+                    summaryDto.SendingPlantAddress = dbPlant.ADDRESS;
                 }
 
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-            }
-
-            AddWorkflowHistory(input);
-
-        }
-
-        private void ApproveDocument(Lack2WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
-            {
-                //var dbData = _lack1Service.GetById(input.DocumentId.Value);
-
-                var dbData = _repository.GetByID(input.DocumentId.Value);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+                var monthData = _monthBll.GetMonth(dtData.PERIOD_MONTH);
+                if (monthData != null)
                 {
-                    CreatedUser = dbData.CREATED_BY,
-                    CurrentUser = input.UserId,
-                    DocumentStatus = dbData.STATUS,
-                    UserRole = input.UserRole,
-                    NppbkcId = dbData.NPPBKC_ID,
-                    DocumentNumber = dbData.LACK2_NUMBER
-                });
-
-                if (!isOperationAllow)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
-                //dbData.APPROVED_BY_POA = input.UserId;
-                //dbData.APPROVED_DATE_POA = DateTime.Now;
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-
-                if (input.UserRole == Enums.UserRole.POA)
-                {
-                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    //dbData.APPROVED_BY_POA = input.UserId;
-                    //dbData.APPROVED_DATE_POA = DateTime.Now;
-                    dbData.APPROVED_BY = input.UserId;
-                    dbData.APPROVED_DATE = DateTime.Now;
-                }
-                else
-                {
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                    dbData.APPROVED_BY_MANAGER = input.UserId;
-                    dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+                    summaryDto.Lack2Period = monthData.MONTH_NAME_IND + " " + dtData.PERIOD_YEAR;
                 }
 
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-            }
+                summaryDto.Lack2Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.SUBMISSION_DATE);
 
-            AddWorkflowHistory(input);
+                summaryDto.TypeExcisableGoods = dtData.EX_GOOD_TYP;
+                summaryDto.TypeExcisableGoodsDesc = dtData.EX_TYP_DESC;
 
-        }
+                decimal total = dtData.LACK2_ITEM.Where(lack2Item => lack2Item.CK5 != null).Sum(lack2Item => lack2Item.CK5.GRAND_TOTAL_EX.HasValue ? lack2Item.CK5.GRAND_TOTAL_EX.Value : 0);
+                summaryDto.TotalDeliveryExcisable = ConvertHelper.ConvertDecimalToStringMoneyFormat(total);
 
-        private void RejectDocument(Lack2WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
-            {
-                //var dbData = _lack1Service.GetById(input.DocumentId.Value);
-                var dbData = _repository.GetByID(input.DocumentId.Value);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
-                    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
-
-                //change back to draft
-                dbData.STATUS = Enums.DocumentStatus.Draft;
-
-                //todo ask
-                dbData.APPROVED_BY = null;
-                dbData.APPROVED_DATE = null;
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-            }
-
-            AddWorkflowHistory(input);
-
-        }
-
-        private void GovApproveDocument(Lack2WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
-            {
-                var dbData = _repository.GetByID(input.DocumentId.Value);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
-
-                dbData.LACK2_DOCUMENT = null;
-                dbData.STATUS = Enums.DocumentStatus.Completed;
-                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
-
-                //dbData.APPROVED_BY_POA = input.UserId;
-                //dbData.APPROVED_DATE_POA = DateTime.Now;
-
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-            }
-
-            AddWorkflowHistory(input);
-
-        }
-
-        private void GovPartialApproveDocument(Lack2WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
-            {
-                var dbData = _repository.GetByID(input.DocumentId.Value);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-
-                dbData.LACK2_DOCUMENT = null;
-                dbData.STATUS = Enums.DocumentStatus.Completed;
-                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-            }
-
-            AddWorkflowHistory(input);
-        }
-
-        private void GovRejectedDocument(Lack2WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
-            {
-                var dbData = _repository.GetByID(input.DocumentId.Value);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
-
-                dbData.STATUS = Enums.DocumentStatus.GovRejected;
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
-                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-            }
-
-            AddWorkflowHistory(input);
-
-        }
-
-        private void WorkflowStatusAddChanges(Lack2WorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
-        {
-            //set changes log
-            var changes = new CHANGES_HISTORY
-            {
-                FORM_TYPE_ID = Enums.MenuList.LACK2,
-                FORM_ID = input.DocumentId.ToString(),
-                FIELD_NAME = "STATUS",
-                NEW_VALUE = EnumHelper.GetDescription(newStatus),
-                OLD_VALUE = EnumHelper.GetDescription(oldStatus),
-                MODIFIED_BY = input.UserId,
-                MODIFIED_DATE = DateTime.Now
-            };
-            _changesHistoryBll.AddHistory(changes);
-        }
-
-        private void WorkflowStatusGovAddChanges(Lack2WorkflowDocumentInput input, Enums.DocumentStatusGov? oldStatus, Enums.DocumentStatusGov newStatus)
-        {
-            //set changes log
-            var changes = new CHANGES_HISTORY
-            {
-                FORM_TYPE_ID = Enums.MenuList.LACK2,
-                FORM_ID = input.DocumentId.ToString(),
-                FIELD_NAME = "GOV_STATUS",
-                NEW_VALUE = EnumHelper.GetDescription(newStatus),
-                OLD_VALUE = oldStatus.HasValue ? EnumHelper.GetDescription(oldStatus) : "NULL",
-                MODIFIED_BY = input.UserId,
-                MODIFIED_DATE = DateTime.Now
-            };
-
-            _changesHistoryBll.AddHistory(changes);
-        }
-
-        private void SendEmailWorkflow(Lack2WorkflowDocumentInput input)
-        {
-            //todo: body message from email template
-            //todo: to = ?
-            //todo: subject = from email template
-            //var to = "irmansulaeman41@gmail.com";
-            //var subject = "this is subject for " + input.DocumentNumber;
-            //var body = "this is body message for " + input.DocumentNumber;
-            //var from = "a@gmail.com";
-
-            if (input.DocumentId != null)
-            {
-                var lack2Data = Mapper.Map<Lack2Dto>(_repository.GetByID(input.DocumentId.Value));
-
-                var mailProcess = ProsesMailNotificationBody(lack2Data, input.ActionType);
-
-                _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
-            }
-        }
-        
-        private string GetManagerEmail(string poaId)
-        {
-            var managerId = _poaBll.GetManagerIdByPoaId(poaId);
-            var managerDetail = _userBll.GetUserById(managerId);
-            return managerDetail.EMAIL;
-        }
-
-        private Lack2MailNotification ProsesMailNotificationBody(Lack2Dto lackData, Enums.ActionType actionType)
-        {
-            var bodyMail = new StringBuilder();
-            var rc = new Lack2MailNotification();
-
-            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
-
-            rc.Subject = "LACK-2 " + lackData.Lack2Number + " is " + EnumHelper.GetDescription(lackData.Status);
-            bodyMail.Append("Dear Team,<br />");
-            bodyMail.AppendLine();
-            bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
-            bodyMail.AppendLine();
-            bodyMail.Append("<table><tr><td>Company Code </td><td>: " + lackData.Burks + "</td></tr>");
-            bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>NPPBKC </td><td>: " + lackData.NppbkcId + "</td></tr>");
-            bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>Document Number</td><td> : " + lackData.Lack2Number + "</td></tr>");
-            bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>Document Type</td><td> : LACK-2</td></tr>");
-            bodyMail.AppendLine();
-            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Lack2/Detail/" + lackData.Lack2Id + "'>link</a> to show detailed information</i></td></tr>");
-            bodyMail.AppendLine();
-            bodyMail.Append("</table>");
-            bodyMail.AppendLine();
-            bodyMail.Append("<br />Regards,<br />");
-            switch (actionType)
-            {
-                case Enums.ActionType.Submit:
-                    if (lackData.Status == Enums.DocumentStatus.WaitingForApproval)
-                    {
-                        var poaList = _poaBll.GetPoaByNppbkcId(lackData.NppbkcId);
-                        foreach (var poaDto in poaList)
-                        {
-                            rc.To.Add(poaDto.POA_EMAIL);
-                        }
-                    }
-                    else if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
-                    {
-                        var managerId = _poaBll.GetManagerIdByPoaId(lackData.CreatedBy);
-                        var managerDetail = _userBll.GetUserById(managerId);
-                        rc.To.Add(managerDetail.EMAIL);
-                    }
+                foreach (var lack2Item in dtData.LACK2_ITEM.Where(lack2Item => lack2Item.CK5 != null))
+                {
+                    summaryDto.Uom = lack2Item.CK5.PACKAGE_UOM_ID;
                     break;
-                case Enums.ActionType.Approve:
-                    if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
-                    {
-                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
-                    }
-                    else if (lackData.Status == Enums.DocumentStatus.WaitingGovApproval)
-                    {
-                        var poaData = _poaBll.GetById(lackData.CreatedBy);
-                        if (poaData != null)
-                        {
-                            //creator is poa user
-                            rc.To.Add(poaData.POA_EMAIL);
-                        }
-                        else
-                        {
-                            //creator is excise executive
-                            var userData = _userBll.GetUserById(lackData.CreatedBy);
-                            rc.To.Add(userData.EMAIL);
-                        }
-                    }
-                    break;
-                case Enums.ActionType.Reject:
-                    //send notification to creator
-                    var userDetail = _userBll.GetUserById(lackData.CreatedBy);
-                    rc.To.Add(userDetail.EMAIL);
-                    break;
-            }
-            rc.Body = bodyMail.ToString();
-            return rc;
-        }
+                }
+                summaryDto.LegalizeData = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE);
+                
+                summaryDto.Poa = dtData.APPROVED_BY;
+                summaryDto.PoaManager = dtData.APPROVED_BY_MANAGER;
 
-        private class Lack2MailNotification
-        {
-            public Lack2MailNotification()
-            {
-                To = new List<string>();
+
+                summaryDto.CreatedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.CREATED_DATE);
+                summaryDto.CreatedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.CREATED_DATE);
+                summaryDto.CreatedBy = dtData.CREATED_BY;
+
+                summaryDto.ApprovedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.APPROVED_DATE);
+                summaryDto.ApprovedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.APPROVED_DATE);
+                summaryDto.ApprovedBy = dtData.APPROVED_BY;
+
+                summaryDto.LastChangedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE);
+                summaryDto.LastChangedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.MODIFIED_DATE);
+
+                summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+
+                //search
+                summaryDto.PeriodYear = dtData.PERIOD_YEAR.ToString();
+                result.Add(summaryDto);
+
             }
-            public string Subject { get; set; }
-            public string Body { get; set; }
-            public List<string> To { get; set; }
+
+            return result;
         }
 
         #endregion
 
-        private Lack2GeneratedOutput GenerateLack2Data(Lack2GenerateDataParamInput input)
+        #region Detail Report Summary
+
+        public List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input)
         {
-            var rc = new Lack2GeneratedOutput()
+
+            var rc = _lack2Service.GetDetailReportsByParam(input);
+
+            if (rc == null)
             {
-                Success = true,
-                ErrorCode = string.Empty,
-                ErrorMessage = string.Empty
-            };
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
 
-            #region validation
+            var result = SetDataDetailReport(rc);
 
+            if (input.DateFrom.HasValue)
+            {
+                input.DateFrom = new DateTime(input.DateFrom.Value.Year, input.DateFrom.Value.Month, input.DateFrom.Value.Day, 0, 0, 0);
+                result = result.Where(c => c.GiDate >= input.DateFrom).ToList();
+            }
 
+            if (!input.DateTo.HasValue) return result;
 
-            #endregion
+            input.DateFrom = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
+            result = result.Where(c => c.GiDate <= input.DateTo).ToList();
 
-            return rc;
+            return result;
+
         }
+
+        private List<Lack2DetailReportDto> SetDataDetailReport(IEnumerable<LACK2> listLack2)
+        {
+            var result = new List<Lack2DetailReportDto>();
+
+            foreach (var dtData in listLack2)
+            {
+                foreach (var lack2Item in dtData.LACK2_ITEM)
+                {
+                    var summaryDto = new Lack2DetailReportDto();
+
+                    summaryDto.Lack2Number = dtData.LACK2_NUMBER;
+
+                    if (lack2Item.CK5 != null)
+                    {
+                        summaryDto.GiDate = lack2Item.CK5.GI_DATE;
+                        summaryDto.Ck5GiDate = ConvertHelper.ConvertDateToStringddMMMyyyy(lack2Item.CK5.GI_DATE);
+                        summaryDto.Ck5RegistrationNumber = lack2Item.CK5.REGISTRATION_NUMBER;
+                        summaryDto.Ck5RegistrationDate = ConvertHelper.ConvertDateToStringddMMMyyyy(lack2Item.CK5.REGISTRATION_DATE);
+                        summaryDto.Ck5Total = ConvertHelper.ConvertDecimalToStringMoneyFormat(lack2Item.CK5.GRAND_TOTAL_EX);
+
+                        summaryDto.ReceivingCompanyCode = lack2Item.CK5.DEST_PLANT_COMPANY_CODE;
+                        summaryDto.ReceivingCompanyName = lack2Item.CK5.DEST_PLANT_COMPANY_NAME;
+                        summaryDto.ReceivingNppbkc = lack2Item.CK5.DEST_PLANT_NPPBKC_ID;
+                        summaryDto.ReceivingAddress = lack2Item.CK5.DEST_PLANT_ADDRESS;
+                    }
+
+                    summaryDto.Ck5SendingPlant = dtData.LEVEL_PLANT_ID;
+                    var dbPlant = _t001WService.GetById(dtData.LEVEL_PLANT_ID);
+                    if (dbPlant != null)
+                    {
+                        summaryDto.SendingPlantAddress = dbPlant.ADDRESS;
+                    }
+                    summaryDto.CompanyCode = dtData.BUKRS;
+                    summaryDto.CompanyName = dtData.BUTXT;
+                    summaryDto.NppbkcId = dtData.NPPBKC_ID;
+                    summaryDto.TypeExcisableGoods = dtData.EX_GOOD_TYP;
+                    summaryDto.TypeExcisableGoodsDesc = dtData.EX_TYP_DESC;
+
+                    result.Add(summaryDto);
+
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
 
     }
 }

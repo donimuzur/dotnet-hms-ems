@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.Core;
+﻿using System.Collections.Generic;
+using Sampoerna.EMS.Core;
 using System;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
@@ -12,14 +13,20 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         //public int? PeriodYear { get; set; }
         public string Creator { get; set; }
         public DateTime? SubmissionDate { get; set; }
-
-        public Enums.DocumentStatus? Status { get; set; }
-
+        
         /// <summary>
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
 
         public bool IsOpenDocList { get; set; }
+
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+
+        public List<string> NppbkcList { get; set; }
+
+        public List<string> DocumentNumberList { get; set; }
+
     }
 }

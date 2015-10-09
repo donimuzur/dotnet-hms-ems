@@ -299,7 +299,9 @@
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\InventoryMovementOutputs.cs" />
+    <Compile Include="Outputs\Lack2CreateOutput.cs" />
     <Compile Include="Outputs\Lack2GeneratedOutput.cs" />
+    <Compile Include="Outputs\Lack2SaveEditOutput.cs" />
     <Compile Include="Outputs\Pbck4ItemsOutput.cs" />
     <Compile Include="Outputs\Pbck4Ouputs.cs" />
     <Compile Include="Outputs\ProductionGetByIdOutput.cs" />

@@ -60,9 +60,32 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
         public string SourcePlantId { get; set; }
-        public int ExGroupTypeId { get; set; }
+        public string ExcisableGoodsType { get; set; }
         public string CompanyCode { get; set; }
         public string NppbkcId { get; set; }
+        public int ExGroupTypeId { get; set; }
+    }
+
+    public class Lack2GetBySelectionCriteriaParamInput
+    {
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+        public string SourcePlantId { get; set; }
+        public string ExGoodTypeId { get; set; }
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+    }
+
+    public class Lack2CreateParamInput : Lack2GenerateDataParamInput
+    {
+        public string UserId { get; set; }
+    }
+
+    public class Lack2SaveEditInput
+    {
+        public Lack2DetailsDto Detail { get; set; }
+        public string UserId { get; set; }
+        public Enums.ActionType WorkflowActionType { get; set; }
     }
 
 }

@@ -66,6 +66,7 @@
     <Compile Include="BLLMapperCK4C.cs" />
     <Compile Include="BLLMapperCK5.cs" />
     <Compile Include="BLLMapperLack1.cs" />
+    <Compile Include="BLLMapperLack2.cs" />
     <Compile Include="BLLMapperPBCK1.cs" />
     <Compile Include="BLLMapperPBCK4.cs" />
     <Compile Include="BLLMapperPBCK7.cs" />
