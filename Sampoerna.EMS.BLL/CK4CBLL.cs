@@ -320,9 +320,15 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Approve:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        rc.To.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                        var poaUser = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
+                        var poaApproveId = _userBll.GetUserById(ck4cData.ApprovedByPoa);
 
-                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                        rc.To.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+
+                        if (poaApproveId != null)
+                            rc.CC.Add(poaApproveId.EMAIL);
+
+                        rc.CC.Add(GetManagerEmail(poaUser));
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -350,10 +356,12 @@ namespace Sampoerna.EMS.BLL
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
                     var poaApprove = _userBll.GetUserById(ck4cData.ApprovedByPoa);
+                    var poaId = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
 
                     rc.To.Add(userDetail.EMAIL);
-                    rc.CC.Add(poaApprove.EMAIL);
-                    rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                    if (poaApprove != null)
+                        rc.CC.Add(poaApprove.EMAIL);
+                    rc.CC.Add(GetManagerEmail(poaId));
 
                     rc.IsCCExist = true;
                     break;
