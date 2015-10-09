@@ -96,6 +96,8 @@
     <Compile Include="Services\Lack1ProductionDetailService.cs" />
     <Compile Include="Services\LACK1Service.cs" />
     <Compile Include="Services\Lack1TrackingService.cs" />
+    <Compile Include="Services\Lack2DocumentService.cs" />
+    <Compile Include="Services\Lack2ItemService.cs" />
     <Compile Include="Services\Lack2Service.cs" />
     <Compile Include="Services\PBCK1Service.cs" />
     <Compile Include="Services\Pbck3Services.cs" />

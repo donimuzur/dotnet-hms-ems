@@ -3,6 +3,6 @@
     public class Lack2SaveEditOutput : BLLBaseOutput
     {
         public int Id { get; set; }
-        public string Lack1Number { get; set; }
+        public string Lack2Number { get; set; }
     }
 }

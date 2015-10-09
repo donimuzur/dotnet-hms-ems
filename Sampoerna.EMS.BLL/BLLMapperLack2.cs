@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -117,6 +118,40 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             #endregion
+
+            Mapper.CreateMap<Lack2GeneratedItemDto, LACK2_ITEM>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CK5_ID, opt => opt.MapFrom(src => src.CK5_ID))
+                ;
+
+            Mapper.CreateMap<Lack2CreateParamInput, LACK2>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SubmissionDate))
+                .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.BUTXT, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.PERIOD_MONTH, opt => opt.MapFrom(src => src.PeriodMonth))
+                .ForMember(dest => dest.PERIOD_YEAR, opt => opt.MapFrom(src => src.PeriodYear))
+                .ForMember(dest => dest.LEVEL_PLANT_ID, opt => opt.MapFrom(src => src.SourcePlantId))
+                .ForMember(dest => dest.LEVEL_PLANT_NAME, opt => opt.MapFrom(src => src.SourcePlantName))
+                .ForMember(dest => dest.LEVEL_PLANT_CITY, opt => opt.MapFrom(src => src.SourcePlantCity))
+                .ForMember(dest => dest.EX_GOOD_TYP, opt => opt.MapFrom(src => src.ExcisableGoodsType))
+                .ForMember(dest => dest.EX_TYP_DESC, opt => opt.MapFrom(src => src.ExcisableGoodsTypeDesc))
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
+                ;
+
+            Mapper.CreateMap<Lack2SaveEditInput, Lack2Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Burks, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SubmissionDate))
+                .ForMember(dest => dest.Butxt, opt => opt.MapFrom(src => src.CompanyName))
+                .ForMember(dest => dest.LevelPlantId, opt => opt.MapFrom(src => src.SourcePlantId))
+                .ForMember(dest => dest.LevelPlantCity, opt => opt.MapFrom(src => src.SourcePlantCity))
+                .ForMember(dest => dest.LevelPlantName, opt => opt.MapFrom(src => src.SourcePlantName))
+                .ForMember(dest => dest.ExGoodTyp, opt => opt.MapFrom(src => src.ExcisableGoodsType))
+                .ForMember(dest => dest.ExTypDesc, opt => opt.MapFrom(src => src.ExcisableGoodsTypeDesc))
+                .ForMember(dest => dest.Burks, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.PeriodMonth))
+                .ForMember(dest => dest.PeriodYear, opt => opt.MapFrom(src => src.PeriodYear))
+                ;
         }
     }
 }

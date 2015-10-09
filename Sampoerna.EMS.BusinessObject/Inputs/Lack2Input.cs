@@ -79,11 +79,21 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     public class Lack2CreateParamInput : Lack2GenerateDataParamInput
     {
         public string UserId { get; set; }
+        public DateTime SubmissionDate { get; set; }
+        public string CompanyName { get; set; }
+        public string SourcePlantName { get; set; }
+        public string SourcePlantCity { get; set; }
+        public string ExcisableGoodsTypeDesc { get; set; }
     }
 
-    public class Lack2SaveEditInput
+    public class Lack2SaveEditInput : Lack2GenerateDataParamInput
     {
-        public Lack2DetailsDto Detail { get; set; }
+        public int Lack2Id { get; set; }
+        public DateTime SubmissionDate { get; set; }
+        public string CompanyName { get; set; }
+        public string SourcePlantName { get; set; }
+        public string SourcePlantCity { get; set; }
+        public string ExcisableGoodsTypeDesc { get; set; }
         public string UserId { get; set; }
         public Enums.ActionType WorkflowActionType { get; set; }
     }

@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IPOABLL _poaBll;
         private IUserBLL _userBll;
+        private IDocumentSequenceNumberBLL _docSeqNumBll;
 
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
@@ -35,6 +36,8 @@ namespace Sampoerna.EMS.BLL
         private IMonthBLL _monthBll;
 
         private ILack2Service _lack2Service;
+        private ILack2ItemService _lack2ItemService;
+        private ILack2DocumentService _lack2DocumentService;
         private IZaidmExNppbkcService _nppbkcService;
         private IExGroupTypeService _exGroupTypeService;
         private ICK5Service _ck5Service;
@@ -50,6 +53,8 @@ namespace Sampoerna.EMS.BLL
             _exGroupTypeService = new ExGroupTypeService(_uow, _logger);
             _ck5Service = new CK5Service(_uow, _logger);
             _t001WService = new T001WService(_uow, _logger);
+            _lack2ItemService = new Lack2ItemService(_uow, _logger);
+            _lack2DocumentService = new Lack2DocumentService(_uow, _logger);
 
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
@@ -58,6 +63,7 @@ namespace Sampoerna.EMS.BLL
             _poaBll = new POABLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow,_logger);
+            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
         }
 
         public List<Lack2Dto> GetAll()
@@ -105,7 +111,77 @@ namespace Sampoerna.EMS.BLL
 
         public Lack2CreateOutput Create(Lack2CreateParamInput input)
         {
-            return null;
+            var generatedData = GenerateLack2Data(input);
+            if (!generatedData.Success)
+            {
+                return new Lack2CreateOutput()
+                {
+                    Success = generatedData.Success,
+                    ErrorCode = generatedData.ErrorCode,
+                    ErrorMessage = generatedData.ErrorMessage,
+                    Id = null,
+                    Lack2Number = string.Empty
+                };
+            }
+
+            var rc = new Lack2CreateOutput()
+            {
+                Success = false,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
+
+            var data = Mapper.Map<LACK2>(input);
+
+            //set default when create new LACK-1 Document
+            data.APPROVED_BY = null;
+            data.APPROVED_DATE = null;
+            data.APPROVED_BY_MANAGER = null;
+            data.APPROVED_BY_MANAGER_DATE = null;
+            data.DECREE_DATE = null;
+            data.GOV_STATUS = 0;
+            data.STATUS = Enums.DocumentStatus.Draft;
+            data.CREATED_DATE = DateTime.Now;
+            data.MODIFIED_BY = null;
+            data.MODIFIED_DATE = null;
+            data.REJECTED_BY = null;
+            data.REJECTED_DATE = null;
+
+            //set from input, exclude on mapper
+            data.LACK2_ITEM = Mapper.Map<List<LACK2_ITEM>>(generatedData.Data.Ck5Items);
+            data.LACK2_DOCUMENT = null;
+
+            //generate new Document Number get from Sequence Number BLL
+            var generateNumberInput = new GenerateDocNumberInput()
+            {
+                Month = Convert.ToInt32(input.PeriodMonth),
+                Year = Convert.ToInt32(input.PeriodYear),
+                NppbkcId = input.NppbkcId
+            };
+
+            data.LACK2_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+
+            _lack2Service.Insert(data);
+
+            //add workflow history for create document
+            var getUserRole = _poaBll.GetUserRole(input.UserId);
+            AddWorkflowHistory(new Lack2WorkflowDocumentInput()
+            {
+                DocumentId = null,
+                DocumentNumber = data.LACK2_NUMBER,
+                ActionType = Enums.ActionType.Created,
+                UserId = input.UserId,
+                UserRole = getUserRole
+            });
+
+            _uow.SaveChanges();
+
+            rc.Success = true;
+            rc.ErrorCode = string.Empty;
+            rc.Id = data.LACK2_ID;
+            rc.Lack2Number = data.LACK2_NUMBER;
+
+            return rc;
         }
 
         public Lack2GeneratedOutput GenerateLack2DataByParam(Lack2GenerateDataParamInput input)
@@ -115,9 +191,113 @@ namespace Sampoerna.EMS.BLL
 
         public Lack2SaveEditOutput SaveEdit(Lack2SaveEditInput input)
         {
-            return null;
+            var rc = new Lack2SaveEditOutput()
+            {
+                Success = false
+            };
+
+            if (input == null)
+            {
+                throw new Exception("Invalid data entry");
+            }
+
+            //origin
+            var dbData = _lack2Service.GetDetailsById(input.Lack2Id);
+
+            //check if need to re-generate LACK-1 data
+            var isNeedToRegenerate = IsNeedToRegenerate(input, dbData);
+            if (isNeedToRegenerate)
+            {
+                //do regenerate data
+                var generatedData = GenerateLack2Data(input);
+                if (!generatedData.Success)
+                {
+                    return new Lack2SaveEditOutput()
+                    {
+                        Success = false,
+                        ErrorCode = generatedData.ErrorCode,
+                        ErrorMessage = generatedData.ErrorMessage
+                    };
+                }
+
+                var origin = Mapper.Map<Lack2Dto>(dbData);
+                var destination = Mapper.Map<Lack2Dto>(input);
+                destination.Lack2Id = dbData.LACK2_ID;
+                destination.Lack2Number = dbData.LACK2_NUMBER;
+                
+                SetChangesHistory(origin, destination, input.UserId);
+
+                //delete first
+                _lack2ItemService.DeleteDataList(dbData.LACK2_ITEM);
+                _lack2DocumentService.DeleteDataList(dbData.LACK2_DOCUMENT);
+                
+                //set to null
+                dbData.LACK2_ITEM = null;
+
+                //set from input
+                dbData.LACK2_ITEM = Mapper.Map<List<LACK2_ITEM>>(generatedData.Data.Ck5Items);
+                
+            }
+            else
+            {
+                var origin = Mapper.Map<Lack2Dto>(dbData);
+                var destination = Mapper.Map<Lack2Dto>(input);
+                SetChangesHistory(origin, destination, input.UserId);
+
+            }
+
+            dbData.SUBMISSION_DATE = input.SubmissionDate;
+            dbData.LEVEL_PLANT_ID = input.SourcePlantId;
+            dbData.LEVEL_PLANT_CITY = input.SourcePlantCity;
+            dbData.LEVEL_PLANT_NAME = input.SourcePlantName;
+            dbData.NPPBKC_ID = input.NppbkcId;
+            dbData.PERIOD_MONTH = input.PeriodMonth;
+            dbData.PERIOD_YEAR = input.PeriodYear;
+            dbData.BUKRS = input.CompanyCode;
+            dbData.BUTXT = input.CompanyName;
+            dbData.EX_GOOD_TYP = input.ExcisableGoodsType;
+            dbData.EX_TYP_DESC = input.ExcisableGoodsTypeDesc;
+            dbData.MODIFIED_BY = input.UserId;
+            dbData.MODIFIED_DATE = DateTime.Now;
+
+            _uow.SaveChanges();
+
+            rc.Success = true;
+            rc.Id = dbData.LACK2_ID;
+            rc.Lack2Number = dbData.LACK2_NUMBER;
+
+            //set workflow history
+            var getUserRole = _poaBll.GetUserRole(input.UserId);
+
+            var inputAddWorkflowHistory = new Lack2WorkflowDocumentInput()
+            {
+                DocumentId = rc.Id,
+                DocumentNumber = rc.Lack2Number,
+                ActionType = input.WorkflowActionType,
+                UserId = input.UserId,
+                UserRole = getUserRole
+            };
+
+            AddWorkflowHistory(inputAddWorkflowHistory);
+
+            _uow.SaveChanges();
+
+            return rc;
         }
-        
+
+        private bool IsNeedToRegenerate(Lack2SaveEditInput input, LACK2 lack2Data)
+        {
+            if (input.PeriodMonth == lack2Data.PERIOD_MONTH && input.PeriodYear == lack2Data.PERIOD_YEAR
+                && input.SourcePlantId == lack2Data.LEVEL_PLANT_ID && input.ExcisableGoodsType == lack2Data.EX_GOOD_TYP
+                && input.CompanyCode == lack2Data.BUKRS
+                && input.NppbkcId == lack2Data.NPPBKC_ID)
+            {
+                //no need to regenerate
+                return false;
+            }
+            return true;
+        }
+
         #region workflow
 
         public void Lack2Workflow(Lack2WorkflowDocumentInput input)

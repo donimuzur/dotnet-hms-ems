@@ -163,8 +163,7 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion
 
         #region --------------- Create ----------
-
-
+        
         /// <summary>
         /// Create LACK2
         /// </summary>
@@ -193,7 +192,46 @@ namespace Sampoerna.EMS.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(LACK2CreateViewModel model)
         {
-            return RedirectToAction("Index");
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    AddMessageInfo("Invalid input, please check the input.", Enums.MessageInfoType.Error);
+                    return View(CreateInitialViewModel(model));
+                }
+                if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                {
+                    AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
+                var input = Mapper.Map<Lack2CreateParamInput>(model);
+                input.UserId = CurrentUser.USER_ID;
+                var saveOutput = _lack2Bll.Create(input);
+                if (saveOutput.Success)
+                {
+                    AddMessageInfo("Save successfull", Enums.MessageInfoType.Info);
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+            }
+            return View(CreateInitialViewModel(model));
+        }
+
+        private LACK2CreateViewModel CreateInitialViewModel(LACK2CreateViewModel model)
+        {
+            model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
+            model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
+            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = GlobalFunctions.GetYearList(_ck5Bll);
+            model.UsrRole = CurrentUser.UserRole;
+            model.MainMenu = Enums.MenuList.LACK2;
+            model.CurrentMenu = PageInfo;
+            return model;
         }
 
         #endregion
@@ -208,9 +246,58 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(int? id)
         {
             if (!id.HasValue)
+            {
                 return HttpNotFound();
+            }
 
-            return View("Edit");
+            var lack2Data = _lack2Bll.GetDetailsById(id.Value);
+
+            if (lack2Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //redirect to details for approval/rejected
+                return RedirectToAction("Detail", new { id });
+            }
+
+            if (CurrentUser.USER_ID == lack2Data.CreatedBy &&
+                (lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+                 lack2Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
+            //var model = InitEditModel(lack2Data);
+            //model = InitEditList(model);
+
+            //if (!IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status))
+            //{
+            //    AddMessageInfo(
+            //        "Operation not allowed.",
+            //        Enums.MessageInfoType.Error);
+            //    if (lack1Data.Lack1Level == Enums.Lack1Level.Nppbkc)
+            //    {
+            //        return RedirectToAction("Index");
+            //    }
+            //    else if (lack1Data.Lack1Level == Enums.Lack1Level.Plant)
+            //    {
+            //        return RedirectToAction("ListByPlant");
+            //    }
+            //}
+
+            //if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
+            //{
+            //    model.ControllerAction = "GovApproveDocument";
+            //}
+
+            //model.MainMenu = _mainMenu;
+            //model.CurrentMenu = PageInfo;
+
+            //return View(model);
+            return View();
         }
 
         [HttpPost]
@@ -219,6 +306,56 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             return RedirectToAction("Index");
         }
+
+        //private Lack2EditViewModel InitEditModel(Lack1DetailsDto lack1Data)
+        //{
+
+        //    var model = Mapper.Map<Lack1EditViewModel>(lack1Data);
+
+        //    model = SetEditHistory(model);
+
+        //    Enums.LACK1Type lack1Type;
+        //    if (lack1Data.Status == Enums.DocumentStatus.Completed)
+        //    {
+        //        lack1Type = Enums.LACK1Type.ComplatedDocument;
+        //    }
+        //    else
+        //    {
+        //        lack1Type = lack1Data.Lack1Level == Enums.Lack1Level.Nppbkc ? Enums.LACK1Type.ListByNppbkc : Enums.LACK1Type.ListByPlant;
+        //    }
+
+        //    model.Lack1Type = lack1Type;
+        //    model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+
+        //    SetEditActiveMenu(model, lack1Type);
+
+        //    //validate approve and reject
+        //    var input = new WorkflowAllowApproveAndRejectInput
+        //    {
+        //        DocumentStatus = model.Status,
+        //        FormView = Enums.FormViewType.Detail,
+        //        UserRole = CurrentUser.UserRole,
+        //        CreatedUser = lack1Data.CreateBy,
+        //        CurrentUser = CurrentUser.USER_ID,
+        //        CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+        //        DocumentNumber = model.Lack1Number,
+        //        NppbkcId = model.NppbkcId
+        //    };
+
+        //    ////workflow
+        //    var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+        //    model.AllowApproveAndReject = allowApproveAndReject;
+
+        //    if (!allowApproveAndReject)
+        //    {
+        //        model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+        //        model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+        //    }
+
+        //    model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
+
+        //    return model;
+        //}
 
         #endregion
 
