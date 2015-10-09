@@ -276,6 +276,8 @@
             getReference();
         });
 
+        ResetPrintHistoryDataTable();
+
         changeToDecimal("input[name='Detail.LatestSaldo']:text", "val");
         changeToDecimal("input[name='Detail.RequestQty']:text", "val");
         changeToDecimal("input[name='Detail.QtyApproved']", "val");
@@ -313,6 +315,59 @@
 
         window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
+    }
+
+    function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+        window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        $.ajax({
+            type: 'POST',
+            url: addHistoryUrl,
+            data: { id: id },
+            success: function (response) {
+                $('#PrintOutHistoryTable').html("");
+                $('#PrintOutHistoryTable').html(response);
+                ResetPrintHistoryDataTable();
+            }
+        });
+    }
+
+
+    function ResetPrintHistoryDataTable() {
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+            table = $('#printHistoryTable').DataTable();
+            table.destroy();
+        }
+
+        table = $('#printHistoryTable').DataTable(
+            {
+                "sDom": "Rlfrtip",
+                "language": {
+                    "zeroRecords": "No records found",
+                    "infoFiltered": "(filtered from _MAX_ total records)"
+                }
+            });
+
+        // Setup - add a text input to each footer cell
+        //$('#printHistoryTable .filters th').each(function () {
+        //    var idx = $(this).index();
+        //    if (idx != 0) {
+        //        $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+        //    }
+        //});
+
+        //// Apply the search
+        //table.columns().eq(0).each(function (colIdx) {
+        //    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+        //        table
+        //            .column(colIdx)
+        //            .search(this.value)
+        //            .draw();
+        //    });
+        //});
     }
 
     function loadSupplierPlant() {
