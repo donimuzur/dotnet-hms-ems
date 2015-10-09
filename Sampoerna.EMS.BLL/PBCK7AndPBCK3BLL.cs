@@ -508,9 +508,7 @@ namespace Sampoerna.EMS.BLL
             }
             return Core.Enums.ActionType.Reject;
         }
-
-    
-
+        
         private string GetActionByPbck7(Pbck7AndPbck3Dto pbck3pbkc7)
         {
             if (pbck3pbkc7.Pbck7Status == Core.Enums.DocumentStatus.Draft)
@@ -596,6 +594,122 @@ namespace Sampoerna.EMS.BLL
 
             return pbck3.CreatedBy;
         }
+
+
+        public Pbck7AndPbck3Dto SavePbck7Pbck3(Pbck7Pbck3SaveInput input)
+        {
+            //workflowhistory
+            var inputWorkflowHistory = new Pbck7Pbck3WorkflowHistoryInput();
+
+            PBCK7 dbData = null;
+
+            if (input.Pbck7Pbck3Dto.Pbck7Id > 0)
+            {
+                //update
+                dbData = _repository.Get(c => c.PBCK3_PBCK7_ID == input.Pbck7Pbck3Dto.Pbck7Id, null, includeTables).FirstOrDefault();
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                //set changes history
+                var origin = Mapper.Map<Pbck4Dto>(dbData);
+
+                SetChangesHistory(origin, input.Pbck4Dto, input.UserId);
+
+                Mapper.Map<Pbck4Dto, PBCK4>(input.Pbck4Dto, dbData);
+
+                if (dbData.STATUS == Enums.DocumentStatus.Rejected)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.Draft;
+                }
+
+                dbData.MODIFIED_DATE = DateTime.Now;
+                dbData.MODIFIED_BY = input.UserId;
+
+                //delete child first
+                foreach (var pbck4Item in dbData.PBCK4_ITEM.ToList())
+                {
+                    _repositoryPbck4Items.Delete(pbck4Item);
+                }
+
+                inputWorkflowHistory.ActionType = Enums.ActionType.Modified;
+
+                //insert new data
+                foreach (var pbck4Material in input.Pbck4Items)
+                {
+                    var pbck4Item = Mapper.Map<PBCK4_ITEM>(pbck4Material);
+                    pbck4Item.PLANT_ID = dbData.PLANT_ID;
+                    dbData.PBCK4_ITEM.Add(pbck4Item);
+                }
+
+            }
+            else
+            {
+
+                var generateNumberInput = new GenerateDocNumberInput()
+                {
+                    Year = DateTime.Now.Year,
+                    Month = DateTime.Now.Month,
+                    NppbkcId = input.Pbck4Dto.NppbkcId,
+                    FormType = Enums.FormType.PBCK4
+                };
+
+                input.Pbck4Dto.PBCK4_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+
+                input.Pbck4Dto.Status = Enums.DocumentStatus.Draft;
+                input.Pbck4Dto.CREATED_DATE = DateTime.Now;
+                input.Pbck4Dto.CREATED_BY = input.UserId;
+
+                dbData = new PBCK4();
+
+                Mapper.Map<Pbck4Dto, PBCK4>(input.Pbck4Dto, dbData);
+
+                inputWorkflowHistory.ActionType = Enums.ActionType.Created;
+
+                //insert new data
+                foreach (var pbck4Material in input.Pbck4Items)
+                {
+
+                    var pbck4Item = Mapper.Map<PBCK4_ITEM>(pbck4Material);
+                    pbck4Item.PLANT_ID = dbData.PLANT_ID;
+                    dbData.PBCK4_ITEM.Add(pbck4Item);
+                }
+
+                _repository.Insert(dbData);
+
+
+            }
+
+            inputWorkflowHistory.DocumentId = dbData.PBCK4_ID;
+            inputWorkflowHistory.DocumentNumber = dbData.PBCK4_NUMBER;
+            inputWorkflowHistory.UserId = input.UserId;
+            inputWorkflowHistory.UserRole = input.UserRole;
+
+
+            AddWorkflowHistory(inputWorkflowHistory);
+
+            try
+            {
+                _uow.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+
+
+            return Mapper.Map<Pbck4Dto>(dbData);
+        }
+
 
     }
 

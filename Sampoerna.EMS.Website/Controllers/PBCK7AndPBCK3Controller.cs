@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.Website.Controllers
 {
     public class PBCK7AndPBCK3Controller : BaseController
     {
-        private IPBCK7And3BLL _pbck7AndPbck7And3Bll;
+        private IPBCK7And3BLL _pbck7Pbck3Bll;
         private IBACK1BLL _back1Bll;
         private Enums.MenuList _mainMenu;
         private IPOABLL _poaBll;
@@ -52,7 +52,7 @@ namespace Sampoerna.EMS.Website.Controllers
             IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IChangesHistoryBLL changesHistoryBll, IPrintHistoryBLL printHistoryBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
-            _pbck7AndPbck7And3Bll = pbck7AndPbck3Bll;
+            _pbck7Pbck3Bll = pbck7AndPbck3Bll;
             _back1Bll = back1Bll;
             _mainMenu = Enums.MenuList.PBCK7;
             _poaBll = poaBll;
@@ -133,7 +133,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
           
             // ReSharper disable once PossibleInvalidOperationException
-            var pbck7 = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            var pbck7 = _pbck7Pbck3Bll.GetPbck7ById(id);
 
             //add to print history
             var input = new PrintHistoryDto()
@@ -156,7 +156,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
            
             // ReSharper disable once PossibleInvalidOperationException
-            var pbck3 = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(id);
+            var pbck3 = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(id);
 
             //add to print history
             var input = new PrintHistoryDto()
@@ -188,11 +188,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 Pbck7Type = Enums.Pbck7Type.Pbck7List,
                 IsCompletedDoc = false,
                 Detail =
-                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser))
+                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7Pbck3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser))
             });
 
             return View("Index", data);
         }
+
         public ActionResult Pbck7Completed()
         {
             var data = InitPbck7ViewModel(new Pbck7IndexViewModel
@@ -202,7 +203,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Pbck7Type = Enums.Pbck7Type.Pbck7List,
                 IsCompletedDoc = true,
                 Detail =
-                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7AndPbck7And3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser, true))
+                    Mapper.Map<List<DataListIndexPbck7>>(_pbck7Pbck3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser, true))
             });
 
             return View("Index", data);
@@ -263,13 +264,13 @@ namespace Sampoerna.EMS.Website.Controllers
         }
         public FileResult PrintPreview(int id, bool isPbck7)
         {
-            var pbck7 = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            var pbck7 = _pbck7Pbck3Bll.GetPbck7ById(id);
             if (!isPbck7)
             {
                 //get pbck3
                 if (pbck7 != null)
                 {
-                    pbck7.Pbck3Dto = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(pbck7.Pbck7Id);
+                    pbck7.Pbck3Dto = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(pbck7.Pbck7Id);
                 }
             }
             var dsPbck7 = CreatePbck7Ds();
@@ -464,7 +465,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetPbck7ByParam(input, CurrentUser);
+            var dbData = _pbck7Pbck3Bll.GetPbck7ByParam(input, CurrentUser);
 
             var result = Mapper.Map<List<DataListIndexPbck7>>(dbData);
 
@@ -475,14 +476,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_Pbck7TableIndex", viewModel);
         }
 
-
-
         #region PBCK3
 
         public ActionResult ListPbck3Index()
         {
             var detail =
-                Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input(), CurrentUser));
+                Mapper.Map<List<DataListIndexPbck3>>(_pbck7Pbck3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input(), CurrentUser));
           
             var data = InitPbck3ViewModel(new Pbck3IndexViewModel
             {
@@ -499,7 +498,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Pbck3Completed()
         {
             var detail =
-                Mapper.Map<List<DataListIndexPbck3>>(_pbck7AndPbck7And3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input(), CurrentUser, true));
+                Mapper.Map<List<DataListIndexPbck3>>(_pbck7Pbck3Bll.GetPbck3ByParam(new Pbck7AndPbck3Input(), CurrentUser, true));
 
             var data = InitPbck3ViewModel(new Pbck3IndexViewModel
             {
@@ -534,7 +533,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            var dbData = _pbck7AndPbck7And3Bll.GetPbck3ByParam(input, CurrentUser);
+            var dbData = _pbck7Pbck3Bll.GetPbck3ByParam(input, CurrentUser);
             var result = Mapper.Map<List<DataListIndexPbck3>>(dbData);
 
             var viewModel = new Pbck3IndexViewModel();
@@ -589,13 +588,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void GetDetailPbck7(Pbck7AndPbck3Dto existingData)
         {
-            existingData.Back1Dto = _pbck7AndPbck7And3Bll.GetBack1ByPbck7(existingData.Pbck7Id);
-            existingData.Pbck3Dto = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(existingData.Pbck7Id);
+            existingData.Back1Dto = _pbck7Pbck3Bll.GetBack1ByPbck7(existingData.Pbck7Id);
+            existingData.Pbck3Dto = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(existingData.Pbck7Id);
 
             if (existingData.Pbck3Dto != null)
             {
-                existingData.Back3Dto = _pbck7AndPbck7And3Bll.GetBack3ByPbck3Id(existingData.Pbck3Dto.Pbck3Id);
-                existingData.Ck2Dto = _pbck7AndPbck7And3Bll.GetCk2ByPbck3Id(existingData.Pbck3Dto.Pbck3Id);
+                existingData.Back3Dto = _pbck7Pbck3Bll.GetBack3ByPbck3Id(existingData.Pbck3Dto.Pbck3Id);
+                existingData.Ck2Dto = _pbck7Pbck3Bll.GetCk2ByPbck3Id(existingData.Pbck3Dto.Pbck3Id);
             }
             if (existingData.Back1Dto == null)
                 existingData.Back1Dto = new Back1Dto();
@@ -612,7 +611,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!id.HasValue)
                 return HttpNotFound();
             
-            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            var existingData = _pbck7Pbck3Bll.GetPbck7ById(id);
             if (existingData.CreatedBy != CurrentUser.USER_ID)
             {
                 return RedirectToAction("Detail", new {id = id});
@@ -624,11 +623,12 @@ namespace Sampoerna.EMS.Website.Controllers
            
             return View("Edit", InitialModel(model));
         }
+
         public ActionResult Detail(int? id)
         {
             if (!id.HasValue)
                 return HttpNotFound();
-            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            var existingData = _pbck7Pbck3Bll.GetPbck7ById(id);
             GetDetailPbck7(existingData);
             var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData);
             model = InitialModel(model);
@@ -657,7 +657,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void SaveBack3(Pbck7Pbck3CreateViewModel model)
         {
-            var existingData = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(model.Id);
+            var existingData = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(model.Id);
             if (existingData != null)
             {
 
@@ -691,12 +691,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 back3Dto.Back3Date = model.Back3Dto.Back3Date;
                 back3Dto.Pbck3ID = existingData.Pbck3Id;
 
-                _pbck7AndPbck7And3Bll.InsertBack3(back3Dto);
+                _pbck7Pbck3Bll.InsertBack3(back3Dto);
                 var ck2Dto = SaveCk2(model, existingData.Pbck3Id);
                 if (existingData.Pbck3Status == Enums.DocumentStatus.GovApproved)
                 {
                     existingData.Pbck3Status = Enums.DocumentStatus.Completed;
-                   _pbck7AndPbck7And3Bll.InsertPbck3(existingData);
+                   _pbck7Pbck3Bll.InsertPbck3(existingData);
                    CreateXml(ck2Dto, model.NppbkcId, existingData.Pbck3Number);
                     
                     
@@ -757,7 +757,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck2Dto.Ck2Number = model.Ck2Dto.Ck2Number;
                 ck2Dto.Ck2Date = model.Ck2Dto.Ck2Date;
                 ck2Dto.Pbck3ID = pbck3Id;
-                _pbck7AndPbck7And3Bll.InsertCk2(ck2Dto);
+                _pbck7Pbck3Bll.InsertCk2(ck2Dto);
 
             return ck2Dto;
 
@@ -785,7 +785,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void SavePbck3(Pbck7Pbck3CreateViewModel model)
         {
-            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+            var existingData = _pbck7Pbck3Bll.GetPbck7ById(model.Id);
             GetDetailPbck7(existingData);
            
             if (existingData != null)
@@ -844,7 +844,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     
                 }
-                _pbck7AndPbck7And3Bll.InsertPbck3(pbck3);
+                _pbck7Pbck3Bll.InsertPbck3(pbck3);
                 
                 
             }
@@ -852,7 +852,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void SaveBack1(Pbck7Pbck3CreateViewModel model)
         {
-            var existingData = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+            var existingData = _pbck7Pbck3Bll.GetPbck7ById(model.Id);
             if (existingData != null)
             {
                
@@ -888,17 +888,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 var uploadItem = model.UploadItems;
                 foreach (var pbck7ItemUpload in uploadItem)
                 {
-                    _pbck7AndPbck7And3Bll.InsertPbck7Item(pbck7ItemUpload);
+                    _pbck7Pbck3Bll.InsertPbck7Item(pbck7ItemUpload);
 
                 }
                 
-                _pbck7AndPbck7And3Bll.InsertBack1(back1Dto);
+                _pbck7Pbck3Bll.InsertBack1(back1Dto);
                 if (existingData.Pbck7Status == Enums.DocumentStatus.GovApproved)
                 {
                     existingData.Pbck7Status = Enums.DocumentStatus.Completed;
                     //prevent error when update pbck7
                     existingData.UploadItems = null;
-                    _pbck7AndPbck7And3Bll.InsertPbck7(existingData);
+                    _pbck7Pbck3Bll.InsertPbck7(existingData);
                 }
             }
 
@@ -961,7 +961,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     foreach (var itemUpload in exItems)
                     {
                         itemUpload.Back1Qty = itemUpload.Pbck7Qty;
-                        _pbck7AndPbck7And3Bll.InsertPbck7Item(itemUpload);
+                        _pbck7Pbck3Bll.InsertPbck7Item(itemUpload);
                     }
                 }
             }
@@ -998,11 +998,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var plant = _plantBll.GetId(item.PlantId);
             item.PlantCity = plant.ORT01;
             item.PlantName = plant.NAME1;
-            var origin = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+            var origin = _pbck7Pbck3Bll.GetPbck7ById(model.Id);
             SetChanges(origin,model);
 
 
-            _pbck7AndPbck7And3Bll.InsertPbck7(item);
+            _pbck7Pbck3Bll.InsertPbck7(item);
             if(model.IsSaveSubmit)
             {
                 AddMessageInfo("Submit Success", Enums.MessageInfoType.Success);
@@ -1038,7 +1038,7 @@ namespace Sampoerna.EMS.Website.Controllers
             int? pbck7IdAfterSave= null;
             try
             {
-                pbck7IdAfterSave = _pbck7AndPbck7And3Bll.InsertPbck7(modelDto);
+                pbck7IdAfterSave = _pbck7Pbck3Bll.InsertPbck7(modelDto);
             }
             catch (Exception ex)
             {
@@ -1046,6 +1046,25 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Edit", new { id = pbck7IdAfterSave});
+        }
+
+        private Pbck7AndPbck3Dto SavePbck7Pbck3ToDatabase(Pbck7Pbck3CreateViewModel model)
+        {
+
+            var dataToSave = Mapper.Map<Pbck7AndPbck3Dto>(model);
+            
+
+            //dataToSave.APPROVED_BY_POA = null;
+
+            var input = new Pbck7Pbck3SaveInput()
+            {
+                Pbck7Pbck3Dto = dataToSave,
+                UserId = CurrentUser.USER_ID,
+                UserRole = CurrentUser.UserRole,
+                Pbck7Pbck3Items = Mapper.Map<List<Pbck7ItemUpload>>(model.UploadItems)
+            };
+
+            return _pbck7Pbck3Bll.SavePbck4(input);
         }
 
         public string GetPoaList(string nppbkcid)
@@ -1181,7 +1200,7 @@ namespace Sampoerna.EMS.Website.Controllers
             Uri uri = urlBuilder.Uri;
             if (uri != Request.UrlReferrer)
                 return HttpNotFound();
-            var item = _pbck7AndPbck7And3Bll.GetPbck7ById(id);
+            var item = _pbck7Pbck3Bll.GetPbck7ById(id);
             
             var statusPbck7 = item.Pbck7Status;
             if (statusPbck7 != Enums.DocumentStatus.Completed)
@@ -1206,7 +1225,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             
             item.UploadItems = null;
-            _pbck7AndPbck7And3Bll.InsertPbck7(item);
+            _pbck7Pbck3Bll.InsertPbck7(item);
             AddMessageInfo("Approve Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -1224,7 +1243,7 @@ namespace Sampoerna.EMS.Website.Controllers
             Uri uri = urlBuilder.Uri;
             if (uri != Request.UrlReferrer)
                 return HttpNotFound();
-            var item = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(id);
+            var item = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(id);
 
             var statusPbck3 = item.Pbck3Status;
             if (statusPbck3 != Enums.DocumentStatus.Completed)
@@ -1250,7 +1269,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
 
             
-            _pbck7AndPbck7And3Bll.InsertPbck3(item);
+            _pbck7Pbck3Bll.InsertPbck3(item);
             AddMessageInfo("Approve Success", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -1376,7 +1395,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck7List = GetAllPbck7No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
-            model.ReportItems = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
+            model.ReportItems = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
         }
         private void InitSummaryReportsPbck3(Pbck3SummaryReportModel model)
         {
@@ -1388,18 +1407,18 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck3List = GetAllPbck3No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
-            model.ReportItems = _pbck7AndPbck7And3Bll.GetPbck3SummaryReportsByParam(new Pbck3SummaryInput());
+            model.ReportItems = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(new Pbck3SummaryInput());
         }
 
         private SelectList GetAllPbck7No()
         {
-            var pbck7List = _pbck7AndPbck7And3Bll.GetAllPbck7();
+            var pbck7List = _pbck7Pbck3Bll.GetAllPbck7();
             return new SelectList(pbck7List, "Pbck7Number", "Pbck7Number");
 
         }
         private SelectList GetAllPbck3No()
         {
-            var pbck3List = _pbck7AndPbck7And3Bll.GetAllPbck3();
+            var pbck3List = _pbck7Pbck3Bll.GetAllPbck3();
             return new SelectList(pbck3List, "Pbck3Number", "Pbck3Number");
 
         }
@@ -1408,14 +1427,14 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterPbck7SummaryReport(Pbck7SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck7SummaryInput>(model);
-            var result = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(input);
+            var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
             return PartialView("_Pbck7SummaryIndex", result);
         }
         [HttpPost]
         public PartialViewResult FilterPbck3SummaryReport(Pbck3SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck3SummaryInput>(model);
-            var result = _pbck7AndPbck7And3Bll.GetPbck3SummaryReportsByParam(input);
+            var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             return PartialView("_Pbck3SummaryIndex", result);
         }
 
@@ -1451,7 +1470,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             
             var input = Mapper.Map<Pbck7SummaryInput>(model);
-            var result = _pbck7AndPbck7And3Bll.GetPbck7SummaryReportsByParam(input);
+            var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
             var src = (from b in result
                 select new Pbck7SummaryReportItem()
                 {
@@ -1577,7 +1596,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             var input = Mapper.Map<Pbck3SummaryInput>(model);
-            var result = _pbck7AndPbck7And3Bll.GetPbck3SummaryReportsByParam(input);
+            var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             var src = (from b in result
                        select new Pbck3SummaryReportItem()
                        {
@@ -1723,14 +1742,14 @@ namespace Sampoerna.EMS.Website.Controllers
             bool isSuccess = false;
             try
             {
-                var item = _pbck7AndPbck7And3Bll.GetPbck7ById(model.Id);
+                var item = _pbck7Pbck3Bll.GetPbck7ById(model.Id);
                 item.Pbck7Status = Enums.DocumentStatus.Rejected;
                 item.IsRejected = true;
                 item.Comment = model.Comment;
                 item.RejectedBy = CurrentUser.USER_ID;
                 item.RejectedDate = DateTime.Now;
                 item.UploadItems = null;
-                _pbck7AndPbck7And3Bll.InsertPbck7(item);
+                _pbck7Pbck3Bll.InsertPbck7(item);
                 isSuccess = true;
             }
             catch (Exception ex)
@@ -1748,14 +1767,14 @@ namespace Sampoerna.EMS.Website.Controllers
             bool isSuccess = false;
             try
             {
-                var item = _pbck7AndPbck7And3Bll.GetPbck3ByPbck7Id(model.Id);
+                var item = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(model.Id);
                 item.Pbck3Status= Enums.DocumentStatus.Rejected;
                 item.IsRejected = true;
                 item.Comment = model.Comment;
                 item.RejectedBy = CurrentUser.USER_ID;
                 item.RejectedDate = DateTime.Now;
                 
-                _pbck7AndPbck7And3Bll.InsertPbck3(item);
+                _pbck7Pbck3Bll.InsertPbck3(item);
                 isSuccess = true;
             }
             catch (Exception ex)
