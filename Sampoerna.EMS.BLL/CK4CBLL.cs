@@ -882,6 +882,7 @@ namespace Sampoerna.EMS.BLL
 
             result.HeaderFooter = headerFooterData;
             var i = 0;
+            List<Ck4cUnpacked> unpackedList = new List<Ck4cUnpacked>();
 
             //add data details of current CK-4C
             for (var j = Convert.ToInt32(result.Detail.ReportedPeriodStart); j <= Convert.ToInt32(result.Detail.ReportedPeriodEnd); j++)
@@ -889,6 +890,7 @@ namespace Sampoerna.EMS.BLL
                 i = i + 1;
                 var prodDate = j + "-" + result.Detail.ReportedMonth.Substring(0, 3) + "-" + result.Detail.ReportedYear;
                 var prodDateFormat = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), j);
+                var lastProdDate = prodDateFormat.AddDays(-1);
                 var dateStart = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), Convert.ToInt32(result.Detail.ReportedPeriodStart));
                 List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
                 foreach (var item in addressPlant)
@@ -898,8 +900,6 @@ namespace Sampoerna.EMS.BLL
                     Int32 isInt;
                     var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
                     var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
-
-                    
 
                     foreach (var data in activeBrand.Distinct())
                     {
@@ -917,9 +917,9 @@ namespace Sampoerna.EMS.BLL
 
                             var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
-                            var lastUnpacked = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE < prodDateFormat).LastOrDefault();
+                            var lastUnpacked = unpackedList.Where(c => c.PlantId == item && c.Facode == data.FA_CODE && c.ProdDate == lastProdDate).Sum(x => x.Unpacked);
 
-                            unpackedQty = (lastUnpacked == null ? 0 : lastUnpacked.UNPACKED_QTY) - oldWaste;
+                            unpackedQty = lastUnpacked - oldWaste;
                         }
 
                         ck4cItem.CollumNo = i;
@@ -938,6 +938,14 @@ namespace Sampoerna.EMS.BLL
 
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
+
+                        var unpackedItem = new Ck4cUnpacked();
+                        unpackedItem.PlantId = item;
+                        unpackedItem.Facode = data.FA_CODE;
+                        unpackedItem.ProdDate = prodDateFormat;
+                        unpackedItem.Unpacked = unpackedQty == null ? 0 : unpackedQty.Value;
+
+                        unpackedList.Add(unpackedItem);
                     }
                     
                 }
