@@ -152,6 +152,32 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+                if (input.Ck5Type == Enums.CK5Type.PortToImporter)
+                {
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS_ID != Enums.DocumentStatus.Draft && nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID))));
+                }
+                else
+                {
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS_ID != Enums.DocumentStatus.Draft && nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))));    
+                }
+                
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => c.STATUS_ID != Enums.DocumentStatus.Draft && c.STATUS_ID != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.SUBMISSION_NUMBER));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+            }
+
             if (!string.IsNullOrEmpty(input.DocumentNumber))
             {
                 queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.DocumentNumber));
