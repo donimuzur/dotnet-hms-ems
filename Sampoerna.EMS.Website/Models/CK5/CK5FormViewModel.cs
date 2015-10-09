@@ -266,5 +266,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Display(Name = "BACK-1 Date")]
         [UIHint("DateTime")]
         public DateTime? Back1Date { get; set; }
+
+        public bool AllowAttachmentCompleted { get; set; }
     }
 }

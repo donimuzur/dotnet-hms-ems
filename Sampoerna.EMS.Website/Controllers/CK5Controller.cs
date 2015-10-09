@@ -910,7 +910,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.NppbkcId = model.SourceNppbkcId;
                 if (model.Ck5Type == Enums.CK5Type.PortToImporter)
                     input.NppbkcId = model.DestNppbkcId;
-                
+
+                input.PoaApprove = ck5Details.Ck5Dto.APPROVED_BY_POA;
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
@@ -961,6 +962,13 @@ namespace Sampoerna.EMS.Website.Controllers
                
                 model.AllowCancelSAP = _workflowBll.AllowCancelSAP(input);
 
+                if (model.IsCompleted)
+                {
+                    
+                    model.AllowAttachmentCompleted = _workflowBll.AllowAttachmentCompleted(input);
+
+                }
+
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocument";
                 else if (model.AllowGiCreated)
@@ -969,7 +977,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "CK5GRCreated";
                 else if (model.AllowTfPostedPortToImporter)
                     model.ActionType = "CK5TfPostedPortToImporter";
-                else if (model.IsCompleted)
+                else if (model.AllowAttachmentCompleted)
                     model.ActionType = "CK5CompletedAttachment";
                 
 
@@ -1439,6 +1447,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     var input = new CK5WorkflowDocumentInput()
                     {
                         DocumentId = model.Ck5Id,
+                        DocumentNumber = model.SubmissionNumber,
                         UserRole = CurrentUser.UserRole,
                         UserId = CurrentUser.USER_ID,
                         Ck5Type = model.Ck5Type,
