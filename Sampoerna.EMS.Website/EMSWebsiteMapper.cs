@@ -875,7 +875,12 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<WasteUploadViewModel, WasteDto>().IgnoreAllNonExisting()
             .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));
 
+            Mapper.CreateMap<WasteUploadItems, WasteUploadItemsInput>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<WasteUploadItemsInput, WasteUploadItemsOuput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<WasteUploadItemsOuput, WasteUploadItems>().IgnoreAllNonExisting();
+                 
             #endregion
 
 
