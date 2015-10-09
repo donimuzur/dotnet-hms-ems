@@ -286,7 +286,7 @@
                         {
                             foreach (var t in @Model.SummaryProductionList)
                             {
-                                @t.Amount <span> </span> @t.UomDesc <br />
+                                @String.Format("{0:n}", t.Amount) <span> </span> @t.UomDesc <br />
                             }
                         }
                     </td>
