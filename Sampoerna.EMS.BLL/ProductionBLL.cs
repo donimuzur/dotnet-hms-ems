@@ -112,20 +112,14 @@ namespace Sampoerna.EMS.BLL
                 SetChange(originDto, productionDto, userId);
                 output.isNewData = false;
             }
-
-            if (dbProduction.UOM == "KG")
-            {
-                dbProduction.UOM = "G";
-                dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
-                dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
-            }
-
+            
             if (dbProduction.UOM == "TH")
             {
                 dbProduction.UOM = "Btg";
                 dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
                 dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
             }
+
             dbProduction.CREATED_DATE = DateTime.Now;
 
             if (dbProduction.BATCH != null)
