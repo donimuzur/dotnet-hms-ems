@@ -350,10 +350,12 @@ namespace Sampoerna.EMS.BLL
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
                     var poaApprove = _userBll.GetUserById(ck4cData.ApprovedByPoa);
+                    var poaId = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
 
                     rc.To.Add(userDetail.EMAIL);
-                    rc.CC.Add(poaApprove.EMAIL);
-                    rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                    if (poaApprove != null)
+                        rc.CC.Add(poaApprove.EMAIL);
+                    rc.CC.Add(GetManagerEmail(poaId));
 
                     rc.IsCCExist = true;
                     break;
