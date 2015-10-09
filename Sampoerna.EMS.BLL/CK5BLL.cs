@@ -2830,7 +2830,7 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
-     public void CK5CompletedAttachment(CK5WorkflowDocumentInput input)
+        public void CK5CompletedAttachment(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
 
@@ -2839,9 +2839,14 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.Completed)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-         
+
             dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
-            
+
+            //add workflow history
+            input.ActionType = Enums.ActionType.Modified;
+
+            AddWorkflowHistory(input);
+         
             _uow.SaveChanges();
         }
     }
