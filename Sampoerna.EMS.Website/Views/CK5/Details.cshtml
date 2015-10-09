@@ -40,7 +40,7 @@
                             <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelSAP" />
                         }
                         
-                          if (Model.IsCompleted)
+                          if (Model.AllowAttachmentCompleted)
                         {
                              <input type="button" class="btn btn-blue" value="Save" id="btnSaveAttachment" />
                         }
@@ -286,8 +286,8 @@
 
 @section scripts {
     <script src="~/Scripts/CK5Scripts.js"></script>
-    @if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject) 
-        || Model.IsCompleted)
+    @if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+        || Model.AllowAttachmentCompleted)
     {
         <script src="~/Scripts/jquery.form.min.js"></script>
         <script src="~/Scripts/UploadExcel.js"></script>
