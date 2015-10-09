@@ -36,6 +36,7 @@
 }
 @section Scripts
 {
+<script src="~/Scripts/thousand-separator.js"></script>
 <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
@@ -54,9 +55,29 @@
             return '<td>' + text + '</td>';
         }
 
+       function changeToDecimal(selector, type) {
+           $(selector).each(function () {
+               if (type == "val") {
+                   var val = $(this).val();
+                   val = parseFloat(Math.round(val * 100) / 100).toFixed(2);
+                   $(this).val(ThausandSeperator(val, 2));
+
+               } else {
+                   var val = $(this).html();
+                   val = parseFloat(Math.round(val * 100) / 100).toFixed(2);
+                   $(this).html(ThausandSeperator(val, 2));
+               }
+           });
+       }
+
         function createColumnWithHiddenField(text, name) {
             return '<td><input type="hidden" name="' + name + '" value="' + text + '">' + text + '</td>';
         }
+        
+        function createColumnWithHiddenFieldDecimal(text, name) {
+            return '<td><input type="hidden" name="' + name + '" value="' + text + '"><span class="decimal">' + text + '</span></td>';
+        }
+        
         function uploadXmlFile() {
 
             var postUrl = '@Url.Action("UploadFile", "Production")';
@@ -97,8 +118,8 @@
                     createColumnWithHiddenField(uploaditems[i].PlantWerks, 'UploadItems[' + i + '].PlantWerks') +
                     createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems[' + i + '].FaCode') +
                     createColumnWithHiddenField(uploaditems[i].BrandDescription, 'UploadItems[' + i + '].BrandDescription') +
-                    createColumnWithHiddenField(uploaditems[i].QtyPacked, 'UploadItems[' + i + '].QtyPacked') +
-                    createColumnWithHiddenField(uploaditems[i].QtyUnpacked, 'UploadItems[' + i + '].QtyUnpacked') +
+                    createColumnWithHiddenFieldDecimal(uploaditems[i].QtyPacked, 'UploadItems[' + i + '].QtyPacked') +
+                    createColumnWithHiddenFieldDecimal(uploaditems[i].QtyUnpacked, 'UploadItems[' + i + '].QtyUnpacked') +
                     createColumnWithHiddenField(uploaditems[i].Uom, 'UploadItems[' + i + '].Uom') +
                     createColumnWithHiddenField(uploaditems[i].ProductionDate, 'UploadItems[' + i + '].ProductionDate') +
                     createColumnWithHiddenField(uploaditems[i].Message, 'UploadItems[' + i + '].Message') + + '</tr>';
@@ -106,6 +127,7 @@
                     }
                    
                     $('#btnSave').enable();
+                    changeToDecimal('.decimal', 'html');
                 }
             });
         };

@@ -456,11 +456,10 @@ namespace Sampoerna.EMS.BLL
                 #endregion
                 //Brand Description Validation
                 #region -------------Brand Description--------------------
-                ZAIDM_EX_BRAND brandCeTypeData = null;
-               
-                if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandCeTypeData))
+              
+                if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandTypeData))
                 {
-                    output.BrandDescription = brandCeTypeData.BRAND_CE;
+                    output.BrandDescription = brandTypeData.BRAND_CE;
                 }
                 else
                 {
@@ -624,6 +623,6 @@ namespace Sampoerna.EMS.BLL
             message = messageList;
             return valResult;
         }
-        
+      
     }
 }
