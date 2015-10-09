@@ -145,8 +145,13 @@
                                         <th>Tobacco Product Type</th>
                                         <th>HJE</th>
                                         <th>Tarif</th>
+                                        <th>Content Per Pack</th>
+                                        <th>Packed QTY</th>
+                                        <th>Packed QTY In Pack</th>
+                                        <th>Unpacked QTY</th>
                                         <th>Produced QTY</th>
                                         <th>UoM Produced QTY</th>
+                                        <th>Remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tb-body-ck4c">
@@ -154,19 +159,20 @@
                                     {
                                         var item = Model.Details.Ck4cItemData[i];
                                         <tr>
-                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CItemId" type="hidden" value="@item.Ck4CItemId" /></td>
-                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CId" type="hidden" value="@item.Ck4CId" /></td>
-                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" /></td>
-                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" /></td>
-                                            <td><input name="Details.Ck4cItemData[@i].ProdDate" type="hidden" value="@item.ProdDate" />@item.ProdDateName</td>
-                                            <td><input name="Details.Ck4cItemData[@i].FaCode" type="hidden" value="@item.FaCode" />@item.FaCode</td>
-                                            <td><input name="Details.Ck4cItemData[@i].BrandDescription" type="hidden" value="@item.BrandDescription" />@item.BrandDescription</td>
-                                            <td><input name="Details.Ck4cItemData[@i].Werks" type="hidden" value="@item.Werks" />@item.PlantName</td>
-                                            <td><input name="Details.Ck4cItemData[@i].ProdCode" type="hidden" value="@item.ProdCode" />@item.ProdType</td>
-                                            <td><input name="Details.Ck4cItemData[@i].HjeIdr" type="hidden" value="@item.HjeIdr" />@item.HjeIdr</td>
-                                            <td><input name="Details.Ck4cItemData[@i].Tarif" type="hidden" value="@item.Tarif" />@item.Tarif</td>
-                                            <td><input name="Details.Ck4cItemData[@i].ProdQty" type="hidden" value="@item.ProdQty" />@item.ProdQty</td>
-                                            <td><input name="Details.Ck4cItemData[@i].ProdQtyUom" type="hidden" value="@item.ProdQtyUom" />@item.ProdQtyUom</td>
+                                            <td>@item.ProdDateName</td>
+                                            <td>@item.FaCode</td>
+                                            <td>@item.BrandDescription</td>
+                                            <td>@item.PlantName</td>
+                                            <td>@item.ProdType</td>
+                                            <td class="number">@string.Format("{0:N2}", item.HjeIdr)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.Tarif)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.ContentPerPack)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.PackedQty)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.PackedInPack)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.UnpackedQty)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.ProdQty)</td>
+                                            <td>@item.ProdQtyUom</td>
+                                            <td>@item.Remarks</td>
                                         </tr>
                                     }
                                 </tbody>
