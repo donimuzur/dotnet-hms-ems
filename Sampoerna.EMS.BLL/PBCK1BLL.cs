@@ -1827,7 +1827,7 @@ namespace Sampoerna.EMS.BLL
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
             //rc.Subject = "PBCK-1 " + pbck1Data.Pbck1Number + " is " + EnumHelper.GetDescription(pbck1Data.Status);
-            rc.Subject = "PBCK-1 is " + EnumHelper.GetDescription(pbck1Data.Status);
+            rc.Subject = "PBCK-1 " + pbck1Data.Pbck1Number + " is " + EnumHelper.GetDescription(pbck1Data.Status);
             bodyMail.Append("Dear Team,<br />");
             bodyMail.AppendLine();
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");

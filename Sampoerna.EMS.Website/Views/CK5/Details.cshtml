@@ -26,7 +26,7 @@
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
-                        else if (Model.AllowGiCreated || Model.AllowGrCreated)
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated || Model.AllowTfPostedPortToImporter)
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnGiCreated" />
                         }
@@ -97,7 +97,7 @@
                             }
                             
                         }
-                        else if (Model.AllowGiCreated || Model.AllowGrCreated)
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated || Model.AllowTfPostedPortToImporter)
                         {
                             @Html.HiddenFor(model => model.KppBcCity)
                             @Html.HiddenFor(model => model.GoodTypeName)
@@ -107,6 +107,7 @@
                             
                              @Html.Partial("_CK5SealingInput")
                         }
+                       
                         else
                         {
                             @Html.Partial("_CK5InformationDetails")
@@ -296,219 +297,227 @@
 
 
     <script type="text/javascript">
-        $(document).ready(function () {
-           
+    $(document).ready(function () {
+
+
+
+        if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
+            OnReadyFunction('@Model.DocumentStatus');
+            
+        } else {
             OnReadyFunction('@Model.Ck5Type.ToString()');
+        }
+        openGovStatusBlock();
 
-            openGovStatusBlock();
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
+        });
 
-            $('#btn-changelog-export-xls').click(function () {
-                location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
-            });
+        $('#btnBack').click(function (e) {
 
-            $('#btnBack').click(function (e) {
-                //alert('@Enums.CK5Type.Domestic.ToString()');
-                
-                if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
-                    location.href = '@Url.Action("Index", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
-                    location.href = '@Url.Action("Index", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
-                    location.href = '@Url.Action("CK5Export", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
-                    location.href = '@Url.Action("CK5Import", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
-                    location.href = '@Url.Action("CK5Manual", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
-                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+            if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()')
+                location.href = '@Url.Action("CK5Completed", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                location.href = '@Url.Action("Index", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                location.href = '@Url.Action("Index", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                location.href = '@Url.Action("CK5Export", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                location.href = '@Url.Action("CK5Import", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                location.href = '@Url.Action("CK5Manual", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                location.href = '@Url.Action("CK5MarketReturn", "CK5")';
 
-            });
-            
-            $("#btnSaveGovStatus").click(function () {
-                if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
-                    if (ValidateGovMarketReturn()) {
-                        $('#GovApproveForm').submit();
-                        //alert('submit');
-                    }
-                } else {
-                    if (ValidateGovInput()) {
-                        $('#GovApproveForm').submit();
-                    }
+        });
+
+        $("#btnSaveGovStatus").click(function () {
+            if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
+                if (ValidateGovMarketReturn()) {
+                    $('#GovApproveForm').submit();
+                    //alert('submit');
                 }
-              
-            });
-            
+            } else {
+                if (ValidateGovInput()) {
+                    $('#GovApproveForm').submit();
+                }
+            }
+
+        });
+
+        $('#divComment').hide();
+
+        $('#GovStatus').on('change', function (e) {
+            var valueSelected = this.value;
+
             $('#divComment').hide();
-            
-            $('#GovStatus').on('change', function (e) {
-                var valueSelected = this.value;
 
-                $('#divComment').hide();
+            if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
+                $('#divComment').show();
 
-                if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
-                    $('#divComment').show();
-                    
-                }
-               
-            });
-            
-            $("#btnGiCreated").click(function () {
-                
-                if ('@Model.AllowGiCreated' == "True") {
-                    
-                    if (ValidateGiCreated()) {
-                        $('#GovApproveForm').submit();
-                    }
-                }
-                else if ('@Model.AllowGrCreated' == "True") {
-                    
-                    if (ValidateGRCreated()) {
-                        $('#GovApproveForm').submit();
-                    }
-                }
-                
-            });
-            
-            if ('@Model.AllowGiCreated' == "True" || '@Model.AllowGrCreated' == "True") {
-                $('#collapseFour').removeClass('collapse');
-                $('#collapseFour').addClass('in');
-                $("#collapseFour").css({ height: "auto" });
-                
-                $('#collapseThree').removeClass('in');
-                $("#collapseThree").css({ height: "0" });
-                
-                $('#collapseTwo').removeClass('in');
-                $("#collapseTwo").css({ height: "0" });
-                
-                $('#collapseOne').removeClass('in');
-                $("#collapseOne").css({ height: "0" });
             }
-            
+
         });
 
-        function openGovStatusBlock() {
-            var docStatus = '@Model.IsWaitingGovApproval';
-            var isAllow = '@Model.AllowGovApproveAndReject';
-            if (docStatus.toLowerCase() == 'true' && isAllow.toLowerCase() == 'true') {
-                $('#home').addClass('active');
-                $('#home-tab').addClass('active');
-                $('#collapseFour').addClass("in");
+        $("#btnGiCreated").click(function () {
 
-                $('#RegistrationNumber').bind('input propertychange', function () {
-                    AddValidationClass(false, 'RegistrationNumber');
-                    if (this.value.length) {
-                        AddValidationClass(true, 'RegistrationNumber');
-                    }
-                });
+            if ('@Model.AllowGiCreated' == "True") {
 
-                $('#RegistrationDate').bind('input change', function () {
-                    AddValidationClass(false, 'RegistrationDate');
-                    if (this.value.length) {
-                        AddValidationClass(true, 'RegistrationDate');
-                    }
-                });
+                if (ValidateGiCreated()) {
+                    $('#GovApproveForm').submit();
+                }
             }
+            else if ('@Model.AllowGrCreated' == "True"
+            || '@Model.AllowTfPostedPortToImporter' == "True") {
+
+                if (ValidateGRCreated()) {
+                    $('#GovApproveForm').submit();
+                }
+            }
+
+        });
+
+        if ('@Model.AllowGiCreated' == "True" || '@Model.AllowGrCreated' == "True") {
+            $('#collapseFour').removeClass('collapse');
+            $('#collapseFour').addClass('in');
+            $("#collapseFour").css({ height: "auto" });
+
+            $('#collapseThree').removeClass('in');
+            $("#collapseThree").css({ height: "0" });
+
+            $('#collapseTwo').removeClass('in');
+            $("#collapseTwo").css({ height: "0" });
+
+            $('#collapseOne').removeClass('in');
+            $("#collapseOne").css({ height: "0" });
         }
 
-        $("#btnApprove").click(function () {
+    });
 
-            $('#btnConfirm').show();
-            $('#btnConfirmGovApprove').hide();
-            $("#lblTitleModal").text('Approval');
-            $("#lblMessageModal").text('Approve Documents ?');
-            $('#Ck5Modal').modal('show');
+    function openGovStatusBlock() {
+        var docStatus = '@Model.IsWaitingGovApproval';
+        var isAllow = '@Model.AllowGovApproveAndReject';
+        if (docStatus.toLowerCase() == 'true' && isAllow.toLowerCase() == 'true') {
+            $('#home').addClass('active');
+            $('#home-tab').addClass('active');
+            $('#collapseFour').addClass("in");
 
-        });
+            $('#RegistrationNumber').bind('input propertychange', function () {
+                AddValidationClass(false, 'RegistrationNumber');
+                if (this.value.length) {
+                    AddValidationClass(true, 'RegistrationNumber');
+                }
+            });
 
-
-        $("#btnConfirm").click(function () {
-
-            window.location = "@Url.Action("ApproveDocument", "CK5", new {id = @Model.Ck5Id})";
-        });
-
-        $("#btnReject").click(function () {
-            $('#btnConfirmReject').attr('disabled', 'disabled');
-
-            $('#Comment').val('');
-
-            $('#Ck5ModalReject').modal('show');
-
-        });
-   
-
-        $('#Comment').bind('input propertychange', function () {
-
-            $('#btnConfirmReject').attr('disabled', 'disabled');
-            //$('#btnConfirmGovReject').attr('disabled', 'disabled');
-            //$('#btnConfirmGovCancel').attr('disabled', 'disabled');
-
-            if (this.value.length) {
-                $('#btnConfirmReject').removeAttr('disabled');
-                //$('#btnConfirmGovReject').removeAttr('disabled');
-                //$('#btnConfirmGovCancel').removeAttr('disabled');
-            }
-        });
-        
-        function printPreview(url) {
-
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
-        }
-
-        function PrintOutClick(reportUrl, addHistoryUrl, id) {
-
-            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
-            $.ajax({
-                type: 'POST',
-                url: addHistoryUrl,
-                data: { id: id },
-                success: function (response) {
-                    $('#PrintOutHistoryTable').html("");
-                    $('#PrintOutHistoryTable').html(response);
-                    ResetPrintHistoryDataTable();
+            $('#RegistrationDate').bind('input change', function () {
+                AddValidationClass(false, 'RegistrationDate');
+                if (this.value.length) {
+                    AddValidationClass(true, 'RegistrationDate');
                 }
             });
         }
+    }
 
-        function ResetPrintHistoryDataTable() {
-            // DataTable
-            var table = null;
-            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
-                table = $('#printHistoryTable').DataTable();
-                table.destroy();
+    $("#btnApprove").click(function () {
+
+        $('#btnConfirm').show();
+        $('#btnConfirmGovApprove').hide();
+        $("#lblTitleModal").text('Approval');
+        $("#lblMessageModal").text('Approve Documents ?');
+        $('#Ck5Modal').modal('show');
+
+    });
+
+
+    $("#btnConfirm").click(function () {
+
+        window.location = "@Url.Action("ApproveDocument", "CK5", new {id = @Model.Ck5Id})";
+    });
+
+    $("#btnReject").click(function () {
+        $('#btnConfirmReject').attr('disabled', 'disabled');
+
+        $('#Comment').val('');
+
+        $('#Ck5ModalReject').modal('show');
+
+    });
+
+
+    $('#Comment').bind('input propertychange', function () {
+
+        $('#btnConfirmReject').attr('disabled', 'disabled');
+        //$('#btnConfirmGovReject').attr('disabled', 'disabled');
+        //$('#btnConfirmGovCancel').attr('disabled', 'disabled');
+
+        if (this.value.length) {
+            $('#btnConfirmReject').removeAttr('disabled');
+            //$('#btnConfirmGovReject').removeAttr('disabled');
+            //$('#btnConfirmGovCancel').removeAttr('disabled');
+        }
+    });
+
+    function printPreview(url) {
+
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+    }
+
+    function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+        window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        $.ajax({
+            type: 'POST',
+            url: addHistoryUrl,
+            data: { id: id },
+            success: function (response) {
+                $('#PrintOutHistoryTable').html("");
+                $('#PrintOutHistoryTable').html(response);
+                ResetPrintHistoryDataTable();
             }
+        });
+    }
 
-            table = $('#printHistoryTable').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "zeroRecords": "No records found",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
-
-          
+    function ResetPrintHistoryDataTable() {
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+            table = $('#printHistoryTable').DataTable();
+            table.destroy();
         }
 
-        $("#btnCancelSAP").click(function () {
-
-           
-            $('#Ck5ModalCancelSap').modal('show');
-
-        });
-        
-        $("#btnConfirmCancel").click(function () {
-
-            window.location = "@Url.Action("CancelSAPDocument", "CK5", new {id = @Model.Ck5Id})";
-        });
-
-        $("#btnSaveAttachment").click(function () {
+        table = $('#printHistoryTable').DataTable(
+            {
+                "sDom": "Rlfrtip",
+                "language": {
+                    "zeroRecords": "No records found",
+                    "infoFiltered": "(filtered from _MAX_ total records)"
+                }
+            });
 
 
-            $('#GovApproveForm').submit();                
-            
+    }
 
-        });
+    $("#btnCancelSAP").click(function () {
+
+
+        $('#Ck5ModalCancelSap').modal('show');
+
+    });
+
+    $("#btnConfirmCancel").click(function () {
+
+        window.location = "@Url.Action("CancelSAPDocument", "CK5", new {id = @Model.Ck5Id})";
+    });
+
+    $("#btnSaveAttachment").click(function () {
+
+
+        $('#GovApproveForm').submit();
+
+
+    });
     </script>
 }

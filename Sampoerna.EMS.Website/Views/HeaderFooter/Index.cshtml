@@ -88,7 +88,7 @@
                             <th>Company Name</th>
                             <th>Company Header Image</th>
                             <th>Company Footer</th>
-                            <th> Deleted </th>
+                            @*<th> Deleted </th>*@
                         </tr>
 
                     </thead>
@@ -99,7 +99,7 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th></th>
+                            @*<th></th>*@
                         </tr>
 
                     </thead>
@@ -128,9 +128,9 @@
                                 <td>
                                     @Html.Raw(item.FOOTER_CONTENT)
                                 </td>
-                                <td>
+                                @*<td>
                                     @Html.DisplayFor(modelItem => item.IsDeletedDesc)
-                                </td>
+                                </td>*@
                             </tr>
                         }
                     </tbody>
