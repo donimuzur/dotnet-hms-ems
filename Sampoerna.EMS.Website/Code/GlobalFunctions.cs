@@ -507,7 +507,7 @@ namespace Sampoerna.EMS.Website.Code
 
         public static SelectList GetUomStickGram(IUnitOfMeasurementBLL uomBll)
         {
-            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true && x.IS_EMS == true && (x.UOM_ID == "G" || x.UOM_ID == "Btg" || x.UOM_ID == "TH" || x.UOM_ID == "KG"));
+            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true && x.IS_EMS == true && (x.UOM_ID == "G" || x.UOM_ID == "Btg"));
             return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
