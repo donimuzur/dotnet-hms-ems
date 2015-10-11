@@ -337,18 +337,18 @@
 
         });*@
 
-        //function ajaxGetPersonalizationCodeDescription(url, formData) {
-        //    if (formData.personalizationId) {
-        //        $.ajax({
-        //            type: 'POST',
-        //            url: url,
-        //            data: formData,
-        //            success: function(data) {
-        //                $('#PersonalizationCodeDescription').val(data);
-        //            }
-        //        });
-        //    }
-        //}
+        function ajaxGetPersonalizationCodeDescription(url, formData) {
+            if (formData.personalizationId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        $('#PersonalizationCodeDescription').val(data);
+                    }
+                });
+            }
+        }
 
                 @*$("#ProductCode").change(function() {
             if ($("#ProductCode").length) {
@@ -363,19 +363,19 @@
 
         });*@
 
-        //function ajaxGetProductCodeDetails(url, formData) {
-        //    if (formData.productId) {
-        //        $.ajax({
-        //            type: 'POST',
-        //            url: url,
-        //            data: formData,
-        //            success: function(data) {
-        //                $('#ProductType').val(data.PRODUCT_TYPE);
-        //                $('#ProductAlias').val(data.PRODUCT_ALIAS);
-        //            }
-        //        });
-        //    }
-        //}
+        function ajaxGetProductCodeDetails(url, formData) {
+            if (formData.productId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        $('#ProductType').val(data.PRODUCT_TYPE);
+                        $('#ProductAlias').val(data.PRODUCT_ALIAS);
+                    }
+                });
+            }
+        }
 
 
                 @*$("#SeriesId").change(function() {

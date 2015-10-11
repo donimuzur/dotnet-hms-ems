@@ -37,6 +37,16 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         var item = new INVENTORY_MOVEMENT();
                         item.MAT_DOC = xElement.Element("MatDoc").Value;
+                        var existingData = GetMovement(item.MAT_DOC);
+
+                        if (existingData != null)
+                        {
+                            item = existingData;
+                            
+                        }
+                        
+
+                        
                         item.MVT = xElement.Element("MvT").Value;
                         item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("Material"));
                         item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("Plnt"));
@@ -48,7 +58,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.POSTING_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("PstngDate")));
                         item.ENTRY_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EntryDate")));
                         item.CREATED_USER = _xmlMapper.GetElementValue(xElement.Element("Username"));
-            
+                        
                         items.Add(item);
                     }
                     catch (Exception ex)
@@ -85,7 +95,13 @@ namespace Sampoerna.EMS.XMLReader
         //    return exisitingPlant;
         //}
 
+        public INVENTORY_MOVEMENT GetMovement(string matdoc)
+        {
+            var existingMvmt = _xmlMapper.uow.GetGenericRepository<INVENTORY_MOVEMENT>()
+                .Get(x => x.MAT_DOC == matdoc, null, "").FirstOrDefault();
 
+            return existingMvmt;
+        }
 
 
     }
