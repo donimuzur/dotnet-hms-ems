@@ -208,7 +208,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbBrand = _brandRegistrationBll.GetById(plant, facode,stickercode);
           
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
-                return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE });
+                return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE, stickercode=dbBrand.STICKER_CODE });
 
             model = Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
             model.HjeValueStr = model.HjeValue == null ? string.Empty : model.HjeValue.ToString();
@@ -216,6 +216,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             model.PrintingPriceValueStr = model.PrintingPrice == null ? string.Empty : model.PrintingPrice.ToString();
             model = InitEdit(model);
+
+            model.IsAllowDelete = !model.IsFromSAP;
 
             return View(model);
         }

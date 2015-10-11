@@ -389,7 +389,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         item.QtyUnpacked = item.QtyUnpacked * 1000;
                     }
 
-
+                 
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
 

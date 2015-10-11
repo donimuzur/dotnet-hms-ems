@@ -453,10 +453,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.DustWasteStickQty = dataRow[8] == "" || dataRow[8] == "-" ? 0 : Convert.ToDecimal(dataRow[8]);
                     item.FloorWasteStickQty = dataRow[9] == "" || dataRow[9] == "-" ? 0 : Convert.ToDecimal(dataRow[9]);
                     item.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[10])).ToString("dd MMM yyyy");
-
+                   
                     {
                         model.Add(item);
                     }
+
+                    var input = Mapper.Map<List<WasteUploadItemsInput>>(model);
+                    var outputResult = _wasteBll.ValidationWasteUploadDocumentProcess(input);
+
+                    model = Mapper.Map<List<WasteUploadItems>>(outputResult);
+
 
                 }
             }

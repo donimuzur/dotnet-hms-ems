@@ -152,6 +152,32 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+                if (input.Ck5Type == Enums.CK5Type.PortToImporter)
+                {
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS_ID != Enums.DocumentStatus.Draft && nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID))));
+                }
+                else
+                {
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS_ID != Enums.DocumentStatus.Draft && nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))));    
+                }
+                
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => c.STATUS_ID != Enums.DocumentStatus.Draft && c.STATUS_ID != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.SUBMISSION_NUMBER));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+            }
+
             if (!string.IsNullOrEmpty(input.DocumentNumber))
             {
                 queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.DocumentNumber));
@@ -1950,11 +1976,12 @@ namespace Sampoerna.EMS.BLL
 
                 result.ReportDetails.DestinationCountry = dtData.DEST_COUNTRY_NAME;
                 result.ReportDetails.DestinationCode = dtData.DEST_COUNTRY_CODE;
-                result.ReportDetails.DestinationNppbkc = dtData.DEST_PLANT_NPPBKC_ID;
-                result.ReportDetails.DestinationName = dtData.DEST_PLANT_NAME;
-                result.ReportDetails.DestinationAddress = dtData.DEST_PLANT_ADDRESS;
-                result.ReportDetails.DestinationOfficeName = dtData.DEST_PLANT_COMPANY_NAME;
-                result.ReportDetails.DestinationOfficeCode = dtData.DEST_PLANT_COMPANY_CODE;
+
+                result.ReportDetails.DestinationNppbkc = result.ReportDetails.SourcePlantNppbkc; //dtData.DEST_PLANT_NPPBKC_ID;
+                result.ReportDetails.DestinationName = result.ReportDetails.SourcePlantName; //dtData.DEST_PLANT_NAME;
+                result.ReportDetails.DestinationAddress = result.ReportDetails.SourcePlantAddress; //dtData.DEST_PLANT_ADDRESS;
+                result.ReportDetails.DestinationOfficeName = result.ReportDetails.SourceOfficeName; //dtData.DEST_PLANT_COMPANY_NAME;
+                result.ReportDetails.DestinationOfficeCode = result.ReportDetails.SourceOfficeCode;//dtData.DEST_PLANT_COMPANY_CODE;
 
                 result.ReportDetails.LoadingPort = dtData.LOADING_PORT;
                 result.ReportDetails.LoadingPortName = dtData.LOADING_PORT_NAME;
@@ -2804,7 +2831,7 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
-     public void CK5CompletedAttachment(CK5WorkflowDocumentInput input)
+        public void CK5CompletedAttachment(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
 
@@ -2813,9 +2840,14 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.Completed)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-         
+
             dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
-            
+
+            //add workflow history
+            input.ActionType = Enums.ActionType.Modified;
+
+            AddWorkflowHistory(input);
+         
             _uow.SaveChanges();
         }
     }
