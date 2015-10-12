@@ -106,7 +106,7 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Qty Packed<span class="red">*</span></label>
+                                                                <label class="col-md-4">Quantity Packed<span class="red">*</span></label>
                                                                 <div class="col-md-8">
                                                                     @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "decimal form-control", @maxlength = "19" })
                                                                 </div>
@@ -114,9 +114,9 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Qty Unpacked<span class="red">*</span></label>
+                                                                <label class="col-md-4"> Quantity</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.QtyUnpackedStr, new { @class = "decimal form-control", @maxlength = "19" })
+                                                                    @Html.TextBoxFor(model => model.QtyStr, new { @class = "decimal form-control"})
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -132,20 +132,14 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Product Qty Stick</label>
+                                                                <label class="col-md-4">Product Quantity Stick</label>
                                                                 <div class="col-md-8">
+                                                                    @Html.HiddenFor(model => model.ProdQtyStickStr)
                                                                     @Html.TextBoxFor(model => model.ProdQtyStickStr, new { @class = "decimal form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="col-md-4"> Quantity</label>
-                                                                <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.QtyStr, new { @class = "decimal form-control", disabled = "disabled" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                     
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4"> Bundle </label>
@@ -195,7 +189,6 @@
         $('#MenuCk4cDailyProduction').addClass('active');
 
         $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
-        $('#QtyUnpackedStr').val(ThausandSeperator($('#QtyUnpackedStr').val(), 2));
         $('#ProdQtyStickStr').val(ThausandSeperator($('#ProdQtyStickStr').val(), 2));
         $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
 

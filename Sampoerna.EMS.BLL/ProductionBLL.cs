@@ -117,7 +117,7 @@ namespace Sampoerna.EMS.BLL
             {
                 dbProduction.UOM = "Btg";
                 dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
-                dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
+                dbProduction.QTY = dbProduction.QTY * 1000;
             }
 
             dbProduction.CREATED_DATE = DateTime.Now;
@@ -172,7 +172,7 @@ namespace Sampoerna.EMS.BLL
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
                              QtyPacked = p.QTY_PACKED == null ? 0 : p.QTY_PACKED,
-                             QtyUnpacked = p.QTY_UNPACKED == null ? 0 : p.QTY_UNPACKED,
+                             QtyUnpacked = 0,
                              QtyProduced = p.QTY == null ? p.QTY_PACKED + p.QTY_UNPACKED : p.QTY,
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
@@ -198,7 +198,7 @@ namespace Sampoerna.EMS.BLL
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
                              QtyPacked = p.QTY_PACKED == null ? 0 : p.QTY_PACKED,
-                             QtyUnpacked = p.QTY_UNPACKED == null ? 0 : p.QTY_UNPACKED,
+                             QtyUnpacked = 0,
                              QtyProduced = p.QTY == null ? p.QTY_PACKED + p.QTY_UNPACKED : p.QTY,
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
@@ -246,7 +246,7 @@ namespace Sampoerna.EMS.BLL
             changeData.Add("PRODUCTION_DATE", origin.ProductionDate == data.ProductionDate);
             changeData.Add("BRAND_DESC", origin.BrandDescription == data.BrandDescription);
             changeData.Add("QTY_PACKED", origin.QtyPacked == data.QtyPacked);
-            changeData.Add("QTY_UNPACKED", origin.QtyUnpacked == data.QtyUnpacked);
+            changeData.Add("QTY", origin.Qty == data.Qty);
             changeData.Add("UOM", origin.Uom == data.Uom);
             changeData.Add("PROD_QTY_STICK", origin.ProdQtyStick == data.ProdQtyStick);
 
@@ -295,10 +295,10 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.QtyPacked.ToString();
                             changes.FIELD_NAME = "Qty Packed";
                             break;
-                        case "QTY_UNPACKED":
-                            changes.OLD_VALUE = origin.QtyUnpacked.ToString();
-                            changes.NEW_VALUE = data.QtyUnpacked.ToString();
-                            changes.FIELD_NAME = "Qty Unpacked";
+                        case "QTY":
+                            changes.OLD_VALUE = origin.Qty.ToString();
+                            changes.NEW_VALUE = data.Qty.ToString();
+                            changes.FIELD_NAME = "Quantity";
                             break;
                         case "UOM":
                             changes.OLD_VALUE = origin.Uom;
@@ -474,9 +474,11 @@ namespace Sampoerna.EMS.BLL
                         output.Message += message + ";";
                     }
                 }
+                
                 else
                 {
                     output.IsValid = true;
+                    output.Message = string.Empty;
                 }
 
                 #endregion

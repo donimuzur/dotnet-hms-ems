@@ -820,7 +820,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ProductionDate,
                     opt => opt.MapFrom(src => src.ProductionDate.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName))
-                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.Qty == null ? src.QtyPacked + src.QtyUnpacked : src.Qty));
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.Qty));
             //.ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode));
 
 
