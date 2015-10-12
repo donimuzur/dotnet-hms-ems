@@ -102,6 +102,13 @@ namespace Sampoerna.EMS.Website
 
 
             #endregion
+
+            Mapper.CreateMap<Pbck7UploadViewModel, Pbck7ItemsInput>().IgnoreAllNonExisting()
+                  .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantId))
+                  .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode))
+                 .ForMember(dest => dest.Pbck7Qty, opt => opt.MapFrom(src => src.Pbck7Qty))
+                 .ForMember(dest => dest.FiscalYear, opt => opt.MapFrom(src => src.FiscalYear))
+               ;
         }
     }
 }

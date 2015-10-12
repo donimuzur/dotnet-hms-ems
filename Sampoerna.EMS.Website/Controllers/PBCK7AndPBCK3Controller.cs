@@ -1016,7 +1016,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var uploadItem = model.UploadItems;
                 foreach (var pbck7ItemUpload in uploadItem)
                 {
-                    _pbck7Pbck3Bll.InsertPbck7Item(pbck7ItemUpload);
+                    //_pbck7Pbck3Bll.InsertPbck7Item(pbck7ItemUpload);
 
                 }
                 
@@ -1378,34 +1378,43 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
-            var model = new List<Pbck7ItemUpload>();
+
+            var model = new Pbck7Pbck3CreateViewModel();
+            
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
                 {
-                    var item = new Pbck7ItemUpload();
-                    item.FaCode = datarow[0];
-                    item.Pbck7Qty = Convert.ToDecimal(datarow[1]);
-                    item.FiscalYear = Convert.ToInt32(datarow[2]);
+                    var item = new Pbck7UploadViewModel();
+                   
                     
                     try
                     {
-                        var existingBrand = _brandRegistration.GetByIdIncludeChild(plantId, item.FaCode);
-                        if (existingBrand != null)
-                        {
-                            item.Brand = existingBrand.BRAND_CE;
-                            item.SeriesValue = existingBrand.ZAIDM_EX_SERIES.SERIES_CODE;
-                            item.ProdTypeAlias = existingBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
-                            item.Content = Convert.ToInt32(existingBrand.BRAND_CONTENT);
-                            item.Hje = existingBrand.HJE_IDR;
-                            item.Tariff = existingBrand.TARIFF;
-                            item.ExciseValue = item.Content*item.Tariff*item.Pbck7Qty;
-                            model.Add(item);
-                        }
-                        else
-                        {
-                            return Json(-1);
-                        }
+                        item.FaCode = datarow[0];
+                        item.Pbck7Qty = datarow[1];// Convert.ToDecimal(datarow[1]);
+                        item.FiscalYear = datarow[2];// Convert.ToInt32(datarow[2]);
+
+                        item.PlantId = plantId;
+
+                        model.UploadItems.Add(item);
+
+                        //var existingBrand = _brandRegistration.GetByIdIncludeChild(plantId, item.FaCode);
+                        //if (existingBrand != null)
+                        //{
+                        //    item.Brand = existingBrand.BRAND_CE;
+                        //    item.SeriesValue = existingBrand.ZAIDM_EX_SERIES.SERIES_CODE;
+                        //    item.ProdTypeAlias = existingBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
+                        //    item.Content = Convert.ToInt32(existingBrand.BRAND_CONTENT);
+                        //    item.Hje = existingBrand.HJE_IDR;
+                        //    item.Tariff = existingBrand.TARIFF;
+                        //    item.ExciseValue = item.Content*item.Tariff*item.Pbck7Qty;
+                        //    item.Message = "";
+                        //    model.Add(item);
+                        //}
+                        //else
+                        //{
+                        //    return Json(-1);
+                        //}
 
                     }
                     catch (Exception)
@@ -1416,6 +1425,15 @@ namespace Sampoerna.EMS.Website.Controllers
                    
                 }
             }
+
+            var input = Mapper.Map<List<Pbck7ItemsInput>>(model.UploadItems);
+
+            //var outputResult = _pbck4Bll.Pbck4ItemProcess(input);
+
+            //model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(outputResult);
+
+            //return PartialView("_Pbck4UploadList", model.UploadItemModels);
+
             return Json(model);
         }
 

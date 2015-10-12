@@ -235,6 +235,7 @@
     <Compile Include="Inputs\Pbck4ItemsInput.cs" />
     <Compile Include="Inputs\Pbck7AndPbck3Input.cs" />
     <Compile Include="Inputs\Pbck4Inputs.cs" />
+    <Compile Include="Inputs\Pbck7ItemsInput.cs" />
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\ProductionUploadItemsInput.cs" />

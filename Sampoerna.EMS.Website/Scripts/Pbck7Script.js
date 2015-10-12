@@ -59,7 +59,8 @@ function uploadXmlFile(url) {
                     createColumn(uploaditems[i].Hje) +
                     createColumn(uploaditems[i].Tariff) +
                     createColumn(uploaditems[i].FiscalYear) +
-                    createColumn(uploaditems[i].ExciseValue) + '</tr>';
+                    createColumn(uploaditems[i].ExciseValue) + 
+                createColumn(uploaditems[i].Message) + '</tr>';
                 $('#tb-upload-excel').append(tr);
             }
             $('#btn-save-upload').enable();
@@ -116,19 +117,20 @@ $('#btn-save-upload').click(function () {
     //$('#table-upload tbody').html('');
     
     for (var i = 0; i < uploaditems.length; i++) {
+      
         var tr = '<tr>' +
             createColumn(i + 1) +
-            createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems[' + i + '].FaCode') +
-            createColumnWithHiddenField(uploaditems[i].ProdTypeAlias, 'UploadItems[' + i + '].ProdTypeAlias') +
-            createColumnWithHiddenField(uploaditems[i].Brand, 'UploadItems[' + i + '].Brand') +
-            createColumnWithHiddenField(uploaditems[i].Content, 'UploadItems[' + i + '].Content') +
-            createColumnWithHiddenField(uploaditems[i].Pbck7Qty, 'UploadItems[' + i + '].Pbck7Qty') +
-            createColumnWithHiddenField(uploaditems[i].Back1Qty, 'UploadItems[' + i + '].Back1Qty') +
-            createColumnWithHiddenField(uploaditems[i].SeriesValue, 'UploadItems[' + i + '].SeriesValue') +
-            createColumnWithHiddenField(uploaditems[i].Hje, 'UploadItems[' + i + '].Hje') +
-            createColumnWithHiddenField(uploaditems[i].Tariff, 'UploadItems[' + i + '].Tariff') +
-            createColumnWithHiddenField(uploaditems[i].FiscalYear, 'UploadItems[' + i + '].FiscalYear') +
-            createColumnWithHiddenField(uploaditems[i].ExciseValue, 'UploadItems[' + i + '].ExciseValue') + '</tr>';
+            createColumnWithHiddenField(uploaditems[i][1], 'UploadItems[' + i + '].FaCode') +
+            createColumnWithHiddenField(uploaditems[i][2], 'UploadItems[' + i + '].ProdTypeAlias') +
+            createColumnWithHiddenField(uploaditems[i][3], 'UploadItems[' + i + '].Brand') +
+            createColumnWithHiddenField(uploaditems[i][4], 'UploadItems[' + i + '].Content') +
+            createColumnWithHiddenField(uploaditems[i][5], 'UploadItems[' + i + '].Pbck7Qty') +
+            createColumnWithHiddenField(uploaditems[i][6], 'UploadItems[' + i + '].Back1Qty') +
+            createColumnWithHiddenField(uploaditems[i][7], 'UploadItems[' + i + '].SeriesValue') +
+            createColumnWithHiddenField(uploaditems[i][8], 'UploadItems[' + i + '].Hje') +
+            createColumnWithHiddenField(uploaditems[i][9], 'UploadItems[' + i + '].Tariff') +
+            createColumnWithHiddenField(uploaditems[i][10], 'UploadItems[' + i + '].FiscalYear') +
+            createColumnWithHiddenField(uploaditems[i][11], 'UploadItems[' + i + '].ExciseValue') + '</tr>';
         $('#body-tb-upload').append(tr);
         //$('#table-upload tbody').append(tr);
     }

@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
             Pbck3Dto =new Pbck3Dto();
             Ck2Dto = new Ck2Dto();
             Back3Dto = new Back3Dto();
-            UploadItems = new List<Pbck7ItemUpload>();
+            UploadItems = new List<Pbck7UploadViewModel>();
         }
         public List<PrintHistoryItemModel> PrintHistoryListPbck3 { get; set; }
         
@@ -79,7 +79,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public Enums.DocumentTypePbck7AndPbck3 DocumentTypeList { get; set; }
 
-        public List<Pbck7ItemUpload> UploadItems { get; set; }
+        public List<Pbck7UploadViewModel> UploadItems { get; set; }
         public List<WorkflowHistoryViewModel> WorkflowHistoryPbck7 { get; set; }
         public List<WorkflowHistoryViewModel> WorkflowHistoryPbck3 { get; set; }
 
@@ -123,8 +123,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
 
         public List<HttpPostedFileBase> DocumentsPostBack1 { get; set; }
-
-
         
         public Enums.DocumentStatusGov Pbck3GovStatusList { get; set; }
 
