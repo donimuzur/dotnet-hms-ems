@@ -21,6 +21,12 @@
                                     <div class="row">
                                         <label class="col-md-4">CK-4C No</label>
                                         <div class="col-md-8">
+                                            <input type="hidden" id="CompanyId" value="@Model.Details.CompanyId" />
+                                            <input type="hidden" id="PlantId" value="@Model.Details.PlantId" />
+                                            <input type="hidden" id="NppbkcId" value="@Model.Details.NppbkcId" />
+                                            <input type="hidden" id="PeriodId" value="@Model.Details.ReportedPeriod" />
+                                            <input type="hidden" id="MonthId" value="@Model.Details.ReportedMonth" />
+                                            <input type="hidden" id="YearId" value="@Model.Details.ReportedYears" />
                                             @Html.HiddenFor(model => model.Details.Ck4CId)
                                             @Html.HiddenFor(model => model.Details.Number)
                                             @Html.HiddenFor(model => model.Details.Status)
@@ -160,37 +166,39 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tb-body-ck4c">
-                                    @for (var i = 0; i < Model.Details.Ck4cItemData.Count; i++)
-                                {
-                                    var item = Model.Details.Ck4cItemData[i];
-                                    var rowCount = (i + 1);
-                                    var classRemarks = "Remarks" + rowCount;
+                                @if (Model.Details.Ck4cItemData != null) { 
+                                    for (var i = 0; i < Model.Details.Ck4cItemData.Count; i++)
+                                    {
+                                        var item = Model.Details.Ck4cItemData[i];
+                                        var rowCount = (i + 1);
+                                        var classRemarks = "Remarks" + rowCount;
                                         
-                                    <tr>
-                                        <td class="action">
-                                            <a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
-                                        </td>
-                                        <td style="display: none">@rowCount</td>
-                                        <td><input name="Details.Ck4cItemData[@i].ProdDate" type="hidden" value="@item.ProdDate" />@item.ProdDateName</td>
-                                        <td><input name="Details.Ck4cItemData[@i].FaCode" type="hidden" value="@item.FaCode" />@item.FaCode</td>
-                                        <td><input name="Details.Ck4cItemData[@i].BrandDescription" type="hidden" value="@item.BrandDescription" />@item.BrandDescription</td>
-                                        <td><input name="Details.Ck4cItemData[@i].Werks" type="hidden" value="@item.Werks" />@item.PlantName</td>
-                                        <td><input name="Details.Ck4cItemData[@i].ProdCode" type="hidden" value="@item.ProdCode" />@item.ProdType</td>
-                                        <td class="number"><input name="Details.Ck4cItemData[@i].HjeIdr" type="hidden" value="@item.HjeIdr" />@string.Format("{0:N2}", item.HjeIdr)</td>
-                                        <td class="number"><input name="Details.Ck4cItemData[@i].Tarif" type="hidden" value="@item.Tarif" />@string.Format("{0:N2}", item.Tarif)</td>
-                                        <td class="number"><input name="Details.Ck4cItemData[@i].ContentPerPack" type="hidden" value="@item.ContentPerPack" />@string.Format("{0:N2}", item.ContentPerPack)</td>
-                                        <td class="number"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" />@string.Format("{0:N2}", item.PackedQty)</td>
-                                        <td class="number"><input name="Details.Ck4cItemData[@i].PackedInPack" type="hidden" value="@item.PackedInPack" />@string.Format("{0:N2}", item.PackedInPack)</td>
-                                        <td class="number"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" />@string.Format("{0:N2}", item.UnpackedQty)</td>
-                                        <td class="number"><input name="Details.Ck4cItemData[@i].ProdQty" type="hidden" value="@item.ProdQty" />@string.Format("{0:N2}", item.ProdQty)</td>
-                                        <td><input name="Details.Ck4cItemData[@i].ProdQtyUom" type="hidden" value="@item.ProdQtyUom" />@item.ProdQtyUom</td>
-                                        <td>@item.Remarks</td>
-                                        <td style="display: none"><input type="hidden" id="Details_Ck4cItemData[@i]_Remarks" name="Details.Ck4cItemData[@i].Remarks" value="@item.Remarks" class="@classRemarks" /></td>
-                                        <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CItemId" type="hidden" value="@item.Ck4CItemId" /></td>
-                                        <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CId" type="hidden" value="@item.Ck4CId" /></td>
-                                        <td style="display:none"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" /></td>
-                                        <td style="display:none"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" /></td>
-                                    </tr>
+                                        <tr>
+                                            <td class="action">
+                                                <a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                            </td>
+                                            <td style="display: none">@rowCount</td>
+                                            <td><input name="Details.Ck4cItemData[@i].ProdDate" type="hidden" value="@item.ProdDate" />@item.ProdDateName</td>
+                                            <td><input name="Details.Ck4cItemData[@i].FaCode" type="hidden" value="@item.FaCode" />@item.FaCode</td>
+                                            <td><input name="Details.Ck4cItemData[@i].BrandDescription" type="hidden" value="@item.BrandDescription" />@item.BrandDescription</td>
+                                            <td><input name="Details.Ck4cItemData[@i].Werks" type="hidden" value="@item.Werks" />@item.PlantName</td>
+                                            <td><input name="Details.Ck4cItemData[@i].ProdCode" type="hidden" value="@item.ProdCode" />@item.ProdType</td>
+                                            <td class="number"><input name="Details.Ck4cItemData[@i].HjeIdr" type="hidden" value="@item.HjeIdr" />@string.Format("{0:N2}", item.HjeIdr)</td>
+                                            <td class="number"><input name="Details.Ck4cItemData[@i].Tarif" type="hidden" value="@item.Tarif" />@string.Format("{0:N2}", item.Tarif)</td>
+                                            <td class="number"><input name="Details.Ck4cItemData[@i].ContentPerPack" type="hidden" value="@item.ContentPerPack" />@string.Format("{0:N2}", item.ContentPerPack)</td>
+                                            <td class="number"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" />@string.Format("{0:N2}", item.PackedQty)</td>
+                                            <td class="number"><input name="Details.Ck4cItemData[@i].PackedInPack" type="hidden" value="@item.PackedInPack" />@string.Format("{0:N2}", item.PackedInPack)</td>
+                                            <td class="number"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" />@string.Format("{0:N2}", item.UnpackedQty)</td>
+                                            <td class="number"><input name="Details.Ck4cItemData[@i].ProdQty" type="hidden" value="@item.ProdQty" />@string.Format("{0:N2}", item.ProdQty)</td>
+                                            <td><input name="Details.Ck4cItemData[@i].ProdQtyUom" type="hidden" value="@item.ProdQtyUom" />@item.ProdQtyUom</td>
+                                            <td>@item.Remarks</td>
+                                            <td style="display: none"><input type="hidden" id="Details_Ck4cItemData[@i]_Remarks" name="Details.Ck4cItemData[@i].Remarks" value="@item.Remarks" class="@classRemarks" /></td>
+                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CItemId" type="hidden" value="@item.Ck4CItemId" /></td>
+                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CId" type="hidden" value="@item.Ck4CId" /></td>
+                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" /></td>
+                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" /></td>
+                                        </tr>
+                                    }
                                 }
                                 </tbody>
                             </table>

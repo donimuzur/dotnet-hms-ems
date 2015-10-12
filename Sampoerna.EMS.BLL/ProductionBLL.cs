@@ -344,10 +344,9 @@ namespace Sampoerna.EMS.BLL
             {
                 if(unpacked == 0)
                 {
-                    var oldData = _repository.Get(p => p.COMPANY_CODE == item.CompanyCode && p.WERKS == item.PlantWerks
-                                                        && p.FA_CODE == item.FaCode && p.PRODUCTION_DATE < item.ProductionDate).LastOrDefault();
+                    var oldData = GetOldSaldo(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate).LastOrDefault();
 
-                    unpacked = oldData == null ? 0 : oldData.QTY_UNPACKED.Value;
+                    unpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
                 }
 
                 var wasteData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate);
@@ -616,6 +615,42 @@ namespace Sampoerna.EMS.BLL
 
             message = messageList;
             return valResult;
+        }
+
+        private List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate)
+        {
+            List<ProductionDto> data = new List<ProductionDto>();
+
+            var list = _repository.Get(p => p.COMPANY_CODE == company && p.WERKS == plant && p.FA_CODE == facode && p.PRODUCTION_DATE < prodDate).OrderBy(p => p.PRODUCTION_DATE).ToList();
+
+            var lastUnpacked = Convert.ToDecimal(0);
+
+            foreach(var item in list)
+            {
+                var wasteData = _wasteBll.GetExistDto(item.COMPANY_CODE, item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
+
+                var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
+
+                var unpackedWaste = oldWaste > item.QTY ? oldWaste : 0;
+
+                var prodWaste = oldWaste < item.QTY ? oldWaste : 0;
+
+                var prod = new ProductionDto
+                {
+                    PlantWerks = item.WERKS,
+                    FaCode = item.FA_CODE,
+                    ProductionDate = item.PRODUCTION_DATE,
+                    QtyProduced = item.QTY - prodWaste,
+                    QtyPacked = item.QTY_PACKED,
+                    QtyUnpacked = lastUnpacked + item.QTY - item.QTY_PACKED - unpackedWaste
+                };
+
+                lastUnpacked = prod.QtyUnpacked.Value;
+
+                data.Add(prod);
+            }
+
+            return data;
         }
       
     }
