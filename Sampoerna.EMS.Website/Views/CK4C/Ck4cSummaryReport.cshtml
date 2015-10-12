@@ -86,7 +86,11 @@
                                         </div>
 
                                         <div class="toggle-component">
-                                            
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                </label>
+                                            </div>
                                             <div class="checkbox">
                                                 <label>
                                                     @Html.CheckBoxFor(model => model.ExportModel.Ck4CNumber, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })CK-4C Number
@@ -268,6 +272,24 @@
             table.column(5).visible(true);
             table.column(6).visible(true);
             table.column(16).visible(true);
+
+            $('#selecctall').change(function () {
+                if ($(this).is(':checked')) {
+                    $('.checkexport').prop('checked', this.checked);
+                    // Show a column
+
+                    $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+                    var table = $('#ck4CTable').DataTable();
+                    for (var i = 0; i < 17; i++) {
+                        table.column(i).visible(true);
+                    }
+                } else {
+                    $('.checkexport').each(function () {
+                        this.checked = false;
+                    });
+                    $('#ck4CTable').parents('div.dataTables_wrapper').first().hide();
+                }
+            });
 
         }
 

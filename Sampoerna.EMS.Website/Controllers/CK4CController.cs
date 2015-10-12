@@ -1403,55 +1403,55 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (modelExport.ProductionDate)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.ProductionDate);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.ProductionDate.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.TobaccoProductType)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.TobaccoProductType);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.TobaccoProductType.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.BrandDescription)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.BrandDescription);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.BrandDescription.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Hje)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Hje);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.Hje.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Tariff)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Tariff);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.Tariff.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.ProducedQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.ProducedQty);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.ProducedQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.PackedQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.PackedQty);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.PackedQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Content)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Content);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.Content.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.UnPackQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.UnPackQty);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.UnPackQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
