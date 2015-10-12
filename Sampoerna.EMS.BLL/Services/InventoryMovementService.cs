@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
@@ -29,7 +30,11 @@ namespace Sampoerna.EMS.BLL.Services
         public InvMovementGetForLack1UsageMovementByParamOutput GetForLack1UsageMovementByParam(InvMovementGetForLack1UsageMovementByParamInput input)
         {
 
-            var receivingMvtType = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving);
+            var receivingMvtType = new List<string>()
+            {
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving102)
+            };
 
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
                 && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
@@ -49,12 +54,12 @@ namespace Sampoerna.EMS.BLL.Services
             var inventoryMovements = movementUsageAll.ToList();
             
             //there is records on receiving Data
-            var receivingList = (from rec in _repository.Get(c => c.MVT == receivingMvtType)
+            var receivingList = (from rec in _repository.Get(c => receivingMvtType.Contains(c.MVT))
                                   join a in inventoryMovements on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
                                   where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
                                   select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageReceivingList = (from rec in _repository.Get(c => c.MVT == receivingMvtType)
+            var usageReceivingList = (from rec in _repository.Get(c => receivingMvtType.Contains(c.MVT))
                                       join a in inventoryMovements on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
                                       where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();

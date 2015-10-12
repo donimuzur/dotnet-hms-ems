@@ -1976,11 +1976,12 @@ namespace Sampoerna.EMS.BLL
 
                 result.ReportDetails.DestinationCountry = dtData.DEST_COUNTRY_NAME;
                 result.ReportDetails.DestinationCode = dtData.DEST_COUNTRY_CODE;
-                result.ReportDetails.DestinationNppbkc = dtData.DEST_PLANT_NPPBKC_ID;
-                result.ReportDetails.DestinationName = dtData.DEST_PLANT_NAME;
-                result.ReportDetails.DestinationAddress = dtData.DEST_PLANT_ADDRESS;
-                result.ReportDetails.DestinationOfficeName = dtData.DEST_PLANT_COMPANY_NAME;
-                result.ReportDetails.DestinationOfficeCode = dtData.DEST_PLANT_COMPANY_CODE;
+
+                result.ReportDetails.DestinationNppbkc = result.ReportDetails.SourcePlantNppbkc; //dtData.DEST_PLANT_NPPBKC_ID;
+                result.ReportDetails.DestinationName = result.ReportDetails.SourcePlantName; //dtData.DEST_PLANT_NAME;
+                result.ReportDetails.DestinationAddress = result.ReportDetails.SourcePlantAddress; //dtData.DEST_PLANT_ADDRESS;
+                result.ReportDetails.DestinationOfficeName = result.ReportDetails.SourceOfficeName; //dtData.DEST_PLANT_COMPANY_NAME;
+                result.ReportDetails.DestinationOfficeCode = result.ReportDetails.SourceOfficeCode;//dtData.DEST_PLANT_COMPANY_CODE;
 
                 result.ReportDetails.LoadingPort = dtData.LOADING_PORT;
                 result.ReportDetails.LoadingPortName = dtData.LOADING_PORT_NAME;
