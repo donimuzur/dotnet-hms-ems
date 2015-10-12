@@ -4,23 +4,23 @@
     <thead>
         <tr>
             <th class="toggle-row"> No </th>
-            
-            <th>CK-4C Number</th>
-            <th>Ce Office</th>
-            <th>Plant</th>
-            <th>Plant Description</th>
-            <th>License Number</th>
-            <th>Report Period</th>
-            <th>Production Date</th>
-            <th>Tobacco Product Type</th>
-            <th>Brand Description</th>
-            <th>HJE</th>
-            <th>Tariff</th>
-            <th>Produced QTY</th>
-            <th>Packed QTY</th>
-            <th>Content per Pack</th>
-            <th>Unpacked QTY</th>
-            <th>Status</th>
+
+            <th style="min-width: 220px">CK-4C Number</th>
+            <th style="min-width: 80px">Company</th>
+            <th style="min-width: 55px">Plant</th>
+            <th style="min-width: 170px">Plant Description</th>
+            <th style="min-width: 250px">Nppbkc</th>
+            <th style="min-width: 120px">Report Period</th>
+            <th style="min-width: 130px">Production Date</th>
+            <th style="min-width: 180px">Tobacco Product Type</th>
+            <th style="min-width: 250px">Brand Description</th>
+            <th style="min-width: 80px">HJE</th>
+            <th style="min-width: 100px">Tariff</th>
+            <th style="min-width: 120px">Produced QTY</th>
+            <th style="min-width: 120px">Packed QTY</th>
+            <th style="min-width: 130px">Content per Pack</th>
+            <th style="min-width: 120px">Unpacked QTY</th>
+            <th style="min-width: 150px">Status</th>
 
         </tr>
     </thead>
@@ -39,15 +39,78 @@
                     <td>@Html.DisplayFor(model => item.PlantDescription)</td>
                     <td>@Html.DisplayFor(model => item.LicenseNumber)</td>
                     <td>@Html.DisplayFor(model => item.ReportPeriod)</td>
-                    <td>@Html.DisplayFor(model => item.ProductionDate)</td>
-                    <td>@Html.DisplayFor(model => item.TobaccoProductType)</td>
-                    <td>@Html.DisplayFor(model => item.BrandDescription)</td>
-                    <td>@Html.DisplayFor(model => item.Hje)</td>
-                    <td>@Html.DisplayFor(model => item.Tariff)</td>
-                    <td>@Html.DisplayFor(model => item.ProducedQty)</td>
-                    <td>@Html.DisplayFor(model => item.PackedQty)</td>
-                    <td>@Html.DisplayFor(model => item.Content)</td>
-                    <td>@Html.DisplayFor(model => item.UnPackQty)</td>
+                    <td>
+                        <ol>
+                            @foreach (var data in item.ProductionDate)
+                            {
+                                <li>@data</li>
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var data in item.TobaccoProductType)
+                            {
+                                <li>@data</li>
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var data in item.BrandDescription)
+                            {
+                                <li>@data</li>
+                            }
+                        </ol>
+                    </td>
+                    <td class="number">
+                        <ol>
+                            @foreach (var data in item.Hje)
+                            {
+                                <li>@string.Format("{0:N2}", data)</li>
+                            }
+                        </ol>
+                    </td>
+                    <td class="number">
+                        <ol>
+                            @foreach (var data in item.Tariff)
+                            {
+                                <li>@string.Format("{0:N2}", data)</li>
+                            }
+                        </ol>
+                    </td>
+                    <td class="number">
+                        <ol>
+                            @foreach (var data in item.ProducedQty)
+                            {
+                                <li>@string.Format("{0:N2}", data)</li>
+                            }
+                        </ol>
+                    </td>
+                    <td class="number">
+                        <ol>
+                            @foreach (var data in item.PackedQty)
+                            {
+                                <li>@string.Format("{0:N2}", data)</li>
+                            }
+                        </ol>
+                    </td>
+                    <td class="number">
+                        <ol>
+                            @foreach (var data in item.Content)
+                            {
+                                <li>@string.Format("{0:N2}", data)</li>
+                            }
+                        </ol>
+                    </td>
+                    <td class="number">
+                        <ol>
+                            @foreach (var data in item.UnPackQty)
+                            {
+                                <li>@string.Format("{0:N2}", data)</li>
+                            }
+                        </ol>
+                    </td>
                     <td class="last">@Html.DisplayFor(model => item.Status)</td>
                 </tr>
                 row = row + 1;
