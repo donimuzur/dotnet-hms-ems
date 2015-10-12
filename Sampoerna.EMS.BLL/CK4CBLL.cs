@@ -926,9 +926,11 @@ namespace Sampoerna.EMS.BLL
                         var ck4cItem = new Ck4cReportItemDto();
                         var brand = _brandBll.GetById(item, data.FA_CODE);
                         var prodType = _prodTypeBll.GetById(data.PROD_CODE);
-                        var prodQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PROD_QTY);
-                        var packedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PACKED_QTY);
-                        var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.UNPACKED_QTY);
+                        var itemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat);
+                        var prodQty = itemCk4c.Sum(x => x.PROD_QTY);
+                        var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
+                        var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
+                        var remarks = itemCk4c.FirstOrDefault();
                         var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
 
                         if (unpackedQty == 0)
@@ -958,7 +960,7 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.Hje = plantDetail.HJE_IDR == null ? "0.00" : String.Format("{0:n}", plantDetail.HJE_IDR);
                         ck4cItem.Total = total == null ? "0.00" : String.Format("{0:n}", total);
                         ck4cItem.ProdWaste = unpackedQty == null ? "0.00" : String.Format("{0:n}", unpackedQty);
-                        ck4cItem.Comment = "";
+                        ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;
 
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);

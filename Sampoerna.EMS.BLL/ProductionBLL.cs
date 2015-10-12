@@ -160,6 +160,7 @@ namespace Sampoerna.EMS.BLL
             var dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && p.WERKS == plant && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
                          join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { p.FA_CODE, p.WERKS } equals new { b.FA_CODE, b.WERKS }
                          join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
+                         join t in _repositoryPlant.GetQuery() on p.WERKS equals t.WERKS
                          select new ProductionDto()
                          {
                              CompanyCode = p.COMPANY_CODE,
@@ -167,7 +168,7 @@ namespace Sampoerna.EMS.BLL
                              FaCode = p.FA_CODE,
                              PlantWerks = p.WERKS,
                              BrandDescription = p.BRAND_DESC,
-                             PlantName = p.PLANT_NAME,
+                             PlantName = t.NAME1,
                              TobaccoProductType = g.PRODUCT_TYPE,
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
@@ -186,6 +187,7 @@ namespace Sampoerna.EMS.BLL
                          join n in _repositoryPlant.Get(n => n.NPPBKC_ID == nppbkc) on p.WERKS equals n.WERKS
                          join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { p.FA_CODE, p.WERKS } equals new { b.FA_CODE, b.WERKS }
                          join g in _repositoryProd.GetQuery() on b.PROD_CODE equals g.PROD_CODE
+                         join t in _repositoryPlant.GetQuery() on p.WERKS equals t.WERKS
                          select new ProductionDto()
                          {
                              CompanyCode = p.COMPANY_CODE,
@@ -193,7 +195,7 @@ namespace Sampoerna.EMS.BLL
                              FaCode = p.FA_CODE,
                              PlantWerks = p.WERKS,
                              BrandDescription = p.BRAND_DESC,
-                             PlantName = p.PLANT_NAME,
+                             PlantName = t.NAME1,
                              TobaccoProductType = g.PRODUCT_TYPE,
                              Hje = b.HJE_IDR,
                              Tarif = b.TARIFF,
