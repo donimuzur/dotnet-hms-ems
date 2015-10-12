@@ -27,70 +27,70 @@ namespace Sampoerna.EMS.BLL
             _t001KReporRepository = _uow.GetGenericRepository<T001K>();
         }
 
-        public string GenerateNumber(GenerateDocNumberInput input)
-        {
-            string docNumber;
+        //public string GenerateNumber(GenerateDocNumberInput input)
+        //{
+        //    string docNumber;
 
-            var lastSeqData = _repository.Get(c => c.MONTH == input.Month && c.YEAR == input.Year).FirstOrDefault();
+        //    var lastSeqData = _repository.Get(c => c.MONTH == input.Month && c.YEAR == input.Year).FirstOrDefault();
 
-            if (lastSeqData == null)
-            {
-                //insert new record
-                lastSeqData = new DOC_NUMBER_SEQ()
-                {
-                    YEAR = input.Year, 
-                    MONTH = input.Month, 
-                    DOC_NUMBER_SEQ_LAST = 1
-                };
-                _repository.Insert(lastSeqData);
-            }
-            else
-            {
-                lastSeqData.DOC_NUMBER_SEQ_LAST += 1;
-                _repository.Update(lastSeqData);
-            }
+        //    if (lastSeqData == null)
+        //    {
+        //        //insert new record
+        //        lastSeqData = new DOC_NUMBER_SEQ()
+        //        {
+        //            YEAR = input.Year, 
+        //            MONTH = input.Month, 
+        //            DOC_NUMBER_SEQ_LAST = 1
+        //        };
+        //        _repository.Insert(lastSeqData);
+        //    }
+        //    else
+        //    {
+        //        lastSeqData.DOC_NUMBER_SEQ_LAST += 1;
+        //        _repository.Update(lastSeqData);
+        //    }
 
-            docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("0000000000");
+        //    docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("0000000000");
 
-            if (input.FormType != Enums.FormType.CK5)
-            {
-                var t001Data =
-                    _t001KReporRepository.Get(
-                        c =>
-                            c.T001W.NPPBKC_ID == input.NppbkcId && c.T001W.IS_MAIN_PLANT.HasValue &&
-                            c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
+        //    if (input.FormType != Enums.FormType.CK5)
+        //    {
+        //        var t001Data =
+        //            _t001KReporRepository.Get(
+        //                c =>
+        //                    c.T001W.NPPBKC_ID == input.NppbkcId && c.T001W.IS_MAIN_PLANT.HasValue &&
+        //                    c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
 
-                if (t001Data == null || t001Data.T001 == null)
-                {
-                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCompanyDataHasNotSet);
-                }
+        //        if (t001Data == null || t001Data.T001 == null)
+        //        {
+        //            throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCompanyDataHasNotSet);
+        //        }
                 
-                if (string.IsNullOrEmpty(t001Data.T001.BUTXT_ALIAS))
-                {
-                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCompanyAliasHasNotSet);
-                }
+        //        if (string.IsNullOrEmpty(t001Data.T001.BUTXT_ALIAS))
+        //        {
+        //            throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCompanyAliasHasNotSet);
+        //        }
 
-                if (t001Data.T001W == null || t001Data.T001W.ZAIDM_EX_NPPBKC == null)
-                {
-                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberPlantDataHasNotSet);
-                }
+        //        if (t001Data.T001W == null || t001Data.T001W.ZAIDM_EX_NPPBKC == null)
+        //        {
+        //            throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberPlantDataHasNotSet);
+        //        }
 
-                if (string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS))
-                {
-                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCityAliasHasNotSet);
-                }
+        //        if (string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS))
+        //        {
+        //            throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCityAliasHasNotSet);
+        //        }
 
-                //generate number
-                docNumber = docNumber + "/" + t001Data.T001.BUTXT_ALIAS + "/" + t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS 
-                    + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year;
+        //        //generate number
+        //        docNumber = docNumber + "/" + t001Data.T001.BUTXT_ALIAS + "/" + t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS 
+        //            + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year;
 
-            }
+        //    }
             
-            _uow.SaveChanges();
+        //    _uow.SaveChanges();
 
-            return docNumber;
+        //    return docNumber;
 
-        }
+        //}
 
         /// <summary>
         /// Infinitive sequence number by Form Type
@@ -127,11 +127,9 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public string GenerateNumberNoReset(GenerateDocNumberInput input)
+        public string GenerateNumber(GenerateDocNumberInput input)
         {
-            string docNumber;
-
-            var lastSeqData = _repository.Get().FirstOrDefault();
+            var lastSeqData = _repository.Get(c => c.FORM_TYPE_ID != Enums.FormType.CK5).FirstOrDefault();
 
             if (lastSeqData == null)
             {
@@ -150,7 +148,7 @@ namespace Sampoerna.EMS.BLL
                 _repository.Update(lastSeqData);
             }
 
-            docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString();
+            var docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString();
 
             if (input.FormType != Enums.FormType.CK5)
             {
@@ -160,14 +158,31 @@ namespace Sampoerna.EMS.BLL
                             c.T001W.NPPBKC_ID == input.NppbkcId && c.T001W.IS_MAIN_PLANT.HasValue &&
                             c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
 
+                if (t001Data == null || t001Data.T001 == null)
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCompanyDataHasNotSet);
+                }
+
+                if (string.IsNullOrEmpty(t001Data.T001.BUTXT_ALIAS))
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCompanyAliasHasNotSet);
+                }
+
+                if (t001Data.T001W == null || t001Data.T001W.ZAIDM_EX_NPPBKC == null)
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberPlantDataHasNotSet);
+                }
+
+                if (string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS))
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.GenerateNumberCityAliasHasNotSet);
+                }
+
                 //generate number
-                docNumber = docNumber + "/" +
-                            ((t001Data != null && t001Data.T001 != null && !string.IsNullOrEmpty(t001Data.T001.BUTXT_ALIAS)) ? t001Data.T001.BUTXT_ALIAS : "-") + "/" +
-                            (t001Data != null && t001Data.T001W != null && t001Data.T001W.ZAIDM_EX_NPPBKC != null &&
-                             !string.IsNullOrEmpty(t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS)
-                                ? t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS
-                                : "-") + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" +
-                            input.Year.ToString();
+                docNumber = docNumber + "/" + t001Data.T001.BUTXT_ALIAS + "/" + t001Data.T001W.ZAIDM_EX_NPPBKC.CITY_ALIAS
+                            + "/" + MonthHelper.ConvertToRomansNumeral(input.Month) + "/" + input.Year;
+
+
 
             }
 
@@ -175,11 +190,11 @@ namespace Sampoerna.EMS.BLL
 
             return docNumber;
         }
-
-
+        
         public List<DOC_NUMBER_SEQ> GetDocumentSequenceList()
         {
             return _repository. Get(null, null, "MONTH1").ToList();
         }
+
     }
 }
