@@ -131,7 +131,7 @@
                                               
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">Content</label>
+                                                        <label class="col-md-4">Content<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(model => model.Content, new { @class = "form-control", @maxlength = "4" })
                                                         </div>
@@ -337,18 +337,18 @@
 
         });*@
 
-        //function ajaxGetPersonalizationCodeDescription(url, formData) {
-        //    if (formData.personalizationId) {
-        //        $.ajax({
-        //            type: 'POST',
-        //            url: url,
-        //            data: formData,
-        //            success: function(data) {
-        //                $('#PersonalizationCodeDescription').val(data);
-        //            }
-        //        });
-        //    }
-        //}
+        function ajaxGetPersonalizationCodeDescription(url, formData) {
+            if (formData.personalizationId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        $('#PersonalizationCodeDescription').val(data);
+                    }
+                });
+            }
+        }
 
                 @*$("#ProductCode").change(function() {
             if ($("#ProductCode").length) {
@@ -363,19 +363,19 @@
 
         });*@
 
-        //function ajaxGetProductCodeDetails(url, formData) {
-        //    if (formData.productId) {
-        //        $.ajax({
-        //            type: 'POST',
-        //            url: url,
-        //            data: formData,
-        //            success: function(data) {
-        //                $('#ProductType').val(data.PRODUCT_TYPE);
-        //                $('#ProductAlias').val(data.PRODUCT_ALIAS);
-        //            }
-        //        });
-        //    }
-        //}
+        function ajaxGetProductCodeDetails(url, formData) {
+            if (formData.productId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        $('#ProductType').val(data.PRODUCT_TYPE);
+                        $('#ProductAlias').val(data.PRODUCT_ALIAS);
+                    }
+                });
+            }
+        }
 
 
                 @*$("#SeriesId").change(function() {

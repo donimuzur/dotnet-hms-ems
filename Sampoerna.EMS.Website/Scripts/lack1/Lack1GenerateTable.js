@@ -9,7 +9,8 @@ function generateTable(data) {
     console.log(data);
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
-
+    if (data.IncomeList.length > 0)
+    {
     if (data.IncomeList) {
         var rowIndex = 1;
         var rowCount = data.IncomeList.length;
@@ -62,6 +63,7 @@ function generateTable(data) {
         '<td>' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
         '<td>' + (data.Noted ? data.Noted : '') + '</td></tr>';
         $('#IncomeListCount').val(0);
+    }
     }
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "' + data.TotalIncome + '" />'

@@ -196,7 +196,7 @@ namespace Sampoerna.EMS.BLL
                 UserId = input.UserId,
                 UserRole = getUserRole
             });
-            
+
             _uow.SaveChanges();
 
             rc.Success = true;
@@ -1006,7 +1006,7 @@ namespace Sampoerna.EMS.BLL
         {
             return Mapper.Map<List<Lack1DetailsDto>>(_lack1Service.GetPbck1RealizationList(input));
         }
-        
+
         #region ----------------Private Method-------------------
 
         private bool IsNeedToRegenerate(Lack1GenerateDataParamInput input, LACK1 lack1Data)
@@ -1259,8 +1259,14 @@ namespace Sampoerna.EMS.BLL
             //Get Data from Inventory_Movement
             var mvtTypeForUsage = new List<string>
             {
-                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd),
-                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin)
+                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage201),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage202),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage901),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage902),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageZ01),
+                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageZ02)
             };
 
             var plantIdList = new List<string>();
@@ -1301,8 +1307,8 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            var totalUsageIncludeCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
-            var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+            var totalUsageIncludeCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+            var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
 
             rc.TotalUsage = totalUsageIncludeCk5;
 
@@ -1489,7 +1495,7 @@ namespace Sampoerna.EMS.BLL
         private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list, decimal totalUsage, decimal totalUsageInCk5)
         {
             if (list.Count <= 0) return new List<Lack1GeneratedProductionDataDto>();
-            
+
             var groupedData = list.GroupBy(p => new
             {
                 p.ProdCode,
@@ -1622,15 +1628,27 @@ namespace Sampoerna.EMS.BLL
 
                 if (data.LACK1_TRACKING != null && data.LACK1_TRACKING.Count > 0)
                 {
+                    var receivingMvtType = new List<string>()
+                        {
+                            EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving101),
+                            EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving102)
+                        };
+
                     var receiving =
                         data.LACK1_TRACKING.Where(
-                            c => c.INVENTORY_MOVEMENT.MVT == EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving))
+                                c =>receivingMvtType.Contains(c.INVENTORY_MOVEMENT.MVT))
                             .ToList();
 
                     var mvtTypeForUsage = new List<string>
                     {
-                        EnumHelper.GetDescription(Enums.MovementTypeCode.UsageAdd),
-                        EnumHelper.GetDescription(Enums.MovementTypeCode.UsageMin)
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.Usage201),
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.Usage202),
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.Usage901),
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.Usage902),
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.UsageZ01),
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.UsageZ02)
                     };
 
                     var usage =

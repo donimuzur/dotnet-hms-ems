@@ -17,10 +17,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public decimal Convertion { get; set; }
         public decimal ConvertedQty { get; set; }
         public string ConvertedUom { get; set; }
-        public decimal Hje { get; set; }
-        public decimal Tariff { get; set; }
-        public decimal ExciseValue { get; set; }
-        public decimal UsdValue { get; set; }
+        public decimal? Hje { get; set; }
+        public decimal? Tariff { get; set; }
+        public decimal? ExciseValue { get; set; }
+        public decimal? UsdValue { get; set; }
         public string Note { get; set; }
         public string Message { get; set; }
         

@@ -127,7 +127,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 _poaMapBLL.Delete(id);
 
-                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
+                AddMessageInfo(Constans.SubmitMessage.Deleted, Enums.MessageInfoType.Success
                      );
                 
             }

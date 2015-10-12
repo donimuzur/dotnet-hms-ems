@@ -340,7 +340,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.BRAND_CE))
                 .ForMember(dest => dest.SkepNo, opt => opt.MapFrom(src => src.SKEP_NO))
                 .ForMember(dest => dest.SkepDate, opt => opt.MapFrom(src => src.SKEP_DATE))
-                .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP.PROD_CODE))
+                .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.PROD_CODE))
                 .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP.PRODUCT_TYPE))
                 .ForMember(dest => dest.ProductAlias, opt => opt.MapFrom(src => src.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS))
                 .ForMember(dest => dest.SeriesCode, opt => opt.MapFrom(src => src.ZAIDM_EX_SERIES.SERIES_CODE))
@@ -403,7 +403,10 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.STATUS))
             .ForMember(dest => dest.IsFromSAP, opt => opt.MapFrom(src => src.IS_FROM_SAP))
             .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
-            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT));
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
+            .ForMember(dest => dest.BoolIsDeleted, opt => opt.MapFrom(src => src.IS_DELETED))
+            .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED))
+            ;
 
             Mapper.CreateMap<BrandRegistrationCreateViewModel, ZAIDM_EX_BRAND>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.StickerCode))
@@ -872,7 +875,12 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<WasteUploadViewModel, WasteDto>().IgnoreAllNonExisting()
             .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));
 
+            Mapper.CreateMap<WasteUploadItems, WasteUploadItemsInput>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<WasteUploadItemsInput, WasteUploadItemsOuput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<WasteUploadItemsOuput, WasteUploadItems>().IgnoreAllNonExisting();
+                 
             #endregion
 
 

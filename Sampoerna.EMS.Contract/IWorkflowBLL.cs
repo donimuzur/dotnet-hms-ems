@@ -27,5 +27,7 @@ namespace Sampoerna.EMS.Contract
 
         bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input);
 
+        bool AllowAttachmentCompleted(WorkflowAllowApproveAndRejectInput input);
+
     }
 }

@@ -8,7 +8,7 @@
                 <a href="@Url.Action("Index", "BrandRegistration")">
                     <button class="btn btn-grey">Back</button>
                 </a>
-                @if (Model.IsAllowDelete)
+                @*@if (Model.IsAllowDelete)
                 {
                     if (Model.BoolIsDeleted.HasValue && Model.BoolIsDeleted.Value)
                     {
@@ -19,7 +19,7 @@
                         <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Delete</a>
                     }
                     
-                }
+                }*@
             </div>
         </div>
     </div>
@@ -332,6 +332,7 @@
 </div>
 
 <!--delete-->
+<!--
 <input id="btn-delete-brand" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.brand" value="delete">
 <div class="modal ems-modal fade delete-modal brand" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
@@ -350,6 +351,7 @@
         </div>
     </div>
 </div>
+-->
 
 @section scripts {
 <script src="~/Scripts/thousand-separator.js"></script>
@@ -360,9 +362,9 @@
         $('.check-box').attr('disabled', 'disabled');
         $('#MenuMasterBrandRegistration').addClass('active');
     });
-    var confirmDeleteBrand = function () {
-        $('#btn-delete-brand').click();
-    };
+    //var confirmDeleteBrand = function () {
+    //    $('#btn-delete-brand').click();
+    //};
     $('#tariff').val(ThausandSeperator($('#tariff').val(), 2));
     $('#printingPrice').val(ThausandSeperator($('#printingPrice').val(), 2));
     $('#convertion').val(ThausandSeperator($('#convertion').val(), 2));

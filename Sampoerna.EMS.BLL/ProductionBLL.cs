@@ -112,20 +112,14 @@ namespace Sampoerna.EMS.BLL
                 SetChange(originDto, productionDto, userId);
                 output.isNewData = false;
             }
-
-            if (dbProduction.UOM == "KG")
-            {
-                dbProduction.UOM = "G";
-                dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
-                dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
-            }
-
+            
             if (dbProduction.UOM == "TH")
             {
                 dbProduction.UOM = "Btg";
                 dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
                 dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
             }
+
             dbProduction.CREATED_DATE = DateTime.Now;
 
             if (dbProduction.BATCH != null)
@@ -394,12 +388,12 @@ namespace Sampoerna.EMS.BLL
                 var output = Mapper.Map<ProductionUploadItemsOutput>(inputItem);
                 output.IsValid = true;
 
-                var checkCountdataProduction =
+                var checkCountdataDailyProduction =
                     inputs.Where(
                         c =>
                             c.CompanyCode == output.CompanyCode && c.PlantWerks == output.PlantWerks &&
                             c.FaCode == output.FaCode && c.ProductionDate == output.ProductionDate).ToList();
-                if (checkCountdataProduction.Count > 1)
+                if (checkCountdataDailyProduction.Count > 1)
                 {
                     //double Daily Production Data
                     output.IsValid = false;
@@ -456,11 +450,10 @@ namespace Sampoerna.EMS.BLL
                 #endregion
                 //Brand Description Validation
                 #region -------------Brand Description--------------------
-                ZAIDM_EX_BRAND brandCeTypeData = null;
-               
-                if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandCeTypeData))
+              
+                if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandTypeData))
                 {
-                    output.BrandDescription = brandCeTypeData.BRAND_CE;
+                    output.BrandDescription = brandTypeData.BRAND_CE;
                 }
                 else
                 {
@@ -616,7 +609,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                messageList.Add("Finish Goods Code is empty");
+                messageList.Add("Brand Description  is empty");
             }
 
             #endregion
@@ -624,6 +617,6 @@ namespace Sampoerna.EMS.BLL
             message = messageList;
             return valResult;
         }
-        
+      
     }
 }
