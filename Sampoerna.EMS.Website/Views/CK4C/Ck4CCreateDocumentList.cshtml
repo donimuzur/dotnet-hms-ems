@@ -70,6 +70,8 @@
     <script src="~/Scripts/ck4cscript.js"></script>
     <script type="text/javascript" language="javascript" class="init">
     $(document).ready(function () {
+        ChangeCompany($(this).find("option:selected").val(), '', '');
+
         $("#Details_CompanyId").change(function () {
             ChangeCompany($(this).find("option:selected").val(), '', '');
         });
@@ -95,6 +97,8 @@
         });
 
         $("#btnSaveCk4c").click(function () {
+            CheckSameData();
+
             if (ValidateInput()) {
                 $('#CreateForm').submit();
             }

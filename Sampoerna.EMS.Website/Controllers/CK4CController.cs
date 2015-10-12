@@ -125,6 +125,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Ck4cGetOpenDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
             var dbData = _ck4CBll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Number);
             return Mapper.Map<List<DataDocumentList>>(dbData);
         }
@@ -334,8 +337,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Details", new { id = existCk4c.Ck4CId });
             }
 
-            _ck4CBll.Save(item, CurrentUser.USER_ID);
+            var ck4cData = _ck4CBll.Save(item, CurrentUser.USER_ID);
             AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+            Ck4cWorkflow(ck4cData.Ck4CId, Enums.ActionType.Created, string.Empty);
             return RedirectToAction("DocumentList");
         }
         #endregion
@@ -636,6 +640,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 var dataToSave = Mapper.Map<Ck4CDto>(model.Details);
 
+                if (dataToSave.Ck4cItem.Count == 0)
+                {
+                    AddMessageInfo("No item found", Enums.MessageInfoType.Warning);
+                    model.Details.StatusName = "Draft";
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
                 var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);
                 var nppbkcId = plant == null ? dataToSave.NppbkcId : plant.NPPBKC_ID;
@@ -861,6 +873,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
 
                         message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
+                        if (model.Details.StatusGoverment == Enums.StatusGovCk4c.Approved)
+                            message = "Document has been saved";
                         actionResult = "CompletedDocument";
                     }
 
@@ -884,6 +898,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
 
                         message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
+                        if (model.Details.StatusGoverment == Enums.StatusGovCk4c.Approved)
+                            message = "Document has been saved";
                         actionResult = "CompletedDocument";
                     }
                 }
@@ -1387,55 +1403,55 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (modelExport.ProductionDate)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.ProductionDate);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.ProductionDate.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.TobaccoProductType)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.TobaccoProductType);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.TobaccoProductType.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.BrandDescription)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.BrandDescription);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.BrandDescription.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Hje)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Hje);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.Hje.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Tariff)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Tariff);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.Tariff.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.ProducedQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.ProducedQty);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.ProducedQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.PackedQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.PackedQty);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.PackedQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Content)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Content);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.Content.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.UnPackQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.UnPackQty);
+                    slDocument.SetCellValue(iRow, iColumn, string.Join("<br />", data.UnPackQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 

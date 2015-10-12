@@ -16,14 +16,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ReportPeriod { get; set; }
         public string Status { get; set; }
 
-        public string ProductionDate { get; set; }
-        public string TobaccoProductType { get; set; }
-        public string BrandDescription { get; set; }
-        public string Hje { get; set; }
-        public string Tariff { get; set; }
-        public string ProducedQty { get; set; }
-        public string PackedQty { get; set; }
-        public string Content { get; set; }
-        public string UnPackQty { get; set; }
+        public List<string> ProductionDate { get; set; }
+        public List<string> TobaccoProductType { get; set; }
+        public List<string> BrandDescription { get; set; }
+        public List<string> Hje { get; set; }
+        public List<string> Tariff { get; set; }
+        public List<string> ProducedQty { get; set; }
+        public List<string> PackedQty { get; set; }
+        public List<string> Content { get; set; }
+        public List<string> UnPackQty { get; set; }
     }
 }
