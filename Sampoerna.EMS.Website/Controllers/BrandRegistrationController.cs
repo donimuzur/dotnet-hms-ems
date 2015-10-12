@@ -8,6 +8,7 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using System.Web;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -425,8 +426,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(string plant, string facode,string stickercode)
         {
-            AddHistoryDelete(plant, facode);
-            var isDeleted = _brandRegistrationBll.Delete(plant, facode,stickercode);
+            var decodeFacode = HttpUtility.UrlDecode(facode);
+            AddHistoryDelete(plant, Url.Encode(decodeFacode));
+            var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode);
             
             if(isDeleted)
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
