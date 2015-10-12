@@ -44,9 +44,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExGoodTypeBLL _goodTypeBll;
         private ICK5BLL _ck5Bll;
         private IPBCK1BLL _pbck1Bll;
-        private IHeaderFooterBLL _headerFooterBll;
-        private IWorkflowBLL _workflowBll;
-        private IWorkflowHistoryBLL _workflowHistoryBll;
+        
         private IPrintHistoryBLL _printHistoryBll;
         public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
             IPlantBLL plantBll, ICompanyBLL companyBll, IPrintHistoryBLL printHistoryBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, ICK5BLL ck5Bll, IZaidmExGoodTypeBLL exGroupBll, IChangesHistoryBLL changesHistoryBll)
@@ -64,9 +62,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             _ck5Bll = ck5Bll;
             _pbck1Bll = pbck1Bll;
-            _headerFooterBll = headerFooterBll;
-            _workflowBll = workflowBll;
-            _workflowHistoryBll = workflowHistoryBll;
+            
             _printHistoryBll = printHistoryBll;
             _changesHistoryBll = changesHistoryBll;
         }
@@ -450,6 +446,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return data;
 
         }
+
         [HttpPost]
         public JsonResult GetPoaByNppbkcId(string nppbkcid)
         {
@@ -459,14 +456,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetGoodsTypeByNPPBKC(string nppbkcid)
+        public JsonResult GetGoodsTypeByNppbkc(string nppbkcid)
         {
-            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput() { NppbkcId = nppbkcid });
-            var data = pbck1List.GroupBy(x => new { x.GoodType, x.GoodTypeDesc }).Select(x => new SelectItemModel()
-            {
-                ValueField = x.Key.GoodType,
-                TextField = x.Key.GoodType + "-" + x.Key.GoodTypeDesc,
-            }).ToList();
+            var data = GetExciseGoodsTypeList(nppbkcid);
 
             return Json(data);
 
@@ -475,7 +467,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetNppbkcByCompanyId(string companyId)
         {
-            return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
+            var data = _nppbkcbll.GetNppbkcsByCompany(companyId);
+            return Json(data);
         }
 
         private DataSet CreateLack2Ds()
@@ -611,6 +604,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             Response.End();
 
+        }
+
+        private SelectList GetExciseGoodsTypeList(string nppbkcId)
+        {
+            var data = _pbck1Bll.GetGoodsTypeByNppbkcId(nppbkcId);
+            return new SelectList(data, "EXC_GOOD_TYP", "EXT_TYP_DESC");
         }
 
         #endregion
