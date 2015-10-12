@@ -31,40 +31,36 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region --------- Field and Constructor --------------
 
-        private ILACK2BLL _lack2Bll;
-        private IPlantBLL _plantBll;
-        private ICompanyBLL _companyBll;
-        private IZaidmExGoodTypeBLL _exGroupBll;
-        private IChangesHistoryBLL _changesHistoryBll;
-
         private Enums.MenuList _mainMenu;
-        private IZaidmExNPPBKCBLL _nppbkcbll;
+
+        private ILACK2BLL _lack2Bll;
+        private ICompanyBLL _companyBll;
+        private IPrintHistoryBLL _printHistoryBll;
+        private IChangesHistoryBLL _changesHistoryBll;
         private IPOABLL _poabll;
         private IMonthBLL _monthBll;
-        private IZaidmExGoodTypeBLL _goodTypeBll;
-        private ICK5BLL _ck5Bll;
+        private IUserPlantMapBLL _userPlantMapBll;
         private IPBCK1BLL _pbck1Bll;
-        
-        private IPrintHistoryBLL _printHistoryBll;
-        public LACK2Controller(IPageBLL pageBll, IPOABLL poabll, IHeaderFooterBLL headerFooterBll, IPBCK1BLL pbck1Bll, IZaidmExGoodTypeBLL goodTypeBll, IMonthBLL monthBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK2BLL lack2Bll,
-            IPlantBLL plantBll, ICompanyBLL companyBll, IPrintHistoryBLL printHistoryBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, ICK5BLL ck5Bll, IZaidmExGoodTypeBLL exGroupBll, IChangesHistoryBLL changesHistoryBll)
+        private ICK5BLL _ck5Bll;
+        private IZaidmExNPPBKCBLL _nppbkcbll;
+
+        public LACK2Controller(IPageBLL pageBll, ILACK2BLL lack2Bll, ICompanyBLL companyBll, IChangesHistoryBLL changesHistoryBll,
+            IPrintHistoryBLL printHistoryBll, IPOABLL poabll, IMonthBLL monthBll, IUserPlantMapBLL userPlantMapBll, IPBCK1BLL pbck1Bll, ICK5BLL ck5Bll,
+            IZaidmExNPPBKCBLL nppbkcBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
-            _lack2Bll = lack2Bll;
-            _plantBll = plantBll;
-            _companyBll = companyBll;
-            _exGroupBll = exGroupBll;
             _mainMenu = Enums.MenuList.LACK2;
-            _nppbkcbll = nppbkcbll;
-            _poabll = poabll;
-            _monthBll = monthBll;
-            _goodTypeBll = goodTypeBll;
 
-            _ck5Bll = ck5Bll;
-            _pbck1Bll = pbck1Bll;
-            
+            _lack2Bll = lack2Bll;
+            _companyBll = companyBll;
             _printHistoryBll = printHistoryBll;
             _changesHistoryBll = changesHistoryBll;
+            _poabll = poabll;
+            _monthBll = monthBll;
+            _userPlantMapBll = userPlantMapBll;
+            _pbck1Bll = pbck1Bll;
+            _ck5Bll = ck5Bll;
+            _nppbkcbll = nppbkcBll;
         }
 
         #endregion
@@ -86,7 +82,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbData = _lack2Bll.GetByParam(input);
 
             var model = new Lack2IndexViewModel();
-            model = InitViewModel(model);
+            model = InitIndexViewModel(model);
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.MenuLack2OpenDocument = "active";
@@ -140,7 +136,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 UserRole = currUser.UserRole
             };
             var model = new Lack2IndexViewModel();
-            model = InitViewModel(model);
+            model = InitIndexViewModel(model);
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
@@ -167,21 +163,22 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-
-            LACK2CreateViewModel model = new LACK2CreateViewModel
+            
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
             {
-                NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants),
-                CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll),
-                ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll),
-                SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null),
-                MonthList = GlobalFunctions.GetMonthList(_monthBll),
-                YearList = GlobalFunctions.GetYearList(_ck5Bll),
-                UsrRole = CurrentUser.UserRole,
-                MainMenu = Enums.MenuList.LACK2,
-                CurrentMenu = PageInfo
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
+            var model = new LACK2CreateViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
             };
 
-            return View("Create", model);
+            return View("Create", CreateInitialViewModel(model));
+
         }
 
         [HttpPost]
@@ -218,13 +215,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private LACK2CreateViewModel CreateInitialViewModel(LACK2CreateViewModel model)
         {
-            model.NPPBKCDDL = GlobalFunctions.GetAuthorizedNppbkc(CurrentUser.NppbckPlants);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            model.ExcisableGoodsTypeDDL = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
-            model.SendingPlantDDL = GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, null);
+            model.NPPBKCDDL = new SelectList(GetNppbkcDataByCompanyId(model.CompanyCode), "NPPBKC_ID", "NPPBKC_ID");
+            model.ExcisableGoodsTypeDDL = new SelectList(GetExciseGoodsTypeData(model.NppbkcId), "EXC_GOOD_TYP", "EXT_TYP_DESC");
+            model.SendingPlantDDL = new SelectList(GetSendingPlantDataByNppbkcId(model.CompanyCode, model.NppbkcId), "WERKS", "DROPDOWNTEXTFIELD");
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
-            model.YearList = GlobalFunctions.GetYearList(_ck5Bll);
-            model.UsrRole = CurrentUser.UserRole;
+            model.YearList = GetCk5YearList();
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
             return model;
@@ -303,56 +302,6 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
-        //private Lack2EditViewModel InitEditModel(Lack1DetailsDto lack1Data)
-        //{
-
-        //    var model = Mapper.Map<Lack1EditViewModel>(lack1Data);
-
-        //    model = SetEditHistory(model);
-
-        //    Enums.LACK1Type lack1Type;
-        //    if (lack1Data.Status == Enums.DocumentStatus.Completed)
-        //    {
-        //        lack1Type = Enums.LACK1Type.ComplatedDocument;
-        //    }
-        //    else
-        //    {
-        //        lack1Type = lack1Data.Lack1Level == Enums.Lack1Level.Nppbkc ? Enums.LACK1Type.ListByNppbkc : Enums.LACK1Type.ListByPlant;
-        //    }
-
-        //    model.Lack1Type = lack1Type;
-        //    model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
-
-        //    SetEditActiveMenu(model, lack1Type);
-
-        //    //validate approve and reject
-        //    var input = new WorkflowAllowApproveAndRejectInput
-        //    {
-        //        DocumentStatus = model.Status,
-        //        FormView = Enums.FormViewType.Detail,
-        //        UserRole = CurrentUser.UserRole,
-        //        CreatedUser = lack1Data.CreateBy,
-        //        CurrentUser = CurrentUser.USER_ID,
-        //        CurrentUserGroup = CurrentUser.USER_GROUP_ID,
-        //        DocumentNumber = model.Lack1Number,
-        //        NppbkcId = model.NppbkcId
-        //    };
-
-        //    ////workflow
-        //    var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
-        //    model.AllowApproveAndReject = allowApproveAndReject;
-
-        //    if (!allowApproveAndReject)
-        //    {
-        //        model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-        //        model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
-        //    }
-
-        //    model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
-
-        //    return model;
-        //}
-
         #endregion
 
         #region --------------- Detail --------
@@ -369,10 +318,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Detail(LACK2CreateViewModel model)
         {
 
-            if (model.ActionType == "Approve")
-            {
-                return RedirectToAction("Approve", new { id = model.Lack2Model.Lack2Id });
-            }
+            //if (model.ActionType == "Approve")
+            //{
+            //    return RedirectToAction("Approve", new { id = model.Lack2Model.Lack2Id });
+            //}
 
             return RedirectToAction("Index");
         }
@@ -381,19 +330,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region ------- Other ----------------
 
-        /// <summary>
-        /// Fills the select lists for the IndexViewModel
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns>Lack2IndexViewModel</returns>
-        private Lack2IndexViewModel InitViewModel(Lack2IndexViewModel model)
+        public JsonResult Generate(Lack2GenerateInputModel param)
         {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
-            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
-            model.PlantIdList = GlobalFunctions.GetPlantAll();
-            model.CreatorList = GlobalFunctions.GetCreatorList();
-
-            return model;
+            var input = Mapper.Map<Lack2GenerateDataParamInput>(param);
+            var outGeneratedData = _lack2Bll.GenerateLack2DataByParam(input);
+            return Json(outGeneratedData);
         }
 
         [HttpPost]
@@ -416,59 +357,54 @@ namespace Sampoerna.EMS.Website.Controllers
             };
 
             _printHistoryBll.AddPrintHistory(input);
-            var model = new BaseModel();
-            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack2.Lack2Number));
+            var model = new BaseModel
+            {
+                PrintHistoryList =
+                    Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack2.Lack2Number))
+            };
             return PartialView("_PrintHistoryTable", model);
 
         }
 
-        private string SaveUploadedFile(HttpPostedFileBase file, string lack2Num)
-        {
-            if (file == null || file.FileName == "")
-                return "";
-
-            string sFileName = "";
-
-
-            sFileName = Constans.UploadPath + Path.GetFileName("LACK2_" + lack2Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
-            string path = Server.MapPath(sFileName);
-
-            // file is uploaded
-            file.SaveAs(path);
-
-            return sFileName;
-        }
-
         [HttpPost]
-        public JsonResult GetPlantByNppbkcId(string nppbkcid)
+        public JsonResult GetPlantByNppbkcId(string companyId, string nppbkcId)
         {
-            var data = Json(GlobalFunctions.GetAuthorizedPlant(CurrentUser.NppbckPlants, nppbkcid));
-            return data;
-
-        }
-
-        [HttpPost]
-        public JsonResult GetPoaByNppbkcId(string nppbkcid)
-        {
-            var data = _poabll.GetPoaByNppbkcId(nppbkcid);
-            return Json(data.Distinct());
-
-        }
-
-        [HttpPost]
-        public JsonResult GetGoodsTypeByNppbkc(string nppbkcid)
-        {
-            var data = GetExciseGoodsTypeList(nppbkcid);
-
+            var data = GetSendingPlantDataByNppbkcId(companyId, nppbkcId);
             return Json(data);
+        }
 
+        [HttpPost]
+        public JsonResult GetPoaByNppbkcId(string nppbkcId)
+        {
+            var data = _poabll.GetPoaByNppbkcId(nppbkcId);
+            return Json(data.Distinct());
+        }
+
+        [HttpPost]
+        public JsonResult GetGoodsTypeByNppbkc(string nppbkcId)
+        {
+            var data = GetExciseGoodsTypeData(nppbkcId);
+            return Json(data);
         }
 
         [HttpPost]
         public JsonResult GetNppbkcByCompanyId(string companyId)
         {
-            var data = _nppbkcbll.GetNppbkcsByCompany(companyId);
-            return Json(data);
+            return Json(GetNppbkcDataByCompanyId(companyId));
+        }
+        
+        [EncryptedParameter]
+        public FileResult PrintPreview(int id)
+        {
+
+            ReportClass rpt = new ReportClass();
+            string report_path = ConfigurationManager.AppSettings["Report_Path"];
+            rpt.FileName = report_path + "LACK2\\Preview.rpt";
+            rpt.Load();
+            //rpt.SetDataSource(dsLack2);
+
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return File(stream, "application/pdf");
         }
 
         private DataSet CreateLack2Ds()
@@ -505,20 +441,6 @@ namespace Sampoerna.EMS.Website.Controllers
             ds.Tables.Add(dt);
             ds.Tables.Add(dtDetail);
             return ds;
-        }
-
-        [EncryptedParameter]
-        public FileResult PrintPreview(int id)
-        {
-
-            ReportClass rpt = new ReportClass();
-            string report_path = ConfigurationManager.AppSettings["Report_Path"];
-            rpt.FileName = report_path + "LACK2\\Preview.rpt";
-            rpt.Load();
-            //rpt.SetDataSource(dsLack2);
-
-            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-            return File(stream, "application/pdf");
         }
 
         private byte[] GetHeader(string imagePath)
@@ -605,13 +527,24 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.End();
 
         }
-
-        private SelectList GetExciseGoodsTypeList(string nppbkcId)
+        
+        private string SaveUploadedFile(HttpPostedFileBase file, string lack2Num)
         {
-            var data = _pbck1Bll.GetGoodsTypeByNppbkcId(nppbkcId);
-            return new SelectList(data, "EXC_GOOD_TYP", "EXT_TYP_DESC");
-        }
+            if (file == null || file.FileName == "")
+                return "";
 
+            string sFileName = "";
+
+
+            sFileName = Constans.UploadPath + Path.GetFileName("LACK2_" + lack2Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+        
         #endregion
 
         #region Summary Reports
@@ -1563,12 +1496,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult RejectDocument(LACK2CreateViewModel model)
+        public ActionResult RejectDocument(Lack2DetailViewModel model)
         {
             bool isSuccess = false;
             try
             {
-                Lack2Workflow(model.Lack2Model.Lack2Id, Enums.ActionType.Reject, model.Lack2Model.Comment);
+                Lack2Workflow(model.Detail.Lack2Id, Enums.ActionType.Reject, model.Detail.Comment);
                 isSuccess = true;
             }
             catch (Exception ex)
@@ -1576,10 +1509,78 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
 
-            if (!isSuccess) return RedirectToAction("Details", "Lack2", new { id = model.Lack2Model.Lack2Id });
+            if (!isSuccess) return RedirectToAction("Details", "Lack2", new { id = model.Detail.Lack2Id });
             AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
 
+        }
+
+        #endregion
+
+        #region ------------- Private Methods ------------------
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nppbkcId"></param>
+        /// <returns></returns>
+        private List<ZAIDM_EX_GOODTYPCompositeDto> GetExciseGoodsTypeData(string nppbkcId)
+        {
+            var data = _pbck1Bll.GetGoodsTypeByNppbkcId(nppbkcId);
+            return data;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        private List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbkcDataByCompanyId(string companyId)
+        {
+            var data = _userPlantMapBll.GetAuthorizedNppbkc(new UserPlantMapGetAuthorizedNppbkc()
+            {
+                UserId = CurrentUser.USER_ID,
+                CompanyCode = companyId
+            });
+            return data;
+        }
+
+        private List<T001WCompositeDto> GetSendingPlantDataByNppbkcId(string companyId, string nppbkcId)
+        {
+            var data = _userPlantMapBll.GetAuthorizdePlant(new UserPlantMapGetAuthorizedPlant()
+            {
+                UserId = CurrentUser.USER_ID,
+                CompanyCode = companyId,
+                NppbkcId =  nppbkcId
+            });
+            return data;
+        }
+
+        private SelectList GetCk5YearList()
+        {
+            var yearList = _ck5Bll.GetAllYearsByGiDate();
+            var selectItemSource = yearList.Select(year => new SelectItemModel
+            {
+                // ReSharper disable SpecifyACultureInStringConversionExplicitly
+                TextField = year.ToString(), ValueField = year.ToString()
+                // ReSharper restore SpecifyACultureInStringConversionExplicitly
+            }).ToList();
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+        
+        /// <summary>
+        /// Fills the select lists for the IndexViewModel
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Lack2IndexViewModel</returns>
+        private Lack2IndexViewModel InitIndexViewModel(Lack2IndexViewModel model)
+        {
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            model.PlantIdList = GlobalFunctions.GetPlantAll();
+            model.CreatorList = GlobalFunctions.GetCreatorList();
+
+            return model;
         }
 
         #endregion

@@ -240,6 +240,7 @@
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\ProductionUploadItemsInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
+    <Compile Include="Inputs\UserPlantMapInputs.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
     <Compile Include="Inputs\WasteGetByParamInput.cs" />
     <Compile Include="Inputs\WasteUploadItemsInput.cs" />

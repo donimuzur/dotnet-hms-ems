@@ -109,6 +109,7 @@
     <Compile Include="Services\ICK4CItemService.cs" />
     <Compile Include="Services\ICK5MaterialService.cs" />
     <Compile Include="Services\ICK5Service.cs" />
+    <Compile Include="Services\IExcisableGoodsTypeService.cs" />
     <Compile Include="Services\IExGroupTypeService.cs" />
     <Compile Include="Services\IInventoryMovementService.cs" />
     <Compile Include="Services\ILack1IncomeDetailService.cs" />
@@ -122,7 +123,9 @@
     <Compile Include="Services\ILack2Service.cs" />
     <Compile Include="Services\IPBCK1Service.cs" />
     <Compile Include="Services\IT001KService.cs" />
+    <Compile Include="Services\IT001Service.cs" />
     <Compile Include="Services\IT001WService.cs" />
+    <Compile Include="Services\IUserPlantMapService.cs" />
     <Compile Include="Services\IZaidmExNppbkcService.cs" />
     <Compile Include="Services\IZaidmExProdTypeService.cs" />
   </ItemGroup>

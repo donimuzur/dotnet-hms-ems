@@ -80,10 +80,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public string UserId { get; set; }
         public DateTime SubmissionDate { get; set; }
-        public string CompanyName { get; set; }
-        public string SourcePlantName { get; set; }
-        public string SourcePlantCity { get; set; }
-        public string ExcisableGoodsTypeDesc { get; set; }
     }
 
     public class Lack2SaveEditInput : Lack2GenerateDataParamInput

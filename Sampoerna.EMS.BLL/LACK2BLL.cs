@@ -42,7 +42,9 @@ namespace Sampoerna.EMS.BLL
         private IExGroupTypeService _exGroupTypeService;
         private ICK5Service _ck5Service;
         private IT001WService _t001WService;
-
+        private IT001Service _t001Service;
+        private IExcisableGoodsTypeService _excisableGoodsTypeService;
+        
         public LACK2BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -55,6 +57,8 @@ namespace Sampoerna.EMS.BLL
             _t001WService = new T001WService(_uow, _logger);
             _lack2ItemService = new Lack2ItemService(_uow, _logger);
             _lack2DocumentService = new Lack2DocumentService(_uow, _logger);
+            _t001Service = new T001Service(_uow, _logger);
+            _excisableGoodsTypeService = new ExcisableGoodsTypeService(_uow, _logger);
 
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
@@ -146,6 +150,30 @@ namespace Sampoerna.EMS.BLL
             data.MODIFIED_DATE = null;
             data.REJECTED_BY = null;
             data.REJECTED_DATE = null;
+
+            //Set Company Detail
+            var companyData = _t001Service.GetById(input.CompanyCode);
+            if (companyData != null)
+            {
+                data.BUKRS = companyData.BUKRS;
+                data.BUTXT = companyData.BUTXT;
+            }
+
+            //set plant detail
+            var plantData = _t001WService.GetById(input.SourcePlantId);
+            if (plantData != null)
+            {
+                data.LEVEL_PLANT_CITY = plantData.ORT01;
+                data.LEVEL_PLANT_NAME = plantData.NAME1;
+            }
+
+            //set excisable goods type
+            var excisableGoodsTypeData = _excisableGoodsTypeService.GetById(input.ExcisableGoodsType);
+            if (excisableGoodsTypeData != null)
+            {
+                data.EX_GOOD_TYP = excisableGoodsTypeData.EXC_GOOD_TYP;
+                data.EX_TYP_DESC = excisableGoodsTypeData.EXT_TYP_DESC;
+            }
 
             //set from input, exclude on mapper
             data.LACK2_ITEM = Mapper.Map<List<LACK2_ITEM>>(generatedData.Data.Ck5Items);
@@ -246,17 +274,35 @@ namespace Sampoerna.EMS.BLL
 
             }
 
+            //Set Company Detail
+            var companyData = _t001Service.GetById(input.CompanyCode);
+            if (companyData != null)
+            {
+                dbData.BUKRS = companyData.BUKRS;
+                dbData.BUTXT = companyData.BUTXT;
+            }
+
+            //set plant detail
+            var plantData = _t001WService.GetById(input.SourcePlantId);
+            if (plantData != null)
+            {
+                dbData.LEVEL_PLANT_CITY = plantData.ORT01;
+                dbData.LEVEL_PLANT_NAME = plantData.NAME1;
+            }
+
+            //set excisable goods type
+            var excisableGoodsTypeData = _excisableGoodsTypeService.GetById(input.ExcisableGoodsType);
+            if (excisableGoodsTypeData != null)
+            {
+                dbData.EX_GOOD_TYP = excisableGoodsTypeData.EXC_GOOD_TYP;
+                dbData.EX_TYP_DESC = excisableGoodsTypeData.EXT_TYP_DESC;
+            }
+
             dbData.SUBMISSION_DATE = input.SubmissionDate;
             dbData.LEVEL_PLANT_ID = input.SourcePlantId;
-            dbData.LEVEL_PLANT_CITY = input.SourcePlantCity;
-            dbData.LEVEL_PLANT_NAME = input.SourcePlantName;
             dbData.NPPBKC_ID = input.NppbkcId;
             dbData.PERIOD_MONTH = input.PeriodMonth;
             dbData.PERIOD_YEAR = input.PeriodYear;
-            dbData.BUKRS = input.CompanyCode;
-            dbData.BUTXT = input.CompanyName;
-            dbData.EX_GOOD_TYP = input.ExcisableGoodsType;
-            dbData.EX_TYP_DESC = input.ExcisableGoodsTypeDesc;
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
 
@@ -763,6 +809,17 @@ namespace Sampoerna.EMS.BLL
                 CompanyCode = input.CompanyCode,
                 NppbkcId = input.NppbkcId
             });
+
+            if (ck5Selected.Count == 0)
+            {
+                return new Lack2GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingCk5DataSelected.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingCk5DataSelected),
+                    Data = null
+                };
+            }
 
             rc.Data.Ck5Items = Mapper.Map<List<Lack2GeneratedItemDto>>(ck5Selected);
 

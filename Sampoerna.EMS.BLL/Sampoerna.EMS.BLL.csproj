@@ -88,6 +88,7 @@
     <Compile Include="Services\CK4CItemService.cs" />
     <Compile Include="Services\CK5MaterialService.cs" />
     <Compile Include="Services\CK5Service.cs" />
+    <Compile Include="Services\ExcisableGoodsTypeService.cs" />
     <Compile Include="Services\ExGroupTypeService.cs" />
     <Compile Include="Services\InventoryMovementService.cs" />
     <Compile Include="Services\Lack1IncomeDetailService.cs" />
@@ -102,7 +103,9 @@
     <Compile Include="Services\PBCK1Service.cs" />
     <Compile Include="Services\Pbck3Services.cs" />
     <Compile Include="Services\T001KService.cs" />
+    <Compile Include="Services\T001Service.cs" />
     <Compile Include="Services\T001WService.cs" />
+    <Compile Include="Services\UserPlantMapService.cs" />
     <Compile Include="Services\ZaidmExNppbkcService.cs" />
     <Compile Include="Services\ZaidmExProdTypeService.cs" />
     <Compile Include="UserPlantMapBLL.cs" />

@@ -21,6 +21,16 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Lack2SearchDetailReportsViewModel, Lack2GetDetailReportByParamInput>().IgnoreAllNonExisting()
                 ;
+            Mapper.CreateMap<Lack2GenerateInputModel, Lack2GenerateDataParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PeriodMonth, opt => opt.MapFrom(src => src.PeriodMonth))
+                .ForMember(dest => dest.PeriodYear, opt => opt.MapFrom(src => src.PeriodYear))
+                .ForMember(dest => dest.SourcePlantId, opt => opt.MapFrom(src => src.SourcePlantId))
+                .ForMember(dest => dest.ExcisableGoodsType, opt => opt.MapFrom(src => src.ExcisableGoodsType))
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
+                ;
+
+            Mapper.CreateMap<LACK2CreateViewModel, Lack2CreateParamInput>().IgnoreAllNonExisting();
         }
     }
 }

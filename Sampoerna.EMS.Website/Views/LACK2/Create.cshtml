@@ -52,7 +52,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">LACK-2 No</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBoxFor(x => x.Lack2Model.Lack2Number, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBox("lack2-number", string.Empty, new { @class = "form-control", @disabled = "disabled" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -60,7 +60,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Company</label>
                                                             <div class="col-md-8">
-                                                                @Html.DropDownListFor(x => x.Lack2Model.Burks, Model.CompanyCodesDDL, "select", new { @class = "form-control" })
+                                                                @Html.DropDownListFor(x => x.CompanyCode, Model.CompanyCodesDDL, "select", new { @class = "form-control" })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -71,10 +71,10 @@
                                                             <div class="col-md-8">
                                                                 <div class="row">
                                                                     <div class="col-md-6">
-                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodMonth, Model.MonthList, new { @class = "form-control" })
+                                                                        @Html.DropDownListFor(x => x.PeriodMonth, Model.MonthList, new { @class = "form-control" })
                                                                     </div>
                                                                     <div class="col-md-6">
-                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodYear, Model.YearList, new { @class = "form-control" })
+                                                                        @Html.DropDownListFor(x => x.PeriodYear, Model.YearList, new { @class = "form-control" })
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -103,7 +103,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">NPPBKC</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(m => m.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
+                                                                    @Html.DropDownListFor(m => m.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -111,7 +111,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Plant</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(m => m.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "select", new { @class = "form-control" })
+                                                                    @Html.DropDownListFor(m => m.SourcePlantId, Model.SendingPlantDDL, "select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -128,7 +128,7 @@
                                                                 <label class="col-md-4">Submission Date</label>
                                                                 <div class="col-md-8">
                                                                     <div class="input-group date">
-                                                                        @Html.TextBoxFor(model => model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                                        @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                         <span class="input-group-addon">
                                                                             <i class="fa fa-calendar"></i>
                                                                         </span>
@@ -142,12 +142,12 @@
                                                             <div class="row">
                                                                 <label class="col-md-4 long">Excisable Goods Type</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.DropDownListFor(m => m.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "select", new { @class = "form-control" })
+                                                                    @Html.DropDownListFor(m => m.ExcisableGoodsType, Model.ExcisableGoodsTypeDDL, "select", new { @class = "form-control" })
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4 col-md-offset-4">
-                                                            <input type="button" class="btn btn-blue full" onclick="GetCk5ByPeriod();" value="Generate" />
+                                                            <input type="button" class="btn btn-blue full" onclick="GenerateCk5Items();" value="Generate" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -215,7 +215,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="headingFour">
@@ -243,7 +242,7 @@
                                                                 <label class="col-md-4">Decree Date</label>
                                                                 <div class="col-md-8">
                                                                     <div class="input-group date">
-                                                                        @Html.TextBox("decree-date", Model.Lack2Model.DecreeDate, new { @class = "form-control", @disabled = "disabled" })
+                                                                        @Html.TextBox("decree-date", string.Empty, new { @class = "form-control", @disabled = "disabled" })
                                                                         <span class="input-group-addon">
                                                                             <i class="fa fa-calendar"></i>
                                                                         </span>
@@ -267,171 +266,265 @@
                                         </div>
                                     </div>
                                 </div>
-                                @Html.Partial("_WorkflowHistory", Model)
                             </div>
-
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 
 }
+
+<div id="ModalValidation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Input selection criteria not valid</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     
     <script type="text/javascript">
         $('#MenuLack2OpenDocument').addClass('active');
-        $(function () {
+
+        $(document).ready(function() {
             openPanel();
-            $('#Lack2Model_LevelPlantId').html('');
-            $('#Lack2Model_NppbkcId').html('');
 
-            $('#Lack2Model_ExGoodTyp').html('');
-
-
-        });
-        $('#btnCancel').click(function (e) {
-            location.href = '@Url.Action("Index", "Lack2")';
-        });
-        $('#Lack2Model_NppbkcId').change(function () {
-
-            if ($(this).length) {
-                var nppbkc = $(this).find("option:selected").val();
-
-                $('#Lack2Model_LevelPlantId').html('');
-                if (nppbkc != '') {
-                    ajaxGetPlantByNppbkc(nppbkc);
-                    ajaxGetGoodsTypeByNppbkc(nppbkc);
-                    ajaxGetPoaByNppbkc(nppbkc);
-                }
-            }
-
-        });
-
-        $('#Lack2Model_Burks').change(function () {
-
-            if ($(this).length) {
-                var company = $(this).find("option:selected").val();
-                if (company !== '') {
-                    ajaxGetNppbkcByCompany(company);
-
-
-                }
-            }
-        });
-
-        function ajaxGetNppbkcByCompany(company) {
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
-                data: { companyId: company },
-                success: function (data) {
-                    $('#Lack2Model_NppbkcId').html('');
-                    $('#Lack2Model_NppbkcId').append('<option>select</option>');
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
-                    }
-                }
+            $('#CompanyCode').on("change", function () {
+                BukrsOnChange();
             });
 
+            $('#NppbkcId').on("change", function () {
+                NppbkcIdOnChange();
+            });
+
+        });
+
+        function NppbkcIdOnChange() {
+            if ($("#NppbkcId").length && $('#CompanyCode').length) {
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                var companyId = $('#CompanyCode').find("option:selected").val();
+                
+                $('#SourcePlantId option').remove();
+                $('#displayPoaList').val('');
+                $('#ExcisableGoodsType option').remove();
+                
+                if (nppbkcId != '') {
+                    
+                    /*Load Excisable Goods Type*/
+                    ajaxGetGoodsTypeByNppbkc('@Url.Action("GetGoodsTypeByNppbkc", "LACK2")', { nppbkcId: nppbkcId });
+                    
+                    /*Load Plant */
+                    if (companyId != '') {
+                        ajaxGetPlantByNppbkc('@Url.Action("GetPlantByNppbkcId", "LACK2")', { companyId: companyId, nppbkcId: nppbkcId });
+                    }
+                    
+                    /*Load Poa */
+                    ajaxGetPoaByNppbkc('@Url.Action("GetPoaByNppbkcId", "LACK2")', { nppbkcId: nppbkcId });
+                    
+                } else {
+                    $('#Lack2Model_ExGoodTyp').append('<option value="">Select</option>');
+                    $('#SourcePlantId').append('<option value="">Select</option>');
+                }
+            }
         }
 
-        function ajaxGetPlantByNppbkc(nppbkc) {
+        function BukrsOnChange() {
+            if ($("#CompanyCode").length) {
+                var companyCode = $('#CompanyCode').find("option:selected").val();
+                $('#NppbkcId option').remove();
+                console.log(companyCode);
+                if (companyCode == '' || $(this).find("option:selected").val() == '') {
+                    $('#NppbkcId').append('<option value="">Select</option>');
+                } else {
+                    ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "LACK2")', { companyId: companyCode });
+                }
+            }
+        }
 
-            $.ajax({
+        function ajaxGetNppbkcByCompany(url, formData) {
+            if (formData.companyId) {
+                $.ajax({
                     type: 'POST',
-                    url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
-                    data: { nppbkcid: nppbkc },
+                    url: url,
+                    data: formData,
                     success: function (data) {
-                        $('#Lack2Model_LevelPlantId').html('');
+                        $('#NppbkcId').append('<option>select</option>');
+                        if (data.length > 0) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+        }
 
+        function ajaxGetGoodsTypeByNppbkc(url, formData)
+        {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.length) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#ExcisableGoodsType').append('<option value=' + data[i].EXC_GOOD_TYP + '>' + data[i].EXT_TYP_DESC + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+            
+        }
+        
+        function ajaxGetPlantByNppbkc(url, formData) {
+            if (formData.companyId && formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.length > 0) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#SourcePlantId').append('<option value=' + data[i].WERKS + '>' + data[i].DROPDOWNTEXTFIELD + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function ajaxGetPoaByNppbkc(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                       var poalist = '';
                         for (var i = 0; i < data.length; i++) {
-                            $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-
+                            poalist += data[i].PRINTED_NAME;
+                            if (data.length - 1 != i) {
+                                poalist += ', ';
+                            }
                         }
-
+                        $('#displayPoaList').val(poalist);
                     }
-                }
-            );
-
-        }
-
-        function ajaxGetPoaByNppbkc(nppbkc) {
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
-                data: { nppbkcid: nppbkc },
-                success: function (data) {
-                    $('#displayPoaList').html('');
-                    var poalist = '';
-                    for (var i = 0; i < data.length; i++) {
-
-                        poalist += data[i].PRINTED_NAME;
-                        if (data.length - 1 != i) {
-                            poalist += ', ';
-                        }
-                    }
-                    $('#displayPoaList').html(poalist);
-                }
-            });
-
-        }
-
-        function ajaxGetGoodsTypeByNppbkc(nppbkc) {
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
-                data: { nppbkcid: nppbkc },
-                success: function (data) {
-
-                    $('#Lack2Model_ExGoodTyp').html('');
-                    for (var i = 0; i < data.length; i++) {
-                        $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
-                    }
-                }
-            });
-
+                });
+            }
         }
 
         function openPanel() {
             $('.panel-collapse').removeClass('collapse').addClass('in');
         }
 
-        function GetCk5ByPeriod() {
-            var month = parseInt($('#Lack2Model_PeriodMonth').val());
-            var year = parseInt($('#Lack2Model_PeriodYear').val());
-            var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
-            var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
-                data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
-                success: function (data) {
+        function generateInputValidation() {
+            var rc = true;
+            if ($('#CompanyCode').find("option:selected").val() == '') {
+                rc = false;
+                $('#CompanyCode').addClass('input-validation-error');
+            }
 
-                    if (data.length > 0) {
-                        $('#tb-body-ck5-lack2').html("");
-                        for (var i = 0; i < data.length; i++) {
-                            var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
-                                '<td>' + data[i].NoDateWithFormat + '</td>' +
-                                '<td>' + data[i].GIDateStr + '</td>' +
-                                '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
-                                '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
-                                '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
-                                '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
-                            $('#tb-body-ck5-lack2').append(tableCk5Item);
-                        }
+            if ($('#PeriodMonth').find("option:selected").val() == '') {
+                rc = false;
+                $('#PeriodMonth').addClass('input-validation-error');
+            }
+
+            if ($('#PeriodYear').find("option:selected").val() == '') {
+                rc = false;
+                $('#PeriodYear').addClass('input-validation-error');
+            }
+
+            if ($('#NppbkcId').find("option:selected").val() == '') {
+                rc = false;
+                $('#NppbkcId').addClass('input-validation-error');
+            }
+
+            if ($('#SourcePlantId').find("option:selected").val() == '') {
+                rc = false;
+                $('#SourcePlantId').addClass('input-validation-error');
+            }
+
+            if ($('#ExcisableGoodsType').find("option:selected").val() == '') {
+                rc = false;
+                $('#ExcisableGoodsType').addClass('input-validation-error');
+            }
+
+            if (!rc) {
+                $('#modalBodyMessage').text('Please input the required field on selection criteria input.');
+            }
+
+            return rc;
+
+        }
+
+        function GenerateCk5Items() {
+
+            if (!generateInputValidation()) {
+                $('#ModalValidation').modal('show');
+                return;
+            }
+
+            var param = {};
+            param.PeriodMonth = parseInt($('#PeriodMonth').val());
+            param.PeriodYear = parseInt($('#PeriodYear').val());
+            param.NppbkcId = $('#NppbkcId').find("option:selected").val();
+            param.SourcePlantId = $('#SourcePlantId').find("option:selected").val();
+            param.ExcisableGoodsType = $('#ExcisableGoodsType').find("option:selected").val();
+            param.CompanyCode = $('#CompanyCode').find("option:selected").val();
+            
+            $.ajax({
+                url: '@Url.Action("Generate", "LACK2")',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ param: param }),
+                success: function(response) {
+                    if (response.Success) {
+                        console.log(response);
+                        generateTable(response.Data.Ck5Items);
                     } else {
-                        $('#tb-body-ck5-lack2').html("");
-                        $('#tb-body-ck5-lack2').append('<tr><td style="text-align:center" colspan="7">no data<td></tr>');
+                        /*alert(response.ErrorMessage);*/
+                        $('#modalBodyMessage').text(response.ErrorMessage);
+                        $('#ModalValidation').modal('show');
                     }
                 }
             });
         }
+
+        function generateTable(data) {
+            if (data.length > 0) {
+                $('#tb-body-ck5-lack2').html("");
+                for (var i = 0; i < data.length; i++) {
+                    var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__CK5_ID" name="Lack2Model.Items[' + i
+                        + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                        '<td>' + data[i].NoDateWithFormat + '</td>' +
+                        '<td>' + data[i].GIDateStr + '</td>' +
+                        '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
+                    $('#tb-body-ck5-lack2').append(tableCk5Item);
+                }
+            } else {
+                $('#tb-body-ck5-lack2').html("");
+                $('#tb-body-ck5-lack2').append('<tr><td style="text-align:center" colspan="6">no data<td></tr>');
+            }
+        }
+
     </script>
 
 }

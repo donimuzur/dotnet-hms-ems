@@ -78,6 +78,9 @@ namespace Sampoerna.EMS.Core.Exceptions
             GenerateNumberCityAliasHasNotSet,
             [Description("A record with same parameter is already exist")]
             Lack2DuplicateSelectionCriteria,
+
+            [Description("Missing Ck5 data selected")]
+            MissingCk5DataSelected
         }
         
         /// <summary>

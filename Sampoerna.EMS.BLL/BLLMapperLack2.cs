@@ -127,14 +127,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SubmissionDate))
                 .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.CompanyCode))
-                .ForMember(dest => dest.BUTXT, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dest => dest.PERIOD_MONTH, opt => opt.MapFrom(src => src.PeriodMonth))
                 .ForMember(dest => dest.PERIOD_YEAR, opt => opt.MapFrom(src => src.PeriodYear))
                 .ForMember(dest => dest.LEVEL_PLANT_ID, opt => opt.MapFrom(src => src.SourcePlantId))
-                .ForMember(dest => dest.LEVEL_PLANT_NAME, opt => opt.MapFrom(src => src.SourcePlantName))
-                .ForMember(dest => dest.LEVEL_PLANT_CITY, opt => opt.MapFrom(src => src.SourcePlantCity))
                 .ForMember(dest => dest.EX_GOOD_TYP, opt => opt.MapFrom(src => src.ExcisableGoodsType))
-                .ForMember(dest => dest.EX_TYP_DESC, opt => opt.MapFrom(src => src.ExcisableGoodsTypeDesc))
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
                 ;
 
