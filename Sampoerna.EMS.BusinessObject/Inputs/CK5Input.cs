@@ -22,6 +22,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public Enums.CK5Type Ck5Type { get; set; }
+
+        public string UserId { get; set; }
+
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class CK5SaveInput

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -105,5 +106,16 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ProdTotal { get; set; }
 
         public string ProdBtg { get; set; }
+    }
+
+    public class Ck4cUnpacked
+    {
+        public string PlantId { get; set; }
+
+        public string Facode { get; set; }
+
+        public DateTime ProdDate { get; set; }
+
+        public decimal Unpacked { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sampoerna.EMS.Utils
@@ -100,6 +101,14 @@ namespace Sampoerna.EMS.Utils
         public static string ConvertDateToStringHHmm(DateTime? value)
         {
             return value.HasValue ? value.Value.ToString("HH:mm") : string.Empty;
+        }
+
+        public static string ToTitleCase(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(input.ToLower());
         }
     }
 }

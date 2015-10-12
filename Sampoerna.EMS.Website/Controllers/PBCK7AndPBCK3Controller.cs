@@ -838,7 +838,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         pbck3.CreatedBy = CurrentUser.USER_ID;
                         pbck3.Pbck7Id = existingData.Pbck7Id;
                         pbck3.Pbck3Date = model.Pbck3Dto.Pbck3Date;
-                        pbck3.Pbck3Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
+                        pbck3.Pbck3Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
                     
                    
 
@@ -1033,7 +1033,7 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.Month = modelDto.Pbck7Date.Month;
             inputDoc.Year = modelDto.Pbck7Date.Year;
             inputDoc.NppbkcId = modelDto.NppbkcId;
-            modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
+            modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
 
             int? pbck7IdAfterSave= null;
             try

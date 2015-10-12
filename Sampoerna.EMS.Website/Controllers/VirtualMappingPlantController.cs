@@ -197,8 +197,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     modeldetail.ImportPlanName = dbVirtual.T001W1.WERKS;
                     modeldetail.ExportPlanName = dbVirtual.T001W.WERKS;
-
-                    
                     return View("Details",modeldetail);
                 }
                 else {
@@ -209,7 +207,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     model.ImportPlantId = dbVirtual.T001W1.WERKS;
                     model.ExportPlantId = dbVirtual.T001W.WERKS;
-
+                    model.IsDeleted = dbVirtual.IS_DELETED;
+                    model.IsAllowDelete = !model.IsDeleted.HasValue || !model.IsDeleted.Value;
                     return View(model);
                 }
                 

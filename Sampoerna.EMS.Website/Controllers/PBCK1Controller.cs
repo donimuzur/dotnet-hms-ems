@@ -454,6 +454,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
 
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(pbck1Data.Pbck1Number));
+                model.PrintHistoryList = printHistory;
+
                 model.DocStatus = model.Detail.Status;
 
                 model.SupInfo.SupplierPlantWerks = model.Detail.SupplierPlantWerks;

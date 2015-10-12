@@ -1487,23 +1487,23 @@ namespace Sampoerna.EMS.BLL
                     rc.Detail.PlantPhoneNumber = mainPlant.PHONE;
 
                     //Get BrandRegistration Data
-                    var brandRegistrationDataByMainPlant = _brandRegistrationBll.GetByPlantId(mainPlant.WERKS);
+                    //var brandRegistrationDataByMainPlant = _brandRegistrationBll.GetByPlantId(mainPlant.WERKS);
 
                     if (dbData.PBCK1_PROD_CONVERTER != null && dbData.PBCK1_PROD_PLAN.Count > 0)
                     {
-                        var dataJoined = (from brand in brandRegistrationDataByMainPlant
-                                          join prodConv in dbDataSuratKonversi.PBCK1_PROD_CONVERTER on brand.PROD_CODE equals prodConv.PROD_CODE
-                                          select new Pbck1ReportBrandRegistrationDto()
-                                          {
-                                              Type = prodConv.PRODUCT_ALIAS,
-                                              Brand = brand.BRAND_CE,
-                                              Kadar = "-", //hardcoded, ref: FS PBCK-1 EMS Version document
-                                              Convertion =
-                                                  prodConv.CONVERTER_OUTPUT.HasValue ? prodConv.CONVERTER_OUTPUT.Value.ToString("N2") : "-",
-                                              ConvertionUom = prodConv.UOM.UOM_DESC,
-                                              ConvertionUomId = prodConv.CONVERTER_UOM_ID
-                                          }).DistinctBy(c => c.Brand).ToList();
-
+                        //var dataJoined = (from brand in brandRegistrationDataByMainPlant
+                        //                  join prodConv in dbDataSuratKonversi.PBCK1_PROD_CONVERTER on brand.PROD_CODE equals prodConv.PROD_CODE
+                        //                  select new Pbck1ReportBrandRegistrationDto()
+                        //                  {
+                        //                      Type = prodConv.PRODUCT_ALIAS,
+                        //                      Brand = brand.BRAND_CE,
+                        //                      Kadar = "-", //hardcoded, ref: FS PBCK-1 EMS Version document
+                        //                      Convertion =
+                        //                          prodConv.CONVERTER_OUTPUT.HasValue ? prodConv.CONVERTER_OUTPUT.Value.ToString("N2") : "-",
+                        //                      ConvertionUom = prodConv.UOM.UOM_DESC,
+                        //                      ConvertionUomId = prodConv.CONVERTER_UOM_ID
+                        //                  }).DistinctBy(c => c.Brand).ToList();
+                        var dataJoined = dbData.PBCK1_PROD_CONVERTER.ToList();
                         var convertedUomData =
                             dbData.PBCK1_PROD_CONVERTER.FirstOrDefault(c => !string.IsNullOrEmpty(c.CONVERTER_UOM_ID));
                         if (convertedUomData != null)
@@ -1514,7 +1514,7 @@ namespace Sampoerna.EMS.BLL
                         rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();
                         foreach (var dataItem in dataJoined)
                         {
-                            rc.BrandRegistrationList.Add(dataItem);
+                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N2"), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC});
                         }
                     }
                 }
@@ -1827,7 +1827,7 @@ namespace Sampoerna.EMS.BLL
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
             //rc.Subject = "PBCK-1 " + pbck1Data.Pbck1Number + " is " + EnumHelper.GetDescription(pbck1Data.Status);
-            rc.Subject = "PBCK-1 is " + EnumHelper.GetDescription(pbck1Data.Status);
+            rc.Subject = "PBCK-1 " + pbck1Data.Pbck1Number + " is " + EnumHelper.GetDescription(pbck1Data.Status);
             bodyMail.Append("Dear Team,<br />");
             bodyMail.AppendLine();
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
