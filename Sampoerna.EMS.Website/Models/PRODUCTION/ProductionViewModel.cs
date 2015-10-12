@@ -53,13 +53,6 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string BrandDescription { get; set; }
 
         [Required]
-        public string QtyUnpackedStr { get; set; }
-        public decimal? QtyUnpacked
-        {
-            get;
-            set;
-        }
-        [Required]
         public string QtyPackedStr { get; set; }
 
         public decimal? QtyPacked
@@ -73,8 +66,9 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string ProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
+        [Required]
         public string ProdQtyStickStr { get; set; }
-        public decimal? ProQtyStick
+        public decimal? ProdQtyStick
         {
             get; set;
         }
