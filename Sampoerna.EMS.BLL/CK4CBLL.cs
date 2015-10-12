@@ -1158,8 +1158,6 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
             }
-
-            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
             
             var rc = _repository.Get(queryFilter, null, includeTables).ToList();
             if (rc == null)
