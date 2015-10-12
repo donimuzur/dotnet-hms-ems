@@ -40,6 +40,7 @@ namespace Sampoerna.EMS.BLL
         private IUserBLL _userBll;
         private IBrandRegistrationService _brandRegistrationService;
         private ICK4CDecreeDocBLL _ck4cDecreeDocBll;
+        private IWasteBLL _wasteBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -63,6 +64,7 @@ namespace Sampoerna.EMS.BLL
             _userBll = new UserBLL(_uow, _logger);
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
             _ck4cDecreeDocBll = new CK4CDecreeDocBLL(_uow, _logger);
+            _wasteBll = new WasteBLL(_logger, _uow);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -89,6 +91,8 @@ namespace Sampoerna.EMS.BLL
             
             try
             {
+                bool changed = false;
+
                 if (item.Ck4CId > 0)
                 {
                     //update
@@ -97,7 +101,7 @@ namespace Sampoerna.EMS.BLL
                     if (model == null)
                         throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-                    SetChangesHistory(model, item, userId);
+                    changed = SetChangesHistory(model, item, userId);
 
                     _ck4cItemBll.DeleteByCk4cId(item.Ck4CId);
 
@@ -113,88 +117,32 @@ namespace Sampoerna.EMS.BLL
                 }
                 
                 _uow.SaveChanges();
-                var history = new WorkflowHistoryDto();
-                history.FORM_ID = model.CK4C_ID;
-                history.ACTION = GetActionType(model.STATUS, item.ModifiedBy);
-                history.ACTION_BY = GetActionBy(item);
-                history.ACTION_DATE = DateTime.Now;
-                history.FORM_NUMBER = item.Number;
-                history.FORM_TYPE_ID = Enums.FormType.CK4C;
-                history.COMMENT = item.Comment;
+
                 //set workflow history
-                var getUserRole = _poabll.GetUserRole(history.ACTION_BY);
-                history.ROLE = getUserRole;
-                _workflowHistoryBll.AddHistory(history);
+                var getUserRole = _poabll.GetUserRole(userId);
+                var input = new Ck4cWorkflowDocumentInput()
+                {
+                    DocumentId = model.CK4C_ID,
+                    DocumentNumber = model.NUMBER,
+                    ActionType = Enums.ActionType.Modified,
+                    UserId = userId,
+                    UserRole = getUserRole
+                };
+
+                if (changed)
+                {
+                    AddWorkflowHistory(input);
+                }
                 _uow.SaveChanges();
             }
             catch (Exception exception)
             {
                 throw exception;
             }
-            return item;
+
+            return Mapper.Map<Ck4CDto>(model);
         }
 
-        private Enums.ActionType GetActionType(Enums.DocumentStatus docStatus, string modifiedBy)
-        {
-            if (docStatus == Enums.DocumentStatus.Draft)
-            {
-                if (modifiedBy != null)
-                {
-                    return Enums.ActionType.Modified;
-                }
-                return Enums.ActionType.Created;
-            }
-            if (docStatus == Enums.DocumentStatus.WaitingForApproval)
-            {
-                return Enums.ActionType.Submit;
-            }
-
-            if (docStatus == Enums.DocumentStatus.WaitingForApprovalManager)
-            {
-                return Enums.ActionType.Approve;
-            }
-
-            if (docStatus == Enums.DocumentStatus.WaitingGovApproval)
-            {
-                return Enums.ActionType.Approve;
-            }
-            if (docStatus == Enums.DocumentStatus.GovApproved)
-            {
-                return Enums.ActionType.GovPartialApprove;
-            }
-            if (docStatus == Enums.DocumentStatus.Completed)
-            {
-                return Enums.ActionType.GovApprove;
-            }
-            return Enums.ActionType.Reject;
-        }
-
-        private string GetActionBy(Ck4CDto ck4c)
-        {
-            if (ck4c.Status == Enums.DocumentStatus.Draft)
-            {
-                if (ck4c.ModifiedBy != null)
-                {
-                    return ck4c.ModifiedBy;
-                }
-                return ck4c.CreatedBy;
-            }
-            if (ck4c.Status == Enums.DocumentStatus.WaitingForApproval)
-            {
-                return ck4c.CreatedBy;
-            }
-            if (ck4c.Status == Enums.DocumentStatus.WaitingForApprovalManager)
-            {
-                return ck4c.ApprovedByManager;
-            }
-            if (ck4c.Status == Enums.DocumentStatus.WaitingGovApproval)
-            {
-                return ck4c.ApprovedByManager;
-            }
-
-            return ck4c.CreatedBy;
-        }
-        
         public Ck4CDto GetById(long id)
         {
             var dbData = _repository.Get(c => c.CK4C_ID == id, null, includeTables).FirstOrDefault();
@@ -209,6 +157,10 @@ namespace Sampoerna.EMS.BLL
             var isNeedSendNotif = true;
             switch (input.ActionType)
             {
+                case Enums.ActionType.Created:
+                    CreateDocument(input);
+                    isNeedSendNotif = false;
+                    break;
                 case Enums.ActionType.Submit:
                     SubmitDocument(input);
                     break;
@@ -220,11 +172,9 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovApprove:
                     GovApproveDocument(input);
-                    isNeedSendNotif = false;
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
-                    isNeedSendNotif = false;
                     break;
                 case Enums.ActionType.Completed:
                     EditCompletedDocument(input);
@@ -278,7 +228,7 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : CK-4C</td></tr>");
             bodyMail.AppendLine();
-            if (actionType == Enums.ActionType.Reject)
+            if (actionType == Enums.ActionType.Reject || actionType == Enums.ActionType.GovReject)
             {
                 bodyMail.Append("<tr><td>Comment</td><td> : " + comment + "</td></tr>");
                 bodyMail.AppendLine();
@@ -318,9 +268,15 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Approve:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        rc.To.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                        var poaUser = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
+                        var poaApproveId = _userBll.GetUserById(ck4cData.ApprovedByPoa);
 
-                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                        rc.To.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+
+                        if (poaApproveId != null)
+                            rc.CC.Add(poaApproveId.EMAIL);
+
+                        rc.CC.Add(GetManagerEmail(poaUser));
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -348,11 +304,49 @@ namespace Sampoerna.EMS.BLL
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
                     var poaApprove = _userBll.GetUserById(ck4cData.ApprovedByPoa);
+                    var poaId = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
 
                     rc.To.Add(userDetail.EMAIL);
-                    rc.CC.Add(poaApprove.EMAIL);
-                    rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                    if (poaApprove != null)
+                        rc.CC.Add(poaApprove.EMAIL);
+                    rc.CC.Add(GetManagerEmail(poaId));
 
+                    rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.GovApprove:
+                    var poaData3 = _poabll.GetById(ck4cData.CreatedBy);
+                    if (poaData3 != null)
+                    {
+                        //creator is poa user
+                        rc.To.Add(_userBll.GetUserById(poaData3.POA_ID).EMAIL);
+                        rc.CC.Add(GetManagerEmail(ck4cData.CreatedBy));
+                    }
+                    else
+                    {
+                        //creator is excise executive
+                        var userData = _userBll.GetUserById(ck4cData.CreatedBy);
+                        rc.To.Add(userData.EMAIL);
+                        rc.CC.Add(_userBll.GetUserById(ck4cData.ApprovedByPoa).EMAIL);
+                        rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                    }
+                    rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.GovReject:
+                    var poaData5 = _poabll.GetById(ck4cData.CreatedBy);
+                    if (poaData5 != null)
+                    {
+                        //creator is poa user
+                        rc.To.Add(_userBll.GetUserById(poaData5.POA_ID).EMAIL);
+                        rc.CC.Add(GetManagerEmail(ck4cData.CreatedBy));
+                    }
+                    else
+                    {
+                        //creator is excise executive
+                        var userData = _userBll.GetUserById(ck4cData.CreatedBy);
+                        rc.To.Add(userData.EMAIL);
+                        rc.CC.Add(_userBll.GetUserById(ck4cData.ApprovedByPoa).EMAIL);
+                        rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                    }
                     rc.IsCCExist = true;
                     break;
             }
@@ -380,6 +374,18 @@ namespace Sampoerna.EMS.BLL
             public List<string> To { get; set; }
             public List<string> CC { get; set; }
             public bool IsCCExist { get; set; }
+        }
+
+        private void CreateDocument(Ck4cWorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            input.DocumentNumber = dbData.NUMBER;
+
+            AddWorkflowHistory(input);
         }
 
         private void SubmitDocument(Ck4cWorkflowDocumentInput input)
@@ -640,6 +646,24 @@ namespace Sampoerna.EMS.BLL
         {
             var queryFilter = ProcessQueryFilter(input);
 
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poabll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+            }
+
             queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
 
             return Mapper.Map<List<Ck4CDto>>(GetCk4cData(queryFilter, input.ShortOrderColumn));
@@ -702,6 +726,8 @@ namespace Sampoerna.EMS.BLL
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
+            var saldoDate = new DateTime();
+
             var result = new Ck4cReportDto();
             result.Detail.Ck4cId = dtData.CK4C_ID;
             result.Detail.Number = dtData.NUMBER;
@@ -717,12 +743,14 @@ namespace Sampoerna.EMS.BLL
             {
                 result.Detail.ReportedPeriodStart = "1";
                 result.Detail.ReportedPeriodEnd = "14";
+                saldoDate = new DateTime(dtData.REPORTED_YEAR.Value, dtData.REPORTED_MONTH.Value, 1);
             }
             else if (dtData.REPORTED_PERIOD == 2)
             {
                 var endDate = new DateTime(dtData.REPORTED_YEAR.Value, dtData.REPORTED_MONTH.Value, 1).AddMonths(1).AddDays(-1).Day.ToString();
                 result.Detail.ReportedPeriodStart = "15";
                 result.Detail.ReportedPeriodEnd = endDate;
+                saldoDate = new DateTime(dtData.REPORTED_YEAR.Value, dtData.REPORTED_MONTH.Value, 15);
             }
 
             var ck4cPeriodMonth = _monthBll.GetMonth(dtData.REPORTED_MONTH.Value).MONTH_NAME_IND;
@@ -755,6 +783,8 @@ namespace Sampoerna.EMS.BLL
 
                     var ck4cItem = new Ck4cReportItemDto();
 
+                    var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+
                     ck4cItem.CollumNo = 0;
                     ck4cItem.No = string.Empty;
                     ck4cItem.NoProd = string.Empty;
@@ -772,7 +802,7 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.Isi = String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
                     ck4cItem.Hje = plantDetail.HJE_IDR == null ? "0.00" : String.Format("{0:n}", plantDetail.HJE_IDR);
                     ck4cItem.Total = "0.00";
-                    ck4cItem.ProdWaste = "0.00";
+                    ck4cItem.ProdWaste = unpackedQty == null ? "0.00" : String.Format("{0:n}", unpackedQty.UnpackedQty);
                     ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
 
                     //result.Ck4cItemList.Add(ck4cItem);
@@ -872,6 +902,7 @@ namespace Sampoerna.EMS.BLL
 
             result.HeaderFooter = headerFooterData;
             var i = 0;
+            List<Ck4cUnpacked> unpackedList = new List<Ck4cUnpacked>();
 
             //add data details of current CK-4C
             for (var j = Convert.ToInt32(result.Detail.ReportedPeriodStart); j <= Convert.ToInt32(result.Detail.ReportedPeriodEnd); j++)
@@ -879,6 +910,7 @@ namespace Sampoerna.EMS.BLL
                 i = i + 1;
                 var prodDate = j + "-" + result.Detail.ReportedMonth.Substring(0, 3) + "-" + result.Detail.ReportedYear;
                 var prodDateFormat = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), j);
+                var lastProdDate = prodDateFormat.AddDays(-1);
                 var dateStart = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), Convert.ToInt32(result.Detail.ReportedPeriodStart));
                 List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
                 foreach (var item in addressPlant)
@@ -889,8 +921,6 @@ namespace Sampoerna.EMS.BLL
                     var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
                     var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
 
-                    
-
                     foreach (var data in activeBrand.Distinct())
                     {
                         var ck4cItem = new Ck4cReportItemDto();
@@ -898,8 +928,23 @@ namespace Sampoerna.EMS.BLL
                         var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                         var prodQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PROD_QTY);
                         var packedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PACKED_QTY);
-                        var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && (c.PROD_DATE <= prodDateFormat && c.PROD_DATE >= dateStart)).Sum(x => x.UNPACKED_QTY);
+                        var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.UNPACKED_QTY);
                         var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
+
+                        if (unpackedQty == 0)
+                        {
+                            var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
+
+                            var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
+
+                            var lastUnpacked = unpackedList.Where(c => c.PlantId == item && c.Facode == data.FA_CODE && c.ProdDate == lastProdDate).Sum(x => x.Unpacked);
+
+                            var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+
+                            var lastSaldoUnpacked = lastSaldo == null ? 0 : lastSaldo.UnpackedQty;
+
+                            unpackedQty = (lastUnpacked == 0 ? lastSaldoUnpacked : lastUnpacked) - oldWaste;
+                        }
 
                         ck4cItem.CollumNo = i;
                         ck4cItem.No = i.ToString();
@@ -917,6 +962,14 @@ namespace Sampoerna.EMS.BLL
 
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
+
+                        var unpackedItem = new Ck4cUnpacked();
+                        unpackedItem.PlantId = item;
+                        unpackedItem.Facode = data.FA_CODE;
+                        unpackedItem.ProdDate = prodDateFormat;
+                        unpackedItem.Unpacked = unpackedQty == null ? 0 : unpackedQty.Value;
+
+                        unpackedList.Add(unpackedItem);
                     }
                     
                 }
@@ -993,8 +1046,10 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
-        private void SetChangesHistory(CK4C origin, Ck4CDto data, string userId)
+        private bool SetChangesHistory(CK4C origin, Ck4CDto data, string userId)
         {
+            var changed = false;
+
             var changeData = new Dictionary<string, bool>();
             changeData.Add("COMPANY_CODE", origin.COMPANY_ID == data.CompanyId);
             changeData.Add("PLANT", origin.PLANT_ID == data.PlantId);
@@ -1057,9 +1112,12 @@ namespace Sampoerna.EMS.BLL
                         default: break;
                     }
                     _changesHistoryBll.AddHistory(changes);
+
+                    changed = true;
                 }
             }
 
+            return changed;
         }
 
         public bool AllowEditCompletedDocument(Ck4CDto item, string userId)
@@ -1100,8 +1158,6 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
             }
-
-            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
             
             var rc = _repository.Get(queryFilter, null, includeTables).ToList();
             if (rc == null)

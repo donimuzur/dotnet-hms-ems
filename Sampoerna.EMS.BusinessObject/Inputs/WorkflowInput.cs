@@ -13,6 +13,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
        public string DocumentNumber { get; set; }
        public string NppbkcId { get; set; }
        public string ManagerApprove { get; set; }
+       public string PoaApprove { get; set; }
     }
 
     public class WorkflowAllowEditAndSubmitInput

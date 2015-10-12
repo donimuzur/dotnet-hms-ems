@@ -125,6 +125,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Ck4cGetOpenDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
             var dbData = _ck4CBll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Number);
             return Mapper.Map<List<DataDocumentList>>(dbData);
         }
@@ -334,8 +337,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Details", new { id = existCk4c.Ck4CId });
             }
 
-            _ck4CBll.Save(item, CurrentUser.USER_ID);
+            var ck4cData = _ck4CBll.Save(item, CurrentUser.USER_ID);
             AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+            Ck4cWorkflow(ck4cData.Ck4CId, Enums.ActionType.Created, string.Empty);
             return RedirectToAction("DocumentList");
         }
         #endregion
@@ -636,6 +640,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 var dataToSave = Mapper.Map<Ck4CDto>(model.Details);
 
+                if (dataToSave.Ck4cItem.Count == 0)
+                {
+                    AddMessageInfo("No item found", Enums.MessageInfoType.Warning);
+                    model.Details.StatusName = "Draft";
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
                 var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);
                 var nppbkcId = plant == null ? dataToSave.NppbkcId : plant.NPPBKC_ID;
@@ -861,6 +873,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
 
                         message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
+                        if (model.Details.StatusGoverment == Enums.StatusGovCk4c.Approved)
+                            message = "Document has been saved";
                         actionResult = "CompletedDocument";
                     }
 
@@ -884,6 +898,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
 
                         message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
+                        if (model.Details.StatusGoverment == Enums.StatusGovCk4c.Approved)
+                            message = "Document has been saved";
                         actionResult = "CompletedDocument";
                     }
                 }

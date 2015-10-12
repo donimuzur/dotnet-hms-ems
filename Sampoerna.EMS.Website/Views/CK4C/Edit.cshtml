@@ -184,6 +184,8 @@
         });
 
         $("#btnSaveCk4c").click(function () {
+            CheckSameData();
+
             if (ValidateInput()) {
                 $('#EditForm').submit();
             }
@@ -196,6 +198,8 @@
         });
 
         $("#btnSubmitDocument").click(function () {
+            CheckSameData();
+
             $('#Ck4cModal').modal('show');
         });
 
@@ -217,32 +221,32 @@
         if ($("#Details_CompanyId").length) {
             var cpy = comp;
             if (cpy != '') {
-                ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy }, plant);
-                ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
-                }
+            ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy }, plant);
+            ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
             }
         }
+    }
 
-        function SetPoaList() {
-            var poa = '@Model.Details.ApprovedByPoa';
-            var nppbkc = '@Model.Details.NppbkcId';
-            var plant = '@Model.Details.PlantId';
-            var url = '@Url.Action("PoaListPartial", "CK4C")';
-            var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
+    function SetPoaList() {
+        var poa = '@Model.Details.ApprovedByPoa';
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plant = '@Model.Details.PlantId';
+        var url = '@Url.Action("PoaListPartial", "CK4C")';
+        var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
 
-            if (poa == '')
+        if (poa == '')
+        {
+            ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+
+            if(nppbkc == '')
             {
-                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
-
-                if(nppbkc == '')
-                {
-                    ajaxSelectNppbck({ plantId: plant }, urlPlant);
-                }
+                ajaxSelectNppbck({ plantId: plant }, urlPlant);
             }
         }
+    }
 
-        function SetBasedOn() {
-            var nppbkc = '@Model.Details.NppbkcId';
+    function SetBasedOn() {
+        var nppbkc = '@Model.Details.NppbkcId';
         var plantId = $('#Details_PlantId').val();
         var plantName = $('#Details_PlantName').val();
         var docStatus = '@Model.Details.Status.ToString()';

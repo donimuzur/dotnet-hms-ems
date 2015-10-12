@@ -112,20 +112,14 @@ namespace Sampoerna.EMS.BLL
                 SetChange(originDto, productionDto, userId);
                 output.isNewData = false;
             }
-
-            if (dbProduction.UOM == "KG")
-            {
-                dbProduction.UOM = "G";
-                dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
-                dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
-            }
-
+            
             if (dbProduction.UOM == "TH")
             {
                 dbProduction.UOM = "Btg";
                 dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
                 dbProduction.QTY_UNPACKED = dbProduction.QTY_UNPACKED * 1000;
             }
+
             dbProduction.CREATED_DATE = DateTime.Now;
 
             if (dbProduction.BATCH != null)
@@ -350,10 +344,9 @@ namespace Sampoerna.EMS.BLL
             {
                 if(unpacked == 0)
                 {
-                    var oldData = _repository.Get(p => p.COMPANY_CODE == item.CompanyCode && p.WERKS == item.PlantWerks
-                                                        && p.FA_CODE == item.FaCode && p.PRODUCTION_DATE < item.ProductionDate).LastOrDefault();
+                    var oldData = GetOldSaldo(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate).LastOrDefault();
 
-                    unpacked = oldData == null ? 0 : oldData.QTY_UNPACKED.Value;
+                    unpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
                 }
 
                 var wasteData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate);
@@ -394,12 +387,12 @@ namespace Sampoerna.EMS.BLL
                 var output = Mapper.Map<ProductionUploadItemsOutput>(inputItem);
                 output.IsValid = true;
 
-                var checkCountdataProduction =
+                var checkCountdataDailyProduction =
                     inputs.Where(
                         c =>
                             c.CompanyCode == output.CompanyCode && c.PlantWerks == output.PlantWerks &&
                             c.FaCode == output.FaCode && c.ProductionDate == output.ProductionDate).ToList();
-                if (checkCountdataProduction.Count > 1)
+                if (checkCountdataDailyProduction.Count > 1)
                 {
                     //double Daily Production Data
                     output.IsValid = false;
@@ -456,11 +449,10 @@ namespace Sampoerna.EMS.BLL
                 #endregion
                 //Brand Description Validation
                 #region -------------Brand Description--------------------
-                ZAIDM_EX_BRAND brandCeTypeData = null;
-               
-                if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandCeTypeData))
+              
+                if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandTypeData))
                 {
-                    output.BrandDescription = brandCeTypeData.BRAND_CE;
+                    output.BrandDescription = brandTypeData.BRAND_CE;
                 }
                 else
                 {
@@ -616,7 +608,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                messageList.Add("Finish Goods Code is empty");
+                messageList.Add("Brand Description  is empty");
             }
 
             #endregion
@@ -624,6 +616,42 @@ namespace Sampoerna.EMS.BLL
             message = messageList;
             return valResult;
         }
-        
+
+        private List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate)
+        {
+            List<ProductionDto> data = new List<ProductionDto>();
+
+            var list = _repository.Get(p => p.COMPANY_CODE == company && p.WERKS == plant && p.FA_CODE == facode && p.PRODUCTION_DATE < prodDate).OrderBy(p => p.PRODUCTION_DATE).ToList();
+
+            var lastUnpacked = Convert.ToDecimal(0);
+
+            foreach(var item in list)
+            {
+                var wasteData = _wasteBll.GetExistDto(item.COMPANY_CODE, item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
+
+                var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
+
+                var unpackedWaste = oldWaste > item.QTY ? oldWaste : 0;
+
+                var prodWaste = oldWaste < item.QTY ? oldWaste : 0;
+
+                var prod = new ProductionDto
+                {
+                    PlantWerks = item.WERKS,
+                    FaCode = item.FA_CODE,
+                    ProductionDate = item.PRODUCTION_DATE,
+                    QtyProduced = item.QTY - prodWaste,
+                    QtyPacked = item.QTY_PACKED,
+                    QtyUnpacked = lastUnpacked + item.QTY - item.QTY_PACKED - unpackedWaste
+                };
+
+                lastUnpacked = prod.QtyUnpacked.Value;
+
+                data.Add(prod);
+            }
+
+            return data;
+        }
+      
     }
 }
