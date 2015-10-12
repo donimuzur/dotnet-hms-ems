@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
             Pbck3Dto =new Pbck3Dto();
             Ck2Dto = new Ck2Dto();
             Back3Dto = new Back3Dto();
+            UploadItems = new List<Pbck7ItemUpload>();
         }
         public List<PrintHistoryItemModel> PrintHistoryListPbck3 { get; set; }
         

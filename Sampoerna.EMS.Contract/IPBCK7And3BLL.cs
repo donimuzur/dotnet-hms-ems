@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -49,5 +50,8 @@ namespace Sampoerna.EMS.Contract
 
         void InsertPbck3(Pbck3Dto pbck3Dto);
 
+        Pbck7AndPbck3Dto SavePbck7(Pbck7Pbck3SaveInput input);
+
+        Pbck7DetailsOutput GetDetailsPbck7ById(int id);
     }
 }

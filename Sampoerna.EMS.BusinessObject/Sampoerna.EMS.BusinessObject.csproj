@@ -301,6 +301,7 @@
     <Compile Include="Outputs\InventoryMovementOutputs.cs" />
     <Compile Include="Outputs\Pbck4ItemsOutput.cs" />
     <Compile Include="Outputs\Pbck4Ouputs.cs" />
+    <Compile Include="Outputs\Pbck7Outputs.cs" />
     <Compile Include="Outputs\ProductionGetByIdOutput.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\Lack1GeneratedOutput.cs" />

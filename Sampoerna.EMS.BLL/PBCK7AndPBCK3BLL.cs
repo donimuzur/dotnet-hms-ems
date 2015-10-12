@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -10,6 +11,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
@@ -35,7 +37,9 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poabll;
         private string includeTable = "PBCK7_ITEM";
         private WorkflowHistoryBLL _workflowHistoryBll;
-       
+
+        private IDocumentSequenceNumberBLL _docSeqNumBll;
+
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -51,6 +55,8 @@ namespace Sampoerna.EMS.BLL
             _repositoryCk2 = _uow.GetGenericRepository<CK2>();
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, logger);
             _repositoryPbck7Item = _uow.GetGenericRepository<PBCK7_ITEM>();
+
+            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow,_logger);
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -595,8 +601,46 @@ namespace Sampoerna.EMS.BLL
             return pbck3.CreatedBy;
         }
 
+        private void AddWorkflowHistory(Pbck7Pbck3WorkflowHistoryInput input)
+        {
+            var inputWorkflowHistory = new GetByActionAndFormNumberInput();
+            inputWorkflowHistory.ActionType = input.ActionType;
+            inputWorkflowHistory.FormNumber = input.DocumentNumber;
 
-        public Pbck7AndPbck3Dto SavePbck7Pbck3(Pbck7Pbck3SaveInput input)
+            var dbData = new WorkflowHistoryDto();
+            dbData.ACTION = input.ActionType;
+            dbData.FORM_NUMBER = input.DocumentNumber;
+            dbData.FORM_TYPE_ID = input.FormType;
+
+            dbData.FORM_ID = input.DocumentId;
+            if (!string.IsNullOrEmpty(input.Comment))
+                dbData.COMMENT = input.Comment;
+
+
+            dbData.ACTION_BY = input.UserId;
+            dbData.ROLE = input.UserRole;
+            dbData.ACTION_DATE = DateTime.Now;
+
+            _workflowHistoryBll.Save(dbData);
+        }
+
+        //private void AddWorkflowHistory(Pbck7Pbck3WorkflowDocumentInput input)
+        //{
+        //    var inputWorkflowHistory = new Pbck7Pbck3WorkflowHistoryInput();
+
+        //    inputWorkflowHistory.DocumentId = input.DocumentId;
+        //    inputWorkflowHistory.DocumentNumber = input.DocumentNumber;
+        //    inputWorkflowHistory.UserId = input.UserId;
+        //    inputWorkflowHistory.UserRole = input.UserRole;
+        //    inputWorkflowHistory.ActionType = input.ActionType;
+        //    inputWorkflowHistory.FormType = input.FormType
+        //    inputWorkflowHistory.Comment = input.Comment;
+
+        //    AddWorkflowHistory(inputWorkflowHistory);
+        //}
+
+
+        public Pbck7AndPbck3Dto SavePbck7(Pbck7Pbck3SaveInput input)
         {
             //workflowhistory
             var inputWorkflowHistory = new Pbck7Pbck3WorkflowHistoryInput();
@@ -606,16 +650,16 @@ namespace Sampoerna.EMS.BLL
             if (input.Pbck7Pbck3Dto.Pbck7Id > 0)
             {
                 //update
-                dbData = _repository.Get(c => c.PBCK3_PBCK7_ID == input.Pbck7Pbck3Dto.Pbck7Id, null, includeTables).FirstOrDefault();
+                dbData = _repositoryPbck7.Get(c => c.PBCK7_ID == input.Pbck7Pbck3Dto.Pbck7Id, null, null).FirstOrDefault();
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
                 //set changes history
-                var origin = Mapper.Map<Pbck4Dto>(dbData);
+                //var origin = Mapper.Map<Pbck7AndPbck3Dto>(dbData);
 
-                SetChangesHistory(origin, input.Pbck4Dto, input.UserId);
+                //SetChangesHistory(origin, input.Pbck4Dto, input.UserId);
 
-                Mapper.Map<Pbck4Dto, PBCK4>(input.Pbck4Dto, dbData);
+                Mapper.Map<Pbck7AndPbck3Dto, PBCK7>(input.Pbck7Pbck3Dto, dbData);
 
                 if (dbData.STATUS == Enums.DocumentStatus.Rejected)
                 {
@@ -626,19 +670,19 @@ namespace Sampoerna.EMS.BLL
                 dbData.MODIFIED_BY = input.UserId;
 
                 //delete child first
-                foreach (var pbck4Item in dbData.PBCK4_ITEM.ToList())
+                foreach (var pbck4Item in dbData.PBCK7_ITEM.ToList())
                 {
-                    _repositoryPbck4Items.Delete(pbck4Item);
+                    _repositoryPbck7Item.Delete(pbck4Item);
                 }
 
                 inputWorkflowHistory.ActionType = Enums.ActionType.Modified;
 
                 //insert new data
-                foreach (var pbck4Material in input.Pbck4Items)
+                foreach (var pbck7Items in input.Pbck7Pbck3Items)
                 {
-                    var pbck4Item = Mapper.Map<PBCK4_ITEM>(pbck4Material);
-                    pbck4Item.PLANT_ID = dbData.PLANT_ID;
-                    dbData.PBCK4_ITEM.Add(pbck4Item);
+                    var pbck7Item = Mapper.Map<PBCK7_ITEM>(pbck7Items);
+                    //pbck4Item.PLANT_ID = dbData.PLANT_ID;
+                    dbData.PBCK7_ITEM.Add(pbck7Item);
                 }
 
             }
@@ -647,43 +691,43 @@ namespace Sampoerna.EMS.BLL
 
                 var generateNumberInput = new GenerateDocNumberInput()
                 {
-                    Year = DateTime.Now.Year,
-                    Month = DateTime.Now.Month,
-                    NppbkcId = input.Pbck4Dto.NppbkcId,
-                    FormType = Enums.FormType.PBCK4
+                    Year = input.Pbck7Pbck3Dto.Pbck7Date.Year,
+                    Month = input.Pbck7Pbck3Dto.Pbck7Date.Month,
+                    NppbkcId = input.Pbck7Pbck3Dto.NppbkcId,
+                    FormType = Enums.FormType.PBCK7
                 };
 
-                input.Pbck4Dto.PBCK4_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+                input.Pbck7Pbck3Dto.Pbck7Number = _docSeqNumBll.GenerateNumber(generateNumberInput);
 
-                input.Pbck4Dto.Status = Enums.DocumentStatus.Draft;
-                input.Pbck4Dto.CREATED_DATE = DateTime.Now;
-                input.Pbck4Dto.CREATED_BY = input.UserId;
+                input.Pbck7Pbck3Dto.Pbck7Status = Enums.DocumentStatus.Draft;
+                input.Pbck7Pbck3Dto.CreateDate = DateTime.Now;
+                input.Pbck7Pbck3Dto.CreatedBy = input.UserId;
 
-                dbData = new PBCK4();
+                dbData = new PBCK7();
 
-                Mapper.Map<Pbck4Dto, PBCK4>(input.Pbck4Dto, dbData);
+                Mapper.Map<Pbck7AndPbck3Dto, PBCK7>(input.Pbck7Pbck3Dto, dbData);
 
                 inputWorkflowHistory.ActionType = Enums.ActionType.Created;
 
                 //insert new data
-                foreach (var pbck4Material in input.Pbck4Items)
+                foreach (var pbck7Material in input.Pbck7Pbck3Items)
                 {
 
-                    var pbck4Item = Mapper.Map<PBCK4_ITEM>(pbck4Material);
-                    pbck4Item.PLANT_ID = dbData.PLANT_ID;
-                    dbData.PBCK4_ITEM.Add(pbck4Item);
+                    var pbck7Item = Mapper.Map<PBCK7_ITEM>(pbck7Material);
+                    
+                    dbData.PBCK7_ITEM.Add(pbck7Item);
                 }
 
-                _repository.Insert(dbData);
+                _repositoryPbck7.Insert(dbData);
 
 
             }
 
-            inputWorkflowHistory.DocumentId = dbData.PBCK4_ID;
-            inputWorkflowHistory.DocumentNumber = dbData.PBCK4_NUMBER;
+            inputWorkflowHistory.DocumentId = dbData.PBCK7_ID;
+            inputWorkflowHistory.DocumentNumber = dbData.PBCK7_NUMBER;
             inputWorkflowHistory.UserId = input.UserId;
             inputWorkflowHistory.UserRole = input.UserRole;
-
+            inputWorkflowHistory.FormType = Enums.FormType.PBCK7;
 
             AddWorkflowHistory(inputWorkflowHistory);
 
@@ -707,9 +751,60 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            return Mapper.Map<Pbck4Dto>(dbData);
+            return Mapper.Map<Pbck7AndPbck3Dto>(dbData);
         }
 
+        public Pbck7DetailsOutput GetDetailsPbck7ById(int id)
+        {
+            var output = new Pbck7DetailsOutput();
+
+            var result = _repositoryPbck7.Get(x => x.PBCK7_ID == id, null, includeTable).FirstOrDefault();
+            if (result == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);//return new Pbck7AndPbck3Dto();
+
+            output.Pbck7Dto = Mapper.Map<Pbck7AndPbck3Dto>(result);
+
+            output.Back1Dto = GetBack1ByPbck7(id);
+            output.Pbck3Dto = GetPbck3ByPbck7Id(id);
+
+            if (output.Pbck3Dto != null)
+            {
+                output.Back3Dto = GetBack3ByPbck3Id(output.Pbck3Dto.Pbck3Id);
+                output.Ck2Dto = GetCk2ByPbck3Id(output.Pbck3Dto.Pbck3Id);
+            }
+            if (output.Back1Dto == null)
+                output.Back1Dto = new Back1Dto();
+            if (output.Pbck3Dto == null)
+                output.Pbck3Dto = new Pbck3Dto();
+            if (output.Back3Dto == null)
+                output.Back3Dto = new Back3Dto();
+            if (output.Ck2Dto == null)
+                output.Ck2Dto = new Ck2Dto();
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormId = result.PBCK7_ID;
+            workflowInput.FormNumber = result.PBCK7_NUMBER;
+            workflowInput.DocumentStatus = result.STATUS;
+            workflowInput.NPPBKC_Id = result.NPPBKC;
+            workflowInput.FormType = Enums.FormType.PBCK7;
+
+            output.WorkflowHistoryPbck7 = _workflowHistoryBll.GetByFormNumber(workflowInput);
+
+            workflowInput.FormId = output.Pbck3Dto.Pbck3Id;
+            workflowInput.FormNumber = output.Pbck3Dto.Pbck3Number;
+            workflowInput.DocumentStatus = output.Pbck3Dto.Pbck3Status;
+            workflowInput.NPPBKC_Id = result.NPPBKC;
+            workflowInput.FormType = Enums.FormType.PBCK3;
+
+            output.WorkflowHistoryPbck3 = _workflowHistoryBll.GetByFormNumber(workflowInput);
+
+            return output;
+
+            //var pbck7 = Mapper.Map<Pbck7AndPbck3Dto>(result);
+            //pbck7.Back1Dto = Mapper.Map<Back1Dto>(result.BACK1.LastOrDefault());
+            //return pbck7;
+        }
 
     }
 

@@ -885,6 +885,7 @@
     <Content Include="Scripts\Pbck4InputManual.js" />
     <Content Include="Scripts\Pbck4Script.js" />
     <Content Include="Scripts\Pbck4ScriptDocUpload.js" />
+    <Content Include="Scripts\Pbck7Script.js" />
     <Content Include="Scripts\pbck7\form.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />

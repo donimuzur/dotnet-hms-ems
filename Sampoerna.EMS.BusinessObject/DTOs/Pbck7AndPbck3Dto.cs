@@ -143,6 +143,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public int? Pbck7Id { get; set; }
 
+        public string Message { get; set; }
+
     }
 
     public class Back3Dto
