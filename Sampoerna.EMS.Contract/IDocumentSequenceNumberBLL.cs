@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.Contract
 
         string GenerateNumberByFormType(Enums.FormType formType);
 
-        string GenerateNumberNoReset(GenerateDocNumberInput input);
+        //string GenerateNumberNoReset(GenerateDocNumberInput input);
 
 
         List<DOC_NUMBER_SEQ> GetDocumentSequenceList();

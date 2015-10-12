@@ -51,6 +51,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class Ck4cGetOpenDocumentByParamInput : Ck4CGetByParamInput
     {
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Ck4cGetCompletedDocumentByParamInput : Ck4CGetByParamInput

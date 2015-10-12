@@ -1,7 +1,10 @@
 ﻿using System.Linq;
+using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
+using AutoMapper;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -28,6 +31,13 @@ namespace Sampoerna.EMS.BLL
                     _repository.Delete(ck4cItem);
                 }
             }
+        }
+
+        public List<Ck4cItem> GetDataByPlantAndFacode(string plant, string facode)
+        {
+            var data = _repository.Get(c => c.WERKS == plant && c.FA_CODE == facode).ToList();
+
+            return Mapper.Map<List<Ck4cItem>>(data);
         }
     }
 }
