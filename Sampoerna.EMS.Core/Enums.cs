@@ -56,7 +56,7 @@ namespace Sampoerna.EMS.Core
             PortToImporter = 2,
             [Description("Import")]
             ImporterToPlant = 3,
-           [Description("Export")]
+            [Description("Export")]
             Export = 4,
             [Description("Manual")]
             Manual = 5,
@@ -64,11 +64,11 @@ namespace Sampoerna.EMS.Core
             DomesticAlcohol = 6,
             [Description("Completed")]
             Completed = 7,
-           [Description("Market Return")]
+            [Description("Market Return")]
             MarketReturn = 8
         }
 
-       
+
 
         public enum CK5XmlStatus
         {
@@ -102,13 +102,13 @@ namespace Sampoerna.EMS.Core
 
             GRReversal = 22,
             GIReversal = 17,
-            
+
             STOBGIReversal = 32,
             STOBGRReversal = 37,
 
             None = 00
 
-         
+
 
         }
 
@@ -124,9 +124,9 @@ namespace Sampoerna.EMS.Core
             Draft = 1,
             [Description("Revised")]
             Revised = 5,
-            [Description("Waiting for Your Approval")]
+            [Description("Waiting for Approval")]
             WaitingForApproval = 10,
-            [Description("Waiting for Your Approval")]
+            [Description("Waiting for Approval")]
             WaitingForApprovalManager = 11,
             [Description("Approved")]
             Approved = 15,
@@ -166,7 +166,7 @@ namespace Sampoerna.EMS.Core
             GIReversal = 95,
             [Description("Cancelled")]
             Cancelled = 100,
-            
+
             [Description("Completed")]
             Completed = 105,
 
@@ -193,7 +193,7 @@ namespace Sampoerna.EMS.Core
             [Description("Rec STO GR Completed")]
             StoRecGRCompleted = 230,
 
-           
+
             [Description("STOB Good Issue Reversal")]
             STOBGIReversal = 235,
 
@@ -202,7 +202,7 @@ namespace Sampoerna.EMS.Core
 
             [Description("STOB Good Issue Partial")]
             STOBGIPartial = 245,
-            
+
             [Description("STOB Good Receive Partial")]
             STOBGRPartial = 250,
 
@@ -218,7 +218,7 @@ namespace Sampoerna.EMS.Core
             [Description("TF Posting")]
             TFPosting = 320
         }
-        
+
 
         public enum DocumentStatusGov
         {
@@ -338,7 +338,7 @@ namespace Sampoerna.EMS.Core
 
             [Description("STOB Good Issue Partial")]
             STOBGIPartial = 245,
-            
+
             [Description("STOB Good Receive Partial")]
             STOBGRPartial = 250,
             [Description("TF Posted")]
@@ -496,18 +496,18 @@ namespace Sampoerna.EMS.Core
         public enum Pbck7Type
         {
             [Description("PBCK7")]
-            Pbck7List =1,
+            Pbck7List = 1,
             [Description("PBCK3")]
-            Pbck3List  =2
+            Pbck3List = 2
         }
 
         public enum DocumentTypePbck7AndPbck3
         {
             [Description("Pemusnahan")]
-            Pemusnahan=1,
+            Pemusnahan = 1,
             [Description("Pengolahan")]
-            Pengolahaan=2,
-            
+            Pengolahaan = 2,
+
         }
 
         public enum CK4CType
@@ -525,11 +525,25 @@ namespace Sampoerna.EMS.Core
         public enum MovementTypeCode
         {
             [Description("261")]
-            UsageAdd = 261,
+            Usage261 = 261,
             [Description("262")]
-            UsageMin = 262,
+            Usage262 = 262,
+            [Description("201")]
+            Usage201 = 201,
+            [Description("202")]
+            Usage202 = 202,
+            [Description("901")]
+            Usage901 = 901,
+            [Description("902")]
+            Usage902 = 902,
+            [Description("Z01")]
+            UsageZ01 = 701,
+            [Description("Z02")]
+            UsageZ02 = 702,
             [Description("101")]
-            Receiving = 101,
+            Receiving101 = 101,
+            [Description("102")]
+            Receiving102 = 102
         }
 
         public enum StatusGovCk4c

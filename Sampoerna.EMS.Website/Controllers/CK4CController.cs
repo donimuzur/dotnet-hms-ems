@@ -125,6 +125,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Ck4cGetOpenDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
             var dbData = _ck4CBll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Number);
             return Mapper.Map<List<DataDocumentList>>(dbData);
         }
@@ -235,6 +238,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year)
         {
             var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).ToList();
+
+            var result = _productionBll.GetExactResult(data);
+
             return Json(data);
         }
 
@@ -305,7 +311,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var company = _companyBll.GetById(model.Details.CompanyId);
             var nppbkcId = plant == null ? item.NppbkcId : plant.NPPBKC_ID;
 
-            item.NppbkcId = plant != null ? plant.NPPBKC_ID : item.NppbkcId;
+            item.NppbkcId = nppbkcId;
             item.PlantName = plant == null ? "" : plant.NAME1;
             item.CompanyName = company.BUTXT;
             item.CreatedBy = CurrentUser.USER_ID;
@@ -324,8 +330,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View(model);
             }
 
-            _ck4CBll.Save(item, CurrentUser.USER_ID);
+            var existCk4c = _ck4CBll.GetByItem(item);
+            if (existCk4c != null)
+            {
+                AddMessageInfo("Data CK-4C already exists", Enums.MessageInfoType.Warning);
+                return RedirectToAction("Details", new { id = existCk4c.Ck4CId });
+            }
+
+            var ck4cData = _ck4CBll.Save(item, CurrentUser.USER_ID);
             AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+            Ck4cWorkflow(ck4cData.Ck4CId, Enums.ActionType.Created, string.Empty);
             return RedirectToAction("DocumentList");
         }
         #endregion
@@ -380,6 +394,57 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion
 
         #region Details
+
+        public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var ck4cData = _ck4CBll.GetById(id.Value);
+
+            if (ck4cData == null)
+            {
+                return HttpNotFound();
+            }
+
+            var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+            var nppbkcId = ck4cData.NppbkcId;
+
+            //workflow history
+            var workflowInput = new GetByFormNumberInput();
+            workflowInput.FormNumber = ck4cData.Number;
+            workflowInput.DocumentStatus = ck4cData.Status;
+            workflowInput.NPPBKC_Id = nppbkcId;
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            var changesHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                    id.Value.ToString()));
+
+            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
+
+            var model = new Ck4CIndexDocumentListViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Details = Mapper.Map<DataDocumentList>(ck4cData),
+                WorkflowHistory = workflowHistory,
+                ChangesHistoryList = changesHistory,
+                PrintHistoryList = printHistory
+            };
+
+            model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
+
+            model.AllowEditCompleted = _ck4CBll.AllowEditCompletedDocument(ck4cData, CurrentUser.USER_ID);
+
+            return View(model);
+        }
 
         public ActionResult Details(int? id)
         {
@@ -476,7 +541,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Ck4CIndexDocumentListViewModel();
             model = InitialModel(model);
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || (CurrentUser.UserRole == Enums.UserRole.POA && ck4cData.Status == Enums.DocumentStatus.WaitingForApproval))
             {
                 //redirect to details for approval/rejected
                 return RedirectToAction("Details", new { id });
@@ -485,11 +550,6 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 model.Details = Mapper.Map<DataDocumentList>(ck4cData);
-
-                if (!ValidateEditDocument(model))
-                {
-                    return RedirectToAction("DocumentList");
-                }
 
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
 
@@ -538,6 +598,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "GovApproveDocument";
                 }
 
+                if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject))
+                {
+
+                }
+                else if (!ValidateEditDocument(model, false))
+                {
+                    return RedirectToAction("Details", new { id });
+                }
+
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
             }
             catch (Exception exception)
@@ -571,9 +640,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 var dataToSave = Mapper.Map<Ck4CDto>(model.Details);
 
+                if (dataToSave.Ck4cItem.Count == 0)
+                {
+                    AddMessageInfo("No item found", Enums.MessageInfoType.Warning);
+                    model.Details.StatusName = "Draft";
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
                 var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);
+                var nppbkcId = plant == null ? dataToSave.NppbkcId : plant.NPPBKC_ID;
 
+                dataToSave.NppbkcId = nppbkcId;
                 dataToSave.PlantName = plant == null ? "" : plant.NAME1;
                 dataToSave.CompanyName = company.BUTXT;
                 dataToSave.ModifiedBy = CurrentUser.USER_ID;
@@ -669,7 +748,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck4CBll.Ck4cWorkflow(input);
         }
 
-        private bool ValidateEditDocument(Ck4CIndexDocumentListViewModel model)
+        private bool ValidateEditDocument(Ck4CIndexDocumentListViewModel model, bool message = true)
         {
 
             //check is Allow Edit Document
@@ -697,13 +776,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             bool isSuccess = false;
             var currentUserId = CurrentUser;
-            var message = "Document is " + EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+            var message = string.Empty;
 
             try
             {
-                if(model.Details.Status == Enums.DocumentStatus.WaitingGovApproval ||
-                    (model.Details.Status == Enums.DocumentStatus.Completed &&
-                    (model.Details.Ck4cDecreeFiles != null)))
+                if(model.Details.Status == Enums.DocumentStatus.WaitingGovApproval)
                 {
                     model.Details.Ck4cDecreeDoc = new List<Ck4cDecreeDocModel>();
                     if (model.Details.Ck4cDecreeFiles != null)
@@ -727,11 +804,6 @@ namespace Sampoerna.EMS.Website.Controllers
                                     CREATED_DATE = DateTime.Now
                                 };
                                 model.Details.Ck4cDecreeDoc.Add(decreeDoc);
-                            }
-                            else
-                            {
-                                AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                                return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
                             }
                         }
                     }
@@ -758,8 +830,93 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
 
             AddMessageInfo(message, Enums.MessageInfoType.Success);
-            
-            return RedirectToAction("DocumentList");
+
+            return RedirectToAction("CompletedDocument");
+        }
+
+        [HttpPost]
+        public ActionResult GovCompletedDocument(Ck4CIndexDocumentListViewModel model)
+        {
+            bool isSuccess = false;
+            var currentUserId = CurrentUser;
+            var message = "Document is " + EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+            var actionResult = "DocumentList";
+
+            try
+            {
+                if (model.Details.Status == Enums.DocumentStatus.Completed)
+                {
+                    model.Details.Ck4cDecreeDoc = new List<Ck4cDecreeDocModel>();
+                    
+                    if (model.Details.Ck4cDecreeFiles != null)
+                    {
+                        foreach (var item in model.Details.Ck4cDecreeFiles)
+                        {
+                            if (item != null)
+                            {
+                                var filenamecheck = item.FileName;
+
+                                if (filenamecheck.Contains("\\"))
+                                {
+                                    filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                                }
+
+                                var decreeDoc = new Ck4cDecreeDocModel()
+                                {
+                                    FILE_NAME = filenamecheck,
+                                    FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId),
+                                    CREATED_BY = currentUserId.USER_ID,
+                                    CREATED_DATE = DateTime.Now
+                                };
+                                model.Details.Ck4cDecreeDoc.Add(decreeDoc);
+                            }
+                        }
+
+                        message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
+                        if (model.Details.StatusGoverment == Enums.StatusGovCk4c.Approved)
+                            message = "Document has been saved";
+                        actionResult = "CompletedDocument";
+                    }
+
+                    if (model.Details.Ck4cUploadedDoc != null)
+                    {
+                        foreach (var item in model.Details.Ck4cUploadedDoc)
+                        {
+                            if (item != null)
+                            {
+                                var valueDoc = item.Split('|').ToArray();
+
+                                var decreeDoc = new Ck4cDecreeDocModel()
+                                {
+                                    FILE_NAME = valueDoc[1],
+                                    FILE_PATH = valueDoc[0],
+                                    CREATED_BY = currentUserId.USER_ID,
+                                    CREATED_DATE = DateTime.Now
+                                };
+                                model.Details.Ck4cDecreeDoc.Add(decreeDoc);
+                            }
+                        }
+
+                        message = "Document " + EnumHelper.GetDescription(model.Details.StatusGoverment);
+                        if (model.Details.StatusGoverment == Enums.StatusGovCk4c.Approved)
+                            message = "Document has been saved";
+                        actionResult = "CompletedDocument";
+                    }
+                }
+
+                Ck4cWorkflowCompleted(model.Details, model.Details.GovApprovalActionType, model.Details.Comment);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
+
+            AddMessageInfo(message, Enums.MessageInfoType.Success);
+
+            return RedirectToAction(actionResult);
         }
 
         private string SaveUploadedFile(HttpPostedFileBase file, int ck4cId)
@@ -784,18 +941,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private void Ck4cWorkflowGovApprove(DataDocumentList ck4cData, Enums.ActionType actionType, string comment)
         {
-            var input = new Ck4cWorkflowDocumentInput()
-            {
-                DocumentId = ck4cData.Ck4CId,
-                ActionType = actionType,
-                UserRole = CurrentUser.UserRole,
-                UserId = CurrentUser.USER_ID,
-                DocumentNumber = ck4cData.Number
-            };
-
             if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
             {
-                input = new Ck4cWorkflowDocumentInput()
+                var input = new Ck4cWorkflowDocumentInput()
                 {
                     DocumentId = ck4cData.Ck4CId,
                     ActionType = actionType,
@@ -809,9 +957,49 @@ namespace Sampoerna.EMS.Website.Controllers
                         Ck4cDecreeDoc = Mapper.Map<List<Ck4cDecreeDocDto>>(ck4cData.Ck4cDecreeDoc)
                     }
                 };
-            }
 
-            _ck4CBll.Ck4cWorkflow(input);
+                _ck4CBll.Ck4cWorkflow(input);
+            }
+        }
+
+        private void Ck4cWorkflowCompleted(DataDocumentList ck4cData, Enums.ActionType actionType, string comment)
+        {
+            if (ck4cData.Status == Enums.DocumentStatus.Completed)
+            {
+                var input = new Ck4cWorkflowDocumentInput();
+
+                if(ck4cData.Ck4cDecreeDoc.Count == 0)
+                {
+                    input = new Ck4cWorkflowDocumentInput()
+                    {
+                        DocumentId = ck4cData.Ck4CId,
+                        ActionType = actionType,
+                        UserRole = CurrentUser.UserRole,
+                        UserId = CurrentUser.USER_ID,
+                        DocumentNumber = ck4cData.Number,
+                        Comment = comment
+                    };
+                }
+                else
+                {
+                    input = new Ck4cWorkflowDocumentInput()
+                    {
+                        DocumentId = ck4cData.Ck4CId,
+                        ActionType = actionType,
+                        UserRole = CurrentUser.UserRole,
+                        UserId = CurrentUser.USER_ID,
+                        DocumentNumber = ck4cData.Number,
+                        Comment = comment,
+                        AdditionalDocumentData = new Ck4cWorkflowDocumentData()
+                        {
+                            DecreeDate = ck4cData.DecreeDate.Value,
+                            Ck4cDecreeDoc = Mapper.Map<List<Ck4cDecreeDocDto>>(ck4cData.Ck4cDecreeDoc)
+                        }
+                    };
+                }
+                
+                _ck4CBll.Ck4cWorkflow(input);
+            }
         }
 
         #endregion

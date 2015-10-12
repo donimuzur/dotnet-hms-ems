@@ -1,8 +1,5 @@
 ﻿using Sampoerna.EMS.Core;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -58,6 +55,10 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public bool IsOpenDocList { get; set; }
 
         public bool AllowPrintDocument { get; set; }
+
+        public string MenuLack2OpenDocument { get; set; }
+        public string MenuLack2CompletedDocument { get; set; }
+
 
     }
 }

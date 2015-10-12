@@ -211,17 +211,18 @@
             if ($("#SearchInput_BrandCe").length) {
 
                 var FaDesc = $(this).find("option:selected").val();
+                var Plant = $('#SearchInput_PlantId').val();
                 if (FaDesc == '') {
                     $('#test').val('');
                 } else {
-                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Waste")', { faCode: FaDesc });
+                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Waste")', {  plantWerk: Plant, faCode: FaDesc });
                 }
             }
 
         });
 
         function ajaxFaCodeDescription(url, formData) {
-            if (formData.faCode) {
+            if (formData.plantWerk, formData.faCode) {
                 $.ajax({
                     type: 'POST',
                     url: url,

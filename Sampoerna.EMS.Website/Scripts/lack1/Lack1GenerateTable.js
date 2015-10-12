@@ -9,7 +9,8 @@ function generateTable(data) {
     console.log(data);
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
-
+    if (data.IncomeList.length > 0)
+    {
     if (data.IncomeList) {
         var rowIndex = 1;
         var rowCount = data.IncomeList.length;
@@ -40,6 +41,7 @@ function generateTable(data) {
                 '<input name="IncomeList[' + i + '].Ck5Id" type="hidden" value = "' + data.IncomeList[i].Ck5Id + '" />' +
                 '<input name="IncomeList[' + i + '].RegistrationDate" type="hidden" value = "' + data.IncomeList[i].RegistrationDate + '" />'
                 + '<input name="IncomeList[' + i + '].RegistrationNumber" type="hidden" value = "' + data.IncomeList[i].RegistrationNumber + '" />'
+                + '<input name="IncomeList[' + i + '].StringRegistrationDate" type="hidden" value = "' + data.IncomeList[i].StringRegistrationDate + '" />'
                 + rowIndex + '</td><td>' + data.IncomeList[i].RegistrationNumber + ' - ' + data.IncomeList[i].StringRegistrationDate + '</td>' +
                         '<td>' + '<input name="IncomeList[' + i + '].Amount" type="hidden" value = "' + data.IncomeList[i].Amount + '" />' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
             /*rc.append(item);*/
@@ -62,13 +64,16 @@ function generateTable(data) {
         '<td>' + (data.Noted ? data.Noted : '') + '</td></tr>';
         $('#IncomeListCount').val(0);
     }
+    }
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "' + data.TotalIncome + '" />'
         + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.SummaryProductionList) + '</td><td colspan="2"></td></tr>' +
         '</tbody></table>';
     
-    rc = rc + generatePlant(data.Lack1Plant);
-    rc = rc + generatePbck1Mapping(data.Lack1Pbck1Mapping);
+    //rc = rc + generatePlant(data.Lack1Plant);
+    //if (data.Lack1Pbck1Mapping) {
+    //    rc = rc + generatePbck1Mapping(data.Lack1Pbck1Mapping);
+    //}
 
     return rc;
 }

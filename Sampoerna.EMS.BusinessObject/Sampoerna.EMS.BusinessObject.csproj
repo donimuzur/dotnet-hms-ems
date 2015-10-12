@@ -237,9 +237,11 @@
     <Compile Include="Inputs\Pbck4Inputs.cs" />
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
+    <Compile Include="Inputs\ProductionUploadItemsInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
     <Compile Include="Inputs\WasteGetByParamInput.cs" />
+    <Compile Include="Inputs\WasteUploadItemsInput.cs" />
     <Compile Include="Inputs\WorkflowHistoryInput.cs" />
     <Compile Include="Inputs\WorkflowInput.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
@@ -308,7 +310,9 @@
     <Compile Include="Outputs\PBCK1Outputs.cs" />
     <Compile Include="Outputs\Pbck1ProdConverterOutput.cs" />
     <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />
+    <Compile Include="Outputs\ProductionUploadItemsOutput.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
+    <Compile Include="Outputs\WasteUploadItemsOutput.cs" />
     <Compile Include="Outputs\WorkflowHistoryOutput.cs" />
     <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />
     <Compile Include="Outputs\ZaidmExPOAMapOutput.cs" />

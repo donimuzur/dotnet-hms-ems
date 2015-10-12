@@ -237,6 +237,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public bool AllowGrCreated { get; set; }
 
+        public bool AllowTfPostedPortToImporter { get; set; }
+
         public string ActionType { get; set; }
 
         public bool AllowCancelSAP { get; set; }
@@ -256,7 +258,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public SelectList Ck5RefList { get; set; }
         public bool IsCk5ImporterToPlant { get; set; }
         public bool IsMarketReturn { get; set; }
-
+        public bool IsCompleted { get; set; }
 
         [Display(Name = "BACK-1 Number")]
         public string Back1Number { get; set; }
@@ -264,5 +266,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [Display(Name = "BACK-1 Date")]
         [UIHint("DateTime")]
         public DateTime? Back1Date { get; set; }
+
+        public bool AllowAttachmentCompleted { get; set; }
     }
 }

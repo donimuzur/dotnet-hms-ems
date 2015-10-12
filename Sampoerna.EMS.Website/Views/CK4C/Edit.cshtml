@@ -25,7 +25,7 @@
                     
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
-                    @if (Model.Details.Status == Enums.DocumentStatus.Draft)
+                    @if (Model.Details.Status == Enums.DocumentStatus.Draft || Model.Details.Status == Enums.DocumentStatus.Rejected)
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }
@@ -129,133 +129,146 @@
 
 @section scripts
 {
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script src="~/Scripts/ck4cscript.js"></script>
     @if (Model.Details.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
     {
         <script src="~/Scripts/ck4c/docupload.js"></script>
     }
     <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-            SetPoaList();
+    $(document).ready(function () {
+        SetPoaList();
 
-            SetBasedOn();
+        SetBasedOn();
 
-            SetDataByCompany();
+        SetDataByCompany();
+
+        $('#divComment').hide();
+
+        $('#Details_StatusGoverment').on('change', function (e) {
+            var valueSelected = this.value;
 
             $('#divComment').hide();
 
-            $('#Details_StatusGoverment').on('change', function (e) {
-                var valueSelected = this.value;
-
-                $('#divComment').hide();
-
-                if (valueSelected == 'Rejected') {
-                    $('#divComment').show();
-                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovReject');
-                }
-                else if (valueSelected == 'Approved') {
-                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
-                }
-            });
-
-            $("#Details_CompanyId").change(function () {
-                ChangeCompany($(this).find("option:selected").val(), '', '');
-            });
-
-            $('#Details_NppbkcId').change(function () {
-                nppbkcIdOnChange('@Url.Action("PoaListPartial", "CK4C")');
-            });
-
-            $("#Details_PlantId").change(function () {
-                plantIdOnChange('@Url.Action("GetPoaByPlantId", "CK4C")');
-            });
-
-            $('#btnCancel').click(function (e) {
-                location.href = '@Url.Action("DocumentList", "CK4C")';
-            });
-
-            $("input[name='based-on']").click(function (e) {
-                ChangeBasedOn(this.value);
-            });
-
-            $('#btnGenerate').click(function (e) {
-                getProductionData('@Url.Action("GetProductionData", "CK4C")');
-            });
-
-            $("#btnSaveCk4c").click(function () {
-                if (ValidateInput()) {
-                    $('#EditForm').submit();
-                }
-            });
-
-            $("#btnSaveGovStatus").click(function () {
-                if (ValidateGovInput()) {
-                    $('#EditForm').submit();
-                }
-            });
-
-            $("#btnSubmitDocument").click(function () {
-                $('#Ck4cModal').modal('show');
-            });
-
-            $("#btnSubmitConfirm").click(function () {
-                $('#Details_IsSaveSubmit').val('submit');
-                $('#EditForm').submit();
-            });
-
-            $("#btnSaveRemarks").click(function () {
-                UpdateRow();
-            });
+            if (valueSelected == 'Rejected') {
+                $('#divComment').show();
+                $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+            }
+            else if (valueSelected == 'Approved') {
+                $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+            }
         });
 
-        function ChangeCompany(comp, plant, nppbkc) {
-            $('#Details_PlantId').html('');
-            $('#Details_PlantId').append('<option value="">select</option>');
-            $('#Details_NppbkcId').html('');
-            $('#Details_NppbkcId').append('<option value="">select</option>');
-            if ($("#Details_CompanyId").length) {
-                var cpy = comp;
-                if (cpy != '') {
-                    ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy }, plant);
-                    ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
-                }
+        $("#Details_CompanyId").change(function () {
+            ChangeCompany($(this).find("option:selected").val(), '', '');
+        });
+
+        $('#Details_NppbkcId').change(function () {
+            nppbkcIdOnChange('@Url.Action("PoaListPartial", "CK4C")');
+        });
+
+        $("#Details_PlantId").change(function () {
+            plantIdOnChange('@Url.Action("GetPoaByPlantId", "CK4C")');
+        });
+
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("DocumentList", "CK4C")';
+        });
+
+        $("input[name='based-on']").click(function (e) {
+            ChangeBasedOn(this.value);
+        });
+
+        $('#btnGenerate').click(function (e) {
+            getProductionData('@Url.Action("GetProductionData", "CK4C")');
+        });
+
+        $("#btnSaveCk4c").click(function () {
+            CheckSameData();
+
+            if (ValidateInput()) {
+                $('#EditForm').submit();
+            }
+        });
+
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateGovInput()) {
+                $('#EditForm').submit();
+            }
+        });
+
+        $("#btnSubmitDocument").click(function () {
+            CheckSameData();
+
+            $('#Ck4cModal').modal('show');
+        });
+
+        $("#btnSubmitConfirm").click(function () {
+            $('#Details_IsSaveSubmit').val('submit');
+            $('#EditForm').submit();
+        });
+
+        $("#btnSaveRemarks").click(function () {
+            UpdateRow();
+        });
+    });
+
+    function ChangeCompany(comp, plant, nppbkc) {
+        $('#Details_PlantId').html('');
+        $('#Details_PlantId').append('<option value="">select</option>');
+        $('#Details_NppbkcId').html('');
+        $('#Details_NppbkcId').append('<option value="">select</option>');
+        if ($("#Details_CompanyId").length) {
+            var cpy = comp;
+            if (cpy != '') {
+            ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy }, plant);
+            ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
             }
         }
+    }
 
-        function SetPoaList() {
-            var poa = '@Model.Details.ApprovedByPoa';
-            var nppbkc = '@Model.Details.NppbkcId';
-            var url = '@Url.Action("PoaListPartial", "CK4C")';
+    function SetPoaList() {
+        var poa = '@Model.Details.ApprovedByPoa';
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plant = '@Model.Details.PlantId';
+        var url = '@Url.Action("PoaListPartial", "CK4C")';
+        var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
 
-            if (poa == '') {
-                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+        if (poa == '')
+        {
+            ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+
+            if(nppbkc == '')
+            {
+                ajaxSelectNppbck({ plantId: plant }, urlPlant);
             }
         }
+    }
 
-        function SetBasedOn() {
-            var nppbkc = '@Model.Details.NppbkcId';
-            var plantId = $('#Details_PlantId').val();
-            var plantName = $('#Details_PlantName').val();
-            var docStatus = '@Model.Details.Status.ToString()';
-            var isAllow = '@Model.AllowGovApproveAndReject';
+    function SetBasedOn() {
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plantId = $('#Details_PlantId').val();
+        var plantName = $('#Details_PlantName').val();
+        var docStatus = '@Model.Details.Status.ToString()';
+        var isAllow = '@Model.AllowGovApproveAndReject';
 
-            if (plantId == '') {
-                $('#basedNppbkc').prop('checked', true);
-                if (docStatus != '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() != 'true') {
-                    $('#Details_NppbkcId').prop('disabled', false);
-                    $('#Details_PlantId').prop('disabled', true);
-                }
+        if (plantId == '') {
+            $('#basedNppbkc').prop('checked', true);
+            if (docStatus != '@Enums.DocumentStatus.WaitingGovApproval.ToString()' && isAllow.toLowerCase() != 'true') {
+                $('#Details_NppbkcId').prop('disabled', false);
+                $('#Details_PlantId').prop('disabled', true);
             }
         }
+    }
 
-        function SetDataByCompany() {
-            var nppbkc = '@Model.Details.NppbkcId';
-            var plant = '@Model.Details.PlantId';
-            ChangeCompany($("#Details_CompanyId").find("option:selected").val(), plant, nppbkc);
-        }
+    function SetDataByCompany() {
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plant = '@Model.Details.PlantId';
+        ChangeCompany($("#Details_CompanyId").find("option:selected").val(), plant, nppbkc);
+    }
 
-        function printPreview(url) {
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-        }
+    function printPreview(url) {
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+    }
     </script>
 }

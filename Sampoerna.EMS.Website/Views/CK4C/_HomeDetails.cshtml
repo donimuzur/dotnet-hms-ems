@@ -156,13 +156,13 @@
                                         <td>@item.BrandDescription</td>
                                         <td>@item.PlantName</td>
                                         <td>@item.ProdType</td>
-                                        <td>@item.HjeIdr</td>
-                                        <td>@item.Tarif</td>
-                                        <td>@item.ContentPerPack</td>
-                                        <td>@item.PackedQty</td>
-                                        <td>@item.PackedInPack</td>
-                                        <td>@item.UnpackedQty</td>
-                                        <td>@item.ProdQty</td>
+                                        <td class="number">@string.Format("{0:N2}", item.HjeIdr)</td>
+                                        <td class="number">@string.Format("{0:N2}", item.Tarif)</td>
+                                        <td class="number">@string.Format("{0:N2}", item.ContentPerPack)</td>
+                                        <td class="number">@string.Format("{0:N2}", item.PackedQty)</td>
+                                        <td class="number">@string.Format("{0:N2}", item.PackedInPack)</td>
+                                        <td class="number">@string.Format("{0:N2}", item.UnpackedQty)</td>
+                                        <td class="number">@string.Format("{0:N2}", item.ProdQty)</td>
                                         <td>@item.ProdQtyUom</td>
                                         <td>@item.Remarks</td>
                                     </tr>

@@ -1,0 +1,138 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
+@{
+    ViewBag.Title = "Detail";
+}
+
+@using (Html.BeginForm("", "CK4C", FormMethod.Post, new { @id = "DetailForm"}))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>CK-4C Form</h3>
+                <label class="status">@Model.Details.StatusName</label>
+                <div class="action-button">
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeDetails")
+                        @Html.Partial("_PrintOut")
+                        @Html.Partial("_ChangeLog")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts
+{
+    <script src="~/Scripts/ck4cscript.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+            SetBasedOn();
+
+            SetPoaList();
+
+            $('#divComment').hide();
+
+            $('#btnCancel').click(function (e) {
+                location.href = '@Url.Action("DocumentList", "CK4C")';
+            });
+        });
+
+        function SetPoaList() {
+            var poa = '@Model.Details.ApprovedByPoa';
+            var nppbkc = '@Model.Details.NppbkcId';
+            var plant = '@Model.Details.PlantId';
+            var url = '@Url.Action("PoaListPartial", "CK4C")';
+            var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
+
+            if (poa == '')
+            {
+                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+
+                if(nppbkc == '')
+                {
+                    ajaxSelectNppbck({ plantId: plant }, urlPlant);
+                }
+            }
+        }
+
+        function SetBasedOn() {
+            var nppbkc = '@Model.Details.NppbkcId';
+            var plantId = '@Model.Details.PlantId';
+            var plantName = '@Model.Details.PlantName';
+
+            if (plantId == '')
+            {
+                $('#basedNppbkc').prop('checked', true);
+            }
+
+            if(plantId != '')
+            {
+                $('#Details_PlantName').val(plantId + '-' + plantName);
+            }
+        }
+
+        function printPreview(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        }
+
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+        }
+
+    </script>
+}

@@ -100,12 +100,12 @@
 		width: 100%;
 		clear: both;
 	}
-    .button-print {
-        display: none
-    }
 	.print-out .page-break{ 
 		display: block; 
 		page-break-before: always; 
+	}
+	.button-print{
+		display: none;
 	}
 	@page {
         size: landscape;   /* auto is the current printer page size */

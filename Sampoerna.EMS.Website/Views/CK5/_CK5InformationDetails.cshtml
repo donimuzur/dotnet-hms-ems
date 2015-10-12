@@ -734,30 +734,85 @@
                                         </div>
                                     </div>
                                 </div>
+                                @if (Model.AllowAttachmentCompleted)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-5 Doc</label>
+                                            <div class="col-md-8">
 
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Attachment</label>
-                                        <div class="col-md-8">
-                                            @*<input type="text" class="form-control" disabled="">*@
-                                            @if (Model.Ck5FileUploadModelList != null)
-                                            {
-                                                foreach (var file in Model.Ck5FileUploadModelList)
-                                                {
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <i class="fa fa-file"></i>
-                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="file-upload" id="poa-files">
+
                                                         </div>
-
                                                     </div>
+                                                    <div class="col-md-12">
+                                                        <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file">Add File</button>
+                                                    </div>
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Attachment</label>
+                                            <div class="col-md-8">
+                                                @*<input type="text" class="form-control" disabled="">*@
+                                                @if (Model.Ck5FileUploadModelList != null)
+                                                {
+                                                    foreach (var file in Model.Ck5FileUploadModelList)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <i class="fa fa-file"></i>
+                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                            </div>
+
+                                                        </div>
+                                                    }
                                                 }
-                                            }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            @if (Model.AllowAttachmentCompleted)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Attachment</label>
+                                            <div class="col-md-8">
+                                                @*<input type="text" class="form-control" disabled="">*@
+                                                @if (Model.Ck5FileUploadModelList != null)
+                                                {
+                                                    foreach (var file in Model.Ck5FileUploadModelList)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <i class="fa fa-file"></i>
+                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                            </div>
+
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
+                            }
                         </div>
                     </div>
                 </div>
@@ -788,3 +843,41 @@
 
     </div>
 </div>
+
+@* Modal upload dialog *@
+
+<div class="modal fade in upload-file ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">CK5 Attachment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="file-sk-container" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary full add-files">Add Files</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                @*<input type="file" id="Ck5FileUploadFileList_0_" name="Ck5FileUploadFileList[0]" class="form-control">*@
+                                <input type="file" class="file-inputs" data-filename-placement="inside" id="Ck5FileUploadFileList_0_" name="Ck5FileUploadFileList[0]">
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" id="upload-file-sk" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* end Modal upload dialog *@

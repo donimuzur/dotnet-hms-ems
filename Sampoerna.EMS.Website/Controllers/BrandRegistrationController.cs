@@ -52,17 +52,17 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        public ActionResult Details(string plant, string facode)
+        public ActionResult Details(string plant, string facode,string stickercode)
         {
             var model = new BrandRegistrationDetailsViewModel();
-            
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
+
+            var dbBrand = _brandRegistrationBll.GetById(plant, facode, stickercode);
             model = Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);
             model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode+stickercode));
 
             
             if (model.IsFromSap.HasValue && model.IsFromSap.Value)
@@ -161,13 +161,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
                 dbBrand.STATUS = model.IsActive;
                 if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
-                    dbBrand.PER_CODE_DESC = dbBrand.PER_CODE_DESC.Split('-')[1];
+                    dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription.Split('-')[1];
 
                 try
                 {
                     _brandRegistrationBll.Save(dbBrand);
-                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                       );
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
                 }
                 catch
@@ -200,16 +199,16 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        public ActionResult Edit(string plant, string facode)
+        public ActionResult Edit(string plant, string facode,string stickercode)
         {
            
             var model = new BrandRegistrationEditViewModel();
 
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
+            var dbBrand = _brandRegistrationBll.GetById(plant, facode,stickercode);
           
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
-                return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE });
+                return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE, stickercode=dbBrand.STICKER_CODE });
 
             model = Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
             model.HjeValueStr = model.HjeValue == null ? string.Empty : model.HjeValue.ToString();
@@ -217,6 +216,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             model.PrintingPriceValueStr = model.PrintingPrice == null ? string.Empty : model.PrintingPrice.ToString();
             model = InitEdit(model);
+
+            model.IsAllowDelete = !model.IsFromSAP;
 
             return View(model);
         }
@@ -249,8 +250,8 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.CREATED_BY = CurrentUser.USER_ID;
-            if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
-                dbBrand.PER_CODE_DESC = dbBrand.PER_CODE_DESC.Split('-')[1];
+            if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
+                dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
             try
             {
                 _brandRegistrationBll.Save(dbBrand);
@@ -314,7 +315,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (listChange.Value) continue;
                 var changes = new CHANGES_HISTORY();
                 changes.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
-                changes.FORM_ID = origin.WERKS + origin.FA_CODE;
+                changes.FORM_ID = origin.WERKS + origin.FA_CODE + origin.STICKER_CODE;
                 changes.FIELD_NAME = listChange.Key;
                 changes.MODIFIED_BY = CurrentUser.USER_ID;
                 changes.MODIFIED_DATE = DateTime.Now;

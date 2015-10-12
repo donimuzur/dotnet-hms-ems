@@ -200,9 +200,17 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.CreatedUser != input.CurrentUser)
                 return false;
-
+            
             return input.DocumentStatus == Enums.DocumentStatus.GRCreated ||
                     input.DocumentStatus == Enums.DocumentStatus.GRCompleted;
+        }
+
+        public bool AllowTfPostedPortToImporter(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.TFPosted;
         }
 
         public bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input)
@@ -218,5 +226,15 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
+        public bool AllowAttachmentCompleted(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.DocumentStatus != Enums.DocumentStatus.Completed) return false;
+            if (input.CreatedUser == input.CurrentUser) return true;
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                return input.CurrentUser == input.PoaApprove;
+            }
+            return false;
+        }
     }
 }

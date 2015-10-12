@@ -5,7 +5,7 @@
     ViewBag.Title = "Details";
 }
 
-@using (Html.BeginForm("GovApproveDocument", "CK4C", FormMethod.Post, new { @id = "DetailForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("GovCompletedDocument", "CK4C", FormMethod.Post, new { @id = "DetailForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
@@ -154,13 +154,15 @@
     <script src="~/Scripts/ck4cscript.js"></script>
     @if (Model.Details.Status == Enums.DocumentStatus.Completed && Model.AllowEditCompleted)
     {
-        <script src="~/Scripts/ck4c/docupload.js"></script>
+        <script src="~/Scripts/ck4c/doccompleted.js"></script>
     }
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function () {
             SetBasedOn();
 
             SetPoaList();
+
+            SetStatusGov();
 
             $('#divComment').hide();
 
@@ -214,21 +216,38 @@
             });
         });
 
+        function SetStatusGov() {
+            var statusGov = '@Model.Details.StatusGoverment';
+            if (statusGov == 'Rejected') {
+                $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+            }
+            else if (statusGov == 'Approved') {
+                $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+            }
+        }
+
         function SetPoaList() {
             var poa = '@Model.Details.ApprovedByPoa';
             var nppbkc = '@Model.Details.NppbkcId';
+            var plant = '@Model.Details.PlantId';
             var url = '@Url.Action("PoaListPartial", "CK4C")';
+            var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
 
             if (poa == '')
             {
                 ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+
+                if(nppbkc == '')
+                {
+                    ajaxSelectNppbck({ plantId: plant }, urlPlant);
+                }
             }
         }
 
         function SetBasedOn() {
             var nppbkc = '@Model.Details.NppbkcId';
-            var plantId = $('#Details_PlantId').val();
-            var plantName = $('#Details_PlantName').val();
+            var plantId = '@Model.Details.PlantId';
+            var plantName = '@Model.Details.PlantName';
 
             if (plantId == '')
             {

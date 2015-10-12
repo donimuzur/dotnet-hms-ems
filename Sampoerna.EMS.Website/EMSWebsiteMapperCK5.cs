@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.CompanyCode))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CompanyName))
-                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.CompanyAddress))
+                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.ADDRESS))
                 .ForMember(dest => dest.KppBcName, opt => opt.MapFrom(src => src.KppbcCity + "-" + src.KppbcNo ))
                 .ForMember(dest => dest.KppbcCity, opt => opt.MapFrom(src => src.KppbcCity))
                 .ForMember(dest => dest.KppbcNo, opt => opt.MapFrom(src => src.KppbcNo))
@@ -188,7 +188,8 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.Ck5ManualType, opt => opt.MapFrom(src => src.CK5_MANUAL_TYPE))
             .ForMember(dest => dest.Ck5ManualTypeString, opt => opt.MapFrom(src => Utils.EnumHelper.GetDescription(src.CK5_MANUAL_TYPE)))
             .ForMember(dest => dest.Ck5FileUploadModelList, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.Ck5FileUploadDtos)))
-            .ForMember(dest => dest.Ck5RefId, opt => opt.MapFrom(src => src.CK5_REF_ID));
+            .ForMember(dest => dest.Ck5RefId, opt => opt.MapFrom(src => src.CK5_REF_ID))
+            .ForMember(dest => dest.IsCompleted, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.Completed ? true:false));
 
             Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5FileUploadViewModel>().IgnoreAllNonExisting();
 

@@ -193,9 +193,17 @@ function getProductionData(urlFunction) {
     var year = $('#Details_ReportedYears').find("option:selected").val();
     var isPlant = $('#Details_PlantId').is(":disabled");
     var isNppbkc = $('#Details_NppbkcId').is(":disabled");
+
+    $('#CompanyId').val(comp);
+    $('#PlantId').val(plant);
+    $('#NppbkcId').val(nppbkc);
+    $('#PeriodId').val(period);
+    $('#MonthId').val(month);
+    $('#YearId').val(year);
+
     if (comp == "" || (plant == "" && isNppbkc) || (nppbkc == "" && isPlant) || period == "" || month == "" || year == "") {
         $('#tb-body-ck4c').html("");
-        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="9">no data<td></tr>');
+        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
     }
     else {
         $.ajax({
@@ -226,13 +234,13 @@ function getProductionData(urlFunction) {
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + data[i].BrandDescription + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Werks" name="Details.Ck4cItemData[' + i + '].Werks" value=' + data[i].PlantWerks + '></input>' + data[i].PlantWerks + "-" + data[i].PlantName + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_UnpackedQty" name="Details.Ck4cItemData[' + i + '].UnpackedQty" value=' + data[i].QtyUnpacked + '></input>' + data[i].TobaccoProductType + '</td>' +
-                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_HjeIdr" name="Details.Ck4cItemData[' + i + '].HjeIdr" value=' + data[i].Hje + '></input>' + data[i].Hje + '</td>' +
-                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Tarif" name="Details.Ck4cItemData[' + i + '].Tarif" value=' + data[i].Tarif + '></input>' + data[i].Tarif + '</td>' +
-                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ContentPerPack" name="Details.Ck4cItemData[' + i + '].ContentPerPack" value=' + data[i].ContentPerPack + '></input>' + data[i].ContentPerPack + '</td>' +
-                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + data[i].QtyPacked + '</td>' +
-                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedInPack" name="Details.Ck4cItemData[' + i + '].PackedInPack" value=' + data[i].PackedInPack + '></input>' + data[i].PackedInPack + '</td>' +
-                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_UnpackedQty" name="Details.Ck4cItemData[' + i + '].UnpackedQty" value=' + data[i].QtyUnpacked + '></input>' + data[i].QtyUnpacked + '</td>' +
-                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQty" name="Details.Ck4cItemData[' + i + '].ProdQty" value=' + data[i].QtyProduced + '></input>' + data[i].QtyProduced + '</td>' +
+                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_HjeIdr" name="Details.Ck4cItemData[' + i + '].HjeIdr" value=' + data[i].Hje + '></input>' + ThausandSeperator(data[i].Hje, 2) + '</td>' +
+                            '<td class="number" class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Tarif" name="Details.Ck4cItemData[' + i + '].Tarif" value=' + data[i].Tarif + '></input>' + ThausandSeperator(data[i].Tarif, 2) + '</td>' +
+                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ContentPerPack" name="Details.Ck4cItemData[' + i + '].ContentPerPack" value=' + data[i].ContentPerPack + '></input>' + ThausandSeperator(data[i].ContentPerPack, 2) + '</td>' +
+                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + ThausandSeperator(data[i].QtyPacked, 2) + '</td>' +
+                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedInPack" name="Details.Ck4cItemData[' + i + '].PackedInPack" value=' + data[i].PackedInPack + '></input>' + ThausandSeperator(data[i].PackedInPack, 2) + '</td>' +
+                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_UnpackedQty" name="Details.Ck4cItemData[' + i + '].UnpackedQty" value=' + data[i].QtyUnpacked + '></input>' + ThausandSeperator(data[i].QtyUnpacked, 2) + '</td>' +
+                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQty" name="Details.Ck4cItemData[' + i + '].ProdQty" value=' + data[i].QtyProduced + '></input>' + ThausandSeperator(data[i].QtyProduced, 2) + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQtyUom" name="Details.Ck4cItemData[' + i + '].ProdQtyUom" value=' + data[i].Uom + '></input><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdCode" name="Details.Ck4cItemData[' + i + '].ProdCode" value=' + data[i].ProdCode + '></input>' + data[i].Uom + '</td>' +
                             '<td></td>' +
                             '<td style="display: none"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Remarks" name="Details.Ck4cItemData[' + i + '].Remarks" value="" class=' + classRemarks + '></input></td>' +
@@ -241,7 +249,7 @@ function getProductionData(urlFunction) {
                     }
                 } else {
                     $('#tb-body-ck4c').html("");
-                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="13">no data<td></tr>');
+                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
                 }
             }
         });
@@ -326,5 +334,26 @@ function ajaxSelectNppbck(formData, url) {
     if (formData) {
         //Load POA
         ajaxLoadPoa(formData, url);
+    }
+}
+
+function CheckSameData() {
+    var comp = $('#Details_CompanyId').find("option:selected").val();
+    var plant = $('#Details_PlantId').find("option:selected").val();
+    var nppbkc = $('#Details_NppbkcId').find("option:selected").val();
+    var period = $('#Details_ReportedPeriod').find("option:selected").val();
+    var month = $('#Details_ReportedMonth').find("option:selected").val();
+    var year = $('#Details_ReportedYears').find("option:selected").val();
+
+    var compX = $('#CompanyId').val();
+    var plantX = $('#PlantId').val();
+    var nppbkcX = $('#NppbkcId').val();
+    var periodX = $('#PeriodId').val();
+    var monthX = $('#MonthId').val();
+    var yearX = $('#YearId').val();
+
+    if (comp != compX || plant != plantX || nppbkc != nppbkcX || period != periodX || month != monthX || year != yearX) {
+        $('#tb-body-ck4c').html("");
+        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
     }
 }
