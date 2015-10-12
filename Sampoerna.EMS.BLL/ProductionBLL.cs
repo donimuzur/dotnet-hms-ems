@@ -375,7 +375,7 @@ namespace Sampoerna.EMS.BLL
             return list;
         }
 
-        public List<ProductionUploadItemsOutput> ValidationDailyUploadDocumentProcess(List<ProductionUploadItemsInput> inputs)
+        public List<ProductionUploadItemsOutput> ValidationDailyUploadDocumentProcess(List<ProductionUploadItemsInput> inputs, string qtyPacked, string qty)
         {
             var messageList = new List<string>();
             var outputList = new List<ProductionUploadItemsOutput>();
@@ -400,6 +400,8 @@ namespace Sampoerna.EMS.BLL
                         + output.FaCode +", " + output.ProductionDate + "]");
                 }
 
+               
+
                 //Company Code Validation
                 #region -------------- Company Code Validation --------------
                 List<string> messages;
@@ -416,7 +418,6 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-
                 //Plant Code Validation
                 #region -------------- Plant Code Validation --------------
 
@@ -461,8 +462,57 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                
-                //Message
+                //Production date
+                #region ---------------Production Date validation-------------
+
+                int temp;
+                DateTime dateTemp;
+                if (Int32.TryParse(output.ProductionDate, out temp))
+                {
+                    try
+                    {
+                        output.ProductionDate = DateTime.FromOADate(Convert.ToDouble(output.ProductionDate)).ToString("dd MMM yyyy");    
+                    }
+                    catch (Exception)
+                    {
+                        messageList.Add("Production Date [" + output.ProductionDate + "] not valid");
+                    }
+                    
+                }
+                else
+                {
+                    messageList.Add("Production Date [" + output.ProductionDate + "] not valid");
+                }
+                #endregion
+                //Quantity Packed
+                #region -------Quantity Production validation--------
+                decimal tempDecimal;
+                if (decimal.TryParse(output.QtyPacked,out tempDecimal) || output.QtyPacked == "" || output.QtyPacked == "-")
+                {
+                    output.QtyPacked = output.QtyPacked == "" || output.QtyPacked == "-" ? "0" : output.QtyPacked;
+                    
+                }
+             
+                else
+                {
+                    output.QtyPacked = qtyPacked;
+                    messageList.Add("Quantity Packed [" + qtyPacked + "] not valid");
+                }
+                #endregion
+                //Quantity 
+                #region -----------Quantity Validation-------------
+                if (decimal.TryParse(output.Qty, out tempDecimal) || output.Qty == "" || output.Qty == "-")
+                {
+                    output.Qty = output.Qty == "" || output.Qty == "-" ? "0" : output.Qty;
+                }
+                else
+                {
+                    output.Qty = qty;
+                    messageList.Add("Quantity [" + qty + "] not valid");
+                }
+                #endregion
+
+               //Message
                 #region -------------- Set Message Info if exists ---------------
 
                 if (messageList.Count > 0)
@@ -619,6 +669,7 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
+        
         private List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate)
         {
             List<ProductionDto> data = new List<ProductionDto>();

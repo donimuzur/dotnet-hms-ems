@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Configuration;
@@ -146,7 +147,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.BrandDescription = brandDesc.BRAND_CE;
                 data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
                 data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
-               
+
                 data.CreatedDate = DateTime.Now;
 
 
@@ -190,7 +191,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
             model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
             model.ProdQtyStickStr = model.ProdQtyStick == null ? string.Empty : model.ProdQtyStick.ToString();
-           
+
 
             model = IniEdit(model);
 
@@ -263,7 +264,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
             dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
-            
+
 
 
             try
@@ -341,7 +342,7 @@ namespace Sampoerna.EMS.Website.Controllers
                   "Daily_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + productionDate.ToString("ddMMMyyyy")));
 
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
-           
+
             model.ProdQtyStickStr = model.ProdQtyStick == null ? string.Empty : model.ProdQtyStick.ToString();
             model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
 
@@ -378,8 +379,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (item.Uom == "TH")
                     {
                         item.Uom = "Btg";
-                        item.QtyPacked = item.QtyPacked * 1000;
-                        item.Qty = item.Qty * 1000;
+                        item.QtyPacked = item.QtyPacked*1000;
+                        item.Qty = item.Qty*1000;
                     }
 
                     if (item.Uom == "KG")
@@ -389,7 +390,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         item.Qty = item.Qty * 1000;
                     }
 
-                 
+
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
 
@@ -433,10 +434,14 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult UploadFile(HttpPostedFileBase itemExcelFile)
         {
+            var qtyPacked = string.Empty;
+            var qty = string.Empty;
+
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new List<ProductionUploadItems>();
             if (data != null)
             {
+                DateTime temp;
                 foreach (var dataRow in data.DataRows)
                 {
                     if (dataRow[0] == "")
@@ -451,20 +456,62 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
-                    item.QtyPacked = dataRow[4] == "" || dataRow[4]=="-" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    item.Qty = dataRow[5] == "" || dataRow[5]=="-" ? 0  : Convert.ToDecimal(dataRow[5]);
-                    item.Uom = dataRow[6];
-                    item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
 
-
+                    decimal tempDecimal;
+                    if (decimal.TryParse(dataRow[4], out tempDecimal) || dataRow[4] == "" || dataRow[4] == "-")
                     {
-                        model.Add(item);
+                        item.QtyPacked = dataRow[4] == "" || dataRow[4] == "-" ? 0 : Convert.ToDecimal(dataRow[4]);
                     }
+                    else
+                    {
+                        qtyPacked = dataRow[4];
+                    }
+
+                    if (decimal.TryParse(dataRow[5], out tempDecimal) || dataRow[5] == "" || dataRow[5] == "-")
+                    {
+                        item.Qty = dataRow[5] == "" || dataRow[5] == "-" ? 0 : Convert.ToDecimal(dataRow[5]);
+                    }
+                    else
+                    {
+                        qty = dataRow[5];
+                    }
+                    
+                   
+                    item.Uom = dataRow[6];
+                    item.ProductionDate = dataRow[7];
+
+                    //var dateParam = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
+                    //if (DateTime.TryParse(DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy"), "dd MMM yyyy", DateTimeStyles.NoCurrentDateDefault, out temp))
+                    //{
+                    //    item.ProductionDate = string.Empty;
+                    //}
+
+                    // true if it doesnot contain letters
+                   
+
+
+                    //string pattern = "dd MMM yyyy";
+                    //if (DateTime.TryParseExact(dataRow[7], pattern, CultureInfo.InvariantCulture,
+                    //                           DateTimeStyles.None,
+                    //                           out temp))
+                    //{
+                    //    // dt is the parsed value
+                    //}
+                    //else
+                    //{
+                    //    // Invalid string
+                    //}
+
+                    model.Add(item);
+
+
+                    
+
 
                 }
             }
             var input = Mapper.Map<List<ProductionUploadItemsInput>>(model);
-            var outputResult = _productionBll.ValidationDailyUploadDocumentProcess(input);
+            var outputResult = _productionBll.ValidationDailyUploadDocumentProcess(input, qtyPacked, qty);
 
             model = Mapper.Map<List<ProductionUploadItems>>(outputResult);
             return Json(model);
