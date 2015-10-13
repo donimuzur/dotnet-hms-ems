@@ -115,6 +115,7 @@ namespace Sampoerna.EMS.BLL
 
         public Lack1CreateOutput Create(Lack1CreateParamInput input)
         {
+            input.IsCreateNew = true;
             var generatedData = GenerateLack1Data(input);
             if (!generatedData.Success)
             {
@@ -222,88 +223,79 @@ namespace Sampoerna.EMS.BLL
             //origin
             var dbData = _lack1Service.GetDetailsById(input.Detail.Lack1Id);
 
-            //check if need to re-generate LACK-1 data
+            //always generate data
+            //do regenerate data
             var generateInput = Mapper.Map<Lack1GenerateDataParamInput>(input);
-            var isNeedToRegenerate = IsNeedToRegenerate(generateInput, dbData);
-            if (isNeedToRegenerate)
+            generateInput.IsCreateNew = false;
+            var generatedData = GenerateLack1Data(generateInput);
+            if (!generatedData.Success)
             {
-                //do regenerate data
-                var generatedData = GenerateLack1Data(generateInput);
-                if (!generatedData.Success)
+                return new SaveLack1Output()
                 {
-                    return new SaveLack1Output()
-                    {
-                        Success = false,
-                        ErrorCode = generatedData.ErrorCode,
-                        ErrorMessage = generatedData.ErrorMessage
-                    };
-                }
+                    Success = false,
+                    ErrorCode = generatedData.ErrorCode,
+                    ErrorMessage = generatedData.ErrorMessage
+                };
+            }
 
-                var origin = Mapper.Map<Lack1DetailsDto>(dbData);
-                var destination = Mapper.Map<Lack1DetailsDto>(generatedData.Data);
-                destination.Lack1Id = dbData.LACK1_ID;
-                destination.Lack1Number = dbData.LACK1_NUMBER;
-                destination.Lack1Level = dbData.LACK1_LEVEL;
-                destination.SubmissionDate = origin.SubmissionDate;
-                destination.SupplierCompanyName = origin.SupplierCompanyName;
-                destination.SupplierCompanyCode = origin.SupplierCompanyCode;
-                destination.WasteQty = input.Detail.WasteQty;
-                destination.WasteUom = input.Detail.WasteUom;
-                destination.WasteUomDesc = input.Detail.WasteUomDesc;
-                destination.ReturnQty = input.Detail.ReturnQty;
-                destination.ReturnUom = input.Detail.ReturnUom;
-                destination.ReturnUomDesc = input.Detail.ReturnUomDesc;
-                destination.Status = input.Detail.Status;
-                destination.GovStatus = input.Detail.GovStatus;
-                destination.DecreeDate = input.Detail.DecreeDate;
+            var origin = Mapper.Map<Lack1DetailsDto>(dbData);
+            var destination = Mapper.Map<Lack1DetailsDto>(generatedData.Data);
 
-                SetChangesHistory(origin, destination, input.UserId);
+            destination.Lack1Id = dbData.LACK1_ID;
+            destination.Lack1Number = dbData.LACK1_NUMBER;
+            destination.Lack1Level = dbData.LACK1_LEVEL;
+            destination.SubmissionDate = origin.SubmissionDate;
+            destination.SupplierCompanyName = origin.SupplierCompanyName;
+            destination.SupplierCompanyCode = origin.SupplierCompanyCode;
+            destination.WasteQty = input.Detail.WasteQty;
+            destination.WasteUom = input.Detail.WasteUom;
+            destination.WasteUomDesc = input.Detail.WasteUomDesc;
+            destination.ReturnQty = input.Detail.ReturnQty;
+            destination.ReturnUom = input.Detail.ReturnUom;
+            destination.ReturnUomDesc = input.Detail.ReturnUomDesc;
+            destination.Status = input.Detail.Status;
+            destination.GovStatus = input.Detail.GovStatus;
+            destination.DecreeDate = input.Detail.DecreeDate;
 
-                //delete first
-                _lack1IncomeDetailService.DeleteDataList(dbData.LACK1_INCOME_DETAIL);
-                _lack1Pbck1MappingService.DeleteDataList(dbData.LACK1_PBCK1_MAPPING);
-                _lack1PlantService.DeleteDataList(dbData.LACK1_PLANT);
-                _lack1ProductionDetailService.DeleteDataList(dbData.LACK1_PRODUCTION_DETAIL);
-                _lack1TrackingService.DeleteDataList(dbData.LACK1_TRACKING);
+            SetChangesHistory(origin, destination, input.UserId);
 
-                //regenerate
-                Mapper.Map<Lack1GeneratedDto, LACK1>(generatedData.Data, dbData);
+            //delete first
+            _lack1IncomeDetailService.DeleteDataList(dbData.LACK1_INCOME_DETAIL);
+            _lack1Pbck1MappingService.DeleteDataList(dbData.LACK1_PBCK1_MAPPING);
+            _lack1PlantService.DeleteDataList(dbData.LACK1_PLANT);
+            _lack1ProductionDetailService.DeleteDataList(dbData.LACK1_PRODUCTION_DETAIL);
+            _lack1TrackingService.DeleteDataList(dbData.LACK1_TRACKING);
 
-                //set to null
-                dbData.LACK1_INCOME_DETAIL = null;
-                dbData.LACK1_PBCK1_MAPPING = null;
-                dbData.LACK1_PLANT = null;
-                dbData.LACK1_PRODUCTION_DETAIL = null;
-                dbData.LACK1_TRACKING = null;
+            //regenerate
+            Mapper.Map<Lack1GeneratedDto, LACK1>(generatedData.Data, dbData);
 
-                //set from input
-                dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(generatedData.Data.IncomeList);
-                dbData.LACK1_PBCK1_MAPPING = Mapper.Map<List<LACK1_PBCK1_MAPPING>>(generatedData.Data.Pbck1List);
-                dbData.LACK1_PRODUCTION_DETAIL = Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(generatedData.Data.ProductionList);
+            //set to null
+            dbData.LACK1_INCOME_DETAIL = null;
+            dbData.LACK1_PBCK1_MAPPING = null;
+            dbData.LACK1_PLANT = null;
+            dbData.LACK1_PRODUCTION_DETAIL = null;
+            dbData.LACK1_TRACKING = null;
 
-                //set LACK1_TRACKING
-                var allTrackingList = generatedData.Data.InvMovementAllList;
-                allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
-                dbData.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
+            //set from input
+            dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(generatedData.Data.IncomeList);
+            dbData.LACK1_PBCK1_MAPPING = Mapper.Map<List<LACK1_PBCK1_MAPPING>>(generatedData.Data.Pbck1List);
+            dbData.LACK1_PRODUCTION_DETAIL = Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(generatedData.Data.ProductionList);
 
-                //set LACK1_PLANT table
-                if (input.Detail.Lack1Level == Enums.Lack1Level.Nppbkc)
-                {
-                    var plantListFromMaster = _t001WServices.GetByNppbkcId(input.Detail.NppbkcId);
-                    dbData.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(plantListFromMaster);
-                }
-                else
-                {
-                    var plantFromMaster = _t001WServices.GetById(input.Detail.LevelPlantId);
-                    dbData.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
-                }
+            //set LACK1_TRACKING
+            var allTrackingList = generatedData.Data.InvMovementAllList;
+            allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
+            dbData.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
+
+            //set LACK1_PLANT table
+            if (input.Detail.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                var plantListFromMaster = _t001WServices.GetByNppbkcId(input.Detail.NppbkcId);
+                dbData.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(plantListFromMaster);
             }
             else
             {
-                var origin = Mapper.Map<Lack1DetailsDto>(dbData);
-
-                SetChangesHistory(origin, input.Detail, input.UserId);
-
+                var plantFromMaster = _t001WServices.GetById(input.Detail.LevelPlantId);
+                dbData.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
             }
 
             dbData.SUBMISSION_DATE = input.Detail.SubmissionDate;
@@ -341,7 +333,7 @@ namespace Sampoerna.EMS.BLL
             return rc;
 
         }
-
+        
         public Lack1DetailsDto GetDetailsById(int id)
         {
             var dbData = _lack1Service.GetDetailsById(id);
@@ -912,18 +904,7 @@ namespace Sampoerna.EMS.BLL
 
             return selected.Count == 0 ? new List<Lack1Dto>() : selected;
         }
-
-        //internal List<LACK1_PRODUCTION_DETAIL> GetProductionDetailByPeriode(Lack1GetByPeriodParamInput input)
-        //{
-        //    var getData = _lack1Service.GetProductionDetailByPeriode(input);
-
-        //    if (getData == null) return new List<LACK1_PRODUCTION_DETAIL>();
-
-        //    //todo: select by periode in range period from and period to from input param
-
-        //    return getData.ToList();
-        //}
-
+        
         public Lack1GeneratedOutput GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
         {
             return GenerateLack1Data(input);
@@ -1190,28 +1171,31 @@ namespace Sampoerna.EMS.BLL
             #region Validation
 
             //check if already exists with same selection criteria
-            var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
+            if (input.IsCreateNew)
             {
-                CompanyCode = input.CompanyCode,
-                NppbkcId = input.NppbkcId,
-                ExcisableGoodsType = input.ExcisableGoodsType,
-                ReceivingPlantId = input.ReceivedPlantId,
-                SupplierPlantId = input.SupplierPlantId,
-                PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear
-            });
-
-            if (lack1Check != null)
-            {
-                return new Lack1GeneratedOutput()
+                var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
                 {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria),
-                    Data = null
-                };
-            }
+                    CompanyCode = input.CompanyCode,
+                    NppbkcId = input.NppbkcId,
+                    ExcisableGoodsType = input.ExcisableGoodsType,
+                    ReceivingPlantId = input.ReceivedPlantId,
+                    SupplierPlantId = input.SupplierPlantId,
+                    PeriodMonth = input.PeriodMonth,
+                    PeriodYear = input.PeriodYear
+                });
 
+                if (lack1Check != null)
+                {
+                    return new Lack1GeneratedOutput()
+                    {
+                        Success = false,
+                        ErrorCode = ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria.ToString(),
+                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria),
+                        Data = null
+                    };
+                }
+            }
+            
             //Check Excisable Group Type if exists
             var checkExcisableGroupType = _exGroupTypeService.GetGroupTypeDetailByGoodsType(input.ExcisableGoodsType);
             if (checkExcisableGroupType == null)
