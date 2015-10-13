@@ -147,7 +147,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile, string nppbkc)
+        public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile, string nppbkc, string isNppbckImportChecked)
         {
             var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
             var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
@@ -184,7 +184,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<List<Pbck1ProdConverterInput>>(model.Detail.Pbck1ProdConverter);
-            var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input, nppbkc);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input, nppbkc, Boolean.Parse(isNppbckImportChecked));
 
             model.Detail.Pbck1ProdConverter = Mapper.Map<List<Pbck1ProdConvModel>>(outputResult);
 

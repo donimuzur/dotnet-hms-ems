@@ -108,7 +108,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
        public string GIDateStr { get; set; }
         public string PbckUom { get; set; }
 
-        public string NoDateWithFormat { get; set; } 
+        public string NoDateWithFormat { get; set; }
 
+        public bool IsModifiedHistory { get; set; }
     }
 }
