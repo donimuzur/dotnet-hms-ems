@@ -981,7 +981,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (model.DecreeFiles == null)
             {
                 AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
-                return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
+                return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
             }
 
             bool isSuccess = false;
@@ -1012,7 +1012,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         else
                         {
                             AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                            return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
+                            return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
                         }
                     }
                 }
@@ -1028,7 +1028,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!isSuccess)
             {
                 AddMessageInfo(err, Enums.MessageInfoType.Error);
-                return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
+                return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
             }
 
             AddMessageInfo("Document " + EnumHelper.GetDescription(model.GovStatus), Enums.MessageInfoType.Success);
