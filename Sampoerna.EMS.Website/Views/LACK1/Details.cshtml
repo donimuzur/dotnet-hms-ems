@@ -59,7 +59,7 @@
                     @Html.AntiForgeryToken()
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
                         {
                             <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
                         }
@@ -69,7 +69,7 @@
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Lack1Type)
                         @Html.Partial("_HomeDetails")
-                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
                         {
                             @Html.Partial("_PrintOut")
                         }
