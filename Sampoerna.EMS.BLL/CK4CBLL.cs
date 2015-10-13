@@ -395,7 +395,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.Draft)
+            if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             if (dbData.CREATED_BY != input.UserId)
@@ -926,9 +926,11 @@ namespace Sampoerna.EMS.BLL
                         var ck4cItem = new Ck4cReportItemDto();
                         var brand = _brandBll.GetById(item, data.FA_CODE);
                         var prodType = _prodTypeBll.GetById(data.PROD_CODE);
-                        var prodQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PROD_QTY);
-                        var packedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.PACKED_QTY);
-                        var unpackedQty = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat).Sum(x => x.UNPACKED_QTY);
+                        var itemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat);
+                        var prodQty = itemCk4c.Sum(x => x.PROD_QTY);
+                        var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
+                        var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
+                        var remarks = itemCk4c.FirstOrDefault();
                         var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
 
                         if (unpackedQty == 0)
@@ -958,7 +960,7 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.Hje = plantDetail.HJE_IDR == null ? "0.00" : String.Format("{0:n}", plantDetail.HJE_IDR);
                         ck4cItem.Total = total == null ? "0.00" : String.Format("{0:n}", total);
                         ck4cItem.ProdWaste = unpackedQty == null ? "0.00" : String.Format("{0:n}", unpackedQty);
-                        ck4cItem.Comment = "";
+                        ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;
 
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
@@ -1175,42 +1177,75 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var dtData in listCk4C)
             {
+                var summaryDto = new Ck4CSummaryReportDto();
+
+                summaryDto.Ck4CNo = dtData.NUMBER;
+                summaryDto.CeOffice = dtData.COMPANY_ID;
+                summaryDto.BasedOn = dtData.PLANT_ID == null ? "NPPBKC" : "PLANT";
+                summaryDto.PlantId = dtData.PLANT_ID;
+                summaryDto.PlantDescription = dtData.PLANT_NAME;
+                summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
+                summaryDto.Period = dtData.REPORTED_PERIOD.ToString();
+                summaryDto.Month = dtData.MONTH.MONTH_NAME_ENG;
+                summaryDto.Year = dtData.REPORTED_YEAR.ToString();
+                summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+
+                var prodDate = new List<string>();
+                var faCode = new List<string>();
+                var tobacco = new List<string>();
+                var brandDesc = new List<string>();
+                var hje = new List<decimal>();
+                var tariff = new List<decimal>();
+                var content = new List<decimal>();
+                var packedQty = new List<decimal>();
+                var packedQtyInPack = new List<decimal>();
+                var unpackedQty = new List<decimal>();
+                var prodQty = new List<decimal>();
+                var uomProdQty = new List<string>();
+                var remarks = new List<string>();
+
                 foreach (var ck4CItem in dtData.CK4C_ITEM)
                 {
-                    var summaryDto = new Ck4CSummaryReportDto();
-
-                    summaryDto.Ck4CNo = dtData.NUMBER;
-                    summaryDto.CeOffice = dtData.COMPANY_ID;
-                    summaryDto.PlantId = dtData.PLANT_ID;
-                    summaryDto.PlantDescription = dtData.PLANT_NAME;
-                    summaryDto.LicenseNumber = dtData.NPPBKC_ID;
-                    summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
-                    summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
-
-                    summaryDto.ProductionDate = ConvertHelper.ConvertDateToStringddMMMyyyy(ck4CItem.PROD_DATE);
-
+                    prodDate.Add(ConvertHelper.ConvertDateToStringddMMMyyyy(ck4CItem.PROD_DATE));
+                    faCode.Add(ck4CItem.FA_CODE);
+                    
                     var dbBrand = _brandRegistrationService.GetByPlantIdAndFaCode(ck4CItem.WERKS, ck4CItem.FA_CODE);
 
                     if (dbBrand != null)
                     {
-                        summaryDto.TobaccoProductType = dbBrand.ZAIDM_EX_PRODTYP != null
+                        tobacco.Add(dbBrand.ZAIDM_EX_PRODTYP != null
                             ? dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_TYPE
-                            : string.Empty;
-                        summaryDto.BrandDescription = dbBrand.BRAND_CE;
+                            : string.Empty);
+                        brandDesc.Add(dbBrand.BRAND_CE);
                     }
 
-                    summaryDto.Hje = ConvertHelper.ConvertDecimalToString(ck4CItem.HJE_IDR);
-                    summaryDto.Tariff = ConvertHelper.ConvertDecimalToString(ck4CItem.TARIFF);
-                    summaryDto.ProducedQty = ConvertHelper.ConvertDecimalToString(ck4CItem.PROD_QTY);
-                    summaryDto.ProducedQty = ConvertHelper.ConvertDecimalToString(ck4CItem.PACKED_QTY);
-                    summaryDto.UnPackQty = ConvertHelper.ConvertDecimalToString(ck4CItem.UNPACKED_QTY);
-
-                    summaryDto.Content = ck4CItem.CONTENT_PER_PACK.HasValue
-                        ? ck4CItem.CONTENT_PER_PACK.ToString()
-                        : string.Empty;
-
-                    result.Add(summaryDto);
+                    hje.Add(ck4CItem.HJE_IDR.Value);
+                    tariff.Add(ck4CItem.TARIFF.Value);
+                    content.Add(ck4CItem.CONTENT_PER_PACK.Value);
+                    packedQty.Add(ck4CItem.PACKED_QTY.Value);
+                    packedQtyInPack.Add(ck4CItem.PACKED_IN_PACK.Value);
+                    unpackedQty.Add(ck4CItem.UNPACKED_QTY.Value);
+                    prodQty.Add(ck4CItem.PROD_QTY);
+                    uomProdQty.Add(ck4CItem.UOM_PROD_QTY);
+                    remarks.Add(ck4CItem.REMARKS);
                 }
+
+                summaryDto.ProductionDate = prodDate;
+                summaryDto.FaCode = faCode;
+                summaryDto.TobaccoProductType = tobacco;
+                summaryDto.BrandDescription = brandDesc;
+                summaryDto.Hje = hje;
+                summaryDto.Tariff = tariff;
+                summaryDto.Content = content;
+                summaryDto.PackedQty = packedQty;
+                summaryDto.PackedQtyInPack = packedQtyInPack;
+                summaryDto.UnPackQty = unpackedQty;
+                summaryDto.ProducedQty = prodQty;
+                summaryDto.UomProducedQty = uomProdQty;
+                summaryDto.Remarks = remarks;
+
+                result.Add(summaryDto);
             }
 
             return result;

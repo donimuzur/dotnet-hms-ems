@@ -757,6 +757,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck2Dto.Ck2Number = model.Ck2Dto.Ck2Number;
                 ck2Dto.Ck2Date = model.Ck2Dto.Ck2Date;
                 ck2Dto.Pbck3ID = pbck3Id;
+                ck2Dto.Ck2Value = model.Ck2Dto.Ck2Value;
+
                 _pbck7AndPbck7And3Bll.InsertCk2(ck2Dto);
 
             return ck2Dto;
@@ -802,6 +804,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         
                         SubmitPbck3(model);
+                        pbck3.Pbck3Status = model.Pbck3Dto.Pbck3Status;
+
                     }
                     else
                     {

@@ -84,6 +84,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string MenuNppbkcAddClassCss { get; set; }
         public string MenuCompletedAddClassCss { get; set; }
         public int IncomeListCount { get; set; }
+        public bool? IsCreateNew { get; set; }
 
         public SelectList BukrList { get; set; }
         public SelectList MontList { get; set; }

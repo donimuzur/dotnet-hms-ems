@@ -738,7 +738,7 @@ namespace Sampoerna.EMS.BLL
                bodyMail.Append("<tr><td>CK-3 Value</td><td> : " + ck3Value + "</td></tr>");
                bodyMail.AppendLine();
            }
-           bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/PBCK4/Details/" + pbck4Dto.PBCK4_ID + "'>link</a> to show detailed information</i></td></tr>");
+           bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/PBCK4/Edit/" + pbck4Dto.PBCK4_ID + "'>link</a> to show detailed information</i></td></tr>");
            bodyMail.AppendLine();
            bodyMail.Append("</table>");
            bodyMail.AppendLine();

@@ -31,7 +31,7 @@ namespace Sampoerna.EMS.BLL.Services
             Expression<Func<CK5, bool>> queryFilterCk5 = c => c.DEST_PLANT_NPPBKC_ID == input.NppbkcId && c.DEST_PLANT_COMPANY_CODE == input.CompanyCode
                                              && (int)c.EX_GOODS_TYPE == input.ExGroupTypeId && c.SOURCE_PLANT_ID == input.SupplierPlantId
                                              && (c.GR_DATE.HasValue && c.GR_DATE.Value.Month == input.PeriodMonth && c.GR_DATE.Value.Year == input.PeriodYear)
-                                             && c.STATUS_ID >= Enums.DocumentStatus.Completed
+                                             && c.STATUS_ID == Enums.DocumentStatus.Completed
                                              ;
 
             if (input.Lack1Level == Enums.Lack1Level.Plant)
