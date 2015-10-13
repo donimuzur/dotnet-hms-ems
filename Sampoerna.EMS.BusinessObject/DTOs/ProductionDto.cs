@@ -51,8 +51,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PlantWerks { get; set; }
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
-        public decimal? Qty { get; set; }
-        public decimal? QtyPacked { get; set; }
+        public string Qty { get; set; }
+        public string QtyPacked { get; set; }
         public string Uom { get; set; }
         public string ProductionDate { get; set; }
         public string CompanyName { get; set; }

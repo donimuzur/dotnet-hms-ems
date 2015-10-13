@@ -379,15 +379,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (item.Uom == "TH")
                     {
                         item.Uom = "Btg";
-                        item.QtyPacked = item.QtyPacked*1000;
-                        item.Qty = item.Qty*1000;
+                        item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
+                        item.Qty = Convert.ToString(Convert.ToDecimal(item.Qty) * 1000);
                     }
 
                     if (item.Uom == "KG")
                     {
                         item.Uom = "G";
-                        item.QtyPacked = item.QtyPacked * 1000;
-                        item.Qty = item.Qty * 1000;
+                        item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
+                        item.Qty = Convert.ToString(Convert.ToDecimal(item.Qty) * 1000);
                     }
 
 
@@ -456,29 +456,30 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
-
-                    decimal tempDecimal;
-                    if (decimal.TryParse(dataRow[4], out tempDecimal) || dataRow[4] == "" || dataRow[4] == "-")
-                    {
-                        item.QtyPacked = dataRow[4] == "" || dataRow[4] == "-" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    }
-                    else
-                    {
-                        qtyPacked = dataRow[4];
-                    }
-
-                    if (decimal.TryParse(dataRow[5], out tempDecimal) || dataRow[5] == "" || dataRow[5] == "-")
-                    {
-                        item.Qty = dataRow[5] == "" || dataRow[5] == "-" ? 0 : Convert.ToDecimal(dataRow[5]);
-                    }
-                    else
-                    {
-                        qty = dataRow[5];
-                    }
-                    
-                   
+                    item.QtyPacked = dataRow[4];
+                    item.Qty = dataRow[5];
                     item.Uom = dataRow[6];
                     item.ProductionDate = dataRow[7];
+
+
+                    //decimal tempDecimal;
+                    //if (decimal.TryParse(dataRow[4], out tempDecimal) || dataRow[4] == "" || dataRow[4] == "-")
+                    //{
+                    //    item.QtyPacked = dataRow[4] == "" || dataRow[4] == "-" ? 0 : Convert.ToDecimal(dataRow[4]);
+                    //}
+                    //else
+                    //{
+                    //    qtyPacked = dataRow[4];
+                    //}
+
+                    //if (decimal.TryParse(dataRow[5], out tempDecimal) || dataRow[5] == "" || dataRow[5] == "-")
+                    //{
+                    //    item.Qty = dataRow[5] == "" || dataRow[5] == "-" ? 0 : Convert.ToDecimal(dataRow[5]);
+                    //}
+                    //else
+                    //{
+                    //    qty = dataRow[5];
+                    //}
 
                     //var dateParam = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
                     //if (DateTime.TryParse(DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy"), "dd MMM yyyy", DateTimeStyles.NoCurrentDateDefault, out temp))
