@@ -21,5 +21,6 @@
 
         public string Noted { get; set; }
 
+        public bool IsCreateNew { get; set; }
     }
 }

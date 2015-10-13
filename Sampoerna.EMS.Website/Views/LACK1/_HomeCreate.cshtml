@@ -22,6 +22,7 @@
                                     <div class="row">
                                         <label class="col-md-4">LACK-1 No</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.IsCreateNew)
                                             @Html.TextBoxFor(model => model.Lack1Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
