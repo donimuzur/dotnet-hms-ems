@@ -800,10 +800,10 @@ namespace Sampoerna.EMS.Website.Controllers
                                 }
                             }
 
-                            SaveCk5ToDatabase(model);
+                           var resultDto = SaveCk5ToDatabase(model);
                             if (isSubmit)
                             {
-                                CK5Workflow(model.Ck5Id, Enums.ActionType.Submit, string.Empty);
+                                CK5Workflow(model.Ck5Id, Enums.ActionType.Submit, resultDto.IsModifiedHistory);
                                 AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
                                 return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
                                
@@ -1168,7 +1168,17 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck5Bll.CK5Workflow(input);
         }
 
-
+        private void CK5Workflow(long id, Enums.ActionType actionType, bool isModified)
+        {
+            var input = new CK5WorkflowDocumentInput();
+            input.DocumentId = id;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            input.ActionType = actionType;
+            input.Comment = "";
+            input.IsModified = isModified;
+            _ck5Bll.CK5Workflow(input);
+        }
     
         public ActionResult SubmitDocument(long id)
         {
