@@ -145,9 +145,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.PlantName = plant.NAME1;
                 data.BrandDescription = brandDesc.BRAND_CE;
                 data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
-                data.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
-                data.ProdQtyStick = Convert.ToDecimal(model.QtyPackedStr) + Convert.ToDecimal(model.QtyUnpackedStr);
-
+                data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
+               
                 data.CreatedDate = DateTime.Now;
 
 
@@ -189,11 +188,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
-            model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
-            model.ProdQtyStickStr = model.ProQtyStick == null ? string.Empty : model.ProQtyStick.ToString();
             model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
+            model.ProdQtyStickStr = model.ProdQtyStick == null ? string.Empty : model.ProdQtyStick.ToString();
+           
 
             model = IniEdit(model);
+
             model.CompanyCodeX = model.CompanyCode;
             model.PlantWerksX = model.PlantWerks;
             model.ProductionDateX = model.ProductionDate;
@@ -261,9 +261,9 @@ namespace Sampoerna.EMS.Website.Controllers
             dbPrductionNew.BrandDescription = brandDesc.BRAND_CE;
 
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
-            dbPrductionNew.QtyUnpacked = model.QtyUnpackedStr == null ? 0 : Convert.ToDecimal(model.QtyUnpackedStr);
-            dbPrductionNew.ProdQtyStick = Convert.ToDecimal(model.QtyPackedStr) +
-                                          Convert.ToDecimal(model.QtyUnpackedStr);
+            dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
+            dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
+            
 
 
             try
@@ -341,8 +341,8 @@ namespace Sampoerna.EMS.Website.Controllers
                   "Daily_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + productionDate.ToString("ddMMMyyyy")));
 
             model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
-            model.QtyUnpackedStr = model.QtyUnpacked == null ? string.Empty : model.QtyUnpacked.ToString();
-            model.ProdQtyStickStr = model.ProQtyStick == null ? string.Empty : model.ProQtyStick.ToString();
+           
+            model.ProdQtyStickStr = model.ProdQtyStick == null ? string.Empty : model.ProdQtyStick.ToString();
             model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
 
             model = InitDetail(model);
@@ -379,14 +379,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         item.Uom = "Btg";
                         item.QtyPacked = item.QtyPacked * 1000;
-                        item.QtyUnpacked = item.QtyUnpacked * 1000;
+                        item.Qty = item.Qty * 1000;
                     }
 
                     if (item.Uom == "KG")
                     {
                         item.Uom = "G";
                         item.QtyPacked = item.QtyPacked * 1000;
-                        item.QtyUnpacked = item.QtyUnpacked * 1000;
+                        item.Qty = item.Qty * 1000;
                     }
 
                  
@@ -406,7 +406,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (existingData != null)
                     {
-                        AddMessageInfo("Data Already Exist, Please Check Data Company Code, Plant Code, Fa Code, and Waste Production Date", Enums.MessageInfoType.Warning);
+                        AddMessageInfo("Data Already Exist, Please Check Data Company Code," +
+                                       " Plant Code, Fa Code, and Waste Production Date", Enums.MessageInfoType.Warning);
                         return RedirectToAction("UploadManualProduction");
                     }
 
@@ -451,7 +452,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
                     item.QtyPacked = dataRow[4] == "" || dataRow[4]=="-" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    item.QtyUnpacked = dataRow[5] == "" || dataRow[5]=="-" ? 0  : Convert.ToDecimal(dataRow[5]);
+                    item.Qty = dataRow[5] == "" || dataRow[5]=="-" ? 0  : Convert.ToDecimal(dataRow[5]);
                     item.Uom = dataRow[6];
                     item.ProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
 

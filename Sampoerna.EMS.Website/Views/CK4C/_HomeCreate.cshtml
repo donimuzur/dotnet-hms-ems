@@ -21,6 +21,12 @@
                                     <div class="row">
                                         <label class="col-md-4">CK-4C No</label>
                                         <div class="col-md-8">
+                                            <input type="hidden" id="CompanyId"/>
+                                            <input type="hidden" id="PlantId" />
+                                            <input type="hidden" id="NppbkcId" />
+                                            <input type="hidden" id="PeriodId" />
+                                            <input type="hidden" id="MonthId" />
+                                            <input type="hidden" id="YearId" />
                                             @Html.TextBoxFor(model => model.Details.Number, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>

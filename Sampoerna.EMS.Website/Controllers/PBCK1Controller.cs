@@ -2261,6 +2261,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //set satuan kebutuhan bkc
                 summaryUomBkc = string.Join(Environment.NewLine, summary.Select(d => uomBkcId).Take(SummaryJenisAmount.Keys.Count()));
+                if (summaryUomBkc == "L")
+                    summaryUomBkc = "Liter";
 
                 foreach (var item in prodPlan)
                 {

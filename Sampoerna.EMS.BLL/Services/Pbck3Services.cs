@@ -39,14 +39,15 @@ namespace Sampoerna.EMS.BLL.Services
                 FormType = Enums.FormType.CK5MarketReturn
             };
 
-            var dbPbck3 = new PBCK3();
-
-            dbPbck3.PBCK3_NUMBER = _documentSequenceNumberBll.GenerateNumberNoReset(generateNumberInput);
-            dbPbck3.PBCK3_DATE = DateTime.Now;
-            dbPbck3.STATUS = Enums.DocumentStatus.Draft;
-            dbPbck3.CREATED_BY = input.UserId;
-            dbPbck3.CREATED_DATE = DateTime.Now;
-            dbPbck3.CK5_ID = input.Ck5Id;
+            var dbPbck3 = new PBCK3
+            {
+                PBCK3_NUMBER = _documentSequenceNumberBll.GenerateNumber(generateNumberInput),
+                PBCK3_DATE = DateTime.Now,
+                STATUS = Enums.DocumentStatus.Draft,
+                CREATED_BY = input.UserId,
+                CREATED_DATE = DateTime.Now,
+                CK5_ID = input.Ck5Id
+            };
 
             _repository.InsertOrUpdate(dbPbck3);
 
