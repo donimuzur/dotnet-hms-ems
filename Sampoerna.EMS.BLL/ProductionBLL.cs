@@ -254,6 +254,8 @@ namespace Sampoerna.EMS.BLL
             changeData.Add("UOM", origin.Uom == data.Uom);
             changeData.Add("PROD_QTY_STICK", origin.ProdQtyStick == data.ProdQtyStick);
 
+            string isFromSapString = string.IsNullOrEmpty(origin.Batch) ? "" : "[FROM SAP]";
+
             foreach (var listChange in changeData)
             {
                 if (!listChange.Value)
@@ -272,7 +274,7 @@ namespace Sampoerna.EMS.BLL
                         case "COMPANY_CODE":
                             changes.OLD_VALUE = origin.CompanyCode;
                             changes.NEW_VALUE = data.CompanyCode;
-                            changes.FIELD_NAME = "Company";
+                            changes.FIELD_NAME = "Company" + isFromSapString;
                             break;
                         case "WERKS":
                             changes.OLD_VALUE = origin.PlantWerks;
@@ -297,12 +299,14 @@ namespace Sampoerna.EMS.BLL
                         case "QTY_PACKED":
                             changes.OLD_VALUE = origin.QtyPacked.ToString();
                             changes.NEW_VALUE = data.QtyPacked.ToString();
-                            changes.FIELD_NAME = "Qty Packed";
+                            changes.FIELD_NAME = "Qty Packed"+ isFromSapString;
+                            break;
                             break;
                         case "QTY":
                             changes.OLD_VALUE = origin.Qty.ToString();
                             changes.NEW_VALUE = data.Qty.ToString();
-                            changes.FIELD_NAME = "Quantity";
+                            changes.FIELD_NAME = "Quantity"+ isFromSapString;
+                            break;
                             break;
                         case "UOM":
                             changes.OLD_VALUE = origin.Uom;

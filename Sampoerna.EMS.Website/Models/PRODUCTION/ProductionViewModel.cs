@@ -82,6 +82,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string Docgmvter { get; set; }
         public string MatDoc { get; set; }
         public string Ordr { get; set; }
+        public string Batch { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }
