@@ -38,5 +38,7 @@ namespace Sampoerna.EMS.Contract
         WorkflowHistoryDto RejectedStatusByDocumentNumber(GetByFormTypeAndFormIdInput input);
 
         WorkflowHistoryDto GetApprovedOrRejectedPOAStatusByDocumentNumber(GetByFormTypeAndFormIdInput input);
+
+        void UpdateHistoryModifiedForSubmit(WorkflowHistoryDto history);
     }
 }
