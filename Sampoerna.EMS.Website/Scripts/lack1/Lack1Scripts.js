@@ -17,6 +17,7 @@
     param.ReturnAmountUom = $('#ReturnUom').find("option:selected").val();
     param.Noted = $('#Noted').val();
     param.CompanyName = $('#Bukrs').find("option:selected").text();
+    param.IsCreateNew = $('#IsCreateNew').val();
 
     var plantAttr = $('#LevelPlantId').attr('disabled');
     /* For some browsers, `attr` is undefined; for others,
