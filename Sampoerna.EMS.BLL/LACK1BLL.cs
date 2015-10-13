@@ -223,81 +223,97 @@ namespace Sampoerna.EMS.BLL
             //origin
             var dbData = _lack1Service.GetDetailsById(input.Detail.Lack1Id);
 
-            //always generate data
-            //do regenerate data
+            //check if need to regenerate
+            var isNeedToRegenerate = dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected;
             var generateInput = Mapper.Map<Lack1GenerateDataParamInput>(input);
-            generateInput.IsCreateNew = false;
-            var generatedData = GenerateLack1Data(generateInput);
-            if (!generatedData.Success)
+            //if (!isNeedToRegenerate)
+            //{
+            //    isNeedToRegenerate = IsNeedToRegenerate(generateInput, dbData);
+            //}
+            
+            if (isNeedToRegenerate)
             {
-                return new SaveLack1Output()
+                //do regenerate data
+                generateInput.IsCreateNew = false;
+                var generatedData = GenerateLack1Data(generateInput);
+                if (!generatedData.Success)
                 {
-                    Success = false,
-                    ErrorCode = generatedData.ErrorCode,
-                    ErrorMessage = generatedData.ErrorMessage
-                };
-            }
+                    return new SaveLack1Output()
+                    {
+                        Success = false,
+                        ErrorCode = generatedData.ErrorCode,
+                        ErrorMessage = generatedData.ErrorMessage
+                    };
+                }
 
-            var origin = Mapper.Map<Lack1DetailsDto>(dbData);
-            var destination = Mapper.Map<Lack1DetailsDto>(generatedData.Data);
+                var origin = Mapper.Map<Lack1DetailsDto>(dbData);
+                var destination = Mapper.Map<Lack1DetailsDto>(generatedData.Data);
 
-            destination.Lack1Id = dbData.LACK1_ID;
-            destination.Lack1Number = dbData.LACK1_NUMBER;
-            destination.Lack1Level = dbData.LACK1_LEVEL;
-            destination.SubmissionDate = origin.SubmissionDate;
-            destination.SupplierCompanyName = origin.SupplierCompanyName;
-            destination.SupplierCompanyCode = origin.SupplierCompanyCode;
-            destination.WasteQty = input.Detail.WasteQty;
-            destination.WasteUom = input.Detail.WasteUom;
-            destination.WasteUomDesc = input.Detail.WasteUomDesc;
-            destination.ReturnQty = input.Detail.ReturnQty;
-            destination.ReturnUom = input.Detail.ReturnUom;
-            destination.ReturnUomDesc = input.Detail.ReturnUomDesc;
-            destination.Status = input.Detail.Status;
-            destination.GovStatus = input.Detail.GovStatus;
-            destination.DecreeDate = input.Detail.DecreeDate;
+                destination.Lack1Id = dbData.LACK1_ID;
+                destination.Lack1Number = dbData.LACK1_NUMBER;
+                destination.Lack1Level = dbData.LACK1_LEVEL;
+                destination.SubmissionDate = origin.SubmissionDate;
+                destination.SupplierCompanyName = origin.SupplierCompanyName;
+                destination.SupplierCompanyCode = origin.SupplierCompanyCode;
+                destination.WasteQty = input.Detail.WasteQty;
+                destination.WasteUom = input.Detail.WasteUom;
+                destination.WasteUomDesc = input.Detail.WasteUomDesc;
+                destination.ReturnQty = input.Detail.ReturnQty;
+                destination.ReturnUom = input.Detail.ReturnUom;
+                destination.ReturnUomDesc = input.Detail.ReturnUomDesc;
+                destination.Status = input.Detail.Status;
+                destination.GovStatus = input.Detail.GovStatus;
+                destination.DecreeDate = input.Detail.DecreeDate;
 
-            SetChangesHistory(origin, destination, input.UserId);
+                SetChangesHistory(origin, destination, input.UserId);
 
-            //delete first
-            _lack1IncomeDetailService.DeleteDataList(dbData.LACK1_INCOME_DETAIL);
-            _lack1Pbck1MappingService.DeleteDataList(dbData.LACK1_PBCK1_MAPPING);
-            _lack1PlantService.DeleteDataList(dbData.LACK1_PLANT);
-            _lack1ProductionDetailService.DeleteDataList(dbData.LACK1_PRODUCTION_DETAIL);
-            _lack1TrackingService.DeleteDataList(dbData.LACK1_TRACKING);
+                //delete first
+                _lack1TrackingService.DeleteByLack1Id(dbData.LACK1_ID);
+                _lack1IncomeDetailService.DeleteByLack1Id(dbData.LACK1_ID);
+                _lack1Pbck1MappingService.DeleteByLack1Id(dbData.LACK1_ID);
+                _lack1PlantService.DeleteByLack1Id(dbData.LACK1_ID);
+                _lack1ProductionDetailService.DeleteByLack1Id(dbData.LACK1_ID);
 
-            //regenerate
-            Mapper.Map<Lack1GeneratedDto, LACK1>(generatedData.Data, dbData);
+                //regenerate
+                Mapper.Map<Lack1GeneratedDto, LACK1>(generatedData.Data, dbData);
 
-            //set to null
-            dbData.LACK1_INCOME_DETAIL = null;
-            dbData.LACK1_PBCK1_MAPPING = null;
-            dbData.LACK1_PLANT = null;
-            dbData.LACK1_PRODUCTION_DETAIL = null;
-            dbData.LACK1_TRACKING = null;
+                //set to null
+                dbData.LACK1_INCOME_DETAIL = null;
+                dbData.LACK1_PBCK1_MAPPING = null;
+                dbData.LACK1_PLANT = null;
+                dbData.LACK1_PRODUCTION_DETAIL = null;
+                dbData.LACK1_TRACKING = null;
 
-            //set from input
-            dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(generatedData.Data.IncomeList);
-            dbData.LACK1_PBCK1_MAPPING = Mapper.Map<List<LACK1_PBCK1_MAPPING>>(generatedData.Data.Pbck1List);
-            dbData.LACK1_PRODUCTION_DETAIL = Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(generatedData.Data.ProductionList);
+                //set from input
+                dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(generatedData.Data.IncomeList);
+                dbData.LACK1_PBCK1_MAPPING = Mapper.Map<List<LACK1_PBCK1_MAPPING>>(generatedData.Data.Pbck1List);
+                dbData.LACK1_PRODUCTION_DETAIL =
+                    Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(generatedData.Data.ProductionList);
 
-            //set LACK1_TRACKING
-            var allTrackingList = generatedData.Data.InvMovementAllList;
-            allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
-            dbData.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
+                //set LACK1_TRACKING
+                var allTrackingList = generatedData.Data.InvMovementAllList;
+                allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
+                dbData.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
 
-            //set LACK1_PLANT table
-            if (input.Detail.Lack1Level == Enums.Lack1Level.Nppbkc)
-            {
-                var plantListFromMaster = _t001WServices.GetByNppbkcId(input.Detail.NppbkcId);
-                dbData.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(plantListFromMaster);
+                //set LACK1_PLANT table
+                if (input.Detail.Lack1Level == Enums.Lack1Level.Nppbkc)
+                {
+                    var plantListFromMaster = _t001WServices.GetByNppbkcId(input.Detail.NppbkcId);
+                    dbData.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(plantListFromMaster);
+                }
+                else
+                {
+                    var plantFromMaster = _t001WServices.GetById(input.Detail.LevelPlantId);
+                    dbData.LACK1_PLANT = new List<LACK1_PLANT>() {Mapper.Map<LACK1_PLANT>(plantFromMaster)};
+                }
             }
             else
             {
-                var plantFromMaster = _t001WServices.GetById(input.Detail.LevelPlantId);
-                dbData.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
-            }
+                var origin = Mapper.Map<Lack1DetailsDto>(dbData);
 
+                SetChangesHistory(origin, input.Detail, input.UserId);
+            }
+            
             dbData.SUBMISSION_DATE = input.Detail.SubmissionDate;
             dbData.LACK1_LEVEL = input.Detail.Lack1Level;
             dbData.WASTE_QTY = input.Detail.WasteQty;
@@ -990,6 +1006,7 @@ namespace Sampoerna.EMS.BLL
 
         #region ----------------Private Method-------------------
 
+        [Obsolete("Old logic, now only from STATUS for regenerate condition")]
         private bool IsNeedToRegenerate(Lack1GenerateDataParamInput input, LACK1 lack1Data)
         {
             if (input.CompanyCode == lack1Data.BUKRS && input.PeriodMonth == lack1Data.PERIOD_MONTH
@@ -1170,7 +1187,7 @@ namespace Sampoerna.EMS.BLL
 
             #region Validation
 
-            //check if already exists with same selection criteria
+            //check if already exists with same selection criteria when create new document only
             if (input.IsCreateNew)
             {
                 var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
