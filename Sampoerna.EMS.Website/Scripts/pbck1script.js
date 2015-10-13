@@ -219,7 +219,9 @@ function prodConvGenerateClick(url) {
         formData.append("prodConvExcelFile", file);
     }
     formData.append("nppbkc", $("#Detail_NppbkcId").val());
-
+    formData.append("isNppbckImportChecked", $("#Detail_IsNppbkcImport").is(':checked'));
+    
+    console.log(formData);
     $.ajax({
         url: url,
         type: 'POST',
