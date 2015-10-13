@@ -205,6 +205,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     AddMessageInfo("Save successfull", Enums.MessageInfoType.Info);
                     return RedirectToAction("Index");
                 }
+                model.PoaList = model.PoaListHidden;
+                AddMessageInfo("Save failed : " + saveOutput.ErrorMessage, Enums.MessageInfoType.Info);
+                return View(CreateInitialViewModel(model));
             }
             catch (Exception exception)
             {

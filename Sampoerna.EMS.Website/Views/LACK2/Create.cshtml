@@ -5,7 +5,7 @@
     int i = 0;
 }
 
-@using (@Html.BeginForm("Create", "LACK2"))
+@using (@Html.BeginForm("Create", "LACK2", FormMethod.Post, new { @id = "CreateLackForm" }))
 {  @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
         <div class="row">
@@ -13,8 +13,8 @@
                 <h3>LACK-2 Form</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    <button class="btn btn-blue" onclick="openPanel();" type="Submit">Save</button>
-                    <a href="@Url.Action("Index","LACK2")" class=" btn btn-grey">Cancel</a>
+                    <input type="button" class="btn btn-blue" onclick="saveClick()" value="Save" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btn-back" />
                 </div>
             </div>
         </div>
@@ -119,7 +119,8 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">POA</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextArea("poalist", null, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
+                                                                    @Html.HiddenFor(model => model.PoaListHidden)
+                                                                    @Html.TextAreaFor(model => model.PoaList, new { @class = "form-control", @disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -300,7 +301,10 @@
         $('#MenuLack2OpenDocument').addClass('active');
 
         $(document).ready(function() {
-            openPanel();
+
+            $('#btn-back').click(function () {
+                location.href = '@Url.Action("Index", "LACK2")';
+            });
 
             $('#CompanyCode').on("change", function () {
                 BukrsOnChange();
@@ -422,16 +426,13 @@
                                 poalist += ', ';
                             }
                         }
-                        $('#displayPoaList').val(poalist);
+                        $('#PoaListHidden').val(poalist);
+                        $('#PoaList').val(poalist);
                     }
                 });
             }
         }
-
-        function openPanel() {
-            $('.panel-collapse').removeClass('collapse').addClass('in');
-        }
-
+        
         function generateInputValidation() {
             var rc = true;
             if ($('#CompanyCode').find("option:selected").val() == '') {
@@ -470,6 +471,33 @@
 
             return rc;
 
+        }
+        
+        function saveInputValidation() {
+            var rc = true;
+            if ($('#SubmissionDate').val() == '') {
+                rc = false;
+                $('#SubmissionDate').addClass('input-validation-error');
+            }
+            if (!rc) {
+                $('#modalBodyMessage').text('Please input the required field on selection criteria input.');
+            }
+            return rc;
+        }
+        
+        function saveClick() {
+            var isValid = false;
+            if (generateInputValidation()) {
+                isValid = true;
+            }
+            if (isValid) {
+                isValid = saveInputValidation();
+            }
+            if (isValid) {
+                $('#CreateLackForm').submit();
+            } else {
+                $('#ModalValidation').modal('show');
+            }
         }
 
         function GenerateCk5Items() {

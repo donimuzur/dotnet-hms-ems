@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
@@ -14,6 +15,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string CompanyCode { get; set; }
         public string NppbkcId { get; set; }
         public string UserId { get; set; }
+        [Required]
         public DateTime? SubmissionDate { get; set; }
         
         #endregion
@@ -33,6 +35,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public SelectList MonthList { get; set; }
 
         public SelectList YearList { get; set; }
+
+        public string PoaList { get; set; }
+        public string PoaListHidden { get; set; }
 
         #endregion
 
