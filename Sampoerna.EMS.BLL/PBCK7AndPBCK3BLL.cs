@@ -806,6 +806,105 @@ namespace Sampoerna.EMS.BLL
             //return pbck7;
         }
 
+        private List<Pbck7ItemsOutput> ValidatePbck7Items(List<Pbck7ItemsInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<Pbck7ItemsOutput>();
+
+            foreach (var pbck7ItemInput in inputs)
+            {
+                messageList.Clear();
+
+                var output = Mapper.Map<Pbck7ItemsOutput>(pbck7ItemInput);
+
+                var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(pbck4ItemInput.Plant, pbck4ItemInput.FaCode);
+                if (dbBrand == null)
+                    messageList.Add("FA Code Not Exist");
+
+                var dbCk1 = _ck1Services.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
+                if (dbCk1 == null)
+                    messageList.Add("CK-1 Number Not Exist");
+
+                if (!ConvertHelper.IsNumeric(pbck4ItemInput.ReqQty))
+                    messageList.Add("Req Qty not valid");
+
+                if (!ConvertHelper.IsNumeric(pbck4ItemInput.ApprovedQty))
+                    messageList.Add("Approved Qty not valid");
+
+                if (!string.IsNullOrEmpty(pbck4ItemInput.NoPengawas))
+                {
+                    if (pbck4ItemInput.NoPengawas.Length > 10)
+                        messageList.Add("No Pengawas Max Length 10");
+                }
+
+                //validate ReqQty to block stock
+
+                var blockStockData = _blockStockBll.GetBlockStockByPlantAndMaterialId(pbck4ItemInput.Plant,
+                    pbck4ItemInput.FaCode);
+                if (blockStockData.Count == 0)
+                {
+                    messageList.Add("Block Stock not available");
+                }
+                else
+                {
+                    var blockDecimal = blockStockData.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
+                    if (ConvertHelper.ConvertToDecimalOrZero(pbck4ItemInput.ReqQty) > blockDecimal)
+                        messageList.Add("Req Qty more than Block Stock");
+                }
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                outputList.Add(output);
+            }
+
+
+            return outputList;
+        }
+
+        public List<Pbck7ItemsOutput> Pbck7ItemProcess(List<Pbck7ItemsInput> inputs)
+        {
+            var outputList = ValidatePbck4Items(inputs);
+
+            if (!outputList.All(c => c.IsValid))
+                return outputList;
+
+            foreach (var output in outputList)
+            {
+                var resultValue = GetAdditionalValuePbck4Items(output);
+
+
+                output.StickerCode = resultValue.StickerCode;
+                output.SeriesCode = resultValue.SeriesCode;
+                output.BrandName = resultValue.BrandName;
+                output.ProductAlias = resultValue.ProductAlias;
+
+                output.Content = resultValue.Content;
+
+                output.Hje = resultValue.Hje;
+                output.Tariff = resultValue.Tariff;
+                output.Colour = resultValue.Colour;
+
+                output.TotalHje = resultValue.TotalHje;
+
+                output.TotalStamps = resultValue.TotalStamps;
+                output.CK1_ID = resultValue.CK1_ID;
+                output.BlockedStock = resultValue.BlockedStock;
+            }
+
+            return outputList;
+        }
     }
 
 
