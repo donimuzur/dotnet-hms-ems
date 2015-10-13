@@ -446,13 +446,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
-                    item.MarkerRejectStickQty = dataRow[4] == "" || dataRow[4] =="-" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    item.PackerRejectStickQty = dataRow[5] == "" || dataRow[5] =="-"? 0: Convert.ToDecimal(dataRow[5]);
-                    item.DustWasteGramQty = dataRow[6] == "" || dataRow[6] =="-" ? 0 : Convert.ToDecimal(dataRow[6]);
-                    item.FloorWasteGramQty = dataRow[7] == "" || dataRow[7] == "-" ? 0 : Convert.ToDecimal(dataRow[7]);
-                    item.DustWasteStickQty = dataRow[8] == "" || dataRow[8] == "-" ? 0 : Convert.ToDecimal(dataRow[8]);
-                    item.FloorWasteStickQty = dataRow[9] == "" || dataRow[9] == "-" ? 0 : Convert.ToDecimal(dataRow[9]);
-                    item.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[10])).ToString("dd MMM yyyy");
+                    item.MarkerRejectStickQty = dataRow[4];
+                    item.PackerRejectStickQty = dataRow[5];
+                    item.DustWasteGramQty = dataRow[6];
+                    item.FloorWasteGramQty = dataRow[7];
+                    item.DustWasteStickQty = dataRow[8];
+                    item.FloorWasteStickQty = dataRow[9];
+                    item.WasteProductionDate = dataRow[10]; 
                    
                     {
                         model.Add(item);
