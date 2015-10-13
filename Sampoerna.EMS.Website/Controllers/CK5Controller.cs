@@ -2966,7 +2966,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!string.IsNullOrEmpty(goodTypeGroup))
             {
                 Enums.ExGoodsType goodTypeGroupId = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroup);
-                dbMaterial = _materialBll.GetMaterialByPlantIdAndGoodType(plantId, (int)goodTypeGroupId);
+                //dbMaterial = _materialBll.GetMaterialByPlantIdAndGoodType(plantId, (int)goodTypeGroupId);
+                dbMaterial = _ck5Bll.GetValidateMaterial(plantId, (int)goodTypeGroupId);
             } 
             var model = Mapper.Map<List<CK5InputManualViewModel>>(dbMaterial);
 

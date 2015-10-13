@@ -443,6 +443,10 @@ namespace Sampoerna.EMS.BLL
             return AutoMapper.Mapper.Map<MaterialDto>(data);
         }
 
-        
+
+        public List<MATERIAL_UOM> GetMaterialUomByPlant(string plant)
+        {
+            return _repositoryUoM.Get(c => c.WERKS == plant).ToList();
+        }
     }
 }
