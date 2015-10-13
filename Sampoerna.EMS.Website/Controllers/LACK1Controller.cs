@@ -258,6 +258,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = new Lack1CreateViewModel
             {
+                IsCreateNew = true,
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Lack1Level = lack1Level.Value,
@@ -288,6 +289,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var input = Mapper.Map<Lack1CreateParamInput>(model);
+                input.IsCreateNew = true;
                 input.UserId = CurrentUser.USER_ID;
                 var saveOutput = _lack1Bll.Create(input);
                 if (saveOutput.Success)
@@ -580,6 +582,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = InitEditModel(lack1Data);
             model = InitEditList(model);
+            model.IsCreateNew = false;
 
             if (!IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status))
             {
@@ -978,7 +981,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (model.DecreeFiles == null)
             {
                 AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
-                return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
+                return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
             }
 
             bool isSuccess = false;
@@ -1009,7 +1012,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         else
                         {
                             AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                            return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
+                            return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
                         }
                     }
                 }
@@ -1025,7 +1028,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!isSuccess)
             {
                 AddMessageInfo(err, Enums.MessageInfoType.Error);
-                return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
+                return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
             }
 
             AddMessageInfo("Document " + EnumHelper.GetDescription(model.GovStatus), Enums.MessageInfoType.Success);

@@ -4,6 +4,7 @@
     <thead>
         <tr>
             <th class="toggle-row"> Filter </th>
+            <th>PBCK-4 Number</th>
             <th>Plant Id</th>
             <th>Plant Desc</th>
             <th>NPPBKC ID</th>
@@ -15,6 +16,7 @@
     <thead class="filters">
         <tr>
             <th> Action</th>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -35,6 +37,7 @@
                         <a href="@Url.Action("Edit", "PBCK4", new { id = item.PbckId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
                     }
                 </td>
+                <td>@Html.DisplayFor(model => item.Pbck4Number)</td>
                 <td>@Html.DisplayFor(model => item.PlantId)</td>
                 <td>@Html.DisplayFor(model => item.PlantDescription)</td>
                 <td>

@@ -148,7 +148,8 @@ namespace Sampoerna.EMS.BLL
                 _repository.Update(lastSeqData);
             }
 
-            var docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString();
+            //var docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString();//log : 2015-10-12
+            var docNumber = lastSeqData.DOC_NUMBER_SEQ_LAST.ToString("0000000000"); //log : 2015-1013
 
             if (input.FormType != Enums.FormType.CK5)
             {

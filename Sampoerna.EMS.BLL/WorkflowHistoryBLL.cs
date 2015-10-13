@@ -332,5 +332,23 @@ namespace Sampoerna.EMS.BLL
 
             return Mapper.Map<WorkflowHistoryDto>(dbData);
         }
+
+
+        public void UpdateHistoryModifiedForSubmit(WorkflowHistoryDto history)
+        {
+            //var dbData = Mapper.Map<WORKFLOW_HISTORY>(history);
+            var dbData =
+                _repository.Get(c => c.ACTION == Enums.ActionType.Modified && c.FORM_NUMBER == history.FORM_NUMBER,
+                    o => o.OrderByDescending(d => d.ACTION_DATE)).FirstOrDefault();
+
+            if (dbData == null)
+                _repository.Insert(Mapper.Map<WORKFLOW_HISTORY>(history));
+            else
+            {
+                dbData.ACTION  = Enums.ActionType.Submit;
+                dbData.ACTION_DATE = DateTime.Now;
+                _repository.Update(dbData);
+            }
+        }
     }
 }

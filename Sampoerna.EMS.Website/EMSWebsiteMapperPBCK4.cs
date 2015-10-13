@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn.HasValue ? src.ReportedOn.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.APPROVED_BY_POA) ? string.Empty: src.APPROVED_BY_POA))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
+                .ForMember(dest => dest.Pbck4Number, opt => opt.MapFrom(src => src.PBCK4_NUMBER))
                 ;
 
             Mapper.CreateMap<Pbck4SearchViewModel, Pbck4GetByParamInput>().IgnoreAllNonExisting()

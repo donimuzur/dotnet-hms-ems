@@ -12,15 +12,15 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string PlantWerks { get; set; }
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
-        public decimal? MarkerRejectStickQty { get; set; }
-        public decimal? PackerRejectStickQty { get; set; }
+        public string MarkerRejectStickQty { get; set; }
+        public string PackerRejectStickQty { get; set; }
         public string WasteProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
-        public decimal? DustWasteGramQty { get; set; }
-        public decimal? FloorWasteGramQty { get; set; }
-        public decimal? DustWasteStickQty { get; set; }
-        public decimal? FloorWasteStickQty { get; set; }
+        public string DustWasteGramQty { get; set; }
+        public string FloorWasteGramQty { get; set; }
+        public string DustWasteStickQty { get; set; }
+        public string FloorWasteStickQty { get; set; }
         public string Message { get; set; }
         public bool IsValid { get; set; }
     }
