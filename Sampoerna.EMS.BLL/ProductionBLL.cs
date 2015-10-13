@@ -33,6 +33,7 @@ namespace Sampoerna.EMS.BLL
         private IPlantBLL _plantBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IWasteBLL _wasteBll;
+        private IUnitOfMeasurementBLL _uomBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -48,6 +49,7 @@ namespace Sampoerna.EMS.BLL
             _plantBll = new PlantBLL(_uow, _logger);
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _wasteBll = new WasteBLL(_logger, _uow);
+            _uomBll = new UnitOfMeasurementBLL(uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -464,7 +466,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Production date
+                //Daily Production date
                 #region ---------------Production Date validation-------------
 
                 int temp;
@@ -513,8 +515,22 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Quantity [" + output.Qty + "] not valid");
                 }
                 #endregion
+                //UOM Validation
+                #region -------------- UOM Validation --------------------
+                UOM uomTypeData = null;
 
-               //Message
+                if (ValidateUomId(output.Uom, out messages, out uomTypeData))
+                {
+                    output.Uom = uomTypeData.UOM_ID;
+                }
+                else
+                {
+                    output.IsValid = false;
+                    messageList.AddRange(messages);
+                }
+
+                #endregion
+                //Message
                 #region -------------- Set Message Info if exists ---------------
 
                 if (messageList.Count > 0)
@@ -671,6 +687,33 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
+        private bool ValidateUomId(string uomId, out List<string> message, out UOM uomData)
+        {
+            uomData = null;
+            var valResult = false;
+            var messageList = new List<string>();
+            #region ----------------UOM Validation-------------------------
+            if (!string.IsNullOrWhiteSpace(uomId))
+            {
+                uomData = _uomBll.GetById(uomId);
+                if (uomData == null)
+                {
+                    messageList.Add("UomId Description [" + uomId + "] not valid");
+                }
+                else
+                {
+                    valResult = true;
+                }
+            }
+            else
+            {
+                messageList.Add("UomId Description  is empty");
+            }
+             #endregion
+
+            message = messageList;
+            return valResult;
+        }
         
         private List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate)
         {
