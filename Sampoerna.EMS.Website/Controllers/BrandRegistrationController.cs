@@ -8,6 +8,7 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using System.Web;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -62,7 +63,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode+stickercode));
 
             
             if (model.IsFromSap.HasValue && model.IsFromSap.Value)
@@ -161,13 +162,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
                 dbBrand.STATUS = model.IsActive;
                 if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
-                    dbBrand.PER_CODE_DESC = dbBrand.PER_CODE_DESC.Split('-')[1];
+                    dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription.Split('-')[1];
 
                 try
                 {
                     _brandRegistrationBll.Save(dbBrand);
-                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                       );
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
                 }
                 catch
@@ -251,8 +251,8 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.CREATED_BY = CurrentUser.USER_ID;
-            if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
-                dbBrand.PER_CODE_DESC = dbBrand.PER_CODE_DESC.Split('-')[1];
+            if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
+                dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
             try
             {
                 _brandRegistrationBll.Save(dbBrand);
@@ -316,7 +316,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (listChange.Value) continue;
                 var changes = new CHANGES_HISTORY();
                 changes.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
-                changes.FORM_ID = origin.WERKS + origin.FA_CODE;
+                changes.FORM_ID = origin.WERKS + origin.FA_CODE + origin.STICKER_CODE;
                 changes.FIELD_NAME = listChange.Key;
                 changes.MODIFIED_BY = CurrentUser.USER_ID;
                 changes.MODIFIED_DATE = DateTime.Now;
@@ -426,8 +426,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(string plant, string facode,string stickercode)
         {
-            AddHistoryDelete(plant, facode);
-            var isDeleted = _brandRegistrationBll.Delete(plant, facode,stickercode);
+            var decodeFacode = HttpUtility.UrlDecode(facode);
+            AddHistoryDelete(plant, Url.Encode(decodeFacode));
+            var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode);
             
             if(isDeleted)
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;

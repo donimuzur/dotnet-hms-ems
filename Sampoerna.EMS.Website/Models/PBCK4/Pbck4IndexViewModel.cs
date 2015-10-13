@@ -37,6 +37,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string Poa { get; set; }
         
         public string Status { get; set; }
+
+        public string Pbck4Number { get; set; }
         
     }
 }

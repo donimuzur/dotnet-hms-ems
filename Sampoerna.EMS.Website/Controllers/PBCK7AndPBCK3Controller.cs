@@ -757,6 +757,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck2Dto.Ck2Number = model.Ck2Dto.Ck2Number;
                 ck2Dto.Ck2Date = model.Ck2Dto.Ck2Date;
                 ck2Dto.Pbck3ID = pbck3Id;
+                ck2Dto.Ck2Value = model.Ck2Dto.Ck2Value;
+
                 _pbck7AndPbck7And3Bll.InsertCk2(ck2Dto);
 
             return ck2Dto;
@@ -802,6 +804,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         
                         SubmitPbck3(model);
+                        pbck3.Pbck3Status = model.Pbck3Dto.Pbck3Status;
+
                     }
                     else
                     {
@@ -838,7 +842,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         pbck3.CreatedBy = CurrentUser.USER_ID;
                         pbck3.Pbck7Id = existingData.Pbck7Id;
                         pbck3.Pbck3Date = model.Pbck3Dto.Pbck3Date;
-                        pbck3.Pbck3Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
+                        pbck3.Pbck3Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
                     
                    
 
@@ -1033,7 +1037,7 @@ namespace Sampoerna.EMS.Website.Controllers
             inputDoc.Month = modelDto.Pbck7Date.Month;
             inputDoc.Year = modelDto.Pbck7Date.Year;
             inputDoc.NppbkcId = modelDto.NppbkcId;
-            modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
+            modelDto.Pbck7Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
 
             int? pbck7IdAfterSave= null;
             try

@@ -193,6 +193,14 @@ function getProductionData(urlFunction) {
     var year = $('#Details_ReportedYears').find("option:selected").val();
     var isPlant = $('#Details_PlantId').is(":disabled");
     var isNppbkc = $('#Details_NppbkcId').is(":disabled");
+
+    $('#CompanyId').val(comp);
+    $('#PlantId').val(plant);
+    $('#NppbkcId').val(nppbkc);
+    $('#PeriodId').val(period);
+    $('#MonthId').val(month);
+    $('#YearId').val(year);
+
     if (comp == "" || (plant == "" && isNppbkc) || (nppbkc == "" && isPlant) || period == "" || month == "" || year == "") {
         $('#tb-body-ck4c').html("");
         $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
@@ -326,5 +334,26 @@ function ajaxSelectNppbck(formData, url) {
     if (formData) {
         //Load POA
         ajaxLoadPoa(formData, url);
+    }
+}
+
+function CheckSameData() {
+    var comp = $('#Details_CompanyId').find("option:selected").val();
+    var plant = $('#Details_PlantId').find("option:selected").val();
+    var nppbkc = $('#Details_NppbkcId').find("option:selected").val();
+    var period = $('#Details_ReportedPeriod').find("option:selected").val();
+    var month = $('#Details_ReportedMonth').find("option:selected").val();
+    var year = $('#Details_ReportedYears').find("option:selected").val();
+
+    var compX = $('#CompanyId').val();
+    var plantX = $('#PlantId').val();
+    var nppbkcX = $('#NppbkcId').val();
+    var periodX = $('#PeriodId').val();
+    var monthX = $('#MonthId').val();
+    var yearX = $('#YearId').val();
+
+    if (comp != compX || plant != plantX || nppbkc != nppbkcX || period != periodX || month != monthX || year != yearX) {
+        $('#tb-body-ck4c').html("");
+        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
     }
 }
