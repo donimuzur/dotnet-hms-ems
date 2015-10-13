@@ -8,9 +8,8 @@
             <th> Plant</th>
             <th> Finish Goods </th>
             <th> Description </th>
-            <th> Qty Packed </th>
-            <th> Qty Unpacked </th>
-            <th> Qty </th>
+            <th> Quantity Packed </th>
+            <th> Quantity </th>
             <th> Uom </th>
             <th> Date </th>
         </tr>
@@ -26,8 +25,7 @@
             <th> </th>
             <th> </th>
             <th> </th>
-            <th></th>
-            <th></th>
+            <th> </th>
 
         </tr>
     </thead>
@@ -55,9 +53,6 @@
                 </td>
                 <td class="number"> 
                     @string.Format("{0:N2}", item.QtyPacked)
-                </td>
-                <td class="number">
-                    @string.Format("{0:N2}", item.QtyUnpacked)
                 </td>
                 <td class="number">
                     @string.Format("{0:N2}", item.Qty)
