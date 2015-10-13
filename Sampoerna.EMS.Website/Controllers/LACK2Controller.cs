@@ -216,7 +216,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = CurrentUser.USER_ID
             };
 
-            if (!_workflowBll.AllowEditDocument(input))
+            if (!_workflowBll.AllowEditDocumentPbck1(input))
                 return RedirectToAction("Detail", new { id = id.Value });
 
             if (model.Lack2Model.CreatedBy != CurrentUser.USER_ID)

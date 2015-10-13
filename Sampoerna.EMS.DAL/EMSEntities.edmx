@@ -6424,7 +6424,7 @@
           <Property Name="SUBMISSION_DATE" Type="DateTime" Precision="3" />
           <Property Name="SUPPLIER_PLANT" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
           <Property Name="SUPPLIER_PLANT_WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="SUPPLIER_PLANT_ADDRESS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SUPPLIER_PLANT_ADDRESS" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="EX_GOODTYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="EX_TYP_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
           <Property Name="WASTE_QTY" Type="Decimal" Precision="15" Scale="2" />
