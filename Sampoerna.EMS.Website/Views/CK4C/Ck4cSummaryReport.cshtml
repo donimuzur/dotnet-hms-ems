@@ -76,8 +76,8 @@
 
                                 <div>
 
-                                    @Html.HiddenFor(model => model.ExportModel.Ck4CNo)
-                                    @Html.HiddenFor(model => model.ExportModel.PlantId)
+                                    @Html.HiddenFor(model => model.ExportModel.Ck4CNumber)
+                                    @Html.HiddenFor(model => model.ExportModel.Plant)
 
                                     <div class="row toggle">
 
@@ -93,7 +93,7 @@
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.Ck4CNumber, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })CK-4C No
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Ck4CNo, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })CK-4C No
                                                 </label>
                                             </div>
                                             <div class="checkbox">
@@ -123,17 +123,17 @@
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.PlantDescription, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })Period
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Period, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })Period
                                                 </label>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.PlantDescription, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "8" })Month
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Month, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "8" })Month
                                                 </label>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.PlantDescription, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "9" })Year
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Year, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "9" })Year
                                                 </label>
                                             </div>
                                             <div class="checkbox">
@@ -148,7 +148,7 @@
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.ProductionDate, new { @class = "checkbox checkexport", @datacolumn = "12" })FA Code
+                                                    @Html.CheckBoxFor(model => model.ExportModel.FaCode, new { @class = "checkbox checkexport", @datacolumn = "12" })FA Code
                                                 </label>
                                             </div>
                                             <div class="checkbox">
@@ -173,7 +173,7 @@
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.Content, new { @class = "checkbox checkexport", @datacolumn = "17" })Content per Pack
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Content, new { @class = "checkbox checkexport", @datacolumn = "17" })Content Per Pack
                                                 </label>
                                             </div>
                                             <div class="checkbox">
@@ -198,12 +198,12 @@
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.ProducedQty, new { @class = "checkbox checkexport", @datacolumn = "22" })UoM Produced QTY
+                                                    @Html.CheckBoxFor(model => model.ExportModel.UomProducedQty, new { @class = "checkbox checkexport", @datacolumn = "22" })UoM Produced QTY
                                                 </label>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    @Html.CheckBoxFor(model => model.ExportModel.ProducedQty, new { @class = "checkbox checkexport", @datacolumn = "23" })Remarks
+                                                    @Html.CheckBoxFor(model => model.ExportModel.Remarks, new { @class = "checkbox checkexport", @datacolumn = "23" })Remarks
                                                 </label>
                                             </div>
                                             <div class="checkbox">
@@ -326,20 +326,13 @@
         });
 
         function GetSearchSummaryReports() {
-            $('#ExportModel_Pbck4No').val($('#SearchView_Pbck4No').find("option:selected").val());
-            $('#ExportModel_PlantId').val($('#SearchView_PlantId').find("option:selected").val());
-
-            $('#ExportModel_YearFrom').val($('#SearchView_YearFrom').find("option:selected").val());
-            $('#ExportModel_YearTo').val($('#SearchView_YearTo').find("option:selected").val());
-
+            $('#ExportModel_Ck4CNumber').val($('#SearchView_Ck4CNo').find("option:selected").val());
+            $('#ExportModel_Plant').val($('#SearchView_PlantId').find("option:selected").val());
         }
-
 
         $("#btnConfirm").click(function () {
             GetSearchSummaryReports();
             $('#ExportSummaryReportsForms').submit();
-
-
         });
 
     </script>
