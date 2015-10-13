@@ -7,12 +7,14 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -39,6 +41,8 @@ namespace Sampoerna.EMS.BLL
         private WorkflowHistoryBLL _workflowHistoryBll;
 
         private IDocumentSequenceNumberBLL _docSeqNumBll;
+        private IBrandRegistrationService _brandRegistrationServices;
+
 
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -57,6 +61,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryPbck7Item = _uow.GetGenericRepository<PBCK7_ITEM>();
 
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow,_logger);
+            _brandRegistrationServices = new BrandRegistrationService(_uow, _logger);
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -816,42 +821,27 @@ namespace Sampoerna.EMS.BLL
                 messageList.Clear();
 
                 var output = Mapper.Map<Pbck7ItemsOutput>(pbck7ItemInput);
+                output.Message = "";
+                output.ProdTypeAlias = "";
+                output.Brand = "";
+                output.Content = "0";
+                output.SeriesValue = "";
+                output.Hje = "0";
+                output.Tariff = "0";
+                output.ExciseValue = "0";
 
-                var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(pbck4ItemInput.Plant, pbck4ItemInput.FaCode);
+                var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(pbck7ItemInput.Plant, pbck7ItemInput.FaCode);
                 if (dbBrand == null)
                     messageList.Add("FA Code Not Exist");
 
-                var dbCk1 = _ck1Services.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
-                if (dbCk1 == null)
-                    messageList.Add("CK-1 Number Not Exist");
 
-                if (!ConvertHelper.IsNumeric(pbck4ItemInput.ReqQty))
-                    messageList.Add("Req Qty not valid");
+                if (!ConvertHelper.IsNumeric(pbck7ItemInput.Pbck7Qty))
+                    messageList.Add("PBCK-7 Qty not valid");
 
-                if (!ConvertHelper.IsNumeric(pbck4ItemInput.ApprovedQty))
-                    messageList.Add("Approved Qty not valid");
+                if (!ConvertHelper.IsNumeric(pbck7ItemInput.FiscalYear))
+                    messageList.Add("Fiscal Year not valid");
 
-                if (!string.IsNullOrEmpty(pbck4ItemInput.NoPengawas))
-                {
-                    if (pbck4ItemInput.NoPengawas.Length > 10)
-                        messageList.Add("No Pengawas Max Length 10");
-                }
-
-                //validate ReqQty to block stock
-
-                var blockStockData = _blockStockBll.GetBlockStockByPlantAndMaterialId(pbck4ItemInput.Plant,
-                    pbck4ItemInput.FaCode);
-                if (blockStockData.Count == 0)
-                {
-                    messageList.Add("Block Stock not available");
-                }
-                else
-                {
-                    var blockDecimal = blockStockData.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
-                    if (ConvertHelper.ConvertToDecimalOrZero(pbck4ItemInput.ReqQty) > blockDecimal)
-                        messageList.Add("Req Qty more than Block Stock");
-                }
-
+            
                 if (messageList.Count > 0)
                 {
                     output.IsValid = false;
@@ -873,34 +863,62 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
+        private Pbck7ItemsOutput GetAdditionalValuePbck7Items(Pbck7ItemsOutput input)
+        {
+            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(input.PlantId, input.FaCode);
+            if (dbBrand == null)
+            {
+                input.Brand = "";
+                input.ProdTypeAlias = "";
+                input.Content = "0";
+                input.Hje = "0";
+                input.Tariff = "0";
+                input.ExciseValue = "0";
+
+            }
+            else
+            {
+                input.Brand = dbBrand.BRAND_CE;
+                if (dbBrand.ZAIDM_EX_SERIES != null)
+                    input.SeriesValue = dbBrand.ZAIDM_EX_SERIES.SERIES_CODE;
+
+                if (dbBrand.ZAIDM_EX_PRODTYP != null)
+                    input.ProdTypeAlias = dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
+                
+
+                input.Content = ConvertHelper.ConvertToDecimalOrZero(dbBrand.BRAND_CONTENT).ToString();
+
+                input.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value.ToString() : "0";
+                input.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value.ToString() : "0";
+
+                input.ExciseValue = (ConvertHelper.GetDecimal(input.Content) * ConvertHelper.GetDecimal(input.Tariff) * ConvertHelper.GetDecimal(input.Pbck7Qty)).ToString("f2");
+                
+            }
+        
+            return input;
+        }
+
         public List<Pbck7ItemsOutput> Pbck7ItemProcess(List<Pbck7ItemsInput> inputs)
         {
-            var outputList = ValidatePbck4Items(inputs);
+            var outputList = ValidatePbck7Items(inputs);
 
             if (!outputList.All(c => c.IsValid))
                 return outputList;
 
             foreach (var output in outputList)
             {
-                var resultValue = GetAdditionalValuePbck4Items(output);
+                var resultValue = GetAdditionalValuePbck7Items(output);
 
 
-                output.StickerCode = resultValue.StickerCode;
-                output.SeriesCode = resultValue.SeriesCode;
-                output.BrandName = resultValue.BrandName;
-                output.ProductAlias = resultValue.ProductAlias;
-
+                output.Brand = resultValue.Brand;
+                output.SeriesValue = resultValue.SeriesValue;
+                output.ProdTypeAlias = resultValue.ProdTypeAlias;
+              
                 output.Content = resultValue.Content;
-
                 output.Hje = resultValue.Hje;
                 output.Tariff = resultValue.Tariff;
-                output.Colour = resultValue.Colour;
+                output.ExciseValue = resultValue.ExciseValue;
 
-                output.TotalHje = resultValue.TotalHje;
-
-                output.TotalStamps = resultValue.TotalStamps;
-                output.CK1_ID = resultValue.CK1_ID;
-                output.BlockedStock = resultValue.BlockedStock;
             }
 
             return outputList;

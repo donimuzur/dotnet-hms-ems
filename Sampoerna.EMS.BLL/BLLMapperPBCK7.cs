@@ -7,6 +7,8 @@ using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -167,6 +169,13 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Ck2Dto, CK2>().IgnoreAllNonExisting();
 
             #endregion
+
+            Mapper.CreateMap<Pbck7ItemsInput, Pbck7ItemsOutput>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.Plant))
+              .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode))
+              .ForMember(dest => dest.Pbck7Qty, opt => opt.MapFrom(src => src.Pbck7Qty))
+              .ForMember(dest => dest.FiscalYear, opt => opt.MapFrom(src => src.FiscalYear))
+              ;
 
         }
     }

@@ -109,6 +109,17 @@ namespace Sampoerna.EMS.Website
                  .ForMember(dest => dest.Pbck7Qty, opt => opt.MapFrom(src => src.Pbck7Qty))
                  .ForMember(dest => dest.FiscalYear, opt => opt.MapFrom(src => src.FiscalYear))
                ;
+
+            Mapper.CreateMap<Pbck7UploadViewModel, Pbck7ItemUpload>().IgnoreAllNonExisting()
+                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.Content)))
+                .ForMember(dest => dest.Pbck7Qty, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.Pbck7Qty)))
+                .ForMember(dest => dest.Back1Qty, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.Back1Qty)))
+                .ForMember(dest => dest.FiscalYear, opt => opt.MapFrom(src => ConvertHelper.ConvertToInt32OrNull(src.FiscalYear)))
+                .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.Hje)))
+                .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.Tariff)))
+                .ForMember(dest => dest.ExciseValue, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.ExciseValue)))
+                .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => ConvertHelper.ConvertToInt32OrNull(src.Pbck7Id)))
+              ;
         }
     }
 }

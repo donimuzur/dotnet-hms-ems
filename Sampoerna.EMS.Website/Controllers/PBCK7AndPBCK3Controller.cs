@@ -966,7 +966,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         pbck3.CreatedBy = CurrentUser.USER_ID;
                         pbck3.Pbck7Id = existingData.Pbck7Dto.Pbck7Id;
                         pbck3.Pbck3Date = model.Pbck3Dto.Pbck3Date;
-                        pbck3.Pbck3Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
+                        pbck3.Pbck3Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
                     
                    
 
@@ -1427,13 +1427,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var input = Mapper.Map<List<Pbck7ItemsInput>>(model.UploadItems);
 
-            //var outputResult = _pbck4Bll.Pbck4ItemProcess(input);
+            var outputResult = _pbck7Pbck3Bll.Pbck7ItemProcess(input);
 
             //model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(outputResult);
 
             //return PartialView("_Pbck4UploadList", model.UploadItemModels);
 
-            return Json(model);
+            return Json(outputResult);
         }
 
         private string SaveUploadedFile(HttpPostedFileBase file, string back1Num)

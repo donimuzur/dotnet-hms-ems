@@ -110,5 +110,17 @@ namespace Sampoerna.EMS.Utils
 
             return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(input.ToLower());
         }
+
+        public static int? ConvertToInt32OrNull(string value)
+        {
+            try
+            {
+                return Convert.ToInt32(value);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
