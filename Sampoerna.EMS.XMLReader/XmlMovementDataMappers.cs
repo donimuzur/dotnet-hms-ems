@@ -36,7 +36,7 @@ namespace Sampoerna.EMS.XMLReader
                     try
                     {
                         var item = new INVENTORY_MOVEMENT();
-                        item.MAT_DOC = xElement.Element("MatDoc").Value;
+                        item.MAT_DOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
                         var existingData = GetMovement(item.MAT_DOC);
 
                         if (existingData != null)
@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.XMLReader
                         
 
                         
-                        item.MVT = xElement.Element("MvT").Value;
+                        item.MVT = _xmlMapper.GetElementValue(xElement.Element("MvT"));
                         item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("Material"));
                         item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("Plnt"));
                         item.QTY = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
