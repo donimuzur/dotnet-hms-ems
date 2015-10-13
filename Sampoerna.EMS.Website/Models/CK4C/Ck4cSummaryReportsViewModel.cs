@@ -61,13 +61,15 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public List<string> Remarks { get; set; }
     }
 
-    public class Ck4CExportSummaryReportsViewModel : Ck4CSearchSummaryReportsViewModel
+    public class Ck4CExportSummaryReportsViewModel
     {
+        public string Ck4CNumber { get; set; }
+        public string Plant { get; set; }
         public bool NoRow { get; set; }
-        public bool Ck4CNumber { get; set; }
+        public bool Ck4CNo { get; set; }
         public bool CeOffice { get; set; }
         public bool BasedOn { get; set; }
-        public new bool PlantId { get; set; }
+        public bool PlantId { get; set; }
         public bool PlantDescription { get; set; }
         public bool LicenseNumber { get; set; }
         public bool ReportPeriod { get; set; }
