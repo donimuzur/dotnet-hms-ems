@@ -268,33 +268,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Detail", new { id });
             }
 
-            //var model = InitEditModel(lack2Data);
-            //model = InitEditList(model);
+            var model = InitEditModel(lack2Data);
+            model = InitEditList(model);
+            model.IsCreateNew = false;
 
-            //if (!IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status))
-            //{
-            //    AddMessageInfo(
-            //        "Operation not allowed.",
-            //        Enums.MessageInfoType.Error);
-            //    if (lack1Data.Lack1Level == Enums.Lack1Level.Nppbkc)
-            //    {
-            //        return RedirectToAction("Index");
-            //    }
-            //    else if (lack1Data.Lack1Level == Enums.Lack1Level.Plant)
-            //    {
-            //        return RedirectToAction("ListByPlant");
-            //    }
-            //}
-
-            //if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
-            //{
-            //    model.ControllerAction = "GovApproveDocument";
-            //}
-
-            //model.MainMenu = _mainMenu;
-            //model.CurrentMenu = PageInfo;
-
-            //return View(model);
             return View();
         }
 
