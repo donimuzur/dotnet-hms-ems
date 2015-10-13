@@ -404,9 +404,6 @@ namespace Sampoerna.EMS.BLL
                         + output.FaCode +", " + output.ProductionDate + "]");
                 }
 
-               
-
-                //Company Code Validation
                 #region -------------- Company Code Validation --------------
                 List<string> messages;
                 T001 companyTypeData = null;
@@ -422,7 +419,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Plant Code Validation
+              
                 #region -------------- Plant Code Validation --------------
 
                 Plant plantTypeData = null;
@@ -437,7 +434,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Fa Code Validation
+               
                 #region ---------------FaCode validation-----------------
                 ZAIDM_EX_BRAND brandTypeData ;
                 
@@ -452,7 +449,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Brand Description Validation
+               
                 #region -------------Brand Description--------------------
               
                 if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandTypeData))
@@ -466,7 +463,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Daily Production date
+               
                 #region ---------------Production Date validation-------------
 
                 int temp;
@@ -488,7 +485,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Production Date [" + output.ProductionDate + "] not valid");
                 }
                 #endregion
-                //Quantity Packed
+             
                 #region -------Quantity Production validation--------
                 decimal tempDecimal;
                 if (decimal.TryParse(output.QtyPacked,out tempDecimal) || output.QtyPacked == "" || output.QtyPacked == "-")
@@ -503,7 +500,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Quantity Packed [" + output.QtyPacked + "] not valid");
                 }
                 #endregion
-                //Quantity 
+               
                 #region -----------Quantity Validation-------------
                 if (decimal.TryParse(output.Qty, out tempDecimal) || output.Qty == "" || output.Qty == "-")
                 {
@@ -515,7 +512,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Quantity [" + output.Qty + "] not valid");
                 }
                 #endregion
-                //UOM Validation
+              
                 #region -------------- UOM Validation --------------------
                 UOM uomTypeData = null;
 
@@ -530,7 +527,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Message
+               
                 #region -------------- Set Message Info if exists ---------------
 
                 if (messageList.Count > 0)
@@ -698,7 +695,7 @@ namespace Sampoerna.EMS.BLL
                 uomData = _uomBll.GetById(uomId);
                 if (uomData == null)
                 {
-                    messageList.Add("UomId Description [" + uomId + "] not valid");
+                    messageList.Add("Uom Id  [" + uomId + "] not valid");
                 }
                 else
                 {
@@ -707,7 +704,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                messageList.Add("UomId Description  is empty");
+                messageList.Add("Uom Id  is empty");
             }
              #endregion
 
