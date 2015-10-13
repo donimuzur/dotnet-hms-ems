@@ -38,28 +38,9 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_BRAND GetBrandForProdConv(string brand, string prodCode, string nppbkc)
         {
-            /* 
-             * validate bedasarkan nppbck dan nppbck_import (jika ada nppbck_import) 
-             * PBCK1 Feedback Log No. 228
-            */
+            var plant = _plantBll.GetPlantByNppbkc(nppbkc).Select(s => s.WERKS).ToList();
 
-            var plant = _plantBll.GetPlantByNppbkc(nppbkc).Select(s => new { s.WERKS, s.NPPBKC_IMPORT_ID}).ToList();
-
-            var listWerks = plant.Select(c => c.WERKS).ToList();
-
-            var listNppbckImport = plant.Where(c => c.NPPBKC_IMPORT_ID != null).Select(c => c.NPPBKC_IMPORT_ID).ToList();
-
-            if (listNppbckImport.Any()) 
-            {
-                //get plant werks from nppbckimport
-                foreach (var nppbck in listNppbckImport)
-                {
-                    var werksNppbkcImport = _plantBll.GetPlantByNppbkc(nppbkc).Select(s => s.WERKS).ToList();
-                    listWerks.AddRange(werksNppbkcImport);
-                }
-            }
-
-            var dbData = _repository.Get(c => c.BRAND_CE == brand && c.PROD_CODE == prodCode && listWerks.Contains(c.WERKS)).FirstOrDefault();
+            var dbData = _repository.Get(c => c.BRAND_CE == brand && c.PROD_CODE == prodCode && plant.Contains(c.WERKS)).FirstOrDefault();
 
             return dbData;
         }
