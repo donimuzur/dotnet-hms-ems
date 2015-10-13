@@ -497,8 +497,8 @@ namespace Sampoerna.EMS.BLL
              
                 else
                 {
-                    output.QtyPacked = qtyPacked;
-                    messageList.Add("Quantity Packed [" + qtyPacked + "] not valid");
+                    output.QtyPacked = output.QtyPacked;
+                    messageList.Add("Quantity Packed [" + output.QtyPacked + "] not valid");
                 }
                 #endregion
                 //Quantity 
@@ -509,8 +509,8 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
-                    output.Qty = qty;
-                    messageList.Add("Quantity [" + qty + "] not valid");
+                    output.Qty = output.QtyPacked;
+                    messageList.Add("Quantity [" + output.Qty + "] not valid");
                 }
                 #endregion
 
