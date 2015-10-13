@@ -100,6 +100,10 @@ namespace Sampoerna.EMS.BLL
             var output = new SaveProductionOutput();
             output.isNewData = true;
             output.isFromSap = false;
+            var batch = _repository.GetByID(productionDto.CompanyCode, productionDto.PlantWerks,
+                productionDto.FaCode, productionDto.ProductionDate);
+
+            productionDto.Batch = batch.BATCH;
 
             var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
 
