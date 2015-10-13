@@ -191,8 +191,8 @@
                                                         <div class="col-md-8">
                                                             @if (Model.IsFromSAP)
                                                             {
-                                                                @Html.HiddenFor(model => model.SeriesCode)
-                                                                @Html.TextBox("seriescode", Model.SeriesCode + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.SeriesId)
+                                                                @Html.TextBox("seriescode", Model.SeriesId + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
                                                             }
                                                             else
                                                             {
