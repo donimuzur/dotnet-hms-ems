@@ -178,7 +178,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 inputDoc.Month = item.PeriodMonth;
                 inputDoc.Year = item.PeriodYear;
                 inputDoc.NppbkcId = item.NppbkcId;
-                item.Lack2Number = _documentSequenceNumberBll.GenerateNumberNoReset(inputDoc);
+                item.Lack2Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
                 item.Items = model.Lack2Model.Items.Select(x => Mapper.Map<Lack2ItemDto>(x)).ToList();
 
                 item.Status = Enums.DocumentStatus.Draft;

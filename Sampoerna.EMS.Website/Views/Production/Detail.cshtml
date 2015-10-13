@@ -103,7 +103,7 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Qty Packed<span class="red">*</span></label>
+                                                                <label class="col-md-4">Quantity Packed<span class="red">*</span></label>
                                                                 <div class="col-md-8">
                                                                     @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "decimal form-control", disabled = "disabled" })
                                                                 </div>
@@ -111,9 +111,9 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Qty Unpacked<span class="red">*</span></label>
+                                                                <label class="col-md-4">Quantity</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.QtyUnpackedStr, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                    @Html.TextBoxFor(model => model.QtyStr, new { @class = "decimal form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -129,20 +129,13 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">Product Qty Stick</label>
+                                                                <label class="col-md-4">Product Quantity Stick</label>
                                                                 <div class="col-md-8">
                                                                     @Html.TextBoxFor(model => model.ProdQtyStickStr, new { @class = "decimal form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="col-md-4"> Quantity</label>
-                                                                <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.QtyStr, new { @class = "decimal form-control", disabled = "disabled" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                       
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4"> Bundle </label>
