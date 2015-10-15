@@ -476,7 +476,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentUser = CurrentUser.USER_ID,
                     CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                     DocumentNumber = model.Detail.Pbck1Number,
-                    NppbkcId = model.Detail.NppbkcId
+                    NppbkcId = model.Detail.NppbkcId,
+                    FormType = Enums.FormType.PBCK1
                 };
 
                 ////workflow
@@ -495,7 +496,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "GovApproveDocument";
                 }
 
-                if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject) )
+                if(model.Detail.Status == Enums.DocumentStatus.Completed){
+                    model.ActionType = "ChangeCompletedDocument";
+                }
+
+                if (((model.ActionType == "GovApproveDocument" || model.ActionType == "ChangeCompletedDocument") && model.AllowGovApproveAndReject))
                 { 
                 
                 }else if (!ValidateEditDocument(model, false))
@@ -979,6 +984,27 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck1Bll.Pbck1Workflow(input);
         }
 
+        private void Pbck1WorkflowCompletedEdit(Pbck1Item pbck1Data, Enums.ActionType actionType, string comment)
+        {
+            var input = new Pbck1WorkflowDocumentInput()
+            {
+                DocumentId = pbck1Data.Pbck1Id,
+                ActionType = actionType,
+                UserRole = CurrentUser.UserRole,
+                UserId = CurrentUser.USER_ID,
+                DocumentNumber = pbck1Data.Pbck1Number,
+                Comment = comment,
+                DocumentStatus = Enums.DocumentStatus.Completed,
+                AdditionalDocumentData = new Pbck1WorkflowDocumentData()
+                {
+                    DecreeDate = pbck1Data.DecreeDate.Value,
+                    QtyApproved = pbck1Data.QtyApproved == null ? 0 : Convert.ToDecimal(pbck1Data.QtyApproved),
+                    Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
+                }
+            };
+            _pbck1Bll.Save(input);
+        }
+
         public ActionResult SubmitDocument(int? id)
         {
             if (!id.HasValue)
@@ -1119,6 +1145,77 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            AddMessageInfo("Document " + EnumHelper.GetDescription(model.Detail.StatusGov), Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult ChangeCompletedDocument(Pbck1ItemViewModel model)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            //}
+
+            if (model.Detail.Pbck1DecreeFiles == null)
+            {
+                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
+                return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+            }
+
+            bool isSuccess = false;
+            var currentUserId = CurrentUser;
+            try
+            {
+                model.Detail.Pbck1DecreeDoc = new List<Pbck1DecreeDocModel>();
+                if (model.Detail.Pbck1DecreeFiles != null)
+                {
+                    foreach (var item in model.Detail.Pbck1DecreeFiles)
+                    {
+                        if (item != null)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var decreeDoc = new Pbck1DecreeDocModel()
+                            {
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
+                                CREATED_BY = currentUserId.USER_ID,
+                                CREATED_DATE = DateTime.Now
+                            };
+                            model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
+                        }
+                        else
+                        {
+                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+                        }
+                    }
+                }
+
+
+                var input = new Pbck1UpdateReportedOn()
+                {
+                    Id = model.Detail.Pbck1Id,
+                    ReportedOn = model.Detail.ReportedOn
+                };
+
+                _pbck1Bll.UpdateReportedOn(input);
+
+                Pbck1WorkflowCompletedEdit(model.Detail, model.Detail.GovApprovalActionType, model.Detail.Comment);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
             AddMessageInfo("Document " + EnumHelper.GetDescription(model.Detail.StatusGov), Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }

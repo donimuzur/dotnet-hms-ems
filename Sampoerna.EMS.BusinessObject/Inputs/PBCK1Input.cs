@@ -70,7 +70,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Comment { get; set; }
         public Enums.ActionType ActionType { get; set; }
         public string DocumentNumber { get; set; }
-
+        public Enums.DocumentStatus DocumentStatus { get; set; }
         public Pbck1WorkflowDocumentData AdditionalDocumentData { get; set; }
         
     }

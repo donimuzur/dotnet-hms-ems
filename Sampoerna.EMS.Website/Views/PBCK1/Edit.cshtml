@@ -51,7 +51,7 @@
                         @Html.HiddenFor(model => model.Detail.Status)
                         @Html.HiddenFor(model => model.Detail.CreatedById)
 
-                        @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+                        @if ((Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval || Model.Detail.Status == Enums.DocumentStatus.Completed) && Model.AllowGovApproveAndReject)
                         {
                             @Html.HiddenFor(model => model.Detail.Pbck1Reference)
                             @Html.HiddenFor(model => model.Detail.Pbck1Type)
@@ -133,7 +133,7 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/pbck1script.js"></script>
     <script src="~/Scripts/thousand-separator.js"></script>
-    @if (Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+    @if ((Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval || Model.Detail.Status == Enums.DocumentStatus.Completed) && Model.AllowGovApproveAndReject)
     {
         <script src="~/Scripts/pbck1/docupload.js"></script>
     }
@@ -153,7 +153,7 @@
         $('#Detail_StatusGov').on('change', function (e) {
             var valueSelected = this.value;
             var request = $("input[name='Detail.RequestQty']:hidden").val();
-
+            alert(1);
             $('#divComment').hide();
             $("input[name='Detail.QtyApproved']:text").prop("readonly", true);
 
