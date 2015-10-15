@@ -2198,12 +2198,20 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-        public List<CK5ExternalSupplierDto> GetExternalSupplierList()
+        public List<CK5ExternalSupplierDto> GetExternalSupplierList(List<string> goodTypeList = null)
         {
+            
+            Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
+
+            queryFilter = queryFilter.And(c => string.IsNullOrEmpty(c.SUPPLIER_PLANT_WERKS));
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+
+            if (goodTypeList != null && goodTypeList.Count > 0)
+            {
+                queryFilter = queryFilter.And(c => goodTypeList.Contains(c.EXC_GOOD_TYP));
+            }
             var dbData =
-                _repository.Get(
-                    x => string.IsNullOrEmpty(x.SUPPLIER_PLANT_WERKS) && x.STATUS == Enums.DocumentStatus.Completed,
-                    null, "")
+                _repository.Get(queryFilter,null, "")
                     .GroupBy(l => new
                     {
                         l.SUPPLIER_COMPANY,

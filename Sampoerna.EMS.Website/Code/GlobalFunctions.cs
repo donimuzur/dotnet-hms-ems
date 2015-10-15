@@ -12,6 +12,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Code
@@ -528,11 +529,11 @@ namespace Sampoerna.EMS.Website.Code
         }
 
 
-        public static SelectList GetExternalSupplierList()
+        public static SelectList GetExternalSupplierList(Enums.CK5Type ck5Type)
         {
             ICK5BLL ck5Bll = MvcApplication.GetInstance<CK5BLL>();
 
-            var data = ck5Bll.GetExternalSupplier();
+            var data = ck5Bll.GetExternalSupplier(ck5Type);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
 
             return new SelectList(selectItemSource, "ValueField", "TextField");

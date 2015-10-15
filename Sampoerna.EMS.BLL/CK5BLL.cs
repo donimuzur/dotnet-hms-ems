@@ -945,7 +945,7 @@ namespace Sampoerna.EMS.BLL
             {
                 exGoodTypeList = _goodTypeGroupBLL.GetById((int)Enums.ExGoodsType.EtilAlcohol).EX_GROUP_TYPE_DETAILS.Select(x => x.GOODTYPE_ID).ToList();
             }
-            var data = _pbck1Bll.GetExternalSupplierList();
+            var data = _pbck1Bll.GetExternalSupplierList(exGoodTypeList);
             return Mapper.Map<List<CK5ExternalSupplierDto>>(data);
         }
 
@@ -2849,9 +2849,15 @@ namespace Sampoerna.EMS.BLL
 
         public List<CK5> GetAllCompletedPortToImporter()
         {
+            Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
+            var ck5Ref = _repository.Get(
+                    x => x.STATUS_ID != Enums.DocumentStatus.Cancelled, null, "").Select(x=> x.CK5_REF_ID).ToList();
+
+            queryFilter = queryFilter.And(x => ck5Ref.Contains(x.CK5_ID));
+            queryFilter = queryFilter.And(x => x.CK5_TYPE == Enums.CK5Type.PortToImporter);
+            queryFilter = queryFilter.And(x => x.STATUS_ID == Enums.DocumentStatus.Completed);
             var data =
-                _repository.Get(
-                    x => x.STATUS_ID == Enums.DocumentStatus.Completed && x.CK5_TYPE == Enums.CK5Type.PortToImporter,null,"").ToList();
+                _repository.Get(queryFilter, null, "").ToList();
 
             return data;
         }

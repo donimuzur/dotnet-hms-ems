@@ -73,6 +73,6 @@ namespace Sampoerna.EMS.Contract
 
        List<MaterialDto> GetValidateMaterial(string plantId, int goodTypeGroup);
 
-       List<CK5ExternalSupplierDto> GetExternalSupplier();
+       List<CK5ExternalSupplierDto> GetExternalSupplier(Enums.CK5Type ck5Type);
    }
 }
