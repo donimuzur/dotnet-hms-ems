@@ -509,28 +509,33 @@ namespace Sampoerna.EMS.BLL
                     {
 
                         var material = _materialBll.getByID(ck5MaterialInput.Brand, ck5MaterialInput.Plant);
-                        if (ck5MaterialInput.ConvertedUom == material.BASE_UOM_ID)
-                            continue;
-
-                        var matUom = material.MATERIAL_UOM;
-
-                        var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Any();
-
-                        if (isConvertionExist)
+                        if (material != null)
                         {
-                            //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                            var umren = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Single().UMREN;
-                            if (umren == null)
+                            if (ck5MaterialInput.ConvertedUom == material.BASE_UOM_ID)
+                                continue;
+
+                            var matUom = material.MATERIAL_UOM;
+
+                            var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Any();
+
+                            if (isConvertionExist)
                             {
-                                messageList.Add("convertion to SAP in material master is null");
+                                //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
+                                var umren = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Single().UMREN;
+                                if (umren == null)
+                                {
+                                    messageList.Add("convertion to SAP in material master is null");
+
+                                }
 
                             }
-
+                            else
+                            {
+                                messageList.Add("convertion to SAP Base UOM in material master not exist");
+                            }
                         }
                         else
-                        {
                             messageList.Add("convertion to SAP Base UOM in material master not exist");
-                        }
                     }
                 }
 
@@ -1022,10 +1027,12 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GICreated:
                 case Enums.ActionType.GICompleted:
+                case Enums.ActionType.StoRecGICompleted:
                     GiCreatedDocument(input);
                     break;
                 case Enums.ActionType.GRCreated:
                 case Enums.ActionType.GRCompleted:
+                case Enums.ActionType.StoRecGRCompleted:
                     GrCreatedDocument(input);
                     break;
                 case Enums.ActionType.CancelSAP:
@@ -1589,7 +1596,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.GICreated &&
-                dbData.STATUS_ID != Enums.DocumentStatus.GICompleted)
+                dbData.STATUS_ID != Enums.DocumentStatus.GICompleted &&
+                 dbData.STATUS_ID != Enums.DocumentStatus.StoRecGICompleted)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = dbData.SEALING_NOTIF_NUMBER;
@@ -1619,7 +1627,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.GRCreated &&
-                dbData.STATUS_ID != Enums.DocumentStatus.GRCompleted)
+                dbData.STATUS_ID != Enums.DocumentStatus.GRCompleted &&
+                dbData.STATUS_ID != Enums.DocumentStatus.StoRecGRCompleted)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = dbData.SEALING_NOTIF_NUMBER;
@@ -1998,8 +2007,9 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.DestPlantName = "-";
                 result.ReportDetails.DestPlantAddress = "-";
 
-                result.ReportDetails.DestOfficeName = result.ReportDetails.SourceOfficeName;
-                result.ReportDetails.DestOfficeCode = result.ReportDetails.SourceOfficeCode;
+                //result.ReportDetails.DestOfficeName = result.ReportDetails.SourceOfficeName;
+                //result.ReportDetails.DestOfficeCode = result.ReportDetails.SourceOfficeCode;
+                result.ReportDetails.DestOfficeCode = "-";
 
                 result.ReportDetails.DestinationCountry = dtData.DEST_COUNTRY_NAME;
                 result.ReportDetails.DestinationCode = dtData.DEST_COUNTRY_CODE;
