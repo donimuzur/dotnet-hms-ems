@@ -1903,6 +1903,24 @@ namespace Sampoerna.EMS.BLL
      
         #region Reports
 
+        private string GetMaterialUomGroupBy(IEnumerable<CK5_MATERIAL> listMaterials)
+        {
+            string result = "";
+
+            var listGroup = listMaterials.GroupBy(a => a.UOM)
+                .Select(x => new CK5ReportMaterialGroupUomDto
+                {
+                    Uom = x.Key,
+                    SumUom = x.Sum(c=>c.QTY.HasValue ? c.QTY.Value : 0)
+                }).ToList();
+
+
+            result = string.Join(Environment.NewLine,
+                listGroup.Select(c => ConvertHelper.ConvertDecimalToStringMoneyFormat(c.SumUom) + " " + c.Uom));
+
+            return result;
+        }
+
         public CK5ReportDto GetCk5ReportDataById(long id)
         {
             var dtData = _repository.Get(c => c.CK5_ID == id, null, includeTables).FirstOrDefault();
@@ -1912,7 +1930,9 @@ namespace Sampoerna.EMS.BLL
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
 
-          
+            result.ReportDetails.Total = GetMaterialUomGroupBy(dtData.CK5_MATERIAL);
+            result.ReportDetails.Uom = "";
+
             result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID;
 
             if (string.IsNullOrEmpty(dtData.SOURCE_PLANT_NPPBKC_ID))
