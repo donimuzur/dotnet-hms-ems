@@ -151,7 +151,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dbBrand = new ZAIDM_EX_BRAND();
 
                 dbBrand = Mapper.Map<ZAIDM_EX_BRAND>(model);
-
                 if (dbBrand.STICKER_CODE.Length > 18)
                     dbBrand.STICKER_CODE = dbBrand.STICKER_CODE.Substring(0, 17);
                 dbBrand.CREATED_DATE = DateTime.Now;
@@ -427,7 +426,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Delete(string plant, string facode,string stickercode)
         {
             var decodeFacode = HttpUtility.UrlDecode(facode);
-            AddHistoryDelete(plant, Url.Encode(decodeFacode));
+            AddHistoryDelete(plant, decodeFacode, stickercode);
             var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode);
             
             if(isDeleted)
@@ -438,11 +437,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
-        private void AddHistoryDelete(string plant, string facode)
+        private void AddHistoryDelete(string plant, string facode, string stickercode)
         {
             var history = new CHANGES_HISTORY();
             history.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
-            history.FORM_ID = plant + facode;
+            history.FORM_ID = plant + facode + stickercode;
             history.FIELD_NAME = "IS_DELETED";
             history.OLD_VALUE = "false";
             history.NEW_VALUE = "true";

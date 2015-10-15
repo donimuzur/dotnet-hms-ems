@@ -80,7 +80,14 @@ namespace Sampoerna.EMS.Core.Exceptions
             Lack2DuplicateSelectionCriteria,
 
             [Description("Missing Ck5 data selected")]
-            MissingCk5DataSelected
+            MissingCk5DataSelected,
+
+            [Description("Convertion to SAP in Material Master is null")]
+            ConvertedSAPNull,
+
+            [Description("Convertion to SAP Base UOM in Material Master not exist")]
+            ConvertedSAPNotExist
+
         }
         
         /// <summary>

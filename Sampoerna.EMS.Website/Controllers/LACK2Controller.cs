@@ -268,9 +268,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Detail", new { id });
             }
 
-            var model = InitEditModel(lack2Data);
-            model = InitEditList(model);
-            model.IsCreateNew = false;
+            //var model = InitEditModel(lack2Data);
+            //model = InitEditList(model);
+            //model.IsCreateNew = false;
 
             return View();
         }

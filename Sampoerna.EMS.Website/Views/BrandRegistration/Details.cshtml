@@ -87,8 +87,14 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Personalization Code</label>
                                                                 <div class="col-md-8">
-                                                                      @Html.TextBox("percode", Model.PersonalizationCode + "-" + Model.PersonalizationCodeDescription, new { @class = "form-control", disabled = "disabled" })
-                                                                    
+                                                                    @if (!String.IsNullOrEmpty(Model.PersonalizationCode) && !String.IsNullOrEmpty(Model.PersonalizationCodeDescription))
+                                                                    {
+                                                                        @Html.TextBox("percode", Model.PersonalizationCode + "-" + Model.PersonalizationCodeDescription, new {@class = "form-control", disabled = "disabled"})
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.TextBox("percode", "", new { @class = "form-control", disabled = "disabled" })
+                                                                    }
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -96,7 +102,14 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Product Code<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                      @Html.TextBox("prodcode", Model.ProductCode + "-" + Model.ProductType + " [" + Model.ProductAlias + "]", new { @class = "form-control", disabled = "disabled" })
+                                                                    @if (!String.IsNullOrEmpty(Model.ProductCode) && !String.IsNullOrEmpty(Model.ProductType) && !String.IsNullOrEmpty(Model.ProductAlias))
+                                                                    {
+                                                                        @Html.TextBox("prodcode", Model.ProductCode + "-" + Model.ProductType + " [" + Model.ProductAlias + "]", new { @class = "form-control", disabled = "disabled" })
+                                                                    }else
+                                                                    {
+                                                                        @Html.TextBox("prodcode", "", new { @class = "form-control", disabled = "disabled" })
+                                                                    }
+                                                                    
                                                                     
                                                                 </div>
                                                             </div>

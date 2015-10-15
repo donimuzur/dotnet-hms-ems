@@ -330,9 +330,14 @@ namespace Sampoerna.EMS.BLL
 
         
         }
+
+      
+
         public CK5Dto SaveCk5(CK5SaveInput input)
         {
             ValidateCk5(input);
+
+            //ValidateCk5MaterialConvertedUom(input);
 
             bool isModified = false;
 
@@ -2859,6 +2864,43 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
          
             _uow.SaveChanges();
+        }
+
+        public List<MaterialDto> GetValidateMaterial(string plantId, int goodTypeGroup)
+        {
+            //get from material _uom
+            var listMaterial = _materialBll.GetMaterialUomByPlant(plantId).Select(c=>c.MEINH);
+            
+           var listDbMaterial = _materialBll.GetMaterialByPlantIdAndGoodType(plantId, goodTypeGroup);
+
+            return listDbMaterial.Where(a => listMaterial.Contains(a.BASE_UOM_ID)).ToList();
+
+        }
+
+        private void ValidateCk5MaterialConvertedUom(CK5SaveInput input)
+        {
+            foreach (var ck5MaterialDto in input.Ck5Material)
+            {
+                var material = _materialBll.getByID(ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID);
+                if (ck5MaterialDto.CONVERTED_UOM == material.BASE_UOM_ID)
+                    continue;
+
+                var matUom = material.MATERIAL_UOM;
+
+                var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).Any();
+
+                if (isConvertionExist)
+                {
+                    //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
+                    var umren = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).Single().UMREN;
+                    if (umren == null)
+                        throw new BLLException(ExceptionCodes.BLLExceptions.ConvertedSAPNull);
+
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.ConvertedSAPNotExist);
+            }
+
         }
     }
 }
