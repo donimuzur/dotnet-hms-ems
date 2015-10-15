@@ -235,9 +235,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year)
+        public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year, bool isNppbkc)
         {
-            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).ToList();
+            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year, isNppbkc).ToList();
 
             var result = _productionBll.GetExactResult(data);
 
