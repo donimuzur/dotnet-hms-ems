@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.BLL
             return item;
         }
 
-        public List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc, int period, int month, int year)
+        public List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc, int period, int month, int year, bool isNppbkc)
         {
             DateTime firstDay = new DateTime(year, month, 1);
             DateTime startDate = firstDay;
@@ -194,14 +194,14 @@ namespace Sampoerna.EMS.BLL
                              Tarif = b.TARIFF,
                              QtyPacked = p.QTY_PACKED == null ? 0 : p.QTY_PACKED,
                              QtyUnpacked = 0,
-                             QtyProduced = p.QTY,
+                             QtyProduced = p.QTY == null ? 0 : p.QTY,
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
                              PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
                          };
 
-            if (nppbkc != string.Empty)
+            if (nppbkc != string.Empty && isNppbkc)
             {
                 dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
                          join n in _repositoryPlant.Get(n => n.NPPBKC_ID == nppbkc) on p.WERKS equals n.WERKS
@@ -221,7 +221,7 @@ namespace Sampoerna.EMS.BLL
                              Tarif = b.TARIFF,
                              QtyPacked = p.QTY_PACKED == null ? 0 : p.QTY_PACKED,
                              QtyUnpacked = 0,
-                             QtyProduced = p.QTY,
+                             QtyProduced = p.QTY == null ? 0 : p.QTY,
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),

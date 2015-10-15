@@ -191,8 +191,8 @@ function getProductionData(urlFunction) {
     var period = $('#Details_ReportedPeriod').find("option:selected").val();
     var month = $('#Details_ReportedMonth').find("option:selected").val();
     var year = $('#Details_ReportedYears').find("option:selected").val();
-    var isPlant = $('#Details_PlantId').is(":disabled");
-    var isNppbkc = $('#Details_NppbkcId').is(":disabled");
+    var isNppbkc = $('#Details_PlantId').is(":disabled");
+    var isPlant = $('#Details_NppbkcId').is(":disabled");
 
     $('#CompanyId').val(comp);
     $('#PlantId').val(plant);
@@ -201,7 +201,7 @@ function getProductionData(urlFunction) {
     $('#MonthId').val(month);
     $('#YearId').val(year);
 
-    if (comp == "" || (plant == "" && isNppbkc) || (nppbkc == "" && isPlant) || period == "" || month == "" || year == "") {
+    if (comp == "" || (plant == "" && isPlant) || (nppbkc == "" && isNppbkc) || period == "" || month == "" || year == "") {
         $('#tb-body-ck4c').html("");
         $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
     }
@@ -209,7 +209,7 @@ function getProductionData(urlFunction) {
         $.ajax({
             type: 'POST',
             url: urlFunction,
-            data: { comp: comp, plant: plant, nppbkc: nppbkc, period: period, month: month, year: year },
+            data: { comp: comp, plant: plant, nppbkc: nppbkc, period: period, month: month, year: year, isNppbkc: isNppbkc },
             success: function (data) {
                 if (data.length > 0) {
                     $('#tb-body-ck4c').html("");
