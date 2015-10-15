@@ -76,7 +76,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public List<T001WModel> NppbkcPlants { get; set; }
         public List<string> PoaList { get; set; }
         public bool IsNppbkcImport { get; set; }
-        public bool IsExternalSupplier { get { return this.SupplierPlantWerks == null; }}
+        public bool IsExternalSupplier { get { return this.SupplierPlantWerks == null; } }
+        public string SupplierCompany { get; set; }
     }
 
     public class Pbck1ExportSummaryReportsViewModel
@@ -118,6 +119,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool DecreeDate { get; set; }
         public bool IsNppbkcImport { get; set; }
         public bool IsExternalSupplier { get; set; }
+        public bool SupplierCompany { get; set; }
     }
 
     public class Pbck1FilterSummaryReportViewModel
@@ -167,6 +169,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string QtyApproved { get; set; }
         public string DecreeDate { get; set; }
         public string PoaList { get; set; }
+        public string IsNppbkcImport { get; set; }
+        public string SupplierCompany { get; set; }
     }
 
 }
