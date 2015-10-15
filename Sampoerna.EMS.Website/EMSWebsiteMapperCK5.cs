@@ -341,6 +341,20 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.SupplierPhone, opt => opt.MapFrom(src => src.SUPPLIER_PHONE))
                 .ForMember(dest => dest.SupplierPortId, opt => opt.MapFrom(src => src.SUPPLIER_PORT_ID))
                 .ForMember(dest => dest.SupplierPortName, opt => opt.MapFrom(src => src.SUPPLIER_PORT_NAME));
+
+            Mapper.CreateMap<CK5ExternalSupplierDto, CK5PlantModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY))
+                //.ForMember(dest => dest.PlantNpwp, opt => opt.MapFrom(src => src.supp))
+                .ForMember(dest => dest.NPPBCK_ID, opt => opt.MapFrom(src => src.SUPPLIER_NPPBKC_ID))
+                //.ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.s))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY))
+                .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.SUPPLIER_ADDRESS))
+                .ForMember(dest => dest.KppBcName,
+                    opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_NAME));
+                //.ForMember(dest => dest.KppbcCity, opt => opt.MapFrom(src => src.supp))
+                //.ForMember(dest => dest.KppbcNo, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_ID));
+                ;
         }
     }
 }

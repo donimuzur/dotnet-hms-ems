@@ -482,16 +482,23 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = Mapper.Map<CK5PlantModel>(dbPlantDest);
 
             GetQuotaAndRemainOutput output;
+            var destNppbkcId = dbPlantDest.NPPBKC_ID;
+
+            if (ck5Type == Enums.CK5Type.PortToImporter)
+            {
+                destNppbkcId = dbPlantDest.NPPBKC_IMPORT_ID;
+            }
+
             if (string.IsNullOrEmpty(goodTypeGroupId))
             {
-                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, null);
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, destNppbkcId, null);
             } else {
                 Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroupId);
-                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, (int)goodtypeenum);
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, destNppbkcId, (int)goodtypeenum);
             }
 
 
-            if (sourceNppbkcId == dbPlantDest.NPPBKC_ID || ck5Type == Enums.CK5Type.Manual)
+            if (sourceNppbkcId == destNppbkcId || ck5Type == Enums.CK5Type.Manual)
             {
                 model.Pbck1Id = null;
                 model.Pbck1Number = null;
@@ -524,6 +531,9 @@ namespace Sampoerna.EMS.Website.Controllers
             if (ck5Type == Enums.CK5Type.DomesticAlcohol)
             {
                 var supplier = _ck5Bll.GetExternalSupplierItem(plantId, ck5Type);
+                model = Mapper.Map<CK5PlantModel>(supplier);
+
+                model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
                 //model.
             }
             else
