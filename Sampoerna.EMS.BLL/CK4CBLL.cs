@@ -791,6 +791,7 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.ProdDate = string.Empty;
 
                     var prodType = _prodTypeBll.GetById(data.PROD_CODE);
+                    ck4cItem.ProdCode = data.PROD_CODE;
                     ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
 
                     ck4cItem.SumBtg = "0.00";
@@ -817,6 +818,7 @@ namespace Sampoerna.EMS.BLL
                 c.No,
                 c.NoProd,
                 c.ProdDate,
+                c.ProdCode,
                 c.ProdType,
                 c.SumBtg,
                 c.BtgGr,
@@ -836,6 +838,7 @@ namespace Sampoerna.EMS.BLL
                 No = c.No,
                 NoProd = c.NoProd,
                 ProdDate = c.ProdDate,
+                ProdCode = c.ProdCode,
                 ProdType = c.ProdType,
                 SumBtg = c.SumBtg,
                 BtgGr = c.BtgGr,
@@ -952,6 +955,7 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.No = i.ToString();
                         ck4cItem.NoProd = i.ToString();
                         ck4cItem.ProdDate = prodDate;
+                        ck4cItem.ProdCode = data.PROD_CODE;
                         ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
                         ck4cItem.SumBtg = String.Format("{0:n}",prodQty);
                         ck4cItem.BtgGr = packedQty == null ? "0.00" : String.Format("{0:n}", packedQty);
@@ -982,6 +986,7 @@ namespace Sampoerna.EMS.BLL
                     c.No,
                     c.NoProd,
                     c.ProdDate,
+                    c.ProdCode,
                     c.ProdType,
                     c.SumBtg,
                     c.BtgGr,
@@ -1001,6 +1006,7 @@ namespace Sampoerna.EMS.BLL
                     No = c.No,
                     NoProd = c.NoProd,
                     ProdDate = c.ProdDate,
+                    ProdCode = c.ProdCode,
                     ProdType = c.ProdType,
                     SumBtg = c.SumBtg,
                     BtgGr = c.BtgGr,
@@ -1021,7 +1027,7 @@ namespace Sampoerna.EMS.BLL
             foreach (var item in ck4cItemGroupByDate)
             {
                //insert result.ck4itemList again ordered brand
-                var listItem = ck4cItemGroupByDate.Where(c => c.Key == item.Key).Select(c => c.Value.OrderBy(d => d.ProdType)).FirstOrDefault().ToList();
+                var listItem = ck4cItemGroupByDate.Where(c => c.Key == item.Key).Select(c => c.Value.OrderBy(d => d.ProdCode)).FirstOrDefault().ToList();
                 result.Ck4cItemList.AddRange(listItem);
             }
 
