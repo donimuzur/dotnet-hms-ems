@@ -90,6 +90,7 @@
                             <th>Printing Price</th>
                             <th>Cut Filler Code</th>
                             <th> Active </th>
+                            <th>Created By - Date</th>
                             <th> Deleted </th>
                         </tr>
 
@@ -106,6 +107,7 @@
                             <th>Printing Price</th>
                             <th>Cut Filler Code</th>
                             <th> Active </th>
+                            <th>Created By - Date</th>
                             <th> Deleted </th>
                         </tr>
                     </thead>
@@ -145,6 +147,9 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.IsActive)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreatedBy) - @Html.DisplayFor(modelItem => item.CreatedDate)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.IsDeleted)
