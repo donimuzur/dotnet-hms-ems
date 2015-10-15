@@ -4,15 +4,16 @@
     <thead>
         <tr>
             <th class="toggle-row"> No </th>
-            <th>Company</th>
-            <th>NPPBKC</th>
-            <th>KPPBC</th>
+            <th>Original Company</th>
+            <th>Original NPPBKC</th>
+            <th>Original Address</th>
+            <th>Original KPPBC</th>
             <th>PBCK-1 Number</th>
             <th>Status</th>
-            <th>Address</th>
-            <th>Original NPPBKC</th>
-            <th>Original KPPBC</th>
-            <th>Original Address</th>
+            <th>Supplier NPPBKC</th>
+            <th>Supplier KPPBC</th>
+            <th>Supplier Address</th>
+            <th>Supplier Company</th>
             <th>Exc. Goods Amount</th>
             <th>PBCK Type</th>
             <th>Supplier Port</th>
@@ -47,13 +48,6 @@
                     <td>@row</td>
                     <td>@Html.DisplayFor(model => item.NppbkcCompanyName)</td>
                     <td>@Html.DisplayFor(model => item.NppbkcId)</td>
-                    <td>
-                        @Html.DisplayFor(model => item.NppbkcKppbcName)
-                    </td>
-                    <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
-                    <td>
-                        @item.StatusName
-                    </td>
                     <td style="padding:20px">
                         <ol>
                             @foreach (var plant in item.NppbkcPlants)
@@ -65,12 +59,22 @@
                     <td>
                         @item.SupplierNppbkcId
                     </td>
+                    <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
+                    <td>
+                        @item.StatusName
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.NppbkcKppbcName)
+                    </td>
                     <td>
                         <!-- Fixing Bug PBCK1 No. 168 -->
                         @item.SupplierKppbcName
                     </td>
                     <td>
                         @item.SupplierAddress
+                    </td>
+                    <td>
+                        @item.SupplierCompany
                     </td>
                     <td align="right">
                         @String.Format("{0:n}", @item.QtyApproved)
@@ -111,7 +115,7 @@
                         @item.Lack1FromMonthName  @item.Lack1FormYear
                     </td>
                     <td>
-                         @item.Lack1ToMonthName @item.Lack1ToYear
+                        @item.Lack1ToMonthName @item.Lack1ToYear
                     </td>
                     <td align="right">
                         @String.Format("{0:n}", @item.LatestSaldo)
@@ -142,8 +146,9 @@
                         {
                             <span>Yes</span>
                         }
-                        else { 
-                            <span>No</span>                        
+                        else
+                        {
+                            <span>No</span>
                         }
                     </td>
                     <td>
@@ -157,7 +162,7 @@
                         }
                     </td>
                 </tr>
-                            row = row + 1;
+                        row = row + 1;
             }
         }
     </tbody>
