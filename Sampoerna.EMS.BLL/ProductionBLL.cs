@@ -323,7 +323,7 @@ namespace Sampoerna.EMS.BLL
                         case "QTY":
                             changes.OLD_VALUE = origin.Qty.ToString();
                             changes.NEW_VALUE = data.Qty.ToString();
-                            changes.FIELD_NAME = "Quantity" + isFromSapString;
+                            changes.FIELD_NAME = "Produced Qty" + isFromSapString;
                             break;
                             break;
                         case "UOM":
