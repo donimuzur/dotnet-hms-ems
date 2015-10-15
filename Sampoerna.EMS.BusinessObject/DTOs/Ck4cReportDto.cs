@@ -70,6 +70,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string ProdQty { get; set; }
 
+        public string ProdCode { get; set; }
+
         public string ProdType { get; set; }
 
         public string Merk { get; set; }
