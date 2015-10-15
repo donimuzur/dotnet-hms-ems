@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Core.Common.EntitySql;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using AutoMapper;
@@ -2192,6 +2194,35 @@ namespace Sampoerna.EMS.BLL
            
             
             var data = Mapper.Map<Pbck1Dto>(dbData);
+
+            return data;
+        }
+
+        public List<Pbck1Dto> GetExternalSupplierList()
+        {
+            var dbData =
+                _repository.Get(
+                    x => string.IsNullOrEmpty(x.SUPPLIER_PLANT_WERKS) && x.STATUS == Enums.DocumentStatus.Completed,
+                    null, "")
+                    .GroupBy(l => new
+                    {
+                        l.SUPPLIER_COMPANY,
+                        l.SUPPLIER_NPPBKC_ID
+                    }).Select(cl => new PBCK1()
+                    {
+                        SUPPLIER_NPPBKC_ID = cl.First().SUPPLIER_NPPBKC_ID,
+                        SUPPLIER_ADDRESS = cl.First().SUPPLIER_ADDRESS,
+                        SUPPLIER_PLANT = cl.First().SUPPLIER_PLANT,
+                        SUPPLIER_COMPANY = cl.First().SUPPLIER_COMPANY,
+                        SUPPLIER_PORT_ID = cl.First().SUPPLIER_PORT_ID,
+                        SUPPLIER_PORT_NAME = cl.First().SUPPLIER_PORT_NAME,
+                        SUPPLIER_KPPBC_ID = cl.First().SUPPLIER_KPPBC_ID,
+                        SUPPLIER_KPPBC_NAME = cl.First().SUPPLIER_KPPBC_NAME,
+                        SUPPLIER_PHONE = cl.First().SUPPLIER_PHONE
+
+                    }).ToList();
+
+            var data = Mapper.Map<List<Pbck1Dto>>(dbData);
 
             return data;
         }

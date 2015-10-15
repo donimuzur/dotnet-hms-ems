@@ -51,5 +51,7 @@ namespace Sampoerna.EMS.Contract
 
         string checkUniquePBCK1(Pbck1SaveInput pbck1);
         Pbck1Dto GetPBCK1Reference(Pbck1ReferenceSearchInput input);
+
+        List<Pbck1Dto> GetExternalSupplierList();
     }
 }
