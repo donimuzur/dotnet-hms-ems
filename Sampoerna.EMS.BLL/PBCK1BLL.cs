@@ -1638,6 +1638,10 @@ namespace Sampoerna.EMS.BLL
                     }
 
                 }
+                else
+                {
+                    rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
+                }
             }
             else
             {
