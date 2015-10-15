@@ -1323,7 +1323,9 @@ namespace Sampoerna.EMS.Website.Controllers
                            RequestQty = d.RequestQty == null ? "" : d.RequestQty.Value.ToString(),
                            StatusGov = d.StatusGovName,
                            QtyApproved = d.QtyApproved == null ? "" : d.QtyApproved.Value.ToString(),
-                           DecreeDate = d.DecreeDate == null ? "" : d.DecreeDate.Value.ToString()
+                           DecreeDate = d.DecreeDate == null ? "" : d.DecreeDate.Value.ToString(),
+                           SupplierCompany = d.SupplierCompany,
+                           IsNppbkcImport = d.IsNppbkcImport ? "Yes": "No"
                        }).ToList();
 
             var grid = new System.Web.UI.WebControls.GridView
@@ -1572,6 +1574,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "DecreeDate",
                     HeaderText = "DecreeDate"
+                });
+            } 
+            if (model.ExportModel.IsNppbkcImport)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "IsNppbkcImport",
+                    HeaderText = "IsNppbkcImport"
+                });
+            } 
+            if (model.ExportModel.SupplierCompany)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierCompany",
+                    HeaderText = "SupplierCompany"
                 });
             }
 
