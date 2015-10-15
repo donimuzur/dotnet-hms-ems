@@ -1089,16 +1089,13 @@
     <Content Include="Views\LACK2\Detail.cshtml" />
     <Content Include="Views\CK4C\DocumentList.cshtml" />
     <Content Include="Views\CK4C\_CK4CTableDocumentList.cshtml" />
-    <Content Include="Views\LACK2\_FileUpload.cshtml" />
     <Content Include="Views\CK4C\Ck4CCreateDocumentList.cshtml" />
     <Content Include="Views\CK4C\_HomeCreate.cshtml" />
     <Content Include="Views\LACK1\Details.cshtml" />
     <Content Include="Views\LACK1\_HomeDetails.cshtml" />
     <Content Include="Views\LACK1\_ChangeLog.cshtml" />
-    <Content Include="Views\LACK2\_FileUpload.cshtml" />
     <Content Include="Views\LACK2\_PrintOut.cshtml" />
     <Content Include="Views\LACK2\_ChangesLog.cshtml" />
-    <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
     <Content Include="Views\Production\Create.cshtml" />
@@ -1182,6 +1179,8 @@
     <Content Include="Views\CK4C\_DecreeDocCompleted.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadListDetail.cshtml" />
     <Content Include="Views\CK4C\Detail.cshtml" />
+    <Content Include="Views\LACK2\_HomeGovApproval.cshtml" />
+    <Content Include="Views\LACK2\_HomeEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1333,7 +1332,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

@@ -64,6 +64,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string CompanyCode { get; set; }
         public string NppbkcId { get; set; }
         public int ExGroupTypeId { get; set; }
+        public bool IsCreateNew { get; set; }
     }
 
     public class Lack2GetBySelectionCriteriaParamInput
@@ -86,10 +87,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public int Lack2Id { get; set; }
         public DateTime SubmissionDate { get; set; }
-        public string CompanyName { get; set; }
-        public string SourcePlantName { get; set; }
-        public string SourcePlantCity { get; set; }
-        public string ExcisableGoodsTypeDesc { get; set; }
         public string UserId { get; set; }
         public Enums.ActionType WorkflowActionType { get; set; }
     }

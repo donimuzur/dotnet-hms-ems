@@ -115,6 +115,7 @@ namespace Sampoerna.EMS.BLL
 
         public Lack2CreateOutput Create(Lack2CreateParamInput input)
         {
+            input.IsCreateNew = true;
             var generatedData = GenerateLack2Data(input);
             if (!generatedData.Success)
             {
@@ -233,11 +234,14 @@ namespace Sampoerna.EMS.BLL
             var dbData = _lack2Service.GetDetailsById(input.Lack2Id);
 
             //check if need to re-generate LACK-1 data
-            var isNeedToRegenerate = IsNeedToRegenerate(input, dbData);
+            //check if need to regenerate
+            var isNeedToRegenerate = dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected;
+            var generateInput = Mapper.Map<Lack2GenerateDataParamInput>(input);
             if (isNeedToRegenerate)
             {
                 //do regenerate data
-                var generatedData = GenerateLack2Data(input);
+                generateInput.IsCreateNew = false;
+                var generatedData = GenerateLack2Data(generateInput);
                 if (!generatedData.Success)
                 {
                     return new Lack2SaveEditOutput()
@@ -271,7 +275,6 @@ namespace Sampoerna.EMS.BLL
                 var origin = Mapper.Map<Lack2Dto>(dbData);
                 var destination = Mapper.Map<Lack2Dto>(input);
                 SetChangesHistory(origin, destination, input.UserId);
-
             }
 
             //Set Company Detail
@@ -330,20 +333,7 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
         }
-
-        private bool IsNeedToRegenerate(Lack2SaveEditInput input, LACK2 lack2Data)
-        {
-            if (input.PeriodMonth == lack2Data.PERIOD_MONTH && input.PeriodYear == lack2Data.PERIOD_YEAR
-                && input.SourcePlantId == lack2Data.LEVEL_PLANT_ID && input.ExcisableGoodsType == lack2Data.EX_GOOD_TYP
-                && input.CompanyCode == lack2Data.BUKRS
-                && input.NppbkcId == lack2Data.NPPBKC_ID)
-            {
-                //no need to regenerate
-                return false;
-            }
-            return true;
-        }
-
+        
         #region workflow
 
         public void Lack2Workflow(Lack2WorkflowDocumentInput input)
@@ -773,29 +763,33 @@ namespace Sampoerna.EMS.BLL
 
             if (checkExcisableGroupType.EX_GROUP_TYPE_ID.HasValue)
                 input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
-
+            
             //check if already exists with same selection criteria
-            var lackCheck = _lack2Service.GetBySelectionCriteria(new Lack2GetBySelectionCriteriaParamInput()
+            if (input.IsCreateNew)
             {
-                CompanyCode = input.CompanyCode,
-                NppbkcId = input.NppbkcId,
-                SourcePlantId = input.SourcePlantId,
-                ExGoodTypeId = input.ExcisableGoodsType,
-                PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear
-            });
-
-            if (lackCheck != null)
-            {
-                return new Lack2GeneratedOutput()
+                var lackCheck = _lack2Service.GetBySelectionCriteria(new Lack2GetBySelectionCriteriaParamInput()
                 {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria),
-                    Data = null
-                };
-            }
+                    CompanyCode = input.CompanyCode,
+                    NppbkcId = input.NppbkcId,
+                    SourcePlantId = input.SourcePlantId,
+                    ExGoodTypeId = input.ExcisableGoodsType,
+                    PeriodMonth = input.PeriodMonth,
+                    PeriodYear = input.PeriodYear
+                });
 
+                if (lackCheck != null)
+                {
+                    return new Lack2GeneratedOutput()
+                    {
+                        Success = false,
+                        ErrorCode = ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria.ToString(),
+                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria),
+                        Data = null
+                    };
+                }
+
+            }
+            
             #endregion
 
             //get ck5 data

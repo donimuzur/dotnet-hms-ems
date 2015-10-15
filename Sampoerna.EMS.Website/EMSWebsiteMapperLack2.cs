@@ -31,6 +31,18 @@ namespace Sampoerna.EMS.Website
                 ;
 
             Mapper.CreateMap<LACK2CreateViewModel, Lack2CreateParamInput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack2DetailsDto, Lack2EditViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Burks))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Butxt))
+                .ForMember(dest => dest.PeriodMonthNameEn, opt => opt.MapFrom(src => src.PerionNameEng))
+                .ForMember(dest => dest.PeriodMonthNameId, opt => opt.MapFrom(src => src.PeriodNameInd))
+                .ForMember(dest => dest.SourcePlantId, opt => opt.MapFrom(src => src.LevelPlantId))
+                .ForMember(dest => dest.SourcePlantName, opt => opt.MapFrom(src => src.LevelPlantName))
+                .ForMember(dest => dest.ExcisableGoodsType, opt => opt.MapFrom(src => src.ExGoodTyp))
+                .ForMember(dest => dest.ExcisableGoodsTypeDesc, opt => opt.MapFrom(src => src.ExTypDesc))
+                ;
+
         }
     }
 }

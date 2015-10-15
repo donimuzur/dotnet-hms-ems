@@ -14,6 +14,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Website.Filters;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.LACK2;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -21,8 +22,8 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.PrintHistory;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using SpreadsheetLight;
-using Sampoerna.EMS.Website.Models.ChangesHistory;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -43,10 +44,12 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPBCK1BLL _pbck1Bll;
         private ICK5BLL _ck5Bll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IWorkflowBLL _workflowBll;
+        private IWorkflowHistoryBLL _workflowHistoryBll;
 
         public LACK2Controller(IPageBLL pageBll, ILACK2BLL lack2Bll, ICompanyBLL companyBll, IChangesHistoryBLL changesHistoryBll,
             IPrintHistoryBLL printHistoryBll, IPOABLL poabll, IMonthBLL monthBll, IUserPlantMapBLL userPlantMapBll, IPBCK1BLL pbck1Bll, ICK5BLL ck5Bll,
-            IZaidmExNPPBKCBLL nppbkcBll)
+            IZaidmExNPPBKCBLL nppbkcBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _mainMenu = Enums.MenuList.LACK2;
@@ -61,6 +64,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck1Bll = pbck1Bll;
             _ck5Bll = ck5Bll;
             _nppbkcbll = nppbkcBll;
+            _workflowBll = workflowBll;
+            _workflowHistoryBll = workflowHistoryBll;
         }
 
         #endregion
@@ -268,18 +273,172 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Detail", new { id });
             }
 
-            //var model = InitEditModel(lack2Data);
-            //model = InitEditList(model);
-            //model.IsCreateNew = false;
+            if (!IsAllowEditLack1(lack2Data.CreatedBy, lack2Data.Status))
+            {
+                AddMessageInfo(
+                    "Operation not allowed.",
+                    Enums.MessageInfoType.Error);
+            }
+
+            var model = InitEditModel(lack2Data);
+            model = InitEditList(model);
+            model.IsCreateNew = false;
+
+            if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                model.ControllerAction = "GovApproveDocument";
+            }
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(LACK2CreateViewModel model)
+        public ActionResult Edit(Lack2EditViewModel model)
         {
-            return RedirectToAction("Index");
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+
+                    if (errors.Count > 0)
+                    {
+                        //get error details
+                    }
+                    model.MainMenu = _mainMenu;
+                    model.CurrentMenu = PageInfo;
+                    model = InitEditList(model);
+                    model = SetEditHistory(model);
+                    AddMessageInfo("Invalid input", Enums.MessageInfoType.Error);
+                    return View(model);
+                }
+
+                if (model.CreatedBy != CurrentUser.USER_ID)
+                {
+                    return RedirectToAction("Detail", new { id = model.Lack2Id });
+                }
+
+                bool isSubmit = model.IsSaveSubmit == "submit";
+
+                var input = Mapper.Map<Lack2SaveEditInput>(model);
+                input.UserId = CurrentUser.USER_ID;
+                input.WorkflowActionType = Enums.ActionType.Modified;
+
+                var saveResult = _lack2Bll.SaveEdit(input);
+
+                if (saveResult.Success)
+                {
+                    if (isSubmit)
+                    {
+                        Lack2Workflow(model.Lack2Id, Enums.ActionType.Submit, string.Empty);
+                        AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
+                        return RedirectToAction("Detail", "Lack2", new { id = model.Lack2Id });
+                    }
+                    AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
+                    return RedirectToAction("Edit", new { id = model.Lack2Id });
+                }
+            }
+            catch (Exception)
+            {
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+                model = InitEditList(model);
+                model = SetEditHistory(model);
+                AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
+                return View(model);
+            }
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model = InitEditList(model);
+            model = SetEditHistory(model);
+            return View(model);
+        }
+
+        private Lack2EditViewModel InitEditModel(Lack2DetailsDto lack2Data)
+        {
+            var model = Mapper.Map<Lack2EditViewModel>(lack2Data);
+
+            model = SetEditHistory(model);
+
+            var curUser = CurrentUser;
+
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = lack2Data.CreatedBy,
+                CurrentUser = curUser.USER_ID,
+                CurrentUserGroup = curUser.USER_GROUP_ID,
+                DocumentNumber = model.Lack2Number,
+                NppbkcId = model.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
+
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            return model;
+        }
+
+        private Lack2EditViewModel InitEditList(Lack2EditViewModel model)
+        {
+            model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
+            model.NPPBKCDDL = new SelectList(GetNppbkcDataByCompanyId(model.CompanyCode), "NPPBKC_ID", "NPPBKC_ID");
+            model.ExcisableGoodsTypeDDL = new SelectList(GetExciseGoodsTypeData(model.NppbkcId), "EXC_GOOD_TYP", "EXT_TYP_DESC");
+            model.SendingPlantDDL = new SelectList(GetSendingPlantDataByNppbkcId(model.CompanyCode, model.NppbkcId), "WERKS", "DROPDOWNTEXTFIELD");
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = GetCk5YearList();
+            return model;
+        }
+
+        private Lack2EditViewModel SetEditHistory(Lack2EditViewModel model)
+        {
+            //workflow history
+            var workflowInput = new GetByFormNumberInput
+            {
+                FormNumber = model.Lack2Number,
+                DocumentStatus = model.Status,
+                NPPBKC_Id = model.NppbkcId
+            };
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            var changesHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.LACK1,
+                    model.Lack2Id.ToString()));
+
+            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(model.Lack2Number));
+
+            model.ChangesHistoryList = changesHistory;
+            model.WorkflowHistory = workflowHistory;
+            model.PrintHistoryList = printHistory;
+
+            return model;
+        }
+
+        private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
+        {
+            bool isAllow = CurrentUser.USER_ID == userId;
+            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.WaitingGovApproval))
+            {
+                isAllow = false;
+            }
+
+            return isAllow;
         }
 
         #endregion
