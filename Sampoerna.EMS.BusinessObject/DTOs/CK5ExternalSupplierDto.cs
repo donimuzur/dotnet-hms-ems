@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
-    class CK5ExternalSupplierDto
+    public class CK5ExternalSupplierDto
     {
         public string SUPPLIER_NPPBKC_ID { get; set; }
         public string SUPPLIER_ADDRESS { get; set; }

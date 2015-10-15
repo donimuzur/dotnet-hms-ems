@@ -2198,7 +2198,7 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-        public List<Pbck1Dto> GetExternalSupplierList()
+        public List<CK5ExternalSupplierDto> GetExternalSupplierList()
         {
             var dbData =
                 _repository.Get(
@@ -2222,7 +2222,7 @@ namespace Sampoerna.EMS.BLL
 
                     }).ToList();
 
-            var data = Mapper.Map<List<Pbck1Dto>>(dbData);
+            var data = Mapper.Map<List<CK5ExternalSupplierDto>>(dbData);
 
             return data;
         }

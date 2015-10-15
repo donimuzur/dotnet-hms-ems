@@ -115,7 +115,7 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.Ck5Material, opt => opt.MapFrom(src => Mapper.Map<List<CK5MaterialDto>>(src.CK5_MATERIAL)))
                ;
 
-
+            Mapper.CreateMap<PBCK1, CK5ExternalSupplierDto>().IgnoreAllNonExisting();
         }
     }
 }

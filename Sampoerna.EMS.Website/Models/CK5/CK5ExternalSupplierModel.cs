@@ -9,16 +9,15 @@ namespace Sampoerna.EMS.Website.Models.CK5
     public class CK5ExternalSupplierModel
     {
 
-        public string SupplierName { get; set; }
-        public string SuppierNpwp { get; set; }
-        public string NPPBCK_ID { get; set; }
-        //public string CompanyName { get; set; }
+        public string SupplierNppbkcId { get; set; }
         public string SupplierAddress { get; set; }
-        //public string KppBcName { get; set; }
-        public string PlantName { get; set; }
-        //public string CompanyCode { get; set; }
-        public string KppbcCity { get; set; }
-        public string KppbcNo { get; set; }
+        public string SupplierPlant { get; set; }
+        public string SupplierCompany { get; set; }
+        public string SupplierPortId { get; set; }
+        public string SupplierPortName { get; set; }
+        public string SupplierKppbcId { get; set; }
+        public string SupplierKppbcName { get; set; }
+        public string SupplierPhone { get; set; }
 
         public int? Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }

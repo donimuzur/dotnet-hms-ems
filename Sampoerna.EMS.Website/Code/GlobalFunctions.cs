@@ -526,6 +526,17 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
             //return new SelectList(data, "COUNTRY_CODE", "COUNTRY_CODE");
         }
+
+
+        public static SelectList GetExternalSupplierList()
+        {
+            ICK5BLL ck5Bll = MvcApplication.GetInstance<CK5BLL>();
+
+            var data = ck5Bll.GetExternalSupplier();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
     }
 
 }

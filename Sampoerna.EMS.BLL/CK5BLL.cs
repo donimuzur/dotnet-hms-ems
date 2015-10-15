@@ -937,6 +937,18 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<CK5MaterialDto>>(result);
         }
 
+        public List<CK5ExternalSupplierDto> GetExternalSupplier(Enums.CK5Type ck5Type)
+        {
+            List<string> exGoodTypeList = new List<string>();
+
+            if (ck5Type == Enums.CK5Type.DomesticAlcohol)
+            {
+                exGoodTypeList = _goodTypeGroupBLL.GetById((int)Enums.ExGoodsType.EtilAlcohol).EX_GROUP_TYPE_DETAILS.Select(x => x.GOODTYPE_ID).ToList();
+            }
+            var data = _pbck1Bll.GetExternalSupplierList();
+            return Mapper.Map<List<CK5ExternalSupplierDto>>(data);
+        }
+
 
         #region workflow
 
