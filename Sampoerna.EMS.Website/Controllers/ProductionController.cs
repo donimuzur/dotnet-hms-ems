@@ -264,9 +264,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
             dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
-            //dbPrductionNew.Batch = dbProduction.Batch;
-
-
+            
             try
             {
                 if (!ModelState.IsValid)

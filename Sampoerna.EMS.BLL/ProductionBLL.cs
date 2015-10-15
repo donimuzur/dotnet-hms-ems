@@ -100,21 +100,19 @@ namespace Sampoerna.EMS.BLL
             var output = new SaveProductionOutput();
             output.isNewData = true;
             output.isFromSap = false;
-            var batch = _repository.GetByID(productionDto.CompanyCode, productionDto.PlantWerks,
-                productionDto.FaCode, productionDto.ProductionDate);
-
-            productionDto.Batch = batch.BATCH;
-
+            
             var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
 
-            var origin = _repository.GetByID(dbProduction.COMPANY_CODE, dbProduction.WERKS, dbProduction.FA_CODE,
-                dbProduction.PRODUCTION_DATE);
+            var origin = _repository.GetByID(productionDto.CompanyCodeX, productionDto.PlantWerksX, productionDto.FaCodeX,
+               Convert.ToDateTime(productionDto.ProductionDateX));
+           
 
             var originDto = Mapper.Map<ProductionDto>(origin);
-
+         
             //to do ask and to do refactor
             if (originDto != null)
             {
+               
                 SetChange(originDto, productionDto, userId);
                 output.isNewData = false;
             }
@@ -128,7 +126,8 @@ namespace Sampoerna.EMS.BLL
 
             dbProduction.CREATED_DATE = DateTime.Now;
 
-            if (dbProduction.BATCH != null)
+
+            if (origin.BATCH != null)
                 output.isFromSap = true;
 
             _repository.InsertOrUpdate(dbProduction);
