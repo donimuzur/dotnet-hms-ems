@@ -104,4 +104,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MaterialDescription { get; set; }
 
     }
+
+    public class CK5ReportMaterialGroupUomDto
+    {
+        public string Uom { get; set; }
+        public decimal SumUom { get; set; }
+    }
 }
