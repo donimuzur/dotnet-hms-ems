@@ -519,15 +519,26 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5Type)
         {
-            var dbPlant = _plantBll.GetT001WById(plantId);
-            var model = Mapper.Map<CK5PlantModel>(dbPlant);
+            CK5PlantModel model = new CK5PlantModel();
 
-            if (ck5Type == Enums.CK5Type.ImporterToPlant || ck5Type == Enums.CK5Type.PortToImporter)
+            if (ck5Type == Enums.CK5Type.DomesticAlcohol)
             {
-                model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
+                var supplier = _ck5Bll.GetExternalSupplierItem(plantId, ck5Type);
+                //model.
+            }
+            else
+            {
+                var dbPlant = _plantBll.GetT001WById(plantId);
+                model = Mapper.Map<CK5PlantModel>(dbPlant);
+
+                if (ck5Type == Enums.CK5Type.ImporterToPlant)
+                {
+                    model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
+                    model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
+                }
             }
 
-            model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
+            
       
             return Json(model);
         }

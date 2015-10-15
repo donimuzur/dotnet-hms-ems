@@ -533,7 +533,7 @@ namespace Sampoerna.EMS.Website.Code
         {
             ICK5BLL ck5Bll = MvcApplication.GetInstance<CK5BLL>();
 
-            var data = ck5Bll.GetExternalSupplier(ck5Type);
+            var data = ck5Bll.GetExternalSupplierList(ck5Type);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
 
             return new SelectList(selectItemSource, "ValueField", "TextField");

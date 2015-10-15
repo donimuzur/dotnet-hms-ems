@@ -942,7 +942,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<CK5MaterialDto>>(result);
         }
 
-        public List<CK5ExternalSupplierDto> GetExternalSupplier(Enums.CK5Type ck5Type)
+        public List<CK5ExternalSupplierDto> GetExternalSupplierList(Enums.CK5Type ck5Type)
         {
             List<string> exGoodTypeList = new List<string>();
 
@@ -954,6 +954,12 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<CK5ExternalSupplierDto>>(data);
         }
 
+        public CK5ExternalSupplierDto GetExternalSupplierItem(string plantId, Enums.CK5Type ck5Type)
+        {
+            var dataList = GetExternalSupplierList(ck5Type);
+
+            return dataList.SingleOrDefault(x => x.SUPPLIER_PLANT == plantId);
+        }
 
         #region workflow
 
