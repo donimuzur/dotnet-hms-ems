@@ -381,7 +381,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
-                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(dest => dest.MODIFIED_BY));
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(dest => dest.MODIFIED_BY))
+                .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH));
 
 
 
@@ -405,7 +406,8 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
-               .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy));
+               .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy))
+               .ForMember(dest => dest.BATCH, opt => opt.MapFrom(src => src.Batch));
 
             Mapper.CreateMap<ProductionUploadItems, PRODUCTION>().IgnoreAllNonExisting()
                .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.CompanyCode))

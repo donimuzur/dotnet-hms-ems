@@ -66,22 +66,26 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string ProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
-        [Required]
+        
         public string ProdQtyStickStr { get; set; }
         public decimal? ProdQtyStick
         {
-            get; set;
+            get;
+            set;
         }
+        [Required]
         public string QtyStr { get; set; }
         public decimal? Qty
         {
-            get; set;
+            get;
+            set;
         }
         public int? Bundle { get; set; }
         public string Market { get; set; }
         public string Docgmvter { get; set; }
         public string MatDoc { get; set; }
         public string Ordr { get; set; }
+        public string Batch { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }
