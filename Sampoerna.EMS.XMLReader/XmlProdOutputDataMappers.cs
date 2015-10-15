@@ -277,7 +277,7 @@ namespace Sampoerna.EMS.XMLReader
                             //item.QTY_PACKED = existingProduction.QTY_PACKED;
                             if ( String.IsNullOrEmpty(item.BATCH))
                             {
-                                item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
                             }
                             
 
@@ -302,7 +302,7 @@ namespace Sampoerna.EMS.XMLReader
                             //item.QTY_PACKED = existingProduction.QTY_PACKED;
                             if (String.IsNullOrEmpty(item.BATCH))
                             {
-                                item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
                             }
                         }
                         break;
@@ -315,7 +315,7 @@ namespace Sampoerna.EMS.XMLReader
                     var tempQtyPacked = tempPack*int.Parse(existingBrand.BRAND_CONTENT);
 
                     item.QTY_PACKED = tempQtyPacked;
-                    item.QTY_UNPACKED = item.QTY - item.QTY_PACKED;
+                    //item.QTY_UNPACKED = item.QTY - item.QTY_PACKED;
                     item.PROD_QTY_STICK = item.QTY;
                 }
             }

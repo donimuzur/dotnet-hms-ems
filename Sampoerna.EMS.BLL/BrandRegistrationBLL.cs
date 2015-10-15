@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
@@ -38,7 +39,7 @@ namespace Sampoerna.EMS.BLL
         public ZAIDM_EX_BRAND GetBrandForProdConv(string brand, string prodCode, string nppbkc)
         {
             var plant = _plantBll.GetPlantByNppbkc(nppbkc).Select(s => s.WERKS).ToList();
- 
+
             var dbData = _repository.Get(c => c.BRAND_CE == brand && c.PROD_CODE == prodCode && plant.Contains(c.WERKS)).FirstOrDefault();
 
             return dbData;
@@ -57,7 +58,7 @@ namespace Sampoerna.EMS.BLL
         public ZAIDM_EX_BRAND GetById(string plant, string facode, string stickercode)
         {
             //var dbData = _repository.GetByID(plant, facode, stickercode);
-            var dbData = _repository.Get(c => c.WERKS == plant && c.FA_CODE == facode && c.STICKER_CODE == stickercode, null, "ZAIDM_EX_GOODTYP, ZAIDM_EX_PRODTYP").FirstOrDefault();
+            var dbData = _repository.Get(c => c.WERKS == plant && c.FA_CODE == facode && c.STICKER_CODE == stickercode, null, "ZAIDM_EX_GOODTYP, ZAIDM_EX_PRODTYP, ZAIDM_EX_SERIES, ZAIDM_EX_MARKET").FirstOrDefault();
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);

@@ -330,9 +330,14 @@ namespace Sampoerna.EMS.BLL
 
         
         }
+
+      
+
         public CK5Dto SaveCk5(CK5SaveInput input)
         {
             ValidateCk5(input);
+
+            //ValidateCk5MaterialConvertedUom(input);
 
             bool isModified = false;
 
@@ -504,28 +509,33 @@ namespace Sampoerna.EMS.BLL
                     {
 
                         var material = _materialBll.getByID(ck5MaterialInput.Brand, ck5MaterialInput.Plant);
-                        if (ck5MaterialInput.ConvertedUom == material.BASE_UOM_ID)
-                            continue;
-
-                        var matUom = material.MATERIAL_UOM;
-
-                        var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Any();
-
-                        if (isConvertionExist)
+                        if (material != null)
                         {
-                            //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                            var umren = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Single().UMREN;
-                            if (umren == null)
+                            if (ck5MaterialInput.ConvertedUom == material.BASE_UOM_ID)
+                                continue;
+
+                            var matUom = material.MATERIAL_UOM;
+
+                            var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Any();
+
+                            if (isConvertionExist)
                             {
-                                messageList.Add("convertion to SAP in material master is null");
+                                //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
+                                var umren = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Single().UMREN;
+                                if (umren == null)
+                                {
+                                    messageList.Add("convertion to SAP in material master is null");
+
+                                }
 
                             }
-
+                            else
+                            {
+                                messageList.Add("convertion to SAP Base UOM in material master not exist");
+                            }
                         }
                         else
-                        {
                             messageList.Add("convertion to SAP Base UOM in material master not exist");
-                        }
                     }
                 }
 
@@ -1017,10 +1027,12 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GICreated:
                 case Enums.ActionType.GICompleted:
+                case Enums.ActionType.StoRecGICompleted:
                     GiCreatedDocument(input);
                     break;
                 case Enums.ActionType.GRCreated:
                 case Enums.ActionType.GRCompleted:
+                case Enums.ActionType.StoRecGRCompleted:
                     GrCreatedDocument(input);
                     break;
                 case Enums.ActionType.CancelSAP:
@@ -1584,7 +1596,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.GICreated &&
-                dbData.STATUS_ID != Enums.DocumentStatus.GICompleted)
+                dbData.STATUS_ID != Enums.DocumentStatus.GICompleted &&
+                 dbData.STATUS_ID != Enums.DocumentStatus.StoRecGICompleted)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = dbData.SEALING_NOTIF_NUMBER;
@@ -1614,7 +1627,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.GRCreated &&
-                dbData.STATUS_ID != Enums.DocumentStatus.GRCompleted)
+                dbData.STATUS_ID != Enums.DocumentStatus.GRCompleted &&
+                dbData.STATUS_ID != Enums.DocumentStatus.StoRecGRCompleted)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = dbData.SEALING_NOTIF_NUMBER;
@@ -1889,6 +1903,24 @@ namespace Sampoerna.EMS.BLL
      
         #region Reports
 
+        private string GetMaterialUomGroupBy(IEnumerable<CK5_MATERIAL> listMaterials)
+        {
+            string result = "";
+
+            var listGroup = listMaterials.GroupBy(a => a.UOM)
+                .Select(x => new CK5ReportMaterialGroupUomDto
+                {
+                    Uom = x.Key,
+                    SumUom = x.Sum(c=>c.QTY.HasValue ? c.QTY.Value : 0)
+                }).ToList();
+
+
+            result = string.Join(Environment.NewLine,
+                listGroup.Select(c => ConvertHelper.ConvertDecimalToStringMoneyFormat(c.SumUom) + " " + c.Uom));
+
+            return result;
+        }
+
         public CK5ReportDto GetCk5ReportDataById(long id)
         {
             var dtData = _repository.Get(c => c.CK5_ID == id, null, includeTables).FirstOrDefault();
@@ -1898,7 +1930,9 @@ namespace Sampoerna.EMS.BLL
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
 
-          
+            result.ReportDetails.Total = GetMaterialUomGroupBy(dtData.CK5_MATERIAL);
+            result.ReportDetails.Uom = "";
+
             result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID;
 
             if (string.IsNullOrEmpty(dtData.SOURCE_PLANT_NPPBKC_ID))
@@ -1993,8 +2027,9 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.DestPlantName = "-";
                 result.ReportDetails.DestPlantAddress = "-";
 
-                result.ReportDetails.DestOfficeName = result.ReportDetails.SourceOfficeName;
-                result.ReportDetails.DestOfficeCode = result.ReportDetails.SourceOfficeCode;
+                //result.ReportDetails.DestOfficeName = result.ReportDetails.SourceOfficeName;
+                //result.ReportDetails.DestOfficeCode = result.ReportDetails.SourceOfficeCode;
+                result.ReportDetails.DestOfficeCode = "-";
 
                 result.ReportDetails.DestinationCountry = dtData.DEST_COUNTRY_NAME;
                 result.ReportDetails.DestinationCode = dtData.DEST_COUNTRY_CODE;
@@ -2871,6 +2906,43 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
          
             _uow.SaveChanges();
+        }
+
+        public List<MaterialDto> GetValidateMaterial(string plantId, int goodTypeGroup)
+        {
+            //get from material _uom
+            var listMaterial = _materialBll.GetMaterialUomByPlant(plantId).Select(c=>c.MEINH);
+            
+           var listDbMaterial = _materialBll.GetMaterialByPlantIdAndGoodType(plantId, goodTypeGroup);
+
+            return listDbMaterial.Where(a => listMaterial.Contains(a.BASE_UOM_ID)).ToList();
+
+        }
+
+        private void ValidateCk5MaterialConvertedUom(CK5SaveInput input)
+        {
+            foreach (var ck5MaterialDto in input.Ck5Material)
+            {
+                var material = _materialBll.getByID(ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID);
+                if (ck5MaterialDto.CONVERTED_UOM == material.BASE_UOM_ID)
+                    continue;
+
+                var matUom = material.MATERIAL_UOM;
+
+                var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).Any();
+
+                if (isConvertionExist)
+                {
+                    //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
+                    var umren = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).Single().UMREN;
+                    if (umren == null)
+                        throw new BLLException(ExceptionCodes.BLLExceptions.ConvertedSAPNull);
+
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.ConvertedSAPNotExist);
+            }
+
         }
     }
 }

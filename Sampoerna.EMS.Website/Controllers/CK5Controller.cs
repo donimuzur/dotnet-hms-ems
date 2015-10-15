@@ -954,12 +954,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.AllowTfPostedPortToImporter = _workflowBll.AllowTfPostedPortToImporter(input);
                 }
+                else if (model.Ck5Type == Enums.CK5Type.Intercompany)
+                {
+                    model.AllowGiCreated = _workflowBll.AllowStoGiCompleted(input);
+                    model.AllowGrCreated = _workflowBll.AllowStoGrCreated(input);
+                }
                 else
                 {
                     model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
                     model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
                 }
-               
+
                 model.AllowCancelSAP = _workflowBll.AllowCancelSAP(input);
 
                 if (model.IsCompleted)
@@ -1317,6 +1322,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     case Enums.DocumentStatus.GICompleted:
                         input.ActionType = Enums.ActionType.GICompleted;
                         break;
+                    case Enums.DocumentStatus.StoRecGICompleted:
+                        input.ActionType = Enums.ActionType.StoRecGICompleted;
+                        break;
                     default:
                         AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
                         return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
@@ -1361,6 +1369,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         break;
                     case Enums.DocumentStatus.GRCompleted:
                         input.ActionType = Enums.ActionType.GRCompleted;
+                        break;
+                    case Enums.DocumentStatus.StoRecGRCompleted:
+                        input.ActionType = Enums.ActionType.StoRecGRCompleted;
                         break;
                     default:
                         AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
@@ -1480,7 +1491,76 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private bool  CK5WorkflowGovApproval(CK5FormViewModel model)
         {
-           
+            //string fileName = "";
+            ////create xml first
+            //if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn)
+            //{
+            //    //return true;
+            //}
+            //else
+            //{
+            //    try
+            //    {
+            //        //create xml file
+            //        var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
+
+            //        fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+            //                       model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
+            //        ck5XmlDto.Ck5PathXml = fileName;
+
+            //        XmlCK5DataWriter rt = new XmlCK5DataWriter();
+
+            //        //ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
+            //        rt.CreateCK5Xml(ck5XmlDto);
+
+            //        //return true;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        //don't need rollback
+            //        //_ck5Bll.GovApproveDocumentRollback(input);
+            //        AddMessageInfo("Failed Create CK5 XMl message : " + ex.Message, Enums.MessageInfoType.Error);
+            //        return false;
+            //    }
+            //}
+            //try
+            //{
+            //    DateTime registrationDate = DateTime.Now;
+            //    if (model.RegistrationDate.HasValue)
+            //        registrationDate = model.RegistrationDate.Value;
+
+            //    var input = new CK5WorkflowDocumentInput()
+            //    {
+            //        DocumentId = model.Ck5Id,
+            //        ActionType = Enums.ActionType.GovApprove,
+            //        UserRole = CurrentUser.UserRole,
+            //        UserId = CurrentUser.USER_ID,
+            //        Ck5Type = model.Ck5Type,
+            //        AdditionalDocumentData = new CK5WorkflowDocumentData()
+            //        {
+            //            RegistrationNumber = model.RegistrationNumber,
+            //            RegistrationDate = registrationDate,
+            //            Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList),
+            //            Back1Number = model.Back1Number,
+            //            Back1Date = model.Back1Date
+            //        }
+            //    };
+            //    _ck5Bll.CK5Workflow(input);
+            //    return true;
+            //}
+            //catch (Exception ex)
+            //{
+            //    //remove xml file that already create
+            //    if (System.IO.File.Exists(fileName))
+            //        System.IO.File.Delete(fileName);
+
+            //    AddMessageInfo("Failed Gov Approval CK5 XMl : " + ex.Message, Enums.MessageInfoType.Error);
+            //    return false;
+            //}
+
+
+
             DateTime registrationDate = DateTime.Now;
             if (model.RegistrationDate.HasValue)
                 registrationDate = model.RegistrationDate.Value;
@@ -1498,7 +1578,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     RegistrationDate = registrationDate,
                     Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList),
                     Back1Number = model.Back1Number,
-                    Back1Date =  model.Back1Date
+                    Back1Date = model.Back1Date
                 }
             };
             _ck5Bll.CK5Workflow(input);
@@ -1508,14 +1588,14 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //create xml file
                 var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
-              
+
                 var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
                                model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-                
+
                 ck5XmlDto.Ck5PathXml = fileName;
 
                 XmlCK5DataWriter rt = new XmlCK5DataWriter();
-                
+
                 //ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
                 rt.CreateCK5Xml(ck5XmlDto);
 
@@ -1600,7 +1680,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var ck5 = _ck5Bll.GetById(id);
-
+                
                 if (ck5.STATUS_ID == Enums.DocumentStatus.STOCreated && string.IsNullOrEmpty(ck5.DN_NUMBER))
                 {
                     CK5Workflow(id, Enums.ActionType.CancelSTOCreated, string.Empty);
@@ -1619,7 +1699,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         var fileName = string.Format("CK5CAN_{0}-{1}-{2}.xml", ck5.SUBMISSION_NUMBER, date, time);
 
                         if (fileName.Contains("/"))
-                            throw  new Exception("You use Old CK5Number");
+                            throw new Exception("You use Old CK5Number");
 
                         ck5XmlDto.Ck5PathXml = Path.Combine(ConfigurationManager.AppSettings["CK5PathXml"], fileName);
 
@@ -1641,17 +1721,59 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         _ck5Bll.CancelSTOCreatedRollback(input);
                         AddMessageInfo("Failed Create CK5  XMl 03 message : " + ex.Message, Enums.MessageInfoType.Error);
-                    
+
                     }
                  
+                }
+                else if (string.IsNullOrEmpty(ck5.DN_NUMBER))
+                {
+                    CK5Workflow(id, Enums.ActionType.CancelSAP, string.Empty);
+                    try
+                    {
+                        //create xml file
+                        var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(id);
+                        ////todo check validation
+                        //var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                        //               ck5XmlDto.SUBMISSION_NUMBER + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+
+                        var date = DateTime.Now.ToString("yyyyMMdd");
+                        var time = DateTime.Now.ToString("hhmmss");
+
+                        var fileName = string.Format("CK5CAN_{0}-{1}-{2}.xml", ck5.SUBMISSION_NUMBER, date, time);
+
+                        if (fileName.Contains("/"))
+                            throw new Exception("You use Old CK5Number");
+
+                        ck5XmlDto.Ck5PathXml = Path.Combine(ConfigurationManager.AppSettings["CK5PathXml"], fileName);
+
+                        XmlCK5DataWriter rt = new XmlCK5DataWriter();
+
+                        rt.CreateCK5Xml(ck5XmlDto, "03");
+
+                        AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                    }
+                    catch (Exception ex)
+                    {
+                        //failed create xml...
+                        //rollaback the update
+                        var input = new CK5WorkflowDocumentInput();
+                        input.DocumentId = id;
+                        input.UserId = CurrentUser.USER_ID;
+                        input.UserRole = CurrentUser.UserRole;
+                        input.ActionType = Enums.ActionType.CancelSTOCreated;
+
+                        _ck5Bll.CancelSTOCreatedRollback(input);
+                        AddMessageInfo("Failed Create CK5  XMl 03 message : " + ex.Message, Enums.MessageInfoType.Error);
+
+                    }
                 }
                 else
                 {
                     CK5Workflow(id, Enums.ActionType.CancelSAP, string.Empty);
-                    AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                    //AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
                 }
-                
-                
+
+
             }
             catch (Exception ex)
             {
@@ -2966,7 +3088,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!string.IsNullOrEmpty(goodTypeGroup))
             {
                 Enums.ExGoodsType goodTypeGroupId = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroup);
-                dbMaterial = _materialBll.GetMaterialByPlantIdAndGoodType(plantId, (int)goodTypeGroupId);
+                //dbMaterial = _materialBll.GetMaterialByPlantIdAndGoodType(plantId, (int)goodTypeGroupId);
+                dbMaterial = _ck5Bll.GetValidateMaterial(plantId, (int)goodTypeGroupId);
             } 
             var model = Mapper.Map<List<CK5InputManualViewModel>>(dbMaterial);
 

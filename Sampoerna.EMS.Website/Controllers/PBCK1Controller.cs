@@ -147,7 +147,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile, string nppbkc)
+        public PartialViewResult UploadFileConversion(HttpPostedFileBase prodConvExcelFile, string nppbkc, string isNppbckImportChecked)
         {
             var data = (new ExcelReader()).ReadExcel(prodConvExcelFile);
             var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
@@ -184,7 +184,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<List<Pbck1ProdConverterInput>>(model.Detail.Pbck1ProdConverter);
-            var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input, nppbkc);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdConverterUpload(input, nppbkc, Boolean.Parse(isNppbckImportChecked));
 
             model.Detail.Pbck1ProdConverter = Mapper.Map<List<Pbck1ProdConvModel>>(outputResult);
 
@@ -1323,7 +1323,9 @@ namespace Sampoerna.EMS.Website.Controllers
                            RequestQty = d.RequestQty == null ? "" : d.RequestQty.Value.ToString(),
                            StatusGov = d.StatusGovName,
                            QtyApproved = d.QtyApproved == null ? "" : d.QtyApproved.Value.ToString(),
-                           DecreeDate = d.DecreeDate == null ? "" : d.DecreeDate.Value.ToString()
+                           DecreeDate = d.DecreeDate == null ? "" : d.DecreeDate.Value.ToString(),
+                           SupplierCompany = d.SupplierCompany,
+                           IsNppbkcImport = d.IsNppbkcImport ? "Yes": "No"
                        }).ToList();
 
             var grid = new System.Web.UI.WebControls.GridView
@@ -1572,6 +1574,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "DecreeDate",
                     HeaderText = "DecreeDate"
+                });
+            } 
+            if (model.ExportModel.IsNppbkcImport)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "IsNppbkcImport",
+                    HeaderText = "IsNppbkcImport"
+                });
+            } 
+            if (model.ExportModel.SupplierCompany)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierCompany",
+                    HeaderText = "SupplierCompany"
                 });
             }
 
@@ -2261,8 +2279,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //set satuan kebutuhan bkc
                 summaryUomBkc = string.Join(Environment.NewLine, summary.Select(d => uomBkcId).Take(SummaryJenisAmount.Keys.Count()));
-                if (summaryUomBkc == "L")
-                    summaryUomBkc = "Liter";
+                if (summaryUomBkc.Contains("L"))
+                    summaryUomBkc = summaryUomBkc.Replace("L", "Liter");
 
                 foreach (var item in prodPlan)
                 {

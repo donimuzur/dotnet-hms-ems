@@ -577,7 +577,7 @@ namespace Sampoerna.EMS.BLL
             return dbData == null ? string.Empty : dbData.NUMBER;
         }
 
-        public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs, string nppbkc)
+        public List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs, string nppbkc, bool isNppbkcImportChekced)
         {
             var messageList = new List<string>();
             var outputList = new List<Pbck1ProdConverterOutput>();
@@ -649,7 +649,7 @@ namespace Sampoerna.EMS.BLL
                 #endregion
 
                 #region -------------- Brand Validation --------------------
-                if (!ValidateBrand(output.BrandCE, prodTypeData.PROD_CODE, nppbkc, prodTypeData.PRODUCT_ALIAS, out messages))
+                if (!ValidateBrand(output.BrandCE, prodTypeData.PROD_CODE, nppbkc, prodTypeData.PRODUCT_ALIAS, out messages, isNppbkcImportChekced))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -1028,7 +1028,7 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        private bool ValidateBrand(string brand, string prodCode, string nppbkc,string alias,out List<string> message)
+        private bool ValidateBrand(string brand, string prodCode, string nppbkc,string alias,out List<string> message, bool isCheckedPbck1Import)
         {
             var valResult = false;
             var messageList = new List<string>();
@@ -1036,9 +1036,34 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrWhiteSpace(brand))
             {
                 var brandData = _brandRegistrationBll.GetBrandForProdConv(brand, prodCode, nppbkc);
+
                 if (brandData != null)
                 {
-                    valResult = true;
+                    if (isCheckedPbck1Import)
+                    {
+                        var nppbckImport =
+                            _plantBll.GetPlantByNppbkc(nppbkc)
+                                .Where(c => c.NPPBKC_IMPORT_ID != null)
+                                .Select(c => c.NPPBKC_IMPORT_ID)
+                                .ToList();
+
+                        if (nppbckImport.Any())
+                        {
+                            var listBrandNppbkcImport = new List<ZAIDM_EX_BRAND>();
+                            foreach (var item in nppbckImport)
+                            {
+                                var brandDataNppbckImport = _brandRegistrationBll.GetBrandForProdConv(brand, prodCode,
+                                    item);
+                                if (brandDataNppbckImport != null) listBrandNppbkcImport.Add(brandDataNppbckImport);
+                            }
+                            if (listBrandNppbkcImport.Any()) valResult = true;
+                            else messageList.Add("Brand [" + brand + "] for [" + alias + "] and NPPBKC [" + nppbkc + "] not valid");
+                        }
+                    }
+                    else
+                    {
+                        valResult = true;
+                    }
                 }
                 else
                 {

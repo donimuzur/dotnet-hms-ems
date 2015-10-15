@@ -297,8 +297,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 List<string> messages;
-
-                //Company Code Validation
+                
                 #region -------------- Company Code Validation ---------------
 
                 T001 companyTypedata = null;
@@ -312,7 +311,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.AddRange(messages);
                 }
                 #endregion
-
+               
                 #region -------------- Plant Code Validation ---------------
 
                 Plant plantTypeData = null;
@@ -327,7 +326,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-
+                
                 #region -------------- Fa Code Vlidation ------------------
 
                 ZAIDM_EX_BRAND brandTypeData = null;
@@ -341,7 +340,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.AddRange(messages);
                 }
                 #endregion
-
+               
                 #region ------------ Brand Description Validation -----------------
 
                 if (ValidationBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandTypeData))
@@ -354,8 +353,102 @@ namespace Sampoerna.EMS.BLL
                     messageList.AddRange(messages);
                 }
                 #endregion
+              
+                #region ---------------Waste Production Date validation-------------
+                int temp;
+                DateTime dateTemp;
+                if (Int32.TryParse(output.WasteProductionDate, out temp))
+                {
+                    try
+                    {
+                        output.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(output.WasteProductionDate)).ToString("dd MMM yyyy");
+                    }
+                    catch (Exception)
+                    {
+                        messageList.Add("Waste Production Date [" + output.WasteProductionDate + "] not valid");
+                    }
 
-                //Message
+                }
+                else
+                {
+                    messageList.Add("Waste Production Date [" + output.WasteProductionDate + "] not valid");
+                }
+                #endregion
+
+                #region -----------MarkerRejectStickQty Validation-------------
+
+                decimal tempDecimal;
+                if (decimal.TryParse(output.MarkerRejectStickQty, out tempDecimal) || output.MarkerRejectStickQty == "" || output.MarkerRejectStickQty == "-")
+                {
+                    output.MarkerRejectStickQty = output.MarkerRejectStickQty == "" || output.MarkerRejectStickQty == "-" ? "0" : output.MarkerRejectStickQty;
+                }
+                else
+                {
+                    output.MarkerRejectStickQty = output.MarkerRejectStickQty;
+                    messageList.Add("Marker Reject Stick Qty [" + output.MarkerRejectStickQty + "] not valid");
+                }
+                #endregion
+
+                #region -----------PackerRejectStickQty Validation-------------
+                if (decimal.TryParse(output.PackerRejectStickQty, out tempDecimal) || output.PackerRejectStickQty == "" || output.PackerRejectStickQty == "-")
+                {
+                    output.PackerRejectStickQty = output.PackerRejectStickQty == "" || output.PackerRejectStickQty == "-" ? "0" : output.PackerRejectStickQty;
+                }
+                else
+                {
+                    output.PackerRejectStickQty = output.PackerRejectStickQty;
+                    messageList.Add("Packer Reject Stick Qty [" + output.PackerRejectStickQty + "] not valid");
+                }
+                #endregion
+
+                #region -----------DustWasteGramQty Validation-------------
+                if (decimal.TryParse(output.DustWasteGramQty, out tempDecimal) || output.DustWasteGramQty == "" || output.DustWasteGramQty == "-")
+                {
+                    output.DustWasteGramQty = output.DustWasteGramQty == "" || output.DustWasteGramQty == "-" ? "0" : output.DustWasteGramQty;
+                }
+                else
+                {
+                    output.DustWasteGramQty = output.DustWasteGramQty;
+                    messageList.Add("Dust Waste Gram Qty [" + output.DustWasteGramQty + "] not valid");
+                }
+                #endregion
+
+                #region -----------FloorWasteGramQty Validation-------------
+                if (decimal.TryParse(output.FloorWasteGramQty, out tempDecimal) || output.FloorWasteGramQty == "" || output.FloorWasteGramQty == "-")
+                {
+                    output.FloorWasteGramQty = output.FloorWasteGramQty == "" || output.FloorWasteGramQty == "-" ? "0" : output.FloorWasteGramQty;
+                }
+                else
+                {
+                    output.FloorWasteGramQty = output.FloorWasteGramQty;
+                    messageList.Add("Floor Waste Gram Qty [" + output.FloorWasteGramQty + "] not valid");
+                }
+                #endregion
+
+                #region -----------DustWasteStickQty Validation-------------
+                if (decimal.TryParse(output.DustWasteStickQty, out tempDecimal) || output.DustWasteStickQty == "" || output.DustWasteStickQty == "-")
+                {
+                    output.DustWasteStickQty = output.DustWasteStickQty == "" || output.DustWasteStickQty == "-" ? "0" : output.DustWasteStickQty;
+                }
+                else
+                {
+                    output.DustWasteStickQty = output.DustWasteStickQty;
+                    messageList.Add("Dust Waste Stick Qty [" + output.DustWasteStickQty + "] not valid");
+                }
+                #endregion
+
+                #region -----------FloorWasteStickQty Validation-------------
+                if (decimal.TryParse(output.FloorWasteStickQty, out tempDecimal) || output.FloorWasteStickQty == "" || output.FloorWasteStickQty == "-")
+                {
+                    output.FloorWasteStickQty = output.FloorWasteStickQty == "" || output.FloorWasteStickQty == "-" ? "0" : output.FloorWasteStickQty;
+                }
+                else
+                {
+                    output.FloorWasteStickQty = output.FloorWasteStickQty;
+                    messageList.Add("Floor Waste stick Qty [" + output.FloorWasteStickQty + "] not valid");
+                }
+                #endregion
+
                 #region -------------- Set Message Info if exists ---------------
 
                 if (messageList.Count > 0)
@@ -370,6 +463,7 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
+                    output.Message = string.Empty;
                     output.IsValid = true;
                 }
 
