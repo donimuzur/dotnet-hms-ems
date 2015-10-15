@@ -29,5 +29,9 @@ namespace Sampoerna.EMS.Contract
 
         bool AllowAttachmentCompleted(WorkflowAllowApproveAndRejectInput input);
 
+        bool AllowStoGiCompleted(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowStoGrCreated(WorkflowAllowApproveAndRejectInput input);
+
     }
 }
