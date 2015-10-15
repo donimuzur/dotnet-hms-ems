@@ -70,5 +70,7 @@ namespace Sampoerna.EMS.Contract
        Back1DataOutput GetBack1ByCk5Id(long ck5Id);
 
        void CK5CompletedAttachment(CK5WorkflowDocumentInput input);
+
+       List<MaterialDto> GetValidateMaterial(string plantId, int goodTypeGroup);
    }
 }

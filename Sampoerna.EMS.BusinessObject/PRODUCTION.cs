@@ -18,7 +18,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string WERKS { get; set; }
         public string FA_CODE { get; set; }
         public string BRAND_DESC { get; set; }
-        public Nullable<decimal> QTY_UNPACKED { get; set; }
         public Nullable<decimal> QTY_PACKED { get; set; }
         public string UOM { get; set; }
         public System.DateTime PRODUCTION_DATE { get; set; }
