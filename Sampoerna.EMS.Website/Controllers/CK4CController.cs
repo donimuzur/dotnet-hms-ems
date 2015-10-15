@@ -652,6 +652,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var company = _companyBll.GetById(model.Details.CompanyId);
                 var nppbkcId = plant == null ? dataToSave.NppbkcId : plant.NPPBKC_ID;
 
+                dataToSave.Status = Enums.DocumentStatus.Draft;
                 dataToSave.NppbkcId = nppbkcId;
                 dataToSave.PlantName = plant == null ? "" : plant.NAME1;
                 dataToSave.CompanyName = company.BUTXT;

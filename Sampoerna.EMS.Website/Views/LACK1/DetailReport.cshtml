@@ -134,9 +134,10 @@
             var now = new Date();
 
             $('#btn-export-to-excel').click(function () {
+                var dateString = '@DateTime.Now.ToString("ddMMyyyyHHmmss")';
                 $("#lack1Table").table2excel({
                     name: "Worksheet Name",
-                    filename: "lack1_detailreport_" + now.format('ddMMyyyyHHmmss') //do not include extension
+                    filename: "lack1_detailreport_" + dateString //do not include extension
                 });
             });
 
