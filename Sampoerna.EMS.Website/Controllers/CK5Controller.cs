@@ -352,11 +352,11 @@ namespace Sampoerna.EMS.Website.Controllers
             else if (model.Ck5Type == Enums.CK5Type.PortToImporter)
             {
                 model.DestPlantList = GlobalFunctions.GetPlantImportList();
-                model.SourcePlantList = GlobalFunctions.GetExternalSupplierList();
+                model.SourcePlantList = GlobalFunctions.GetExternalSupplierList(model.Ck5Type);
             }
             else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
             {
-                model.SourcePlantList = GlobalFunctions.GetExternalSupplierList();
+                model.SourcePlantList = GlobalFunctions.GetExternalSupplierList(model.Ck5Type);
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
             }
             else
@@ -482,19 +482,12 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = Mapper.Map<CK5PlantModel>(dbPlantDest);
 
             GetQuotaAndRemainOutput output;
-            var destNppbkcId = dbPlantDest.NPPBKC_ID;
-
-            if (ck5Type == Enums.CK5Type.PortToImporter)
-            {
-                destNppbkcId = dbPlantDest.NPPBKC_IMPORT_ID;
-            }
-
             if (string.IsNullOrEmpty(goodTypeGroupId))
             {
-                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, destNppbkcId, null);
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, null);
             } else {
                 Enums.ExGoodsType goodtypeenum = (Enums.ExGoodsType)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroupId);
-                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, destNppbkcId, (int)goodtypeenum);
+                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(sourcePlantId, sourceNppbkcId, submissionDate, dbPlantDest.NPPBKC_ID, (int)goodtypeenum);
             }
 
 
