@@ -1187,8 +1187,9 @@ namespace Sampoerna.EMS.BLL
                     var creatorDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
                     var poaSender = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
 
+                    if(poaSender != null)
+                        rc.CC.Add(poaSender.EMAIL);
 
-                    rc.CC.Add(poaSender.EMAIL);
                     rc.CC.Add(creatorDetail.EMAIL);
 
 
