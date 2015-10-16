@@ -16,7 +16,7 @@
 
                     @if (Model.AllowApproveAndReject)
                     {
-                        if (!@ViewBag.IsCurrManager)
+                        if (@ViewBag.IsCurrManager != null && !@ViewBag.IsCurrManager)
                         {
                             <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
 
@@ -28,7 +28,7 @@
                     {
                         if (Model.AllowManagerReject)
                         {
-                            if (!@ViewBag.IsCurrManager)
+                            if (@ViewBag.IsCurrManager != null && !@ViewBag.IsCurrManager)
                             {
                                 <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                             }
