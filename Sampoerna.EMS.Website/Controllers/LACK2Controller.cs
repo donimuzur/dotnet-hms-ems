@@ -24,6 +24,7 @@ using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using SpreadsheetLight;
+using Sampoerna.EMS.Utils;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -278,6 +279,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(
                     "Operation not allowed.",
                     Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
             }
 
             var model = InitEditModel(lack2Data);
@@ -418,7 +420,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var changesHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.LACK1,
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.LACK2,
                     model.Lack2Id.ToString()));
 
             var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(model.Lack2Number));
@@ -454,21 +456,104 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Detail(int? id)
         {
             if (!id.HasValue)
+            {
                 return HttpNotFound();
-            return View("Detail");
+            }
+
+            var lack1Data = _lack2Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = InitDetailModel(lack1Data);
+            
+            return View(model);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Detail(LACK2CreateViewModel model)
+        private Lack2DetailViewModel InitDetailModel(Lack2DetailsDto lack2Data)
         {
+            var model = Mapper.Map<Lack2DetailViewModel>(lack2Data);
 
-            //if (model.ActionType == "Approve")
-            //{
-            //    return RedirectToAction("Approve", new { id = model.Lack2Model.Lack2Id });
-            //}
+            model = SetDetailHistory(model);
 
-            return RedirectToAction("Index");
+            var curUser = CurrentUser;
+
+            //validate approve and reject
+            var input = new WorkflowAllowApproveAndRejectInput
+            {
+                DocumentStatus = model.Status,
+                FormView = Enums.FormViewType.Detail,
+                UserRole = CurrentUser.UserRole,
+                CreatedUser = lack2Data.CreatedBy,
+                CurrentUser = curUser.USER_ID,
+                CurrentUserGroup = curUser.USER_GROUP_ID,
+                DocumentNumber = model.Lack2Number,
+                NppbkcId = model.NppbkcId
+            };
+
+            ////workflow
+            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+            model.AllowApproveAndReject = allowApproveAndReject;
+
+            if (!allowApproveAndReject)
+            {
+                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+            }
+
+            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
+
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            model.PoaList = GetPoaListByNppbkcId(model.NppbkcId);
+            model.PoaListHidden = model.PoaList;
+            model = SetDetailActiveMenu(model);
+
+            return model;
+        }
+
+        private Lack2DetailViewModel SetDetailActiveMenu(Lack2DetailViewModel model)
+        {
+            if (model.Status == Enums.DocumentStatus.Completed)
+            {
+                model.MenuLack2CompletedDocument = "active";
+                model.MenuLack2OpenDocument = "";
+            }
+            else
+            {
+                model.MenuLack2CompletedDocument = "";
+                model.MenuLack2OpenDocument = "active";
+            }
+            return model;
+        }
+
+        private Lack2DetailViewModel SetDetailHistory(Lack2DetailViewModel model)
+        {
+            //workflow history
+            var workflowInput = new GetByFormNumberInput
+            {
+                FormNumber = model.Lack2Number,
+                DocumentStatus = model.Status,
+                NPPBKC_Id = model.NppbkcId
+            };
+
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+            var changesHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.LACK2,
+                    model.Lack2Id.ToString()));
+
+            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(model.Lack2Number));
+
+            model.ChangesHistoryList = changesHistory;
+            model.WorkflowHistory = workflowHistory;
+            model.PrintHistoryList = printHistory;
+
+            return model;
         }
 
         #endregion
@@ -481,36 +566,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var outGeneratedData = _lack2Bll.GenerateLack2DataByParam(input);
             return Json(outGeneratedData);
         }
-
-        [HttpPost]
-        public ActionResult AddPrintHistory(int? id)
-        {
-            if (!id.HasValue)
-                HttpNotFound();
-
-            // ReSharper disable once PossibleInvalidOperationException
-            var lack2 = _lack2Bll.GetById(id.Value);
-
-            //add to print history
-            var input = new PrintHistoryDto()
-            {
-                FORM_TYPE_ID = Enums.FormType.LACK2,
-                FORM_ID = lack2.Lack2Id,
-                FORM_NUMBER = lack2.Lack2Number,
-                PRINT_DATE = DateTime.Now,
-                PRINT_BY = CurrentUser.USER_ID
-            };
-
-            _printHistoryBll.AddPrintHistory(input);
-            var model = new BaseModel
-            {
-                PrintHistoryList =
-                    Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack2.Lack2Number))
-            };
-            return PartialView("_PrintHistoryTable", model);
-
-        }
-
+        
         [HttpPost]
         public JsonResult GetPlantByNppbkcId(string companyId, string nppbkcId)
         {
@@ -538,156 +594,122 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(GetNppbkcDataByCompanyId(companyId));
         }
         
-        [EncryptedParameter]
-        public FileResult PrintPreview(int id)
+        public void ExportChangesLogToExcel(int id)
         {
 
-            ReportClass rpt = new ReportClass();
-            string report_path = ConfigurationManager.AppSettings["Report_Path"];
-            rpt.FileName = report_path + "LACK2\\Preview.rpt";
-            rpt.Load();
-            //rpt.SetDataSource(dsLack2);
+            string pathFile = "";
 
-            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-            return File(stream, "application/pdf");
-        }
+            pathFile = ExportChangeLogs(id);
 
-        private DataSet CreateLack2Ds()
-        {
-            DataSet ds = new DataSet("dsLack2");
+            var newFile = new FileInfo(pathFile);
 
-            DataTable dt = new DataTable("Lack2");
+            var fileName = Path.GetFileName(pathFile);
 
-            // object of data row 
-            DataRow drow;
-            dt.Columns.Add("CompanyName", System.Type.GetType("System.String"));
-            dt.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
-            dt.Columns.Add("Alamat", System.Type.GetType("System.String"));
-            dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
-            dt.Columns.Add("Footer", System.Type.GetType("System.String"));
-            dt.Columns.Add("BKC", System.Type.GetType("System.String"));
-            dt.Columns.Add("Period", System.Type.GetType("System.String"));
-            dt.Columns.Add("City", System.Type.GetType("System.String"));
-            dt.Columns.Add("CreatedDate", System.Type.GetType("System.String"));
-            dt.Columns.Add("PoaPrintedName", System.Type.GetType("System.String"));
-            dt.Columns.Add("Preview", System.Type.GetType("System.String"));
-            dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
-
-            //detail
-            DataTable dtDetail = new DataTable("Lack2Item");
-            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
-
-            dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
-            dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
-
-            ds.Tables.Add(dt);
-            ds.Tables.Add(dtDetail);
-            return ds;
-        }
-
-        private byte[] GetHeader(string imagePath)
-        {
-            byte[] imgbyte = null;
-            try
-            {
-
-                FileStream fs;
-                BinaryReader br;
-
-                if (System.IO.File.Exists(Server.MapPath(imagePath)))
-                {
-                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                }
-                else
-                {
-                    // if photo does not exist show the nophoto.jpg file 
-                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                }
-                // initialise the binary reader from file streamobject 
-                br = new BinaryReader(fs);
-                // define the byte array of filelength 
-                imgbyte = new byte[fs.Length + 1];
-                // read the bytes from the binary reader 
-                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
-
-
-                br.Close();
-                // close the binary reader 
-                fs.Close();
-                // close the file stream 
-
-            }
-            catch (Exception ex)
-            {
-            }
-            return imgbyte;
-            // Return Datatable After Image Row Insertion
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
 
         }
 
-        public void ExportClientsListToExcel(int id)
+        private string ExportChangeLogs(int id)
         {
-
             var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.LACK2, id.ToString());
 
             var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
 
-            var grid = new GridView
+            var slDocument = new SLDocument();
+            int endColumnIndex;
+            //create header
+            slDocument = HeaderExportChangeLogs(slDocument, out endColumnIndex);
+
+            int iRow = 2; //starting row data
+
+            foreach (var item in model)
             {
-                DataSource = from d in model
-                             select new
-                             {
-                                 Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty,
-                                 FieldName = d.FIELD_NAME,
-                                 OldValue = d.OLD_VALUE,
-                                 NewValue = d.NEW_VALUE,
-                                 User = d.USERNAME
+                int iColumn = 1;
+                slDocument.SetCellValue(iRow, iColumn, item.MODIFIED_DATE.HasValue ? item.MODIFIED_DATE.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty);
+                iColumn++;
 
-                             }
-            };
+                slDocument.SetCellValue(iRow, iColumn, item.FIELD_NAME);
+                iColumn++;
 
-            grid.DataBind();
+                slDocument.SetCellValue(iRow, iColumn, item.OLD_VALUE);
+                iColumn++;
 
-            var fileName = "Lack2_Logs" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
-            Response.ClearContent();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                slDocument.SetCellValue(iRow, iColumn, item.NEW_VALUE);
+                iColumn++;
 
-            //'Excel 2003 : "application/vnd.ms-excel"
-            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                slDocument.SetCellValue(iRow, iColumn, item.USERNAME);
+                
+                iRow++;
+            }
 
-            var sw = new StringWriter();
-            var htw = new HtmlTextWriter(sw);
-
-            grid.RenderControl(htw);
-
-            Response.Output.Write(sw.ToString());
-
-            Response.Flush();
-
-            Response.End();
-
+            return CreateXlsExportChangeLogs(slDocument, endColumnIndex, iRow - 1);
         }
-        
-        private string SaveUploadedFile(HttpPostedFileBase file, string lack2Num)
+
+        private SLDocument HeaderExportChangeLogs(SLDocument slDocument, out int endColumnIndex)
         {
-            if (file == null || file.FileName == "")
-                return "";
+            int iColumn = 1;
 
-            string sFileName = "";
+            slDocument.SetCellValue(1, iColumn, "Date");
+            iColumn = iColumn + 1;
 
+            slDocument.SetCellValue(1, iColumn, "Field");
+            iColumn = iColumn + 1;
 
-            sFileName = Constans.UploadPath + Path.GetFileName("LACK2_" + lack2Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
-            string path = Server.MapPath(sFileName);
+            slDocument.SetCellValue(1, iColumn, "Old Value");
+            iColumn = iColumn + 1;
 
-            // file is uploaded
-            file.SaveAs(path);
+            slDocument.SetCellValue(1, iColumn, "New Value");
+            iColumn = iColumn + 1;
 
-            return sFileName;
+            slDocument.SetCellValue(1, iColumn, "User");
+            
+            endColumnIndex = iColumn;
+
+            return slDocument;
+        }
+
+        private string CreateXlsExportChangeLogs(SLDocument slDocument, int endColumnIndex, int endRowIndex)
+        {
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
+
+            //set header style
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //set border to value cell
+            slDocument.SetCellStyle(2, 1, endRowIndex, endColumnIndex, valueStyle);
+
+            //set header style
+            slDocument.SetCellStyle(1, 1, 1, endColumnIndex, headerStyle);
+
+            //set auto fit to all column
+            slDocument.AutoFitColumn(1, endColumnIndex);
+
+            var fileName = "lack2_changeslog_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.Lack2FolderPaht), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
         }
         
         #endregion
@@ -1620,7 +1642,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _lack2Bll.Lack2Workflow(input);
         }
 
-        public ActionResult Approve(int? id)
+        public ActionResult ApproveDocument(int? id)
         {
 
             if (!id.HasValue)
@@ -1636,7 +1658,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            if (!isSuccess) return RedirectToAction("Details", "Lack2", new { id });
+            if (!isSuccess) return RedirectToAction("Detail", "Lack2", new { id });
             AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -1646,7 +1668,7 @@ namespace Sampoerna.EMS.Website.Controllers
             bool isSuccess = false;
             try
             {
-                Lack2Workflow(model.Detail.Lack2Id, Enums.ActionType.Reject, model.Detail.Comment);
+                Lack2Workflow(model.Lack2Id, Enums.ActionType.Reject, model.Comment);
                 isSuccess = true;
             }
             catch (Exception ex)
@@ -1654,10 +1676,90 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
 
-            if (!isSuccess) return RedirectToAction("Details", "Lack2", new { id = model.Detail.Lack2Id });
+            if (!isSuccess) return RedirectToAction("Detail", "Lack2", new { id = model.Lack2Id });
             AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
 
+        }
+
+        [HttpPost]
+        public ActionResult GovApproveDocument(Lack2EditViewModel model)
+        {
+
+            if (model.DecreeFiles == null)
+            {
+                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
+                return RedirectToAction("Edit", "Lack2", new { id = model.Lack2Id });
+            }
+
+            bool isSuccess = false;
+            string err = string.Empty;
+            try
+            {
+                model.Documents = new List<Lack2DocumentDto>();
+                if (model.DecreeFiles != null)
+                {
+                    foreach (var item in model.DecreeFiles)
+                    {
+                        if (item != null)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var decreeDoc = new Lack2DocumentDto()
+                            {
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Lack2Id)
+                            };
+                            model.Documents.Add(decreeDoc);
+                        }
+                        else
+                        {
+                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Edit", "Lack2", new { id = model.Lack2Id });
+                        }
+                    }
+                }
+
+                Lack2WorkflowGovApprove(model, model.GovApprovalActionType, model.Comment);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                err = ex.Message;
+            }
+
+            if (!isSuccess)
+            {
+                AddMessageInfo(err, Enums.MessageInfoType.Error);
+                return RedirectToAction("Edit", "Lack2", new { id = model.Lack2Id });
+            }
+
+            AddMessageInfo("Document " + EnumHelper.GetDescription(model.GovStatus), Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
+        }
+
+        private void Lack2WorkflowGovApprove(Lack2EditViewModel lackData, Enums.ActionType actionType, string comment)
+        {
+            var input = new Lack2WorkflowDocumentInput()
+            {
+                DocumentId = lackData.Lack2Id,
+                ActionType = actionType,
+                UserRole = CurrentUser.UserRole,
+                UserId = CurrentUser.USER_ID,
+                DocumentNumber = lackData.Lack2Number,
+                Comment = comment,
+                AdditionalDocumentData = new Lack2WorkflowDocumentData()
+                {
+                    DecreeDate = lackData.DecreeDate,
+                    Lack2DecreeDoc = lackData.Documents
+                }
+            };
+            _lack2Bll.Lack2Workflow(input);
         }
 
         #endregion
@@ -1726,6 +1828,68 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CreatorList = GlobalFunctions.GetCreatorList();
 
             return model;
+        }
+
+        private string SaveUploadedFile(HttpPostedFileBase file, int lack2Id)
+        {
+            if (file == null || file.FileName == "")
+                return "";
+
+            string sFileName = "";
+
+            sFileName = Constans.Lack2FolderPaht + Path.GetFileName("LACK2_" + lack2Id + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            string path = Server.MapPath(sFileName);
+
+            // file is uploaded
+            file.SaveAs(path);
+
+            return sFileName;
+        }
+
+
+        #endregion
+
+        #region Print and print preview 
+
+        [EncryptedParameter]
+        public ActionResult PrintOut(int? id)
+        {
+            return View();
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintPreview(int? id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddPrintHistory(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var lack2 = _lack2Bll.GetById(id.Value);
+
+            //add to print history
+            var input = new PrintHistoryDto()
+            {
+                FORM_TYPE_ID = Enums.FormType.LACK2,
+                FORM_ID = lack2.Lack2Id,
+                FORM_NUMBER = lack2.Lack2Number,
+                PRINT_DATE = DateTime.Now,
+                PRINT_BY = CurrentUser.USER_ID
+            };
+
+            _printHistoryBll.AddPrintHistory(input);
+            var model = new BaseModel
+            {
+                PrintHistoryList =
+                    Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack2.Lack2Number))
+            };
+            return PartialView("_PrintHistoryTable", model);
+
         }
 
         #endregion

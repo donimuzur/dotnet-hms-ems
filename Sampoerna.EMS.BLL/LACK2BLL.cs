@@ -233,10 +233,34 @@ namespace Sampoerna.EMS.BLL
             //origin
             var dbData = _lack2Service.GetDetailsById(input.Lack2Id);
 
-            //check if need to re-generate LACK-1 data
+            //Set Company Detail
+            var companyData = _t001Service.GetById(input.CompanyCode);
+            if (companyData != null)
+            {
+                input.CompanyCode = companyData.BUKRS;
+                input.CompanyName = companyData.BUTXT;
+            }
+
+            //set plant detail
+            var plantData = _t001WService.GetById(input.SourcePlantId);
+            if (plantData != null)
+            {
+                input.SourcePlantCity = plantData.ORT01;
+                input.SourcePlantName = plantData.NAME1;
+            }
+
+            //set excisable goods type
+            var excisableGoodsTypeData = _excisableGoodsTypeService.GetById(input.ExcisableGoodsType);
+            if (excisableGoodsTypeData != null)
+            {
+                input.ExcisableGoodsType = excisableGoodsTypeData.EXC_GOOD_TYP;
+                input.ExcisableGoodsTypeDesc = excisableGoodsTypeData.EXT_TYP_DESC;
+            }
+
             //check if need to regenerate
             var isNeedToRegenerate = dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected;
             var generateInput = Mapper.Map<Lack2GenerateDataParamInput>(input);
+
             if (isNeedToRegenerate)
             {
                 //do regenerate data
@@ -276,31 +300,7 @@ namespace Sampoerna.EMS.BLL
                 var destination = Mapper.Map<Lack2Dto>(input);
                 SetChangesHistory(origin, destination, input.UserId);
             }
-
-            //Set Company Detail
-            var companyData = _t001Service.GetById(input.CompanyCode);
-            if (companyData != null)
-            {
-                dbData.BUKRS = companyData.BUKRS;
-                dbData.BUTXT = companyData.BUTXT;
-            }
-
-            //set plant detail
-            var plantData = _t001WService.GetById(input.SourcePlantId);
-            if (plantData != null)
-            {
-                dbData.LEVEL_PLANT_CITY = plantData.ORT01;
-                dbData.LEVEL_PLANT_NAME = plantData.NAME1;
-            }
-
-            //set excisable goods type
-            var excisableGoodsTypeData = _excisableGoodsTypeService.GetById(input.ExcisableGoodsType);
-            if (excisableGoodsTypeData != null)
-            {
-                dbData.EX_GOOD_TYP = excisableGoodsTypeData.EXC_GOOD_TYP;
-                dbData.EX_TYP_DESC = excisableGoodsTypeData.EXT_TYP_DESC;
-            }
-
+            
             dbData.SUBMISSION_DATE = input.SubmissionDate;
             dbData.LEVEL_PLANT_ID = input.SourcePlantId;
             dbData.NPPBKC_ID = input.NppbkcId;
@@ -308,6 +308,12 @@ namespace Sampoerna.EMS.BLL
             dbData.PERIOD_YEAR = input.PeriodYear;
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
+            dbData.BUKRS = input.CompanyCode;
+            dbData.BUTXT = input.CompanyName;
+            dbData.LEVEL_PLANT_CITY = input.SourcePlantCity;
+            dbData.LEVEL_PLANT_NAME = input.SourcePlantName;
+            dbData.EX_GOOD_TYP = input.ExcisableGoodsType;
+            dbData.EX_TYP_DESC = input.ExcisableGoodsTypeDesc;
 
             _uow.SaveChanges();
 
@@ -517,6 +523,8 @@ namespace Sampoerna.EMS.BLL
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
+                    input.AdditionalDocumentData.DecreeDate);
 
                 dbData.LACK2_DOCUMENT = null;
                 dbData.STATUS = Enums.DocumentStatus.Completed;
@@ -552,6 +560,8 @@ namespace Sampoerna.EMS.BLL
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
+                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
+                    input.AdditionalDocumentData.DecreeDate);
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
 
@@ -585,12 +595,14 @@ namespace Sampoerna.EMS.BLL
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
-
+                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
+                    input.AdditionalDocumentData.DecreeDate);
                 dbData.STATUS = Enums.DocumentStatus.GovRejected;
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
                 dbData.APPROVED_BY = input.UserId;
                 dbData.APPROVED_DATE = DateTime.Now;
+                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
             }
@@ -626,6 +638,26 @@ namespace Sampoerna.EMS.BLL
                 NEW_VALUE = EnumHelper.GetDescription(newStatus),
                 OLD_VALUE = oldStatus.HasValue ? EnumHelper.GetDescription(oldStatus) : "NULL",
                 MODIFIED_BY = input.UserId,
+                MODIFIED_DATE = DateTime.Now
+            };
+
+            _changesHistoryBll.AddHistory(changes);
+        }
+
+        private void WorkflowDecreeDateAddChanges(int? documentId, string userId, DateTime? origin, DateTime? updated)
+        {
+            if (origin == updated) return;
+            //set changes log
+            if (documentId == null) return;
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Enums.MenuList.LACK2,
+                // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+                FORM_ID = documentId.Value.ToString(),
+                FIELD_NAME = "Decree Date",
+                NEW_VALUE = origin.HasValue ? origin.Value.ToString("dd-MM-yyyy") : "NULL",
+                OLD_VALUE = updated.HasValue ? updated.Value.ToString("dd-MM-yyyy") : "NULL",
+                MODIFIED_BY = userId,
                 MODIFIED_DATE = DateTime.Now
             };
 

@@ -6,6 +6,10 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 {
     public class LACK2CreateViewModel : BaseModel
     {
+        public LACK2CreateViewModel()
+        {
+            SubmissionDate = DateTime.Now;
+        }
         #region Field
         public string Lack2Number { get; set; }
         public int? PeriodMonth { get; set; }

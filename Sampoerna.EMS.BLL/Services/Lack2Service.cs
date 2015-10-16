@@ -67,12 +67,17 @@ namespace Sampoerna.EMS.BLL.Services
             switch (input.UserRole)
             {
                 case Enums.UserRole.POA:
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && input.NppbKcId.Contains(c.NPPBKC_ID))));
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId 
+                        || (c.STATUS != Enums.DocumentStatus.Draft 
+                        && input.NppbkcList.Contains(c.NPPBKC_ID))));
                     break;
                 case Enums.UserRole.Manager:
-                    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft 
-                                                       && c.STATUS != Enums.DocumentStatus.WaitingForApproval
-                                                       && input.DocumentNumberList.Contains(c.LACK2_NUMBER));
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                c.STATUS != Enums.DocumentStatus.Draft &&
+                                c.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                                input.DocumentNumberList.Contains(c.LACK2_NUMBER));
                     break;
                 default:
                     queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);

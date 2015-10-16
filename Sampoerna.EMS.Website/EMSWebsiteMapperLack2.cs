@@ -2,6 +2,7 @@
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models.LACK2;
 
 namespace Sampoerna.EMS.Website
@@ -41,6 +42,22 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.SourcePlantName, opt => opt.MapFrom(src => src.LevelPlantName))
                 .ForMember(dest => dest.ExcisableGoodsType, opt => opt.MapFrom(src => src.ExGoodTyp))
                 .ForMember(dest => dest.ExcisableGoodsTypeDesc, opt => opt.MapFrom(src => src.ExTypDesc))
+                ;
+
+            Mapper.CreateMap<Lack2EditViewModel, Lack2SaveEditInput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack2DetailsDto, Lack2DetailViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Burks))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Butxt))
+                .ForMember(dest => dest.PeriodMonthNameEn, opt => opt.MapFrom(src => src.PerionNameEng))
+                .ForMember(dest => dest.PeriodMonthNameId, opt => opt.MapFrom(src => src.PeriodNameInd))
+                .ForMember(dest => dest.SourcePlantId, opt => opt.MapFrom(src => src.LevelPlantId))
+                .ForMember(dest => dest.SourcePlantName, opt => opt.MapFrom(src => src.LevelPlantName))
+                .ForMember(dest => dest.ExcisableGoodsType, opt => opt.MapFrom(src => src.ExGoodTyp))
+                .ForMember(dest => dest.ExcisableGoodsTypeDesc, opt => opt.MapFrom(src => src.ExTypDesc))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.StatusName))
+                .ForMember(dest => dest.GovStatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
+                .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DecreeDate))
                 ;
 
         }

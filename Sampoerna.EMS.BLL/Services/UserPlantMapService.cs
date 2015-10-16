@@ -59,7 +59,7 @@ namespace Sampoerna.EMS.BLL.Services
             var dataMap = _repository.Get(queryFilter, null, "T001W, T001W.ZAIDM_EX_NPPBKC, T001W.T001K").ToList();
             if (dataMap.Count == 0) return new List<ZAIDM_EX_NPPBKC>();
             var nppbkcList = dataMap.Where(c => !c.T001W.ZAIDM_EX_NPPBKC.IS_DELETED.HasValue 
-                || !c.T001W.ZAIDM_EX_NPPBKC.IS_DELETED.Value).Select(d => d.T001W.ZAIDM_EX_NPPBKC).ToList();
+                || !c.T001W.ZAIDM_EX_NPPBKC.IS_DELETED.Value).Select(d => d.T001W.ZAIDM_EX_NPPBKC).Distinct().ToList();
             return nppbkcList;
         }
 
@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.BLL.Services
                 && c.T001W.NPPBKC_ID == input.NppbkcId;
             var dataMap = _repository.Get(queryFilter, null, "T001W, T001W.T001K").ToList();
             if (dataMap.Count == 0) return new List<T001W>();
-            var plantList = dataMap.Where(c => !c.T001W.IS_DELETED.HasValue || !c.T001W.IS_DELETED.Value).Select(d => d.T001W).ToList();
+            var plantList = dataMap.Where(c => !c.T001W.IS_DELETED.HasValue || !c.T001W.IS_DELETED.Value).Select(d => d.T001W).Distinct().ToList();
             return plantList;
         }
 

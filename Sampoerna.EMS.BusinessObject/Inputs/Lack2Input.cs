@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class Lack2WorkflowDocumentData
     {
-        public DateTime DecreeDate { get; set; }
+        public DateTime? DecreeDate { get; set; }
         public List<Lack2DocumentDto> Lack2DecreeDoc { get; set; }
     }
 
@@ -89,6 +89,16 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime SubmissionDate { get; set; }
         public string UserId { get; set; }
         public Enums.ActionType WorkflowActionType { get; set; }
+
+        #region Additional property
+
+        public string CompanyName { get; set; }
+        public string SourcePlantName { get; set; }
+        public string SourcePlantCity { get; set; }
+        public string ExcisableGoodsTypeDesc { get; set; }
+
+        #endregion
+
     }
 
 }

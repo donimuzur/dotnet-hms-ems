@@ -20,7 +20,7 @@
                     }
                     else
                     {
-                        <input type="button" class="btn btn-blue" value="Save" onclick="saveEditClick()" />
+                        <input type="button" class="btn btn-blue" value="Save" onclick="saveClick()" />
                     }
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Id })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btn-back" />
@@ -55,6 +55,7 @@
                         @Html.HiddenFor(x => x.CreatedBy)
                         @Html.HiddenFor(x => x.CreatedDate)
                         @Html.HiddenFor(x => x.Status)
+                        @Html.HiddenFor(model => model.GovApprovalActionType)
                         @if (Model.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
                         {
                             @Html.Partial("_HomeGovApproval")
@@ -76,6 +77,376 @@
         </div>
     </div>
 }
+
+<div id="Lack2Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Submit</h3>
+            </div>
+            <div class="modal-body">
+                Submit Documents  ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ModalValidation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Input selection criteria not valid</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
+    
+    <script src="~/Scripts/lack2/form.js"></script>
+    <script type="text/javascript">
         
+        $('#MenuLack2OpenDocument').addClass('active');
+
+        $(document).ready(function () {
+            
+            $('#divComment').hide();
+
+            $("#btnSubmitConfirm").click(function () {
+                $('#IsSaveSubmit').val('submit');
+                $('#form-lack2-edit').submit();
+            });
+
+            $("#btnSubmitDocument").click(function () {
+                $('#Lack2Modal').modal('show');
+            });
+
+            $('#btn-back').click(function () {
+                location.href = '@Url.Action("Index", "LACK2")';
+            });
+            
+            $("#btnSaveGovStatus").click(function () {
+                if (ValidateGovInput()) {
+                    $('#form-lack2-edit').submit();
+                }
+            });
+            
+            $('#CompanyCode').on("change", function () {
+                BukrsOnChange();
+            });
+
+            $('#NppbkcId').on("change", function () {
+                NppbkcIdOnChange();
+            });
+            
+            $('#GovStatus').on('change', function () {
+                onGovStatusChange();
+            });
+            
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportChangesLogToExcel", "Lack2", new { id = Model.Lack2Id })';
+            });
+
+        });
+        
+        function onGovStatusChange() {
+            if ($("#GovStatus").length) {
+                var statusGov = $('#GovStatus').find("option:selected").val();
+                console.log(statusGov);
+                $('#divComment').hide();
+                if (statusGov == 'Rejected') {
+                    $('#divComment').show();
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                } else if (statusGov == 'PartialApproved') {
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+                } else if (statusGov == 'FullApproved') {
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }
+            }
+        }
+
+        function ValidateGovInput() {
+            var result = true;
+            var govStatus = $('#GovStatus').find("option:selected").val();
+
+            if (govStatus == '') {
+                AddValidationClass(false, 'GovStatus');
+                result = false;
+            }
+
+            if ($('#DecreeDate').val() == '') {
+                AddValidationClass(false, 'DecreeDate');
+                result = false;
+            }
+
+            if ($('#GovStatus').val() == 'Rejected') {
+                if ($('#Comment').val() == '') {
+                    AddValidationClass(false, 'Comment');
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+        
+        function BukrsOnChange() {
+            if ($("#CompanyCode").length) {
+                var companyCode = $('#CompanyCode').find("option:selected").val();
+                $('#NppbkcId option').remove();
+                console.log(companyCode);
+                if (companyCode == '' || $(this).find("option:selected").val() == '') {
+                    $('#NppbkcId').append('<option value="">Select</option>');
+                } else {
+                    ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "LACK2")', { companyId: companyCode });
+                }
+            }
+        }
+        
+        function NppbkcIdOnChange() {
+            if ($("#NppbkcId").length && $('#CompanyCode').length) {
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                var companyId = $('#CompanyCode').find("option:selected").val();
+
+                $('#SourcePlantId option').remove();
+                $('#displayPoaList').val('');
+                $('#ExcisableGoodsType option').remove();
+
+                if (nppbkcId != '') {
+
+                    /*Load Excisable Goods Type*/
+                    ajaxGetGoodsTypeByNppbkc('@Url.Action("GetGoodsTypeByNppbkc", "LACK2")', { nppbkcId: nppbkcId });
+
+                    /*Load Plant */
+                    if (companyId != '') {
+                        ajaxGetPlantByNppbkc('@Url.Action("GetPlantByNppbkcId", "LACK2")', { companyId: companyId, nppbkcId: nppbkcId });
+                    }
+
+                    /*Load Poa */
+                    ajaxGetPoaByNppbkc('@Url.Action("GetPoaByNppbkcId", "LACK2")', { nppbkcId: nppbkcId });
+
+                } else {
+                    $('#Lack2Model_ExGoodTyp').append('<option value="">Select</option>');
+                    $('#SourcePlantId').append('<option value="">Select</option>');
+                }
+            }
+        }
+        
+        function ajaxGetNppbkcByCompany(url, formData) {
+            if (formData.companyId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $('#NppbkcId').append('<option>select</option>');
+                        if (data.length > 0) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        function ajaxGetGoodsTypeByNppbkc(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.length) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#ExcisableGoodsType').append('<option value=' + data[i].EXC_GOOD_TYP + '>' + data[i].EXT_TYP_DESC + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+
+        }
+        
+        function ajaxGetPlantByNppbkc(url, formData) {
+            if (formData.companyId && formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.length > 0) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#SourcePlantId').append('<option value=' + data[i].WERKS + '>' + data[i].DROPDOWNTEXTFIELD + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function ajaxGetPoaByNppbkc(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var poalist = '';
+                        for (var i = 0; i < data.length; i++) {
+                            poalist += data[i].PRINTED_NAME;
+                            if (data.length - 1 != i) {
+                                poalist += ', ';
+                            }
+                        }
+                        $('#PoaListHidden').val(poalist);
+                        $('#PoaList').val(poalist);
+                    }
+                });
+            }
+        }
+        
+        function generateInputValidation() {
+            var rc = true;
+            if ($('#CompanyCode').find("option:selected").val() == '') {
+                rc = false;
+                $('#CompanyCode').addClass('input-validation-error');
+            }
+
+            if ($('#PeriodMonth').find("option:selected").val() == '') {
+                rc = false;
+                $('#PeriodMonth').addClass('input-validation-error');
+            }
+
+            if ($('#PeriodYear').find("option:selected").val() == '') {
+                rc = false;
+                $('#PeriodYear').addClass('input-validation-error');
+            }
+
+            if ($('#NppbkcId').find("option:selected").val() == '') {
+                rc = false;
+                $('#NppbkcId').addClass('input-validation-error');
+            }
+
+            if ($('#SourcePlantId').find("option:selected").val() == '') {
+                rc = false;
+                $('#SourcePlantId').addClass('input-validation-error');
+            }
+
+            if ($('#ExcisableGoodsType').find("option:selected").val() == '') {
+                rc = false;
+                $('#ExcisableGoodsType').addClass('input-validation-error');
+            }
+
+            if (!rc) {
+                $('#modalBodyMessage').text('Please input the required field on selection criteria input.');
+            }
+
+            return rc;
+
+        }
+
+        function saveInputValidation() {
+            var rc = true;
+            if ($('#SubmissionDate').val() == '') {
+                rc = false;
+                $('#SubmissionDate').addClass('input-validation-error');
+            }
+            if (!rc) {
+                $('#modalBodyMessage').text('Please input the required field on selection criteria input.');
+            }
+            return rc;
+        }
+
+        function saveClick() {
+            var isValid = false;
+            if (generateInputValidation()) {
+                isValid = true;
+            }
+            if (isValid) {
+                isValid = saveInputValidation();
+            }
+            if (isValid) {
+                $('#form-lack2-edit').submit();
+            } else {
+                $('#ModalValidation').modal('show');
+            }
+        }
+        
+        function GenerateCk5Items() {
+
+            if (!generateInputValidation()) {
+                $('#ModalValidation').modal('show');
+                return;
+            }
+
+            var param = {};
+            param.PeriodMonth = parseInt($('#PeriodMonth').val());
+            param.PeriodYear = parseInt($('#PeriodYear').val());
+            param.NppbkcId = $('#NppbkcId').find("option:selected").val();
+            param.SourcePlantId = $('#SourcePlantId').find("option:selected").val();
+            param.ExcisableGoodsType = $('#ExcisableGoodsType').find("option:selected").val();
+            param.CompanyCode = $('#CompanyCode').find("option:selected").val();
+
+            $.ajax({
+                url: '@Url.Action("Generate", "LACK2")',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ param: param }),
+                success: function (response) {
+                    if (response.Success) {
+                        console.log(response);
+                        generateTable(response.Data.Ck5Items);
+                    } else {
+                        /*alert(response.ErrorMessage);*/
+                        $('#modalBodyMessage').text(response.ErrorMessage);
+                        $('#ModalValidation').modal('show');
+                    }
+                }
+            });
+        }
+
+        function generateTable(data) {
+            if (data.length > 0) {
+                $('#tb-body-ck5-lack2').html("");
+                for (var i = 0; i < data.length; i++) {
+                    var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__CK5_ID" name="Lack2Model.Items[' + i
+                        + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                        '<td>' + data[i].NoDateWithFormat + '</td>' +
+                        '<td>' + data[i].GIDateStr + '</td>' +
+                        '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
+                    $('#tb-body-ck5-lack2').append(tableCk5Item);
+                }
+            } else {
+                $('#tb-body-ck5-lack2').html("");
+                $('#tb-body-ck5-lack2').append('<tr><td style="text-align:center" colspan="6">no data<td></tr>');
+            }
+        }
+        
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
+            }
+        }
+        
+    </script>
 }

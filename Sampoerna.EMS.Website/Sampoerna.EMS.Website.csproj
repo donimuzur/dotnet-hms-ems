@@ -339,6 +339,7 @@
     <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
     <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2BaseItemModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2DetailReportsViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2DetailViewModel.cs" />
@@ -599,6 +600,7 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="Content\upload\header\header_sampoerna.jpg" />
     <Content Include="Content\upload\header\sample_header.png" />
+    <Content Include="Content\upload\Lack2\header_sampoerna.jpg" />
     <Content Include="ExtLib\itextsharp.dll" />
     <Content Include="ExtLib\itextsharp.pdfa.dll" />
     <Content Include="ExtLib\iTextSharp.xml" />
@@ -1181,6 +1183,7 @@
     <Content Include="Views\CK4C\Detail.cshtml" />
     <Content Include="Views\LACK2\_HomeGovApproval.cshtml" />
     <Content Include="Views\LACK2\_HomeEdit.cshtml" />
+    <Content Include="Views\LACK2\_HomeDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
