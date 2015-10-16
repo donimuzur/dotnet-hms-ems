@@ -458,10 +458,10 @@
                                                     {
                                                         <div class="row">
                                                             <div class="col-sm-10">
-                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                <input type="hidden" class="Pbck1OldDecreeFilesID" name="Pbck1OldDecreeFilesID[]" value="@file.PBCK1_DECREE_DOC_ID"><a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
                                                             </div>
                                                             <div class="col-sm-2">
-                                                                <button class="btn btn-danger full" type="button" onclick=""><i class="fa fa-times"></i></button>
+                                                                <button class="btn btn-danger full" type="button" onclick="removeDecree(this)"><i class="fa fa-times"></i></button>
                                                             </div>
                                                         </div>
 

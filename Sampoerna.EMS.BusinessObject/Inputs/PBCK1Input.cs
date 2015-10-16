@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     public class Pbck1WorkflowDocumentData
     {
         public decimal QtyApproved { get; set; }
-        public DateTime DecreeDate { get; set; }
+        public DateTime? DecreeDate { get; set; }
         public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
     }
 

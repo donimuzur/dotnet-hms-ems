@@ -288,6 +288,8 @@ namespace Sampoerna.EMS.BLL
 
             if (input.DocumentId > 0)
             {
+                _decreeDocBll.DeleteByPbck1Id(input.DocumentId);
+
                 dbData = _repository.GetByID(input.DocumentId);
 
                 if (dbData == null)
@@ -295,7 +297,7 @@ namespace Sampoerna.EMS.BLL
 
                 var origin = Mapper.Map<Pbck1Dto>(dbData);
 
-                Enums.DocumentStatusGov status = Enums.DocumentStatusGov.FullApproved;
+                Enums.DocumentStatusGov? status = Enums.DocumentStatusGov.FullApproved;
 
                 switch (input.ActionType) { 
                     case Enums.ActionType.GovApprove:
@@ -307,12 +309,20 @@ namespace Sampoerna.EMS.BLL
                     case Enums.ActionType.GovReject:
                         status = Enums.DocumentStatusGov.Rejected;
                         break;
+                    case Enums.ActionType.Reject:
+                        status = null;
+                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        break;
                 }
 
-                dbData.PBCK1_DECREE_DOC = null;
                 dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
+
+                foreach (var item in input.AdditionalDocumentData.Pbck1DecreeDoc)
+                {
+                    dbData.PBCK1_DECREE_DOC.Add(Mapper.Map<PBCK1_DECREE_DOC>(item));
+                }
+
                 dbData.STATUS_GOV = status;
 
                 //todo: update remaining quota and necessary data

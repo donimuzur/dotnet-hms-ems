@@ -36,6 +36,7 @@ namespace Sampoerna.EMS.Website.Controllers
     {
 
         private IPBCK1BLL _pbck1Bll;
+        private IPbck1DecreeDocBLL _pbck1DecreeDocBll;
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
         private IChangesHistoryBLL _changesHistoryBll;
@@ -55,7 +56,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IT001KBLL _t001kBll;
 
         public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -75,6 +76,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _lfa1Bll = lfa1Bll;
             _uomBll = uomBll;
             _t001kBll = t001kBll;
+            _pbck1DecreeDocBll = pbck1DecreeDocBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -1005,6 +1007,27 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck1Bll.Save(input);
         }
 
+        private void Pbck1WorkflowReturnToGovApprove(Pbck1Item pbck1Data, Enums.ActionType actionType, string comment)
+        {
+            var input = new Pbck1WorkflowDocumentInput()
+            {
+                DocumentId = pbck1Data.Pbck1Id,
+                ActionType = Enums.ActionType.Reject,
+                UserRole = CurrentUser.UserRole,
+                UserId = CurrentUser.USER_ID,
+                DocumentNumber = pbck1Data.Pbck1Number,
+                Comment = comment,
+                DocumentStatus = Enums.DocumentStatus.Completed,
+                AdditionalDocumentData = new Pbck1WorkflowDocumentData()
+                {
+                    DecreeDate = null,
+                    QtyApproved = 0,
+                    Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
+                }
+            };
+            _pbck1Bll.Save(input);
+        }
+
         public ActionResult SubmitDocument(int? id)
         {
             if (!id.HasValue)
@@ -1157,22 +1180,34 @@ namespace Sampoerna.EMS.Website.Controllers
             //    return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
             //}
 
+            var oldDoc = _pbck1Bll.GetById(model.Detail.Pbck1Id).Pbck1DecreeDoc.Select(c => c.PBCK1_DECREE_DOC_ID);
+
             if (model.Detail.Pbck1DecreeFiles == null)
             {
                 AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
                 return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
             }
 
+
             bool isSuccess = false;
+            bool validDoc = true;
             var currentUserId = CurrentUser;
             try
             {
                 model.Detail.Pbck1DecreeDoc = new List<Pbck1DecreeDocModel>();
+
+                if (model.Detail.StatusGov == 0 && model.Detail.DecreeDate == null)
+                {
+                    Pbck1WorkflowReturnToGovApprove(model.Detail, model.Detail.GovApprovalActionType, model.Detail.Comment);
+                    AddMessageInfo("Document Rejected", Enums.MessageInfoType.Success);
+                    return RedirectToAction("Index");
+                }
+
                 if (model.Detail.Pbck1DecreeFiles != null)
                 {
                     foreach (var item in model.Detail.Pbck1DecreeFiles)
                     {
-                        if (item != null)
+                        if (item != null && validDoc)
                         {
                             var filenamecheck = item.FileName;
 
@@ -1192,12 +1227,21 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         else
                         {
-                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                            return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+                            validDoc = false;
                         }
                     }
                 }
 
+                if(!validDoc && model.Pbck1OldDecreeFilesID == null){
+                    AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+                }
+
+                foreach(var item in oldDoc){
+                    if(!model.Pbck1OldDecreeFilesID.Contains(item)){
+                        _pbck1DecreeDocBll.RemoveDoc(item);
+                    }
+                }
 
                 var input = new Pbck1UpdateReportedOn()
                 {

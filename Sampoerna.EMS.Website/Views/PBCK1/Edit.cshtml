@@ -127,7 +127,14 @@
 @section scripts {
     <script type="text/javascript">
         var referenceURL = "@Url.Action("GetPBCK1Reference", "PBCK1")";
+        var completedDocument = false;
     </script>
+    @if ((Model.Detail.Status == Enums.DocumentStatus.Completed) && Model.AllowGovApproveAndReject)
+    {
+    <script type="text/javascript">
+        completedDocument = true;
+    </script>
+    }
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
@@ -153,7 +160,6 @@
         $('#Detail_StatusGov').on('change', function (e) {
             var valueSelected = this.value;
             var request = $("input[name='Detail.RequestQty']:hidden").val();
-            alert(1);
             $('#divComment').hide();
             $("input[name='Detail.QtyApproved']:text").prop("readonly", true);
 
@@ -591,4 +597,33 @@
     }
 
     </script>
+    @if ((Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval || Model.Detail.Status == Enums.DocumentStatus.Completed) && Model.AllowGovApproveAndReject)
+    {
+       <script type="text/javascript">
+           $(document).ready(function () {
+               var valueSelected = $('#Detail_StatusGov').val();
+               var request = $("input[name='Detail.RequestQty']:hidden").val();
+               $('#divComment').hide();
+               $("input[name='Detail.QtyApproved']:text").prop("readonly", true);
+
+               if (valueSelected == 'Rejected') {
+                   $('#divComment').show();
+                   $("input[name='Detail.QtyApproved']:hidden").val(0);
+                   $("input[name='Detail.QtyApproved']:text").val(0);
+                   $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+               }
+               else if (valueSelected == 'PartialApproved') {
+                   $("input[name='Detail.QtyApproved']:text").prop("readonly", false);
+                   $("input[name='Detail.QtyApproved']:hidden").val(request);
+                   $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request, 2));
+                   $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+               }
+               else if (valueSelected == 'FullApproved') {
+                   $("input[name='Detail.QtyApproved']:hidden").val(request);
+                   $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request, 2));
+                   $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+               }
+           });
+       </script>
+    }
 }

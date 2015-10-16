@@ -1,5 +1,4 @@
 ﻿var file_sk = 0;
-alert(1);
 $('#upload-file-sk').click(function () {
 
     uploadSk();
@@ -66,4 +65,7 @@ function removeUploadButton(index, obj) {
 
     file_sk--;
     active = true;
+}
+function removeDecree(obj) {
+    $(obj).closest(".row").remove();
 }
