@@ -114,7 +114,7 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4"> Quantity</label>
+                                                                <label class="col-md-4"> Produced Qty</label>
                                                                 <div class="col-md-8">
                                                                     @Html.TextBoxFor(model => model.QtyStr, new { @class = "decimal form-control"})
                                                                 </div>
@@ -160,11 +160,12 @@
                                                             <div class="row">
                                                                 <label class="col-md-4"> Material Document Number </label>
                                                                 <div class="col-md-8">
+                                                                    @Html.HiddenFor(model => model.Batch)
                                                                     @Html.TextBoxFor(model => model.MatDoc, new { @class = "decimal form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
-
+                                                      
                                                     </div>
                                                 </div>
                                             </div>

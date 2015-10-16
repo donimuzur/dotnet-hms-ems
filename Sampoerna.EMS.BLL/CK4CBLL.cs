@@ -770,7 +770,7 @@ namespace Sampoerna.EMS.BLL
                 address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
 
                 Int32 isInt;
-                var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
+                var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt)).OrderBy(x => x.PROD_CODE);
                 var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
 
                 foreach (var data in activeBrand)
