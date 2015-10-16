@@ -46,5 +46,18 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _repository.Get(queryFilterCk5).ToList();
         }
+
+        public List<CK5> GetForLack2ByParam(Ck5GetForLack2ByParamInput input)
+        {
+            var data = _repository.Get(
+                    p => p.SOURCE_PLANT_NPPBKC_ID == input.NppbkcId && p.SOURCE_PLANT_COMPANY_CODE == input.CompanyCode &&
+                        p.GI_DATE.HasValue && p.GI_DATE.Value.Month == input.PeriodMonth && p.GI_DATE.Value.Year == input.PeriodYear &&
+                        p.CK5_TYPE != Enums.CK5Type.Export &&
+                        p.SOURCE_PLANT_ID == input.SourcePlantId && (int)p.EX_GOODS_TYPE == input.ExGroupTypeId).ToList();
+
+            return data;
+
+        }
+
     }
 }
