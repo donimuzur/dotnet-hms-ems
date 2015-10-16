@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.LACK2_ITEM_ID))
                 .ForMember(dest => dest.Lack2Id, opt => opt.MapFrom(src => src.LACK2_ID))
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
-                .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.CK5.REGISTRATION_NUMBER + "-" + src.CK5.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")))
+                .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.CK5.REGISTRATION_NUMBER + " - " + src.CK5.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")))
                 .ForMember(dest => dest.Ck5GIDate, opt => opt.MapFrom(src => src.CK5.GI_DATE == null ? null : src.CK5.GI_DATE.Value.ToString("dd-MM-yyyy")))
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_COMPANY_NAME))
                 .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_ADDRESS))
