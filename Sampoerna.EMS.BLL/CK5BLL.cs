@@ -138,6 +138,14 @@ namespace Sampoerna.EMS.BLL
              return Mapper.Map<List<CK5Dto>>(dtData);
         }
 
+        public List<CK5Dto> GetCk5ByPBCK1(int pbck1Id)
+        {
+
+            var dtData = _repository.Get(c => c.PBCK1_DECREE_ID == pbck1Id && (c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.Cancelled), null, includeTables).ToList();
+
+            return Mapper.Map<List<CK5Dto>>(dtData);
+        }
+
         public List<CK5Dto> GetInitDataListIndex(Enums.CK5Type ck5Type)
         {
           

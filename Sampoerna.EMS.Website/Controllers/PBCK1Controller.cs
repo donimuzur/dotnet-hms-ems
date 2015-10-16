@@ -24,6 +24,7 @@ using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PBCK1;
+using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -36,6 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
     {
 
         private IPBCK1BLL _pbck1Bll;
+        private ICK5BLL _ck5Bll;
         private IPbck1DecreeDocBLL _pbck1DecreeDocBll;
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
@@ -56,7 +58,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IT001KBLL _t001kBll;
 
         public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -77,6 +79,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _uomBll = uomBll;
             _t001kBll = t001kBll;
             _pbck1DecreeDocBll = pbck1DecreeDocBll;
+            _ck5Bll = ck5Bll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -947,6 +950,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (model.Detail.PlanProdFrom > model.Detail.PlanProdTo)
             {
                 message = "Plan Production From cannot be greater than Plan Production To";
+            }
+
+            if (model.Detail.NppbkcId == model.Detail.SupplierNppbkcId)
+            {
+                message = "Original NPPBKC cannot be the same as supplier NPPBCK";
             }
 
             return message;
@@ -2638,6 +2646,34 @@ namespace Sampoerna.EMS.Website.Controllers
                 return Json(new { kppbcid = nppbkc.KPPBC_ID, kppbcname = lfa.NAME1 });
             }
         }
+
+        #region ------ CK5 details ----
+
+        public ActionResult CK5Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+            var pbck1Data = _pbck1Bll.GetById(id.Value);
+            var ck5Data = _ck5Bll.GetCk5ByPBCK1(id.Value);
+            if (pbck1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new PBCK1ListCK5Model()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Detail = Mapper.Map<Pbck1Item>(pbck1Data),
+                CK5List = Mapper.Map<List<CK5Item>>(ck5Data)
+            };
+
+            return View(model);
+        }
+
+        #endregion
 
 
     }
