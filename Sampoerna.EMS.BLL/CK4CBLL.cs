@@ -1193,6 +1193,8 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.Period = dtData.REPORTED_PERIOD.ToString();
                 summaryDto.Month = dtData.MONTH.MONTH_NAME_ENG;
                 summaryDto.Year = dtData.REPORTED_YEAR.ToString();
+                summaryDto.PoaApproved = dtData.APPROVED_BY_POA == null ? "-" : dtData.APPROVED_BY_POA;
+                summaryDto.ManagerApproved = dtData.APPROVED_BY_MANAGER == null ? "-" : dtData.APPROVED_BY_MANAGER;
                 summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
 
                 var prodDate = new List<string>();
