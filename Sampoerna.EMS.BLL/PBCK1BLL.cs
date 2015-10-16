@@ -2162,6 +2162,25 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByExternalAndSubmissionDate(string exSupplierId, string exSupplierNppbkcId, DateTime? submissionDate, string destPlantNppbkcId, List<string> goodtypes)
+        {
+
+            var dbData =
+                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT == exSupplierId && p.SUPPLIER_NPPBKC_ID == exSupplierNppbkcId
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId && goodtypes.Contains(p.EXC_GOOD_TYP)).OrderByDescending(p => p.DECREE_DATE);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
+
+        }
+
+        public List<Pbck1Dto> GetByRef(int pbckId)
+        {
+            var dbData =
+                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.PBCK1_REF == pbckId);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
+        }
+
         public string checkUniquePBCK1(Pbck1SaveInput input)
         {
             if (input.Pbck1.Pbck1Type == Enums.PBCK1Type.Additional)

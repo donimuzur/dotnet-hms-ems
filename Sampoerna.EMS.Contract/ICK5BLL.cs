@@ -76,5 +76,8 @@ namespace Sampoerna.EMS.Contract
        List<CK5ExternalSupplierDto> GetExternalSupplierList(Enums.CK5Type ck5Type);
 
        CK5ExternalSupplierDto GetExternalSupplierItem(string plantId, Enums.CK5Type ck5Type);
+
+       GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ItemExternal(string plantId, string plantNppbkcId,
+           DateTime submissionDate, string destPlantNppbkcId, int? goodtypegroupid);
    }
 }
