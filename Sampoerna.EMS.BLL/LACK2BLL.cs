@@ -358,7 +358,7 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovApprove:
                     GovApproveDocument(input);
-                    isNeedSendNotif = false;
+                    //isNeedSendNotif = false;
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
@@ -366,7 +366,7 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovPartialApprove:
                     GovPartialApproveDocument(input);
-                    isNeedSendNotif = false;
+                    //isNeedSendNotif = false;
                     break;
             }
 
@@ -674,14 +674,17 @@ namespace Sampoerna.EMS.BLL
             //var body = "this is body message for " + input.DocumentNumber;
             //var from = "a@gmail.com";
 
-            if (input.DocumentId != null)
-            {
-                var lack2Data = Mapper.Map<Lack2Dto>(_lack2Service.GetById(input.DocumentId.Value));
+            if (input.DocumentId == null) return;
 
-                var mailProcess = ProsesMailNotificationBody(lack2Data, input.ActionType);
+            var lack2Data = Mapper.Map<Lack2DetailsDto>(_lack2Service.GetDetailsById(input.DocumentId.Value));
 
-                _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
-            }
+            if ((input.ActionType == Enums.ActionType.GovApprove || input.ActionType == Enums.ActionType.GovPartialApprove)
+                && lack2Data.Status != Enums.DocumentStatus.Completed)
+                return;
+
+            var mailProcess = ProsesMailNotificationBody(lack2Data, input);
+
+            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
         }
 
         private string GetManagerEmail(string poaId)
@@ -691,10 +694,18 @@ namespace Sampoerna.EMS.BLL
             return managerDetail.EMAIL;
         }
 
-        private MailNotification ProsesMailNotificationBody(Lack2Dto lackData, Enums.ActionType actionType)
+        private MailNotification ProsesMailNotificationBody(Lack2Dto lackData, Lack2WorkflowDocumentInput input)
         {
             var bodyMail = new StringBuilder();
             var rc = new MailNotification();
+
+            var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput()
+            {
+                FormId = lackData.Lack2Id,
+                FormType = Enums.FormType.LACK2
+            });
+
+            var poaList = _poaBll.GetPoaByNppbkcId(lackData.NppbkcId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -711,33 +722,68 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : LACK-2</td></tr>");
             bodyMail.AppendLine();
+            if (input.ActionType == Enums.ActionType.Reject)
+            {
+                bodyMail.Append("<tr><td>Comment</td><td> : " + input.Comment + "</td></tr>");
+                bodyMail.AppendLine();
+            }
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Lack2/Detail/" + lackData.Lack2Id + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
-            switch (actionType)
+            switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     if (lackData.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var poaList = _poaBll.GetPoaByNppbkcId(lackData.NppbkcId);
-                        foreach (var poaDto in poaList)
+                        if (rejected != null)
                         {
-                            rc.To.Add(poaDto.POA_EMAIL);
+                            rc.To.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
                         }
+                        else
+                        {
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.To.Add(poaDto.POA_EMAIL);
+                            }
+                        }
+
+                        rc.CC.Add(_userBll.GetUserById(lackData.CreatedBy).EMAIL);
                     }
                     else if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var managerId = _poaBll.GetManagerIdByPoaId(lackData.CreatedBy);
-                        var managerDetail = _userBll.GetUserById(managerId);
-                        rc.To.Add(managerDetail.EMAIL);
+                        var poaData = _poaBll.GetById(lackData.CreatedBy);
+                        rc.To.Add(GetManagerEmail(lackData.CreatedBy));
+                        rc.CC.Add(poaData.POA_EMAIL);
+
+                        foreach (var poaDto in poaList)
+                        {
+                            if (poaData.POA_ID != poaDto.POA_ID)
+                                rc.To.Add(poaDto.POA_EMAIL);
+                        }
                     }
+                    rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Approve:
                     if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+
+                        if (rejected != null)
+                        {
+                            rc.CC.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
+                        }
+                        else
+                        {
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.CC.Add(poaDto.POA_EMAIL);
+                            }
+                        }
+
+                        rc.CC.Add(_userBll.GetUserById(lackData.CreatedBy).EMAIL);
+
                     }
                     else if (lackData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -746,20 +792,107 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is poa user
                             rc.To.Add(poaData.POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(lackData.CreatedBy);
                             rc.To.Add(userData.EMAIL);
+                            rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                         }
                     }
+                    rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(lackData.CreatedBy);
-                    rc.To.Add(userDetail.EMAIL);
+                    var poaData2 = _poaBll.GetById(lackData.CreatedBy);
+
+                    if (lackData.ApprovedBy != null || poaData2 != null)
+                    {
+                        if (poaData2 == null)
+                        {
+                            var poa = _poaBll.GetById(lackData.ApprovedBy);
+                            rc.To.Add(userDetail.EMAIL);
+                            rc.CC.Add(poa.POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
+                        }
+                        else
+                        {
+                            rc.To.Add(poaData2.POA_EMAIL);
+                            rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
+                        }
+                    }
+                    else
+                    {
+                        rc.To.Add(userDetail.EMAIL);
+
+                        foreach (var poaDto in poaList)
+                        {
+                            rc.CC.Add(poaDto.POA_EMAIL);
+                        }
+                    }
+
+                    rc.IsCCExist = true;
                     break;
+
+                case Enums.ActionType.GovApprove:
+                    var poaData3 = _poaBll.GetById(lackData.CreatedBy);
+                    if (poaData3 != null)
+                    {
+                        //creator is poa user
+                        rc.To.Add(GetManagerEmail(lackData.CreatedBy));
+                        rc.CC.Add(poaData3.POA_EMAIL);
+                    }
+                    else
+                    {
+                        //creator is excise executive
+                        var userData = _userBll.GetUserById(lackData.CreatedBy);
+                        rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
+                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+                        rc.CC.Add(userData.EMAIL);
+                    }
+                    rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.GovPartialApprove:
+                    var poaData4 = _poaBll.GetById(lackData.CreatedBy);
+                    if (poaData4 != null)
+                    {
+                        //creator is poa user
+                        rc.To.Add(GetManagerEmail(lackData.CreatedBy));
+                        rc.CC.Add(poaData4.POA_EMAIL);
+                    }
+                    else
+                    {
+                        //creator is excise executive
+                        var userData = _userBll.GetUserById(lackData.CreatedBy);
+                        rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
+                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+                        rc.CC.Add(userData.EMAIL);
+                    }
+                    rc.IsCCExist = true;
+                    break;
+                case Enums.ActionType.GovReject:
+                    var poaData5 = _poaBll.GetById(lackData.CreatedBy);
+                    if (poaData5 != null)
+                    {
+                        //creator is poa user
+                        rc.To.Add(GetManagerEmail(lackData.CreatedBy));
+                        rc.CC.Add(poaData5.POA_EMAIL);
+                    }
+                    else
+                    {
+                        //creator is excise executive
+                        var userData = _userBll.GetUserById(lackData.CreatedBy);
+                        rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
+                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+                        rc.CC.Add(userData.EMAIL);
+                    }
+                    rc.IsCCExist = true;
+                    break;
+
             }
             rc.Body = bodyMail.ToString();
             return rc;
