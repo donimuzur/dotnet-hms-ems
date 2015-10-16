@@ -1383,12 +1383,15 @@ namespace Sampoerna.EMS.BLL
 
             var mailProcess = ProsesMailNotificationBody(pbck1Data, input.ActionType, input.Comment);
 
-            //distinct double To email
-            List<string> ListTo = mailProcess.To.Distinct().ToList();
+            //distinct To email
+            var ListTo = mailProcess.To.Distinct().ToList();
+
+            //distinct CC email
+            var ListCC = mailProcess.CC.Distinct().ToList();
 
             if (mailProcess.IsCCExist)
                 //Send email with CC
-                _messageService.SendEmailToListWithCC(ListTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+                _messageService.SendEmailToListWithCC(ListTo, ListCC, mailProcess.Subject, mailProcess.Body, true);
             else
                 _messageService.SendEmailToList(ListTo, mailProcess.Subject, mailProcess.Body, true);
 
