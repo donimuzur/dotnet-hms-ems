@@ -169,6 +169,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
             }
+            else
+            {
+                var errorlist = ModelState.Values.Select(x => x.Errors).Single();
+
+                var errMsg = "";
+
+                foreach(var error in errorlist){
+                    errMsg = error.ErrorMessage +"\n";
+                }
+                AddMessageInfo(errMsg, Enums.MessageInfoType.Error
+                           );
+            }
             model = InitCreate(model);
             return View(model);
         }
@@ -264,9 +276,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
             dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
-
-
-
+            
             try
             {
                 if (!ModelState.IsValid)
