@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
 using AutoMapper;
+using Org.BouncyCastle.Crypto.Agreement.Srp;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -84,10 +85,12 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck7AndPbck3Dto, Pbck7Pbck3CreateViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Pbck7Id))
                 .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DocumentType))
+                .ForMember(dest => dest.DocumentTypeDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.DocumentType)))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreateDate))
                 .ForMember(dest => dest.Pbck7StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck7Status)))
                 .ForMember(dest => dest.Pbck3StatusName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck3Dto.Pbck3Status)))
                  .ForMember(dest => dest.Pbck7GovStatus, opt => opt.MapFrom(src => src.Pbck7GovStatus))
+                 .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => Mapper.Map<List<Pbck7UploadViewModel>>(src.UploadItems)))
                  
                   ;
 
@@ -120,6 +123,18 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ExciseValue, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.ExciseValue)))
                 .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => ConvertHelper.ConvertToInt32OrNull(src.Pbck7Id)))
               ;
+
+
+            Mapper.CreateMap<Pbck7ItemUpload, Pbck7UploadViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Content, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.Content))
+                .ForMember(dest => dest.Pbck7Qty, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.Pbck7Qty))
+                .ForMember(dest => dest.Back1Qty, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.Back1Qty))
+                .ForMember(dest => dest.FiscalYear, opt => opt.MapFrom(src => src.FiscalYear.HasValue ? src.FiscalYear.Value.ToString() : "0"))
+                .ForMember(dest => dest.Hje, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.Hje))
+                .ForMember(dest => dest.Tariff, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.Tariff))
+                .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.Pbck7Id.HasValue ? src.Pbck7Id.Value.ToString() : "0"))
+               ;
         }
     }
 }

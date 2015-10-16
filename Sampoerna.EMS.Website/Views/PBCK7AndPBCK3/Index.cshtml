@@ -11,9 +11,12 @@
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
             
-                <div class="action-button new">
+            <div class="action-button new">
+                @if (Model.IsShowNewButton)
+                {
                     <a href="@Url.Action("Create", "PBCK7AndPBCK3")"><button class="btn btn-blue">NEW</button></a>
-                </div>
+                }
+            </div>
             
         </div>
     </div>

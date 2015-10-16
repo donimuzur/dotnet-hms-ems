@@ -1180,6 +1180,7 @@
     <Content Include="Views\CK4C\_DecreeDocCompleted.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadListDetail.cshtml" />
     <Content Include="Views\CK4C\Detail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7ChangeLog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

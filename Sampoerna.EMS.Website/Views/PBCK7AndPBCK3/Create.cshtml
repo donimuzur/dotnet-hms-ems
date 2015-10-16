@@ -8,18 +8,15 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>PBCK-3</h3>
-                <label class="status">Draft</label>
+                @*<h3>PBCK-3</h3>
+                <label class="status">Draft</label>*@
                 <h3>PBCK-7</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
                     <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
                 </div>
-                @*<div class="action-button">
-                    <button class="btn btn-blue">Save</button>
-                    <a href="@Url.Action("Index", "Pbck7AndPbck3")" class="btn btn-grey">Cancel</a>
-                </div>*@
+             
             </div>
         </div>
     </div>
@@ -32,9 +29,10 @@
                     <!-- Nav tabs -->
                     @Html.AntiForgeryToken()
                     <ul role="tablist" class="nav nav-tabs">
-                        <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
-                        <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
-                        @*<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="changes" href="#changes">Changes Log</a></li>*@
+                       
+                        <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
+
                     </ul>
 
                     <!-- Tab panes -->

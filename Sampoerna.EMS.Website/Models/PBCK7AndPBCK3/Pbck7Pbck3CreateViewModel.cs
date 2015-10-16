@@ -43,7 +43,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public DateTime? Pbck7Date { get; set; }
         [Required]
         public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
-        
+        public string DocumentTypeDescription { get; set; }
+
         [Required]
         public DateTime? ExecDateFrom { get; set; }
          [Required]

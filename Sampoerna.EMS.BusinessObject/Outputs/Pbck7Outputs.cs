@@ -17,8 +17,10 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
             WorkflowHistoryPbck7 = new List<WorkflowHistoryDto>();
             WorkflowHistoryPbck3 = new List<WorkflowHistoryDto>();
 
-            //ListChangesHistorys = new List<CHANGES_HISTORY>();
+            ListChangesHistorys = new List<CHANGES_HISTORY>();
             //ListWorkflowHistorys = new List<WorkflowHistoryDto>();
+
+            ListPrintHistorys = new List<PrintHistoryDto>();
         }
 
         public Pbck7AndPbck3Dto Pbck7Dto { get; set; }
@@ -30,10 +32,10 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public List<WorkflowHistoryDto> WorkflowHistoryPbck7 { get; set; }
         public List<WorkflowHistoryDto> WorkflowHistoryPbck3 { get; set; }
 
-        //public List<CHANGES_HISTORY> ListChangesHistorys { get; set; }
+        public List<CHANGES_HISTORY> ListChangesHistorys { get; set; }
         //public List<WorkflowHistoryDto> ListWorkflowHistorys { get; set; }
         //public List<Pbck4ItemDto> Pbck4ItemsDto { get; set; }
-        //public List<PrintHistoryDto> ListPrintHistorys { get; set; }
+        public List<PrintHistoryDto> ListPrintHistorys { get; set; }
     }
 
     public class Pbck7ItemsOutput

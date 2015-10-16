@@ -280,6 +280,11 @@ function ValidatePbck7Form() {
         result = false;
     }
     
+    if ($('#Pbck7Date').val() == '') {
+        AddValidationClass(false, 'Pbck7Date');
+        result = false;
+    }
+    
     if ($('#DocumentType').find("option:selected").val() == '') {
 
         AddValidationClass(false, 'DocumentType');
@@ -353,6 +358,38 @@ function ValidatePbck7Form() {
 
     }
 
+
+    return result;
+}
+
+function ValidateGovInput() {
+    var result = true;
+    
+    if ($('#Pbck7GovStatus').val() == '') {
+        AddValidationClass(false, 'Pbck7GovStatus');
+        result = false;
+
+        $('#Pbck7GovStatus').focus();
+    } else {
+        if ($('#Pbck7GovStatus').val() == 'Rejected') {
+            if ($('#Comment').val() == '') {
+                AddValidationClass(false, 'Comment');
+                result = false;
+
+                $('#Comment').focus();
+            }
+        }
+
+    }
+
+    if (result == false) {
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+
+    }
+
+   
 
     return result;
 }

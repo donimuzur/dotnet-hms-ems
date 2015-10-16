@@ -6,9 +6,9 @@
     ViewBag.Title = "Detail";
 }
 
-@using (Html.BeginForm("Detail", "PBCK7AndPBCK3", FormMethod.Post, new {@id = "form-pbck7-detail", @class = "form-excise", role = "form", enctype = "multipart/form-data"}))
+@using (Html.BeginForm(Model.ActionType, "PBCK7AndPBCK3", FormMethod.Post, new {@id = "form-pbck7-detail", @class = "form-excise", role = "form", enctype = "multipart/form-data"}))
 {
-    @Html.HiddenFor(x=>x.ActionType)
+    @*@Html.HiddenFor(x=>x.ActionType)
     @Html.HiddenFor(x => x.IsSaveSubmit)
     @Html.HiddenFor(x => x.ActionTypePbck3)
     @Html.HiddenFor(x => x.IsSaveSubmitPbck3)
@@ -35,12 +35,21 @@
     @Html.HiddenFor(x => x.Pbck3Dto.ApprovedByManager)
     @Html.HiddenFor(x => x.Pbck3Dto.ApprovedDateManager)
     @Html.HiddenFor(x => x.Pbck3Dto.RejectedBy)
-    @Html.HiddenFor(x => x.Pbck3Dto.RejectedDate)
+    @Html.HiddenFor(x => x.Pbck3Dto.RejectedDate)*@
+    
+    
+    @Html.HiddenFor(x => x.ActionType)
+    @Html.HiddenFor(x => x.IsSaveSubmit)
+     @Html.HiddenFor(x => x.Id)
+     @Html.HiddenFor(x => x.CreatedBy)
+    @Html.HiddenFor(x => x.CreatedDate)
+    @Html.HiddenFor(x => x.Pbck7Status)
+    @Html.HiddenFor(x => x.Pbck7StatusName)
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>PBCK-3</h3>
-                <label class="status">@Model.Pbck3StatusName</label>
+                @*<h3>PBCK-3</h3>
+                <label class="status">@Model.Pbck3StatusName</label>*@
                 <h3>PBCK-7</h3>
                 <label class="status">@Model.Pbck7StatusName</label>
                 <div class="action-button">
@@ -54,6 +63,11 @@
                         }
                         else
                         {
+                            if (Model.AllowGovApproveAndReject)
+                            {
+                                <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                            }
+
                             if (Model.AllowManagerReject)
                             {
                                 <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck7" />
@@ -100,7 +114,7 @@
                     <ul role="tablist" class="nav nav-tabs">
                         <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
                         <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck7" href="#printoutpbck7">Print Out PBCK-7</a></li>
-                        <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck3" href="#printoutpbck3">Print Out PBCK-3</a></li>
+                        @*<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck3" href="#printoutpbck3">Print Out PBCK-3</a></li>*@
                         <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
 
@@ -110,14 +124,10 @@
                     <div class="tab-content">
                         @Html.Partial("_HomeDetail")
                         @Html.Partial("_PrintOutPbck7")
-                        @Html.Partial("_PrintOutPbck3")    
+                        @*@Html.Partial("_PrintOutPbck3")*@    
                         @Html.Partial("_Upload")
-                        <div role="tabpanel" class="tab-pane" id="changes">
-                            <div class="table-container">
-                                @Html.Partial("_ChangesHistoryTable", Model)
-                            </div>
-                        </div>
-
+                        @Html.Partial("_Pbck7ChangeLog")
+                       
 
                        
                     </div>
@@ -235,13 +245,42 @@ else
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
+<script src="~/Scripts/Pbck7Script.js"></script>
     <script type="text/javascript">
-        var uploaditems = [];
-        $("#btnApproveConfirm").click(function () {
-            $('#ActionType').val('Approve');
-            $('#form-pbck7-detail').submit();
+        
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXls", "PBCK7AndPBCK3", new { pbckId = Model.Id })';
         });
         
+        $("#btnApproveConfirm").click(function () {
+            //$('#ActionType').val('Approve');
+            //$('#form-pbck7-detail').submit();
+            window.location = "@Url.Action("ApproveDocument", "PBCK7AndPBCK3", new { id = @Model.Id })";
+        });
+
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateGovInput()) {
+                window.location = "@Url.Action("ApproveDocument", "PBCK7AndPBCK3", new { id = @Model.Id })";
+            }
+        });
+
+        $('#divComment').hide();
+        
+        $('#Pbck7GovStatus').on('change', function (e) {
+            var valueSelected = this.value;
+
+            $('#divComment').hide();
+
+         
+            if (valueSelected == 'Rejected') {
+                $('#divComment').show();
+
+            }
+
+        });
+        
+        var uploaditems = [];
+      
         $("#btnApproveConfirmPbck3").click(function () {
             $('#ActionType').val('ApprovePbck3');
             $('#form-pbck7-detail').submit();
