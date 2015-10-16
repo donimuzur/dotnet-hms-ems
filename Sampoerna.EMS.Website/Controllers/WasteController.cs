@@ -440,12 +440,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     var item = new WasteUploadItems();
-
+                    var brandCe = _brandRegistrationBll.GetById(dataRow[1], dataRow[2]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
-                    item.BrandDescription = dataRow[3];
+                    item.BrandDescription = brandCe.BRAND_CE;
                     item.MarkerRejectStickQty = dataRow[4];
                     item.PackerRejectStickQty = dataRow[5];
                     item.DustWasteGramQty = dataRow[6];
