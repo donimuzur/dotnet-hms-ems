@@ -281,6 +281,90 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public SavePbck1Output Save(Pbck1WorkflowDocumentInput input)
+        {
+            PBCK1 dbData = null;
+            bool changed = true;
+
+            if (input.DocumentId > 0)
+            {
+                _decreeDocBll.DeleteByPbck1Id(input.DocumentId);
+
+                dbData = _repository.GetByID(input.DocumentId);
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                var origin = Mapper.Map<Pbck1Dto>(dbData);
+
+                Enums.DocumentStatusGov? status = Enums.DocumentStatusGov.FullApproved;
+
+                switch (input.ActionType) { 
+                    case Enums.ActionType.GovApprove:
+                        status = Enums.DocumentStatusGov.FullApproved;
+                        break;
+                    case Enums.ActionType.GovPartialApprove:
+                        status = Enums.DocumentStatusGov.PartialApproved;
+                        break;
+                    case Enums.ActionType.GovReject:
+                        status = Enums.DocumentStatusGov.Rejected;
+                        break;
+                    case Enums.ActionType.Reject:
+                        status = null;
+                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        break;
+                }
+
+                dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
+                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+
+                foreach (var item in input.AdditionalDocumentData.Pbck1DecreeDoc)
+                {
+                    dbData.PBCK1_DECREE_DOC.Add(Mapper.Map<PBCK1_DECREE_DOC>(item));
+                }
+
+                dbData.STATUS_GOV = status;
+
+                //todo: update remaining quota and necessary data
+                
+
+                var inputNew = Mapper.Map<Pbck1Dto>(dbData);
+
+                origin.Pbck1Parent = Mapper.Map<Pbck1Dto>(dbData.PBCK12);
+
+                changed = SetChangesHistory(origin, inputNew, input.UserId);
+                
+            }
+
+            var output = new SavePbck1Output();
+
+            _uow.SaveChanges();
+
+            output.Success = true;
+            output.Id = dbData.PBCK1_ID;
+            output.Pbck1Number = dbData.NUMBER;
+
+            //set workflow history
+            var getUserRole = _poaBll.GetUserRole(input.UserId);
+            var inputAddWorkflowHistory = new Pbck1WorkflowDocumentInput()
+            {
+                DocumentId = output.Id,
+                DocumentNumber = output.Pbck1Number,
+                ActionType = Enums.ActionType.Modified,
+                UserId = input.UserId,
+                UserRole = getUserRole
+            };
+
+            if (changed)
+            {
+                AddWorkflowHistory(inputAddWorkflowHistory);
+            }
+            _uow.SaveChanges();
+
+            return output;
+
+        }
+
         public void Delete(long id)
         {
             var dbData = _repository.GetByID(id);
@@ -1085,6 +1169,12 @@ namespace Sampoerna.EMS.BLL
             var isNeedSendNotif = true;
             switch (input.ActionType)
             {
+                case Enums.ActionType.Modified:
+                    if(input.DocumentStatus == Enums.DocumentStatus.Completed){
+                        //SubmitDocument(input);
+                        isNeedSendNotif = false;
+                    }
+                    break;
                 case Enums.ActionType.Submit:
                     SubmitDocument(input);
                     break;

@@ -403,38 +403,7 @@ namespace Sampoerna.EMS.Website.Code
 
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
-        public static SelectList GetYearList(ICK5BLL ck5Bll)
-        {
-            var yearList = ck5Bll.GetAllYearsByGiDate();
-            var selectItemSource = new List<SelectItemModel>();
-
-            foreach (var year in yearList)
-            {
-                var item = new SelectItemModel();
-                item.TextField = year.ToString();
-                item.ValueField = year.ToString();
-                selectItemSource.Add(item);
-            }
-            //for (int i = 3; i > 0; i--)
-            //{
-            //    var item = new SelectItemModel();
-
-            //    item.TextField = (DateTime.Now.Year - i).ToString();
-            //    item.ValueField = (DateTime.Now.Year - i).ToString();
-            //    selectItemSource.Add(item);
-            //}
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    var item = new SelectItemModel();
-
-            //    item.TextField = (DateTime.Now.Year + i).ToString();
-            //    item.ValueField = (DateTime.Now.Year + i).ToString();
-            //    selectItemSource.Add(item);
-            //}
-
-            return new SelectList(selectItemSource, "ValueField", "TextField");
-        }
-
+        
         public static SelectList GetPbck1CompletedListByPlant(string plantId)
         {
             IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();

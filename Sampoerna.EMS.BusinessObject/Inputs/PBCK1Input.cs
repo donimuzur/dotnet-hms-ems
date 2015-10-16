@@ -70,7 +70,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Comment { get; set; }
         public Enums.ActionType ActionType { get; set; }
         public string DocumentNumber { get; set; }
-
+        public Enums.DocumentStatus DocumentStatus { get; set; }
         public Pbck1WorkflowDocumentData AdditionalDocumentData { get; set; }
         
     }
@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     public class Pbck1WorkflowDocumentData
     {
         public decimal QtyApproved { get; set; }
-        public DateTime DecreeDate { get; set; }
+        public DateTime? DecreeDate { get; set; }
         public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
     }
 
