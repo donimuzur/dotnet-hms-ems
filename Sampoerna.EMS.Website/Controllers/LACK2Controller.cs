@@ -180,7 +180,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager,
+                IsCreateNew = true
             };
 
             return View("Create", CreateInitialViewModel(model));
@@ -305,10 +306,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         //get error details
                     }
-                    model.MainMenu = _mainMenu;
-                    model.CurrentMenu = PageInfo;
-                    model = InitEditList(model);
-                    model = SetEditHistory(model);
+                    model = OnFailedEdit(model);
                     AddMessageInfo("Invalid input", Enums.MessageInfoType.Error);
                     return View(model);
                 }
@@ -332,26 +330,31 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         Lack2Workflow(model.Lack2Id, Enums.ActionType.Submit, string.Empty);
                         AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
-                        return RedirectToAction("Detail", "Lack2", new { id = model.Lack2Id });
+                        return RedirectToAction("Detail", "Lack2", new {id = model.Lack2Id});
                     }
                     AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
-                    return RedirectToAction("Edit", new { id = model.Lack2Id });
+                    return RedirectToAction("Edit", new {id = model.Lack2Id});
                 }
-            }
-            catch (Exception)
-            {
-                model.MainMenu = _mainMenu;
-                model.CurrentMenu = PageInfo;
-                model = InitEditList(model);
-                model = SetEditHistory(model);
-                AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
+                model = OnFailedEdit(model);
+                AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
                 return View(model);
             }
+            catch (Exception exception)
+            {
+                model = OnFailedEdit(model);
+                AddMessageInfo("Save edit failed. " + exception.Message, Enums.MessageInfoType.Error);
+                return View(model);
+            }
+        }
+
+        private Lack2EditViewModel OnFailedEdit(Lack2EditViewModel model)
+        {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model = InitEditList(model);
             model = SetEditHistory(model);
-            return View(model);
+            model.PoaList = model.PoaListHidden;
+            return model;
         }
 
         private Lack2EditViewModel InitEditModel(Lack2DetailsDto lack2Data)

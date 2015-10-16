@@ -265,6 +265,7 @@ namespace Sampoerna.EMS.BLL
             {
                 //do regenerate data
                 generateInput.IsCreateNew = false;
+                generateInput.Lack2Id = input.Lack2Id;
                 var generatedData = GenerateLack2Data(generateInput);
                 if (!generatedData.Success)
                 {
@@ -930,29 +931,44 @@ namespace Sampoerna.EMS.BLL
                 input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
             
             //check if already exists with same selection criteria
+            var lackCheck = _lack2Service.GetBySelectionCriteria(new Lack2GetBySelectionCriteriaParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+                NppbkcId = input.NppbkcId,
+                SourcePlantId = input.SourcePlantId,
+                ExGoodTypeId = input.ExcisableGoodsType,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear
+            });
+
             if (input.IsCreateNew)
             {
-                var lackCheck = _lack2Service.GetBySelectionCriteria(new Lack2GetBySelectionCriteriaParamInput()
-                {
-                    CompanyCode = input.CompanyCode,
-                    NppbkcId = input.NppbkcId,
-                    SourcePlantId = input.SourcePlantId,
-                    ExGoodTypeId = input.ExcisableGoodsType,
-                    PeriodMonth = input.PeriodMonth,
-                    PeriodYear = input.PeriodYear
-                });
-
                 if (lackCheck != null)
                 {
                     return new Lack2GeneratedOutput()
                     {
                         Success = false,
                         ErrorCode = ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria.ToString(),
-                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria),
+                        ErrorMessage =
+                            EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria),
                         Data = null
                     };
                 }
 
+            }
+            else
+            {
+                if (lackCheck != null && lackCheck.LACK2_ID != input.Lack2Id)
+                {
+                    return new Lack2GeneratedOutput()
+                    {
+                        Success = false,
+                        ErrorCode = ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria.ToString(),
+                        ErrorMessage =
+                            EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack2DuplicateSelectionCriteria),
+                        Data = null
+                    };
+                }
             }
             
             #endregion
