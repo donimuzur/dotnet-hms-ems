@@ -133,7 +133,8 @@ namespace Sampoerna.EMS.BLL.Services
         public LACK2 GetDetailsById(int id)
         {
             var incTables = includeTables + ", LACK2_DOCUMENT, LACK2_ITEM, LACK2_ITEM.CK5";
-            return _repository.Get(x => x.LACK2_ID == id, null, incTables).FirstOrDefault();
+            var data = _repository.Get(x => x.LACK2_ID == id, null, incTables).FirstOrDefault();
+            return data;
         }
 
         public void Insert(LACK2 data)

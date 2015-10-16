@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string UserId { get; set; }
         [Required]
         public DateTime? SubmissionDate { get; set; }
+        public bool IsCreateNew { get; set; }
         
         #endregion
 

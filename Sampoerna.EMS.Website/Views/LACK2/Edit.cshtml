@@ -3,7 +3,7 @@
 @model Sampoerna.EMS.Website.Models.LACK2.Lack2EditViewModel
 
 @{
-    ViewBag.Title = "Edit LACK2";
+    ViewBag.Title = "LACK-2 Form";
 }
 
 @using (@Html.BeginForm(@Model.ControllerAction, "LACK2", FormMethod.Post, new { @id = "form-lack2-edit", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
@@ -11,7 +11,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>LACK-2 Form</h3>
+                <h3>@ViewBag.Title</h3>
                 <label class="status">@Model.StatusName</label>
                 <div class="action-button">
                     @if (Model.AllowGovApproveAndReject)
@@ -55,7 +55,9 @@
                         @Html.HiddenFor(x => x.CreatedBy)
                         @Html.HiddenFor(x => x.CreatedDate)
                         @Html.HiddenFor(x => x.Status)
+                        @Html.HiddenFor(x => x.StatusName)
                         @Html.HiddenFor(model => model.GovApprovalActionType)
+                        @Html.HiddenFor(model => model.GovStatusName)
                         @if (Model.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
                         {
                             @Html.Partial("_HomeGovApproval")
@@ -63,7 +65,6 @@
                         else
                         {
                             @Html.HiddenFor(model => model.GovStatus)
-                            @Html.HiddenFor(model => model.GovStatusName)
                             @Html.Partial("_HomeEdit")
                         }
                         @if (Model.Status == Enums.DocumentStatus.Completed)

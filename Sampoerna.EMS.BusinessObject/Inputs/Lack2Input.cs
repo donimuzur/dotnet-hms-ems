@@ -57,6 +57,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class Lack2GenerateDataParamInput
     {
+        public int Lack2Id { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
         public string SourcePlantId { get; set; }

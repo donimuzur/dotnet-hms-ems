@@ -47,10 +47,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IWorkflowBLL _workflowBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IHeaderFooterBLL _headerFooterBll;
 
         public LACK2Controller(IPageBLL pageBll, ILACK2BLL lack2Bll, ICompanyBLL companyBll, IChangesHistoryBLL changesHistoryBll,
             IPrintHistoryBLL printHistoryBll, IPOABLL poabll, IMonthBLL monthBll, IUserPlantMapBLL userPlantMapBll, IPBCK1BLL pbck1Bll, ICK5BLL ck5Bll,
-            IZaidmExNPPBKCBLL nppbkcBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll)
+            IZaidmExNPPBKCBLL nppbkcBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IHeaderFooterBLL headerFooterBll)
             : base(pageBll, Enums.MenuList.LACK2)
         {
             _mainMenu = Enums.MenuList.LACK2;
@@ -67,6 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _nppbkcbll = nppbkcBll;
             _workflowBll = workflowBll;
             _workflowHistoryBll = workflowHistoryBll;
+            _headerFooterBll = headerFooterBll;
         }
 
         #endregion
@@ -180,7 +182,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager,
+                IsCreateNew = true
             };
 
             return View("Create", CreateInitialViewModel(model));
@@ -305,10 +308,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         //get error details
                     }
-                    model.MainMenu = _mainMenu;
-                    model.CurrentMenu = PageInfo;
-                    model = InitEditList(model);
-                    model = SetEditHistory(model);
+                    model = OnFailedEdit(model);
                     AddMessageInfo("Invalid input", Enums.MessageInfoType.Error);
                     return View(model);
                 }
@@ -332,26 +332,31 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         Lack2Workflow(model.Lack2Id, Enums.ActionType.Submit, string.Empty);
                         AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
-                        return RedirectToAction("Detail", "Lack2", new { id = model.Lack2Id });
+                        return RedirectToAction("Detail", "Lack2", new {id = model.Lack2Id});
                     }
                     AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
-                    return RedirectToAction("Edit", new { id = model.Lack2Id });
+                    return RedirectToAction("Edit", new {id = model.Lack2Id});
                 }
-            }
-            catch (Exception)
-            {
-                model.MainMenu = _mainMenu;
-                model.CurrentMenu = PageInfo;
-                model = InitEditList(model);
-                model = SetEditHistory(model);
-                AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
+                model = OnFailedEdit(model);
+                AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
                 return View(model);
             }
+            catch (Exception exception)
+            {
+                model = OnFailedEdit(model);
+                AddMessageInfo("Save edit failed. " + exception.Message, Enums.MessageInfoType.Error);
+                return View(model);
+            }
+        }
+
+        private Lack2EditViewModel OnFailedEdit(Lack2EditViewModel model)
+        {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model = InitEditList(model);
             model = SetEditHistory(model);
-            return View(model);
+            model.PoaList = model.PoaListHidden;
+            return model;
         }
 
         private Lack2EditViewModel InitEditModel(Lack2DetailsDto lack2Data)
@@ -1854,13 +1859,21 @@ namespace Sampoerna.EMS.Website.Controllers
         [EncryptedParameter]
         public ActionResult PrintOut(int? id)
         {
-            return View();
+            if (!id.HasValue)
+                return HttpNotFound();
+
+            Stream stream = GetReportStream(id.Value, "LACK-2");
+            return File(stream, "application/pdf");
         }
 
         [EncryptedParameter]
         public ActionResult PrintPreview(int? id)
         {
-            return View();
+            if (!id.HasValue)
+                return HttpNotFound();
+
+            Stream stream = GetReportStream(id.Value, "PREVIEW LACK-2");
+            return File(stream, "application/pdf");
         }
 
         [HttpPost]
@@ -1889,6 +1902,155 @@ namespace Sampoerna.EMS.Website.Controllers
                     Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack2.Lack2Number))
             };
             return PartialView("_PrintHistoryTable", model);
+
+        }
+
+        private Stream GetReportStream(int id, string printTitle)
+        {
+            var lack2 = _lack2Bll.GetDetailsById(id);
+
+            var dsLack2 = CreateLack2Ds();
+            var dt = dsLack2.Tables[0];
+            DataRow drow;
+            drow = dt.NewRow();
+            drow[0] = lack2.Butxt;
+            drow[1] = lack2.NppbkcId;
+            drow[2] = lack2.LevelPlantName + ", " + lack2.LevelPlantCity;
+
+            var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
+            {
+                CompanyCode = lack2.Burks,
+                FormTypeId = Enums.FormType.LACK2
+            });
+            if (headerFooter != null)
+            {
+                drow[3] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
+                drow[4] = headerFooter.FOOTER_CONTENT;
+            }
+            drow[5] = lack2.ExTypDesc;
+            drow[6] = lack2.PeriodNameInd + " " + lack2.PeriodYear;
+            drow[7] = lack2.LevelPlantCity;
+            
+            drow[8] = lack2.SubmissionDate == null ? null : string.Format("{0} {1} {2}", lack2.SubmissionDate.Value.Day, _monthBll.GetMonth(lack2.SubmissionDate.Value.Month).MONTH_NAME_IND, lack2.SubmissionDate.Value.Year);
+            if (lack2.ApprovedBy != null)
+            {
+                var poa = _poabll.GetDetailsById(lack2.ApprovedBy);
+                if (poa != null)
+                {
+                    drow[9] = poa.PRINTED_NAME;
+                }
+            }
+
+            drow[10] = printTitle;
+            if (lack2.DecreeDate != null)
+            {
+                var lack2DecreeDate = lack2.DecreeDate.Value;
+                var lack2Month = _monthBll.GetMonth(lack2DecreeDate.Month).MONTH_NAME_IND;
+
+                drow[11] = string.Format("{0} {1} {2}", lack2DecreeDate.Day, lack2Month, lack2DecreeDate.Year);
+
+            }
+            dt.Rows.Add(drow);
+
+            var dtDetail = dsLack2.Tables[1];
+            foreach (var item in lack2.Items)
+            {
+                DataRow drowDetail;
+                drowDetail = dtDetail.NewRow();
+                drowDetail[0] = item.Ck5Number;
+                drowDetail[1] = item.Ck5GIDate;
+                drowDetail[2] = item.Ck5ItemQty.ToString("N2");
+                drowDetail[3] = item.CompanyName;
+                drowDetail[4] = item.CompanyNppbkc;
+                drowDetail[5] = item.CompanyAddress;
+                dtDetail.Rows.Add(drowDetail);
+
+            }
+            // object of data row 
+
+            ReportClass rpt = new ReportClass();
+            string report_path = ConfigurationManager.AppSettings["Report_Path"];
+            rpt.FileName = report_path + "LACK2\\Preview.rpt";
+            rpt.Load();
+            rpt.SetDataSource(dsLack2);
+
+            Stream stream = rpt.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            return stream;
+        }
+
+        private DataSet CreateLack2Ds()
+        {
+            DataSet ds = new DataSet("dsLack2");
+
+            DataTable dt = new DataTable("Lack2");
+
+            // object of data row 
+            DataRow drow;
+            dt.Columns.Add("CompanyName", System.Type.GetType("System.String"));
+            dt.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dt.Columns.Add("Alamat", System.Type.GetType("System.String"));
+            dt.Columns.Add("Header", System.Type.GetType("System.Byte[]"));
+            dt.Columns.Add("Footer", System.Type.GetType("System.String"));
+            dt.Columns.Add("BKC", System.Type.GetType("System.String"));
+            dt.Columns.Add("Period", System.Type.GetType("System.String"));
+            dt.Columns.Add("City", System.Type.GetType("System.String"));
+            dt.Columns.Add("CreatedDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("PoaPrintedName", System.Type.GetType("System.String"));
+            dt.Columns.Add("Preview", System.Type.GetType("System.String"));
+            dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
+
+            //detail
+            DataTable dtDetail = new DataTable("Lack2Item");
+            dtDetail.Columns.Add("Nomor", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Tanggal", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
+
+            dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
+
+            ds.Tables.Add(dt);
+            ds.Tables.Add(dtDetail);
+            return ds;
+        }
+
+        private byte[] GetHeader(string imagePath)
+        {
+            byte[] imgbyte = null;
+            try
+            {
+
+                FileStream fs;
+                BinaryReader br;
+
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                else
+                {
+                    // if photo does not exist show the nophoto.jpg file 
+                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                }
+                // initialise the binary reader from file streamobject 
+                br = new BinaryReader(fs);
+                // define the byte array of filelength 
+                imgbyte = new byte[fs.Length + 1];
+                // read the bytes from the binary reader 
+                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+
+                br.Close();
+                // close the binary reader 
+                fs.Close();
+                // close the file stream 
+
+            }
+            catch (Exception)
+            {
+            }
+            return imgbyte;
+            // Return Datatable After Image Row Insertion
 
         }
 
