@@ -115,6 +115,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string ActionTypePbck3 { get; set; }
 
         public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
+        public string Pbck7GovStatusDesc { get; set; }
 
         public Enums.DocumentStatusGov Pbck7GovStatusList { get; set; }
 
@@ -123,7 +124,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
         public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
 
-        public List<HttpPostedFileBase> DocumentsPostBack1 { get; set; }
+        public List<HttpPostedFileBase> DocumentsPostBack { get; set; }
         
         public Enums.DocumentStatusGov Pbck3GovStatusList { get; set; }
 

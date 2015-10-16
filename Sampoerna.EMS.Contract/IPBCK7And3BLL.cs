@@ -57,5 +57,11 @@ namespace Sampoerna.EMS.Contract
         List<Pbck7ItemsOutput> Pbck7ItemProcess(List<Pbck7ItemsInput> inputs);
 
         void PBCK7Workflow(Pbck7Pbck3WorkflowDocumentInput input);
+
+        Pbck3Output GetPbck3DetailsById(int id);
+
+        Pbck3Dto SavePbck3(Pbck3SaveInput input);
+
+        void PBCK3Workflow(Pbck7Pbck3WorkflowDocumentInput input);
     }
 }

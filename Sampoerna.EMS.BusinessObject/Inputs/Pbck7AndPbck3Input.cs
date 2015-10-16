@@ -56,6 +56,13 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
     }
 
+    public class InsertPbck3FromPbck7Input
+    {
+        public int Pbck7Id { get; set; }
+        public string NppbkcId { get; set; }
+        public string UserId { get; set; }
+    }
+
     public class Pbck7Pbck3SaveInput
     {
         public Pbck7AndPbck3Dto Pbck7Pbck3Dto { get; set; }
@@ -85,10 +92,29 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.ActionType ActionType { get; set; }
         public string DocumentNumber { get; set; }
 
-        public Pbck4WorkflowDocumentData AdditionalDocumentData { get; set; }
+        public Pbck7WorkflowDocumentData AdditionalDocumentData { get; set; }
 
-        public List<Pbck7ItemUpload> UploadItemDto { get; set; }
+        //public List<Pbck7ItemUpload> UploadItemDto { get; set; }
 
+        public Enums.FormType FormType { get; set; }
+    }
+
+    public class Pbck7WorkflowDocumentData
+    {
+
+        public string Back1No { get; set; }
+        public DateTime? Back1Date { get; set; }
+
+        public List<BACK1_DOCUMENT> Back1FileUploadList { get; set; }
+    
+      
+    }
+
+    public class Pbck3SaveInput
+    {
+        public Pbck3Dto Pbck3Dto { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
         public Enums.FormType FormType { get; set; }
     }
 }

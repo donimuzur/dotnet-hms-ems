@@ -52,5 +52,31 @@ namespace Sampoerna.EMS.BLL.Services
             _repository.InsertOrUpdate(dbPbck3);
 
         }
+
+        public void InsertPbck3FromPbck7(InsertPbck3FromPbck7Input input)
+        {
+            //generate pbck3number
+
+            var generateNumberInput = new GenerateDocNumberInput()
+            {
+                Year = DateTime.Now.Year,
+                Month = DateTime.Now.Month,
+                NppbkcId = input.NppbkcId,
+                FormType = Enums.FormType.PBCK3
+            };
+
+            var dbPbck3 = new PBCK3
+            {
+                PBCK3_NUMBER = _documentSequenceNumberBll.GenerateNumber(generateNumberInput),
+                PBCK3_DATE = DateTime.Now,
+                STATUS = Enums.DocumentStatus.Draft,
+                CREATED_BY = input.UserId,
+                CREATED_DATE = DateTime.Now,
+                PBCK7_ID = input.Pbck7Id
+            };
+
+            _repository.InsertOrUpdate(dbPbck3);
+
+        }
     }
 }

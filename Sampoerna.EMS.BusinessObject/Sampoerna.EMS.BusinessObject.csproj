@@ -165,6 +165,7 @@
     <Compile Include="DTOs\Pbck1QuotaDto.cs" />
     <Compile Include="DTOs\Pbck1ReportDto.cs" />
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
+    <Compile Include="DTOs\Pbck3CompositeDto.cs" />
     <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck4ItemDto.cs" />
     <Compile Include="DTOs\Pbck4ReportDto.cs" />
@@ -300,6 +301,7 @@
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\InventoryMovementOutputs.cs" />
+    <Compile Include="Outputs\Pbck3Output.cs" />
     <Compile Include="Outputs\Pbck4ItemsOutput.cs" />
     <Compile Include="Outputs\Pbck4Ouputs.cs" />
     <Compile Include="Outputs\Pbck7Outputs.cs" />

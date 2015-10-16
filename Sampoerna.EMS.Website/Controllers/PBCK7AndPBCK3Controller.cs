@@ -266,7 +266,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             drow["TotalKemasan"] = totalKemasan;
             drow["TotalCukai"] = totalCukai;
-            drow["PrintedDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMM yyyy");
+            drow["PrintedDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.ToString("dd MMM yyyy");
             if (isPbck7)
             {
                 if (pbck7.Pbck7Status != Enums.DocumentStatus.Completed)
@@ -306,7 +306,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType);
             drow["NppbkcCity"] = nppbkc.CITY;
-            drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.Value.ToString("dd MMMM yyyy");
+            drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMMM yyyy") : pbck7.Pbck3Dto.Pbck3Date.ToString("dd MMMM yyyy");
           
             dt.Rows.Add(drow);
 
@@ -686,51 +686,64 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Detail(int id)
         {
-          
-            var existingData = _pbck7Pbck3Bll.GetDetailsPbck7ById(id);
-          
-            var model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData.Pbck7Dto);
-            model.Back1Dto = existingData.Back1Dto;
-            model.Pbck3Dto = existingData.Pbck3Dto;
-            model.Back3Dto = existingData.Back3Dto;
-            model.Ck2Dto = existingData.Ck2Dto;
+            var model = new Pbck7Pbck3CreateViewModel();
 
-            model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
-            //model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
-
-
-            model = InitialModel(model);
-
-         
-            model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
-
-            var changesHistoryPbck = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK7, id.ToString());
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changesHistoryPbck);
-
-            //validate approve and reject
-            var input = new WorkflowAllowApproveAndRejectInput();
-            input.DocumentStatus = model.Pbck7Status;
-            input.FormView = Enums.FormViewType.Detail;
-            input.UserRole = CurrentUser.UserRole;
-            input.CreatedUser = existingData.Pbck7Dto.CreatedBy;
-            input.CurrentUser = CurrentUser.USER_ID;
-            input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
-            input.DocumentNumber = model.Pbck7Number;
-            input.NppbkcId = model.NppbkcId;
-
-            //workflow
-            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
-            model.AllowApproveAndReject = allowApproveAndReject;
-
-
-            if (!allowApproveAndReject)
+            try
             {
-                model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                var existingData = _pbck7Pbck3Bll.GetDetailsPbck7ById(id);
+
+                model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData.Pbck7Dto);
+                model.Back1Dto = existingData.Back1Dto;
+                model.Pbck3Dto = existingData.Pbck3Dto;
+                model.Back3Dto = existingData.Back3Dto;
+                model.Ck2Dto = existingData.Ck2Dto;
+
+                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                //model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
+
+
+                model = InitialModel(model);
+
+
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
+
+                var changesHistoryPbck = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK7, id.ToString());
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changesHistoryPbck);
+
+                //validate approve and reject
+                var input = new WorkflowAllowApproveAndRejectInput();
+                input.DocumentStatus = model.Pbck7Status;
+                input.FormView = Enums.FormViewType.Detail;
+                input.UserRole = CurrentUser.UserRole;
+                input.CreatedUser = existingData.Pbck7Dto.CreatedBy;
+                input.CurrentUser = CurrentUser.USER_ID;
+                input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
+                input.DocumentNumber = model.Pbck7Number;
+                input.NppbkcId = model.NppbkcId;
+
+                //workflow
+                var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+                model.AllowApproveAndReject = allowApproveAndReject;
+
+
+                if (!allowApproveAndReject)
+                {
+                    model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                }
+
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+
+                if (model.AllowGovApproveAndReject)
+                    model.ActionType = "GovApproveDocument";
             }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
 
-            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
-
+                return RedirectToAction("Index");
+            }
+           
 
             return View("Detail", model);
         }
@@ -919,8 +932,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         pbck3.Pbck3Status = Enums.DocumentStatus.Draft;
 
                         var inputDoc = new GenerateDocNumberInput();
-                        inputDoc.Month = model.Pbck3Dto.Pbck3Date.Value.Month;
-                        inputDoc.Year = model.Pbck3Dto.Pbck3Date.Value.Year;
+                        inputDoc.Month = model.Pbck3Dto.Pbck3Date.Month;
+                        inputDoc.Year = model.Pbck3Dto.Pbck3Date.Year;
                         inputDoc.NppbkcId = existingData.Pbck7Dto.NppbkcId;
                         pbck3.CreateDate = DateTime.Now;
                         pbck3.CreatedBy = CurrentUser.USER_ID;
@@ -945,10 +958,10 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                
                 var back1Dto = new Back1Dto();
-                if (model.DocumentsPostBack1 != null)
+                if (model.DocumentsPostBack != null)
                 {
                     back1Dto.Documents = new List<BACK1_DOCUMENT>();
-                    foreach (var sk in model.DocumentsPostBack1)
+                    foreach (var sk in model.DocumentsPostBack)
                     {
                         if (sk != null)
                         {
@@ -1000,7 +1013,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input.UserRole = CurrentUser.UserRole;
             input.ActionType = actionType;
             input.Comment = comment;
-
+            input.FormType = Enums.FormType.PBCK7;
             _pbck7Pbck3Bll.PBCK7Workflow(input);
         }
 
@@ -1298,20 +1311,20 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Pbck7Pbck3CreateViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
-                return RedirectToAction("Detail", new { id = model.Id });
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
+            //    return RedirectToAction("Detail", new { id = model.Id });
+            //}
 
             try
             {
                 var currentUserId = CurrentUser.USER_ID;
 
                 model.Back1Dto.Documents = new List<BACK1_DOCUMENT>();
-                if (model.DocumentsPostBack1 != null)
+                if (model.DocumentsPostBack != null)
                 {
-                    foreach (var item in model.DocumentsPostBack1)
+                    foreach (var item in model.DocumentsPostBack)
                     {
                         if (item != null)
                         {
@@ -1336,14 +1349,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     RedirectToAction("Details", new { id = model.Id });
                 }
 
-               
-                //PBCK4GovWorkflow(model);
-                //if (model.GovStatus == Enums.DocumentStatusGov.FullApproved)
-                //    AddMessageInfo("Success Gov FullApproved Document", Enums.MessageInfoType.Success);
-                //else if (model.GovStatus == Enums.DocumentStatusGov.PartialApproved)
-                //    AddMessageInfo("Success Gov PartialApproved Document", Enums.MessageInfoType.Success);
-                //else if (model.GovStatus == Enums.DocumentStatusGov.Rejected)
-                //    AddMessageInfo("Success Gov Reject Document", Enums.MessageInfoType.Success);
+
+                PBCK7GovWorkflow(model);
+                if (model.Pbck7GovStatus == Enums.DocumentStatusGov.FullApproved)
+                    AddMessageInfo("Success Gov FullApproved Document", Enums.MessageInfoType.Success);
+                else if (model.Pbck7GovStatus == Enums.DocumentStatusGov.PartialApproved)
+                    AddMessageInfo("Success Gov PartialApproved Document", Enums.MessageInfoType.Success);
+                else if (model.Pbck7GovStatus == Enums.DocumentStatusGov.Rejected)
+                    AddMessageInfo("Success Gov Reject Document", Enums.MessageInfoType.Success);
 
             }
             catch (Exception ex)
@@ -1351,6 +1364,54 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
             return RedirectToAction("Detail", new { id = model.Id });
+        }
+
+        private bool PBCK7GovWorkflow(Pbck7Pbck3CreateViewModel model)
+        {
+            try
+            {
+                var actionType = Enums.ActionType.GovApprove;
+
+                if (model.Pbck7GovStatus == Enums.DocumentStatusGov.PartialApproved)
+                    actionType = Enums.ActionType.GovPartialApprove;
+                else if (model.Pbck7GovStatus == Enums.DocumentStatusGov.Rejected)
+                    actionType = Enums.ActionType.GovReject;
+
+                var input = new Pbck7Pbck3WorkflowDocumentInput();
+                input.DocumentId = model.Id;
+                input.DocumentNumber = model.Pbck7Number;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                input.ActionType = actionType;
+                input.Comment = model.Comment;
+                input.FormType = Enums.FormType.PBCK7;
+                //input.UploadItemDto = new List<Pbck7ItemUpload>();
+                //foreach (var pbck7UploadItem in model.UploadItems)
+                //{
+                //    if (pbck7UploadItem.IsUpdated)
+                //        input.UploadItemDto.Add(Mapper.Map<Pbck4ItemDto>(pbck4UploadItem));
+
+                //}
+
+
+                input.AdditionalDocumentData = new Pbck7WorkflowDocumentData();
+                input.AdditionalDocumentData.Back1No = model.Back1Dto.Back1Number;
+                input.AdditionalDocumentData.Back1Date = model.Back1Dto.Back1Date;
+
+                input.AdditionalDocumentData.Back1FileUploadList = model.Back1Dto.Documents;
+
+                _pbck7Pbck3Bll.PBCK7Workflow(input);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return false;
+            }
+           
+
+          
         }
 
 
@@ -1884,6 +1945,227 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SaveAs(path);
 
             return path;
+        }
+
+
+        public ActionResult EditPbck3(int id)
+        {
+            var model = new Pbck3ViewModel();
+
+            try
+            {
+                var existingData = _pbck7Pbck3Bll.GetPbck3DetailsById(id);
+
+                model = Mapper.Map<Pbck3ViewModel>(existingData.Pbck3CompositeDto);
+
+                var input = new WorkflowAllowEditAndSubmitInput();
+                input.DocumentStatus = model.Pbck3Status;
+                input.CreatedUser = existingData.Pbck3CompositeDto.CREATED_BY;
+                input.CurrentUser = CurrentUser.USER_ID;
+                if (!_workflowBll.AllowEditDocument(input))
+                    return RedirectToAction("DetailPbck3", new { @id = existingData.Pbck3CompositeDto.PBCK3_ID });
+
+                
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
+                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
+
+
+                return View("EditPbck3", model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+              
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPbck3(Pbck3ViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                   
+                        //validate
+                        var input = new WorkflowAllowEditAndSubmitInput();
+                        input.DocumentStatus = model.Pbck3Status;
+                        input.CreatedUser = model.CREATED_BY;
+                        input.CurrentUser = CurrentUser.USER_ID;
+                        if (_workflowBll.AllowEditDocument(input))
+                        {
+                            SavePbck3ToDatabase(model);
+                            if (model.IsSaveSubmit)
+                            {
+                                PBCK3Workflow(model.Pbck3Id, Enums.ActionType.Submit, string.Empty);
+                                AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
+                                return RedirectToAction("DetailPbck3", new { @id = model.Pbck3Id });
+
+                            }
+                            AddMessageInfo("Success", Enums.MessageInfoType.Success);
+                            return RedirectToAction("EditPbck3", new { @id = model.Pbck3Id });
+                        }
+                        else
+                        {
+                            AddMessageInfo("Not allow to Edit Document", Enums.MessageInfoType.Error);
+                            return RedirectToAction("EditPbck3", new { @id = model.Pbck3Id });
+                        }
+
+                 
+                }
+                else
+                    AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
+
+                
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+
+               // model = GetHistorys(model);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+
+               // model = GetHistorys(model);
+
+                return View(model);
+            }
+
+
+
+        }
+        private Pbck3ViewModel GetHistorysPbck3(Pbck3ViewModel model)
+        {
+            if (model.FromPbck7)
+            {
+                model.WorkflowHistoryPbck7 =
+                    Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(model.Pbck7Number));
+            }
+            model.ChangesHistoryList =
+                Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK3, model.Pbck3Id.ToString()));
+
+            return model;
+        }
+
+        private Pbck3Dto SavePbck3ToDatabase(Pbck3ViewModel model)
+        {
+
+            var dataToSave = Mapper.Map<Pbck3Dto>(model);
+
+            var input = new Pbck3SaveInput()
+            {
+                Pbck3Dto = dataToSave,
+                UserId = CurrentUser.USER_ID,
+                UserRole = CurrentUser.UserRole,
+                FormType = Enums.FormType.PBCK3
+            };
+
+            return _pbck7Pbck3Bll.SavePbck3(input);
+        }
+
+        private void PBCK3Workflow(int id, Enums.ActionType actionType, string comment)
+        {
+            var input = new Pbck7Pbck3WorkflowDocumentInput();
+            input.DocumentId = id;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            input.ActionType = actionType;
+            input.Comment = comment;
+            input.FormType = Enums.FormType.PBCK3;
+
+            _pbck7Pbck3Bll.PBCK3Workflow(input);
+        }
+
+        public ActionResult DetailPbck3(int id)
+        {
+            var model = new Pbck3ViewModel();
+
+            try
+            {
+                var existingData = _pbck7Pbck3Bll.GetPbck3DetailsById(id);
+
+                model = Mapper.Map<Pbck3ViewModel>(existingData.Pbck3CompositeDto);
+               
+
+                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+
+
+              //  model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
+
+                //var changesHistoryPbck = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK7, id.ToString());
+                //model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changesHistoryPbck);
+
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
+                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
+
+
+                //validate approve and reject
+                var input = new WorkflowAllowApproveAndRejectInput();
+                input.DocumentStatus = model.Pbck3Status;
+                input.FormView = Enums.FormViewType.Detail;
+                input.UserRole = CurrentUser.UserRole;
+                input.CreatedUser = existingData.Pbck3CompositeDto.CREATED_BY;
+                input.CurrentUser = CurrentUser.USER_ID;
+                input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
+                input.DocumentNumber = model.Pbck3Number;
+                input.NppbkcId = model.NppbkcId;
+
+                //workflow
+                var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+                model.AllowApproveAndReject = allowApproveAndReject;
+                
+                if (!allowApproveAndReject)
+                {
+                    model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                }
+               
+                //model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+
+                if (model.AllowGovApproveAndReject)
+                    model.ActionType = "GovApproveDocument";
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                return RedirectToAction("ListPbck3Index");
+            }
+
+
+            return View("DetailPbck3", model);
+        }
+
+        public ActionResult ApproveDocumentPbck3(int id)
+        {
+            try
+            {
+                PBCK3Workflow(id, Enums.ActionType.Approve, string.Empty);
+                AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("DetailPbck3", new { id });
         }
     }
 

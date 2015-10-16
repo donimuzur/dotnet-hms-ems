@@ -122,5 +122,20 @@ namespace Sampoerna.EMS.Utils
                 return null;
             }
         }
+
+        public static string ConvertInt32ToString(int? value)
+        {
+            try
+            {
+                if (value.HasValue)
+                    return value.ToString();
+
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
     }
 }

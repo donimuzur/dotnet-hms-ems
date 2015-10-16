@@ -9,6 +9,8 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -178,6 +180,30 @@ namespace Sampoerna.EMS.BLL
               .ForMember(dest => dest.Pbck7Qty, opt => opt.MapFrom(src => src.Pbck7Qty))
               .ForMember(dest => dest.FiscalYear, opt => opt.MapFrom(src => src.FiscalYear))
               ;
+
+
+            Mapper.CreateMap<PBCK3, Pbck3CompositeDto>().IgnoreAllNonExisting()
+              ;
+
+            Mapper.CreateMap<PBCK7, Pbck3Pbck7DtoComposite>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID))
+                .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.PBCK7_NUMBER))
+                .ForMember(dest => dest.Pbck7Date, opt => opt.MapFrom(src => src.PBCK7_DATE))
+                .ForMember(dest => dest.Pbck7Status, opt => opt.MapFrom(src => src.STATUS))
+                .ForMember(dest => dest.Pbck7StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS)))
+                .ForMember(dest => dest.Pbck7GovStatus, opt => opt.MapFrom(src => src.GOV_STATUS))
+                .ForMember(dest => dest.Pbck7GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GOV_STATUS)))
+                .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DOCUMENT_TYPE))
+                .ForMember(dest => dest.DocumentTypeDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.DOCUMENT_TYPE)))
+                .ForMember(dest => dest.ExecDateFrom, opt => opt.MapFrom(src => src.EXEC_DATE_FROM))
+                .ForMember(dest => dest.ExecDateTo, opt => opt.MapFrom(src => src.EXEC_DATE_TO))
+
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC))
+                .ForMember(dest => dest.Lampiran, opt => opt.MapFrom(src => src.LAMPIRAN))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+
+                .ForMember(dest => dest.Pbck7Documents, opt => opt.MapFrom(src => src.PBCK7_ITEM))
+             ;
 
         }
     }
