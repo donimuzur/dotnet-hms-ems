@@ -25,7 +25,7 @@
                     
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
-                    @if (Model.Details.Status == Enums.DocumentStatus.Draft || Model.Details.Status == Enums.DocumentStatus.Rejected)
+                    @if (Model.Details.Status == Enums.DocumentStatus.Draft || Model.Details.Status == Enums.DocumentStatus.Rejected || Model.Details.Status == Enums.DocumentStatus.GovRejected)
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }
