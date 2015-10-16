@@ -169,6 +169,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
             }
+            else
+            {
+                var errorlist = ModelState.Values.Select(x => x.Errors).Single();
+
+                var errMsg = "";
+
+                foreach(var error in errorlist){
+                    errMsg = error.ErrorMessage +"\n";
+                }
+                AddMessageInfo(errMsg, Enums.MessageInfoType.Error
+                           );
+            }
             model = InitCreate(model);
             return View(model);
         }

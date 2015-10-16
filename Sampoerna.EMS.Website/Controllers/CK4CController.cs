@@ -568,8 +568,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C, id.Value.ToString()));
 
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
+
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
+                model.PrintHistoryList = printHistory;
                 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput
