@@ -120,6 +120,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool IsNppbkcImport { get; set; }
         public bool IsExternalSupplier { get; set; }
         public bool SupplierCompany { get; set; }
+        public bool ApprovedByPoaId { get; set; }
+        public bool ApprovedByManagerId { get; set; }
+        public bool LatestSaldoUomName { get; set; }
+        public bool RequestQtyUomName { get; set; }
     }
 
     public class Pbck1FilterSummaryReportViewModel
@@ -171,6 +175,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string PoaList { get; set; }
         public string IsNppbkcImport { get; set; }
         public string SupplierCompany { get; set; }
+        public string ApprovedByPoaId { get; set; }
+        public string ApprovedByManagerId { get; set; }
+        public string LatestSaldoUomName { get; set; }
+        public string RequestQtyUomName { get; set; }
     }
 
 }
