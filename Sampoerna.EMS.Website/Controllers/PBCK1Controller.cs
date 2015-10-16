@@ -427,6 +427,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var model = new Pbck1ItemViewModel();
+            var isCurrManager = false;
             try
             {
                 model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
@@ -436,7 +437,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (CurrentUser.UserRole == Enums.UserRole.Manager)
                 {
                     //redirect to details for approval/rejected
-                    return RedirectToAction("Details", new { id });
+                    //return RedirectToAction("Details", new { id });
+                    isCurrManager = true;
                 }
 
                 var changeHistory =
@@ -478,16 +480,21 @@ namespace Sampoerna.EMS.Website.Controllers
                     DocumentNumber = model.Detail.Pbck1Number,
                     NppbkcId = model.Detail.NppbkcId
                 };
+                if (isCurrManager) input.ManagerApprove = model.Detail.ApprovedByManagerId;
 
                 ////workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
-
+                ViewBag.IsCurrManager = isCurrManager;
                 if (!allowApproveAndReject)
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                    
+                    if (isCurrManager)
+                        model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                        
                 }
-
+                
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
 
                 if (model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval)
@@ -500,6 +507,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 }else if (!ValidateEditDocument(model, false))
                 {
+                    if(!isCurrManager)
                     return RedirectToAction("Details", new { id });
                 }
 
@@ -699,6 +707,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return HttpNotFound();
             }
+
+            bool isCurrManager = CurrentUser.UserRole == Enums.UserRole.Manager;
+            ViewBag.IsCurrManager = isCurrManager;
 
             //workflow history
             var workflowInput = new GetByFormNumberInput();
