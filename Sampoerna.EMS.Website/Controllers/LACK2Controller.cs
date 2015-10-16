@@ -284,12 +284,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model = InitEditList(model);
             model.IsCreateNew = false;
 
-            if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
-            {
-                model.ControllerAction = "GovApproveDocument";
-            }
+            model.ControllerAction = model.Status == Enums.DocumentStatus.WaitingGovApproval ? "GovApproveDocument" : "Edit";
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -390,6 +387,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
+            model.PoaList = GetPoaListByNppbkcId(model.NppbkcId);
+            model.PoaListHidden = model.PoaList;
+
             return model;
         }
 
@@ -439,6 +439,12 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             return isAllow;
+        }
+
+        private string GetPoaListByNppbkcId(string nppbkcId)
+        {
+            var data = _poabll.GetPoaByNppbkcId(nppbkcId);
+            return data == null ? string.Empty : string.Join(", ", data.Distinct().Select(d => d.PRINTED_NAME).ToList());
         }
 
         #endregion

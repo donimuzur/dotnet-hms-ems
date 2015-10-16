@@ -108,8 +108,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.RejectedBy, opt => opt.MapFrom(src => src.REJECTED_BY))
                 .ForMember(dest => dest.RejectedDate, opt => opt.MapFrom(src => src.REJECTED_DATE))
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
-                .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => Mapper.Map<Lack2DocumentDto>(src.LACK2_DOCUMENT)))
-                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => Mapper.Map<Lack2ItemDto>(src.LACK2_ITEM)))
+                .ForMember(dest => dest.Documents, opt => opt.MapFrom(src => Mapper.Map<List<Lack2DocumentDto>>(src.LACK2_DOCUMENT)))
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => Mapper.Map<List<Lack2ItemDto>>(src.LACK2_ITEM)))
                 ;
 
             Mapper.CreateMap<CK5, Lack2GeneratedItemDto>().IgnoreAllNonExisting()
