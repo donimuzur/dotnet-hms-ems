@@ -9,6 +9,7 @@ using System.Web.UI;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Spreadsheet;
+using iTextSharp.text.pdf.qrcode;
 using Microsoft.Ajax.Utilities;
 using NLog.LayoutRenderers;
 using Sampoerna.EMS.BLL;
@@ -449,7 +450,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
+
             var model = InitCreateCK5(Enums.CK5Type.DomesticAlcohol);
+            model.IsDomesticAlcohol = true;
+            model.GoodType = Enums.ExGoodsType.EtilAlcohol;
+            model.GoodTypeName = EnumHelper.GetDescription(model.GoodType);
             return View("Create", model);
         }
 
@@ -763,6 +768,13 @@ namespace Sampoerna.EMS.Website.Controllers
                         model.GrandTotalEx = portToImporterModel.GrandTotalEx;
                     }
                 }
+                else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                {
+                    model.IsDomesticAlcohol = true;
+                    
+                }
+
+
 
                 if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
                     || model.Ck5Type == Enums.CK5Type.MarketReturn)

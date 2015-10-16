@@ -896,7 +896,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5ExternalSupplierDto, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.SUPPLIER_PLANT + " - "+ src.SUPPLIER_COMPANY));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.SUPPLIER_PLANT));
         }
     }
 
