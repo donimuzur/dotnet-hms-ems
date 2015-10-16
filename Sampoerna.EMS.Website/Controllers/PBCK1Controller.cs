@@ -429,6 +429,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var model = new Pbck1ItemViewModel();
+            var isCurrManager = false;
             try
             {
                 model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
@@ -438,7 +439,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (CurrentUser.UserRole == Enums.UserRole.Manager)
                 {
                     //redirect to details for approval/rejected
-                    return RedirectToAction("Details", new { id });
+                    //return RedirectToAction("Details", new { id });
+                    isCurrManager = true;
                 }
 
                 var changeHistory =
@@ -481,16 +483,21 @@ namespace Sampoerna.EMS.Website.Controllers
                     NppbkcId = model.Detail.NppbkcId,
                     FormType = Enums.FormType.PBCK1
                 };
+                if (isCurrManager) input.ManagerApprove = model.Detail.ApprovedByManagerId;
 
                 ////workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
-
+                ViewBag.IsCurrManager = isCurrManager;
                 if (!allowApproveAndReject)
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                    
+                    if (isCurrManager)
+                        model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                        
                 }
-
+                
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
 
                 if (model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval)
@@ -507,6 +514,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 }else if (!ValidateEditDocument(model, false))
                 {
+                    if(!isCurrManager)
                     return RedirectToAction("Details", new { id });
                 }
 
@@ -706,6 +714,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return HttpNotFound();
             }
+
+            bool isCurrManager = CurrentUser.UserRole == Enums.UserRole.Manager;
+            ViewBag.IsCurrManager = isCurrManager;
 
             //workflow history
             var workflowInput = new GetByFormNumberInput();
@@ -1444,27 +1455,33 @@ namespace Sampoerna.EMS.Website.Controllers
                            OriginalKppbc = "'" + d.SupplierKppbcName,
                            OriginalAddress = d.SupplierAddress,
                            // ReSharper disable once PossibleInvalidOperationException
-                           ExcGoodsAmount = d.QtyApproved == null ? "0" : d.QtyApproved.Value.ToString("N0"),
+                           ExcGoodsAmount = d.QtyApproved == null ? "0.00" : String.Format("{0:n}", d.QtyApproved.Value),
                            Status = d.StatusName,
                            Pbck1Type = d.Pbck1Type.ToString(),
                            SupplierPortName = d.SupplierPortName,
                            SupplierPlant = d.SupplierPlant,
                            GoodTypeDesc = d.GoodTypeDesc,
-                           PlanProdFrom = d.PlanProdFrom.Value.ToString(),
-                           PlanProdTo = d.PlanProdTo.Value.ToString(),
+                           PlanProdFrom = d.PlanProdFrom == null  ? "-" : d.PlanProdFrom.Value.ToString("dd MMMM yyyy"),
+                           PlanProdTo = d.PlanProdTo == null ? "-" : d.PlanProdTo.Value.ToString("dd MMMM yyyy"),
                            SupplierPhone = d.SupplierPhone,
                            PoaList = d.PoaList == null ? "" : d.PoaList.Count > 0 ? string.Join("<br />", d.PoaList.ToArray()) : "",
                            Reference = d.Pbck1ReferenceNumber,
                            LACKFrom = d.Lack1FromMonthName + d.Lack1FormYear,
                            LACKTo = d.Lack1ToMonthName + d.Lack1ToYear,
-                           LatestSaldo = d.LatestSaldo.Value.ToString(),
+                           LatestSaldo =d.LatestSaldo == null ? "0.00" : String.Format("{0:n}", d.LatestSaldo.Value),
                            PeriodFrom = d.PeriodFrom.ToString("dd MMMM yyyy"),
-                           PeriodTo = d.PeriodTo.Value.ToString("dd MMMM yyyy"),
-                           ReportedOn = d.ReportedOn == null ? "" : d.ReportedOn.Value.ToString(),
-                           RequestQty = d.RequestQty == null ? "" : d.RequestQty.Value.ToString(),
+                           PeriodTo = d.PeriodTo == null ? "-" : d.PeriodTo.Value.ToString("dd MMMM yyyy"),
+                           ReportedOn = d.ReportedOn == null ? "" : d.ReportedOn.Value.ToString("dd MMMM yyyy"),
+                           RequestQty = d.RequestQty == null ? "" : d.RequestQty.Value.ToString("dd MMMM yyyy"),
                            StatusGov = d.StatusGovName,
-                           QtyApproved = d.QtyApproved == null ? "" : d.QtyApproved.Value.ToString(),
-                           DecreeDate = d.DecreeDate == null ? "" : d.DecreeDate.Value.ToString()
+                           QtyApproved = d.QtyApproved == null ? "" :  String.Format("{0:n}", d.QtyApproved.Value),
+                           DecreeDate = d.DecreeDate == null ? "" : d.DecreeDate.Value.ToString("dd MMMM yyyy"),
+                           SupplierCompany = d.SupplierCompany,
+                           IsNppbkcImport = d.IsNppbkcImport ? "Yes": "No",
+                           ApprovedByPoaId = String.IsNullOrEmpty(d.ApprovedByPoaId) ? "-" : d.ApprovedByPoaId,
+                           ApprovedByManagerId = String.IsNullOrEmpty(d.ApprovedByManagerId) ? "-" : d.ApprovedByManagerId,
+                           LatestSaldoUomName = String.IsNullOrEmpty(d.LatestSaldoUomName) ? "-" : d.LatestSaldoUomName,
+                           RequestQtyUomName = String.IsNullOrEmpty(d.RequestQtyUomName) ? "-" : d.RequestQtyUomName
                        }).ToList();
 
             var grid = new System.Web.UI.WebControls.GridView
@@ -1472,37 +1489,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 DataSource = src.OrderBy(c => c.Nppbkc).ToList(),
                 AutoGenerateColumns = false
             };
-
-            if (model.ExportModel.Nppbkc)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Nppbkc",
-                    HeaderText = "Nppbkc"
-                });
-            }
             if (model.ExportModel.Company)
             {
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Company",
-                    HeaderText = "Company"
+                    HeaderText = "Original Company"
                 });
             }
-            if (model.ExportModel.Kppbc)
+            if (model.ExportModel.Nppbkc)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "Kppbc",
-                    HeaderText = "Kppbc"
-                });
-            }
-            if (model.ExportModel.Pbck1Number)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Pbck1Number",
-                    HeaderText = "Pbck1Number"
+                    DataField = "Nppbkc",
+                    HeaderText = "Original NPPBKC"
                 });
             }
             if (model.ExportModel.Address)
@@ -1510,16 +1510,33 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Address",
-                    HeaderText = "Address",
+                    HeaderText = "Original Address",
                     HtmlEncode = false
                 });
             }
+            if (model.ExportModel.Kppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Kppbc",
+                    HeaderText = "Original KPPBC"
+                });
+            }
+            if (model.ExportModel.Pbck1Number)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "PBCK-1 Number"
+                });
+            }
+
             if (model.ExportModel.OriginalNppbkc)
             {
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "OriginalNppbkc",
-                    HeaderText = "OriginalNppbkc"
+                    HeaderText = "Supplier NPPBKC"
                 });
             }
             if (model.ExportModel.OriginalKppbc)
@@ -1527,7 +1544,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "OriginalKppbc",
-                    HeaderText = "OriginalKppbc"
+                    HeaderText = "Supplier KPPBC"
                 });
             }
             if (model.ExportModel.OriginalAddress)
@@ -1535,7 +1552,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "OriginalAddress",
-                    HeaderText = "OriginalAddress"
+                    HeaderText = "Supplier Address"
                 });
             }
             if (model.ExportModel.ExcGoodsAmount)
@@ -1713,6 +1730,54 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "DecreeDate",
                     HeaderText = "DecreeDate"
+                });
+            } 
+            if (model.ExportModel.IsNppbkcImport)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "IsNppbkcImport",
+                    HeaderText = "IsNppbkcImport"
+                });
+            } 
+            if (model.ExportModel.SupplierCompany)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierCompany",
+                    HeaderText = "SupplierCompany"
+                });
+            }
+            if (model.ExportModel.ApprovedByPoaId)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ApprovedByPoaId",
+                    HeaderText = "POA Approve"
+                });
+            }
+            if (model.ExportModel.ApprovedByManagerId)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ApprovedByManagerId",
+                    HeaderText = "Manager Approve"
+                });
+            }
+            if (model.ExportModel.LatestSaldoUomName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "LatestSaldoUomName",
+                    HeaderText = "LatestSaldoUomName"
+                });
+            }
+            if (model.ExportModel.RequestQtyUomName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "RequestQtyUomName",
+                    HeaderText = "RequestQtyUomName"
                 });
             }
 

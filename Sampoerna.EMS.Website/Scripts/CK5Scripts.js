@@ -59,18 +59,12 @@ function OnReadyFunction(ck5Type) {
                 //alert(datarows[i][13]);
                 total += parseFloat(datarows[i][16]); //Qty
                 if (i == 0) {
-                    //alert(datarows[i][2]);
-                    //$("#PackageUomName option").each(function () {
-                    //    if ($(this).val().toLowerCase() == datarows[i][17].toLowerCase()) {
-                    //        $(this).attr('selected', 'selected');
-                    //    }
-                    //});
                     $("#PackageUomName").val(datarows[i][17]);
                 }
             }
             data += '</tr>';
-            console.log($('#PbckDecreeId').val());
-            console.log($(datarows[i][4]));
+            //console.log($('#PbckDecreeId').val());
+           // console.log($(datarows[i][4]));
 
             if ($('#PbckDecreeId').val() == '')
                 isExistPbck1 = false;

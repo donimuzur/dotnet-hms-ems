@@ -235,9 +235,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year)
+        public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year, bool isNppbkc)
         {
-            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).ToList();
+            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year, isNppbkc).ToList();
 
             var result = _productionBll.GetExactResult(data);
 
@@ -568,8 +568,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C, id.Value.ToString()));
 
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
+
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
+                model.PrintHistoryList = printHistory;
                 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput

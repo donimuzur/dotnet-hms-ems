@@ -4,15 +4,16 @@
     <thead>
         <tr>
             <th class="toggle-row"> No </th>
-            <th>Company</th>
-            <th>NPPBKC</th>
-            <th>KPPBC</th>
+            <th>Original Company</th>
+            <th>Original NPPBKC</th>
+            <th>Original Address</th>
+            <th>Original KPPBC</th>
             <th>PBCK-1 Number</th>
             <th>Status</th>
-            <th>Address</th>
-            <th>Original NPPBKC</th>
-            <th>Original KPPBC</th>
-            <th>Original Address</th>
+            <th>Supplier NPPBKC</th>
+            <th>Supplier KPPBC</th>
+            <th>Supplier Address</th>
+            <th>Supplier Company</th>
             <th>Exc. Goods Amount</th>
             <th>PBCK Type</th>
             <th>Supplier Port</th>
@@ -26,15 +27,19 @@
             <th>LACK-1 From</th>
             <th>LACK-1 To</th>
             <th>Latest Saldo</th>
+            <th>Uom LACK-1</th>
             <th>Period From</th>
             <th>Period To</th>
             <th>Reported On</th>
             <th>Request Qty</th>
+            <th>Uom Request Qty</th>
             <th>Status Gov</th>
             <th>Qty Approved</th>
             <th>Decree Date</th>
             <th>PBCK For Import</th>
             <th>External supplier port</th>
+            <th>POA Approve</th>
+            <th>Manager Approve</th>
         </tr>
     </thead>
     <tbody>
@@ -47,20 +52,20 @@
                     <td>@row</td>
                     <td>@Html.DisplayFor(model => item.NppbkcCompanyName)</td>
                     <td>@Html.DisplayFor(model => item.NppbkcId)</td>
-                    <td>
-                        @Html.DisplayFor(model => item.NppbkcKppbcName)
-                    </td>
-                    <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
-                    <td>
-                        @item.StatusName
-                    </td>
-                    <td style="padding:20px">
+                    <td style="padding: 20px">
                         <ol>
                             @foreach (var plant in item.NppbkcPlants)
                             {
                                 <li>@plant.ADDRESS</li>
                             }
                         </ol>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.NppbkcKppbcName)
+                    </td>
+                    <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
+                    <td>
+                        @item.StatusName
                     </td>
                     <td>
                         @item.SupplierNppbkcId
@@ -71,6 +76,9 @@
                     </td>
                     <td>
                         @item.SupplierAddress
+                    </td>
+                    <td>
+                        @item.SupplierCompany
                     </td>
                     <td align="right">
                         @String.Format("{0:n}", @item.QtyApproved)
@@ -88,10 +96,24 @@
                         @item.GoodTypeDesc
                     </td>
                     <td>
-                        @item.PlanProdFrom
+                        @if (item.PlanProdFrom == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.PlanProdFrom.Value.ToString("dd-MMMM-yyyy")
+                        }
                     </td>
                     <td>
-                        @item.PlanProdTo
+                        @if (item.PlanProdTo == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.PlanProdTo.Value.ToString("dd-MMMM-yyyy")
+                        }
                     </td>
                     <td>
                         @item.SupplierPhone
@@ -111,39 +133,67 @@
                         @item.Lack1FromMonthName  @item.Lack1FormYear
                     </td>
                     <td>
-                         @item.Lack1ToMonthName @item.Lack1ToYear
+                        @item.Lack1ToMonthName @item.Lack1ToYear
                     </td>
                     <td align="right">
                         @String.Format("{0:n}", @item.LatestSaldo)
                     </td>
                     <td>
-                        @item.PeriodFrom
+                        @item.LatestSaldoUomName
                     </td>
                     <td>
-                        @item.PeriodTo
+                        @item.PeriodFrom.ToString("dd-MMMM-yyyy")
                     </td>
                     <td>
-                        @item.ReportedOn
+                        @if (item.PeriodTo == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.PeriodTo.Value.ToString("dd-MMMM-yyyy")
+                        }
                     </td>
-                    <td align="right">
-                        @String.Format("{0:n}", @item.RequestQty) @item.RequestQtyUomName
+                    <td>
+                        @if (item.ReportedOn == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.ReportedOn.Value.ToString("dd-MMMM-yyyy")
+                        }
+                    </td>
+                    <td align="right" style="padding: 20px">
+                        @String.Format("{0:n}", @item.RequestQty)
+                    </td>
+                    <td>
+                        @item.RequestQtyUomName
                     </td>
                     <td>
                         @item.StatusGov
                     </td>
-                    <td align="right">
+                    <td align="right" style="padding: 20px">
                         @String.Format("{0:n}", @item.QtyApproved) @item.RequestQtyUomName
                     </td>
                     <td>
-                        @item.DecreeDate
+                        @if (item.DecreeDate == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.DecreeDate.Value.ToString("dd-MMMM-yyyy")
+                        }
                     </td>
                     <td>
                         @if (item.IsNppbkcImport)
                         {
                             <span>Yes</span>
                         }
-                        else { 
-                            <span>No</span>                        
+                        else
+                        {
+                            <span>No</span>
                         }
                     </td>
                     <td>
@@ -156,8 +206,28 @@
                             <span>No</span>
                         }
                     </td>
+                    <td>
+                        @if (String.IsNullOrEmpty(item.ApprovedByPoaId))
+                        {
+                            <span>-</span>
+                        }
+                        else
+                        {
+                            <span>@item.ApprovedByPoaId</span>
+                        }
+                    </td>
+                    <td>
+                        @if (String.IsNullOrEmpty(item.ApprovedByManagerId))
+                        {
+                            <span>-</span>
+                        }
+                        else
+                        {
+                            <span>@item.ApprovedByManagerId</span>
+                        }
+                    </td>
                 </tr>
-                            row = row + 1;
+                        row = row + 1;
             }
         }
     </tbody>

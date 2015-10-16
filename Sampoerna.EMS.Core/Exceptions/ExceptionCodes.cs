@@ -76,6 +76,11 @@ namespace Sampoerna.EMS.Core.Exceptions
             GenerateNumberPlantDataHasNotSet,
             [Description("Generate Number error : The city alias has not be set")]
             GenerateNumberCityAliasHasNotSet,
+            [Description("A record with same parameter is already exist")]
+            Lack2DuplicateSelectionCriteria,
+
+            [Description("Missing Ck5 data selected")]
+            MissingCk5DataSelected,
 
             [Description("Convertion to SAP in Material Master is null")]
             ConvertedSAPNull,

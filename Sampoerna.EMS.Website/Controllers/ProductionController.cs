@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
 
                 data.CreatedDate = DateTime.Now;
-
+                data.CreatedBy = CurrentUser.USER_ID;
 
                 try
                 {
@@ -168,6 +168,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
 
+            }
+            else
+            {
+                var errorlist = ModelState.Values.Select(x => x.Errors).Single();
+
+                var errMsg = "";
+
+                foreach(var error in errorlist){
+                    errMsg = error.ErrorMessage +"\n";
+                }
+                AddMessageInfo(errMsg, Enums.MessageInfoType.Error
+                           );
             }
             model = InitCreate(model);
             return View(model);
@@ -264,9 +276,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
             dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
-
-
-
+            
             try
             {
                 if (!ModelState.IsValid)
@@ -401,6 +411,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     item.CreatedDate = DateTime.Now;
+                    item.CreatedBy = CurrentUser.USER_ID;
 
                     var existingData = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
                         Convert.ToDateTime(item.ProductionDate));

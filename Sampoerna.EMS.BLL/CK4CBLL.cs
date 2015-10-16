@@ -767,11 +767,10 @@ namespace Sampoerna.EMS.BLL
             //add data details of CK-4C sebelumnya
             foreach (var item in addressPlant)
             {
-                address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
+                address += "- " + _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
 
                 Int32 isInt;
-                var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
-                var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
+                var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt)).OrderBy(x => x.PROD_CODE);
 
                 foreach (var data in activeBrand)
                 {
@@ -791,6 +790,7 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.ProdDate = string.Empty;
 
                     var prodType = _prodTypeBll.GetById(data.PROD_CODE);
+                    ck4cItem.ProdCode = data.PROD_CODE;
                     ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
 
                     ck4cItem.SumBtg = "0.00";
@@ -800,7 +800,7 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.Merk = brand.BRAND_CE;
 
                     ck4cItem.Isi = String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
-                    ck4cItem.Hje = plantDetail.HJE_IDR == null ? "0.00" : String.Format("{0:n}", plantDetail.HJE_IDR);
+                    ck4cItem.Hje = brand.HJE_IDR == null ? "0.00" : String.Format("{0:n}", brand.HJE_IDR);
                     ck4cItem.Total = "0.00";
                     ck4cItem.ProdWaste = unpackedQty == null ? "0.00" : String.Format("{0:n}", unpackedQty.UnpackedQty);
                     ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
@@ -817,6 +817,7 @@ namespace Sampoerna.EMS.BLL
                 c.No,
                 c.NoProd,
                 c.ProdDate,
+                c.ProdCode,
                 c.ProdType,
                 c.SumBtg,
                 c.BtgGr,
@@ -836,6 +837,7 @@ namespace Sampoerna.EMS.BLL
                 No = c.No,
                 NoProd = c.NoProd,
                 ProdDate = c.ProdDate,
+                ProdCode = c.ProdCode,
                 ProdType = c.ProdType,
                 SumBtg = c.SumBtg,
                 BtgGr = c.BtgGr,
@@ -919,7 +921,6 @@ namespace Sampoerna.EMS.BLL
 
                     Int32 isInt;
                     var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
-                    var plantDetail = dtData.CK4C_ITEM.Where(x => x.WERKS == item).FirstOrDefault();
 
                     foreach (var data in activeBrand.Distinct())
                     {
@@ -952,12 +953,13 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.No = i.ToString();
                         ck4cItem.NoProd = i.ToString();
                         ck4cItem.ProdDate = prodDate;
+                        ck4cItem.ProdCode = data.PROD_CODE;
                         ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
                         ck4cItem.SumBtg = String.Format("{0:n}",prodQty);
                         ck4cItem.BtgGr = packedQty == null ? "0.00" : String.Format("{0:n}", packedQty);
                         ck4cItem.Merk = brand.BRAND_CE;
                         ck4cItem.Isi = String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
-                        ck4cItem.Hje = plantDetail.HJE_IDR == null ? "0.00" : String.Format("{0:n}", plantDetail.HJE_IDR);
+                        ck4cItem.Hje = brand.HJE_IDR == null ? "0.00" : String.Format("{0:n}", brand.HJE_IDR);
                         ck4cItem.Total = total == null ? "0.00" : String.Format("{0:n}", total);
                         ck4cItem.ProdWaste = unpackedQty == null ? "0.00" : String.Format("{0:n}", unpackedQty);
                         ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;
@@ -982,6 +984,7 @@ namespace Sampoerna.EMS.BLL
                     c.No,
                     c.NoProd,
                     c.ProdDate,
+                    c.ProdCode,
                     c.ProdType,
                     c.SumBtg,
                     c.BtgGr,
@@ -1001,6 +1004,7 @@ namespace Sampoerna.EMS.BLL
                     No = c.No,
                     NoProd = c.NoProd,
                     ProdDate = c.ProdDate,
+                    ProdCode = c.ProdCode,
                     ProdType = c.ProdType,
                     SumBtg = c.SumBtg,
                     BtgGr = c.BtgGr,
@@ -1021,7 +1025,7 @@ namespace Sampoerna.EMS.BLL
             foreach (var item in ck4cItemGroupByDate)
             {
                //insert result.ck4itemList again ordered brand
-                var listItem = ck4cItemGroupByDate.Where(c => c.Key == item.Key).Select(c => c.Value.OrderBy(d => d.ProdType)).FirstOrDefault().ToList();
+                var listItem = ck4cItemGroupByDate.Where(c => c.Key == item.Key).Select(c => c.Value.OrderBy(d => d.Merk).OrderBy(d => d.ProdCode)).FirstOrDefault().ToList();
                 result.Ck4cItemList.AddRange(listItem);
             }
 
