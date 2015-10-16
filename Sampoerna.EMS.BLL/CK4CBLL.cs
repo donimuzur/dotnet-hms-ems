@@ -445,6 +445,29 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
+        private void WorkflowPoaChanges(Ck4cWorkflowDocumentInput input, string oldPoa, string newPoa)
+        {
+            try
+            {
+                //set changes log
+                var changes = new CHANGES_HISTORY
+                {
+                    FORM_TYPE_ID = Enums.MenuList.CK4C,
+                    FORM_ID = input.DocumentId.ToString(),
+                    FIELD_NAME = "POA Approved",
+                    NEW_VALUE = newPoa,
+                    OLD_VALUE = oldPoa,
+                    MODIFIED_BY = input.UserId,
+                    MODIFIED_DATE = DateTime.Now
+                };
+                _changesHistoryBll.AddHistory(changes);
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+        }
+
         private void AddWorkflowHistory(Ck4cWorkflowDocumentInput input)
         {
             var dbData = Mapper.Map<WorkflowHistoryDto>(input);
@@ -487,6 +510,8 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
+                WorkflowPoaChanges(input, dbData.APPROVED_BY_POA, input.UserId);
+
                 dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
                 dbData.APPROVED_BY_POA = input.UserId;
                 dbData.APPROVED_DATE_POA = DateTime.Now;
