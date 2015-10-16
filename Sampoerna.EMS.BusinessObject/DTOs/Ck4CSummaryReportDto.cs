@@ -18,6 +18,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Period { get; set; }
         public string Month { get; set; }
         public string Year { get; set; }
+        public string PoaApproved { get; set; }
+        public string ManagerApproved { get; set; }
         public string Status { get; set; }
 
         public List<string> ProductionDate { get; set; }

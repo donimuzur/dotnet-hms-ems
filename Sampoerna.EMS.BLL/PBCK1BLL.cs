@@ -1645,7 +1645,6 @@ namespace Sampoerna.EMS.BLL
 
             var poaId = !string.IsNullOrEmpty(dbData.APPROVED_BY_POA) ? dbData.APPROVED_BY_POA : dbData.CREATED_BY;
 
-            var pemasokName = String.Empty;
             var poaDetails = _poaBll.GetDetailsById(poaId);
             if (poaDetails != null)
             {
@@ -1657,8 +1656,16 @@ namespace Sampoerna.EMS.BLL
                     var managerData = _userBll.GetUserById(poaDetails.MANAGER_ID);
                     if (managerData != null)
                     {
-                        rc.Detail.ExciseManager = managerData.FIRST_NAME + " " + managerData.LAST_NAME;
-                        pemasokName = managerData.FIRST_NAME + " " + managerData.LAST_NAME;
+                        //if external supplier port true
+                        if (String.IsNullOrEmpty(dbData.SUPPLIER_PLANT_WERKS))
+                        {
+                            rc.Detail.ExciseManager = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
+                        }
+                        else
+                        {
+                            rc.Detail.ExciseManager = managerData.FIRST_NAME + " " + managerData.LAST_NAME;
+                        }
+                        
                     }
                 }
 
@@ -1713,16 +1720,8 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPlantAddress = dbData.SUPPLIER_ADDRESS;
             rc.Detail.SupplierPlantPhone = !string.IsNullOrEmpty(dbData.SUPPLIER_PHONE) ? dbData.SUPPLIER_PHONE : "-";
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
+            rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
             
-            //if external supplier port true
-            if (String.IsNullOrEmpty(dbData.SUPPLIER_PLANT_WERKS))
-            {
-                rc.Detail.SupplierCompanyName = pemasokName;
-            }
-            else
-            {
-                rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
-            }
             if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
             {
                 var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
