@@ -949,6 +949,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 message = "Plan Production From cannot be greater than Plan Production To";
             }
 
+            if (model.Detail.NppbkcId == model.Detail.SupplierNppbkcId)
+            {
+                message = "Original NPPBKC cannot be the same as supplier NPPBCK";
+            }
+
             return message;
         }
 
