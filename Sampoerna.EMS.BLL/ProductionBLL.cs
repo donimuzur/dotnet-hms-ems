@@ -748,21 +748,25 @@ namespace Sampoerna.EMS.BLL
 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
-                var unpackedWaste = oldWaste > item.QTY ? oldWaste : 0;
+                var prodQty = item.QTY == null ? 0 : item.QTY;
 
-                var prodWaste = oldWaste < item.QTY ? oldWaste : 0;
+                var packed = item.QTY_PACKED == null ? 0 : item.QTY_PACKED;
+
+                var unpackedWaste = oldWaste > prodQty ? oldWaste : 0;
+
+                var prodWaste = oldWaste < prodQty ? oldWaste : 0;
 
                 var prod = new ProductionDto
                 {
                     PlantWerks = item.WERKS,
                     FaCode = item.FA_CODE,
                     ProductionDate = item.PRODUCTION_DATE,
-                    QtyProduced = item.QTY - prodWaste,
-                    QtyPacked = item.QTY_PACKED,
-                    QtyUnpacked = lastUnpacked + item.QTY - item.QTY_PACKED - unpackedWaste
+                    QtyProduced = prodQty - prodWaste,
+                    QtyPacked = packed,
+                    QtyUnpacked = lastUnpacked + prodQty - packed - unpackedWaste
                 };
 
-                lastUnpacked = prod.QtyUnpacked.Value;
+                lastUnpacked = prod.QtyUnpacked == null ? 0 : prod.QtyUnpacked.Value;
 
                 data.Add(prod);
             }
