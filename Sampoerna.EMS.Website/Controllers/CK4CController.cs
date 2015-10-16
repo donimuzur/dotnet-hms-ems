@@ -1505,6 +1505,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.PoaApproved)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PoaApproved);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.ManagerApproved)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ManagerApproved);
+                    iColumn = iColumn + 1;
+                }
+
                 if (modelExport.Status)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Status);
@@ -1659,6 +1671,18 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.Remarks)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Remarks");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.PoaApproved)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA Approved");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.ManagerApproved)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Manager Approved");
                 iColumn = iColumn + 1;
             }
 
