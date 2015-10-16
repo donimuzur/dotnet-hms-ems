@@ -144,7 +144,7 @@ namespace Sampoerna.EMS.BLL
             data.APPROVED_BY_MANAGER = null;
             data.APPROVED_BY_MANAGER_DATE = null;
             data.DECREE_DATE = null;
-            data.GOV_STATUS = 0;
+            data.GOV_STATUS = null;
             data.STATUS = Enums.DocumentStatus.Draft;
             data.CREATED_DATE = DateTime.Now;
             data.MODIFIED_BY = null;
@@ -536,8 +536,8 @@ namespace Sampoerna.EMS.BLL
                 //dbData.APPROVED_BY_POA = input.UserId;
                 //dbData.APPROVED_DATE_POA = DateTime.Now;
 
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
+                //dbData.APPROVED_BY = input.UserId;
+                //dbData.APPROVED_DATE = DateTime.Now;
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
             }
@@ -572,8 +572,8 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
 
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
+                //dbData.APPROVED_BY = input.UserId;
+                //dbData.APPROVED_DATE = DateTime.Now;
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
             }
@@ -601,8 +601,8 @@ namespace Sampoerna.EMS.BLL
                 dbData.STATUS = Enums.DocumentStatus.GovRejected;
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
+                //dbData.APPROVED_BY = input.UserId;
+                //dbData.APPROVED_DATE = DateTime.Now;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
@@ -844,16 +844,16 @@ namespace Sampoerna.EMS.BLL
                     if (poaData3 != null)
                     {
                         //creator is poa user
-                        rc.To.Add(GetManagerEmail(lackData.CreatedBy));
-                        rc.CC.Add(poaData3.POA_EMAIL);
+                        rc.To.Add(poaData3.POA_EMAIL);
+                        rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                     }
                     else
                     {
                         //creator is excise executive
                         var userData = _userBll.GetUserById(lackData.CreatedBy);
-                        rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
-                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
-                        rc.CC.Add(userData.EMAIL);
+                        rc.To.Add(userData.EMAIL);
+                        rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
+                        rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                     }
                     rc.IsCCExist = true;
                     break;
@@ -862,16 +862,20 @@ namespace Sampoerna.EMS.BLL
                     if (poaData4 != null)
                     {
                         //creator is poa user
-                        rc.To.Add(GetManagerEmail(lackData.CreatedBy));
-                        rc.CC.Add(poaData4.POA_EMAIL);
+                        rc.To.Add(poaData4.POA_EMAIL);
+                        rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                     }
                     else
                     {
                         //creator is excise executive
+                        //var userData = _userBll.GetUserById(lackData.CreatedBy);
+                        //rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
+                        //rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+                        //rc.CC.Add(userData.EMAIL);
                         var userData = _userBll.GetUserById(lackData.CreatedBy);
-                        rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
-                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
-                        rc.CC.Add(userData.EMAIL);
+                        rc.To.Add(userData.EMAIL);
+                        rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
+                        rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                     }
                     rc.IsCCExist = true;
                     break;

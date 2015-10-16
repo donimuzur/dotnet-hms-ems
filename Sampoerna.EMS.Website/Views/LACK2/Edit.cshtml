@@ -55,9 +55,8 @@
                         @Html.HiddenFor(x => x.CreatedBy)
                         @Html.HiddenFor(x => x.CreatedDate)
                         @Html.HiddenFor(x => x.Status)
-                        @Html.HiddenFor(model => model.GovApprovalActionType)
                         @Html.HiddenFor(x => x.StatusName)
-                        @Html.HiddenFor(model => model.GovStatus)
+                        @Html.HiddenFor(model => model.GovApprovalActionType)
                         @Html.HiddenFor(model => model.GovStatusName)
                         @if (Model.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
                         {
@@ -65,6 +64,7 @@
                         }
                         else
                         {
+                            @Html.HiddenFor(model => model.GovStatus)
                             @Html.Partial("_HomeEdit")
                         }
                         @if (Model.Status == Enums.DocumentStatus.Completed)
