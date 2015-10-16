@@ -14,7 +14,7 @@
                 <h3>PBCK-1 Form</h3>
                 <label class="status">@Model.Detail.StatusName</label>
                 <div class="action-button">
-                    @if (@ViewBag.IsCurrManager)
+                    @if (@ViewBag.IsCurrManager != null && @ViewBag.IsCurrManager)
                     {
                         if (Model.AllowApproveAndReject)
                         {

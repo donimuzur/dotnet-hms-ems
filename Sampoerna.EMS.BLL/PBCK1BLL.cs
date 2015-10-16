@@ -1383,12 +1383,15 @@ namespace Sampoerna.EMS.BLL
 
             var mailProcess = ProsesMailNotificationBody(pbck1Data, input.ActionType, input.Comment);
 
-            //distinct double To email
-            List<string> ListTo = mailProcess.To.Distinct().ToList();
+            //distinct To email
+            var ListTo = mailProcess.To.Distinct().ToList();
+
+            //distinct CC email
+            var ListCC = mailProcess.CC.Distinct().ToList();
 
             if (mailProcess.IsCCExist)
                 //Send email with CC
-                _messageService.SendEmailToListWithCC(ListTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+                _messageService.SendEmailToListWithCC(ListTo, ListCC, mailProcess.Subject, mailProcess.Body, true);
             else
                 _messageService.SendEmailToList(ListTo, mailProcess.Subject, mailProcess.Body, true);
 
@@ -1552,6 +1555,7 @@ namespace Sampoerna.EMS.BLL
 
             var poaId = !string.IsNullOrEmpty(dbData.APPROVED_BY_POA) ? dbData.APPROVED_BY_POA : dbData.CREATED_BY;
 
+            var pemasokName = String.Empty;
             var poaDetails = _poaBll.GetDetailsById(poaId);
             if (poaDetails != null)
             {
@@ -1564,6 +1568,7 @@ namespace Sampoerna.EMS.BLL
                     if (managerData != null)
                     {
                         rc.Detail.ExciseManager = managerData.FIRST_NAME + " " + managerData.LAST_NAME;
+                        pemasokName = managerData.FIRST_NAME + " " + managerData.LAST_NAME;
                     }
                 }
 
@@ -1618,8 +1623,16 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPlantAddress = dbData.SUPPLIER_ADDRESS;
             rc.Detail.SupplierPlantPhone = !string.IsNullOrEmpty(dbData.SUPPLIER_PHONE) ? dbData.SUPPLIER_PHONE : "-";
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
-            rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
-
+            
+            //if external supplier port true
+            if (String.IsNullOrEmpty(dbData.SUPPLIER_PLANT_WERKS))
+            {
+                rc.Detail.SupplierCompanyName = pemasokName;
+            }
+            else
+            {
+                rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
+            }
             if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
             {
                 var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
@@ -1874,7 +1887,7 @@ namespace Sampoerna.EMS.BLL
                 bodyMail.Append("<tr><td>Comment</td><td> : " + comment + "</td></tr>");
                 bodyMail.AppendLine();
             }
-            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Details/" + pbck1Data.Pbck1Id + "'>link</a> to show detailed information</i></td></tr>");
+            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Edit/" + pbck1Data.Pbck1Id + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();

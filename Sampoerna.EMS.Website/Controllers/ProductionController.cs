@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
 
                 data.CreatedDate = DateTime.Now;
-
+                data.CreatedBy = CurrentUser.USER_ID;
 
                 try
                 {
@@ -411,6 +411,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     item.CreatedDate = DateTime.Now;
+                    item.CreatedBy = CurrentUser.USER_ID;
 
                     var existingData = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
                         Convert.ToDateTime(item.ProductionDate));
