@@ -29,6 +29,7 @@ function OnReadyFunction(ck5Type) {
 
     var total = 0;
     $('#CK5UploadSave').click(function () {
+        debugger;
         var datarows = GetTableData($('#Ck5UploadTable'));
         var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
         $('#ck5TableItem tbody').html('');
@@ -177,7 +178,7 @@ function GenerateXlsCk5Material(url, ck5Type) {
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("itemExcelFile").files[i];
         formData.append("itemExcelFile", file);
-        if (ck5Type == 'PortToImporter')
+        if (ck5Type == 'PortToImporter' || ck5Type == 'DomesticAlcohol')
             formData.append("plantId", $('#DestPlantId').val());
         else 
             formData.append("plantId", $('#SourcePlantId').val());

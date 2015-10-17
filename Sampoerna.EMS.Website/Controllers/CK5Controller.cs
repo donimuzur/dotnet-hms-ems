@@ -553,7 +553,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             CK5PlantModel model = new CK5PlantModel();
 
-            if (ck5Type == Enums.CK5Type.DomesticAlcohol)
+            if (ck5Type == Enums.CK5Type.DomesticAlcohol || ck5Type == Enums.CK5Type.PortToImporter)
             {
                 var supplier = _ck5Bll.GetExternalSupplierItem(plantId, ck5Type);
                 model = Mapper.Map<CK5PlantModel>(supplier);
@@ -596,7 +596,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         else
                         {
                             if (model.Ck5Type != Enums.CK5Type.Export &&
-                                model.Ck5Type != Enums.CK5Type.PortToImporter && 
+                                //model.Ck5Type != Enums.CK5Type.PortToImporter &&
                                 model.Ck5Type != Enums.CK5Type.Manual)
                             {
                                 //double check
@@ -605,8 +605,20 @@ namespace Sampoerna.EMS.Website.Controllers
                                 if (!model.SubmissionDate.HasValue)
                                     model.SubmissionDate = DateTime.Now;
 
-                                output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(model.SourcePlantId, model.SourceNppbkcId,
-                                    model.SubmissionDate.Value, model.DestNppbkcId, (int) model.GoodType);
+                                if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol ||
+                                    model.Ck5Type == Enums.CK5Type.PortToImporter)
+                                {
+                                    output = _ck5Bll.GetQuotaRemainAndDatePbck1ItemExternal(model.SourcePlantId,
+                                    model.SourceNppbkcId,
+                                    model.SubmissionDate.Value, model.DestNppbkcId, (int)model.GoodType);
+                                }
+                                else
+                                {
+                                    output = _ck5Bll.GetQuotaRemainAndDatePbck1Item(model.SourcePlantId,
+                                    model.SourceNppbkcId,
+                                    model.SubmissionDate.Value, model.DestNppbkcId, (int)model.GoodType);
+                                }
+                                
 
 
                                 model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
@@ -615,23 +627,27 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                         var saveResult = SaveCk5ToDatabase(model);
-                        
+
                         if (model.Ck5Type == Enums.CK5Type.MarketReturn)
                             AddMessageInfo("Success create CK-5 Market Return", Enums.MessageInfoType.Success);
-                        else 
+                        else
                             AddMessageInfo("Success create CK5", Enums.MessageInfoType.Success);
 
-                        
-                        return RedirectToAction("Edit", "CK5", new { @id = saveResult.CK5_ID });
+
+                        return RedirectToAction("Edit", "CK5", new {@id = saveResult.CK5_ID});
                     }
 
                     AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
                 }
                 else
+                {
+                    //ModelState.Values
                     AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
+                }
+                    
 
                 model = InitCK5List(model);
-
+                
                 return View("Create", model);
             }
             catch (Exception ex)

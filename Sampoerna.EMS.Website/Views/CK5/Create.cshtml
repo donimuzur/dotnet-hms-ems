@@ -75,6 +75,9 @@
                         
                         @Html.HiddenFor(model => model.IsCk5Export)
                         @Html.HiddenFor(model => model.IsCk5PortToImporter)
+                        @Html.HiddenFor(model => model.IsDomesticAlcohol)
+                        @Html.HiddenFor(model => model.IsCk5Manual)
+                        @Html.HiddenFor(model => model.IsCk5ImporterToPlant)
 
                         @Html.Partial("_CK5InformationCreate")
                         @Html.Partial("_CK5Printout")
@@ -135,6 +138,7 @@
             </div>
             <div class="modal-body form-excise">
                 <p></p>
+                <input id="uploadMaterialId" type="hidden" value="">
                 <input id="uploadMaterialRow" type="hidden" value="">
                 <input id="uploadMaterialDesc" type="hidden" value="">
                 <div class="row">
@@ -430,7 +434,7 @@
     $("#btnAddRow").click(function () {
         var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
-        if ('@Model.Ck5Type.ToString()' == "PortToImporter") {
+        if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
             sourcePlant = $("#DestPlantId").find("option:selected").val();
         }
 

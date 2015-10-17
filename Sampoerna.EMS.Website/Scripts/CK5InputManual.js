@@ -26,11 +26,17 @@ function ClearValidation() {
 function EditRow(o) {
 
     var nRow = o.parents('tr');
+    var plant = $("#SourcePlantId").find("option:selected").val();
 
     $('#btnSaveMaterial').hide();
     $('#btnUpdateMaterial').show();
 
     //set value
+    if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+        plant = $("#DestPlantId").find("option:selected").val();
+    }
+    
+    $("#uploadMaterialPlant").val(plant);
     $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
     
     $('#uploadMaterialNumber').find('option:not(:first)').remove();
@@ -219,6 +225,7 @@ function AddRow() {
                 "<td style='display: none'>" + $('#uploadMaterialDesc').val() + "</td>" +
                 "<td style='display: none'>" + exciseQty + "</td>" +
                 "<td style='display: none'>" + exciseUOM + "</td>" +
+                "<td style='display: none'></td>" +
                 "</tr>");
         
         $('#CK5UploadSave').enable();
