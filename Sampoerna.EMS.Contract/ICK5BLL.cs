@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.Contract
        CK5Dto SaveCk5(CK5SaveInput input);
 
        List<CK5Dto> GetCk5ByType(Enums.CK5Type ck5Type);
-
+       List<CK5Dto> GetCk5ByPBCK1(int pbck1Id);
        List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType);
 
        CK5DetailsOutput GetDetailsCK5(long id);
@@ -61,8 +61,6 @@ namespace Sampoerna.EMS.Contract
        //GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByNewCk5(string plantId, DateTime submissionDate,string destPlantNppbkc,int goodtypeid);
 
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId,string plantNppbkcId, DateTime submissionDate, string destPlantNppbkcId, int? goodtypegroupid);
-
-       List<CK5> GetByGIDate(int month, int year,string desPlantId, string goodTypeId);
 
        List<int> GetAllYearsByGiDate();
        List<CK5> GetAllCompletedPortToImporter();

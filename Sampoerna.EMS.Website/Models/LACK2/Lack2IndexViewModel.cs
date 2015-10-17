@@ -33,5 +33,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string MenuLack2OpenDocument { get; set; }
         public string MenuLack2CompletedDocument { get; set; }
 
+        public string FilterActionController { get; set; }
+
     }
 }

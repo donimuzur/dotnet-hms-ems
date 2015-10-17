@@ -133,11 +133,15 @@ namespace Sampoerna.EMS.BLL
         {
             //if (input.CreatedUser == input.CurrentUser)
             //    return false;
+            var completedEdit = false;
+            if(input.FormType == Enums.FormType.PBCK1 && input.DocumentStatus == Enums.DocumentStatus.Completed){
+                completedEdit = true;
+            }
 
-            if (input.DocumentStatus != Enums.DocumentStatus.WaitingGovApproval)
+            if (input.DocumentStatus != Enums.DocumentStatus.WaitingGovApproval && !completedEdit)
                 return false;
 
-            if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval || completedEdit)
             {
                 if (input.UserRole == Enums.UserRole.Manager)
                     return false;

@@ -3,6 +3,7 @@
 <table id="pbckTable" class="table-condensed display compact nowrap" width="100%">
     <thead>
         <tr>
+            <th>Action</th>
             <th class="toggle-row"> No </th>
             <th>Original Company</th>
             <th>Original NPPBKC</th>
@@ -49,6 +50,9 @@
             foreach (var item in Model.DetailsList)
             {
                 <tr>
+                    <td class="action">
+                        <a href="@Url.Action("CK5Details", "PBCK1", new { id = item.Pbck1Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    </td>
                     <td>@row</td>
                     <td>@Html.DisplayFor(model => item.NppbkcCompanyName)</td>
                     <td>@Html.DisplayFor(model => item.NppbkcId)</td>

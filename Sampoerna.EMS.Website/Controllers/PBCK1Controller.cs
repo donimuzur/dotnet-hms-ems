@@ -24,6 +24,7 @@ using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PBCK1;
+using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -36,6 +37,8 @@ namespace Sampoerna.EMS.Website.Controllers
     {
 
         private IPBCK1BLL _pbck1Bll;
+        private ICK5BLL _ck5Bll;
+        private IPbck1DecreeDocBLL _pbck1DecreeDocBll;
         private IPlantBLL _plantBll;
         private Enums.MenuList _mainMenu;
         private IChangesHistoryBLL _changesHistoryBll;
@@ -55,7 +58,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IT001KBLL _t001kBll;
 
         public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -75,6 +78,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _lfa1Bll = lfa1Bll;
             _uomBll = uomBll;
             _t001kBll = t001kBll;
+            _pbck1DecreeDocBll = pbck1DecreeDocBll;
+            _ck5Bll = ck5Bll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -478,7 +483,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentUser = CurrentUser.USER_ID,
                     CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                     DocumentNumber = model.Detail.Pbck1Number,
-                    NppbkcId = model.Detail.NppbkcId
+                    NppbkcId = model.Detail.NppbkcId,
+                    FormType = Enums.FormType.PBCK1
                 };
                 if (isCurrManager) input.ManagerApprove = model.Detail.ApprovedByManagerId;
 
@@ -502,7 +508,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "GovApproveDocument";
                 }
 
-                if ((model.ActionType == "GovApproveDocument" && model.AllowGovApproveAndReject) )
+                if(model.Detail.Status == Enums.DocumentStatus.Completed){
+                    model.ActionType = "ChangeCompletedDocument";
+                }
+
+                if (((model.ActionType == "GovApproveDocument" || model.ActionType == "ChangeCompletedDocument") && model.AllowGovApproveAndReject))
                 { 
                 
                 }else if (!ValidateEditDocument(model, false))
@@ -942,6 +952,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 message = "Plan Production From cannot be greater than Plan Production To";
             }
 
+            if (model.Detail.NppbkcId == model.Detail.SupplierNppbkcId)
+            {
+                message = "Original NPPBKC cannot be the same as supplier NPPBCK";
+            }
+
             return message;
         }
 
@@ -988,6 +1003,48 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             };
             _pbck1Bll.Pbck1Workflow(input);
+        }
+
+        private void Pbck1WorkflowCompletedEdit(Pbck1Item pbck1Data, Enums.ActionType actionType, string comment)
+        {
+            var input = new Pbck1WorkflowDocumentInput()
+            {
+                DocumentId = pbck1Data.Pbck1Id,
+                ActionType = actionType,
+                UserRole = CurrentUser.UserRole,
+                UserId = CurrentUser.USER_ID,
+                DocumentNumber = pbck1Data.Pbck1Number,
+                Comment = comment,
+                DocumentStatus = Enums.DocumentStatus.Completed,
+                AdditionalDocumentData = new Pbck1WorkflowDocumentData()
+                {
+                    DecreeDate = pbck1Data.DecreeDate.Value,
+                    QtyApproved = pbck1Data.QtyApproved == null ? 0 : Convert.ToDecimal(pbck1Data.QtyApproved),
+                    Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
+                }
+            };
+            _pbck1Bll.Save(input);
+        }
+
+        private void Pbck1WorkflowReturnToGovApprove(Pbck1Item pbck1Data, Enums.ActionType actionType, string comment)
+        {
+            var input = new Pbck1WorkflowDocumentInput()
+            {
+                DocumentId = pbck1Data.Pbck1Id,
+                ActionType = Enums.ActionType.Reject,
+                UserRole = CurrentUser.UserRole,
+                UserId = CurrentUser.USER_ID,
+                DocumentNumber = pbck1Data.Pbck1Number,
+                Comment = comment,
+                DocumentStatus = Enums.DocumentStatus.Completed,
+                AdditionalDocumentData = new Pbck1WorkflowDocumentData()
+                {
+                    DecreeDate = null,
+                    QtyApproved = 0,
+                    Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
+                }
+            };
+            _pbck1Bll.Save(input);
         }
 
         public ActionResult SubmitDocument(int? id)
@@ -1130,6 +1187,98 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             if (!isSuccess) return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            AddMessageInfo("Document " + EnumHelper.GetDescription(model.Detail.StatusGov), Enums.MessageInfoType.Success);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult ChangeCompletedDocument(Pbck1ItemViewModel model)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+            //}
+
+            var oldDoc = _pbck1Bll.GetById(model.Detail.Pbck1Id).Pbck1DecreeDoc.Select(c => c.PBCK1_DECREE_DOC_ID);
+
+            if (model.Detail.Pbck1DecreeFiles == null)
+            {
+                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
+                return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+            }
+
+
+            bool isSuccess = false;
+            bool validDoc = true;
+            var currentUserId = CurrentUser;
+            try
+            {
+                model.Detail.Pbck1DecreeDoc = new List<Pbck1DecreeDocModel>();
+
+                if (model.Detail.StatusGov == 0 && model.Detail.DecreeDate == null)
+                {
+                    Pbck1WorkflowReturnToGovApprove(model.Detail, model.Detail.GovApprovalActionType, model.Detail.Comment);
+                    AddMessageInfo("Document Rejected", Enums.MessageInfoType.Success);
+                    return RedirectToAction("Index");
+                }
+
+                if (model.Detail.Pbck1DecreeFiles != null)
+                {
+                    foreach (var item in model.Detail.Pbck1DecreeFiles)
+                    {
+                        if (item != null && validDoc)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var decreeDoc = new Pbck1DecreeDocModel()
+                            {
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
+                                CREATED_BY = currentUserId.USER_ID,
+                                CREATED_DATE = DateTime.Now
+                            };
+                            model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
+                        }
+                        else
+                        {
+                            validDoc = false;
+                        }
+                    }
+                }
+
+                if(!validDoc && model.Pbck1OldDecreeFilesID == null){
+                    AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+                }
+
+                foreach(var item in oldDoc){
+                    if(!model.Pbck1OldDecreeFilesID.Contains(item)){
+                        _pbck1DecreeDocBll.RemoveDoc(item);
+                    }
+                }
+
+                var input = new Pbck1UpdateReportedOn()
+                {
+                    Id = model.Detail.Pbck1Id,
+                    ReportedOn = model.Detail.ReportedOn
+                };
+
+                _pbck1Bll.UpdateReportedOn(input);
+
+                Pbck1WorkflowCompletedEdit(model.Detail, model.Detail.GovApprovalActionType, model.Detail.Comment);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
             AddMessageInfo("Document " + EnumHelper.GetDescription(model.Detail.StatusGov), Enums.MessageInfoType.Success);
             return RedirectToAction("Index");
         }
@@ -2497,6 +2646,34 @@ namespace Sampoerna.EMS.Website.Controllers
                 return Json(new { kppbcid = nppbkc.KPPBC_ID, kppbcname = lfa.NAME1 });
             }
         }
+
+        #region ------ CK5 details ----
+
+        public ActionResult CK5Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+            var pbck1Data = _pbck1Bll.GetById(id.Value);
+            var ck5Data = _ck5Bll.GetCk5ByPBCK1(id.Value);
+            if (pbck1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new PBCK1ListCK5Model()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Detail = Mapper.Map<Pbck1Item>(pbck1Data),
+                CK5List = Mapper.Map<List<CK5Item>>(ck5Data)
+            };
+
+            return View(model);
+        }
+
+        #endregion
 
 
     }

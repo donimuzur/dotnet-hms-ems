@@ -1,63 +1,63 @@
 ﻿@using Sampoerna.EMS.Website.Helpers
-@model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
+@model Sampoerna.EMS.Website.Models.LACK2.Lack2BaseItemModel
+
 <div role="tabpanel" class="tab-pane" id="printout">
-    <div class="panel-group" id="accordionPrint" role="tablist" aria-multiselectable="true">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingPrint">
+            <div class="panel-heading" role="tab" id="headingPrintHistory">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordionPrint" href="#collapsePrint" aria-expanded="true" aria-controls="collapsePrint">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapsePrintHistory" aria-expanded="true" aria-controls="collapsePrintHistory">
                         Print Out
-                        <i class="fa fa-caret-down"></i>
                     </a>
                 </h4>
             </div>
-            <div id="collapsePrint" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPrint">
+            <div id="collapsePrintHistory" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPrintHistory">
                 <div class="panel-body">
-                    <div class="row">
-                        <form class="form-excise " role="form">
-                            <div class="last-form">
-                                <div class="col-md-3">
-                                    <div class="row">
-                                        <label class="col-md-5">LACK-2 No</label>
-                                        <div class="col-md-7">
-                                            @Html.TextBox("lack2_no", Model.Lack2Model.Lack2Number, new { @class = "form-control", @disabled = "disabled" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="row">
-                                        <label class="col-md-3">Date</label>
-                                        <div class="col-md-9">
-                                            @Html.TextBox("create_date", DateTime.Now.ToString("dd MMM yyy hh:mm:ss"), new { @class = "form-control", @disabled = "disabled" })
-                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="row">
-                                        <label class="col-md-3">User</label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control" value="@Html.UserName()" disabled />
-                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            @if (Model.AllowPrintDocument)
-                                            {
-                                                <a class="btn btn-blue full" onclick="PrintOutClick('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Model.Lack2Id })', '@Url.Action("AddPrintHistory", "Lack2")', @Model.Lack2Model.Lack2Id)">Print</a>
-                                            }      
-                                        </div>
+                    <div class="form-excise " role="form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-3">LACK-1 No</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" value="@Model.Lack2Number" disabled />
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-3">Date</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" value="@DateTime.Now.ToString("dd MMM yyyy HH:mm:ss")" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-3">User</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" value="@Html.UserName()" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-3"></label>
+                                    <div class="col-md-9">
+                                        @if (Model.AllowPrintDocument)
+                                        {
+                                            <a class="btn btn-blue full" onclick="PrintOutClick('@Url.EncryptedAction("PrintOut", "LACK2", new { id = @Model.Lack2Id})', '@Url.Action("AddPrintHistory", "LACK2")', @Model.Lack2Id)">Print</a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="table-container" id="PrintOutHistoryTable">
         @Html.Partial("_PrintHistoryTable")
     </div>
