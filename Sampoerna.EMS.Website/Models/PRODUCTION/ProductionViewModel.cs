@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string FaCode { get; set; }
         public string Uom { get; set; }
         public string ProductionDate { get; set; }
+       
 
         //selecList
         public SelectList CompanyCodeList { get; set; }
@@ -86,6 +87,8 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string MatDoc { get; set; }
         public string Ordr { get; set; }
         public string Batch { get; set; }
+        public string CreatedBy { get; set; }
+        public string CreatedDate { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }
