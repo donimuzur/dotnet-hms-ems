@@ -9,7 +9,8 @@ function generateTable(data) {
     console.log(data);
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
-    if (data.IncomeList.length > 0)
+    
+    if (data.IncomeList != null && data.IncomeList.length > 0)
     {
     if (data.IncomeList) {
         var rowIndex = 1;
@@ -17,7 +18,7 @@ function generateTable(data) {
         rc = rc +
         /*First Record*/
         '<tr><td>' + rowIndex + '</td>' +
-        '<td rowspan="' + rowCount + '">' + '<input name="BeginingBalance" type="hidden" value = "' + data.BeginingBalance + '" />' + +(data.BeginingBalance < 0 ? '-' : '') + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+        '<td rowspan="' + rowCount + '">' + '<input name="BeginingBalance" type="hidden" value = "' + data.BeginingBalance + '" />' + (data.BeginingBalance < 0 ? '-' : '') + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
         '<td><input name="IncomeList[0].RegistrationNumber" type="hidden" value = "' + data.IncomeList[0].RegistrationNumber + '" />' +
             '<input name="IncomeList[0].StringRegistrationDate" type="hidden" value = "' + data.IncomeList[0].StringRegistrationDate + '" />' +
             '<input name="IncomeList[0].Ck5Id" type="hidden" value = "' + data.IncomeList[0].Ck5Id + '" />' +
