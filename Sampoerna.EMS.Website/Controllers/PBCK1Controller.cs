@@ -1280,7 +1280,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (!isSuccess) return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
             AddMessageInfo("Document " + EnumHelper.GetDescription(model.Detail.StatusGov), Enums.MessageInfoType.Success);
-            return RedirectToAction("Index");
+            return RedirectToAction("CompletedDocument");
         }
 
         public ActionResult GovRejectDocument(Pbck1ItemViewModel model)

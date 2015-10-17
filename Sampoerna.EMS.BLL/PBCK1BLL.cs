@@ -288,7 +288,8 @@ namespace Sampoerna.EMS.BLL
 
             if (input.DocumentId > 0)
             {
-                _decreeDocBll.DeleteByPbck1Id(input.DocumentId);
+                if (input.ActionType == Enums.ActionType.Reject)
+                    _decreeDocBll.DeleteByPbck1Id(input.DocumentId);
 
                 dbData = _repository.GetByID(input.DocumentId);
 
