@@ -44,6 +44,8 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string Period { get; set; }
         public string Month { get; set; }
         public string Year { get; set; }
+        public string PoaApproved { get; set; }
+        public string ManagerApproved { get; set; }
         public string Status { get; set; }
 
         public List<string> ProductionDate { get; set; }
@@ -76,6 +78,8 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool Period { get; set; }
         public bool Month { get; set; }
         public bool Year { get; set; }
+        public bool PoaApproved { get; set; }
+        public bool ManagerApproved { get; set; }
         public bool Status { get; set; }
 
         public bool ProductionDate { get; set; }

@@ -40,16 +40,18 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
        
         public string NppbkcId { get; set; }
 
-        public List<Lack2ItemDto> Items { get; set; }
-
         public string Comment { get; set; }
-
-        public List<LACK2_DOCUMENT> Documents;
 
         public bool IsRejected { get; set; }
 
         public string UserId { get; set; }
 
+    }
+
+    public class Lack2DetailsDto : Lack2Dto
+    {
+        public List<Lack2ItemDto> Items { get; set; }
+        public List<Lack2DocumentDto> Documents { get; set; }
     }
 
     public class Lack2ItemDto

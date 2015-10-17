@@ -340,12 +340,17 @@
     <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
     <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2BaseItemModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2DetailReportsViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DetailViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2EditViewModel.cs" />
     <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2GenerateInputModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2IndexViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2Input.cs" />
+    <Compile Include="Models\LACK2\Lack2ItemModel.cs" />
     <Compile Include="Models\LACK2\LACK2Model.cs" />
     <Compile Include="Models\LACK2\LACK2NppbkcData.cs" />
     <Compile Include="Models\LACK2\LACK2PlantData.cs" />
@@ -361,6 +366,7 @@
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ListCK5Model.cs" />
     <Compile Include="Models\PBCK1\PBCK1SupInfo.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
@@ -596,6 +602,7 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="Content\upload\header\header_sampoerna.jpg" />
     <Content Include="Content\upload\header\sample_header.png" />
+    <Content Include="Content\upload\Lack2\header_sampoerna.jpg" />
     <Content Include="ExtLib\itextsharp.dll" />
     <Content Include="ExtLib\itextsharp.pdfa.dll" />
     <Content Include="ExtLib\iTextSharp.xml" />
@@ -1086,16 +1093,13 @@
     <Content Include="Views\LACK2\Detail.cshtml" />
     <Content Include="Views\CK4C\DocumentList.cshtml" />
     <Content Include="Views\CK4C\_CK4CTableDocumentList.cshtml" />
-    <Content Include="Views\LACK2\_FileUpload.cshtml" />
     <Content Include="Views\CK4C\Ck4CCreateDocumentList.cshtml" />
     <Content Include="Views\CK4C\_HomeCreate.cshtml" />
     <Content Include="Views\LACK1\Details.cshtml" />
     <Content Include="Views\LACK1\_HomeDetails.cshtml" />
     <Content Include="Views\LACK1\_ChangeLog.cshtml" />
-    <Content Include="Views\LACK2\_FileUpload.cshtml" />
     <Content Include="Views\LACK2\_PrintOut.cshtml" />
     <Content Include="Views\LACK2\_ChangesLog.cshtml" />
-    <Content Include="Views\LACK2\_WorkflowHistory.cshtml" />
     <Content Include="Views\Production\Index.cshtml" />
     <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
     <Content Include="Views\Production\Create.cshtml" />
@@ -1179,6 +1183,11 @@
     <Content Include="Views\CK4C\_DecreeDocCompleted.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadListDetail.cshtml" />
     <Content Include="Views\CK4C\Detail.cshtml" />
+    <Content Include="Views\LACK2\_HomeGovApproval.cshtml" />
+    <Content Include="Views\LACK2\_HomeEdit.cshtml" />
+    <Content Include="Views\LACK2\_HomeDetail.cshtml" />
+    <Content Include="Views\PBCK1\CK5Details.cshtml" />
+    <Content Include="Views\PBCK1\_CK5Table.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1335,8 +1344,6 @@
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
-          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
