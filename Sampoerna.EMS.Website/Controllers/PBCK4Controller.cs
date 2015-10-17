@@ -502,10 +502,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         input.CurrentUser = CurrentUser.USER_ID;
                         if (_workflowBll.AllowEditDocument(input))
                         {
-                            SavePbck4ToDatabase(model);
+                          var resultDto =  SavePbck4ToDatabase(model);
                             if (isSubmit)
                             {
-                                PBCK4Workflow(model.Pbck4Id, Enums.ActionType.Submit, string.Empty);
+                                PBCK4Workflow(model.Pbck4Id, Enums.ActionType.Submit, string.Empty, resultDto.IsModifiedHistory);
                                 AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
                                 return RedirectToAction("Details", "PBCK4", new { @id = model.Pbck4Id });
 
@@ -599,7 +599,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_Pbck4UploadList", model.UploadItemModels);
         }
 
-        private void PBCK4Workflow(int id, Enums.ActionType actionType, string comment)
+        private void PBCK4Workflow(int id, Enums.ActionType actionType, string comment, bool isModified = false)
         {
             var input = new Pbck4WorkflowDocumentInput();
             input.DocumentId = id;
@@ -607,6 +607,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input.UserRole = CurrentUser.UserRole;
             input.ActionType = actionType;
             input.Comment = comment;
+            input.IsModified = isModified;
 
             _pbck4Bll.PBCK4Workflow(input);
         }
@@ -626,7 +627,8 @@ namespace Sampoerna.EMS.Website.Controllers
             input.UserRole = CurrentUser.UserRole;
             input.ActionType = actionType;
             input.Comment = model.Comment;
-            
+            input.GovStatusInput = model.GovStatus;
+
             input.UploadItemDto = new List<Pbck4ItemDto>();
             foreach (var pbck4UploadItem in model.UploadItemModels)
             {
@@ -634,7 +636,6 @@ namespace Sampoerna.EMS.Website.Controllers
                     input.UploadItemDto.Add(Mapper.Map<Pbck4ItemDto>(pbck4UploadItem));
                 
             }
-            
 
             input.AdditionalDocumentData = new Pbck4WorkflowDocumentData();
             input.AdditionalDocumentData.Back1No = model.BACK1_NO;
