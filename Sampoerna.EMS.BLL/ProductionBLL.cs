@@ -366,13 +366,27 @@ namespace Sampoerna.EMS.BLL
 
             var unpacked = Convert.ToDecimal(0);
 
+            var plant = string.Empty;
+
+            var facode = string.Empty;
+
             foreach (var item in listItem)
             {
+                //set unpacked to 0 if plant or fa code different
+                if (plant != item.PlantWerks || facode != item.FaCode)
+                {
+                    unpacked = 0;
+                }
+
                 if (unpacked == 0)
                 {
                     var oldData = GetOldSaldo(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate).LastOrDefault();
 
                     unpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+
+                    plant = item.PlantWerks;
+
+                    facode = item.FaCode;
                 }
 
                 var wasteData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate);
@@ -395,7 +409,7 @@ namespace Sampoerna.EMS.BLL
 
                 list.Add(item);
 
-                unpacked = unpackedQty.Value;
+                unpacked = unpackedQty.Value;                
             }
 
             return list;
@@ -734,7 +748,7 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        private List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate)
+        public List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate)
         {
             List<ProductionDto> data = new List<ProductionDto>();
 
