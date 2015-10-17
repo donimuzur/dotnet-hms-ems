@@ -1261,11 +1261,14 @@ namespace Sampoerna.EMS.BLL
                         brandDesc.Add(dbBrand.BRAND_CE);
                     }
 
+                    var contentPerPack = ck4CItem.CONTENT_PER_PACK == null ? 0 : ck4CItem.CONTENT_PER_PACK.Value;
+                    var packedInPack = ck4CItem.PACKED_IN_PACK == null ? 0 : ck4CItem.PACKED_IN_PACK.Value;
+
                     hje.Add(ck4CItem.HJE_IDR.Value);
                     tariff.Add(ck4CItem.TARIFF.Value);
-                    content.Add(ck4CItem.CONTENT_PER_PACK.Value);
+                    content.Add(contentPerPack);
                     packedQty.Add(ck4CItem.PACKED_QTY.Value);
-                    packedQtyInPack.Add(ck4CItem.PACKED_IN_PACK.Value);
+                    packedQtyInPack.Add(packedInPack);
                     unpackedQty.Add(ck4CItem.UNPACKED_QTY.Value);
                     prodQty.Add(ck4CItem.PROD_QTY);
                     uomProdQty.Add(ck4CItem.UOM_PROD_QTY);

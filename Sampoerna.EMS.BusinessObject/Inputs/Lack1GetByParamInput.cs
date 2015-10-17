@@ -94,6 +94,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public bool IsCreateNew { get; set; }
 
+        public int Lack1Id { get; set; }
     }
 
     public class Lack1GetLatestLack1ByParamInput
