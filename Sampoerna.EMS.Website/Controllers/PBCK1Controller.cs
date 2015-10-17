@@ -2134,7 +2134,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     uomId = dt.Lack1UomId;
                 }
-                
+
+
+                var UomKG = "kg";
                 var visibilityUomPemasukan = "l"; //code : l (liter), k (kg) regarding to converted uom id
                 var visibilityUomPenggunaan = "l"; //code : l (liter), k (kg) regarding to converted uom id
                 var visibilityUomBkc = "l"; //code : l (liter), k (kg), b (batang) //from Excisable Goods Type on Brand Registration by Prod_Code in Lack1 Production Data
@@ -2198,7 +2200,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             detailRow.No = item.BulanId.ToString(CultureInfo.InvariantCulture);
 
                             detailRow.Jenis = prod.ProductAlias;
-                            detailRow.Uom = uomId;
+                            detailRow.Uom = uomId.ToLower() == "g" ? UomKG : uomId;
                             detailRow.UomBKC = prod.UomId;
                             
                             if (item.SaldoAwal.HasValue)
@@ -2251,7 +2253,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         detailRow.No = item.BulanId.ToString(CultureInfo.InvariantCulture);
 
                         detailRow.Jenis = "-";
-                        detailRow.Uom = uomId;
+                        detailRow.Uom = uomId.ToLower() == "g" ? UomKG : uomId;
                         detailRow.UomBKC = "-";
                         
                         detailRow.PemasukanDisplay = "-";
