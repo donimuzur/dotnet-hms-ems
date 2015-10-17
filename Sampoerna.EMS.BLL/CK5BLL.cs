@@ -1375,7 +1375,10 @@ namespace Sampoerna.EMS.BLL
             dbData.REGISTRATION_DATE = input.AdditionalDocumentData.RegistrationDate;
 
             dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
-            
+
+            if (input.AdditionalDocumentData.Ck5FileUploadList.Count() > 0)
+                CheckFileUploadChange(input);
+
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             if (!string.IsNullOrEmpty(input.AdditionalDocumentData.Back1Number)
@@ -1474,16 +1477,34 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "REGISTRATION_DATE", input.UserId, dbData.CK5_ID.ToString());
 
             dbData.REGISTRATION_DATE = input.AdditionalDocumentData.RegistrationDate;
-           
+
             dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
 
-           
+            if (input.AdditionalDocumentData.Ck5FileUploadList.Count() > 0)
+                CheckFileUploadChange(input);
+
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);
 
            
 
+        }
+
+        public void CheckFileUploadChange(CK5WorkflowDocumentInput input)
+        {
+            var dataOld = GetCk5FileUploadByCk5Id(input.DocumentId).Select(c => c.FILE_NAME).ToList();
+            var dataNew = input.AdditionalDocumentData.Ck5FileUploadList.Select(c => c.FILE_NAME).ToList();
+            
+            var StringDataOld = String.Join(", ", dataOld);
+            var StringDataNew = String.Join(", ", dataNew);
+
+            if (dataOld.Count > 0)
+            {
+                StringDataNew = StringDataOld + ", " + StringDataNew;
+            }
+
+            SetChangeHistory(StringDataOld, StringDataNew, "CK5_FILE_UPLOAD", input.UserId, input.DocumentId.ToString());
         }
 
         private void DeleteCk5FileUploadByCk5Id(long ck5Id)
@@ -1495,6 +1516,13 @@ namespace Sampoerna.EMS.BLL
             }
 
         }
+
+        private List<CK5_FILE_UPLOAD> GetCk5FileUploadByCk5Id(long ck5Id)
+        {
+            var dbData = _repositoryCK5FileUpload.Get(c => c.CK5_ID == ck5Id);
+            return Mapper.Map<List<CK5_FILE_UPLOAD>>(dbData);
+        }
+
         public void GovApproveDocumentRollback(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -1520,6 +1548,15 @@ namespace Sampoerna.EMS.BLL
            
             //todo delete changehistory
             _changesHistoryBll.DeleteByFormIdAndNewValue(dbData.CK5_ID.ToString(), EnumHelper.GetDescription(Enums.ActionType.GovApprove));
+
+            if (dbData.CK5_FILE_UPLOAD.Count() > 0) {
+                var dataOld = _repository.GetByID(input.DocumentId).CK5_FILE_UPLOAD.Select(c => c.FILE_NAME).ToList();
+                var dataNew = input.AdditionalDocumentData.Ck5FileUploadList.Select(c => c.CK5_FILE_UPLOAD_ID).ToList();
+
+                var StringDataOld = String.Join(", ", dataOld);
+                var StringDataNew = String.Join(", ", dataNew);
+                _changesHistoryBll.DeleteByFormIdAndNewValue(dbData.CK5_ID.ToString(), StringDataOld + ", " + StringDataNew);
+            }
 
             _uow.SaveChanges();
 
@@ -2887,6 +2924,7 @@ namespace Sampoerna.EMS.BLL
 
         public void CK5CompletedAttachment(CK5WorkflowDocumentInput input)
         {
+            
             var dbData = _repository.GetByID(input.DocumentId);
 
             if (dbData == null)
@@ -2896,6 +2934,9 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
+
+            if (input.AdditionalDocumentData.Ck5FileUploadList.Count() > 0)
+                CheckFileUploadChange(input);
 
             //add workflow history
             input.ActionType = Enums.ActionType.Modified;
