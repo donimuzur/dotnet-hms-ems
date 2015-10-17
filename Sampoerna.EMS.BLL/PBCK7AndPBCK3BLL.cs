@@ -1554,6 +1554,8 @@ namespace Sampoerna.EMS.BLL
             dbData.MODIFIED_DATE = DateTime.Now;
             dbData.MODIFIED_BY = input.UserId;
 
+            input.DocumentNumber = dbData.PBCK7_NUMBER;
+
             AddWorkflowHistory(input);
 
 
@@ -1597,7 +1599,7 @@ namespace Sampoerna.EMS.BLL
            
            
 
-            input.DocumentNumber = dbData.PBCK7_NUMBER;
+            
 
         }
 
@@ -1614,10 +1616,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             ////Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.Draft;
+            dbData.STATUS = Enums.DocumentStatus.Rejected;
             dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
@@ -2096,7 +2098,9 @@ namespace Sampoerna.EMS.BLL
             inputCk2.Pbck3Id = dbData.PBCK3_ID;
             inputCk2.Ck2Documents = input.AdditionalDocumentData.Ck2FileUploadList;
             _ck2Services.SaveCk2ByPbck3Id(inputCk2);
-        
+
+            input.DocumentNumber = dbData.PBCK3_NUMBER;
+
             AddWorkflowHistoryPbck3(input);
 
             if (IsCompletedWorkflowPbck3(input))
@@ -2110,7 +2114,7 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            input.DocumentNumber = dbData.PBCK3_NUMBER;
+            
 
         }
 
@@ -2199,10 +2203,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             ////Add Changes
-            WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.Draft);
+            WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.Rejected);
             WorkflowStatusGovAddChangesPbck3(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.Draft;
+            dbData.STATUS = Enums.DocumentStatus.Rejected;
             dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
