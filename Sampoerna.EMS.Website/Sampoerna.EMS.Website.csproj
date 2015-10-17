@@ -382,10 +382,12 @@
     <Compile Include="Models\PBCK4\Pbck4SummaryReportsViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3ViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3CreateViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7UploadViewModel.cs" />
     <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\PLANT\T001WModel.cs" />
@@ -889,9 +891,13 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\pbck1\docupload.js" />
+    <Content Include="Scripts\Pbck3Script.js" />
+    <Content Include="Scripts\Pbck3ScriptDocUpload.js" />
     <Content Include="Scripts\Pbck4InputManual.js" />
     <Content Include="Scripts\Pbck4Script.js" />
     <Content Include="Scripts\Pbck4ScriptDocUpload.js" />
+    <Content Include="Scripts\Pbck7Script.js" />
+    <Content Include="Scripts\Pbck7ScriptDocUpload.js" />
     <Content Include="Scripts\pbck7\form.js" />
     <Content Include="Scripts\poa\form.js" />
     <Content Include="Scripts\respond.js" />
@@ -1182,11 +1188,17 @@
     <Content Include="Views\CK4C\_DecreeDocCompleted.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadListDetail.cshtml" />
     <Content Include="Views\CK4C\Detail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7ChangeLog.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\EditPbck3.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeEditPbck3Pbck7.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3ChangeLog.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\DetailPbck3.cshtml" />
     <Content Include="Views\LACK2\_HomeGovApproval.cshtml" />
     <Content Include="Views\LACK2\_HomeEdit.cshtml" />
     <Content Include="Views\LACK2\_HomeDetail.cshtml" />
     <Content Include="Views\PBCK1\CK5Details.cshtml" />
     <Content Include="Views\PBCK1\_CK5Table.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomePbck3GovApproval.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

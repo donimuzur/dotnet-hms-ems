@@ -44,11 +44,13 @@
   <ItemGroup>
     <Compile Include="IBACK1BLL.cs" />
     <Compile Include="IBack1Services.cs" />
+    <Compile Include="IBack3Services.cs" />
     <Compile Include="IBlockStockBLL.cs" />
     <Compile Include="IBrandRegistrationBLL.cs" />
     <Compile Include="IChangesHistoryBLL.cs" />
     <Compile Include="ICK1BLL.cs" />
     <Compile Include="ICK1Services.cs" />
+    <Compile Include="ICK2Services.cs" />
     <Compile Include="ICK4CBLL.cs" />
     <Compile Include="ICK4CDecreeDocBLL.cs" />
     <Compile Include="ICK4CItemBLL.cs" />
