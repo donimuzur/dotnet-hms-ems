@@ -675,7 +675,7 @@ namespace Sampoerna.EMS.BLL
                         input.ExciseUom = "G";
                         break;
                     case "L":
-                        input.ExciseQty = input.ExciseQty;
+                        input.ExciseQty = input.ConvertedQty;
                         input.ExciseUom = "L";
                         break;
                 }
@@ -2833,9 +2833,9 @@ namespace Sampoerna.EMS.BLL
                 var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
 
                 var pbck1Npbkc = listPbck1[0].NppbkcId;
-                
 
-                output.QtyCk5 = GetQuotaCk5(plantId, plantNppbkcId, pbck1Npbkc, periodStart, periodEnd, (Enums.ExGoodsType)goodtypegroupidval);
+
+                output.QtyCk5 = GetQuotaCk5External(plantId, plantNppbkcId, pbck1Npbkc, periodStart, periodEnd, (Enums.ExGoodsType)goodtypegroupidval);
 
                 output.RemainQuota = output.QtyApprovedPbck1 - output.QtyCk5;
 
@@ -2870,6 +2870,32 @@ namespace Sampoerna.EMS.BLL
                     continue;
                 if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
                     continue;
+
+                if (ck5.GRAND_TOTAL_EX.HasValue)
+                    qtyCk5 += ck5.GRAND_TOTAL_EX.Value;
+            }
+
+            return qtyCk5;
+        }
+
+        public decimal GetQuotaCk5External(string plantName, string sourceNppbkc, string pbck1Npbkc, DateTime periodStart,
+            DateTime periodEnd, Enums.ExGoodsType goodtypegroupid)
+        {
+            var lisCk5 =
+                _repository.Get(
+                    c =>
+                        c.STATUS_ID != Enums.DocumentStatus.Cancelled
+                        && c.SOURCE_PLANT_ID == plantName
+                        && c.SOURCE_PLANT_NPPBKC_ID == sourceNppbkc
+                        && c.DEST_PLANT_NPPBKC_ID == pbck1Npbkc
+                        && c.SUBMISSION_DATE >= periodStart && c.SUBMISSION_DATE <= periodEnd
+                        && c.EX_GOODS_TYPE == goodtypegroupid
+                        ).ToList();
+            decimal qtyCk5 = 0;
+
+            foreach (var ck5 in lisCk5)
+            {
+                
 
                 if (ck5.GRAND_TOTAL_EX.HasValue)
                     qtyCk5 += ck5.GRAND_TOTAL_EX.Value;

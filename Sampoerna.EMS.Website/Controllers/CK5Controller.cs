@@ -1460,6 +1460,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.UnSealingNumber = model.UnSealingNotifNumber;
                 input.UnSealingDate = model.UnsealingNotifDate;
 
+                
                 _ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
@@ -1490,7 +1491,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.UnSealingNumber = model.UnSealingNotifNumber;
                 input.UnSealingDate = model.UnsealingNotifDate;
 
-                _ck5Bll.CK5Workflow(input);
+                //_ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
             }
