@@ -26,15 +26,15 @@ namespace Sampoerna.EMS.Contract
 
         Pbck7AndPbck3Dto GetPbck7ById(int? id);
 
-        void Insert(Pbck7AndPbck3Dto pbck7AndPbck3Dto);
+        //void Insert(Pbck7AndPbck3Dto pbck7AndPbck3Dto);
 
-        int? InsertPbck7(Pbck7AndPbck3Dto pbck7AndPbck3Dto);
-        void InsertPbck7Item(Pbck7ItemUpload item);
+        //int? InsertPbck7(Pbck7AndPbck3Dto pbck7AndPbck3Dto);
+        //void InsertPbck7Item(Pbck7ItemUpload item);
 
-        void InsertBack1(Back1Dto back1);
-        void InsertBack3(Back3Dto back3);
+        //void InsertBack1(Back1Dto back1);
+        //void InsertBack3(Back3Dto back3);
 
-        void InsertCk2(Ck2Dto ck2);
+        //void InsertCk2(Ck2Dto ck2);
 
 
         Back1Dto GetBack1ByPbck7(int pbck7Id);
@@ -48,7 +48,7 @@ namespace Sampoerna.EMS.Contract
         Ck2Dto GetCk2ByPbck3Id(int? id);
 
 
-        void InsertPbck3(Pbck3Dto pbck3Dto);
+        //void InsertPbck3(Pbck3Dto pbck3Dto);
 
         Pbck7AndPbck3Dto SavePbck7(Pbck7Pbck3SaveInput input);
 
@@ -62,6 +62,8 @@ namespace Sampoerna.EMS.Contract
 
         Pbck3Dto SavePbck3(Pbck3SaveInput input);
 
-        void PBCK3Workflow(Pbck7Pbck3WorkflowDocumentInput input);
+        void PBCK3Workflow(Pbck3WorkflowDocumentInput input);
+
+        void SendMailCompletedPbck3Document(Pbck3WorkflowDocumentInput input);
     }
 }

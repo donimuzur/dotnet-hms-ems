@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.Website
                  .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.Pbck7Number))
                
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbckId))
-                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck3Date.ToString("dd MMM yyyy")))
+                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck3Date.HasValue ? src.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.Plant))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.ApprovedBy))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck3Status)));

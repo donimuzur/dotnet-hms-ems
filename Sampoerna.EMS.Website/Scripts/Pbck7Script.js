@@ -378,36 +378,37 @@ function ValidateGovInput() {
 
                 $('#Comment').focus();
             }
+        } 
+    }
+
+    if ($('#Pbck7GovStatus').val() != 'Rejected') {
+
+        if ($('#Back1Dto_Back1Number').val() == '') {
+            AddValidationClass(false, 'Back1Dto_Back1Number');
+            result = false;
+
         }
 
-    }
-    
-    if ($('#Back1Dto_Back1Number').val() == '') {
-        AddValidationClass(false, 'Back1Dto_Back1Number');
-        result = false;
-
-    }
-
-    if ($('#Back1Dto_Back1Date').val() == '') {
-        AddValidationClass(false, 'Back1Dto_Back1Date');
-        result = false;
-    }
-    
-    if ($('#poa_sk0').length == 0) {
-        AddValidationClass(false, 'poa-files');
-
-        if (result) {
-            $('#modalBodyMessage').text('Missing attach files BACK-1 Doc');
-            $('#ModalPbck7ValidateGov').modal('show');
-
-            $('#collapseFour').removeClass('collapse');
-            $('#collapseFour').addClass('in');
-            $("#collapseFour").css({ height: "auto" });
-
+        if ($('#Back1Dto_Back1Date').val() == '') {
+            AddValidationClass(false, 'Back1Dto_Back1Date');
+            result = false;
         }
-        result = false;
+
+        if ($('#poa_sk0').length == 0) {
+            AddValidationClass(false, 'poa-files');
+
+            if (result) {
+                $('#modalBodyMessage').text('Missing attach files BACK-1 Doc');
+                $('#ModalPbck7ValidateGov').modal('show');
+
+                $('#collapseFour').removeClass('collapse');
+                $('#collapseFour').addClass('in');
+                $("#collapseFour").css({ height: "auto" });
+
+            }
+            result = false;
+        }
     }
-    
     if (result == false) {
         $('#collapseFour').removeClass('collapse');
         $('#collapseFour').addClass('in');

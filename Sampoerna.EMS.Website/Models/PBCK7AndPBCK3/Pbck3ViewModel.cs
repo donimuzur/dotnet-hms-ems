@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.PrintHistory;
@@ -30,6 +31,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string Pbck3StatusDescription { get; set; }
         public Enums.DocumentStatusGov Pbck3GovStatus { get; set; }
         public string Pbck3GovStatusDescription { get; set; }
+
+        public Enums.DocumentStatusGov Pbck3GovStatusList { get; set; }
 
         public List<WorkflowHistoryViewModel> WorkflowHistoryPbck3 { get; set; }
 
@@ -71,13 +74,14 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public DateTime? Ck2Date { get; set; }
         public decimal? Ck2Value { get; set; }
         public List<CK2_DOCUMENT> Ck2Documents { get; set; }
+        public List<HttpPostedFileBase> Pbck3Ck2FileUploadFileList { get; set; }
 
         //back3
         public int Back3Id { get; set; }
         public string Back3Number { get; set; }
         public DateTime? Back3Date { get; set; }
-        public List<BACK3_DOCUMENT> Back3Documents { get; set; } 
-
+        public List<BACK3_DOCUMENT> Back3Documents { get; set; }
+        public List<HttpPostedFileBase> Pbck3Back3FileUploadFileList { get; set; }
        
 
         //general

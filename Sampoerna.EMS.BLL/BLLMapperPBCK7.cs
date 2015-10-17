@@ -205,6 +205,16 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Pbck7Documents, opt => opt.MapFrom(src => src.PBCK7_ITEM))
              ;
 
+            Mapper.CreateMap<Pbck3WorkflowDocumentData, Back3Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Back3Number, opt => opt.MapFrom(src => src.Back3No))
+                .ForMember(dest => dest.Back3Date, opt => opt.MapFrom(src => src.Back3Date))
+                ;
+
+            Mapper.CreateMap<Pbck3WorkflowDocumentData, Ck2Dto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck2Number, opt => opt.MapFrom(src => src.Ck2No))
+                .ForMember(dest => dest.Ck2Date, opt => opt.MapFrom(src => src.Ck2Date))
+                .ForMember(dest => dest.Ck2Value, opt => opt.MapFrom(src => src.Ck2Value))
+                ;
         }
     }
 }

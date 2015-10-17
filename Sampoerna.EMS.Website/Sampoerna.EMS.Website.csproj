@@ -884,6 +884,8 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\pbck1\docupload.js" />
+    <Content Include="Scripts\Pbck3Script.js" />
+    <Content Include="Scripts\Pbck3ScriptDocUpload.js" />
     <Content Include="Scripts\Pbck4InputManual.js" />
     <Content Include="Scripts\Pbck4Script.js" />
     <Content Include="Scripts\Pbck4ScriptDocUpload.js" />

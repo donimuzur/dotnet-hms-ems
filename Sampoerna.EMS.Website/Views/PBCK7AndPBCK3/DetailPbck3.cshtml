@@ -6,7 +6,7 @@
     ViewBag.Title = "Edit";
 }
 
-@using (@Html.BeginForm("EditPbck3", "PBCK7AndPBCK3", FormMethod.Post, new { @id = "formPbck3Edit", @class = "form-excise", role = "form" }))
+@using (@Html.BeginForm(Model.ActionType, "PBCK7AndPBCK3", FormMethod.Post, new { @id = "formPbck3Detail", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -62,6 +62,8 @@
                     @Html.HiddenFor(x => x.FromPbck7)
                     @Html.HiddenFor(x => x.Pbck3Id)
                     @Html.HiddenFor(x => x.Pbck3Status)
+                    @Html.HiddenFor(x => x.Pbck3Number)
+                   
                     <!-- Nav tabs -->
                     @Html.AntiForgeryToken()
                     <ul role="tablist" class="nav nav-tabs">
@@ -140,7 +142,13 @@
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/Pbck3Script.js"></script>
+    @if (Model.AllowGovApproveAndReject)
+    {
+        <script src="~/Scripts/UploadExcel.js"></script>
+        <script src="~/Scripts/Pbck3ScriptDocUpload.js"></script>
 
+    }
     <script type="text/javascript">
         $('#btnBack').click(function (e) {
             location.href = '@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")';
@@ -182,6 +190,27 @@
             }
         });
 
+        $('#divComment').hide();
+
+        $('#Pbck3GovStatus').on('change', function (e) {
+            var valueSelected = this.value;
+
+            $('#divComment').hide();
+
+
+            if (valueSelected == 'Rejected') {
+                $('#divComment').show();
+
+            }
+
+        });
+
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateGovInput()) {
+                $('#formPbck3Detail').submit();
+            }
+        });
+        
         function printPreview(url) {
 
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');

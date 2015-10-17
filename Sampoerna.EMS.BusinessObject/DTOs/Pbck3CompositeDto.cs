@@ -47,9 +47,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Ck2Number { get; set; }
         public DateTime? Ck2Date { get; set; }
         public decimal? Ck2Value { get; set; }
-
         public List<CK2_DOCUMENT> Ck2Documents { get; set; }
 
+        //back3
+        public int Back3Id { get; set; }
+        public string Back3Number { get; set; }
+        public DateTime? Back3Date { get; set; }
+        public List<BACK3_DOCUMENT> Back3Documents { get; set; }
+       
        //general
         public bool FromPbck7 { get; set; }
 

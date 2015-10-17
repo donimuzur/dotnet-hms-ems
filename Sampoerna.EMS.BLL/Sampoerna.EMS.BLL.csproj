@@ -82,6 +82,7 @@
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
     <Compile Include="ProductionBLL.cs" />
     <Compile Include="Services\Back1Services.cs" />
+    <Compile Include="Services\Back3Services.cs" />
     <Compile Include="Services\BrandRegistrationService.cs" />
     <Compile Include="Services\CK1Services.cs" />
     <Compile Include="Services\CK2Services.cs" />

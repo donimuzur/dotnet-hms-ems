@@ -147,6 +147,12 @@
     <script src="~/Scripts/pbck7/form.js"></script>
     <script src="~/Scripts/Pbck7Script.js"></script>
     <script type="text/javascript">
+        
+        $('#btn-generate-upload').click(function () {
+            uploadXmlFile('@Url.Action("UploadFile", "PBCK7AndPBCK3")');
+        });
+
+
         $('#btnBack').click(function (e) {
             location.href = '@Url.Action("Index", "PBCK7AndPBCK3")';
         });
@@ -154,7 +160,7 @@
         $("#btnSave").click(function () {
 
             if (ValidatePbck7Form()) {
-                    $('#form-pbck7-edit').submit();
+                $('#form-pbck7-edit').submit();
             }
         });
         
@@ -173,48 +179,7 @@
         });
         
         
-        //var uploaditems = [];
-        //$("#btnSaveGovStatus").click(function() {
-        //    if (ValidateGovInput()) {
-        //        $('#form-pbck7-edit').submit();
-        //    }
-        //});
-        //$("#btnSaveGovStatusPbck3").click(function() {
-
-        //    $('#form-pbck7-edit').submit();
-
-        //});
-        //$("#btn-save-pbck7").click(function() {
-        //    if (ValidateBack1()) {
-        //        $('#form-pbck7-edit').submit();
-        //    }
-        //});
-        //$("#btn-save-pbck3").click(function () {
-        //    if (ValidatePbck3()) {
-        //        $('#form-pbck7-edit').submit();
-        //    }
-        //});
        
-        //$("#btnSubmitConfirm").click(function() {
-        //    $('#IsSaveSubmit').val('true');
-        //    $('#form-pbck7-edit').submit();
-        //});
-
-        //$("#btnSubmitConfirmPbck3").click(function() {
-        //    $('#IsSaveSubmitPbck3').val('true');
-        //    if (ValidatePbck3()) {
-        //        $('#form-pbck7-edit').submit();
-        //    }
-        //});
-        //$('#btnSubmitDocument').click(function() {
-
-        //    $('#pbck7Modal').modal('show');
-        //});
-        //$('#btnSubmitDocumentPbck3').click(function() {
-
-        //    $('#pbck3Modal').modal('show');
-        //});
-
 
         $('#NppbkcId').change(function() {
 

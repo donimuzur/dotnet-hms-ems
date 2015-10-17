@@ -214,6 +214,8 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Inputs\Back1Input.cs" />
+    <Compile Include="Inputs\Back3Input.cs" />
+    <Compile Include="Inputs\Ck2Input.cs" />
     <Compile Include="Inputs\CK4CItemInput.cs" />
     <Compile Include="Inputs\Ck4CGetByParamInput.cs" />
     <Compile Include="Inputs\CK5Input.cs" />

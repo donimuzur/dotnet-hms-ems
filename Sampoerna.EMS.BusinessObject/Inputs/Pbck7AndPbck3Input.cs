@@ -81,6 +81,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.ActionType ActionType { get; set; }
         public string Comment { get; set; }
         public Enums.FormType FormType { get; set; }
+        public bool IsModified { get; set; }
     }
 
     public class Pbck7Pbck3WorkflowDocumentInput
@@ -97,6 +98,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         //public List<Pbck7ItemUpload> UploadItemDto { get; set; }
 
         public Enums.FormType FormType { get; set; }
+        public Enums.DocumentStatusGov StatusGovInput { get; set; }
+        public bool IsModified { get; set; }
     }
 
     public class Pbck7WorkflowDocumentData
@@ -116,5 +119,36 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
         public Enums.FormType FormType { get; set; }
+    }
+
+    public class Pbck3WorkflowDocumentInput
+    {
+        public int DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public string Comment { get; set; }
+        public Enums.ActionType ActionType { get; set; }
+        public string DocumentNumber { get; set; }
+
+        public Pbck3WorkflowDocumentData AdditionalDocumentData { get; set; }
+
+      
+        public Enums.FormType FormType { get; set; }
+        public Enums.DocumentStatusGov GovStatusInput { get; set; }
+        public bool IsModified { get; set; }
+    }
+
+    public class Pbck3WorkflowDocumentData
+    {
+
+        public string Back3No { get; set; }
+        public DateTime? Back3Date { get; set; }
+        public List<BACK3_DOCUMENT> Back3FileUploadList { get; set; }
+
+        public string Ck2No { get; set; }
+        public DateTime? Ck2Date { get; set; }
+        public decimal? Ck2Value { get; set; }
+        public List<CK2_DOCUMENT> Ck2FileUploadList { get; set; }
+
     }
 }

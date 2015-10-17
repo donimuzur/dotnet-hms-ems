@@ -20,9 +20,8 @@
                 <h3>PBCK-7</h3>
                 <label class="status">@Model.Pbck7StatusName</label>
                 <div class="action-button">
-                    @if (Model.Pbck7Status != Enums.DocumentStatus.Completed)
-                    {
-                        if (Model.AllowApproveAndReject)
+                  
+                        @if (Model.AllowApproveAndReject)
                         {
                             <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
 
@@ -40,32 +39,10 @@
                                 <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck7" />
                             }
                         }
-
-                      }
-                    else
-                    {
-                        if (Model.AllowApproveAndRejectPbck3)
-                        {
-                            <input type="button" class="btn btn-blue" value="Approve" id="btnApprovePbck3" />
-
-                            <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck3" />
-                        }
-                        else
-                        {
-                            if (Model.AllowManagerRejectPbck3)
-                            {
-                                <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck3" />
-                            }
-                        }
-
-
-                    }
+                    
                   
                     <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
-                    @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
-                    {
-                        <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Id })')" />
-                    }
+                  
                 </div>
             </div>
         </div>
@@ -113,8 +90,7 @@
         </div>
     </div>
 }
-@if (Model.Pbck7Status != Enums.DocumentStatus.Completed)
-{
+
     <div id="pbck7ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -161,57 +137,8 @@
             </div>
         </div>
     </div>
-}
-else
-{
-    <div id="pbck3ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h3>Approve</h3>
-                </div>
-                <div class="modal-body">
-                    Approve Documents  ?
-                </div>
-                <div class="modal-footer">
-                    <input type="button" id="btnApproveConfirmPbck3" class="btn btn-blue" value="Yes" />
-                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="pbck3RejectModal" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">Reject PBCK-3 document</h4>
-                </div>
-                @using (Html.BeginForm("RejectDocumentPbck3", "Pbck7AndPbck3"))
-                {
-                    <div class="modal-body">
-                        @Html.HiddenFor(model => model.Pbck3Dto.Pbck3Id)
-                        <div class="form-excise" role="form">
-                            <div class="row">
-                                <label class="col-md-3">Add Comment<span class="red">*</span></label>
-                                <div class="col-md-9">
-                                    @Html.TextAreaFor(model => model.Pbck3Dto.Comment, new { @rows = "5", @class = "col-md-9" })
-                                </div>
-                            </div>
-                        </div>
 
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                        <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmRejectPbck3" />
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-
-}
+    
 
 <div id="ModalPbck7ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
@@ -348,11 +275,7 @@ else
 
             $('#pbck7RejectModal').modal('show');
         });
-        $('#btnRejectPbck3').click(function () {
-            $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
-
-            $('#pbck3RejectModal').modal('show');
-        });
+      
         $('#Comment').bind('input propertychange', function () {
 
             $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');

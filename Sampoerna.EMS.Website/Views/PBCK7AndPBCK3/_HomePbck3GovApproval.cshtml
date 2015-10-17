@@ -18,7 +18,7 @@
                         </a>
                     </h4>
                 </div>
-                <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne" style="">
+                <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse" id="collapseOne" style="">
                     <div class="panel-body">
                         <div role="form" class="form-excise">
                             <div class="row">
@@ -121,7 +121,7 @@
                         </a>
                     </h4>
                 </div>
-                <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
+                <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse" id="collapseThree" >
                     <div class="panel-body">
 
                         <div class="table-container" id="table-upload">
@@ -214,7 +214,7 @@
                         </a>
                     </h4>
                 </div>
-                <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                     <div class="panel-body">
                         <div class="form-excise" role="form">
 
@@ -302,6 +302,7 @@
                     <div class="panel-body">
                         <div role="form" class="form-excise">
                             <div class="row">
+
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">PBCK-3 No</label>
@@ -310,6 +311,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">PBCK-3 Date</label>
@@ -331,7 +333,28 @@
                                     </div>
                                 </div>
 
+                            </div>
 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK3 Gov Status<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.EnumDropDownListFor(x => x.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="divComment">
+                                        <div class="row">
+                                            <label class="col-md-4">Add Comment<span class="red">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -342,7 +365,7 @@
         @*@Html.Partial("_Back", Model)
             @Html.Partial("_WorkflowHistoryPbck7", Model)*@
         @*@Html.Partial("_WorkflowHistoryPbck3", Model)*@
-        
+
         <div aria-multiselectable="true" role="tablist" id="accordionFive" class="panel-group">
             <div class="panel panel-default">
                 <div id="headingFive" role="tab" class="panel-heading">
@@ -353,10 +376,19 @@
                         </a>
                     </h4>
                 </div>
-                <div aria-labelledby="headingFive" role="tabpanel" class="panel-collapse collapse" id="collapseFive" style="height: 0px;">
+                <div aria-labelledby="headingFive" role="tabpanel" class="panel-collapse collapse in" id="collapseFive" >
                     <div class="panel-body">
                         <div role="form" class="form-excise">
+
                             <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-3 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Back3Number, new { @class = "form-control", @maxlength = "35" })
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="col-md-6">
                                     <div class="row">
@@ -368,29 +400,9 @@
                                 </div>
 
                             </div>
+
                             <div class="row">
 
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">BACK-3 No</label>
-                                        <div class="col-md-8">
-                                           @Html.TextBoxFor(model => model.Back3Number, new { @class = "form-control", @maxlength = "35" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">CK-2 Date</label>
-                                        <div class="col-md-8">
-                                            <div class="input-group date">
-                                               @Html.TextBoxFor(model => model.Ck2Date,"{0:dd MMM yyyy}", new { @class = "form-control"})
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">BACK-3 Date</label>
@@ -404,65 +416,58 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">CK-2 Value</label>
+                                        <label class="col-md-4">CK-2 Date</label>
                                         <div class="col-md-8">
-                                          @Html.TextBoxFor(model => model.Ck2Value, new { @class = "form-control", @maxlength = "10" })
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.Ck2Date,"{0:dd MMM yyyy}", new { @class = "form-control"})
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="row">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
+                                        <label class="col-md-4">CK-2 Value</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Ck2Value, new { @class = "form-control", @maxlength = "10" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
                                         <label class="col-md-4">BACK-3 Doc</label>
                                         <div class="col-md-8">
-                                            <div class="file-upload" id="back3-files">
-                                                @if (Model.Back3Documents != null)
-                                                {
-                                                    if (Model.Back3Documents != null)
-                                                    {
 
-                                                        foreach (var file in Model.Back3Documents)
-                                                        {
-
-                                                            <div class="row">
-                                                                <div class="col-sm-10">
-                                                                    <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                                </div>
-                                                                @*<div class="col-sm-2">
-                                                                    <button class="btn btn-danger full" type="button" onclick="removeDocBack3(@file.BACK3_DOC_ID, '@Url.Action("RemoveDocBack1", "Pbck7AndPbck3")' , this) "><i class=" fa fa-times"></i></button>
-                                                                </div>*@
-                                                            </div>
-
-                                                        }
-                                                    }
-                                                }
-
-                                            </div>
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">BACK-3 Doc</label>
-                                                        <div class="col-md-8">
+                                                <div class="col-md-12">
+                                                    <div class="file-upload" id="poa-files">
 
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <div class="file-upload" id="poa-files2">
-
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-12">
-                                                                    <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".ck-3">Add File</button>
-                                                                </div>
-
-
-                                                            </div>
-
-                                                        </div>
                                                     </div>
                                                 </div>
+
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".back-3">Add File</button>
+                                                </div>
+
+
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -471,54 +476,86 @@
                                     <div class="row">
                                         <label class="col-md-4">CK-2 Doc</label>
                                         <div class="col-md-8">
-                                            <div class="file-upload" id="ck2-files">
-                                                @if (Model.Ck2Documents != null)
-                                                {
-                                                   
 
-                                                        foreach (var file in Model.Ck2Documents)
-                                                        {
-
-                                                            <div class="row">
-                                                                <div class="col-sm-10">
-                                                                    <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                                </div>
-                                                               
-                                                            </div>
-
-                                                        }
-                                                    
-                                                }
-
-                                            </div>
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">CK-2 Doc</label>
-                                                        <div class="col-md-8">
+                                                <div class="col-md-12">
+                                                    <div class="file-upload" id="poa-files2">
 
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <div class="file-upload" id="poa-files2">
-
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-12">
-                                                                    <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".ck-3">Add File</button>
-                                                                </div>
-
-
-                                                            </div>
-
-                                                        </div>
                                                     </div>
                                                 </div>
+
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".ck-2">Add File</button>
+                                                </div>
+
+
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-3 Uploaded Doc</label>
+                                        <div class="col-md-8">
+                                            <div class="file-upload" id="back3-files">
+                                                @if (Model.Back3Documents != null)
+                                                {
+                                                    foreach (var file in Model.Back3Documents)
+                                                    {
+
+                                                        <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                            </div>
+                                                            @*<div class="col-sm-2">
+                                                                        <button class="btn btn-danger full" type="button" onclick="removeDocBack3(@file.BACK3_DOC_ID, '@Url.Action("RemoveDocBack1", "Pbck7AndPbck3")' , this) "><i class=" fa fa-times"></i></button>
+                                                                    </div>*@
+                                                        </div>
+
+                                                    }
+
+                                                }
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">CK-2 Uploaded Doc</label>
+                                        <div class="col-md-8">
+                                            <div class="file-upload" id="ck2-files">
+                                                @if (Model.Ck2Documents != null)
+                                                {
+                                                    foreach (var file in Model.Ck2Documents)
+                                                    {
+
+                                                        <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                            </div>
+
+                                                        </div>
+
+                                                    }
+
+                                                }
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -671,6 +708,73 @@
 
     </div>
 </div>
+
+@* Modal upload dialog *@
+
+<div class="modal fade in upload-file ems-modal back-3" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">BACK-3 Doc Attachment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="file-sk-container" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary full add-files">Add Files</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <input type="file" class="file-inputs" data-filename-placement="inside" id="Pbck3Back3FileUploadFileList_0_" name="Pbck3Back3FileUploadFileList[0]">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" id="upload-file-sk" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* end Modal upload dialog *@
+
+<div class="modal fade in upload-file ems-modal ck-2" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">CK-2 Doc Attachment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="file-sk-container2" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary full add-files">Add Files</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <input type="file" class="file-inputs" data-filename-placement="inside" id="Pbck3Ck2FileUploadFileList_0_" name="Pbck3Ck2FileUploadFileList[0]">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" id="upload-file-sk2" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 

@@ -107,7 +107,8 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript">
         var isCompleteView = '@Model.IsCompletedDoc';
-        if (isCompleteView = 'False') {
+       
+        if (isCompleteView == 'False') {
             $('#MenuPBCK3Index').addClass('active');
         } else {
             $('#MenuPBCK3CompleteIndex').addClass('active');

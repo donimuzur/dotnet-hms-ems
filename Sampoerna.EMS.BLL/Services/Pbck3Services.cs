@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.BLL.Services
         }
 
 
-        public void InsertPbck3FromCk5MarketReturn(InsertPbck3FromCk5MarketReturnInput input)
+        public string InsertPbck3FromCk5MarketReturn(InsertPbck3FromCk5MarketReturnInput input)
         {
             //generate pbck3number
            
@@ -50,10 +50,11 @@ namespace Sampoerna.EMS.BLL.Services
             };
 
             _repository.InsertOrUpdate(dbPbck3);
-
+         
+            return dbPbck3.PBCK3_NUMBER;
         }
 
-        public void InsertPbck3FromPbck7(InsertPbck3FromPbck7Input input)
+        public string InsertPbck3FromPbck7(InsertPbck3FromPbck7Input input)
         {
             //generate pbck3number
 
@@ -77,6 +78,7 @@ namespace Sampoerna.EMS.BLL.Services
 
             _repository.InsertOrUpdate(dbPbck3);
 
+            return dbPbck3.PBCK3_NUMBER;
         }
     }
 }
