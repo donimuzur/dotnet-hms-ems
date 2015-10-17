@@ -755,19 +755,13 @@
 
                if (valueSelected == 'Rejected') {
                    $('#divComment').show();
-                   $("input[name='Detail.QtyApproved']:hidden").val(0);
-                   $("input[name='Detail.QtyApproved']:text").val(0);
                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
                }
                else if (valueSelected == 'PartialApproved') {
                    $("input[name='Detail.QtyApproved']:text").prop("readonly", false);
-                   $("input[name='Detail.QtyApproved']:hidden").val(request);
-                   $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request, 2));
                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
                }
                else if (valueSelected == 'FullApproved') {
-                   $("input[name='Detail.QtyApproved']:hidden").val(request);
-                   $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request, 2));
                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
                }
            });

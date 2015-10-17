@@ -288,7 +288,8 @@ namespace Sampoerna.EMS.BLL
 
             if (input.DocumentId > 0)
             {
-                _decreeDocBll.DeleteByPbck1Id(input.DocumentId);
+                if (input.ActionType == Enums.ActionType.Reject)
+                    _decreeDocBll.DeleteByPbck1Id(input.DocumentId);
 
                 dbData = _repository.GetByID(input.DocumentId);
 
@@ -1431,7 +1432,7 @@ namespace Sampoerna.EMS.BLL
             {
                 FORM_TYPE_ID = Enums.MenuList.PBCK1,
                 FORM_ID = input.DocumentId.ToString(),
-                FIELD_NAME = "STATUS",
+                FIELD_NAME = "Status",
                 NEW_VALUE = EnumHelper.GetDescription(newStatus),
                 OLD_VALUE = EnumHelper.GetDescription(oldStatus),
                 MODIFIED_BY = input.UserId,
@@ -1447,7 +1448,7 @@ namespace Sampoerna.EMS.BLL
             {
                 FORM_TYPE_ID = Enums.MenuList.PBCK1,
                 FORM_ID = input.DocumentId.ToString(),
-                FIELD_NAME = "STATUS_GOV",
+                FIELD_NAME = "Status Goverment",
                 NEW_VALUE = EnumHelper.GetDescription(newStatus),
                 OLD_VALUE = oldStatus.HasValue ? EnumHelper.GetDescription(oldStatus) : "NULL",
                 MODIFIED_BY = input.UserId,
