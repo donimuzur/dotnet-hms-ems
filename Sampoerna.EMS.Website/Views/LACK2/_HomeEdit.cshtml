@@ -158,6 +158,12 @@
                                         @Html.HiddenFor(x => x.Items[i].Lack2Id)
                                         @Html.HiddenFor(x => x.Items[i].Id)
                                         @Html.HiddenFor(x => x.Items[i].Ck5Id)
+                                        @Html.HiddenFor(x => x.Items[i].Ck5Number)
+                                        @Html.HiddenFor(x => x.Items[i].Ck5GIDate)
+                                        @Html.HiddenFor(x => x.Items[i].Ck5ItemQty)
+                                        @Html.HiddenFor(x => x.Items[i].CompanyName)
+                                        @Html.HiddenFor(x => x.Items[i].CompanyNppbkc)
+                                        @Html.HiddenFor(x => x.Items[i].CompanyAddress)
                                         <td>@(i + 1)</td>
                                         <td>@Model.Items[i].Ck5Number</td>
                                         <td>@Model.Items[i].Ck5GIDate</td>
@@ -201,7 +207,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Decree Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
+                                            <div class="input-group disabled">
                                                 @Html.TextBox("decree-date", string.Empty, new { @class = "form-control", @disabled = "disabled" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>

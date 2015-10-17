@@ -460,16 +460,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         model.Add(item);
                     }
-
-                    var input = Mapper.Map<List<WasteUploadItemsInput>>(model);
-                    var outputResult = _wasteBll.ValidationWasteUploadDocumentProcess(input);
-
-                    model = Mapper.Map<List<WasteUploadItems>>(outputResult);
-
-
+                    
                 }
             }
 
+            var input = Mapper.Map<List<WasteUploadItemsInput>>(model);
+            var outputResult = _wasteBll.ValidationWasteUploadDocumentProcess(input);
+
+            model = Mapper.Map<List<WasteUploadItems>>(outputResult);
             return Json(model);
 
 

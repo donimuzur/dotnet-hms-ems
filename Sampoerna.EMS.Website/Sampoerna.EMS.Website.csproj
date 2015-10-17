@@ -365,6 +365,7 @@
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ListCK5Model.cs" />
     <Compile Include="Models\PBCK1\PBCK1SupInfo.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
@@ -1184,6 +1185,8 @@
     <Content Include="Views\LACK2\_HomeGovApproval.cshtml" />
     <Content Include="Views\LACK2\_HomeEdit.cshtml" />
     <Content Include="Views\LACK2\_HomeDetail.cshtml" />
+    <Content Include="Views\PBCK1\CK5Details.cshtml" />
+    <Content Include="Views\PBCK1\_CK5Table.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

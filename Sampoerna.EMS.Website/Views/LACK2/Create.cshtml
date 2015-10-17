@@ -52,6 +52,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">LACK-2 No</label>
                                                             <div class="col-md-8">
+                                                                @Html.HiddenFor(model => model.IsCreateNew)
                                                                 @Html.TextBox("lack2-number", string.Empty, new { @class = "form-control", @disabled = "disabled" })
                                                             </div>
                                                         </div>
@@ -514,6 +515,7 @@
             param.SourcePlantId = $('#SourcePlantId').find("option:selected").val();
             param.ExcisableGoodsType = $('#ExcisableGoodsType').find("option:selected").val();
             param.CompanyCode = $('#CompanyCode').find("option:selected").val();
+            param.IsCreateNew = $('#IsCreateNew').val();
             
             $.ajax({
                 url: '@Url.Action("Generate", "LACK2")',

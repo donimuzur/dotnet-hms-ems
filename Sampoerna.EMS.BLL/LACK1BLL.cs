@@ -1187,32 +1187,47 @@ namespace Sampoerna.EMS.BLL
 
             #region Validation
 
-            //check if already exists with same selection criteria when create new document only
+            //check if already exists with same selection criteria
+            var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+                NppbkcId = input.NppbkcId,
+                ExcisableGoodsType = input.ExcisableGoodsType,
+                ReceivingPlantId = input.ReceivedPlantId,
+                SupplierPlantId = input.SupplierPlantId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear
+            });
+
             if (input.IsCreateNew)
             {
-                var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
-                {
-                    CompanyCode = input.CompanyCode,
-                    NppbkcId = input.NppbkcId,
-                    ExcisableGoodsType = input.ExcisableGoodsType,
-                    ReceivingPlantId = input.ReceivedPlantId,
-                    SupplierPlantId = input.SupplierPlantId,
-                    PeriodMonth = input.PeriodMonth,
-                    PeriodYear = input.PeriodYear
-                });
-
                 if (lack1Check != null)
                 {
                     return new Lack1GeneratedOutput()
                     {
                         Success = false,
                         ErrorCode = ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria.ToString(),
-                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria),
+                        ErrorMessage =
+                            EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria),
                         Data = null
                     };
                 }
             }
-            
+            else
+            {
+                if (lack1Check != null && lack1Check.LACK1_ID != input.Lack1Id)
+                {
+                    return new Lack1GeneratedOutput()
+                    {
+                        Success = false,
+                        ErrorCode = ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria.ToString(),
+                        ErrorMessage =
+                            EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1DuplicateSelectionCriteria),
+                        Data = null
+                    };
+                }
+            }
+
             //Check Excisable Group Type if exists
             var checkExcisableGroupType = _exGroupTypeService.GetGroupTypeDetailByGoodsType(input.ExcisableGoodsType);
             if (checkExcisableGroupType == null)

@@ -41,6 +41,7 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationService _brandRegistrationService;
         private ICK4CDecreeDocBLL _ck4cDecreeDocBll;
         private IWasteBLL _wasteBll;
+        private IProductionBLL _productionBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -65,6 +66,7 @@ namespace Sampoerna.EMS.BLL
             _brandRegistrationService = new BrandRegistrationService(_uow, _logger);
             _ck4cDecreeDocBll = new CK4CDecreeDocBLL(_uow, _logger);
             _wasteBll = new WasteBLL(_logger, _uow);
+            _productionBll = new ProductionBLL(_logger, _uow);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -809,6 +811,10 @@ namespace Sampoerna.EMS.BLL
 
                     var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE).Where(c => c.ProdDate < saldoDate).LastOrDefault();
 
+                    var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+
+                    var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+
                     ck4cItem.CollumNo = 0;
                     ck4cItem.No = string.Empty;
                     ck4cItem.NoProd = string.Empty;
@@ -827,7 +833,7 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.Isi = String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
                     ck4cItem.Hje = brand.HJE_IDR == null ? "0.00" : String.Format("{0:n}", brand.HJE_IDR);
                     ck4cItem.Total = "0.00";
-                    ck4cItem.ProdWaste = unpackedQty == null ? "0.00" : String.Format("{0:n}", unpackedQty.UnpackedQty);
+                    ck4cItem.ProdWaste = unpackedQty == null ? String.Format("{0:n}", oldUnpacked) : String.Format("{0:n}", unpackedQty.UnpackedQty);
                     ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
 
                     //result.Ck4cItemList.Add(ck4cItem);
@@ -969,7 +975,11 @@ namespace Sampoerna.EMS.BLL
 
                             var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE).Where(c => c.ProdDate < saldoDate).LastOrDefault();
 
-                            var lastSaldoUnpacked = lastSaldo == null ? 0 : lastSaldo.UnpackedQty;
+                            var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+
+                            var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+
+                            var lastSaldoUnpacked = lastSaldo == null ? oldUnpacked : lastSaldo.UnpackedQty;
 
                             unpackedQty = (lastUnpacked == 0 ? lastSaldoUnpacked : lastUnpacked) - oldWaste;
                         }
@@ -1251,11 +1261,14 @@ namespace Sampoerna.EMS.BLL
                         brandDesc.Add(dbBrand.BRAND_CE);
                     }
 
+                    var contentPerPack = ck4CItem.CONTENT_PER_PACK == null ? 0 : ck4CItem.CONTENT_PER_PACK.Value;
+                    var packedInPack = ck4CItem.PACKED_IN_PACK == null ? 0 : ck4CItem.PACKED_IN_PACK.Value;
+
                     hje.Add(ck4CItem.HJE_IDR.Value);
                     tariff.Add(ck4CItem.TARIFF.Value);
-                    content.Add(ck4CItem.CONTENT_PER_PACK.Value);
+                    content.Add(contentPerPack);
                     packedQty.Add(ck4CItem.PACKED_QTY.Value);
-                    packedQtyInPack.Add(ck4CItem.PACKED_IN_PACK.Value);
+                    packedQtyInPack.Add(packedInPack);
                     unpackedQty.Add(ck4CItem.UNPACKED_QTY.Value);
                     prodQty.Add(ck4CItem.PROD_QTY);
                     uomProdQty.Add(ck4CItem.UOM_PROD_QTY);

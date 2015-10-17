@@ -8,5 +8,6 @@
         public string ExcisableGoodsType { get; set; }
         public string CompanyCode { get; set; }
         public string NppbkcId { get; set; }
+        public bool IsCreateNew { get; set; }
     }
 }
