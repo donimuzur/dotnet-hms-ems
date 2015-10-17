@@ -151,6 +151,7 @@
     <Compile Include="DTOs\Lack1TrackingDto.cs" />
     <Compile Include="DTOs\Lack2DetailReportDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
+    <Compile Include="DTOs\Lack2GeneratedDto.cs" />
     <Compile Include="DTOs\Lack2SummaryReportDto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
@@ -243,6 +244,7 @@
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\ProductionUploadItemsInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
+    <Compile Include="Inputs\UserPlantMapInputs.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
     <Compile Include="Inputs\WasteGetByParamInput.cs" />
     <Compile Include="Inputs\WasteUploadItemsInput.cs" />
@@ -304,6 +306,9 @@
     <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\InventoryMovementOutputs.cs" />
     <Compile Include="Outputs\Pbck3Output.cs" />
+    <Compile Include="Outputs\Lack2CreateOutput.cs" />
+    <Compile Include="Outputs\Lack2GeneratedOutput.cs" />
+    <Compile Include="Outputs\Lack2SaveEditOutput.cs" />
     <Compile Include="Outputs\Pbck4ItemsOutput.cs" />
     <Compile Include="Outputs\Pbck4Ouputs.cs" />
     <Compile Include="Outputs\Pbck7Outputs.cs" />

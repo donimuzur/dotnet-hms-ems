@@ -1,0 +1,260 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2EditViewModel
+<div role="tabpanel" class="tab-pane active" id="information">
+    <div class="tab-wrapper">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            LACK-2 Detail
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+
+                        <div class="form-excise" role="form">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">LACK-2 No</label>
+                                    <div class="col-md-8">
+                                        @Html.HiddenFor(x => x.Lack2Number)
+                                        @Html.TextBox("lack2no", Model.Lack2Number, new { @class = "form-control", @disabled = "disabled" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Company</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(x => x.CompanyCode, Model.CompanyCodesDDL, "select", new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Period</label>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                @Html.DropDownListFor(x => x.PeriodMonth, Model.MonthList, new { @class = "form-control" })
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DropDownListFor(x => x.PeriodYear, Model.YearList, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                            Information
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">NPPBKC</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Plant</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.SourcePlantId, Model.SendingPlantDDL, "select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">POA</label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.PoaListHidden)
+                                            @Html.TextAreaFor(model => model.PoaList, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Submission Date</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4 long">Excisable Goods Type</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.ExcisableGoodsType, Model.ExcisableGoodsTypeDDL, "select", new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-md-offset-4">
+                                    <input type="button" class="btn btn-blue full" onclick="GenerateCk5Items();" value="Generate" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group not-upload" id="accordionThree" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionThree" href="#collapseThree" aria-expanded="true" aria-controls="collapse6">
+                            Table
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>No. CK-5</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Company</th>
+                                        <th>NPPBKC</th>
+                                        <th>Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tb-body-ck5-lack2">
+                                    @if (@Model.Items != null)
+                                    {
+                                        for (int i = 0; i < @Model.Items.Count; i++)
+                                        {
+                                    <tr>
+                                        @Html.HiddenFor(x => x.Items[i].Lack2Id)
+                                        @Html.HiddenFor(x => x.Items[i].Id)
+                                        @Html.HiddenFor(x => x.Items[i].Ck5Id)
+                                        @Html.HiddenFor(x => x.Items[i].Ck5Number)
+                                        @Html.HiddenFor(x => x.Items[i].Ck5GIDate)
+                                        @Html.HiddenFor(x => x.Items[i].Ck5ItemQty)
+                                        @Html.HiddenFor(x => x.Items[i].CompanyName)
+                                        @Html.HiddenFor(x => x.Items[i].CompanyNppbkc)
+                                        @Html.HiddenFor(x => x.Items[i].CompanyAddress)
+                                        <td>@(i + 1)</td>
+                                        <td>@Model.Items[i].Ck5Number</td>
+                                        <td>@Model.Items[i].Ck5GIDate</td>
+                                        <td>@Model.Items[i].Ck5ItemQty</td>
+                                        <td>@Model.Items[i].CompanyName</td>
+                                        <td>@Model.Items[i].CompanyNppbkc</td>
+                                        <td>@Model.Items[i].CompanyAddress</td>
+                                    </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionFour" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                            Status
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Status</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBox("gov-status", string.Empty, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Decree Date</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group disabled">
+                                                @Html.TextBox("decree-date", string.Empty, new { @class = "form-control", @disabled = "disabled" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Decree Doc</label>
+                                        <div class="col-md-8">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                            Workflow History
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
+        </div>
+    </div>
+</div>

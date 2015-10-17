@@ -1,5 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -29,6 +34,21 @@ namespace Sampoerna.EMS.BLL
                     _repository.Delete(item);
                 }
             }
+        }
+
+        public int RemoveDoc(long Id)
+        {
+            try
+            {
+                _repository.Delete(Id);
+                _uow.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+            return 0;
+
         }
     }
 }

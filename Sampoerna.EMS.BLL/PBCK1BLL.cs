@@ -281,6 +281,91 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public SavePbck1Output Save(Pbck1WorkflowDocumentInput input)
+        {
+            PBCK1 dbData = null;
+            bool changed = true;
+
+            if (input.DocumentId > 0)
+            {
+                if (input.ActionType == Enums.ActionType.Reject)
+                    _decreeDocBll.DeleteByPbck1Id(input.DocumentId);
+
+                dbData = _repository.GetByID(input.DocumentId);
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                var origin = Mapper.Map<Pbck1Dto>(dbData);
+
+                Enums.DocumentStatusGov? status = Enums.DocumentStatusGov.FullApproved;
+
+                switch (input.ActionType) { 
+                    case Enums.ActionType.GovApprove:
+                        status = Enums.DocumentStatusGov.FullApproved;
+                        break;
+                    case Enums.ActionType.GovPartialApprove:
+                        status = Enums.DocumentStatusGov.PartialApproved;
+                        break;
+                    case Enums.ActionType.GovReject:
+                        status = Enums.DocumentStatusGov.Rejected;
+                        break;
+                    case Enums.ActionType.Reject:
+                        status = null;
+                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        break;
+                }
+
+                dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
+                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+
+                foreach (var item in input.AdditionalDocumentData.Pbck1DecreeDoc)
+                {
+                    dbData.PBCK1_DECREE_DOC.Add(Mapper.Map<PBCK1_DECREE_DOC>(item));
+                }
+
+                dbData.STATUS_GOV = status;
+
+                //todo: update remaining quota and necessary data
+                
+
+                var inputNew = Mapper.Map<Pbck1Dto>(dbData);
+
+                origin.Pbck1Parent = Mapper.Map<Pbck1Dto>(dbData.PBCK12);
+
+                changed = SetChangesHistory(origin, inputNew, input.UserId);
+                
+            }
+
+            var output = new SavePbck1Output();
+
+            _uow.SaveChanges();
+
+            output.Success = true;
+            output.Id = dbData.PBCK1_ID;
+            output.Pbck1Number = dbData.NUMBER;
+
+            //set workflow history
+            var getUserRole = _poaBll.GetUserRole(input.UserId);
+            var inputAddWorkflowHistory = new Pbck1WorkflowDocumentInput()
+            {
+                DocumentId = output.Id,
+                DocumentNumber = output.Pbck1Number,
+                ActionType = Enums.ActionType.Modified,
+                UserId = input.UserId,
+                UserRole = getUserRole
+            };
+
+            if (changed)
+            {
+                AddWorkflowHistory(inputAddWorkflowHistory);
+            }
+            _uow.SaveChanges();
+
+            return output;
+
+        }
+
         public void Delete(long id)
         {
             var dbData = _repository.GetByID(id);
@@ -1085,6 +1170,12 @@ namespace Sampoerna.EMS.BLL
             var isNeedSendNotif = true;
             switch (input.ActionType)
             {
+                case Enums.ActionType.Modified:
+                    if(input.DocumentStatus == Enums.DocumentStatus.Completed){
+                        //SubmitDocument(input);
+                        isNeedSendNotif = false;
+                    }
+                    break;
                 case Enums.ActionType.Submit:
                     SubmitDocument(input);
                     break;
@@ -1341,7 +1432,7 @@ namespace Sampoerna.EMS.BLL
             {
                 FORM_TYPE_ID = Enums.MenuList.PBCK1,
                 FORM_ID = input.DocumentId.ToString(),
-                FIELD_NAME = "STATUS",
+                FIELD_NAME = "Status",
                 NEW_VALUE = EnumHelper.GetDescription(newStatus),
                 OLD_VALUE = EnumHelper.GetDescription(oldStatus),
                 MODIFIED_BY = input.UserId,
@@ -1357,7 +1448,7 @@ namespace Sampoerna.EMS.BLL
             {
                 FORM_TYPE_ID = Enums.MenuList.PBCK1,
                 FORM_ID = input.DocumentId.ToString(),
-                FIELD_NAME = "STATUS_GOV",
+                FIELD_NAME = "Status Goverment",
                 NEW_VALUE = EnumHelper.GetDescription(newStatus),
                 OLD_VALUE = oldStatus.HasValue ? EnumHelper.GetDescription(oldStatus) : "NULL",
                 MODIFIED_BY = input.UserId,
@@ -1383,12 +1474,15 @@ namespace Sampoerna.EMS.BLL
 
             var mailProcess = ProsesMailNotificationBody(pbck1Data, input.ActionType, input.Comment);
 
-            //distinct double To email
-            List<string> ListTo = mailProcess.To.Distinct().ToList();
+            //distinct To email
+            var ListTo = mailProcess.To.Distinct().ToList();
+
+            //distinct CC email
+            var ListCC = mailProcess.CC.Distinct().ToList();
 
             if (mailProcess.IsCCExist)
                 //Send email with CC
-                _messageService.SendEmailToListWithCC(ListTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+                _messageService.SendEmailToListWithCC(ListTo, ListCC, mailProcess.Subject, mailProcess.Body, true);
             else
                 _messageService.SendEmailToList(ListTo, mailProcess.Subject, mailProcess.Body, true);
 
@@ -1563,7 +1657,16 @@ namespace Sampoerna.EMS.BLL
                     var managerData = _userBll.GetUserById(poaDetails.MANAGER_ID);
                     if (managerData != null)
                     {
-                        rc.Detail.ExciseManager = managerData.FIRST_NAME + " " + managerData.LAST_NAME;
+                        //if external supplier port true
+                        if (String.IsNullOrEmpty(dbData.SUPPLIER_PLANT_WERKS))
+                        {
+                            rc.Detail.ExciseManager = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
+                        }
+                        else
+                        {
+                            rc.Detail.ExciseManager = managerData.FIRST_NAME + " " + managerData.LAST_NAME;
+                        }
+                        
                     }
                 }
 
@@ -1619,7 +1722,7 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPlantPhone = !string.IsNullOrEmpty(dbData.SUPPLIER_PHONE) ? dbData.SUPPLIER_PHONE : "-";
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
             rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
-
+            
             if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
             {
                 var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
@@ -1637,6 +1740,10 @@ namespace Sampoerna.EMS.BLL
                                 .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
                     }
 
+                }
+                else
+                {
+                    rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
                 }
             }
             else
@@ -1870,7 +1977,7 @@ namespace Sampoerna.EMS.BLL
                 bodyMail.Append("<tr><td>Comment</td><td> : " + comment + "</td></tr>");
                 bodyMail.AppendLine();
             }
-            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Details/" + pbck1Data.Pbck1Id + "'>link</a> to show detailed information</i></td></tr>");
+            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Edit/" + pbck1Data.Pbck1Id + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();

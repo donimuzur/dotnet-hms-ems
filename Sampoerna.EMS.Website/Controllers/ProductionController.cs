@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
 
                 data.CreatedDate = DateTime.Now;
-
+                data.CreatedBy = CurrentUser.USER_ID;
 
                 try
                 {
@@ -168,6 +168,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
 
+            }
+            else
+            {
+                var errorlist = ModelState.Values.Select(x => x.Errors).Single();
+
+                var errMsg = "";
+
+                foreach(var error in errorlist){
+                    errMsg = error.ErrorMessage +"\n";
+                }
+                AddMessageInfo(errMsg, Enums.MessageInfoType.Error
+                           );
             }
             model = InitCreate(model);
             return View(model);
@@ -264,9 +276,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
             dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
-
-
-
+            
             try
             {
                 if (!ModelState.IsValid)
@@ -401,6 +411,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     item.CreatedDate = DateTime.Now;
+                    item.CreatedBy = CurrentUser.USER_ID;
 
                     var existingData = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
                         Convert.ToDateTime(item.ProductionDate));
@@ -451,58 +462,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                     var item = new ProductionUploadItems();
+                    var brandCe = _brandRegistrationBll.GetById(dataRow[1], dataRow[2]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
-                    item.BrandDescription = dataRow[3];
+                    item.BrandDescription = brandCe.BRAND_CE;
                     item.QtyPacked = dataRow[4];
                     item.Qty = dataRow[5];
                     item.Uom = dataRow[6];
                     item.ProductionDate = dataRow[7];
-
-
-                    //decimal tempDecimal;
-                    //if (decimal.TryParse(dataRow[4], out tempDecimal) || dataRow[4] == "" || dataRow[4] == "-")
-                    //{
-                    //    item.QtyPacked = dataRow[4] == "" || dataRow[4] == "-" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    //}
-                    //else
-                    //{
-                    //    qtyPacked = dataRow[4];
-                    //}
-
-                    //if (decimal.TryParse(dataRow[5], out tempDecimal) || dataRow[5] == "" || dataRow[5] == "-")
-                    //{
-                    //    item.Qty = dataRow[5] == "" || dataRow[5] == "-" ? 0 : Convert.ToDecimal(dataRow[5]);
-                    //}
-                    //else
-                    //{
-                    //    qty = dataRow[5];
-                    //}
-
-                    //var dateParam = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
-                    //if (DateTime.TryParse(DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy"), "dd MMM yyyy", DateTimeStyles.NoCurrentDateDefault, out temp))
-                    //{
-                    //    item.ProductionDate = string.Empty;
-                    //}
-
-                    // true if it doesnot contain letters
-                   
-
-
-                    //string pattern = "dd MMM yyyy";
-                    //if (DateTime.TryParseExact(dataRow[7], pattern, CultureInfo.InvariantCulture,
-                    //                           DateTimeStyles.None,
-                    //                           out temp))
-                    //{
-                    //    // dt is the parsed value
-                    //}
-                    //else
-                    //{
-                    //    // Invalid string
-                    //}
-
+                    
                     model.Add(item);
 
 

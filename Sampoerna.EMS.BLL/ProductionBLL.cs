@@ -100,21 +100,25 @@ namespace Sampoerna.EMS.BLL
             var output = new SaveProductionOutput();
             output.isNewData = true;
             output.isFromSap = false;
+            
 
             var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
 
-            var origin = _repository.GetByID(dbProduction.COMPANY_CODE, dbProduction.WERKS, dbProduction.FA_CODE,
-                dbProduction.PRODUCTION_DATE);
+            var origin = _repository.GetByID(productionDto.CompanyCodeX, productionDto.PlantWerksX, productionDto.FaCodeX,
+               Convert.ToDateTime(productionDto.ProductionDateX));
+
+           
 
             var originDto = Mapper.Map<ProductionDto>(origin);
 
             //to do ask and to do refactor
             if (originDto != null)
             {
+
                 SetChange(originDto, productionDto, userId);
                 output.isNewData = false;
             }
-            
+
             if (dbProduction.UOM == "TH")
             {
                 dbProduction.UOM = "Btg";
@@ -124,8 +128,22 @@ namespace Sampoerna.EMS.BLL
 
             dbProduction.CREATED_DATE = DateTime.Now;
 
-            if (dbProduction.BATCH != null)
-                output.isFromSap = true;
+
+            if (origin != null)
+            {
+
+                if (dbProduction.COMPANY_CODE != origin.COMPANY_CODE || dbProduction.WERKS != origin.WERKS ||
+                  dbProduction.FA_CODE != origin.FA_CODE
+                  || Convert.ToDateTime(dbProduction.PRODUCTION_DATE) != Convert.ToDateTime(origin.PRODUCTION_DATE))
+                {
+                    dbProduction.BATCH = null;
+                }
+
+                if (origin.BATCH != null)
+                    output.isFromSap = true;
+            }
+
+          
 
             _repository.InsertOrUpdate(dbProduction);
             _uow.SaveChanges();
@@ -147,7 +165,7 @@ namespace Sampoerna.EMS.BLL
             return item;
         }
 
-        public List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc, int period, int month, int year)
+        public List<ProductionDto> GetByCompPlant(string comp, string plant, string nppbkc, int period, int month, int year, bool isNppbkc)
         {
             DateTime firstDay = new DateTime(year, month, 1);
             DateTime startDate = firstDay;
@@ -176,14 +194,14 @@ namespace Sampoerna.EMS.BLL
                              Tarif = b.TARIFF,
                              QtyPacked = p.QTY_PACKED == null ? 0 : p.QTY_PACKED,
                              QtyUnpacked = 0,
-                             QtyProduced = p.QTY,
+                             QtyProduced = p.QTY == null ? 0 : p.QTY,
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
                              PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
                          };
 
-            if (nppbkc != string.Empty)
+            if (nppbkc != string.Empty && isNppbkc)
             {
                 dbData = from p in _repository.Get(p => p.COMPANY_CODE == comp && (p.PRODUCTION_DATE >= startDate && p.PRODUCTION_DATE <= endDate))
                          join n in _repositoryPlant.Get(n => n.NPPBKC_ID == nppbkc) on p.WERKS equals n.WERKS
@@ -203,7 +221,7 @@ namespace Sampoerna.EMS.BLL
                              Tarif = b.TARIFF,
                              QtyPacked = p.QTY_PACKED == null ? 0 : p.QTY_PACKED,
                              QtyUnpacked = 0,
-                             QtyProduced = p.QTY,
+                             QtyProduced = p.QTY == null ? 0 : p.QTY,
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
@@ -254,6 +272,8 @@ namespace Sampoerna.EMS.BLL
             changeData.Add("UOM", origin.Uom == data.Uom);
             changeData.Add("PROD_QTY_STICK", origin.ProdQtyStick == data.ProdQtyStick);
 
+            string isFromSapString = string.IsNullOrEmpty(origin.Batch) ? "" : "[FROM SAP]";
+
             foreach (var listChange in changeData)
             {
                 if (!listChange.Value)
@@ -272,7 +292,7 @@ namespace Sampoerna.EMS.BLL
                         case "COMPANY_CODE":
                             changes.OLD_VALUE = origin.CompanyCode;
                             changes.NEW_VALUE = data.CompanyCode;
-                            changes.FIELD_NAME = "Company";
+                            changes.FIELD_NAME = "Company" + isFromSapString;
                             break;
                         case "WERKS":
                             changes.OLD_VALUE = origin.PlantWerks;
@@ -297,12 +317,14 @@ namespace Sampoerna.EMS.BLL
                         case "QTY_PACKED":
                             changes.OLD_VALUE = origin.QtyPacked.ToString();
                             changes.NEW_VALUE = data.QtyPacked.ToString();
-                            changes.FIELD_NAME = "Qty Packed";
+                            changes.FIELD_NAME = "Qty Packed" + isFromSapString;
+                            break;
                             break;
                         case "QTY":
                             changes.OLD_VALUE = origin.Qty.ToString();
                             changes.NEW_VALUE = data.Qty.ToString();
-                            changes.FIELD_NAME = "Quantity";
+                            changes.FIELD_NAME = "Produced Qty" + isFromSapString;
+                            break;
                             break;
                         case "UOM":
                             changes.OLD_VALUE = origin.Uom;
@@ -344,13 +366,27 @@ namespace Sampoerna.EMS.BLL
 
             var unpacked = Convert.ToDecimal(0);
 
-            foreach(var item in listItem)
+            var plant = string.Empty;
+
+            var facode = string.Empty;
+
+            foreach (var item in listItem)
             {
-                if(unpacked == 0)
+                //set unpacked to 0 if plant or fa code different
+                if (plant != item.PlantWerks || facode != item.FaCode)
+                {
+                    unpacked = 0;
+                }
+
+                if (unpacked == 0)
                 {
                     var oldData = GetOldSaldo(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate).LastOrDefault();
 
                     unpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+
+                    plant = item.PlantWerks;
+
+                    facode = item.FaCode;
                 }
 
                 var wasteData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate);
@@ -373,7 +409,7 @@ namespace Sampoerna.EMS.BLL
 
                 list.Add(item);
 
-                unpacked = unpackedQty.Value;
+                unpacked = unpackedQty.Value;                
             }
 
             return list;
@@ -400,13 +436,10 @@ namespace Sampoerna.EMS.BLL
                 {
                     //double Daily Production Data
                     output.IsValid = false;
-                    messageList.Add("Duplicate Daily Production Data  [" + output.CompanyCode + ", " + output.PlantWerks + ", " 
-                        + output.FaCode +", " + output.ProductionDate + "]");
+                    messageList.Add("Duplicate Daily Production Data  [" + output.CompanyCode + ", " + output.PlantWerks + ", "
+                        + output.FaCode + ", " + output.ProductionDate + "]");
                 }
 
-               
-
-                //Company Code Validation
                 #region -------------- Company Code Validation --------------
                 List<string> messages;
                 T001 companyTypeData = null;
@@ -422,7 +455,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Plant Code Validation
+
                 #region -------------- Plant Code Validation --------------
 
                 Plant plantTypeData = null;
@@ -437,13 +470,13 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Fa Code Validation
+
                 #region ---------------FaCode validation-----------------
-                ZAIDM_EX_BRAND brandTypeData ;
-                
+                ZAIDM_EX_BRAND brandTypeData;
+
                 if (ValidateFaCode(output.PlantWerks, output.FaCode, out messages, out brandTypeData))
                 {
-                    output.FaCode = brandTypeData.FA_CODE ;
+                    output.FaCode = brandTypeData.FA_CODE;
                 }
                 else
                 {
@@ -452,9 +485,9 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Brand Description Validation
+
                 #region -------------Brand Description--------------------
-              
+
                 if (ValidateBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandTypeData))
                 {
                     output.BrandDescription = brandTypeData.BRAND_CE;
@@ -466,7 +499,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Daily Production date
+
                 #region ---------------Production Date validation-------------
 
                 int temp;
@@ -475,35 +508,35 @@ namespace Sampoerna.EMS.BLL
                 {
                     try
                     {
-                        output.ProductionDate = DateTime.FromOADate(Convert.ToDouble(output.ProductionDate)).ToString("dd MMM yyyy");    
+                        output.ProductionDate = DateTime.FromOADate(Convert.ToDouble(output.ProductionDate)).ToString("dd MMM yyyy");
                     }
                     catch (Exception)
                     {
                         messageList.Add("Production Date [" + output.ProductionDate + "] not valid");
                     }
-                    
+
                 }
                 else
                 {
                     messageList.Add("Production Date [" + output.ProductionDate + "] not valid");
                 }
                 #endregion
-                //Quantity Packed
+
                 #region -------Quantity Production validation--------
                 decimal tempDecimal;
-                if (decimal.TryParse(output.QtyPacked,out tempDecimal) || output.QtyPacked == "" || output.QtyPacked == "-")
+                if (decimal.TryParse(output.QtyPacked, out tempDecimal) || output.QtyPacked == "" || output.QtyPacked == "-")
                 {
                     output.QtyPacked = output.QtyPacked == "" || output.QtyPacked == "-" ? "0" : output.QtyPacked;
-                    
+
                 }
-             
+
                 else
                 {
                     output.QtyPacked = output.QtyPacked;
                     messageList.Add("Quantity Packed [" + output.QtyPacked + "] not valid");
                 }
                 #endregion
-                //Quantity 
+
                 #region -----------Quantity Validation-------------
                 if (decimal.TryParse(output.Qty, out tempDecimal) || output.Qty == "" || output.Qty == "-")
                 {
@@ -515,7 +548,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Quantity [" + output.Qty + "] not valid");
                 }
                 #endregion
-                //UOM Validation
+
                 #region -------------- UOM Validation --------------------
                 UOM uomTypeData = null;
 
@@ -530,7 +563,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                //Message
+
                 #region -------------- Set Message Info if exists ---------------
 
                 if (messageList.Count > 0)
@@ -542,7 +575,7 @@ namespace Sampoerna.EMS.BLL
                         output.Message += message + ";";
                     }
                 }
-                
+
                 else
                 {
                     output.IsValid = true;
@@ -698,7 +731,7 @@ namespace Sampoerna.EMS.BLL
                 uomData = _uomBll.GetById(uomId);
                 if (uomData == null)
                 {
-                    messageList.Add("UomId Description [" + uomId + "] not valid");
+                    messageList.Add("Uom Id  [" + uomId + "] not valid");
                 }
                 else
                 {
@@ -707,15 +740,15 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                messageList.Add("UomId Description  is empty");
+                messageList.Add("Uom Id  is empty");
             }
-             #endregion
+            #endregion
 
             message = messageList;
             return valResult;
         }
-        
-        private List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate)
+
+        public List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate)
         {
             List<ProductionDto> data = new List<ProductionDto>();
 
@@ -723,33 +756,37 @@ namespace Sampoerna.EMS.BLL
 
             var lastUnpacked = Convert.ToDecimal(0);
 
-            foreach(var item in list)
+            foreach (var item in list)
             {
                 var wasteData = _wasteBll.GetExistDto(item.COMPANY_CODE, item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
-                var unpackedWaste = oldWaste > item.QTY ? oldWaste : 0;
+                var prodQty = item.QTY == null ? 0 : item.QTY;
 
-                var prodWaste = oldWaste < item.QTY ? oldWaste : 0;
+                var packed = item.QTY_PACKED == null ? 0 : item.QTY_PACKED;
+
+                var unpackedWaste = oldWaste > prodQty ? oldWaste : 0;
+
+                var prodWaste = oldWaste < prodQty ? oldWaste : 0;
 
                 var prod = new ProductionDto
                 {
                     PlantWerks = item.WERKS,
                     FaCode = item.FA_CODE,
                     ProductionDate = item.PRODUCTION_DATE,
-                    QtyProduced = item.QTY - prodWaste,
-                    QtyPacked = item.QTY_PACKED,
-                    QtyUnpacked = lastUnpacked + item.QTY - item.QTY_PACKED - unpackedWaste
+                    QtyProduced = prodQty - prodWaste,
+                    QtyPacked = packed,
+                    QtyUnpacked = lastUnpacked + prodQty - packed - unpackedWaste
                 };
 
-                lastUnpacked = prod.QtyUnpacked.Value;
+                lastUnpacked = prod.QtyUnpacked == null ? 0 : prod.QtyUnpacked.Value;
 
                 data.Add(prod);
             }
 
             return data;
         }
-      
+
     }
 }

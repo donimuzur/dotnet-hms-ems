@@ -171,5 +171,6 @@ namespace Sampoerna.EMS.BLL
             var poaList = dbData.ToList().Select(d => d.ZAIDM_EX_NPPBKC);
             return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(poaList.ToList());
         }
+        
     }
 }

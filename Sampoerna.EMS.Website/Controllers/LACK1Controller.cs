@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -21,6 +22,7 @@ using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using System.IO;
 using Sampoerna.EMS.Utils;
+using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -673,6 +675,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
                     return RedirectToAction("Edit", new { id = model.Lack1Id });
                 }
+                AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
             }
             catch (Exception)
             {
@@ -1499,6 +1502,232 @@ namespace Sampoerna.EMS.Website.Controllers
                 }));
             }
             return new SelectList(selectListSource, "ValueField", "TextField");
+        }
+
+        public void ExportDetailReport(Lack1SearchDetailReportViewModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsDetailReport(model);
+            
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsDetailReport(Lack1SearchDetailReportViewModel model)
+        {
+            var dataDetailReport = SearchDetailReport(model);
+
+            var slDocument = new SLDocument();
+            int endColumnIndex;
+            //create header
+            slDocument = CreateHeaderExcel(slDocument, out endColumnIndex);
+            
+            int iRow = 3; //starting row data
+            
+            foreach (var item in dataDetailReport)
+            {
+                int iColumn = 1;
+                if (item.TrackingConsolidations.Count > 0)
+                {
+                    int dataCount = item.TrackingConsolidations.Count - 1;
+                    //first record
+                    slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5Number);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5RegistrationNumber);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5RegistrationDate);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5GrDate);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Qty.ToString("N2"));
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].GiDate);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].MaterialCode);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[0].UsageQty.HasValue ? "-" : ( (-1) * item.TrackingConsolidations[0].UsageQty.Value).ToString("N2"));
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].OriginalUomId);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].ConvertedUomId);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    
+                    for (int i = 1; i < item.TrackingConsolidations.Count; i++)
+                    {
+                        iRow++;
+                        iColumn = 2;
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5Number);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5RegistrationNumber);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5RegistrationDate);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5GrDate);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Qty.ToString("N2"));
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].GiDate);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].MaterialCode);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[i].UsageQty.HasValue ? "-" :((-1) * item.TrackingConsolidations[i].UsageQty.Value).ToString("N2"));
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].OriginalUomId);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomId);
+                    }
+
+                }
+                else
+                {
+                    slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
+                    iColumn++;
+
+                    for (int i = 0; i < 10; i++)
+                    {
+                        slDocument.SetCellValue(iRow, iColumn, "-");
+                        iColumn++;
+                    }
+
+                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
+                    
+                }
+                iRow++;
+            }
+
+            return CreateXlsFileDetailReports(slDocument, endColumnIndex,  iRow - 1);
+
+        }
+
+        private SLDocument CreateHeaderExcel(SLDocument slDocument, out int endColumnIndex)
+        {
+            int iColumn = 1;
+
+            //first row
+            slDocument.SetCellValue(1, iColumn, "Begining Balance");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Receiving");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4));//ColSpan = 5
+            iColumn = iColumn + 5;
+
+            slDocument.SetCellValue(1, iColumn, "Usage");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4)); //ColSpan = 5
+            iColumn = iColumn + 5;
+
+            slDocument.SetCellValue(1, iColumn, "Ending Balance");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
+
+            endColumnIndex = iColumn;
+
+            //second row
+            iColumn = 2;
+            slDocument.SetCellValue(2, iColumn, "CK-5 Number");
+            iColumn++;
+            
+            slDocument.SetCellValue(2, iColumn, "CK-5 Registration Number");
+            iColumn++;
+            
+            slDocument.SetCellValue(2, iColumn, "CK-5 Registration Date");
+            iColumn++;
+            
+            slDocument.SetCellValue(2, iColumn, "CK-5 GR Date");
+            iColumn++;
+            
+            slDocument.SetCellValue(2, iColumn, "Qty");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "GI Date");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Material Code");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Usage Qty");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Original Uom");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Converted Uom");
+
+            return slDocument;
+
+        }
+
+        private string CreateXlsFileDetailReports(SLDocument slDocument, int endColumnIndex, int endRowIndex)
+        {
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
+            
+            //set header style
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //set border to value cell
+            slDocument.SetCellStyle(3, 1, endRowIndex, endColumnIndex, valueStyle);
+
+            //set header style
+            slDocument.SetCellStyle(1, 1, 2, endColumnIndex, headerStyle);
+
+            //set auto fit to all column
+            slDocument.AutoFitColumn(1, endColumnIndex);
+
+            var fileName = "lack1_detreport" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
         }
 
         #endregion

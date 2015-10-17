@@ -3,6 +3,7 @@
 <table id="pbckTable" class="table-condensed display compact nowrap" width="100%">
     <thead>
         <tr>
+            <th>Action</th>
             <th class="toggle-row"> No </th>
             <th>Original Company</th>
             <th>Original NPPBKC</th>
@@ -27,15 +28,19 @@
             <th>LACK-1 From</th>
             <th>LACK-1 To</th>
             <th>Latest Saldo</th>
+            <th>Uom LACK-1</th>
             <th>Period From</th>
             <th>Period To</th>
             <th>Reported On</th>
             <th>Request Qty</th>
+            <th>Uom Request Qty</th>
             <th>Status Gov</th>
             <th>Qty Approved</th>
             <th>Decree Date</th>
             <th>PBCK For Import</th>
             <th>External supplier port</th>
+            <th>POA Approve</th>
+            <th>Manager Approve</th>
         </tr>
     </thead>
     <tbody>
@@ -45,10 +50,13 @@
             foreach (var item in Model.DetailsList)
             {
                 <tr>
+                    <td class="action">
+                        <a href="@Url.Action("CK5Details", "PBCK1", new { id = item.Pbck1Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    </td>
                     <td>@row</td>
                     <td>@Html.DisplayFor(model => item.NppbkcCompanyName)</td>
                     <td>@Html.DisplayFor(model => item.NppbkcId)</td>
-                    <td style="padding:20px">
+                    <td style="padding: 20px">
                         <ol>
                             @foreach (var plant in item.NppbkcPlants)
                             {
@@ -57,14 +65,14 @@
                         </ol>
                     </td>
                     <td>
-                        @item.SupplierNppbkcId
+                        @Html.DisplayFor(model => item.NppbkcKppbcName)
                     </td>
                     <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
                     <td>
                         @item.StatusName
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.NppbkcKppbcName)
+                        @item.SupplierNppbkcId
                     </td>
                     <td>
                         <!-- Fixing Bug PBCK1 No. 168 -->
@@ -92,10 +100,24 @@
                         @item.GoodTypeDesc
                     </td>
                     <td>
-                        @item.PlanProdFrom
+                        @if (item.PlanProdFrom == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.PlanProdFrom.Value.ToString("dd-MMMM-yyyy")
+                        }
                     </td>
                     <td>
-                        @item.PlanProdTo
+                        @if (item.PlanProdTo == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.PlanProdTo.Value.ToString("dd-MMMM-yyyy")
+                        }
                     </td>
                     <td>
                         @item.SupplierPhone
@@ -121,25 +143,52 @@
                         @String.Format("{0:n}", @item.LatestSaldo)
                     </td>
                     <td>
-                        @item.PeriodFrom
+                        @item.LatestSaldoUomName
                     </td>
                     <td>
-                        @item.PeriodTo
+                        @item.PeriodFrom.ToString("dd-MMMM-yyyy")
                     </td>
                     <td>
-                        @item.ReportedOn
+                        @if (item.PeriodTo == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.PeriodTo.Value.ToString("dd-MMMM-yyyy")
+                        }
                     </td>
-                    <td align="right">
-                        @String.Format("{0:n}", @item.RequestQty) @item.RequestQtyUomName
+                    <td>
+                        @if (item.ReportedOn == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.ReportedOn.Value.ToString("dd-MMMM-yyyy")
+                        }
+                    </td>
+                    <td align="right" style="padding: 20px">
+                        @String.Format("{0:n}", @item.RequestQty)
+                    </td>
+                    <td>
+                        @item.RequestQtyUomName
                     </td>
                     <td>
                         @item.StatusGov
                     </td>
-                    <td align="right">
+                    <td align="right" style="padding: 20px">
                         @String.Format("{0:n}", @item.QtyApproved) @item.RequestQtyUomName
                     </td>
                     <td>
-                        @item.DecreeDate
+                        @if (item.DecreeDate == null)
+                        {
+                            <text>-</text>
+                        }
+                        else
+                        {
+                            @item.DecreeDate.Value.ToString("dd-MMMM-yyyy")
+                        }
                     </td>
                     <td>
                         @if (item.IsNppbkcImport)
@@ -159,6 +208,26 @@
                         else
                         {
                             <span>No</span>
+                        }
+                    </td>
+                    <td>
+                        @if (String.IsNullOrEmpty(item.ApprovedByPoaId))
+                        {
+                            <span>-</span>
+                        }
+                        else
+                        {
+                            <span>@item.ApprovedByPoaId</span>
+                        }
+                    </td>
+                    <td>
+                        @if (String.IsNullOrEmpty(item.ApprovedByManagerId))
+                        {
+                            <span>-</span>
+                        }
+                        else
+                        {
+                            <span>@item.ApprovedByManagerId</span>
                         }
                     </td>
                 </tr>
