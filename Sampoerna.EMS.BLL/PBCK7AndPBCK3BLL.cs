@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data.Entity.Validation;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
@@ -439,6 +436,12 @@ namespace Sampoerna.EMS.BLL
         {
             var data = _repositoryPbck3.Get(p => p.PBCK7_ID == id);
             return Mapper.Map<Pbck3Dto>(data.LastOrDefault());
+        }
+
+        public Pbck3Dto GetPbck3ById(int id)
+        {
+            var data = _repositoryPbck3.Get(c => c.PBCK3_ID == id);
+            return Mapper.Map<Pbck3Dto>(data.FirstOrDefault());
         }
 
         public Back3Dto GetBack3ByPbck3Id(int? id)
