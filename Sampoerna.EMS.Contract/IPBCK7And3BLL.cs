@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -65,5 +61,8 @@ namespace Sampoerna.EMS.Contract
         void PBCK3Workflow(Pbck3WorkflowDocumentInput input);
 
         void SendMailCompletedPbck3Document(Pbck3WorkflowDocumentInput input);
+
+        Pbck3Dto GetPbck3ById(int id);
+
     }
 }
