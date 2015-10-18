@@ -831,6 +831,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantWerks))
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCode))
                 .ForMember(dest => dest.ProoductionDate, opt => opt.MapFrom(src => src.ProductionDate));
+                
 
             Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
                

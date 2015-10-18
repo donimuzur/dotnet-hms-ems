@@ -2,7 +2,7 @@
 
 <div id="table-upload-preview">
    
-    <table class="table table-bordered table-striped js-options-table">
+    <table id="Pbck7UploadTable" class="table table-bordered table-striped js-options-table">
         <thead>
             <tr>
                 <th>No</th>
@@ -17,13 +17,42 @@
                 <th>Tariff</th>
                 <th>Fiscal Year</th>
                 <th>Excise Value</th>
+                <th>Message</th>
             </tr>
         </thead>
         <tbody id="tb-upload-excel">
-            
+            @{
+                int counter = 1;
 
-            
-       
+                if (Model != null)
+                {
+                    foreach (var row in Model.UploadItems)
+                    {
+                        <tr>
+                            @*<td class="action">
+                                <a href="#" onclick=" RemoveRow($(this));" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i></a>
+                                <a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                            </td>*@
+                            <td>@counter</td>
+                            <td>@row.FaCode</td>
+                            <td>@row.ProdTypeAlias</td>
+                            <td>@row.Brand</td>
+                            <td>@row.Content</td>
+                            <td>@row.Pbck7Qty</td>
+                            <td>@row.Back1Qty</td>
+                            <td>@row.SeriesValue</td>
+                            <td>@row.Hje</td>
+                            <td>@row.Tariff</td>
+                            <td>@row.FiscalYear</td>
+                            <td>@row.ExciseValue</td>
+                            <td>@row.Message</td>
+                           
+                        </tr>
+
+                        counter = counter + 1;
+                    }
+                }
+            }
         </tbody>
     </table>
 </div>

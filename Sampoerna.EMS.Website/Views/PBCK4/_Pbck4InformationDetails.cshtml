@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Reported On<span class="red">*</span></label>
+                                        <label class="col-md-4">Reported On</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.ReportedOn, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
                                         </div>
@@ -204,6 +204,23 @@
                 <div class="panel-body">
                     <div class="form-excise" role="form">
                         <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Status Gov</label>
+                                    <div class="col-md-8">
+                                       @Html.TextBoxFor(model => model.GovStatusDesc, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                  
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
 
                             <div class="col-md-6">
                                 <div class="row">
@@ -217,7 +234,7 @@
                                 <div class="row">
                                     <label class="col-md-4">CK-3 No</label>
                                     <div class="col-md-8">
-                                       @Html.TextBoxFor(model => model.CK3_NO, new { @disabled = "disabled", @class = "form-control" })
+                                        @Html.TextBoxFor(model => model.CK3_NO, new { @disabled = "disabled", @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
@@ -228,7 +245,7 @@
                                 <div class="row">
                                     <label class="col-md-4">BACK-1 Date</label>
                                     <div class="col-md-8">
-                                      @Html.TextBoxFor(model => model.BACK1_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                        @Html.TextBoxFor(model => model.BACK1_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
@@ -287,16 +304,16 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">CK-3 Office Value</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.CK3_OFFICE_VALUE, new { @disabled = "disabled", @class = "form-control" })
-                                        </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">CK-3 Office Value</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.CK3_OFFICE_VALUE, new { @disabled = "disabled", @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>

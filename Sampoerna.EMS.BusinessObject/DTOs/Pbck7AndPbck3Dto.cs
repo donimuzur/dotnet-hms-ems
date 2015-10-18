@@ -50,7 +50,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string Plant { get; set; }
 
-        
+        public bool IsModifiedHistory { get; set; }
        
     }
 
@@ -113,7 +113,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public Back3Dto Back3Dto { get; set; }
         public Ck2Dto Ck2Dto { get; set; }
-
+        public bool IsModifiedHistory { get; set; }
     }
 
     public class Pbck7ItemUpload
@@ -142,6 +142,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string SeriesValue { get; set; }
 
         public int? Pbck7Id { get; set; }
+
+        public string Message { get; set; }
 
     }
 
