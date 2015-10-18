@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Core.Common.EntitySql;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using AutoMapper;
@@ -2267,6 +2269,25 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<Pbck1Dto> GetPbck1CompletedDocumentByExternalAndSubmissionDate(string exSupplierId, string exSupplierNppbkcId, DateTime? submissionDate, string destPlantNppbkcId, List<string> goodtypes)
+        {
+
+            var dbData =
+                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.SUPPLIER_PLANT == exSupplierId && p.SUPPLIER_NPPBKC_ID == exSupplierNppbkcId
+                 && p.PERIOD_FROM <= submissionDate && p.PERIOD_TO >= submissionDate && p.NPPBKC_ID == destPlantNppbkcId && goodtypes.Contains(p.EXC_GOOD_TYP)).OrderByDescending(p => p.DECREE_DATE);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
+
+        }
+
+        public List<Pbck1Dto> GetByRef(int pbckId)
+        {
+            var dbData =
+                _repository.Get(p => p.STATUS == Enums.DocumentStatus.Completed && p.PBCK1_REF == pbckId);
+
+            return Mapper.Map<List<Pbck1Dto>>(dbData);
+        }
+
         public string checkUniquePBCK1(Pbck1SaveInput input)
         {
             if (input.Pbck1.Pbck1Type == Enums.PBCK1Type.Additional)
@@ -2299,6 +2320,43 @@ namespace Sampoerna.EMS.BLL
            
             
             var data = Mapper.Map<Pbck1Dto>(dbData);
+
+            return data;
+        }
+
+        public List<CK5ExternalSupplierDto> GetExternalSupplierList(List<string> goodTypeList = null)
+        {
+            
+            Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
+
+            queryFilter = queryFilter.And(c => string.IsNullOrEmpty(c.SUPPLIER_PLANT_WERKS));
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+
+            if (goodTypeList != null && goodTypeList.Count > 0)
+            {
+                queryFilter = queryFilter.And(c => goodTypeList.Contains(c.EXC_GOOD_TYP));
+            }
+            var dbData =
+                _repository.Get(queryFilter,null, "")
+                    .GroupBy(l => new
+                    {
+                        l.SUPPLIER_COMPANY,
+                        l.SUPPLIER_NPPBKC_ID
+                    }).Select(cl => new PBCK1()
+                    {
+                        SUPPLIER_NPPBKC_ID = cl.First().SUPPLIER_NPPBKC_ID,
+                        SUPPLIER_ADDRESS = cl.First().SUPPLIER_ADDRESS,
+                        SUPPLIER_PLANT = cl.First().SUPPLIER_PLANT,
+                        SUPPLIER_COMPANY = cl.First().SUPPLIER_COMPANY,
+                        SUPPLIER_PORT_ID = cl.First().SUPPLIER_PORT_ID,
+                        SUPPLIER_PORT_NAME = cl.First().SUPPLIER_PORT_NAME,
+                        SUPPLIER_KPPBC_ID = cl.First().SUPPLIER_KPPBC_ID,
+                        SUPPLIER_KPPBC_NAME = cl.First().SUPPLIER_KPPBC_NAME,
+                        SUPPLIER_PHONE = cl.First().SUPPLIER_PHONE
+
+                    }).ToList();
+
+            var data = Mapper.Map<List<CK5ExternalSupplierDto>>(dbData);
 
             return data;
         }

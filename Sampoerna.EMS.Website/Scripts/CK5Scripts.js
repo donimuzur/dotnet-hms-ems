@@ -29,6 +29,7 @@ function OnReadyFunction(ck5Type) {
 
     var total = 0;
     $('#CK5UploadSave').click(function () {
+        //debugger;
         var datarows = GetTableData($('#Ck5UploadTable'));
         var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
         $('#ck5TableItem tbody').html('');
@@ -89,7 +90,7 @@ function OnReadyFunction(ck5Type) {
         $('#collapse5').addClass('in');
 
        
-        if (ck5Type == 'Export' || ck5Type == 'PortToImporter' || ck5Type == 'Manual' || ck5Type == 'MarketReturn') {
+        if (ck5Type == 'Export' || ck5Type == 'Manual' || ck5Type == 'MarketReturn') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
@@ -177,7 +178,7 @@ function GenerateXlsCk5Material(url, ck5Type) {
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("itemExcelFile").files[i];
         formData.append("itemExcelFile", file);
-        if (ck5Type == 'PortToImporter')
+        if (ck5Type == 'PortToImporter' || ck5Type == 'DomesticAlcohol')
             formData.append("plantId", $('#DestPlantId').val());
         else 
             formData.append("plantId", $('#SourcePlantId').val());
@@ -264,6 +265,11 @@ function ajaxGetDestPlantDetails(url, formData) {
                 $("input[name='RemainQuota']").val(data.RemainQuota);
                 //alert(data.PbckUom);
                 $("input[name='PbckUom']").val(data.PbckUom);
+                
+                if (formData.ck5Type != null && (formData.ck5Type == "PortToImporter" || formData.ck5Type == "DomesticAlcohol")) {
+                    $("input[name='KppBcCity']").val(data.KppbcCity);
+                    $("input[name='CeOfficeCode']").val(data.KppbcNo);
+                }
             }
         });
     }
