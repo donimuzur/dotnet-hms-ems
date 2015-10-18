@@ -2485,7 +2485,7 @@ namespace Sampoerna.EMS.BLL
             input.Ck5Dto.CREATED_DATE = DateTime.Now;
             input.Ck5Dto.CREATED_BY = input.UserId;
 
-            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter || input.Ck5Dto.CK5_TYPE == Enums.CK5Type.DomesticAlcohol)
             {
                 if (string.IsNullOrEmpty(input.Ck5Dto.SOURCE_PLANT_ID))
                     input.Ck5Dto.SOURCE_PLANT_ID = string.Empty;
@@ -2511,7 +2511,12 @@ namespace Sampoerna.EMS.BLL
             {
 
                 var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
-                ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                    input.Ck5Dto.CK5_TYPE == Enums.CK5Type.DomesticAlcohol)
+                {
+                    ck5Material.PLANT_ID = dbData.DEST_PLANT_ID;
+                }
+                
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
 
@@ -2679,7 +2684,7 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId, int exgrouptype)
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId, int exgrouptype, Enums.CK5Type ck5type)
         {
             var output = new GetQuotaAndRemainOutput();
 
@@ -2722,9 +2727,16 @@ namespace Sampoerna.EMS.BLL
 
             var periodEnd = pbck1.PeriodTo.Value.AddDays(1);
 
-            
 
-            output.QtyCk5 = GetQuotaCk5(pbck1.SupplierPlantWerks,pbck1.SupplierNppbkcId, pbck1.NppbkcId, pbck1.PeriodFrom, periodEnd, (Enums.ExGoodsType)exgrouptype);
+            if (ck5type == Enums.CK5Type.DomesticAlcohol || ck5type == Enums.CK5Type.PortToImporter)
+            {
+                output.QtyCk5 = GetQuotaCk5External(pbck1.SupplierPlant, pbck1.SupplierNppbkcId, pbck1.NppbkcId, pbck1.PeriodFrom, periodEnd, (Enums.ExGoodsType)exgrouptype);
+            }
+            else
+            {
+                output.QtyCk5 = GetQuotaCk5(pbck1.SupplierPlantWerks, pbck1.SupplierNppbkcId, pbck1.NppbkcId, pbck1.PeriodFrom, periodEnd, (Enums.ExGoodsType)exgrouptype);    
+            }
+            
 
             return output;
         }
@@ -2741,7 +2753,7 @@ namespace Sampoerna.EMS.BLL
 
             if (ck5DbData.PBCK1_DECREE_ID.HasValue)
             {
-                return GetQuotaRemainAndDatePbck1(ck5DbData.PBCK1_DECREE_ID.Value, (int)ck5DbData.EX_GOODS_TYPE);
+                return GetQuotaRemainAndDatePbck1(ck5DbData.PBCK1_DECREE_ID.Value, (int)ck5DbData.EX_GOODS_TYPE,ck5DbData.CK5_TYPE);
             }
 
             else

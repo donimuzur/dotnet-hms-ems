@@ -827,7 +827,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        //model.Ck5Type != Enums.CK5Type.DomesticAlcohol &&
                         model.Ck5Type != Enums.CK5Type.Manual)
                     {
 
@@ -840,6 +841,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
                         model.PbckUom = output.PbckUom;
+                    }
+                    else if (model.Ck5Type == Enums.CK5Type.PortToImporter &&
+                             model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                    {
+                        
                     }
 
                 }
