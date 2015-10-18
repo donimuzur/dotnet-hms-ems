@@ -54,7 +54,7 @@ namespace Sampoerna.EMS.Contract
 
        void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input);
 
-       GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId, int exgrouptype);
+       GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId, int exgrouptype, Enums.CK5Type ck5type);
 
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByCk5Id(long ck5Id);
 
@@ -70,5 +70,12 @@ namespace Sampoerna.EMS.Contract
        void CK5CompletedAttachment(CK5WorkflowDocumentInput input);
 
        List<MaterialDto> GetValidateMaterial(string plantId, int goodTypeGroup);
+
+       List<CK5ExternalSupplierDto> GetExternalSupplierList(Enums.CK5Type ck5Type);
+
+       CK5ExternalSupplierDto GetExternalSupplierItem(string plantId, Enums.CK5Type ck5Type);
+
+       GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ItemExternal(string plantId, string plantNppbkcId,
+           DateTime submissionDate, string destPlantNppbkcId, int? goodtypegroupid);
    }
 }
