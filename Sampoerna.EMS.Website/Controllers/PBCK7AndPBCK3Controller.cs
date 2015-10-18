@@ -214,34 +214,24 @@ namespace Sampoerna.EMS.Website.Controllers
         }
         public FileResult PrintPreview(int id, bool isPbck7, string title)
         {
-            var pbck7 = _pbck7Pbck3Bll.GetPbck7ById(id);
-            if (!isPbck7)
-            {
-                //get pbck3
-                if (pbck7 != null)
-                {
-                    pbck7.Pbck3Dto = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(pbck7.Pbck7Id);
-                }
-            }
+            string poaId = string.Empty;
             var dsPbck7 = CreatePbck7Ds();
             var dt = dsPbck7.Tables[0];
             DataRow drow;
             drow = dt.NewRow();
-
-            var approvedBy = string.Empty;
-            var createdBy = string.Empty;
+            var pbck7 = new Pbck7AndPbck3Dto();
             if (isPbck7)
             {
-                approvedBy = pbck7.ApprovedBy;
-                createdBy = pbck7.CreatedBy;
+                pbck7 = _pbck7Pbck3Bll.GetPbck7ById(id);
+                poaId = !string.IsNullOrEmpty(pbck7.ApprovedBy) ? pbck7.ApprovedBy : pbck7.CreatedBy;
             }
             else
             {
-                approvedBy = pbck7.Pbck3Dto.ApprovedBy;
-                createdBy = pbck7.Pbck3Dto.CreatedBy;
+                var pbck3Data = _pbck7Pbck3Bll.GetPbck3ById(id);
+                pbck7 = _pbck7Pbck3Bll.GetPbck7ById(pbck3Data.Pbck7Id);
+                pbck7.Pbck3Dto = pbck3Data;
+                poaId = !string.IsNullOrEmpty(pbck3Data.ApprovedBy) ? pbck3Data.ApprovedBy : pbck3Data.CreatedBy;
             }
-            string poaId = !string.IsNullOrEmpty(approvedBy) ? approvedBy : createdBy;
-
             var poaData = _poaBll.GetById(poaId);
             if (poaData != null)
             {
