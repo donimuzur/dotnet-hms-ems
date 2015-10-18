@@ -295,12 +295,14 @@
     $("#DestPlantId").change(function () {
         if ($("#DestPlantId").length) {
             //alert($('#SubmissionDate').val());
-            var isPortToImporter = false;
-            if ('@Model.Ck5Type.ToString()' == "PortToImporter") {
-                isPortToImporter = true;
+            
+            var isUseDest = false;
+            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                isUseDest = true;
                 RemoveTable();
             }
 
+            
 
             var destPlant = $(this).find("option:selected").val();
 
@@ -321,16 +323,16 @@
                 $("input[name='RemainQuota']").val('0');
                 $("input[name='PbckUom']").val('');
 
-                if (isPortToImporter) {
+                if (isUseDest) {
                     $("input[name='KppBcCity']").val('');
                     $("input[name='CeOfficeCode']").val('');
                 }
             } else {
 
-                if (isPortToImporter) {
-                    //alert(destPlant);
-                    ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: destPlant, ck5Type: '@Model.Ck5Type' });
-                } else {
+                @*if (isUseDest) {
+                    
+                    ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetailsDest", "CK5")', { plantId: destPlant, ck5Type: '@Model.Ck5Type'});
+                } else {*@
 
 
                     var submissionDate = $('#SubmissionDate').val();
@@ -343,7 +345,7 @@
 
                     ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodTypeGroupId: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
 
-                }
+                //}
 
             }
         }

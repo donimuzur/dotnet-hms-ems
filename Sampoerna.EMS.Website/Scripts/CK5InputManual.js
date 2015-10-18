@@ -24,10 +24,19 @@ function ClearValidation() {
 }
 
 function EditRow(o) {
-
+    //debugger;
     var nRow = o.parents('tr');
     var plant = $("#SourcePlantId").find("option:selected").val();
+    
 
+    if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+        plant = $("#DestPlantId").find("option:selected").val();
+    }
+
+    
+    var goodTypeGroupId = $("#GoodType").val();
+    ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: plant, goodTypeGroup: goodTypeGroupId });
+    
     $('#btnSaveMaterial').hide();
     $('#btnUpdateMaterial').show();
 

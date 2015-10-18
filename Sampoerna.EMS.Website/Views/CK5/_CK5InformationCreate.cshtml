@@ -381,7 +381,7 @@
                                             }
                                             else
                                             {
-                                                @Html.EnumDropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control", @disabled = "disabled" })    
+                                                @Html.EnumDropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })    
                                             }
                                             
                                             
@@ -475,7 +475,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsCk5Manual)
+                            @if (!Model.IsCk5Export && !Model.IsCk5Manual)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
