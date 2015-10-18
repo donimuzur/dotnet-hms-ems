@@ -257,11 +257,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode,true);
             }
-            else {
-                data = GlobalFunctions.GetPlantAll();
-            
+            else if (ck5Type == Enums.CK5Type.PortToImporter)
+            {
+                data = GlobalFunctions.GetPlantByNppbkcImport(true);
             }
-            
+            else
+            {
+                data = GlobalFunctions.GetPlantAll();
+
+            }
+
             return data;
         }
 
@@ -569,8 +574,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (ck5Type == Enums.CK5Type.ImporterToPlant)
                 {
                     model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
-                    model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
+                    
                 }
+                model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
             }
 
             
@@ -578,6 +584,27 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
+        [HttpPost]
+        public JsonResult GetSourcePlantDetailsDest(string plantId, Enums.CK5Type ck5Type)
+        {
+            CK5PlantModel model = new CK5PlantModel();
+
+            
+            var dbPlant = _plantBll.GetT001WById(plantId);
+            model = Mapper.Map<CK5PlantModel>(dbPlant);
+
+            if (ck5Type == Enums.CK5Type.ImporterToPlant)
+            {
+                model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
+
+            }
+            model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
+            
+
+
+
+            return Json(model);
+        }
      
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -1097,7 +1097,15 @@ namespace Sampoerna.EMS.BLL
             //distinct double To email
             List<string> ListTo = mailProcess.To.Distinct().ToList();
 
-            _messageService.SendEmailToList(ListTo, mailProcess.Subject, mailProcess.Body, true);
+            if (mailProcess.CC.Count > 0)
+            {
+                _messageService.SendEmailToListWithCC(ListTo,mailProcess.CC,mailProcess.Subject,mailProcess.Body,true);
+            }
+            else
+            {
+                _messageService.SendEmailToList(ListTo, mailProcess.Subject, mailProcess.Body, true);    
+            }
+            
 
         }
 
@@ -1148,6 +1156,9 @@ namespace Sampoerna.EMS.BLL
                             switch (ck5Dto.CK5_TYPE)
                             {
                                 case Enums.CK5Type.PortToImporter:
+                                    poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                    break;
+                                case Enums.CK5Type.DomesticAlcohol:
                                     poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     break;
                                 default:
