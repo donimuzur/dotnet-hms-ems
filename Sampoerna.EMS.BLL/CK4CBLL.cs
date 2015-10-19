@@ -1236,13 +1236,13 @@ namespace Sampoerna.EMS.BLL
                 var faCode = new List<string>();
                 var tobacco = new List<string>();
                 var brandDesc = new List<string>();
-                var hje = new List<decimal>();
-                var tariff = new List<decimal>();
-                var content = new List<decimal>();
-                var packedQty = new List<decimal>();
-                var packedQtyInPack = new List<decimal>();
-                var unpackedQty = new List<decimal>();
-                var prodQty = new List<decimal>();
+                var hje = new List<string>();
+                var tariff = new List<string>();
+                var content = new List<string>();
+                var packedQty = new List<string>();
+                var packedQtyInPack = new List<string>();
+                var unpackedQty = new List<string>();
+                var prodQty = new List<string>();
                 var uomProdQty = new List<string>();
                 var remarks = new List<string>();
 
@@ -1264,13 +1264,13 @@ namespace Sampoerna.EMS.BLL
                     var contentPerPack = ck4CItem.CONTENT_PER_PACK == null ? 0 : ck4CItem.CONTENT_PER_PACK.Value;
                     var packedInPack = ck4CItem.PACKED_IN_PACK == null ? 0 : ck4CItem.PACKED_IN_PACK.Value;
 
-                    hje.Add(ck4CItem.HJE_IDR.Value);
-                    tariff.Add(ck4CItem.TARIFF.Value);
-                    content.Add(contentPerPack);
-                    packedQty.Add(ck4CItem.PACKED_QTY.Value);
-                    packedQtyInPack.Add(packedInPack);
-                    unpackedQty.Add(ck4CItem.UNPACKED_QTY.Value);
-                    prodQty.Add(ck4CItem.PROD_QTY);
+                    hje.Add(String.Format("{0:n}", ck4CItem.HJE_IDR.Value));
+                    tariff.Add(String.Format("{0:n}", ck4CItem.TARIFF.Value));
+                    content.Add(String.Format("{0:n}", contentPerPack));
+                    packedQty.Add(String.Format("{0:n}", ck4CItem.PACKED_QTY.Value));
+                    packedQtyInPack.Add(String.Format("{0:n}", packedInPack));
+                    unpackedQty.Add(String.Format("{0:n}", ck4CItem.UNPACKED_QTY.Value));
+                    prodQty.Add(String.Format("{0:n}", ck4CItem.PROD_QTY));
                     uomProdQty.Add(ck4CItem.UOM_PROD_QTY);
                     remarks.Add(ck4CItem.REMARKS);
                 }
