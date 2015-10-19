@@ -138,18 +138,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<ProductionDto>(model);
-                var company = _companyBll.GetById(model.CompanyCode);
-                var plant = _plantBll.GetT001WById(model.PlantWerks);
-                var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
-
-                data.CompanyName = company.BUTXT;
-                data.PlantName = plant.NAME1;
-                data.BrandDescription = brandDesc.BRAND_CE;
+             
                 data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
                 data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
-
-                data.CreatedDate = DateTime.Now;
-                data.CreatedBy = CurrentUser.USER_ID;
+                
 
                 try
                 {
@@ -265,14 +257,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var dbPrductionNew = Mapper.Map<ProductionDto>(model);
-            var company = _companyBll.GetById(model.CompanyCode);
-            var plant = _plantBll.GetT001WById(model.PlantWerks);
-            var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
-
-            dbPrductionNew.CompanyName = company.BUTXT;
-            dbPrductionNew.PlantName = plant.NAME1;
-            dbPrductionNew.BrandDescription = brandDesc.BRAND_CE;
-
+           
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
             dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
