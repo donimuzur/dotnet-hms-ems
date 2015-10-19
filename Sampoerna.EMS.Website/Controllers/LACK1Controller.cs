@@ -675,6 +675,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
                     return RedirectToAction("Edit", new { id = model.Lack1Id });
                 }
+                AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
             }
             catch (Exception)
             {

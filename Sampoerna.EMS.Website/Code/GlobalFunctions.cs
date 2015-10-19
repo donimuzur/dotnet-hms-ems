@@ -12,6 +12,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Code
@@ -403,38 +404,7 @@ namespace Sampoerna.EMS.Website.Code
 
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
-        public static SelectList GetYearList(ICK5BLL ck5Bll)
-        {
-            var yearList = ck5Bll.GetAllYearsByGiDate();
-            var selectItemSource = new List<SelectItemModel>();
-
-            foreach (var year in yearList)
-            {
-                var item = new SelectItemModel();
-                item.TextField = year.ToString();
-                item.ValueField = year.ToString();
-                selectItemSource.Add(item);
-            }
-            //for (int i = 3; i > 0; i--)
-            //{
-            //    var item = new SelectItemModel();
-
-            //    item.TextField = (DateTime.Now.Year - i).ToString();
-            //    item.ValueField = (DateTime.Now.Year - i).ToString();
-            //    selectItemSource.Add(item);
-            //}
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    var item = new SelectItemModel();
-
-            //    item.TextField = (DateTime.Now.Year + i).ToString();
-            //    item.ValueField = (DateTime.Now.Year + i).ToString();
-            //    selectItemSource.Add(item);
-            //}
-
-            return new SelectList(selectItemSource, "ValueField", "TextField");
-        }
-
+        
         public static SelectList GetPbck1CompletedListByPlant(string plantId)
         {
             IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
@@ -525,6 +495,17 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
             return new SelectList(selectItemSource, "ValueField", "TextField");
             //return new SelectList(data, "COUNTRY_CODE", "COUNTRY_CODE");
+        }
+
+
+        public static SelectList GetExternalSupplierList(Enums.CK5Type ck5Type)
+        {
+            ICK5BLL ck5Bll = MvcApplication.GetInstance<CK5BLL>();
+
+            var data = ck5Bll.GetExternalSupplierList(ck5Type);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+
+            return new SelectList(selectItemSource, "ValueField", "TextField");
         }
     }
 

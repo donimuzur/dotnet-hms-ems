@@ -32,7 +32,7 @@ namespace Sampoerna.EMS.MessagingService
             {
                 var actualTo = new List<string>();
                
-                actualTo.AddRange(to);
+                actualTo.AddRange(to.Distinct());
                
 
                 var smtpClient = new SmtpClient();
@@ -95,8 +95,9 @@ namespace Sampoerna.EMS.MessagingService
             {
                 var actualTo = new List<string>();
 
-                actualTo.AddRange(to);
+                actualTo.AddRange(to.Distinct());
 
+                cc = cc.Distinct().ToList();
 
                 var smtpClient = new SmtpClient();
 

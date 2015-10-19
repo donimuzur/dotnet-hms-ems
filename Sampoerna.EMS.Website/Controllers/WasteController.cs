@@ -154,6 +154,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.CompanyName = company.BUTXT;
                 data.PlantName = plant.NAME1;
                 data.BrandDescription = brandDesc.BRAND_CE;
+                data.CreatedBy = CurrentUser.USER_ID;
+                data.CreatedDate = DateTime.Now;
 
                 //waste reject
                 data.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
@@ -398,6 +400,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     item.CreatedDate = DateTime.Now;
+                    item.CreatedBy = CurrentUser.USER_ID;
 
                     var existingData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
                     Convert.ToDateTime(item.WasteProductionDate));
@@ -457,16 +460,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         model.Add(item);
                     }
-
-                    var input = Mapper.Map<List<WasteUploadItemsInput>>(model);
-                    var outputResult = _wasteBll.ValidationWasteUploadDocumentProcess(input);
-
-                    model = Mapper.Map<List<WasteUploadItems>>(outputResult);
-
-
+                    
                 }
             }
 
+            var input = Mapper.Map<List<WasteUploadItemsInput>>(model);
+            var outputResult = _wasteBll.ValidationWasteUploadDocumentProcess(input);
+
+            model = Mapper.Map<List<WasteUploadItems>>(outputResult);
             return Json(model);
 
 

@@ -17,7 +17,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string PlantId { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
-        public DateTime ReportedOn { get; set; }
+        public DateTime? ReportedOn { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
 
@@ -36,6 +36,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
     public class DataListIndexPbck3
     {
         public int Pbck7Id { get; set; }
+        public int Pbck3Id { get; set; }
         public string Pbck3Number { get; set; }
         public string Pbck7Number { get; set; }
        

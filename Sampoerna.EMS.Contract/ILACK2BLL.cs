@@ -1,39 +1,22 @@
-﻿using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Business;
-using Sampoerna.EMS.BusinessObject.DTOs;
+﻿using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
 {
     public interface ILACK2BLL
     {
         List<Lack2Dto> GetAll();
-        
-        List<Lack2Dto> GetDocumentByParam(Lack2GetByParamInput input);
-
-        List<Lack2Dto> GetOpenDocument(Login user);
-
+        List<Lack2Dto> GetByParam(Lack2GetByParamInput input);
+        List<Lack2Dto> GetCompletedByParam(Lack2GetByParamInput input);
         Lack2Dto GetById(int id);
-
-        Lack2Dto GetByIdAndItem(int id);
-
-        Lack2Dto Insert(Lack2Dto item);
-
-        void InsertDocument(LACK2_DOCUMENT document);
-
-        int RemoveDoc(int docId);
-
-        List<Lack2Dto> GetCompletedDocument();
-
-        void RemoveExistingItem(long id);
-
-        bool IsSelectionCriteriaExist(Lack2Dto item);
-        List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
-
-        List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
-
+        Lack2DetailsDto GetDetailsById(int id);
+        Lack2CreateOutput Create(Lack2CreateParamInput input);
+        Lack2GeneratedOutput GenerateLack2DataByParam(Lack2GenerateDataParamInput input);
+        Lack2SaveEditOutput SaveEdit(Lack2SaveEditInput input);
         void Lack2Workflow(Lack2WorkflowDocumentInput input);
-
+        List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
+        List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
     }
 }

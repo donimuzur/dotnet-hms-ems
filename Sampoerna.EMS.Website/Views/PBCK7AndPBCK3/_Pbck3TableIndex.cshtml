@@ -30,8 +30,8 @@
         {
             <tr>
                 <td class="action">
-                    <a href="@Url.Action("Detail", "PBCK7AndPBCK3", new { id = item.Pbck7Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("Edit", "PBCK7AndPBCK3", new { id = item.Pbck7Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    <a href="@Url.Action("DetailPbck3", "PBCK7AndPBCK3", new { id = item.Pbck3Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("EditPbck3", "PBCK7AndPBCK3", new { id = item.Pbck3Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                 </td>
                 <td>
                     @item.Pbck3Number
@@ -40,7 +40,7 @@
                     @item.Pbck7Number
                 </td>
                 <td>
-                    @Model.ReportedOn
+                    @item.ReportedOn
                 </td>
                 <td>
                     @item.NppbkcId
