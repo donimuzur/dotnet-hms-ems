@@ -146,16 +146,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<WasteDto>(model);
-                var company = _companyBll.GetById(model.CompanyCode);
-                var plant = _plantBll.GetT001WById(model.PlantWerks);
-                var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
-
-                //get desc
-                data.CompanyName = company.BUTXT;
-                data.PlantName = plant.NAME1;
-                data.BrandDescription = brandDesc.BRAND_CE;
-                data.CreatedBy = CurrentUser.USER_ID;
-                data.CreatedDate = DateTime.Now;
+               
 
                 //waste reject
                 data.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
@@ -263,14 +254,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var dbWasteNew = Mapper.Map<WasteDto>(model);
-            var company = _companyBll.GetById(model.CompanyCode);
-            var plant = _plantBll.GetT001WById(model.PlantWerks);
-            var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
-
-            dbWasteNew.CompanyName = company.BUTXT;
-            dbWasteNew.PlantName = plant.NAME1;
-            dbWasteNew.BrandDescription = brandDesc.BRAND_CE;
-
+            
             //reject
             dbWasteNew.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
             dbWasteNew.PackerRejectStickQty = model.PackerStr == null ? 0 : Convert.ToDecimal(model.PackerStr);
