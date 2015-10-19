@@ -95,7 +95,7 @@ namespace Sampoerna.EMS.BLL
 
             var queryFilter = ProcessQueryFilter(input);
             if(input.UserRole == Enums.UserRole.POA){
-                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+                var nppbkc = _nppbkcbll.GetNppbkcMainPlantOnlyByPoa(input.UserId).Select(d => d.NPPBKC_ID).ToList();
 
                 queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
             }

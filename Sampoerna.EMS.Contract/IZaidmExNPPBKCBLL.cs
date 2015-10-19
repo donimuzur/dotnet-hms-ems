@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_NPPBKC> GetNppbkcsByCompany(string companyId);
 
-        List<ZAIDM_EX_NPPBKCDto> GetNppbkcsByPOA(string POAId);
+        List<ZAIDM_EX_NPPBKCDto> GetNppbkcsByPOA(string poaId);
+        List<ZAIDM_EX_NPPBKCDto> GetNppbkcMainPlantOnlyByPoa(string poaId);
     }
 }

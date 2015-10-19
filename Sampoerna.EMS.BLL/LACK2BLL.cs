@@ -85,6 +85,10 @@ namespace Sampoerna.EMS.BLL
                 {
                     input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
                 }
+                else
+                {
+                    input.NppbkcList = new List<string>();
+                }
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
@@ -316,6 +320,8 @@ namespace Sampoerna.EMS.BLL
             dbData.EX_GOOD_TYP = input.ExcisableGoodsType;
             dbData.EX_TYP_DESC = input.ExcisableGoodsTypeDesc;
 
+            dbData.STATUS = dbData.STATUS == Enums.DocumentStatus.Rejected ? Enums.DocumentStatus.Draft : dbData.STATUS;
+
             _uow.SaveChanges();
 
             rc.Success = true;
@@ -493,10 +499,10 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
                 //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
                 //change back to draft
-                dbData.STATUS = Enums.DocumentStatus.Draft;
+                dbData.STATUS = Enums.DocumentStatus.Rejected;
 
                 //todo ask
                 dbData.APPROVED_BY = null;
