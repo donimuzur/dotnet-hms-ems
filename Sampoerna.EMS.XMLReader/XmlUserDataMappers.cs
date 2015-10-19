@@ -50,7 +50,7 @@ namespace Sampoerna.EMS.XMLReader
                         
                         var roleMap = new BROLE_MAP();
                         roleMap.BROLE = role.BROLE;
-                        roleMap.MSACCT = _xmlMapper.GetElementValue(xElement.Element("MSACCT")).Trim();
+                        roleMap.MSACCT = _xmlMapper.GetElementValue(xElement.Element("MSACCT")).Trim().ToUpper();
                         roleMap.START_DATE = _xmlMapper.GetDate(xElement.Element("STRTDAT").Value);
                         roleMap.END_DATE = _xmlMapper.GetDate(xElement.Element("ENDDAT").Value);
 
