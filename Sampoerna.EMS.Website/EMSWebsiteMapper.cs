@@ -831,6 +831,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantWerks))
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCode))
                 .ForMember(dest => dest.ProoductionDate, opt => opt.MapFrom(src => src.ProductionDate));
+                
 
             Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
                
@@ -893,6 +894,10 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<COUNTRY, SelectItemModel>().IgnoreAllNonExisting()
              .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.COUNTRY_CODE))
              .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.COUNTRY_CODE + "-" + src.COUNTRY_NAME));
+
+            Mapper.CreateMap<CK5ExternalSupplierDto, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.SUPPLIER_PLANT));
         }
     }
 

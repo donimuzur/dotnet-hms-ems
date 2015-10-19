@@ -268,5 +268,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public DateTime? Back1Date { get; set; }
 
         public bool AllowAttachmentCompleted { get; set; }
+        public bool IsDomesticAlcohol { get; set; }
     }
 }

@@ -116,6 +116,8 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public decimal? FloorWasteStickQty { get; set; }
 
         public Enums.CK4CType Ck4CType { get; set; }
+        public string CreatedBy { get; set; }
+        public string CreatedDate { get; set; }
 
 
         //SelectList
