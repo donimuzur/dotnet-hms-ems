@@ -447,12 +447,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                     var item = new ProductionUploadItems();
-                    var brandCe = _brandRegistrationBll.GetById(dataRow[1], dataRow[2]);
+                    
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
-                    item.BrandDescription = brandCe.BRAND_CE;
+                    item.BrandDescription = dataRow[3];
                     item.QtyPacked = dataRow[4];
                     item.Qty = dataRow[5];
                     item.Uom = dataRow[6];
