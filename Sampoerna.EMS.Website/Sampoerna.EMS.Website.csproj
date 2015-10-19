@@ -481,6 +481,11 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Reports\LACK2\Lack2ItemsReport.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Lack2ItemsReport.rpt</DependentUpon>
+    </Compile>
     <Compile Include="Reports\LACK2\Preview.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1207,6 +1212,8 @@
     <Content Include="Views\PBCK1\CK5Details.cshtml" />
     <Content Include="Views\PBCK1\_CK5Table.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_HomePbck3GovApproval.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3Pbck7Info.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3Ck5Info.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1329,6 +1336,10 @@
       <LastGenOutput>DaftarRincian.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Reports\LACK2\Lack2ItemsReport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Lack2ItemsReport.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>

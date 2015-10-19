@@ -31,13 +31,26 @@ namespace Sampoerna.EMS.BLL.Services
             dbBack1.BACK1_NUMBER = input.Back1Number;
             dbBack1.BACK1_DATE = input.Back1Date;
 
+            //delete child first
+            foreach (var back1Doc in dbBack1.BACK1_DOCUMENT.ToList())
+            {
+                _repositoryBac1Documents.Delete(back1Doc);
+            }
+
+            foreach (var back1Documents in input.Back1Documents)
+            {
+                back1Documents.BACK1 = dbBack1.BACK1_ID;
+                dbBack1.BACK1_DOCUMENT.Add(back1Documents);
+
+            }
+
             _repository.InsertOrUpdate(dbBack1);
 
         }
 
         public BACK1 GetBack1ByCk5Id(long ck5Id)
         {
-            var dbBack1 = _repository.Get(c => c.CK5_ID == ck5Id).FirstOrDefault();
+            var dbBack1 = _repository.Get(c => c.CK5_ID == ck5Id, null, includeTables).FirstOrDefault();
 
             return dbBack1;
 

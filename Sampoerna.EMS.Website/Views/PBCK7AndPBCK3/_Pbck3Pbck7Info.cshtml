@@ -1,0 +1,197 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck3ViewModel
+
+<div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
+    <div class="panel panel-default">
+        <div id="headingOne" role="tab" class="panel-heading">
+            <h4 class="panel-title">
+                <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse" class="">
+                    PBCK-7 Detail
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne" style="">
+            <div class="panel-body">
+                <div role="form" class="form-excise">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">PBCK-7 No</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Pbck7Number, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">PBCK-7 Date</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Pbck7Date, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Document Type</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.DocumentTypeDescription, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Exec Date From</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.ExecDateFrom, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-md-offset-6">
+                            <div class="row">
+                                <label class="col-md-4">Exec Date To</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.ExecDateTo, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">NPPBKC ID</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.NppbkcId, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Lampiran</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Lampiran, new { @disabled = "disabled", @class = "form-control" })
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Plant ID</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.PlantId, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">POA</label>
+                                <div class="col-md-8">
+                                    @Html.TextAreaFor(model => model.PoaList, new { @rows = "3", @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">PBCK7 Gov Status</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Pbck7GovStatusDescription, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div aria-multiselectable="true" role="tablist" id="accordionThree" class="panel-group">
+    <div class="panel panel-default">
+        <div id="headingThree" role="tab" class="panel-heading">
+            <h4 class="panel-title">
+                <a aria-controls="collapse6" aria-expanded="true" href="#collapseThree" data-parent="#accordionThree" data-toggle="collapse">
+                    Table
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
+            <div class="panel-body">
+
+                <div class="table-container" id="table-upload">
+                    <table class="table table-bordered table-striped js-options-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>FA Code</th>
+                                <th>Product Type Alias</th>
+                                <th>Brand</th>
+                                <th>Content</th>
+                                <th>PBCK-7 QTY</th>
+                                <th>BACK-1 QTY</th>
+                                <th>Series Value</th>
+                                <th>HJE</th>
+                                <th>Tariff</th>
+                                <th>Fiscal Year</th>
+                                <th>Excise Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-tb-upload">
+                            @if (Model.Pbck7UploadItems != null)
+                            {
+                                for (int i = 0; i < Model.Pbck7UploadItems.Count; i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            @(i + 1)
+                                        </td>
+                                        <td>
+                                            @Model.Pbck7UploadItems[i].FaCode
+                                        </td>
+                                        <td>
+                                            @Model.Pbck7UploadItems[i].ProdTypeAlias
+                                        </td>
+                                        <td>
+
+                                            @Model.Pbck7UploadItems[i].Brand
+                                        </td>
+                                        <td>
+
+                                            @Model.Pbck7UploadItems[i].Content
+                                        </td>
+                                        <td>
+
+                                            @Model.Pbck7UploadItems[i].Pbck7Qty
+                                        </td>
+                                        <td>
+
+                                            @Model.Pbck7UploadItems[i].Back1Qty
+
+
+                                        </td>
+                                        <td>
+                                            @Model.Pbck7UploadItems[i].SeriesValue
+                                        </td>
+                                        <td>
+                                            @Model.Pbck7UploadItems[i].Hje
+                                        </td>
+                                        <td>
+                                            @Model.Pbck7UploadItems[i].Tariff
+                                        </td>
+                                        <td>
+
+                                            @Model.Pbck7UploadItems[i].FiscalYear
+                                        </td>
+                                        <td>
+                                            @Model.Pbck7UploadItems[i].ExciseValue
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

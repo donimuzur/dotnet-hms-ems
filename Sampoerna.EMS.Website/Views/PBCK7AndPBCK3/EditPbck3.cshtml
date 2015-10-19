@@ -14,11 +14,15 @@
                
                 <h3>PBCK-3</h3>
                 <label class="status">@Model.Pbck3StatusDescription</label>
-
                 @if (Model.FromPbck7)
                 {
                     <h3>PBCK-7</h3>
                     <label class="status">@Model.Pbck7StatusDescription</label>
+                }
+                else
+                {
+                    <h3>CK-5 MARKET RETURN</h3>
+                    <label class="status">@Model.Ck5FormViewModel.DocumentStatusDescription</label>
                 }
                 <div class="action-button">
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />

@@ -294,11 +294,11 @@ namespace Sampoerna.EMS.BLL
             }
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
-                queryFilter = queryFilter.And(c => c.PBCK7.NPPBKC == input.NppbkcId);
+                queryFilter = queryFilter.And(c => (c.PBCK7.NPPBKC == input.NppbkcId || c.CK5.SOURCE_PLANT_NPPBKC_ID == input.NppbkcId));
             }
             if (!string.IsNullOrEmpty(input.PlantId))
             {
-                queryFilter = queryFilter.And(c => c.PBCK7.PLANT_ID == input.PlantId);
+                queryFilter = queryFilter.And(c => c.PBCK7.PLANT_ID == input.PlantId || c.CK5.SOURCE_PLANT_ID == input.PlantId);
             }
             if (!string.IsNullOrEmpty(input.Poa))
             {
@@ -330,7 +330,7 @@ namespace Sampoerna.EMS.BLL
             Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = n => n.OrderByDescending(z => z.CREATED_DATE);
         
 
-            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7");
+            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7, CK5");
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -1598,15 +1598,7 @@ namespace Sampoerna.EMS.BLL
 
                 AddWorkflowHistory(input);
             }
-
-           
-           
-
-            
-
         }
-
-      
 
         private void GovRejectedDocument(Pbck7Pbck3WorkflowDocumentInput input)
         {
@@ -1638,7 +1630,7 @@ namespace Sampoerna.EMS.BLL
         {
             var output = new Pbck3Output();
 
-            var data = _repositoryPbck3.Get(p => p.PBCK3_ID == id, null, "PBCK7, CK5, PBCK7.BACK1, PBCK7.PBCK7_ITEM").FirstOrDefault();
+            var data = _repositoryPbck3.Get(p => p.PBCK3_ID == id, null, "PBCK7, CK5, PBCK7.BACK1, PBCK7.PBCK7_ITEM, CK5.CK5_MATERIAL").FirstOrDefault();
             if (data == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1654,23 +1646,38 @@ namespace Sampoerna.EMS.BLL
             }
             else//from ck5 market return
             {
-                
+                result.FromPbck7 = false;
+
+                result.Ck5Composite.Ck5Dto = Mapper.Map<CK5Dto>(data.CK5);
+                //details
+                result.Ck5Composite.Ck5MaterialDto = Mapper.Map<List<CK5MaterialDto>>(data.CK5.CK5_MATERIAL);
+
+                //workflow history
+                var input = new GetByFormNumberInput();
+                input.FormNumber = data.CK5.SUBMISSION_NUMBER;
+                input.DocumentStatus = data.CK5.STATUS_ID;
+                input.NPPBKC_Id = data.CK5.SOURCE_PLANT_NPPBKC_ID;
+
+                result.Ck5Composite.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
+
             }
 
             //back1
-            if (result.FromPbck7)
+            BACK1 dbBack1 = null;
+            dbBack1 = result.FromPbck7
+                ? _back1Services.GetBack1ByPbck7Id(result.Pbck7Composite.Pbck7Id)
+                : _back1Services.GetBack1ByCk5Id(result.Ck5Composite.Ck5Dto.CK5_ID);
+            
+
+            if (dbBack1 != null)
             {
-                var dbBack1 = _back1Services.GetBack1ByPbck7Id(result.Pbck7Composite.Pbck7Id);
-                if (dbBack1 != null)
+                result.Back1Id = dbBack1.BACK1_ID;
+                result.Back1Number = dbBack1.BACK1_NUMBER;
+                result.Back1Date = dbBack1.BACK1_DATE;
+                result.Back1Documents = new List<BACK1_DOCUMENT>();
+                if (dbBack1.BACK1_DOCUMENT != null)
                 {
-                    result.Back1Id = dbBack1.BACK1_ID;
-                    result.Back1Number = dbBack1.BACK1_NUMBER;
-                    result.Back1Date = dbBack1.BACK1_DATE;
-                    result.Back1Documents = new List<BACK1_DOCUMENT>();
-                    if (dbBack1.BACK1_DOCUMENT != null)
-                    {
-                        result.Back1Documents = dbBack1.BACK1_DOCUMENT.ToList();
-                    }
+                    result.Back1Documents = dbBack1.BACK1_DOCUMENT.ToList();
                 }
             }
 
@@ -2262,6 +2269,11 @@ namespace Sampoerna.EMS.BLL
             {
                 nppbkcId = pbck3CompositeDto.Pbck7Composite.NppbkcId;
                 plantId = pbck3CompositeDto.Pbck7Composite.PlantId;
+            }
+            else
+            {
+                nppbkcId = pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+                plantId = pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_ID;
             }
 
             var poaList = _poaBll.GetPoaByNppbkcId(nppbkcId);

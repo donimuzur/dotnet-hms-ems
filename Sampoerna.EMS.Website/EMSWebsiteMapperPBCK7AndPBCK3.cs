@@ -47,6 +47,7 @@ namespace Sampoerna.EMS.Website
                  .ForMember(dest => dest.Pbck3Id, opt => opt.MapFrom(src => src.Pbck3Id))
                  .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.Pbck3Number))
                  .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.Pbck7Number))
+                 .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.Ck5Number))
                
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbckId))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck3Date.HasValue ? src.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty))
