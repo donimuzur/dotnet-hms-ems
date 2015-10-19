@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -50,5 +51,11 @@ namespace Sampoerna.EMS.BLL.Test
             Assert.AreEqual(0, companyCode1616.Count());
         }
 
+        [TestMethod]
+        public void GetById_Test()
+        {
+            var productionGetId = new ProductionDto();
+
+        }
     }
 }
