@@ -92,6 +92,18 @@ namespace Sampoerna.EMS.BLL
         public bool Save(WasteDto wasteDto, string userId)
         {
             var isNewData = true;
+
+            #region ------get description code-----
+            var company = _companyBll.GetById(wasteDto.CompanyCode);
+            var plant = _plantBll.GetT001WById(wasteDto.PlantWerks);
+            var brandDesc = _brandRegistrationBll.GetById(wasteDto.PlantWerks, wasteDto.FaCode);
+
+            wasteDto.CompanyName = company.BUTXT;
+            wasteDto.PlantName = plant.NAME1;
+            wasteDto.BrandDescription = brandDesc.BRAND_CE;
+           
+            #endregion
+
             var dbWaste = Mapper.Map<WASTE>(wasteDto);
 
             var origin = _repository.GetByID(dbWaste.COMPANY_CODE, dbWaste.WERKS, dbWaste.FA_CODE,
@@ -104,6 +116,9 @@ namespace Sampoerna.EMS.BLL
                 SetChange(originDto, wasteDto, userId);
                 isNewData = false;
             }
+
+            dbWaste.CREATED_BY = userId;
+            dbWaste.CREATED_DATE = DateTime.Now;
 
             _repository.InsertOrUpdate(dbWaste);
             _uow.SaveChanges();
