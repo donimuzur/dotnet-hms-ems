@@ -2470,9 +2470,51 @@ namespace Sampoerna.EMS.BLL
             return rc;
         }
 
-       
 
 
+        public List<GetListFaCodeByPlantOutput> GetListFaCodeByPlant(string plantId)
+        {
+            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+
+            return Mapper.Map<List<GetListFaCodeByPlantOutput>>(dbBrand);
+        }
+
+        public GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId , string faCode)
+        {
+            var result = new GetBrandItemsByPlantAndFaCodeOutput();
+            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, faCode);
+            if (dbBrand == null)
+            {
+                result.PlantId = plantId;
+                result.FaCode = faCode;
+                result.ProductAlias = "";
+                result.BrandName = "";
+                result.BrandContent = "0";
+                result.Hje = "0";
+                result.Tariff = "0";
+                result.SeriesValue = "";
+            }
+            else
+            {
+
+                if (dbBrand.ZAIDM_EX_PRODTYP != null)
+                    result.ProductAlias = dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
+
+
+                result.BrandName = dbBrand.BRAND_CE;
+                if (dbBrand.ZAIDM_EX_SERIES != null)
+                    result.SeriesValue = dbBrand.ZAIDM_EX_SERIES.SERIES_CODE;
+
+                result.BrandContent = ConvertHelper.ConvertToDecimalOrZero(dbBrand.BRAND_CONTENT).ToString();
+
+                result.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value.ToString() : "0";
+                result.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value.ToString() : "0";
+                
+
+            }
+
+            return result;
+        }
     }
 
 

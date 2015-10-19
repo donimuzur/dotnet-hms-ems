@@ -485,6 +485,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Lack2ItemsReport.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\LACK2\Preview.cs">
       <AutoGen>True</AutoGen>
@@ -909,6 +910,7 @@
     <Content Include="Scripts\Pbck4InputManual.js" />
     <Content Include="Scripts\Pbck4Script.js" />
     <Content Include="Scripts\Pbck4ScriptDocUpload.js" />
+    <Content Include="Scripts\Pbck7InputManual.js" />
     <Content Include="Scripts\Pbck7Script.js" />
     <Content Include="Scripts\Pbck7ScriptDocUpload.js" />
     <Content Include="Scripts\pbck7\form.js" />
@@ -1214,6 +1216,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_HomePbck3GovApproval.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck3Pbck7Info.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck3Ck5Info.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7InputManual.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

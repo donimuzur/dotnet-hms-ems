@@ -2252,6 +2252,27 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
         }
 
+        #region "Input Manual
+
+        [HttpPost]
+        public JsonResult GetListFaCode(string plantId)
+        {
+
+            var brandOutput = _pbck7Pbck3Bll.GetListFaCodeByPlant(plantId);
+           
+            return Json(brandOutput);
+        }
+
+        [HttpPost]
+        public JsonResult GetBrandItems(string plantId, string faCode)
+        {
+
+            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode);
+            
+            return Json(brandOutput);
+        }
+
+        #endregion
     }
 
 }
