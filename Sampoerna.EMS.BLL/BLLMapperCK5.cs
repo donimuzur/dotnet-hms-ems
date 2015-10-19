@@ -114,6 +114,9 @@ namespace Sampoerna.EMS.BLL
                ;
 
             Mapper.CreateMap<PBCK1, CK5ExternalSupplierDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<CK5_FILE_UPLOADDto, BACK1_DOCUMENT>().IgnoreAllNonExisting()
+                ;
         }
     }
 }

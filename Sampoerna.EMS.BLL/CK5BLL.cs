@@ -971,6 +971,33 @@ namespace Sampoerna.EMS.BLL
 
         #region workflow
 
+        private void AddWorkflowHistoryPbck3(CK5WorkflowHistoryInput input)
+        {
+            var inputWorkflowHistory = new GetByActionAndFormNumberInput();
+            inputWorkflowHistory.ActionType = input.ActionType;
+            inputWorkflowHistory.FormNumber = input.DocumentNumber;
+
+
+            var dbData = new WorkflowHistoryDto();
+            dbData.ACTION = input.ActionType;
+            dbData.FORM_NUMBER = input.DocumentNumber;
+            dbData.FORM_TYPE_ID = Enums.FormType.PBCK3;
+
+            dbData.FORM_ID = input.DocumentId;
+            if (!string.IsNullOrEmpty(input.Comment))
+                dbData.COMMENT = input.Comment;
+
+
+            dbData.ACTION_BY = input.UserId;
+            dbData.ROLE = input.UserRole;
+            dbData.ACTION_DATE = DateTime.Now;
+
+            if (!input.IsModified && input.ActionType == Enums.ActionType.Submit)
+                _workflowHistoryBll.UpdateHistoryModifiedForSubmit(dbData);
+            else
+                _workflowHistoryBll.Save(dbData);
+        }
+
         private void AddWorkflowHistory(CK5WorkflowHistoryInput input)
         {
             var inputWorkflowHistory = new GetByActionAndFormNumberInput();
@@ -1418,9 +1445,12 @@ namespace Sampoerna.EMS.BLL
                 inputBack1.Ck5Id = dbData.CK5_ID;
                 inputBack1.Back1Number = input.AdditionalDocumentData.Back1Number;
                 inputBack1.Back1Date = input.AdditionalDocumentData.Back1Date.Value;
+                inputBack1.Back1Documents = Mapper.Map<List<BACK1_DOCUMENT>>(input.AdditionalDocumentData.Ck5FileUploadList);
 
                 _back1Services.SaveBack1ByCk5Id(inputBack1);
             }
+
+            AddWorkflowHistory(input);
 
             if (IsCompletedMarketReturnWorkflow(input))
             {
@@ -1430,19 +1460,28 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
                 
                 dbData.STATUS_ID = Enums.DocumentStatus.Completed;
-               
+                input.ActionType = Enums.ActionType.Completed;
                 AddWorkflowHistory(input);
+
+                input.ActionType = Enums.ActionType.GovApprove;
 
                 //insert to pbck3
                 var inputPbck3 = new InsertPbck3FromCk5MarketReturnInput();
                 inputPbck3.Ck5Id = dbData.CK5_ID;
                 inputPbck3.NppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
                 inputPbck3.UserId = input.UserId;
-                _pbck3Services.InsertPbck3FromCk5MarketReturn(inputPbck3);
+                var pbck3Number = _pbck3Services.InsertPbck3FromCk5MarketReturn(inputPbck3);
+
+                //add workflow history pbck3
+                var inputCk5MarketReturn = new CK5WorkflowHistoryInput();
+                inputCk5MarketReturn.DocumentNumber = pbck3Number;
+                inputCk5MarketReturn.UserId = input.UserId;
+                inputCk5MarketReturn.UserRole = input.UserRole;
+                inputCk5MarketReturn.ActionType = Enums.ActionType.Created;
+                
+                AddWorkflowHistoryPbck3(inputCk5MarketReturn);
 
             }
-
-            
         }
 
         private void GovApproveDocument(CK5WorkflowDocumentInput input)

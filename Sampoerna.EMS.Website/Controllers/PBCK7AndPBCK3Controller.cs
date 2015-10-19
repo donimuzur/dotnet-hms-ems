@@ -27,6 +27,7 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PBCK7AndPBCK3;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -1875,10 +1876,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CurrentMenu = PageInfo;
 
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
-                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                
                 model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
 
+                if (existingData.Pbck3CompositeDto.FromPbck7)
+                    model.WorkflowHistoryPbck7 =
+                        Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                else
+                {
+                    model.Ck5FormViewModel =
+                        Mapper.Map<CK5FormViewModel>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto);
 
+                    model.Ck5FormViewModel.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5MaterialDto);
+
+                    model.Ck5FormViewModel.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.ListWorkflowHistorys);
+
+                }
                 return View("EditPbck3", model);
             }
             catch (Exception ex)
@@ -2006,21 +2019,34 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = Mapper.Map<Pbck3ViewModel>(existingData.Pbck3CompositeDto);
 
 
-                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                //model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
 
                 model.MainMenu = _mainMenu;
                 model.CurrentMenu = PageInfo;
 
-
-                //  model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
-
-                //var changesHistoryPbck = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK7, id.ToString());
-                //model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changesHistoryPbck);
-
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
-                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                
                 model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
 
+                string nppbkcId = "";
+
+                if (model.FromPbck7)
+                {
+                    model.WorkflowHistoryPbck7 =
+                        Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                    nppbkcId = model.NppbkcId;
+                }
+                else
+                {
+                    model.Ck5FormViewModel =
+                      Mapper.Map<CK5FormViewModel>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto);
+
+                    model.Ck5FormViewModel.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5MaterialDto);
+
+                    model.Ck5FormViewModel.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.ListWorkflowHistorys);
+
+                    nppbkcId = model.Ck5FormViewModel.SourceNppbkcId;
+                }
 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput();
@@ -2031,7 +2057,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUser = CurrentUser.USER_ID;
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.Pbck3Number;
-                input.NppbkcId = model.NppbkcId;
+                input.NppbkcId = nppbkcId;
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
