@@ -440,7 +440,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
         {
             bool isAllow = CurrentUser.USER_ID == userId;
-            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.WaitingGovApproval))
+            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected))
             {
                 isAllow = false;
             }
