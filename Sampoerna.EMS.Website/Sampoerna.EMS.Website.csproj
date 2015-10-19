@@ -1212,6 +1212,8 @@
     <Content Include="Views\PBCK1\CK5Details.cshtml" />
     <Content Include="Views\PBCK1\_CK5Table.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_HomePbck3GovApproval.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3Pbck7Info.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3Ck5Info.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

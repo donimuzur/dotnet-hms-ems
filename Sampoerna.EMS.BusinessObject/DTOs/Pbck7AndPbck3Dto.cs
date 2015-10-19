@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string Pbck3Number { get; set; }
         public string Pbck7Number { get; set; }
+        public string Ck5Number { get; set; }
        
         public int Pbck7Id { get; set; }
         public int Pbck3Id { get; set; }
