@@ -21,7 +21,7 @@
                 <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                     <div class="panel-body">
                         <div class="form-excise" role="form">
-                            @if (Model.IsCk5PortToImporter)
+                            @*@if (Model.IsCk5PortToImporter)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
@@ -43,7 +43,7 @@
                                 </div>
                             }
                             else
-                            {
+                            {*@
                                 <div class="row">
 
                                     <div class="col-md-6">
@@ -101,7 +101,7 @@
                                     </div>
                                 </div>
 
-                            }
+                            @*}*@
 
                         </div>
                     </div>
@@ -303,7 +303,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                @if (Model.IsCk5ImporterToPlant)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Port to Importer Ref</label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Ck5RefId, Model.Ck5RefList, "Select", new { @class = "form-control" })
 
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -449,7 +460,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsCk5Manual)
+                            @if (!Model.IsCk5Export && !Model.IsCk5Manual)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
