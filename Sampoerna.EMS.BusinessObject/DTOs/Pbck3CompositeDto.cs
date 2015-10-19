@@ -12,6 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
        public Pbck3CompositeDto()
        {
            Pbck7Composite = new Pbck3Pbck7DtoComposite();
+           Ck5Composite = new Pbck3Ck5DtoComposite();
        }
 
         public int PBCK3_ID { get; set; }
@@ -58,6 +59,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
        //general
         public bool FromPbck7 { get; set; }
 
+       //from ck5 market return
+        public Pbck3Ck5DtoComposite Ck5Composite { get; set; } 
+
     }
 
     public class Pbck3Pbck7DtoComposite
@@ -82,5 +86,19 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PoaList { get; set; }
 
         public List<PBCK7_ITEM> Pbck7Documents { get; set; }
+    }
+
+    public class Pbck3Ck5DtoComposite
+    {
+        public Pbck3Ck5DtoComposite()
+        {
+            ListWorkflowHistorys = new List<WorkflowHistoryDto>();
+        }
+
+        public CK5Dto Ck5Dto { get; set; }
+        
+        public List<WorkflowHistoryDto> ListWorkflowHistorys { get; set; }
+        public List<CK5MaterialDto> Ck5MaterialDto { get; set; }
+        
     }
 }
