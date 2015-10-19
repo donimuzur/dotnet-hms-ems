@@ -100,8 +100,17 @@ namespace Sampoerna.EMS.BLL
             var output = new SaveProductionOutput();
             output.isNewData = true;
             output.isFromSap = false;
-            
 
+            #region ----- get description code--------
+            var company = _companyBll.GetById(productionDto.CompanyCode);
+            var plant = _plantBll.GetT001WById(productionDto.PlantWerks);
+            var brandDesc = _brandRegistrationBll.GetById(productionDto.PlantWerks, productionDto.FaCode);
+
+            productionDto.CompanyName = company.BUTXT;
+            productionDto.PlantName = plant.NAME1;
+            productionDto.BrandDescription = brandDesc.BRAND_CE;
+            #endregion
+           
             var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
 
             var origin = _repository.GetByID(productionDto.CompanyCodeX, productionDto.PlantWerksX, productionDto.FaCodeX,
@@ -127,6 +136,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             dbProduction.CREATED_DATE = DateTime.Now;
+            dbProduction.CREATED_BY = userId;
 
 
             if (origin != null)
