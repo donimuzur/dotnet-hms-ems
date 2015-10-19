@@ -505,6 +505,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
+                input.ManagerApprove = curUser.USER_ID;
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
 
