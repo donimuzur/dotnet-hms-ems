@@ -22,22 +22,19 @@
 
                         </div>
 
-                        @*<div class="col-md-6">
-                            <div class="input-group">
-                                <input type="file" name="itemExcelFile" id="itemExcelFile">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="button" class="btn btn-grey" id="btn-generate-upload" value="Generate">
-                            <input type="button" class="btn btn-blue" id="btn-save-upload" value="Save" disabled />
-
-
-                        </div>*@
+                     
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @if (!Model.AllowGovApproveAndReject)
+    {
+      
+       <input type="button" class="btn btn-blue" id="btnAddRow" value="New Input" />
+
+    }
+
     <div class="table-container" id="UploadLIst">
         @Html.Partial("_UploadList")
     </div>
