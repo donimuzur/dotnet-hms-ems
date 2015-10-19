@@ -2226,6 +2226,18 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
         }
 
+        [EncryptedParameter]
+        public FileResult PrintOut(int id)
+        {
+            return PrintPreview(id, true, "PBCK-7");
+        }
+
+        [EncryptedParameter]
+        public FileResult PrintOutPbck3(int id)
+        {
+            return PrintPreview(id, true, "PBCK-3");
+        }
+
     }
 
 }
