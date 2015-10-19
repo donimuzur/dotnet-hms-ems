@@ -234,7 +234,7 @@ function AddRow() {
                 "<td style='display: none'>" + $('#uploadMaterialDesc').val() + "</td>" +
                 "<td style='display: none'>" + exciseQty + "</td>" +
                 "<td style='display: none'>" + exciseUOM + "</td>" +
-                "<td style='display: none'></td>" +
+                "<td style='display: none'>0</td>" +
                 "</tr>");
         
         $('#CK5UploadSave').enable();
