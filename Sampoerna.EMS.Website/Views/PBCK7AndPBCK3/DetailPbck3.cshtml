@@ -5,16 +5,13 @@
 @{
     ViewBag.Title = "Edit";
 }
-
 @using (@Html.BeginForm(Model.ActionType, "PBCK7AndPBCK3", FormMethod.Post, new { @id = "formPbck3Detail", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-
                 <h3>PBCK-3</h3>
                 <label class="status">@Model.Pbck3StatusDescription</label>
-
                 @if (Model.FromPbck7)
                 {
                     <h3>PBCK-7</h3>
@@ -26,7 +23,6 @@
                     <label class="status">@Model.Ck5FormViewModel.DocumentStatusDescription</label>
                 }
                 <div class="action-button">
-
                     @if (Model.AllowApproveAndReject)
                     {
                         <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
@@ -47,12 +43,8 @@
                     }
 
 
-
-
                     <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Pbck3Id })')" />
-
                 </div>
-
 
             </div>
         </div>
@@ -68,14 +60,17 @@
                     @Html.HiddenFor(x => x.Pbck3Id)
                     @Html.HiddenFor(x => x.Pbck3Status)
                     @Html.HiddenFor(x => x.Pbck3Number)
-                   
+
                     <!-- Nav tabs -->
                     @Html.AntiForgeryToken()
                     <ul role="tablist" class="nav nav-tabs">
                         <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        @if (Model.Pbck3Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Pbck3Status != Enums.DocumentStatus.Cancelled)
+                        {
+                            <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck3" href="#printoutpbck3">Print Out</a></li>
+                        }
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                     </ul>
-
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @if (Model.AllowGovApproveAndReject)
@@ -86,7 +81,10 @@
                         {
                             @Html.Partial("_HomeEditPbck3Pbck7")
                         }
-
+                        @if (Model.Pbck3Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Pbck3Status != Enums.DocumentStatus.Cancelled)
+                        {
+                            @Html.Partial("_PrintOutPbck3")
+                        }
                         @Html.Partial("_Pbck3ChangeLog")
                     </div>
                 </div>
@@ -94,7 +92,6 @@
         </div>
     </div>
 }
-
 
 <div id="Pbck3Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
@@ -113,7 +110,6 @@
         </div>
     </div>
 </div>
-
 <div id="Pbck3ModalReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -133,7 +129,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
@@ -143,7 +138,6 @@
         </div>
     </div>
 </div>
-
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -215,12 +209,48 @@
                 $('#formPbck3Detail').submit();
             }
         });
-        
+
         function printPreview(url) {
 
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
         }
 
+
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+        }
+        
     </script>
 }
