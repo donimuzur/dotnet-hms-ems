@@ -964,8 +964,6 @@ namespace Sampoerna.EMS.BLL
                 List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
                 foreach (var item in addressPlant)
                 {
-                    address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
-
                     Int32 isInt;
                     var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
 
