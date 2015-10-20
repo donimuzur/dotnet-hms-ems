@@ -58,7 +58,7 @@
                         @Html.HiddenFor(x => x.StatusName)
                         @Html.HiddenFor(model => model.GovApprovalActionType)
                         @Html.HiddenFor(model => model.GovStatusName)
-                        @if (Model.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+                        @if ((Model.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject) || Model.Status == Enums.DocumentStatus.Completed)
                         {
                             @Html.Partial("_HomeGovApproval")
                         }

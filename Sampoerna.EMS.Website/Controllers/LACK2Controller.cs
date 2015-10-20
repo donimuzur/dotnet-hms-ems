@@ -287,7 +287,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model = InitEditList(model);
             model.IsCreateNew = false;
 
-            model.ControllerAction = model.Status == Enums.DocumentStatus.WaitingGovApproval ? "GovApproveDocument" : "Edit";
+            model.ControllerAction = model.Status == Enums.DocumentStatus.WaitingGovApproval || model.Status == Enums.DocumentStatus.Completed ? "GovApproveDocument" : "Edit";
 
             return View(model);
         }
@@ -438,7 +438,8 @@ namespace Sampoerna.EMS.Website.Controllers
         private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
         {
             bool isAllow = CurrentUser.USER_ID == userId;
-            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected || status == Enums.DocumentStatus.WaitingGovApproval))
+            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected 
+                || status == Enums.DocumentStatus.WaitingGovApproval || status == Enums.DocumentStatus.Completed))
             {
                 isAllow = false;
             }
