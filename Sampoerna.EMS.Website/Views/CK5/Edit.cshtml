@@ -62,11 +62,11 @@
                         {
                             @Html.HiddenFor(model => model.SourcePlantId)
                         }
-                        else
-                        {
+                        @*else
+                        {*@
                             @Html.HiddenFor(model => model.SourceCompanyName)
                             @Html.HiddenFor(model => model.SourceAddress)
-                        }
+                        @*}*@
 
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)

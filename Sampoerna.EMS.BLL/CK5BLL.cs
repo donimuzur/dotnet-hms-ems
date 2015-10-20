@@ -363,10 +363,11 @@ namespace Sampoerna.EMS.BLL
                 //set changes history
                 var origin = Mapper.Map<CK5Dto>(dbData);
 
-                if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter || input.Ck5Dto.CK5_TYPE == Enums.CK5Type.DomesticAlcohol)
                 {
                     if (string.IsNullOrEmpty(input.Ck5Dto.SOURCE_PLANT_ID))
                         input.Ck5Dto.SOURCE_PLANT_ID = string.Empty;
+                        
                 }
 
                 isModified = SetChangesHistory(origin, input.Ck5Dto, input.UserId);
@@ -418,7 +419,16 @@ namespace Sampoerna.EMS.BLL
                 foreach (var ck5Item in input.Ck5Material)
                 {
                     var ck5Material = Mapper.Map<CK5_MATERIAL>(ck5Item);
-                    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                    if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                        input.Ck5Dto.CK5_TYPE == Enums.CK5Type.DomesticAlcohol)
+                    {
+                        ck5Material.PLANT_ID = dbData.DEST_PLANT_ID;
+                    }
+                    else
+                    {
+                        ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                    }
+                    
                     dbData.CK5_MATERIAL.Add(ck5Material);
                 }
 
@@ -436,9 +446,10 @@ namespace Sampoerna.EMS.BLL
             {
                dbData =  ProcessInsertCk5(input);
             }
-
+            
             try
             {
+                //throw (new Exception("error"));
                 _uow.SaveChanges();
             }
             catch (DbEntityValidationException e)
@@ -930,7 +941,16 @@ namespace Sampoerna.EMS.BLL
             var input = new GetByFormNumberInput();
             input.FormNumber = dtData.SUBMISSION_NUMBER;
             input.DocumentStatus = dtData.STATUS_ID;
-            input.NPPBKC_Id = dtData.SOURCE_PLANT_NPPBKC_ID;
+
+            if (dtData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            {
+                input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+            }
+            else
+            {
+                input.NPPBKC_Id = dtData.SOURCE_PLANT_NPPBKC_ID;    
+            }
+            
 
             //output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(dtData.SUBMISSION_NUMBER);
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
@@ -2555,7 +2575,11 @@ namespace Sampoerna.EMS.BLL
                 {
                     ck5Material.PLANT_ID = dbData.DEST_PLANT_ID;
                 }
-                
+                else
+                {
+                    ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
+                }
+
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
 

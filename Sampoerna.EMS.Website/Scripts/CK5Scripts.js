@@ -29,7 +29,6 @@ function OnReadyFunction(ck5Type) {
 
     var total = 0;
     $('#CK5UploadSave').click(function () {
-        //debugger;
         var datarows = GetTableData($('#Ck5UploadTable'));
         var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
         $('#ck5TableItem tbody').html('');
@@ -641,9 +640,11 @@ function ValidateCk5Form(ck5Type) {
         $("#collapseOne").css({ height: "auto" });
 
     }
-    if (ck5Type == 'PortToImporter') {
-        $('#SourcePlantId').val('');
-    }
+    
+    ///deleted for change
+    //if (ck5Type == 'PortToImporter') {
+    //    $('#SourcePlantId').val('');
+    //}
     else if ($('#SourcePlantId').find("option:selected").val() == '') {
         AddValidationClass(false, 'SourcePlantId');
         result = false;
@@ -748,7 +749,7 @@ function ValidateCk5Form(ck5Type) {
     // && (ck5Type != 'Domestic')
     if (result) {
 
-        if (ck5Type == 'Export' || ck5Type == 'PortToImporter' || ck5Type == "Manual")
+        if (ck5Type == 'Export' ||  ck5Type == "Manual")
             return result;
         //alert('Source : ' + $('#SourceNppbkcId').val());
         //alert('Dest : ' + $('#DestNppbkcId').val());
