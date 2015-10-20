@@ -325,7 +325,7 @@ namespace Sampoerna.EMS.BLL
            inputWorkflowHistory.UserRole = input.UserRole;
            inputWorkflowHistory.ActionType = input.ActionType;
            inputWorkflowHistory.Comment = input.Comment;
-           input.IsModified = input.IsModified;
+           inputWorkflowHistory.IsModified = input.IsModified;
 
            AddWorkflowHistory(inputWorkflowHistory);
        }

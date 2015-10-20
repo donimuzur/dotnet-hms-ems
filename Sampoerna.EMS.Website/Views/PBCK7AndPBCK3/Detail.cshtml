@@ -20,7 +20,9 @@
                 <h3>PBCK-7</h3>
                 <label class="status">@Model.Pbck7StatusName</label>
                 <div class="action-button">
-                  
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
+                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
+
                         @if (Model.AllowApproveAndReject)
                         {
                             <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
@@ -40,9 +42,7 @@
                             }
                         }
                     
-                  
-                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
-                  
+                   
                 </div>
             </div>
         </div>
@@ -166,133 +166,145 @@
     <script src="~/Scripts/Pbck7Script.js"></script>
     <script src="~/Scripts/Pbck7ScriptDocUpload.js"></script>
    
-
-
-
-
     <script type="text/javascript">
+        $('#MenuPBCK7Index').addClass('active');
         
+        var isCompleteView = '@Model.Pbck7Status';
+        if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()'){
+            $('#MenuPBCK7CompleteIndex').addClass('active');
+        } else {
+            $('#MenuPBCK7Index').addClass('active');
+        }
+        
+        $('#btnBack').click(function(e) {
+            if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()')
+                location.href = '@Url.Action("Pbck7Completed", "PBCK7AndPBCK3")';
+            else
+                location.href = '@Url.Action("Index", "PBCK7AndPBCK3")';
+        });
+
+
         $('#btn-changelog-export-xls').click(function () {
             location.href = '@Url.Action("ExportXls", "PBCK7AndPBCK3", new { pbckId = Model.Id })';
-        });
-        
-        $("#btnApproveConfirm").click(function () {
-            //$('#ActionType').val('Approve');
-            //$('#form-pbck7-detail').submit();
-            window.location = "@Url.Action("ApproveDocument", "PBCK7AndPBCK3", new { id = @Model.Id })";
-        });
+    });
 
-        $("#btnSaveGovStatus").click(function () {
-            if (ValidateGovInput()) {
-                $('#form-pbck7-detail').submit();
-                @*window.location = "@Url.Action("GovApproveDocument", "PBCK7AndPBCK3", new { id = @Model.Id })";*@
-            }
-        });
+    $("#btnApproveConfirm").click(function () {
+        //$('#ActionType').val('Approve');
+        //$('#form-pbck7-detail').submit();
+        window.location = "@Url.Action("ApproveDocument", "PBCK7AndPBCK3", new { id = @Model.Id })";
+    });
+
+    $("#btnSaveGovStatus").click(function () {
+        if (ValidateGovInput()) {
+            $('#form-pbck7-detail').submit();
+            @*window.location = "@Url.Action("GovApproveDocument", "PBCK7AndPBCK3", new { id = @Model.Id })";*@
+        }
+    });
+
+    $('#divComment').hide();
+
+    $('#Pbck7GovStatus').on('change', function (e) {
+        var valueSelected = this.value;
 
         $('#divComment').hide();
-        
-        $('#Pbck7GovStatus').on('change', function (e) {
-            var valueSelected = this.value;
 
-            $('#divComment').hide();
 
-         
-            if (valueSelected == 'Rejected') {
-                $('#divComment').show();
-
-            }
-
-        });
-        
-     
-        $("#btnApproveConfirmPbck3").click(function () {
-            $('#ActionType').val('ApprovePbck3');
-            $('#form-pbck7-detail').submit();
-        });
-        $('#btnApprove').click(function () {
-
-            $('#pbck7ApproveModal').modal('show');
-        });
-        $('#btnApprovePbck3').click(function () {
-
-            $('#pbck3ApproveModal').modal('show');
-        });
-        $("#btnSubmitConfirm").click(function() {
-            $('#IsSaveSubmit').val('true');
-            $('#form-pbck7-edit').submit();
-        });
-        $('#btnSubmitDocument').click(function() {
-
-            $('#pbck7Modal').modal('show');
-        });
-        $('#btn-generate-upload').click(function() {
-            uploadXmlFile();
-        });
-     
-        
-        function printPreview(url) {
-
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        if (valueSelected == 'Rejected') {
+            $('#divComment').show();
 
         }
-        
-        function PrintOutClick(reportUrl, addHistoryUrl, id) {
 
-            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+    });
 
-            $.ajax({
-                type: 'POST',
-                url: addHistoryUrl,
-                data: { id: id },
-                success: function (response) {
-                    $('#PrintOutHistoryTable').html("");
-                    $('#PrintOutHistoryTable').html(response);
-                    ResetPrintHistoryDataTable();
+
+    $("#btnApproveConfirmPbck3").click(function () {
+        $('#ActionType').val('ApprovePbck3');
+        $('#form-pbck7-detail').submit();
+    });
+    $('#btnApprove').click(function () {
+
+        $('#pbck7ApproveModal').modal('show');
+    });
+    $('#btnApprovePbck3').click(function () {
+
+        $('#pbck3ApproveModal').modal('show');
+    });
+    $("#btnSubmitConfirm").click(function () {
+        $('#IsSaveSubmit').val('true');
+        $('#form-pbck7-edit').submit();
+    });
+    $('#btnSubmitDocument').click(function () {
+
+        $('#pbck7Modal').modal('show');
+    });
+    $('#btn-generate-upload').click(function () {
+        uploadXmlFile();
+    });
+
+
+    function printPreview(url) {
+
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+    }
+
+    function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+        window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        $.ajax({
+            type: 'POST',
+            url: addHistoryUrl,
+            data: { id: id },
+            success: function (response) {
+                $('#PrintOutHistoryTable').html("");
+                $('#PrintOutHistoryTable').html(response);
+                ResetPrintHistoryDataTable();
+            }
+        });
+    }
+    function ResetPrintHistoryDataTable() {
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+            table = $('#printHistoryTable').DataTable();
+            table.destroy();
+        }
+
+        table = $('#printHistoryTable').DataTable(
+            {
+                "sDom": "Rlfrtip",
+                "language": {
+                    "zeroRecords": "No records found",
+                    "infoFiltered": "(filtered from _MAX_ total records)"
                 }
             });
-        }
-        function ResetPrintHistoryDataTable() {
-            // DataTable
-            var table = null;
-            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
-                table = $('#printHistoryTable').DataTable();
-                table.destroy();
-            }
 
-            table = $('#printHistoryTable').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "zeroRecords": "No records found",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
 
+    }
+    $('#btnRejectPbck7').click(function () {
+        $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
+
+        $('#pbck7RejectModal').modal('show');
+    });
+
+    $('#Comment').bind('input propertychange', function () {
+
+        $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
+
+        if (this.value.length) {
+            $('#btnConfirmRejectPbck7').removeAttr('disabled');
 
         }
-        $('#btnRejectPbck7').click(function () {
-            $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
+    });
+    $('#Pbck3Dto_Comment').bind('input propertychange', function () {
 
-            $('#pbck7RejectModal').modal('show');
-        });
-      
-        $('#Comment').bind('input propertychange', function () {
+        $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
 
-            $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
-           
-            if (this.value.length) {
-                $('#btnConfirmRejectPbck7').removeAttr('disabled');
-              
-            }
-        });
-        $('#Pbck3Dto_Comment').bind('input propertychange', function () {
+        if (this.value.length) {
+            $('#btnConfirmRejectPbck3').removeAttr('disabled');
 
-            $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
-
-            if (this.value.length) {
-                $('#btnConfirmRejectPbck3').removeAttr('disabled');
-
-            }
-        });
+        }
+    });
     </script>
 }

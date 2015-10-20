@@ -89,6 +89,8 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     
     <script type="text/javascript">
+        $('#MenuPBCK3Index').addClass('active');
+        
         $('#btnBack').click(function (e) {
             location.href = '@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")';
         });
@@ -105,8 +107,8 @@
         
         $("#btnSubmitConfirm").click(function () {
             //if (ValidatePbck7Form()) {
-                $('#IsSaveSubmit').val('true');
-                $('#formPbck3Edit').submit();
+            $('#IsSaveSubmit').val('true');
+            $('#formPbck3Edit').submit();
             //}
         });
         

@@ -7,6 +7,14 @@ $("#btnUpdateMaterial").click(function () {
     UpdateRowPbck7();
 });
 
+function RemovePbck7ItemsTable() {
+
+    //$('#pbck4TableItem tbody').html('');
+    $('#body-tb-upload').html('');
+    $('#Pbck7UploadTable tbody').html('');
+
+}
+
 function ajaxGetListFaCode2(url, formData, facode) {
     if (formData.plantId) {
         $.ajax({

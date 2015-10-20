@@ -696,6 +696,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.Pbck7Number;
                 input.NppbkcId = model.NppbkcId;
+                input.ManagerApprove = model.ApprovedByManager;
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
@@ -2043,7 +2044,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.Pbck3Number;
                 input.NppbkcId = nppbkcId;
-
+                input.ManagerApprove = model.APPROVED_BY_MANAGER;
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
