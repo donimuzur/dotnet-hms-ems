@@ -78,6 +78,26 @@ namespace Sampoerna.EMS.BLL
 
            Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
 
+           if (input.UserRole == Enums.UserRole.POA)
+           {
+               var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+               queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+
+
+           }
+           else if (input.UserRole == Enums.UserRole.Manager)
+           {
+               var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+               var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+               queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK4_NUMBER));
+           }
+           else
+           {
+               queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+           }
+
            if (!string.IsNullOrEmpty(input.NppbkcId))
            {
                queryFilter = queryFilter.And(c => c.NPPBKC_ID.Contains(input.NppbkcId));
@@ -109,11 +129,11 @@ namespace Sampoerna.EMS.BLL
 
            if (input.IsCompletedDocument)
            {
-               queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+               queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled);
            }
            else
            {
-               queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+               queryFilter = queryFilter.And(c => !(c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled));
            }
 
            Func<IQueryable<PBCK4>, IOrderedQueryable<PBCK4>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
@@ -325,7 +345,7 @@ namespace Sampoerna.EMS.BLL
            inputWorkflowHistory.UserRole = input.UserRole;
            inputWorkflowHistory.ActionType = input.ActionType;
            inputWorkflowHistory.Comment = input.Comment;
-           input.IsModified = input.IsModified;
+           inputWorkflowHistory.IsModified = input.IsModified;
 
            AddWorkflowHistory(inputWorkflowHistory);
        }

@@ -1,0 +1,113 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+
+<div id="Pbck7UploadModal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="lblTitleInputManual">Add Row</span></h4>
+            </div>
+            <div class="modal-body form-excise">
+                <p></p>
+                <input id="uploadMaterialRow" type="hidden" value="">
+                <input id="uploadPbck7ItemId" type="hidden" value="">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Plant</label>
+                        <input class="form-control" id="uploadPlant" type="text" value="" disabled>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>FA Code<span class="red">*</span></label>
+                        <select class="form-control" id="uploadFaCode">
+                            <option value="">Select</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label>Product Type Alias</label>
+                        @Html.TextBoxFor(model => model.ActionType, new { @class = "form-control", @id = "uploadProductTypeAlias", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Brand</label>
+                        @Html.TextBoxFor(model => model.ActionType, new { @class = "form-control", @id = "uploadBrand", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Content</label>
+                        @Html.TextBoxFor(model => model.ActionType, new { @class = "form-control", @id = "uploadContent", @disabled = "disabled" })
+
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label>HJE</label>
+                        @Html.TextBoxFor(model => model.ActionType, new { @class = "form-control", @id = "uploadHje", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Tariff</label>
+                        @Html.TextBoxFor(model => model.ActionType, new { @class = "form-control", @id = "uploadTariff", @disabled = "disabled" })
+
+                    </div>
+                   
+                    
+                    <div class="col-md-4">
+                        <label>Series Value</label>
+                        @Html.TextBoxFor(model => model.ActionType, new { @class = "form-control", @id = "uploadSeriesValue", @disabled = "disabled" })
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                   
+                 
+                    
+                    <div class="col-md-4">
+                        <label>BACK-1 Qty</label>
+                        @Html.TextBoxFor(model => model.RequestedQty, new { @class = "form-control", @id = "uploadBack1Qty", @disabled = "disabled" })
+
+                    </div>
+                    <div class="col-md-4">
+                        <label>PBCK-7 Qty <span class="red">*</span></label>
+                        @Html.TextBoxFor(model => model.RequestedQty, new { @class = "form-control", @id = "uploadPbck7Qty", @maxlength = "15" })
+
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <label>Fiscal Year<span class="red">*</span></label>
+                        @Html.TextBoxFor(model => model.FiscalYear, new { @class = "form-control", @id = "uploadFiscalYear", @maxlength = "4" })
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Excise Value</label>
+                        @Html.TextBoxFor(model => model.ActionType, new { @class = "form-control", @id = "uploadExciseValue", @disabled = "disabled" })
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                <input type="button" class="btn btn-blue" value="Save" id="btnSaveMaterial" />
+                <input type="button" class="btn btn-blue" value="Update" id="btnUpdateMaterial" />
+            </div>
+        </div>
+    </div>
+</div>
+
