@@ -25,7 +25,7 @@
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Id })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btn-back" />
 
-                    @if (Model.Status == Enums.DocumentStatus.Draft)
+                    @if (Model.Status == Enums.DocumentStatus.Draft || Model.Status == Enums.DocumentStatus.Rejected)
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }
@@ -400,7 +400,7 @@
             param.SourcePlantId = $('#SourcePlantId').find("option:selected").val();
             param.ExcisableGoodsType = $('#ExcisableGoodsType').find("option:selected").val();
             param.CompanyCode = $('#CompanyCode').find("option:selected").val();
-
+            param.Lack2Id = $('#Lack2Id').val();
             $.ajax({
                 url: '@Url.Action("Generate", "LACK2")',
                 type: "POST",

@@ -4,5 +4,6 @@
     {
         public int Id { get; set; }
         public string Lack2Number { get; set; }
+        public bool IsModifiedHistory { get; set; }
     }
 }
