@@ -6,7 +6,9 @@ $('#upload-file-sk').click(function () {
     for (var i = 0; i <= file_sk ; i++) {
         var fileName = $('#Pbck4FileUploadFileList_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        poa_sk.push(name);
+        if (name != '') {
+            poa_sk.push(name);
+        }
     }
 
 
@@ -72,7 +74,9 @@ $('#upload-file-sk2').click(function () {
     for (var i = 0; i <= file_sk2 ; i++) {
         var fileName = $('#Pbck4FileUploadFileList2_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        poa_sk2.push(name);
+        if (name != '') {
+            poa_sk2.push(name);
+        }
     }
 
 

@@ -48,7 +48,9 @@ function uploadBack1() {
     for (var i = 0; i <= file_back1 ; i++) {
         var fileName = $('#DocumentsPostBack1_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        docsback1.push(name);
+        if (name != '') {
+            docsback1.push(name);
+        }
     }
     
   
@@ -77,7 +79,9 @@ function uploadBack3() {
     for (var i = 0; i <= file_back3 ; i++) {
         var fileName = $('#DocumentsPostBack3_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        docsback3.push(name);
+        if (name != '') {
+            docsback3.push(name);
+        }
     }
 
 
@@ -107,7 +111,9 @@ function uploadCk2() {
     for (var i = 0; i <= file_ck2 ; i++) {
         var fileName = $('#DocumentsPostCk2_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        docsck2.push(name);
+        if (name != '') {
+            docsck2.push(name);
+        }
     }
 
 
