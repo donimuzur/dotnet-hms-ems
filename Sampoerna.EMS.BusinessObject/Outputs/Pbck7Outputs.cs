@@ -59,4 +59,23 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public bool IsValid { get; set; }
        
     }
+
+    public class GetListFaCodeByPlantOutput
+    {
+        public string PlantId { get; set; }
+        public string FaCode { get; set; }
+    }
+
+    public class GetBrandItemsByPlantAndFaCodeOutput
+    {
+        public string PlantId { get; set; }
+        public string FaCode { get; set; }
+        public string ProductAlias { get; set; }
+        public string BrandName { get; set; }
+        public string BrandContent { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string SeriesValue { get; set; }
+    }
+
 }
