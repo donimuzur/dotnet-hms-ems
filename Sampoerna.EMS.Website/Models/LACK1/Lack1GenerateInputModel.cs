@@ -2,6 +2,7 @@
 {
     public class Lack1GenerateInputModel
     {
+        public int Lack1Id { get; set; }
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
         public int PeriodMonth { get; set; }

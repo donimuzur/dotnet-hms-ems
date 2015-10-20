@@ -512,11 +512,18 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                WorkflowPoaChanges(input, dbData.APPROVED_BY_POA, input.UserId);
+                if(dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+                {
+                    WorkflowPoaChanges(input, dbData.APPROVED_BY_POA, input.UserId);
 
-                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.APPROVED_BY_POA = input.UserId;
+                    dbData.APPROVED_DATE_POA = DateTime.Now;
+                }
+                else
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                }
             }
             else
             {
@@ -801,7 +808,7 @@ namespace Sampoerna.EMS.BLL
                 address += "- " + _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
 
                 Int32 isInt;
-                var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt)).OrderBy(x => x.PROD_CODE);
+                var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01").OrderBy(x => x.PROD_CODE);
 
                 foreach (var data in activeBrand)
                 {
@@ -955,7 +962,7 @@ namespace Sampoerna.EMS.BLL
                     address += _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
 
                     Int32 isInt;
-                    var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt));
+                    var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
 
                     foreach (var data in activeBrand.Distinct())
                     {
