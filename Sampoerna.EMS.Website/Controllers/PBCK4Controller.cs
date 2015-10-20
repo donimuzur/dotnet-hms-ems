@@ -107,11 +107,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             Pbck4GetByParamInput input;
             List<Pbck4Dto> dbData;
+
             if (filter == null)
             {
                 //Get All
                 input = new Pbck4GetByParamInput();
                 input.IsCompletedDocument = isCompletedDocument;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
 
                 dbData = _pbck4Bll.GetPbck4ByParam(input);
                 return Mapper.Map<List<Pbck4Item>>(dbData);
@@ -121,6 +124,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             input = Mapper.Map<Pbck4GetByParamInput>(filter);
             input.IsCompletedDocument = isCompletedDocument;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             dbData = _pbck4Bll.GetPbck4ByParam(input);
             return Mapper.Map<List<Pbck4Item>>(dbData);
