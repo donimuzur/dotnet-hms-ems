@@ -47,6 +47,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string DocumentNumber { get; set; }
 
         public Lack2WorkflowDocumentData AdditionalDocumentData { get; set; }
+        public bool IsModified { get; set; }
     }
 
     public class Lack2WorkflowDocumentData
