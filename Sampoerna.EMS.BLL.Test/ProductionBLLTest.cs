@@ -7,7 +7,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL.Test
@@ -52,10 +54,25 @@ namespace Sampoerna.EMS.BLL.Test
         }
 
         [TestMethod]
-        public void GetById_Test()
+        public void getProduction_WhenDataNotFound_ThrowExceptions()
         {
-            var productionGetId = new ProductionDto();
+            //arrange
+            var input  = new ProductionGetByParamInput();
+            _repository.Get().ReturnsForAnyArgs(x => null);
+            try
+            {
+                //act
+                _productionBll.GetAllByParam(input);
+            }
+            catch (Exception ex)
+            {
+                
+                //assert
+                Assert.AreEqual(ExceptionCodes.BLLExceptions.DataNotFound.ToString(), ex.InnerException);
+                throw;
 
+            }
+            
         }
     }
 }
