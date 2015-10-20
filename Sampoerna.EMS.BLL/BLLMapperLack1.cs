@@ -331,6 +331,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ReturnAmountUom, opt => opt.MapFrom(src => src.Detail.ReturnUom))
                 .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => src.Detail.Lack1Level))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Detail.Noted))
+                .ForMember(dest => dest.Lack1Id, opt => opt.MapFrom(src => src.Detail.Lack1Id))
                 ;
 
             Mapper.CreateMap<Lack1GeneratedDto, Lack1DetailsDto>().IgnoreAllNonExisting()
