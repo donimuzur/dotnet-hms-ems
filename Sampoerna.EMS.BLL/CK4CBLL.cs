@@ -815,6 +815,8 @@ namespace Sampoerna.EMS.BLL
 
                     var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
 
+                    var strOldUnpacked = oldUnpacked == 0 ? "Nihil" : String.Format("{0:n}", oldUnpacked);
+
                     ck4cItem.CollumNo = 0;
                     ck4cItem.No = string.Empty;
                     ck4cItem.NoProd = string.Empty;
@@ -824,16 +826,16 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.ProdCode = data.PROD_CODE;
                     ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
 
-                    ck4cItem.SumBtg = "0.00";
-                    ck4cItem.BtgGr = "0.00";
+                    ck4cItem.SumBtg = "Nihil";
+                    ck4cItem.BtgGr = "Nihil";
 
                     var brand = _brandBll.GetById(item, data.FA_CODE);
                     ck4cItem.Merk = brand.BRAND_CE;
 
-                    ck4cItem.Isi = String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
-                    ck4cItem.Hje = brand.HJE_IDR == null ? "0.00" : String.Format("{0:n}", brand.HJE_IDR);
-                    ck4cItem.Total = "0.00";
-                    ck4cItem.ProdWaste = unpackedQty == null ? String.Format("{0:n}", oldUnpacked) : String.Format("{0:n}", unpackedQty.UnpackedQty);
+                    ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
+                    ck4cItem.Hje = brand.HJE_IDR == null ? "Nihil" : String.Format("{0:n}", brand.HJE_IDR);
+                    ck4cItem.Total = "Nihil";
+                    ck4cItem.ProdWaste = unpackedQty == null ? strOldUnpacked : (unpackedQty.UnpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty.UnpackedQty));
                     ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
 
                     //result.Ck4cItemList.Add(ck4cItem);
@@ -922,8 +924,6 @@ namespace Sampoerna.EMS.BLL
                 prodTotal = String.Format("{0:n}",nBatang) + " batang";
             }
 
-            result.Detail.ProdTotal = prodTotal;
-
             var city = plant == null ? _nppbkcbll.GetById(dtData.NPPBKC_ID).CITY : plant.ORT01;
             result.Detail.City = city;
 
@@ -990,13 +990,13 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.ProdDate = prodDate;
                         ck4cItem.ProdCode = data.PROD_CODE;
                         ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
-                        ck4cItem.SumBtg = String.Format("{0:n}",prodQty);
-                        ck4cItem.BtgGr = packedQty == null ? "0.00" : String.Format("{0:n}", packedQty);
+                        ck4cItem.SumBtg = prodQty == 0 ? "Nihil" : String.Format("{0:n}", prodQty);
+                        ck4cItem.BtgGr = packedQty == null || packedQty == 0 ? "Nihil" : String.Format("{0:n}", packedQty);
                         ck4cItem.Merk = brand.BRAND_CE;
-                        ck4cItem.Isi = String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
-                        ck4cItem.Hje = brand.HJE_IDR == null ? "0.00" : String.Format("{0:n}", brand.HJE_IDR);
-                        ck4cItem.Total = total == null ? "0.00" : String.Format("{0:n}", total);
-                        ck4cItem.ProdWaste = unpackedQty == null ? "0.00" : String.Format("{0:n}", unpackedQty);
+                        ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
+                        ck4cItem.Hje = brand.HJE_IDR == null || brand.HJE_IDR == 0 ? "Nihil" : String.Format("{0:n}", brand.HJE_IDR);
+                        ck4cItem.Total = total == null || total == 0 ? "Nihil" : String.Format("{0:n}", total);
+                        ck4cItem.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty);
                         ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;
 
                         //result.Ck4cItemList.Add(ck4cItem);
@@ -1074,15 +1074,31 @@ namespace Sampoerna.EMS.BLL
 
                 foreach (var data in brandType)
                 {
+                    var sum = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY);
+                    var total = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY);
+
                     prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
-                    sumTotal += String.Format("{0:n}", dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY)) + Environment.NewLine;
-                    btgTotal += String.Format("{0:n}", dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY)) + Environment.NewLine;
+                    sumTotal += (sum == 0 ? "Nihil" : String.Format("{0:n}", sum)) + Environment.NewLine;
+                    btgTotal += (total == 0 ? "Nihil" : String.Format("{0:n}", total)) + Environment.NewLine;
                 }
             }
 
             result.Ck4cTotal.ProdType = prodAlias;
             result.Ck4cTotal.ProdTotal = sumTotal;
             result.Ck4cTotal.ProdBtg = btgTotal;
+
+            if (nBatang == 0 && nGram != 0)
+            {
+                if (result.Ck4cItemList.Where(x => x.ProdType == "SKM" || x.ProdType == "SPM" || x.ProdType == "CRT" || x.ProdType == "SKT").Count() > 0)
+                    prodTotal = "Nihil batang dan " + String.Format("{0:n}", nGram) + " gram";
+            }
+            else if (nBatang != 0 && nGram == 0)
+            {
+                if (result.Ck4cItemList.Where(x => x.ProdType == "TIS").Count() > 0)
+                    prodTotal = String.Format("{0:n}", nBatang) + " batang dan Nihil gram";
+            }
+
+            result.Detail.ProdTotal = prodTotal;
 
             return result;
         }
