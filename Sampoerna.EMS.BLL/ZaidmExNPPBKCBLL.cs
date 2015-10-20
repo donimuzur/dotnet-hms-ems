@@ -40,7 +40,15 @@ namespace Sampoerna.EMS.BLL
 
         public ZAIDM_EX_NPPBKCDto GetDetailsById(string id)
         {
-            return AutoMapper.Mapper.Map<ZAIDM_EX_NPPBKCDto>(_repository.Get(c => c.NPPBKC_ID == id, null, ", T001W, T001, ZAIDM_EX_KPPBC").FirstOrDefault());
+            ZAIDM_EX_NPPBKC tempNppbkc = _repository.Get(c => c.NPPBKC_ID == id, null, ", T001W, T001, ZAIDM_EX_KPPBC").FirstOrDefault();
+            ZAIDM_EX_NPPBKCDto tempNppbkcDto = AutoMapper.Mapper.Map<ZAIDM_EX_NPPBKCDto>(tempNppbkc);
+            if (IsNppbkcImport(id))
+            {
+                //tempNppbkc.T00
+                //tempDto.
+            }
+
+            return AutoMapper.Mapper.Map<ZAIDM_EX_NPPBKCDto>(tempNppbkc);
         }
 
         public List<ZAIDM_EX_NPPBKC> GetAll()
@@ -171,6 +179,14 @@ namespace Sampoerna.EMS.BLL
             var poaList = dbData.ToList().Select(d => d.ZAIDM_EX_NPPBKC);
             return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(poaList.ToList());
         }
-        
+
+        private bool IsNppbkcImport(string id)
+        {
+            
+            bool isImport = _repositoryT001w.Get(x => x.NPPBKC_IMPORT_ID == id).Any();
+
+            return isImport;
+        }
+
     }
 }
