@@ -1359,6 +1359,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var filterModel = new Ck4CSearchSummaryReportsViewModel();
             filterModel.Ck4CNo = modelExport.Ck4CNumber;
             filterModel.PlantId = modelExport.Plant;
+            filterModel.isForExport = true;
 
             var dataSummaryReport = SearchDataSummaryReports(filterModel);
 

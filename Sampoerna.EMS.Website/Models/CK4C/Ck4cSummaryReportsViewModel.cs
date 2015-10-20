@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
 
         public string PlantId { get; set; }
         public SelectList PlantIdList { get; set; }
+        public bool isForExport { get; set; }
 
     }
 

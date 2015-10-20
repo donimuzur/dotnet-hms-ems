@@ -1236,8 +1236,12 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-       
-            return SetDataSummaryReport(rc);
+            var data = SetDataSummaryReport(rc);
+
+            if (input.isForExport)
+                data = SetDataSummaryForExport(rc);
+
+            return data;
         }
 
         private List<Ck4CSummaryReportDto> SetDataSummaryReport(List<CK4C> listCk4C)
@@ -1320,6 +1324,91 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.Remarks = remarks;
 
                 result.Add(summaryDto);
+            }
+
+            return result;
+        }
+
+        private List<Ck4CSummaryReportDto> SetDataSummaryForExport(List<CK4C> listCk4C)
+        {
+            var result = new List<Ck4CSummaryReportDto>();
+
+            foreach (var dtData in listCk4C)
+            {
+                foreach (var ck4CItem in dtData.CK4C_ITEM)
+                {
+                    var summaryDto = new Ck4CSummaryReportDto();
+
+                    summaryDto.Ck4CNo = dtData.NUMBER;
+                    summaryDto.CeOffice = dtData.COMPANY_ID;
+                    summaryDto.BasedOn = dtData.PLANT_ID == null ? "NPPBKC" : "PLANT";
+                    summaryDto.PlantId = dtData.PLANT_ID;
+                    summaryDto.PlantDescription = dtData.PLANT_NAME;
+                    summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                    summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
+                    summaryDto.Period = dtData.REPORTED_PERIOD.ToString();
+                    summaryDto.Month = dtData.MONTH.MONTH_NAME_ENG;
+                    summaryDto.Year = dtData.REPORTED_YEAR.ToString();
+                    summaryDto.PoaApproved = dtData.APPROVED_BY_POA == null ? "-" : dtData.APPROVED_BY_POA;
+                    summaryDto.ManagerApproved = dtData.APPROVED_BY_MANAGER == null ? "-" : dtData.APPROVED_BY_MANAGER;
+                    summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+
+                    var prodDate = new List<string>();
+                    var faCode = new List<string>();
+                    var tobacco = new List<string>();
+                    var brandDesc = new List<string>();
+                    var hje = new List<string>();
+                    var tariff = new List<string>();
+                    var content = new List<string>();
+                    var packedQty = new List<string>();
+                    var packedQtyInPack = new List<string>();
+                    var unpackedQty = new List<string>();
+                    var prodQty = new List<string>();
+                    var uomProdQty = new List<string>();
+                    var remarks = new List<string>();
+
+                    prodDate.Add(ConvertHelper.ConvertDateToStringddMMMyyyy(ck4CItem.PROD_DATE));
+                    faCode.Add(ck4CItem.FA_CODE);
+
+                    var dbBrand = _brandRegistrationService.GetByPlantIdAndFaCode(ck4CItem.WERKS, ck4CItem.FA_CODE);
+
+                    if (dbBrand != null)
+                    {
+                        tobacco.Add(dbBrand.ZAIDM_EX_PRODTYP != null
+                            ? dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_TYPE
+                            : string.Empty);
+                        brandDesc.Add(dbBrand.BRAND_CE);
+                    }
+
+                    var contentPerPack = ck4CItem.CONTENT_PER_PACK == null ? 0 : ck4CItem.CONTENT_PER_PACK.Value;
+                    var packedInPack = ck4CItem.PACKED_IN_PACK == null ? 0 : ck4CItem.PACKED_IN_PACK.Value;
+
+                    hje.Add(String.Format("{0:n}", ck4CItem.HJE_IDR.Value));
+                    tariff.Add(String.Format("{0:n}", ck4CItem.TARIFF.Value));
+                    content.Add(String.Format("{0:n}", contentPerPack));
+                    packedQty.Add(String.Format("{0:n}", ck4CItem.PACKED_QTY.Value));
+                    packedQtyInPack.Add(String.Format("{0:n}", packedInPack));
+                    unpackedQty.Add(String.Format("{0:n}", ck4CItem.UNPACKED_QTY.Value));
+                    prodQty.Add(String.Format("{0:n}", ck4CItem.PROD_QTY));
+                    uomProdQty.Add(ck4CItem.UOM_PROD_QTY);
+                    remarks.Add(ck4CItem.REMARKS);
+
+                    summaryDto.ProductionDate = prodDate;
+                    summaryDto.FaCode = faCode;
+                    summaryDto.TobaccoProductType = tobacco;
+                    summaryDto.BrandDescription = brandDesc;
+                    summaryDto.Hje = hje;
+                    summaryDto.Tariff = tariff;
+                    summaryDto.Content = content;
+                    summaryDto.PackedQty = packedQty;
+                    summaryDto.PackedQtyInPack = packedQtyInPack;
+                    summaryDto.UnPackQty = unpackedQty;
+                    summaryDto.ProducedQty = prodQty;
+                    summaryDto.UomProducedQty = uomProdQty;
+                    summaryDto.Remarks = remarks;
+
+                    result.Add(summaryDto);
+                }
             }
 
             return result;
