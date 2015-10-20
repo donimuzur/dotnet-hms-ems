@@ -793,20 +793,26 @@ namespace Sampoerna.EMS.BLL
             result.Detail.ReportedYear = dtData.REPORTED_YEAR.Value.ToString();
             result.Detail.CompanyName = dtData.COMPANY_NAME;
 
-            var addressPlant = dtData.CK4C_ITEM.Select(x => x.WERKS).Distinct().ToArray();
-            if(dtData.PLANT_ID == null)
-            {
-                addressPlant = _plantBll.GetPlantByNppbkc(dtData.NPPBKC_ID).Select(x => x.WERKS).Distinct().ToArray();
-            }
+            var addressPlant = _plantBll.GetPlantByNppbkc(dtData.NPPBKC_ID).Select(x => x.WERKS).Distinct().ToArray();
+            var addressList = addressPlant;
             var address = string.Empty;
+
+            if(dtData.PLANT_ID != null)
+            {
+                addressList = dtData.CK4C_ITEM.Select(x => x.WERKS).Distinct().ToArray();
+            }
+
+            foreach(var data in addressList)
+            {
+                address += "- " + _plantBll.GetT001WById(data).ADDRESS + Environment.NewLine;
+            }
+
             string prodTypeDistinct = string.Empty;
             string currentProdType = string.Empty;
             List<Ck4cReportItemDto> tempListck4c1 = new List<Ck4cReportItemDto>();
             //add data details of CK-4C sebelumnya
             foreach (var item in addressPlant)
             {
-                address += "- " + _plantBll.GetT001WById(item).ADDRESS + Environment.NewLine;
-
                 Int32 isInt;
                 var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01").OrderBy(x => x.PROD_CODE);
 
@@ -902,13 +908,12 @@ namespace Sampoerna.EMS.BLL
             var nppbkc = dtData.NPPBKC_ID;
             result.Detail.Nppbkc = nppbkc;
 
-            if (dtData.CREATED_BY != null)
+            var poaUser = dtData.APPROVED_BY_POA == null ? dtData.CREATED_BY : dtData.APPROVED_BY_POA;
+
+            var poa = _poabll.GetDetailsById(poaUser);
+            if (poa != null)
             {
-                var poa = _poabll.GetDetailsById(dtData.CREATED_BY);
-                if (poa != null)
-                {
-                    result.Detail.Poa = poa.PRINTED_NAME;
-                }
+                result.Detail.Poa = poa.PRINTED_NAME;
             }
 
             var nBatang = dtData.CK4C_ITEM.Where(c => c.UOM_PROD_QTY == "Btg").Sum(c => c.PROD_QTY);
