@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string FaCode { get; set; }
         public string Uom { get; set; }
         public string ProductionDate { get; set; }
+       
 
         //selecList
         public SelectList CompanyCodeList { get; set; }
@@ -66,22 +67,28 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string ProductionDate { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
-        [Required]
+        
         public string ProdQtyStickStr { get; set; }
         public decimal? ProdQtyStick
         {
-            get; set;
+            get;
+            set;
         }
+        [Required]
         public string QtyStr { get; set; }
         public decimal? Qty
         {
-            get; set;
+            get;
+            set;
         }
         public int? Bundle { get; set; }
         public string Market { get; set; }
         public string Docgmvter { get; set; }
         public string MatDoc { get; set; }
         public string Ordr { get; set; }
+        public string Batch { get; set; }
+        public string CreatedBy { get; set; }
+        public string CreatedDate { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }

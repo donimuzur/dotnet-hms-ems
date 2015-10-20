@@ -1,51 +1,31 @@
-﻿@using Microsoft.Ajax.Utilities
-@using Sampoerna.EMS.Core
+﻿@using Sampoerna.EMS.Core
 @using Sampoerna.EMS.Website.Helpers
-@model Sampoerna.EMS.Website.Models.LACK2.LACK2CreateViewModel
+@model Sampoerna.EMS.Website.Models.LACK2.Lack2EditViewModel
 
 @{
-    ViewBag.Title = "Edit LACK2";
-    
+    ViewBag.Title = "LACK-2 Form";
 }
 
-@using (@Html.BeginForm("Edit", "LACK2", FormMethod.Post,  new { @id="form-lack2-edit", @class = "form-excise", role = "form",enctype = "multipart/form-data"  }))
+@using (@Html.BeginForm(@Model.ControllerAction, "LACK2", FormMethod.Post, new { @id = "form-lack2-edit", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
 {
-    @Html.AntiForgeryToken()
-    @Html.HiddenFor(x=>x.IsSaveSubmit)
-    @Html.HiddenFor(x => x.Lack2Model.Lack2Id)
-    @Html.HiddenFor(x=>x.Lack2Model.CreatedBy)
-    @Html.HiddenFor(x=>x.Lack2Model.CreatedDate)
-    @Html.HiddenFor(x => x.Lack2Model.ModifiedBy)
-    @Html.HiddenFor(x => x.Lack2Model.ModifiedDate)
-    @Html.HiddenFor(x => x.Lack2Model.ApprovedBy)
-    @Html.HiddenFor(x => x.Lack2Model.ApprovedDate)
-    @Html.HiddenFor(x => x.Lack2Model.ApprovedByManager)
-    @Html.HiddenFor(x => x.Lack2Model.ApprovedDateManager)
-    @Html.HiddenFor(x => x.Lack2Model.RejectedBy)
-    @Html.HiddenFor(x => x.Lack2Model.RejectedDate)
-    @Html.HiddenFor(x=>x.Lack2Model.Status)
-   
-
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>LACK-2 Form</h3>
-                <label class="status">@Model.Lack2Model.StatusName</label>
+                <h3>@ViewBag.Title</h3>
+                <label class="status">@Model.StatusName</label>
                 <div class="action-button">
                     @if (Model.AllowGovApproveAndReject)
                     {
                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                     }
-                    else if(Model.AllowEditAndSubmit)
+                    else
                     {
-                        <input type="submit" class="btn btn-blue" value="Save" />
+                        <input type="button" class="btn btn-blue" value="Save" onclick="saveClick()" />
                     }
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Id })')" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btn-back" />
 
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack2", new { id = @Model.Lack2Model.Lack2Id })')" />
-                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
-
-                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Draft
-                        && Model.AllowEditAndSubmit)
+                    @if (Model.Status == Enums.DocumentStatus.Draft || Model.Status == Enums.DocumentStatus.Rejected)
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }
@@ -58,613 +38,416 @@
         <div class="row">
             <div class="col-sm-12">
                 <div role="tabpanel">
-
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
+                        {
+                            <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        }
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                     </ul>
-
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="information">
-                            <div class="tab-wrapper">
-                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="headingOne">
-                                            <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                    LACK-2 Detail
-                                                    <i class="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                            <div class="panel-body">
-                                              
-                                                <div class="form-excise" role="form">
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">LACK-2 No</label>
-                                                            <div class="col-md-8">
-                                                                @Html.HiddenFor(x => x.Lack2Model.Lack2Number)
-                                                                @Html.TextBox("lack2no", Model.Lack2Model.Lack2Number,  new { @class = "form-control", @disabled="disabled"})
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Company</label>
-                                                            <div class="col-md-8">
-                                                                @Html.DropDownListFor(x => x.Lack2Model.Burks, Model.CompanyCodesDDL, "select", new { @class = "form-control" })
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="row">
-                                                            <label class="col-md-4">Period</label>
-                                                            <div class="col-md-8">
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodMonth, Model.MonthList, "select" , new { @class = "form-control" })
-
-
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        @Html.DropDownListFor(x => x.Lack2Model.PeriodYear, Model.YearList, "select", new { @class = "form-control" })
-
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="headingTwo">
-                                            <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                                    Information
-                                                    <i class="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                                            <div class="panel-body">
-                                                <div class="form-excise" role="form">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="col-md-4">NPPBKC</label>
-                                                                <div class="col-md-8">
-                                                                    @Html.DropDownListFor(m => m.Lack2Model.NppbkcId, Model.NPPBKCDDL, "select", new { @class = "form-control" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="col-md-4">Plant</label>
-                                                                <div class="col-md-8">
-                                                                    @Html.DropDownListFor(m => m.Lack2Model.LevelPlantId, Model.SendingPlantDDL, "select", new { @class = "form-control" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="col-md-4">POA</label>
-                                                                <div class="col-md-8">
-                                                                    @Html.TextArea("poalist", null, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="col-md-4">Submission Date</label>
-                                                                <div class="col-md-8">
-                                                                    <div class="input-group date">
-                                                                        @Html.TextBoxFor(model => model.Lack2Model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                                                        <span class="input-group-addon">
-                                                                            <i class="fa fa-calendar"></i>
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="row">
-                                                                <label class="col-md-4 long">Excisable Goods Type</label>
-                                                                <div class="col-md-8">
-                                                                    @Html.DropDownListFor(m => m.Lack2Model.ExGoodTyp, Model.ExcisableGoodsTypeDDL, "select", new { @class = "form-control" })
-
-
-
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4 col-md-offset-4">
-                                                            <input type="button" class="btn btn-blue full" onclick="GetCk5ByPeriod();" value="Generate"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> 
-                                    </div>
-                                </div>
-                                <div class="panel-group not-upload" id="accordionThree" role="tablist" aria-multiselectable="true">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="headingThree">
-                                            <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordionThree" href="#collapseThree" aria-expanded="true" aria-controls="collapse6">
-                                                    Table
-                                                    <i class="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                            <div class="panel-body">
-                                                <div class="table-container">
-                                                    <table class="table table-bordered table-striped js-options-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>No</th>
-                                                                <th>No. CK-5</th>
-                                                                <th>Date</th>
-                                                                <th>Amount</th>
-                                                                <th>Company</th>
-                                                                <th>NPPBKC</th>
-                                                                <th>Address</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="tb-body-ck5-lack2">
-                                                            @if (@Model.Lack2Model.Items != null)
-                                                            {
-
-                                                                for (int i = 0; i < @Model.Lack2Model.Items.Count; i++)
-                                                                {
-                                                                    <tr>
-                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Lack2Id)
-                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Id)
-                                                                        @Html.HiddenFor(x => x.Lack2Model.Items[i].Ck5Id)
-                                                                        <td>@(i + 1)</td>
-                                                                        <td>@Model.Lack2Model.Items[i].Ck5Number</td>
-                                                                        <td>@Model.Lack2Model.Items[i].Ck5GIDate</td>
-                                                                        <td>@Model.Lack2Model.Items[i].Ck5ItemQty</td>
-                                                                        <td>@Model.Lack2Model.Items[i].CompanyName</td>
-                                                                        <td>@Model.Lack2Model.Items[i].CompanyNppbkc</td>
-                                                                        <td>@Model.Lack2Model.Items[i].CompanyAddress</td>
-                                                                    </tr>
-
-                                                                }
-
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                               
-                                    <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading" role="tab" id="headingFour">
-                                                <h4 class="panel-title">
-                                                    <a data-toggle="collapse" data-parent="#accordionFour" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-                                                        Status
-                                                        <i class="fa fa-caret-down"></i>
-                                                    </a>
-                                                </h4>
-                                            </div>
-                                            <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
-                                                <div class="panel-body">
-                                                    <div class="form-excise" role="form">
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="row">
-                                                                    <label class="col-md-4">Status Gov<span class="red">*</span></label>
-                                                                    <div class="col-md-8">
-                                                                        @*@if(Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
-                                                                        {
-                                                                            @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            @Html.TextBox("gov-status", string.Empty, new { @class = "form-control", @disabled = "disabled" })
-
-                                                                        }*@
-                                                                        @if (Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
-                                                                        {
-                                                                            @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new {@class = "form-control"})
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            @Html.EnumDropDownListFor(model => model.Lack2Model.StatusGov, Model.StatusGovList, "Select", new { @class = "form-control", @disabled = "disabled" })
-
-                                                                        }
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="row">
-                                                                        <label class="col-md-4">Decree Date</label>
-                                                                        <div class="col-md-8">
-                                                                            <div class="input-group date">
-                                                                                @if(Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
-                                                                                {
-                                                                                    @Html.TextBoxFor(x => x.Lack2Model.DecreeDate, new {@class = "form-control"})
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    @Html.TextBox("decree_date", Model.Lack2Model.DecreeDate, new { @class = "form-control", @disabled="disabled" })
-
-                                                                                }
-
-                                                                                <span class="input-group-addon">
-                                                                                    <i class="fa fa-calendar"></i>
-                                                                                </span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="row">
-                                                                        <label class="col-md-4">Decree Document</label>
-                                                                        <div class="col-md-8">
-                                                                            <div class="file-upload" id="poa-files">
-                                                                                @if (Model.Lack2Model.Documents != null)
-                                                                                {
-
-                                                                                    foreach (var file in Model.Lack2Model.Documents)
-                                                                                    {
-
-                                                                                        <div class="row">
-                                                                                            <div class="col-sm-10">
-                                                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                                                            </div>
-                                                                                            <div class="col-sm-2">
-                                                                                                <button class="btn btn-danger full" type="button" onclick="removeDoc(@file.LACK2_DOCUMENT_ID, '@Url.Action("RemoveDoc", "LACK2")', this) "><i class="fa fa-times"></i></button>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    }
-                                                                                }
-
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <div class="col-md-6">
-                                                                                    @if (Model.Lack2Model.Status == Enums.DocumentStatus.WaitingGovApproval)
-                                                                                    {
-                                                                                        <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file">Add File</button>
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        <button class="btn btn-primary full" type="button">Add File</button>
-
-                                                                                    }
-                                                                                 </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        @Html.Partial("_FileUpload", Model)
-                                    @Html.Partial("_WorkflowHistory", Model)
-
-                                </div>
-
-                            </div>
-
-                            @Html.Partial("_ChangesLog", Model)
-                         </div>
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(x => x.IsSaveSubmit)
+                        @Html.HiddenFor(x => x.Lack2Id)
+                        @Html.HiddenFor(x => x.CreatedBy)
+                        @Html.HiddenFor(x => x.CreatedDate)
+                        @Html.HiddenFor(x => x.Status)
+                        @Html.HiddenFor(x => x.StatusName)
+                        @Html.HiddenFor(model => model.GovApprovalActionType)
+                        @Html.HiddenFor(model => model.GovStatusName)
+                        @if (Model.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
+                        {
+                            @Html.Partial("_HomeGovApproval")
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.GovStatus)
+                            @Html.Partial("_HomeEdit")
+                        }
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
+                        {
+                            @Html.Partial("_PrintOut")
+                        }
+                        @Html.Partial("_ChangesLog")
                     </div>
                 </div>
             </div>
         </div>
-        <div id="lack2Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        <h3>Submit</h3>
-                    </div>
-                    <div class="modal-body">
-                        Submit Documents  ?
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
-                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
-                    </div>
-                </div>
+    </div>
+}
+
+<div id="Lack2Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Submit</h3>
+            </div>
+            <div class="modal-body">
+                Submit Documents  ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
             </div>
         </div>
-    }
-    @section Scripts {
+    </div>
+</div>
 
-        <script src="~/Scripts/lack2/form.js"></script>
-        <script type="text/javascript">
+<div id="ModalValidation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Input selection criteria not valid</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
 
-            var initialEditNppbkc = true;
-            var initialEditPlant = true;
-            var initialEditGoodtype = true;
+@section Scripts {
+    
+    <script src="~/Scripts/lack2/form.js"></script>
+    <script type="text/javascript">
+        
+        $('#MenuLack2OpenDocument').addClass('active');
 
-            $('#MenuLack2OpenDocument').addClass('active');
+        $(document).ready(function () {
             
-            $('#btn-changelog-export-xls').click(function () {
-                location.href = '@Url.Action("ExportClientsListToExcel", "Lack2", new { id = Model.Lack2Model.Lack2Id })';
-            });
-            
-            $(function() {
-                openPanel();
-                //$('#Lack2Model_LevelPlantId').html('');
-                //$('#Lack2Model_NppbkcId').html('');
+            $('#divComment').hide();
 
-               // $('#Lack2Model_ExGoodTyp').html('');
-
-                //$('#Lack2Model_Burks').change();
-
-            });
-            $('#btnCancel').click(function (e) {
-                location.href = '@Url.Action("Index", "Lack2")';
-            });
-            $("#btnSubmitConfirm").click(function() {
-                $('#IsSaveSubmit').val('true');
+            $("#btnSubmitConfirm").click(function () {
+                $('#IsSaveSubmit').val('submit');
                 $('#form-lack2-edit').submit();
             });
 
-            $('#btnSubmitDocument').click(function() {
-
-                $('#lack2Modal').modal('show');
-            });
-            $('#Lack2Model_NppbkcId').change(function() {
-
-                if ($(this).length) {
-                    var nppbkc = $(this).find("option:selected").val();
-
-                    $('#Lack2Model_LevelPlantId').html('');
-                    if (nppbkc != '') {
-                        ajaxGetPlantByNppbkc(nppbkc);
-                        ajaxGetGoodsTypeByNppbkc(nppbkc);
-                        ajaxGetPoaByNppbkc(nppbkc);
-                    }
-                }
-
+            $("#btnSubmitDocument").click(function () {
+                $('#Lack2Modal').modal('show');
             });
 
-            $('#Lack2Model_Burks').change(function() {
-
-                if ($(this).length) {
-                    var company = $(this).find("option:selected").val();
-                    if (company !== '') {
-                        ajaxGetNppbkcByCompany(company);
-
-
-                    }
-                }
+            $('#btn-back').click(function () {
+                location.href = '@Url.Action("Index", "LACK2")';
             });
-
-            function ajaxGetNppbkcByCompany(company) {
-
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetNppbkcByCompanyId", "LACK2")',
-                    data: { companyId: company },
-                    success: function(data) {
-                        $('#Lack2Model_NppbkcId').html('');
-                        if (initialEditNppbkc) {
-                            var nppbkcId = '@Model.Lack2Model.NppbkcId';
-                             if (nppbkcId != '') {
-
-                                 for (var k = 0; k < data.length; k++) {
-
-                                     $('#Lack2Model_NppbkcId').append('<option value=' + data[k].NPPBKC_ID + '>' + data[k].NPPBKC_ID + '</option>');
-
-                                 }
-                                $('#Lack2Model_NppbkcId').val(nppbkcId);
-                                ajaxGetPlantByNppbkc(nppbkcId);
-                                ajaxGetPoaByNppbkc(nppbkcId);
-                                ajaxGetGoodsTypeByNppbkc(nppbkcId);
-                            }
-                            initialEditNppbkc = false;
-                        } else {
-                            for (var i = 0; i < data.length; i++) {
-                                $('#Lack2Model_NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
-                            }
-                        }
-
-                    }
-                });
-
-            }
-
-            function ajaxGetPlantByNppbkc(nppbkc) {
-                $.ajax({
-                        type: 'POST',
-                        url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
-                        data: { nppbkcid: nppbkc },
-                        success: function(data) {
-                            $('#Lack2Model_LevelPlantId').html('');
-
-                            if (initialEditPlant) {
-                                var plantId = '@Model.Lack2Model.LevelPlantId';
-                                if (plantId != '') {
-
-                                     for (var i = 0; i < data.length; i++) {
-
-                                            $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-
-                                     }
-                                    $('#Lack2Model_LevelPlantId').val(plantId);
-                                }
-                                initialEditPlant = false;
-                            } else {
-                                for (var i = 0; i < data.length; i++) {
-                                    $('#Lack2Model_LevelPlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-
-                                }
-                            }
-
-
-                        }
-                    }
-                );
-
-            }
-
-            function ajaxGetPoaByNppbkc(nppbkc) {
-
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
-                    data: { nppbkcid: nppbkc },
-                    success: function(data) {
-                        $('#displayPoaList').html('');
-                        var poalist = '';
-                        for (var i = 0; i < data.length; i++) {
-
-                            poalist += data[i].PRINTED_NAME;
-                            if (data.length - 1 != i) {
-                                poalist += ', ';
-                            }
-                        }
-                        $('#displayPoaList').html(poalist);
-                    }
-                });
-
-            }
-
-            function ajaxGetGoodsTypeByNppbkc(nppbkc) {
-
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetGoodsTypeByNPPBKC", "LACK2")',
-                    data: { nppbkcid: nppbkc },
-                    success: function(data) {
-
-                        $('#Lack2Model_ExGoodTyp').html('');
-
-                        if (initialEditGoodtype) {
-                            var exgoodtyp = '@Model.Lack2Model.ExGoodTyp';
-
-                            if (exgoodtyp !== '') {
-                                  for (var i = 0; i < data.length; i++) {
-
-
-                                        $('#Lack2Model_ExGoodTyp').append('<option value="' + data[i].ValueField + '">' + data[i].TextField + '</option>');
-
-                                  }
-                                $('#Lack2Model_ExGoodTyp').val(exgoodtyp);
-                            }
-                            initialEditGoodtype = false;
-                        } else {
-                            for (var i = 0; i < data.length; i++) {
-                                $('#Lack2Model_ExGoodTyp').append('<option value=' + data[i].ValueField + '>' + data[i].TextField + '</option>');
-                            }
-                        }
-
-                    }
-                });
-
-            }
-
-            function openPanel() {
-                $('.panel-collapse').removeClass('collapse').addClass('in');
-
-            }
-
-            function printPreview(url) {
-
-                window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
-            }
-
+            
             $("#btnSaveGovStatus").click(function () {
                 if (ValidateGovInput()) {
                     $('#form-lack2-edit').submit();
                 }
             });
+            
+            $('#CompanyCode').on("change", function () {
+                BukrsOnChange();
+            });
 
-            function ValidateGovInput() {
-                var result = true;
-                var govStatus = $('#Lack2Model_StatusGov').find("option:selected").val();
+            $('#NppbkcId').on("change", function () {
+                NppbkcIdOnChange();
+            });
+            
+            $('#GovStatus').on('change', function () {
+                onGovStatusChange();
+            });
+            
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportChangesLogToExcel", "Lack2", new { id = Model.Lack2Id })';
+            });
 
-
-                if (govStatus == '') {
-                    AddValidationClass(false, 'Lack2Model_StatusGov');
-                    result = false;
+        });
+        
+        function onGovStatusChange() {
+            if ($("#GovStatus").length) {
+                var statusGov = $('#GovStatus').find("option:selected").val();
+                console.log(statusGov);
+                $('#divComment').hide();
+                if (statusGov == 'Rejected') {
+                    $('#divComment').show();
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                } else if (statusGov == 'PartialApproved') {
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+                } else if (statusGov == 'FullApproved') {
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovApprove');
                 }
+            }
+        }
 
-                if ($('#Lack2Model_DecreeDate').val() == '') {
-                    AddValidationClass(false, 'Lack2Model_DecreeDate');
-                    result = false;
-                }
+        function ValidateGovInput() {
+            var result = true;
+            var govStatus = $('#GovStatus').find("option:selected").val();
 
-                if ($('#Lack2Model_StatusGov').val() == 'Rejected') {
-                    if ($('#Comment').val() == '') {
-                        AddValidationClass(false, 'Comment');
-                        result = false;
-                    }
-                }
-
-                return result;
+            if (govStatus == '') {
+                AddValidationClass(false, 'GovStatus');
+                result = false;
             }
 
-            function AddValidationClass(isValid, objName) {
-                if (isValid) {
-                    $('#' + objName).removeClass('input-validation-error');
-                    $('#' + objName).addClass('valid');
+            if ($('#DecreeDate').val() == '') {
+                AddValidationClass(false, 'DecreeDate');
+                result = false;
+            }
+
+            if ($('#GovStatus').val() == 'Rejected') {
+                if ($('#Comment').val() == '') {
+                    AddValidationClass(false, 'Comment');
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+        
+        function BukrsOnChange() {
+            if ($("#CompanyCode").length) {
+                var companyCode = $('#CompanyCode').find("option:selected").val();
+                $('#NppbkcId option').remove();
+                console.log(companyCode);
+                if (companyCode == '' || $(this).find("option:selected").val() == '') {
+                    $('#NppbkcId').append('<option value="">Select</option>');
                 } else {
-                    $('#' + objName).removeClass('valid');
-                    $('#' + objName).addClass('input-validation-error');
+                    ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "LACK2")', { companyId: companyCode });
                 }
             }
+        }
+        
+        function NppbkcIdOnChange() {
+            if ($("#NppbkcId").length && $('#CompanyCode').length) {
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                var companyId = $('#CompanyCode').find("option:selected").val();
 
-            function GetCk5ByPeriod() {
-                var month = parseInt($('#Lack2Model_PeriodMonth').val());
-                var year = parseInt($('#Lack2Model_PeriodYear').val());
-                var goodstype = $('#Lack2Model_ExGoodTyp').find("option:selected").val();
-                var sendPlantId = $('#Lack2Model_LevelPlantId').find("option:selected").val();
+                $('#SourcePlantId option').remove();
+                $('#displayPoaList').val('');
+                $('#ExcisableGoodsType option').remove();
+
+                if (nppbkcId != '') {
+
+                    /*Load Excisable Goods Type*/
+                    ajaxGetGoodsTypeByNppbkc('@Url.Action("GetGoodsTypeByNppbkc", "LACK2")', { nppbkcId: nppbkcId });
+
+                    /*Load Plant */
+                    if (companyId != '') {
+                        ajaxGetPlantByNppbkc('@Url.Action("GetPlantByNppbkcId", "LACK2")', { companyId: companyId, nppbkcId: nppbkcId });
+                    }
+
+                    /*Load Poa */
+                    ajaxGetPoaByNppbkc('@Url.Action("GetPoaByNppbkcId", "LACK2")', { nppbkcId: nppbkcId });
+
+                } else {
+                    $('#Lack2Model_ExGoodTyp').append('<option value="">Select</option>');
+                    $('#SourcePlantId').append('<option value="">Select</option>');
+                }
+            }
+        }
+        
+        function ajaxGetNppbkcByCompany(url, formData) {
+            if (formData.companyId) {
                 $.ajax({
                     type: 'POST',
-                    url: '@Url.Action("GetCK5ByLack2Period", "LACK2")',
-                    data: { month: month, year: year, sendPlantId: sendPlantId, goodstype: goodstype },
-                    success: function(data) {
-
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $('#NppbkcId').append('<option>select</option>');
                         if (data.length > 0) {
-                            $('#tb-body-ck5-lack2').html("");
                             for (var i = 0; i < data.length; i++) {
-                                var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__Ck5Id" name="Lack2Model.Items[' + i + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
-                                    '<td>' + data[i].SUBMISSION_NUMBER + '</td>' +
-                                    '<td>' + data[i].GIDateStr + '</td>' +
-                                    '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
-                                    '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
-                                    '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
-                                    '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
-                                $('#tb-body-ck5-lack2').append(tableCk5Item);
+                                $('#NppbkcId').append('<option value=' + data[i].NPPBKC_ID + '>' + data[i].NPPBKC_ID + '</option>');
                             }
                         }
                     }
                 });
-
-
             }
-        </script>
+        }
+        
+        function ajaxGetGoodsTypeByNppbkc(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.length) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#ExcisableGoodsType').append('<option value=' + data[i].EXC_GOOD_TYP + '>' + data[i].EXT_TYP_DESC + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
 
-    }
+        }
+        
+        function ajaxGetPlantByNppbkc(url, formData) {
+            if (formData.companyId && formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.length > 0) {
+                            for (var i = 0; i < data.length; i++) {
+                                $('#SourcePlantId').append('<option value=' + data[i].WERKS + '>' + data[i].DROPDOWNTEXTFIELD + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function ajaxGetPoaByNppbkc(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var poalist = '';
+                        for (var i = 0; i < data.length; i++) {
+                            poalist += data[i].PRINTED_NAME;
+                            if (data.length - 1 != i) {
+                                poalist += ', ';
+                            }
+                        }
+                        $('#PoaListHidden').val(poalist);
+                        $('#PoaList').val(poalist);
+                    }
+                });
+            }
+        }
+        
+        function generateInputValidation() {
+            var rc = true;
+            if ($('#CompanyCode').find("option:selected").val() == '') {
+                rc = false;
+                $('#CompanyCode').addClass('input-validation-error');
+            }
+
+            if ($('#PeriodMonth').find("option:selected").val() == '') {
+                rc = false;
+                $('#PeriodMonth').addClass('input-validation-error');
+            }
+
+            if ($('#PeriodYear').find("option:selected").val() == '') {
+                rc = false;
+                $('#PeriodYear').addClass('input-validation-error');
+            }
+
+            if ($('#NppbkcId').find("option:selected").val() == '') {
+                rc = false;
+                $('#NppbkcId').addClass('input-validation-error');
+            }
+
+            if ($('#SourcePlantId').find("option:selected").val() == '') {
+                rc = false;
+                $('#SourcePlantId').addClass('input-validation-error');
+            }
+
+            if ($('#ExcisableGoodsType').find("option:selected").val() == '') {
+                rc = false;
+                $('#ExcisableGoodsType').addClass('input-validation-error');
+            }
+
+            if (!rc) {
+                $('#modalBodyMessage').text('Please input the required field on selection criteria input.');
+            }
+
+            return rc;
+
+        }
+
+        function saveInputValidation() {
+            var rc = true;
+            if ($('#SubmissionDate').val() == '') {
+                rc = false;
+                $('#SubmissionDate').addClass('input-validation-error');
+            }
+            if (!rc) {
+                $('#modalBodyMessage').text('Please input the required field on selection criteria input.');
+            }
+            return rc;
+        }
+
+        function saveClick() {
+            var isValid = false;
+            if (generateInputValidation()) {
+                isValid = true;
+            }
+            if (isValid) {
+                isValid = saveInputValidation();
+            }
+            if (isValid) {
+                $('#form-lack2-edit').submit();
+            } else {
+                $('#ModalValidation').modal('show');
+            }
+        }
+        
+        function GenerateCk5Items() {
+
+            if (!generateInputValidation()) {
+                $('#ModalValidation').modal('show');
+                return;
+            }
+
+            var param = {};
+            param.PeriodMonth = parseInt($('#PeriodMonth').val());
+            param.PeriodYear = parseInt($('#PeriodYear').val());
+            param.NppbkcId = $('#NppbkcId').find("option:selected").val();
+            param.SourcePlantId = $('#SourcePlantId').find("option:selected").val();
+            param.ExcisableGoodsType = $('#ExcisableGoodsType').find("option:selected").val();
+            param.CompanyCode = $('#CompanyCode').find("option:selected").val();
+            param.Lack2Id = $('#Lack2Id').val();
+            $.ajax({
+                url: '@Url.Action("Generate", "LACK2")',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ param: param }),
+                success: function (response) {
+                    if (response.Success) {
+                        console.log(response);
+                        generateTable(response.Data.Ck5Items);
+                    } else {
+                        /*alert(response.ErrorMessage);*/
+                        $('#modalBodyMessage').text(response.ErrorMessage);
+                        $('#ModalValidation').modal('show');
+                    }
+                }
+            });
+        }
+
+        function generateTable(data) {
+            if (data.length > 0) {
+                $('#tb-body-ck5-lack2').html("");
+                for (var i = 0; i < data.length; i++) {
+                    var tableCk5Item = '<tr><td><input type="hidden" id="Lack2Model_Items[' + i + ']__CK5_ID" name="Lack2Model.Items[' + i
+                        + '].Ck5Id" value=' + data[i].CK5_ID + '></input>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                        '<td>' + data[i].NoDateWithFormat + '</td>' +
+                        '<td>' + data[i].GIDateStr + '</td>' +
+                        '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
+                    $('#tb-body-ck5-lack2').append(tableCk5Item);
+                }
+            } else {
+                $('#tb-body-ck5-lack2').html("");
+                $('#tb-body-ck5-lack2').append('<tr><td style="text-align:center" colspan="6">no data<td></tr>');
+            }
+        }
+        
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
+            }
+        }
+        
+    </script>
+}

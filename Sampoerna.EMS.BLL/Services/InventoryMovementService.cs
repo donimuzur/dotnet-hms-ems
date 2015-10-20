@@ -56,12 +56,12 @@ namespace Sampoerna.EMS.BLL.Services
             //there is records on receiving Data
             var receivingList = (from rec in _repository.Get(c => receivingMvtType.Contains(c.MVT))
                                   join a in inventoryMovements on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                  where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
+                                 where input.StoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                   select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             var usageReceivingList = (from rec in _repository.Get(c => receivingMvtType.Contains(c.MVT))
                                       join a in inventoryMovements on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                      where input.StoReceiverNumberList.Contains(rec.PURCH_DOC)
+                                      where input.StoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             //get exclude in receiving data

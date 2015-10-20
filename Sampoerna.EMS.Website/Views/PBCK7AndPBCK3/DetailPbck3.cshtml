@@ -1,0 +1,265 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck3ViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+@using (@Html.BeginForm(Model.ActionType, "PBCK7AndPBCK3", FormMethod.Post, new { @id = "formPbck3Detail", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>PBCK-3</h3>
+                <label class="status">@Model.Pbck3StatusDescription</label>
+                @if (Model.FromPbck7)
+                {
+                    <h3>PBCK-7</h3>
+                    <label class="status">@Model.Pbck7StatusDescription</label>
+                }
+                else
+                {
+                    <h3>CK-5 MARKET RETURN</h3>
+                    <label class="status">@Model.Ck5FormViewModel.DocumentStatusDescription</label>
+                }
+                <div class="action-button">
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
+                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Pbck3Id })')" />
+                    @if (Model.AllowApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
+
+                        <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                    }
+                    else
+                    {
+                        if (Model.AllowGovApproveAndReject)
+                        {
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                        }
+
+                        if (Model.AllowManagerReject)
+                        {
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                        }
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    @Html.HiddenFor(x => x.CREATED_BY)
+                    @Html.HiddenFor(x => x.IsSaveSubmit)
+                    @Html.HiddenFor(x => x.FromPbck7)
+                    @Html.HiddenFor(x => x.Pbck3Id)
+                    @Html.HiddenFor(x => x.Pbck3Status)
+                    @Html.HiddenFor(x => x.Pbck3Number)
+
+                    <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        @if (Model.Pbck3Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Pbck3Status != Enums.DocumentStatus.Cancelled)
+                        {
+                            <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck3" href="#printoutpbck3">Print Out</a></li>
+                        }
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @if (Model.AllowGovApproveAndReject)
+                        {
+                            @Html.Partial("_HomePbck3GovApproval")
+                        }
+                        else
+                        {
+                            @Html.Partial("_HomeEditPbck3Pbck7")
+                        }
+                        @if (Model.Pbck3Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Pbck3Status != Enums.DocumentStatus.Cancelled)
+                        {
+                            @Html.Partial("_PrintOutPbck3")
+                        }
+                        @Html.Partial("_Pbck3ChangeLog")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="Pbck3Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3><span id="lblTitleModal">Approval</span> </h3>
+            </div>
+            <div class="modal-body">
+                <span id="lblMessageModal">Approve Documents ?</span>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+<div id="Pbck3ModalReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Reject document</h4>
+            </div>
+            @using (Html.BeginForm("RejectDocumentPbck3", "PBCK7AndPbck3"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Pbck3Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmReject" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/Pbck3Script.js"></script>
+    @if (Model.AllowGovApproveAndReject)
+    {
+        <script src="~/Scripts/UploadExcel.js"></script>
+        <script src="~/Scripts/Pbck3ScriptDocUpload.js"></script>
+
+    }
+    <script type="text/javascript">
+      
+        if ('@Model.Pbck3Status' == '@Enums.DocumentStatus.Completed.ToString()') {
+            $('#MenuPBCK3CompleteIndex').addClass('active');
+        } else {
+            $('#MenuPBCK3Index').addClass('active');
+        }
+        
+        $('#btnBack').click(function (e) {
+            if ('@Model.Pbck3Status' == '@Enums.DocumentStatus.Completed.ToString()')
+                location.href = '@Url.Action("Pbck3Completed", "PBCK7AndPBCK3")';
+            else
+                location.href = '@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")';
+        });
+
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXlsPbck3", "PBCK7AndPBCK3", new { pbckId = Model.Pbck3Id })';
+        });
+
+        $("#btnApprove").click(function () {
+            $('#btnConfirm').show();
+            $("#lblTitleModal").text('Approval');
+            $("#lblMessageModal").text('Approve Documents ?');
+            $('#Pbck3Modal').modal('show');
+
+        });
+
+        $("#btnConfirm").click(function () {
+
+            window.location = "@Url.Action("ApproveDocumentPbck3", "PBCK7AndPBCK3", new {id = @Model.Pbck3Id})";
+        });
+
+        $("#btnReject").click(function () {
+            $('#btnConfirmReject').attr('disabled', 'disabled');
+
+            $('#Comment').val('');
+
+            $('#Pbck3ModalReject').modal('show');
+
+        });
+
+        $('#Comment').bind('input propertychange', function () {
+
+            $('#btnConfirmReject').attr('disabled', 'disabled');
+
+            if (this.value.length) {
+                $('#btnConfirmReject').removeAttr('disabled');
+
+            }
+        });
+
+        $('#divComment').hide();
+
+        $('#Pbck3GovStatus').on('change', function (e) {
+            var valueSelected = this.value;
+
+            $('#divComment').hide();
+
+
+            if (valueSelected == 'Rejected') {
+                $('#divComment').show();
+
+            }
+
+        });
+
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateGovInput()) {
+                $('#formPbck3Detail').submit();
+            }
+        });
+
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
+
+
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+        }
+        
+    </script>
+}

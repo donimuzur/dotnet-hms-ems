@@ -2,6 +2,7 @@
 {
     public interface IPbck1DecreeDocBLL
     {
-        void DeleteByPbck1Id(long pbck1Id); 
+        void DeleteByPbck1Id(long pbck1Id);
+        int RemoveDoc(long Id);
     }
 }

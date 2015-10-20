@@ -160,16 +160,28 @@ namespace Sampoerna.EMS.BLL
                 
             return data.ToList();
         }
-        public List<ZAIDM_EX_NPPBKCDto> GetNppbkcsByPOA(string POAId)
+        public List<ZAIDM_EX_NPPBKCDto> GetNppbkcsByPOA(string poaId)
         {
             //query by nppbkc, main plant and active poa
-            Expression<Func<POA_MAP, bool>> queryFilter = c => c.POA_ID == POAId
+            Expression<Func<POA_MAP, bool>> queryFilter = c => c.POA_ID == poaId
+                && c.POA.IS_ACTIVE.HasValue && c.POA.IS_ACTIVE.Value;
+
+            var dbData = _poaMapRepository.Get(queryFilter, null, "ZAIDM_EX_NPPBKC");
+            var nppbkcList = dbData.ToList().Select(d => d.ZAIDM_EX_NPPBKC).Distinct();
+            return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(nppbkcList.ToList());
+        }
+
+        public List<ZAIDM_EX_NPPBKCDto> GetNppbkcMainPlantOnlyByPoa(string poaId)
+        {
+            //query by nppbkc, main plant and active poa
+            Expression<Func<POA_MAP, bool>> queryFilter = c => c.POA_ID == poaId
                 && c.T001W.IS_MAIN_PLANT.HasValue && c.T001W.IS_MAIN_PLANT.Value
                 && c.POA.IS_ACTIVE.HasValue && c.POA.IS_ACTIVE.Value;
 
             var dbData = _poaMapRepository.Get(queryFilter, null, "ZAIDM_EX_NPPBKC");
-            var poaList = dbData.ToList().Select(d => d.ZAIDM_EX_NPPBKC);
-            return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(poaList.ToList());
+            var nppbkcList = dbData.ToList().Select(d => d.ZAIDM_EX_NPPBKC).Distinct();
+            return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(nppbkcList.ToList());
         }
+        
     }
 }

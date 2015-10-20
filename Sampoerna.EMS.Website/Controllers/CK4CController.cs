@@ -235,9 +235,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year)
+        public JsonResult GetProductionData(string comp, string plant, string nppbkc, int period, int month, int year, bool isNppbkc)
         {
-            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year).ToList();
+            var data = _productionBll.GetByCompPlant(comp, plant, nppbkc, period, month, year, isNppbkc).ToList();
 
             var result = _productionBll.GetExactResult(data);
 
@@ -568,8 +568,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C, id.Value.ToString()));
 
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
+
                 model.WorkflowHistory = workflowHistory;
                 model.ChangesHistoryList = changeHistory;
+                model.PrintHistoryList = printHistory;
                 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput
@@ -1426,79 +1429,91 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (modelExport.ProductionDate)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.ProductionDate.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.ProductionDate.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.FaCode)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.FaCode.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.FaCode.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.TobaccoProductType)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.TobaccoProductType.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.TobaccoProductType.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.BrandDescription)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.BrandDescription.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.BrandDescription.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Hje)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.Hje.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.Hje.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Tariff)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.Tariff.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.Tariff.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Content)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.Content.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.Content.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.PackedQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.PackedQty.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.PackedQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.PackedQtyInPack)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.PackedQtyInPack.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.PackedQtyInPack.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.UnPackQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.UnPackQty.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.UnPackQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.ProducedQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.ProducedQty.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.ProducedQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.UomProducedQty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.UomProducedQty.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.UomProducedQty.ToArray()));
                     iColumn = iColumn + 1;
                 }
 
                 if (modelExport.Remarks)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, string.Join(" | ", data.Remarks.ToArray()));
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.Remarks.ToArray()));
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.PoaApproved)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PoaApproved);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.ManagerApproved)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ManagerApproved);
                     iColumn = iColumn + 1;
                 }
 
@@ -1659,6 +1674,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
+            if (modelExport.PoaApproved)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA Approved");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.ManagerApproved)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Manager Approved");
+                iColumn = iColumn + 1;
+            }
+
             if (modelExport.Status)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Status");
@@ -1678,6 +1705,7 @@ namespace Sampoerna.EMS.Website.Controllers
             styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.SetWrapText(true);
             
             slDocument.AutoFitColumn(1, iColumn - 1);
             slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);

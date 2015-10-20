@@ -44,5 +44,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsWaitingGovApproval { get; set; }
 
         public List<PBCK4_DOCUMENTDto> Pbck4DocumentDtos { get; set; }
+
+        public bool IsModifiedHistory { get; set; }
     }
 }

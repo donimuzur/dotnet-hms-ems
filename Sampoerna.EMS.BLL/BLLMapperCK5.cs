@@ -69,11 +69,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
                 .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => (Convert.ToInt32(src.CARRIAGE_METHOD_ID)).ToString()))
 
-                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.HasValue ? src.GRAND_TOTAL_EX.Value.ToString("#,##0.#0") : "0"))
-                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
+                //.ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.HasValue ? src.GRAND_TOTAL_EX.Value.ToString("#,##0.#0") : "0"))
+                //.ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
 
-                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
-                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
 
                 ;
 
@@ -115,7 +113,10 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.Ck5Material, opt => opt.MapFrom(src => Mapper.Map<List<CK5MaterialDto>>(src.CK5_MATERIAL)))
                ;
 
+            Mapper.CreateMap<PBCK1, CK5ExternalSupplierDto>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<CK5_FILE_UPLOADDto, BACK1_DOCUMENT>().IgnoreAllNonExisting()
+                ;
         }
     }
 }
