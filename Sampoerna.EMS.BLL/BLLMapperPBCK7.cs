@@ -216,6 +216,11 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Ck2Date, opt => opt.MapFrom(src => src.Ck2Date))
                 .ForMember(dest => dest.Ck2Value, opt => opt.MapFrom(src => src.Ck2Value))
                 ;
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, GetListFaCodeByPlantOutput>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+              .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+              ;
         }
     }
 }

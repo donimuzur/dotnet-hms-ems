@@ -140,56 +140,72 @@
         </div>
     </div>
 </div>
+
+@Html.Partial("_Pbck7InputManual")
+
+
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/pbck7/form.js"></script>
     <script src="~/Scripts/Pbck7Script.js"></script>
+    <script src="~/Scripts/Pbck7InputManual.js"></script>
     <script type="text/javascript">
+
+        $('#MenuPBCK7Index').addClass('active');
+
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXls", "PBCK7AndPBCK3", new { pbckId = Model.Id })';
+        });
         
-        $('#btn-generate-upload').click(function () {
+        $('#btn-generate-upload').click(function() {
             uploadXmlFile('@Url.Action("UploadFile", "PBCK7AndPBCK3")');
         });
 
 
-        $('#btnBack').click(function (e) {
+        $('#btnBack').click(function(e) {
             location.href = '@Url.Action("Index", "PBCK7AndPBCK3")';
         });
-        
-        $("#btnSave").click(function () {
+
+        $("#btnSave").click(function() {
 
             if (ValidatePbck7Form()) {
                 $('#form-pbck7-edit').submit();
             }
         });
-        
-        $("#btnSubmitDocument").click(function () {
+
+        $("#btnSubmitDocument").click(function() {
             if (ValidatePbck7Form()) {
                 $('#pbck7Modal').modal('show');
             }
 
         });
 
-        $("#btnSubmitConfirm").click(function () {
+        $("#btnSubmitConfirm").click(function() {
             if (ValidatePbck7Form()) {
                 $('#IsSaveSubmit').val('true');
                 $('#form-pbck7-edit').submit();
             }
-        });
-        
-        
+        });        
        
 
         $('#NppbkcId').change(function() {
 
             if ($(this).length) {
                 var nppbkc = $(this).find("option:selected").val();
-
+                //remove table
+                try {
+                    RemovePbck7ItemsTable();
+                } catch(e) {
+                }
+                
                 $('#PlantId').html('');
                 if (nppbkc != '') {
-                    ajaxGetPlantByNppbkc(nppbkc);
-                    ajaxGetPoaByNppbkc(nppbkc);
+                    //ajaxGetPlantByNppbkc(nppbkc);
+                    //ajaxGetPoaByNppbkc(nppbkc);
+                    ajaxGetPlantByNppbkc(nppbkc, '@Url.Action("GetPlantByNppbkcId", "PBCK7AndPBCK3")');
+                    ajaxGetPoaByNppbkc(nppbkc, '@Url.Action("GetPoaByNppbkcId", "PBCK7AndPBCK3")');
                 }
             }
 
@@ -201,5 +217,96 @@
 
         }
 
+        $("#btnAddRow").click(function() {
+            var sourcePlant = $("#PlantId").find("option:selected").val();
+
+            $("#uploadPlant").val(sourcePlant);
+
+            ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK7AndPBCK3")', { plantId: sourcePlant }, '');
+
+            $('#btnSaveMaterial').show();
+            $('#btnUpdateMaterial').hide();
+
+            ClearInputForm();
+            ClearValidation();
+            $("#lblTitleInputManual").text('New Input');
+
+            $('#Pbck7UploadModal').modal('show');
+        });
+
+        $("#uploadFaCode").change(function() {
+            if ($("#uploadFaCode").length) {
+                var faCode = $(this).find("option:selected").val();
+
+
+                if (faCode == '') {
+                    $("#uploadProductTypeAlias").val('');
+                    $("#uploadBrand").val('');
+                    $("#uploadContent").val('');
+                    $("#uploadSeriesValue").val('');
+                    $("#uploadHje").val('');
+                    $("#uploadTariff").val('');
+                } else {
+
+                    var plant = $("#uploadPlant").val();
+                    ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK7AndPBCK3")', { plantId: plant, faCode: faCode });
+                }
+            }
+        });
+
+
+        function EditRow(o) {
+
+            var nRow = o.parents('tr');
+
+            $('#btnSaveMaterial').hide();
+            $('#btnUpdateMaterial').show();
+
+            var sourcePlant = $("#PlantId").find("option:selected").val();
+
+            var faCode = nRow.find("td").eq(2).html();
+            $("#uploadPlant").val(sourcePlant);
+
+            ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK7AndPBCK3")', { plantId: sourcePlant }, faCode);
+
+            //set value
+            $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
+
+            ClearInputForm();
+            ClearValidation();
+
+            $("#uploadProductTypeAlias").val('');
+            $("#uploadBrand").val('');
+
+            $("#uploadContent").val('');
+            $("#uploadPbck7Qty").val('0');
+            $("#uploadBack1Qty").val('');
+            $("#uploadSeriesValue").val('');
+
+            $("#uploadHje").val('');
+            $("#uploadTariff").val('');
+            $("#uploadFiscalYear").val('');
+            $("#uploadExciseValue").val('');
+
+            $('#uploadProductTypeAlias').val(nRow.find("td").eq(3).html());
+            $('#uploadBrand').val(nRow.find("td").eq(4).html());
+            $('#uploadContent').val(nRow.find("td").eq(5).html());
+            $('#uploadPbck7Qty').val(nRow.find("td").eq(6).html());
+            //7 back1 qty
+            $('#uploadSeriesValue').val(nRow.find("td").eq(8).html());
+            $('#uploadHje').val(nRow.find("td").eq(9).html());
+            $('#uploadTariff').val(nRow.find("td").eq(10).html());
+
+            $('#uploadFiscalYear').val(nRow.find("td").eq(11).html());
+            $('#uploadExciseValue').val(nRow.find("td").eq(12).html());
+
+
+            $("#lblTitleInputManual").text('Edit Input');
+
+            $('#Pbck7UploadModal').modal('show');
+
+
+        }
+
     </script>
-}
+    }

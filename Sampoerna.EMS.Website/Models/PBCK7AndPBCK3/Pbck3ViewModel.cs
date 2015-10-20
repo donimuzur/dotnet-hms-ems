@@ -28,7 +28,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
-
+        public string APPROVED_BY_MANAGER { get; set; }
+        public DateTime? APPROVED_BY_MANAGER_DATE { get; set; }
         
         public Enums.DocumentStatus Pbck3Status { get; set; }
         public string Pbck3StatusDescription { get; set; }

@@ -39,6 +39,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string CompanyId { get; set; }
         public string Poa { get; set; }
 
+        public string APPROVED_BY_MANAGER { get; set; }
+        public DateTime? APPROVED_BY_MANAGER_DATE { get; set; }
+
 
         public string BACK1_NO { get; set; }
         public DateTime? BACK1_DATE { get; set; }

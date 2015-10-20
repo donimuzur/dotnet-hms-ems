@@ -23,6 +23,8 @@
                     <label class="status">@Model.Ck5FormViewModel.DocumentStatusDescription</label>
                 }
                 <div class="action-button">
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
+                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Pbck3Id })')" />
                     @if (Model.AllowApproveAndReject)
                     {
                         <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
@@ -41,9 +43,6 @@
                             <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                         }
                     }
-
-
-                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Pbck3Id })')" />
                 </div>
 
             </div>
@@ -149,13 +148,23 @@
 
     }
     <script type="text/javascript">
+      
+        if ('@Model.Pbck3Status' == '@Enums.DocumentStatus.Completed.ToString()') {
+            $('#MenuPBCK3CompleteIndex').addClass('active');
+        } else {
+            $('#MenuPBCK3Index').addClass('active');
+        }
+        
         $('#btnBack').click(function (e) {
-            location.href = '@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")';
+            if ('@Model.Pbck3Status' == '@Enums.DocumentStatus.Completed.ToString()')
+                location.href = '@Url.Action("Pbck3Completed", "PBCK7AndPBCK3")';
+            else
+                location.href = '@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")';
         });
 
-        @*$('#btn-changelog-export-xls').click(function () {
-            location.href = '@Url.Action("ExportXls", "PBCK7AndPbck3", new { pbckId = Model.Pbck3Id })';
-        });*@
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXlsPbck3", "PBCK7AndPBCK3", new { pbckId = Model.Pbck3Id })';
+        });
 
         $("#btnApprove").click(function () {
             $('#btnConfirm').show();
