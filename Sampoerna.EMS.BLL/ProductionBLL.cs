@@ -405,11 +405,9 @@ namespace Sampoerna.EMS.BLL
 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
-                var unpackedWaste = oldWaste > item.QtyProduced ? oldWaste : 0;
-
                 var prodWaste = oldWaste < item.QtyProduced ? oldWaste : 0;
 
-                var unpackedQty = oldUnpacked + item.QtyProduced - item.QtyPacked - unpackedWaste;
+                var unpackedQty = oldUnpacked + item.QtyProduced - item.QtyPacked - oldWaste;
 
                 var prodQty = item.QtyProduced - prodWaste;
 
@@ -776,8 +774,6 @@ namespace Sampoerna.EMS.BLL
 
                 var packed = item.QTY_PACKED == null ? 0 : item.QTY_PACKED;
 
-                var unpackedWaste = oldWaste > prodQty ? oldWaste : 0;
-
                 var prodWaste = oldWaste < prodQty ? oldWaste : 0;
 
                 var prod = new ProductionDto
@@ -787,7 +783,7 @@ namespace Sampoerna.EMS.BLL
                     ProductionDate = item.PRODUCTION_DATE,
                     QtyProduced = prodQty - prodWaste,
                     QtyPacked = packed,
-                    QtyUnpacked = lastUnpacked + prodQty - packed - unpackedWaste
+                    QtyUnpacked = lastUnpacked + prodQty - packed - oldWaste
                 };
 
                 lastUnpacked = prod.QtyUnpacked == null ? 0 : prod.QtyUnpacked.Value;
