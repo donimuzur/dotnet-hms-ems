@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
@@ -48,31 +44,51 @@ namespace Sampoerna.EMS.BLL.Test
             //act
             var results = _productionBll.GetAllProduction();
             var companyCode1616 = results.Where(x => x.CompanyCode == "1616");
+            var werks = results.Where(x => x.PlantWerks == "ID01");
 
             //assert
             Assert.AreEqual(0, companyCode1616.Count());
+            Assert.AreEqual(0, werks.Count());
+        }
+        
+        [TestMethod]
+        public void getProduction_WhenDataFound_ChcekCount()
+        {
+            //arrange 
+            var dailyProd = FakeStuffs.GetDailyProductionList();
+            var input = new ProductionGetByParamInput();
+
+            //act
+            _repository.Get().ReturnsForAnyArgs(dailyProd);
+            var result = _productionBll.GetAllByParam(input);
+
+            //assert
+            Assert.AreEqual(dailyProd.Count(), result.Count);
+
         }
 
-        [TestMethod]
+        [TestMethod, ExpectedException(typeof(BLLException))]
         public void getProduction_WhenDataNotFound_ThrowExceptions()
         {
             //arrange
-            var input  = new ProductionGetByParamInput();
-            _repository.Get().ReturnsForAnyArgs(x => null);
+            var input = new ProductionGetByParamInput();
+            _repository.Get().ReturnsForAnyArgs(n => null);
             try
             {
                 //act
                 _productionBll.GetAllByParam(input);
             }
-            catch (Exception ex)
+            catch (BLLException ex)
             {
-                
+
                 //assert
-                Assert.AreEqual(ExceptionCodes.BLLExceptions.DataNotFound.ToString(), ex.InnerException);
+                Assert.AreEqual(ExceptionCodes.BLLExceptions.DataNotFound.ToString(), ex.Code);
                 throw;
 
             }
-            
+
         }
+
+
     }
 }
