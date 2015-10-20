@@ -119,50 +119,50 @@
     
     <script src="~/Scripts/lack2/form.js"></script>
     <script type="text/javascript">
-        
+
         $('#MenuLack2OpenDocument').addClass('active');
 
-        $(document).ready(function () {
-            
+        $(document).ready(function() {
+
             $('#divComment').hide();
 
-            $("#btnSubmitConfirm").click(function () {
+            $("#btnSubmitConfirm").click(function() {
                 $('#IsSaveSubmit').val('submit');
                 $('#form-lack2-edit').submit();
             });
 
-            $("#btnSubmitDocument").click(function () {
+            $("#btnSubmitDocument").click(function() {
                 $('#Lack2Modal').modal('show');
             });
 
-            $('#btn-back').click(function () {
+            $('#btn-back').click(function() {
                 location.href = '@Url.Action("Index", "LACK2")';
             });
-            
-            $("#btnSaveGovStatus").click(function () {
+
+            $("#btnSaveGovStatus").click(function() {
                 if (ValidateGovInput()) {
                     $('#form-lack2-edit').submit();
                 }
             });
-            
-            $('#CompanyCode').on("change", function () {
+
+            $('#CompanyCode').on("change", function() {
                 BukrsOnChange();
             });
 
-            $('#NppbkcId').on("change", function () {
+            $('#NppbkcId').on("change", function() {
                 NppbkcIdOnChange();
             });
-            
-            $('#GovStatus').on('change', function () {
+
+            $('#GovStatus').on('change', function() {
                 onGovStatusChange();
             });
-            
-            $('#btn-changelog-export-xls').click(function () {
-                location.href = '@Url.Action("ExportChangesLogToExcel", "Lack2", new { id = Model.Lack2Id })';
+
+            $('#btn-changelog-export-xls').click(function() {
+                location.href = '@Url.Action("ExportChangesLogToExcel", "Lack2", new {id = Model.Lack2Id})';
             });
 
         });
-        
+
         function onGovStatusChange() {
             if ($("#GovStatus").length) {
                 var statusGov = $('#GovStatus').find("option:selected").val();
@@ -182,6 +182,11 @@
         function ValidateGovInput() {
             var result = true;
             var govStatus = $('#GovStatus').find("option:selected").val();
+            var status = $('#Status').val();
+
+            if (status != '@Enums.DocumentStatus.Completed') {
+                return true;
+            }
 
             if (govStatus == '') {
                 AddValidationClass(false, 'GovStatus');
@@ -200,9 +205,10 @@
                 }
             }
 
+
             return result;
         }
-        
+
         function BukrsOnChange() {
             if ($("#CompanyCode").length) {
                 var companyCode = $('#CompanyCode').find("option:selected").val();
@@ -215,7 +221,7 @@
                 }
             }
         }
-        
+
         function NppbkcIdOnChange() {
             if ($("#NppbkcId").length && $('#CompanyCode').length) {
                 var nppbkcId = $('#NppbkcId').find("option:selected").val();
@@ -244,14 +250,14 @@
                 }
             }
         }
-        
+
         function ajaxGetNppbkcByCompany(url, formData) {
             if (formData.companyId) {
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         $('#NppbkcId').append('<option>select</option>');
                         if (data.length > 0) {
                             for (var i = 0; i < data.length; i++) {
@@ -262,14 +268,14 @@
                 });
             }
         }
-        
+
         function ajaxGetGoodsTypeByNppbkc(url, formData) {
             if (formData.nppbkcId) {
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         if (data.length) {
                             for (var i = 0; i < data.length; i++) {
                                 $('#ExcisableGoodsType').append('<option value=' + data[i].EXC_GOOD_TYP + '>' + data[i].EXT_TYP_DESC + '</option>');
@@ -280,14 +286,14 @@
             }
 
         }
-        
+
         function ajaxGetPlantByNppbkc(url, formData) {
             if (formData.companyId && formData.nppbkcId) {
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         if (data.length > 0) {
                             for (var i = 0; i < data.length; i++) {
                                 $('#SourcePlantId').append('<option value=' + data[i].WERKS + '>' + data[i].DROPDOWNTEXTFIELD + '</option>');
@@ -304,7 +310,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var poalist = '';
                         for (var i = 0; i < data.length; i++) {
                             poalist += data[i].PRINTED_NAME;
@@ -318,7 +324,7 @@
                 });
             }
         }
-        
+
         function generateInputValidation() {
             var rc = true;
             if ($('#CompanyCode').find("option:selected").val() == '') {
@@ -385,7 +391,7 @@
                 $('#ModalValidation').modal('show');
             }
         }
-        
+
         function GenerateCk5Items() {
 
             if (!generateInputValidation()) {
@@ -406,7 +412,7 @@
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ param: param }),
-                success: function (response) {
+                success: function(response) {
                     if (response.Success) {
                         console.log(response);
                         generateTable(response.Data.Ck5Items);
@@ -438,7 +444,7 @@
                 $('#tb-body-ck5-lack2').append('<tr><td style="text-align:center" colspan="6">no data<td></tr>');
             }
         }
-        
+
         function AddValidationClass(isValid, objName) {
             if (isValid) {
                 $('#' + objName).removeClass('input-validation-error');
@@ -448,6 +454,6 @@
                 $('#' + objName).addClass('input-validation-error');
             }
         }
-        
+
     </script>
 }
