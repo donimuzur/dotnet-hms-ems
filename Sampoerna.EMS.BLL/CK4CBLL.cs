@@ -787,6 +787,10 @@ namespace Sampoerna.EMS.BLL
             result.Detail.CompanyName = dtData.COMPANY_NAME;
 
             var addressPlant = dtData.CK4C_ITEM.Select(x => x.WERKS).Distinct().ToArray();
+            if(dtData.PLANT_ID == null)
+            {
+                addressPlant = _plantBll.GetPlantByNppbkc(dtData.NPPBKC_ID).Select(x => x.WERKS).Distinct().ToArray();
+            }
             var address = string.Empty;
             string prodTypeDistinct = string.Empty;
             string currentProdType = string.Empty;
