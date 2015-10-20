@@ -18,7 +18,9 @@ function uploadSk() {
     for (var i = 0; i <= file_sk ; i++) {
         var fileName = $('#Detail_Pbck1DecreeFiles_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        poa_sk.push(name);
+        if (name != '') {
+            poa_sk.push(name);
+        }
     }
 
     //$('#poa-files').html("");

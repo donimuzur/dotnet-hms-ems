@@ -41,7 +41,7 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
                         {
                             <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
                         }
@@ -67,7 +67,7 @@
                             @Html.HiddenFor(model => model.GovStatus)
                             @Html.Partial("_HomeEdit")
                         }
-                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
                         {
                             @Html.Partial("_PrintOut")
                         }
