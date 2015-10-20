@@ -355,6 +355,11 @@ namespace Sampoerna.EMS.BLL
         
         #region workflow
 
+        //private void Lack2WorkflowAfterCompleted(Lack2WorkflowDocumentInput input)
+        //{
+             
+        //}
+
         public void Lack2Workflow(Lack2WorkflowDocumentInput input)
         {
             var isNeedSendNotif = true;
@@ -510,12 +515,21 @@ namespace Sampoerna.EMS.BLL
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
-                //change back to draft
-                dbData.STATUS = Enums.DocumentStatus.Rejected;
-
                 //todo ask
-                dbData.APPROVED_BY = null;
-                dbData.APPROVED_DATE = null;
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    //manager reject
+                    dbData.APPROVED_BY_MANAGER = null;
+                    dbData.APPROVED_BY_MANAGER_DATE = null;
+                }
+                else
+                {
+                    //poa reject
+                    dbData.APPROVED_BY = null;
+                    dbData.APPROVED_DATE = null;
+                }
+
+                dbData.STATUS = Enums.DocumentStatus.Rejected;
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
             }
@@ -609,15 +623,21 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
                 //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
-                dbData.STATUS = Enums.DocumentStatus.GovRejected;
+                
+                dbData.STATUS = Enums.DocumentStatus.Rejected;
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                //dbData.APPROVED_BY = input.UserId;
-                //dbData.APPROVED_DATE = DateTime.Now;
+                
+                //set to null
+                dbData.APPROVED_BY = null;
+                dbData.APPROVED_BY_MANAGER = null;
+                dbData.APPROVED_BY_MANAGER_DATE = null;
+                dbData.APPROVED_DATE = null;
+
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
