@@ -324,6 +324,13 @@ namespace Sampoerna.EMS.BLL
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
 
+            if (dbData.STATUS == Enums.DocumentStatus.Rejected)
+            {
+                //add history for changes status from rejected to draft
+                WorkflowStatusAddChanges(new Lack1WorkflowDocumentInput() { DocumentId = dbData.LACK1_ID, UserId = input.UserId }, dbData.STATUS, Enums.DocumentStatus.Draft);
+                dbData.STATUS = Enums.DocumentStatus.Draft;
+            }
+
             _uow.SaveChanges();
 
             rc.Success = true;
@@ -470,20 +477,23 @@ namespace Sampoerna.EMS.BLL
                 //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
                 //dbData.APPROVED_BY_POA = input.UserId;
                 //dbData.APPROVED_DATE_POA = DateTime.Now;
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-
+                
                 if (input.UserRole == Enums.UserRole.POA)
                 {
+                    //Add Changes
+                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
                     dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
                     dbData.APPROVED_BY_POA = input.UserId;
                     dbData.APPROVED_DATE_POA = DateTime.Now;
                 }
                 else
                 {
+                    //Add Changes
+                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
                     dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
                     dbData.APPROVED_BY_MANAGER = input.UserId;
                     dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+
                 }
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
@@ -508,10 +518,10 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
                 //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
                 //change back to draft
-                dbData.STATUS = Enums.DocumentStatus.Draft;
+                dbData.STATUS = Enums.DocumentStatus.Rejected;
 
                 //todo ask
                 dbData.APPROVED_BY_POA = null;
@@ -546,8 +556,8 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
 
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
+                //dbData.APPROVED_BY_POA = input.UserId;
+                //dbData.APPROVED_DATE_POA = DateTime.Now;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }
@@ -580,8 +590,8 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
 
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
+                //dbData.APPROVED_BY_POA = input.UserId;
+                //dbData.APPROVED_DATE_POA = DateTime.Now;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }
@@ -608,8 +618,8 @@ namespace Sampoerna.EMS.BLL
                 dbData.STATUS = Enums.DocumentStatus.GovRejected;
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
+                //dbData.APPROVED_BY_POA = input.UserId;
+                //dbData.APPROVED_DATE_POA = DateTime.Now;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }

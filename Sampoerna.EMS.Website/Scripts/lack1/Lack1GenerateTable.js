@@ -18,18 +18,12 @@ function generateTable(data) {
         rc = rc +
         /*First Record*/
         '<tr><td>' + rowIndex + '</td>' +
-        '<td rowspan="' + rowCount + '">' + '<input name="BeginingBalance" type="hidden" value = "' + data.BeginingBalance + '" />' + (data.BeginingBalance < 0 ? '-' : '') + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
-        '<td><input name="IncomeList[0].RegistrationNumber" type="hidden" value = "' + data.IncomeList[0].RegistrationNumber + '" />' +
-            '<input name="IncomeList[0].StringRegistrationDate" type="hidden" value = "' + data.IncomeList[0].StringRegistrationDate + '" />' +
-            '<input name="IncomeList[0].Ck5Id" type="hidden" value = "' + data.IncomeList[0].Ck5Id + '" />' +
-            '<input name="IncomeList[0].Lack1Id" type="hidden" value = "' + data.IncomeList[0].Lack1Id + '" />'
-            + '<input name="IncomeList[0].RegistrationDate" type="hidden" value = "' + data.IncomeList[0].RegistrationDate + '" />'
-            + data.IncomeList[0].RegistrationNumber + ' - '
+        '<td rowspan="' + rowCount + '">' + (data.BeginingBalance < 0 ? '-' : '') + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+        '<td>' + data.IncomeList[0].RegistrationNumber + ' - '
             + data.IncomeList[0].StringRegistrationDate + '</td>' +
         '<td>' +
-            '<input name="IncomeList[0].Amount" type="hidden" value = "' + data.IncomeList[0].Amount + '" />'
-            + ThausandSeperator(data.IncomeList[0].Amount, 2) + '</td>' +
-        '<td rowspan="' + rowCount + '">' + '<input name="TotalUsage" type="hidden" value = "' + parseFloat(data.TotalUsage) + '" />' + (data.TotalUsage < 0 ? '-' : '') + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
+           ThausandSeperator(data.IncomeList[0].Amount, 2) + '</td>' +
+        '<td rowspan="' + rowCount + '">' + (data.TotalUsage < 0 ? '-' : '') + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
@@ -37,14 +31,8 @@ function generateTable(data) {
         /*loop record*/
         for (var i = 1; i < data.IncomeList.length; i++) {
             rowIndex = rowIndex + 1;
-            var item = '<tr><td>' +
-                '<input name="IncomeList[' + i + '].Lack1Id" type="hidden" value = "' + data.IncomeList[i].Lack1Id + '" />' +
-                '<input name="IncomeList[' + i + '].Ck5Id" type="hidden" value = "' + data.IncomeList[i].Ck5Id + '" />' +
-                '<input name="IncomeList[' + i + '].RegistrationDate" type="hidden" value = "' + data.IncomeList[i].RegistrationDate + '" />'
-                + '<input name="IncomeList[' + i + '].RegistrationNumber" type="hidden" value = "' + data.IncomeList[i].RegistrationNumber + '" />'
-                + '<input name="IncomeList[' + i + '].StringRegistrationDate" type="hidden" value = "' + data.IncomeList[i].StringRegistrationDate + '" />'
-                + rowIndex + '</td><td>' + data.IncomeList[i].RegistrationNumber + ' - ' + data.IncomeList[i].StringRegistrationDate + '</td>' +
-                        '<td>' + '<input name="IncomeList[' + i + '].Amount" type="hidden" value = "' + data.IncomeList[i].Amount + '" />' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
+            var item = '<tr><td>' + rowIndex + '</td><td>' + data.IncomeList[i].RegistrationNumber + ' - ' + data.IncomeList[i].StringRegistrationDate + '</td>' +
+                        '<td>' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
             /*rc.append(item);*/
             rc = rc + item;
         }
@@ -84,11 +72,6 @@ function generateJenisHasilProduksi(data) {
     if (data) {
         rc = '<div id="jumlah-hasil-produksi-data">';
         for (var i = 0; i < data.length; i++) {
-            rc += '<input name="ProductionList[' + i + '].Lack1ProductionDetailId" type="hidden" value = "' + data[i].Lack1ProductionDetailId + '" />';
-            rc += '<input name="ProductionList[' + i + '].Lack1Id" type="hidden" value = "' + data[i].Lack1Id + '" />';
-            rc += '<input name="ProductionList[' + i + '].ProdCode" type="hidden" value = "' + data[i].ProdCode + '" />';
-            rc += '<input name="ProductionList[' + i + '].ProductType" type="hidden" value = "' + data[i].ProductType + '" />';
-            rc += '<input name="ProductionList[' + i + '].ProductAlias" type="hidden" value = "' + data[i].ProductAlias + '" />';
             if (i == data.length) {
                 rc = rc + data[i].ProductAlias;
             } else {
@@ -106,9 +89,6 @@ function generateJumlahHasilProduksi(data) {
     var rc = "";
     if (data) {
         for (var i = 0; i < data.length; i++) {
-            rc += '<input name="ProductionList[' + i + '].Amount" type="hidden" value = "' + data[i].Amount + '" />';
-            rc += '<input name="ProductionList[' + i + '].UomId" type="hidden" value = "' + data[i].UomId + '" />';
-            rc += '<input name="ProductionList[' + i + '].UomDesc" type="hidden" value = "' + data[i].UomDesc + '" />';
             if (i == data.length) {
                 rc = rc + (data[i].Amount < 0 ? '-' : '') + ThausandSeperator(data[i].Amount, 2);
             } else {
