@@ -1,4 +1,5 @@
-﻿@using Sampoerna.EMS.Website.Helpers
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
 
 <div role="tabpanel" class="tab-pane active" id="information">
@@ -65,7 +66,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Reported On<span class="red">*</span></label>
+                                        <label class="col-md-4">Reported On</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.ReportedOn, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
                                         </div>
@@ -137,47 +138,47 @@
 
                                     @for (int i = 0; i < Model.UploadItemModels.Count(); i++)
                                     {
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].FaCode)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].StickerCode)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].Ck1No)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].Ck1Date)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].SeriesCode)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].BrandName)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].ProductAlias)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].Content)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].Hje)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].Tariff)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].Colour)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].ReqQty)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].TotalHje)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].TotalStamps)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].NoPengawas)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].ApprovedQty)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].Remark)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].CK1_ID)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].PBCK4_ITEM_ID)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].IsUpdated)
-                                        <tr>
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].FaCode)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].StickerCode)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].Ck1No)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].Ck1Date)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].SeriesCode)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].BrandName)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].ProductAlias)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].Content)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].Hje)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].Tariff)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].Colour)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].ReqQty)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].TotalHje)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].TotalStamps)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].NoPengawas)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].ApprovedQty)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].Remark)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].CK1_ID)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].PBCK4_ITEM_ID)
+                                    @Html.HiddenFor(model => model.UploadItemModels[i].IsUpdated)
+                                    <tr>
 
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].FaCode)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].StickerCode)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Ck1No)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Ck1Date)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].SeriesCode)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].BrandName)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].ProductAlias)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Content)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Hje)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Tariff)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Colour)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].ReqQty)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].TotalHje)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].TotalStamps)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].NoPengawas)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].ApprovedQty)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Remark)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].FaCode)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].StickerCode)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].Ck1No)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].Ck1Date)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].SeriesCode)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].BrandName)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].ProductAlias)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].Content)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].Hje)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].Tariff)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].Colour)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].ReqQty)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].TotalHje)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].TotalStamps)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].NoPengawas)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].ApprovedQty)</td>
+                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].Remark)</td>
 
-                                        </tr>
+                                    </tr>
                                     }
 
 
@@ -202,101 +203,43 @@
             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                 <div class="panel-body">
                     <div class="form-excise" role="form">
-                        
+                        @if (Model.DocumentStatus == Enums.DocumentStatus.Completed)
+                        {
+                            @Html.Partial("_Pbck4GovApprovalCompleted")
+                        }
+                        else
+                        {
+                             @Html.Partial("_Pbck4GovApprovalInfo")
+                        }
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Status Gov<span class="red">*</span></label>
-                                    <div class="col-md-8">
-                                        @Html.EnumDropDownListFor(model => model.GovStatus, Model.GovStatusList, "Select", new { @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6" id="divComment">
-                                <div class="row">
-                                    <label class="col-md-4">Add Comment<span class="red">*</span></label>
-                                    <div class="col-md-8">
-                                        @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">BACK-1 No</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.BACK1_NO, new { @class = "form-control", @maxlength = "35" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">CK-3 No</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.CK3_NO, new { @class = "form-control", @maxlength = "35" })
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">BACK-1 Date</label>
-                                    <div class="col-md-8">
-                                        <div class="input-group date">
-                                            @Html.TextBoxFor(model => model.BACK1_DATE, new { @class = "form-control" })
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">CK-3 Date</label>
-                                    <div class="col-md-8">
-                                        <div class="input-group date">
-                                            @Html.TextBoxFor(model => model.CK3_DATE, new { @class = "form-control" })
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">CK-3 Office Value</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.CK3_OFFICE_VALUE, new { @class = "form-control", @maxlength = "50" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">BACK-1 Doc</label>
+                                    <label class="col-md-4">BACK-1 Doc <span class="red">*</span></label>
                                     <div class="col-md-8">
 
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="file-upload" id="poa-files">
+                                                    @if (Model.Pbck4FileUploadModelList != null)
+                                                    {
+                                                        for (int i = 0; i < Model.Pbck4FileUploadModelList.Count(); i++)
+                                                        {
 
+                                                    @Html.HiddenFor(model => model.Pbck4FileUploadModelList[i].PBCK4_DOCUMENT_ID)
+                                                    @Html.HiddenFor(model => model.Pbck4FileUploadModelList[i].IsDeleted)
+
+                                                    <div class="row">
+                                                        <div class="col-sm-10">
+                                                            <a href="@Url.Content(Model.Pbck4FileUploadModelList[i].FILE_PATH)">@Model.Pbck4FileUploadModelList[i].FILE_NAME</a>
+
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck4(this,"Pbck4FileUploadModelList_", "@i") '><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+
+                                                        }
+                                                    }
                                                 </div>
                                             </div>
 
@@ -312,13 +255,32 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">CK-3 Doc</label>
+                                    <label class="col-md-4">CK-3 Doc <span class="red">*</span></label>
                                     <div class="col-md-8">
 
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="file-upload" id="poa-files2">
+                                                    @if (Model.Pbck4FileUploadModelList2 != null)
+                                                    {
+                                                        for (int i = 0; i < Model.Pbck4FileUploadModelList2.Count(); i++)
+                                                        {
 
+                                                    @Html.HiddenFor(model => model.Pbck4FileUploadModelList2[i].PBCK4_DOCUMENT_ID)
+                                                    @Html.HiddenFor(model => model.Pbck4FileUploadModelList2[i].IsDeleted)
+
+                                                    <div class="row">
+                                                        <div class="col-sm-10">
+                                                            <a href="@Url.Content(Model.Pbck4FileUploadModelList2[i].FILE_PATH)">@Model.Pbck4FileUploadModelList2[i].FILE_NAME</a>
+
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck4(this,"Pbck4FileUploadModelList2", "@i") '><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+
+                                                        }
+                                                    }
                                                 </div>
                                             </div>
 
@@ -333,73 +295,30 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">BACK-1 Uploaded Doc</label>
-                                    <div class="col-md-8">
-                                        @*<input type="text" class="form-control" disabled>*@
-                                        @if (Model.Pbck4FileUploadModelList != null)
-                                        {
-                                            foreach (var file in Model.Pbck4FileUploadModelList)
-                                            {
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <i class="fa fa-file"></i>
-                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                    </div>
 
-                                                </div>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">CK-3 Uploaded Doc</label>
-                                    <div class="col-md-8">
-                                        @*<input type="text" class="form-control" disabled>*@
-                                        @if (Model.Pbck4FileUploadModelList2 != null)
-                                        {
-                                            foreach (var file in Model.Pbck4FileUploadModelList2)
-                                            {
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <i class="fa fa-file"></i>
-                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                    </div>
 
-                                                </div>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
 
-        <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="heading7">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
-                            Workflow History
-                            <i class="fa fa-caret-down"></i>
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
-                    <div class="panel-body">
-                        <div class="table-container">
-                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
-                        </div>
+    <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="heading7">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                        Workflow History
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                <div class="panel-body">
+                    <div class="table-container">
+                        @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
                     </div>
                 </div>
             </div>
@@ -410,7 +329,9 @@
             <span class="red">*</span> ) This Field Required
         </div>
     </div>
+
 </div>
+
 
 @* Modal upload dialog *@
 
@@ -431,9 +352,11 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-9">
-                                <input type="file" class="file-inputs" data-filename-placement="inside" id="Pbck4FileUploadFileList_0_" name="Pbck4FileUploadFileList[0]">
+                                <input type="file" class="form-control" data-filename-placement="inside" id="Pbck4FileUploadFileList_0_" name="Pbck4FileUploadFileList[0]">
                             </div>
-
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-danger full" onclick="removeUploadButton(0);">Remove</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -463,10 +386,15 @@
                             </div>
                         </div>
                         <div class="row">
+                            @*<div class="col-sm-9">
+                                    <input type="file" class="file-inputs" data-filename-placement="inside" id="Pbck4FileUploadFileList2_0_" name="Pbck4FileUploadFileList2[0]">
+                                </div>*@
                             <div class="col-sm-9">
-                                <input type="file" class="file-inputs" data-filename-placement="inside" id="Pbck4FileUploadFileList2_0_" name="Pbck4FileUploadFileList2[0]">
+                                <input type="file" class="form-control" data-filename-placement="inside" id="Pbck4FileUploadFileList2_0_" name="Pbck4FileUploadFileList2[0]">
                             </div>
-
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-danger full" onclick="removeUploadButton(0);">Remove</button>
+                            </div>
                         </div>
                     </div>
                 </div>
