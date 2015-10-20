@@ -6,7 +6,9 @@ $('#upload-file-sk').click(function () {
     for (var i = 0; i <= file_sk ; i++) {
         var fileName = $('#Ck5FileUploadFileList_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        poa_sk.push(name);
+        if (name != '') {
+            poa_sk.push(name);
+        }
     }
 
    

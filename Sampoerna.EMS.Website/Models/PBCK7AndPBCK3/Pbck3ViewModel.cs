@@ -92,6 +92,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public bool AllowApproveAndReject { get; set; }
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowManagerReject { get; set; }
+        public bool AllowPrintDocument { get; set; }
 
         public string ActionType { get; set; }
 

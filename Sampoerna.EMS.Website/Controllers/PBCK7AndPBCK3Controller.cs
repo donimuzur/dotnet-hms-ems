@@ -99,7 +99,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             // ReSharper disable once PossibleInvalidOperationException
-            var pbck3 = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(id);
+            //var pbck3 = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(id);
+            var pbck3 = _pbck7Pbck3Bll.GetPbck3ById(id);
 
             //add to print history
             var input = new PrintHistoryDto()
@@ -285,6 +286,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (nppbkc != null)
             {
                 drow["TextTo"] = nppbkc.TEXT_TO;
+                drow["NppbkcCity"] = nppbkc.CITY;
                 var vendor = _lfa1Bll.GetById(nppbkc.KPPBC_ID);
                 if (vendor != null)
                 {
@@ -292,31 +294,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
             drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType).ToLower();
-            drow["NppbkcCity"] = nppbkc.CITY;
             drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMMM yyyy") : pbck3Date.ToString("dd MMMM yyyy");
 
             dt.Rows.Add(drow);
 
             var dtDetail = dsPbck7.Tables[1];
-            var totalPbck7Qty = pbck7.UploadItems.Sum(d => d.Pbck7Qty.HasValue ? d.Pbck7Qty.Value : 0);
-            var totalExciseValue = pbck7.UploadItems.Sum(d => d.ExciseValue.HasValue ? d.ExciseValue.Value : 0);
-            foreach (var item in pbck7.UploadItems)
-            {
-                DataRow drowDetail;
-                drowDetail = dtDetail.NewRow();
-                drowDetail[0] = item.ProdTypeAlias;
-                drowDetail[1] = item.Brand;
-                drowDetail[2] = item.Content.HasValue ? item.Content.Value.ToString("N2") : "-";
-                drowDetail[3] = item.Pbck7Qty.HasValue ? item.Pbck7Qty.Value.ToString("N2") : "-";
-                drowDetail[4] = item.SeriesValue;
-                drowDetail[5] = item.Hje.HasValue ? item.Hje.Value.ToString("N2") : "-";
-                drowDetail[6] = item.Tariff.HasValue ? item.Tariff.Value.ToString("N2") : "-";
-                drowDetail[7] = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
-                drowDetail[8] = totalExciseValue.ToString("N2");
-                drowDetail[9] = totalPbck7Qty.ToString("N2");
-                dtDetail.Rows.Add(drowDetail);
 
+
+            if (pbck7.UploadItems != null && pbck7.UploadItems.Count > 0)
+            {
+                var totalPbck7Qty = pbck7.UploadItems.Sum(d => d.Pbck7Qty.HasValue ? d.Pbck7Qty.Value : 0);
+                var totalExciseValue = pbck7.UploadItems.Sum(d => d.ExciseValue.HasValue ? d.ExciseValue.Value : 0);
+                foreach (var item in pbck7.UploadItems)
+                {
+                    DataRow drowDetail;
+                    drowDetail = dtDetail.NewRow();
+                    drowDetail[0] = item.ProdTypeAlias;
+                    drowDetail[1] = item.Brand;
+                    drowDetail[2] = item.Content.HasValue ? item.Content.Value.ToString("N2") : "-";
+                    drowDetail[3] = item.Pbck7Qty.HasValue ? item.Pbck7Qty.Value.ToString("N2") : "-";
+                    drowDetail[4] = item.SeriesValue;
+                    drowDetail[5] = item.Hje.HasValue ? item.Hje.Value.ToString("N2") : "-";
+                    drowDetail[6] = item.Tariff.HasValue ? item.Tariff.Value.ToString("N2") : "-";
+                    drowDetail[7] = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
+                    drowDetail[8] = totalExciseValue.ToString("N2");
+                    drowDetail[9] = totalPbck7Qty.ToString("N2");
+                    dtDetail.Rows.Add(drowDetail);
+
+                }
             }
+            
             // object of data row 
 
             ReportClass rpt = new ReportClass();
@@ -2012,7 +2019,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
                 
                 model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
-
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(existingData.Pbck3CompositeDto.PBCK3_NUMBER));
                 string nppbkcId = "";
 
                 if (model.FromPbck7)
@@ -2054,7 +2061,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
-                //model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
 
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocumentPbck3";
@@ -2250,6 +2257,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
             return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
+        }
+
+        [EncryptedParameter]
+        public FileResult PrintOut(int id)
+        {
+            return PrintPreview(id, true, "PBCK-7");
+        }
+
+        [EncryptedParameter]
+        public FileResult PrintOutPbck3(int id)
+        {
+            return PrintPreview(id, false, "PBCK-3");
         }
 
     }

@@ -45,12 +45,11 @@ namespace Sampoerna.EMS.BLL.Test
         [TestMethod]
         public void IsCorrectRowResult()
         {
-
             //act
             var results = _companyBll.GetMasterData();
-            var companyCode102 = results.Where(x => x.BUKRS == "102");
+            var companyCode1616 = results.Where(x => x.BUKRS == "1616");
             //assert
-            Assert.AreEqual(1, companyCode102.Count());
+            Assert.AreEqual(0, companyCode1616.Count());
 
         }
 
