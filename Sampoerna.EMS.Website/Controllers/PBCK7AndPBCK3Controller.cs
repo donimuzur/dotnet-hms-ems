@@ -99,7 +99,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             // ReSharper disable once PossibleInvalidOperationException
-            var pbck3 = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(id);
+            //var pbck3 = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(id);
+            var pbck3 = _pbck7Pbck3Bll.GetPbck3ById(id);
 
             //add to print history
             var input = new PrintHistoryDto()
@@ -285,6 +286,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (nppbkc != null)
             {
                 drow["TextTo"] = nppbkc.TEXT_TO;
+                drow["NppbkcCity"] = nppbkc.CITY;
                 var vendor = _lfa1Bll.GetById(nppbkc.KPPBC_ID);
                 if (vendor != null)
                 {
@@ -292,31 +294,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
             drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType).ToLower();
-            drow["NppbkcCity"] = nppbkc.CITY;
             drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMMM yyyy") : pbck3Date.ToString("dd MMMM yyyy");
 
             dt.Rows.Add(drow);
 
             var dtDetail = dsPbck7.Tables[1];
-            var totalPbck7Qty = pbck7.UploadItems.Sum(d => d.Pbck7Qty.HasValue ? d.Pbck7Qty.Value : 0);
-            var totalExciseValue = pbck7.UploadItems.Sum(d => d.ExciseValue.HasValue ? d.ExciseValue.Value : 0);
-            foreach (var item in pbck7.UploadItems)
-            {
-                DataRow drowDetail;
-                drowDetail = dtDetail.NewRow();
-                drowDetail[0] = item.ProdTypeAlias;
-                drowDetail[1] = item.Brand;
-                drowDetail[2] = item.Content.HasValue ? item.Content.Value.ToString("N2") : "-";
-                drowDetail[3] = item.Pbck7Qty.HasValue ? item.Pbck7Qty.Value.ToString("N2") : "-";
-                drowDetail[4] = item.SeriesValue;
-                drowDetail[5] = item.Hje.HasValue ? item.Hje.Value.ToString("N2") : "-";
-                drowDetail[6] = item.Tariff.HasValue ? item.Tariff.Value.ToString("N2") : "-";
-                drowDetail[7] = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
-                drowDetail[8] = totalExciseValue.ToString("N2");
-                drowDetail[9] = totalPbck7Qty.ToString("N2");
-                dtDetail.Rows.Add(drowDetail);
 
+
+            if (pbck7.UploadItems != null && pbck7.UploadItems.Count > 0)
+            {
+                var totalPbck7Qty = pbck7.UploadItems.Sum(d => d.Pbck7Qty.HasValue ? d.Pbck7Qty.Value : 0);
+                var totalExciseValue = pbck7.UploadItems.Sum(d => d.ExciseValue.HasValue ? d.ExciseValue.Value : 0);
+                foreach (var item in pbck7.UploadItems)
+                {
+                    DataRow drowDetail;
+                    drowDetail = dtDetail.NewRow();
+                    drowDetail[0] = item.ProdTypeAlias;
+                    drowDetail[1] = item.Brand;
+                    drowDetail[2] = item.Content.HasValue ? item.Content.Value.ToString("N2") : "-";
+                    drowDetail[3] = item.Pbck7Qty.HasValue ? item.Pbck7Qty.Value.ToString("N2") : "-";
+                    drowDetail[4] = item.SeriesValue;
+                    drowDetail[5] = item.Hje.HasValue ? item.Hje.Value.ToString("N2") : "-";
+                    drowDetail[6] = item.Tariff.HasValue ? item.Tariff.Value.ToString("N2") : "-";
+                    drowDetail[7] = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
+                    drowDetail[8] = totalExciseValue.ToString("N2");
+                    drowDetail[9] = totalPbck7Qty.ToString("N2");
+                    dtDetail.Rows.Add(drowDetail);
+
+                }
             }
+            
             // object of data row 
 
             ReportClass rpt = new ReportClass();
@@ -2013,7 +2020,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
                 
                 model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
-
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(existingData.Pbck3CompositeDto.PBCK3_NUMBER));
                 string nppbkcId = "";
 
                 if (model.FromPbck7)
@@ -2055,7 +2062,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
-                //model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
 
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocumentPbck3";
@@ -2253,6 +2260,18 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
         }
 
+        [EncryptedParameter]
+        public FileResult PrintOut(int id)
+        {
+            return PrintPreview(id, true, "PBCK-7");
+        }
+
+        [EncryptedParameter]
+        public FileResult PrintOutPbck3(int id)
+        {
+            return PrintPreview(id, false, "PBCK-3");
+        }
+
         #region "Input Manual
 
         [HttpPost]
@@ -2274,6 +2293,83 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        public void ExportXlsPbck3(int pbckId)
+        {
+            
+            var pathFile = CreateXlsFilePbck3(pbckId);
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsFilePbck3(int pbckId)
+        {
+            var slDocument = new SLDocument();
+
+            //todo check
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK3, pbckId.ToString());
+
+            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+
+            int iRow = 1;
+
+            //create header
+            slDocument.SetCellValue(iRow, 1, "DATE");
+            slDocument.SetCellValue(iRow, 2, "FIELD");
+            slDocument.SetCellValue(iRow, 3, "OLD VALUE");
+            slDocument.SetCellValue(iRow, 4, "NEW VALUE");
+            slDocument.SetCellValue(iRow, 5, "USER");
+
+            iRow++;
+
+            foreach (var changesHistoryItemModel in model)
+            {
+                slDocument.SetCellValue(iRow, 1,
+                    changesHistoryItemModel.MODIFIED_DATE.HasValue
+                        ? changesHistoryItemModel.MODIFIED_DATE.Value.ToString("dd MMM yyyy")
+                        : string.Empty);
+                slDocument.SetCellValue(iRow, 2, changesHistoryItemModel.FIELD_NAME);
+                slDocument.SetCellValue(iRow, 3, changesHistoryItemModel.OLD_VALUE);
+                slDocument.SetCellValue(iRow, 4, changesHistoryItemModel.NEW_VALUE);
+                slDocument.SetCellValue(iRow, 5, changesHistoryItemModel.USERNAME);
+
+                iRow++;
+            }
+
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //SLStyle styleHeader = slDocument.CreateStyle();
+            //styleHeader.Font.Bold = true;
+
+            slDocument.AutoFitColumn(1, 5);
+            slDocument.SetCellStyle(1, 1, iRow - 1, 5, styleBorder);
+            //slDocument.SetCellStyle(1, 1, 1, iColumn - 1, styleHeader);
+
+            var fileName = "PBCK3" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath("~/Content/upload/"), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
     }
 
 }

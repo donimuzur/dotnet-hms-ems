@@ -440,7 +440,7 @@ namespace Sampoerna.EMS.BLL
 
         public Pbck3Dto GetPbck3ById(int id)
         {
-            var data = _repositoryPbck3.Get(c => c.PBCK3_ID == id);
+            var data = _repositoryPbck3.Get(c => c.PBCK3_ID == id, null, "PBCK7");
             return Mapper.Map<Pbck3Dto>(data.FirstOrDefault());
         }
 

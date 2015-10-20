@@ -154,6 +154,10 @@
     <script type="text/javascript">
 
         $('#MenuPBCK7Index').addClass('active');
+
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXls", "PBCK7AndPBCK3", new { pbckId = Model.Id })';
+        });
         
         $('#btn-generate-upload').click(function() {
             uploadXmlFile('@Url.Action("UploadFile", "PBCK7AndPBCK3")');
