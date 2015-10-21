@@ -64,7 +64,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode+stickercode));
-
+            model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
             
             if (model.IsFromSap.HasValue && model.IsFromSap.Value)
             {
