@@ -1282,9 +1282,17 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.APPROVED_BY_POA = input.UserId;
+                    dbData.APPROVED_DATE_POA = DateTime.Now;
+                }
+                else
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                }
+               
             }
             else
             {
