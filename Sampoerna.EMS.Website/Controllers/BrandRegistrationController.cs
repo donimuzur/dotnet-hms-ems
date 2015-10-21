@@ -154,6 +154,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (dbBrand.STICKER_CODE.Length > 18)
                     dbBrand.STICKER_CODE = dbBrand.STICKER_CODE.Substring(0, 17);
                 dbBrand.CREATED_DATE = DateTime.Now;
+                dbBrand.CREATED_BY = CurrentUser.USER_ID;
                 dbBrand.IS_FROM_SAP = false;
                 dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
@@ -166,6 +167,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     _brandRegistrationBll.Save(dbBrand);
+                    AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE);
+
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
                 }
@@ -450,6 +453,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
             _changesHistoryBll.AddHistory(history);
         }
+        private void AddHistoryCreate(string plant, string facode, string stickercode)
+        {
+            var history = new CHANGES_HISTORY();
+            history.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
+            history.FORM_ID = plant + facode + stickercode;
+            history.FIELD_NAME = "NEW_DATA";
+            history.OLD_VALUE = "";
+            history.NEW_VALUE = "";
+            history.MODIFIED_DATE = DateTime.Now;
+            history.MODIFIED_BY = CurrentUser.USER_ID;
+
+            _changesHistoryBll.AddHistory(history);
+        }
+
         [HttpPost]
         public JsonResult GetPlantByStickerCode(string mn)
         {
