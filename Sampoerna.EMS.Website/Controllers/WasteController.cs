@@ -368,6 +368,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                var listWaste = new List<WasteUploadItems>();
+
+                //check validation
                 foreach (var item in modelDto.UploadItems)
                 {
                     var company = _companyBll.GetById(item.CompanyCode);
@@ -395,12 +398,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         return RedirectToAction("UploadManualWaste");
                     }
 
-
-
-                    _wasteBll.SaveUpload(item);
-                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                       );
+                    listWaste.Add(item);
                 }
+
+                //do save
+                foreach(var data in listWaste)
+                {
+                    _wasteBll.SaveUpload(data);
+                }
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
             }
 
             catch (Exception ex)

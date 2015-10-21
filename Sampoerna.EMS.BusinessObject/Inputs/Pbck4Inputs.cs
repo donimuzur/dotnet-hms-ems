@@ -23,6 +23,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public bool IsCompletedDocument { get; set; }
+
+        public string UserId { get; set; }
+
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Pbck4SaveInput

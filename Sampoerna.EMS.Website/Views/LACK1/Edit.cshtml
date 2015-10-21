@@ -38,7 +38,7 @@
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-nppbkc-list" />
                     }
                     
-                    @if (Model.Status == Enums.DocumentStatus.Draft)
+                    @if (Model.Status == Enums.DocumentStatus.Draft || Model.Status == Enums.DocumentStatus.Rejected)
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }
@@ -55,7 +55,7 @@
                     @Html.AntiForgeryToken()
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
                         {
                             <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
                         }
@@ -91,7 +91,7 @@
                             @Html.HiddenFor(model => model.GovStatusDescription)
                             @Html.Partial("_HomeEdit")
                         }
-                        @if (Model.Status == Enums.DocumentStatus.Completed)
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
                         {
                             @Html.Partial("_PrintOut")
                         }
@@ -332,6 +332,16 @@
                 $('#EditLack1Form').submit();
             } else {
                 $('#ModalValidation').modal('show');
+            }
+        }
+        
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
             }
         }
         

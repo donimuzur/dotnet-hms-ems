@@ -44,5 +44,9 @@ namespace Sampoerna.EMS.Contract
        List<GetListCk1ByNppbkcOutput> GetListCk1ByPlantAndFaCode(GetListCk1ByPlantAndFaCodeInput input);
 
        string GetListPoaByNppbkcId(string nppbkcId);
+
+       void SendMailCompletedPbck4Document(Pbck4WorkflowDocumentInput input);
+
+       void UpdateUploadedFileCompleted(List<PBCK4_DOCUMENTDto> input);
    }
 }

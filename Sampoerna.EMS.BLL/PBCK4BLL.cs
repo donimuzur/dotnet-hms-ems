@@ -45,6 +45,7 @@ namespace Sampoerna.EMS.BLL
        private IPlantBLL _plantBll;
        private IBlockStockBLL _blockStockBll;
        private IHeaderFooterBLL _headerFooterBll;
+       private IWorkflowBLL _workflowBll;
 
        private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
 
@@ -71,12 +72,33 @@ namespace Sampoerna.EMS.BLL
            _plantBll = new PlantBLL(_uow, _logger);
            _blockStockBll = new BlockStockBLL(_uow,_logger);
            _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
+           _workflowBll = new WorkflowBLL(_uow, _logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
        {
 
            Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
+
+           if (input.UserRole == Enums.UserRole.POA)
+           {
+               var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+               queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+
+
+           }
+           else if (input.UserRole == Enums.UserRole.Manager)
+           {
+               var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+               var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+               queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK4_NUMBER));
+           }
+           else
+           {
+               queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+           }
 
            if (!string.IsNullOrEmpty(input.NppbkcId))
            {
@@ -109,11 +131,11 @@ namespace Sampoerna.EMS.BLL
 
            if (input.IsCompletedDocument)
            {
-               queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+               queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled);
            }
            else
            {
-               queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+               queryFilter = queryFilter.And(c => !(c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled));
            }
 
            Func<IQueryable<PBCK4>, IOrderedQueryable<PBCK4>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
@@ -325,7 +347,7 @@ namespace Sampoerna.EMS.BLL
            inputWorkflowHistory.UserRole = input.UserRole;
            inputWorkflowHistory.ActionType = input.ActionType;
            inputWorkflowHistory.Comment = input.Comment;
-           input.IsModified = input.IsModified;
+           inputWorkflowHistory.IsModified = input.IsModified;
 
            AddWorkflowHistory(inputWorkflowHistory);
        }
@@ -660,7 +682,7 @@ namespace Sampoerna.EMS.BLL
                case Enums.ActionType.GovApprove:
                case Enums.ActionType.GovPartialApprove:
                    GovApproveDocument(input);
-                   isNeedSendNotif = true;
+                   //isNeedSendNotif = true;
                    break;
                case Enums.ActionType.GovReject:
                    GovRejectedDocument(input);
@@ -676,7 +698,12 @@ namespace Sampoerna.EMS.BLL
            _uow.SaveChanges();
        }
 
-       
+       public void SendMailCompletedPbck4Document(Pbck4WorkflowDocumentInput input)
+       {
+           input.ActionType = Enums.ActionType.GovApprove;
+           SendEmailWorkflow(input);
+       }
+
        private void SendEmailWorkflow(Pbck4WorkflowDocumentInput input)
        {
          
@@ -1001,9 +1028,22 @@ namespace Sampoerna.EMS.BLL
            if (dbData == null)
                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-           if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-               dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+           //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+           //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+           //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+           var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+           {
+               CreatedUser = dbData.CREATED_BY,
+               CurrentUser = input.UserId,
+               DocumentStatus = dbData.STATUS,
+               UserRole = input.UserRole,
+               NppbkcId = dbData.NPPBKC_ID,
+               DocumentNumber = dbData.PBCK4_NUMBER
+           });
+
+           if (!isOperationAllow)
                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
 
            string oldValue = EnumHelper.GetDescription(dbData.STATUS);
            string newValue = "";
@@ -1249,7 +1289,8 @@ namespace Sampoerna.EMS.BLL
            var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
            pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
 
-           dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+           //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+           InsertOrDeletePbck4Item(pbckDocument);
 
            //update item updated
            foreach (var pbck4ItemDto in input.UploadItemDto)
@@ -1279,6 +1320,30 @@ namespace Sampoerna.EMS.BLL
 
           
            
+       }
+
+       public void UpdateUploadedFileCompleted(List<PBCK4_DOCUMENTDto> input)
+       {
+           InsertOrDeletePbck4Item(input);
+           _uow.SaveChanges();
+       }
+
+       private void InsertOrDeletePbck4Item(List<PBCK4_DOCUMENTDto> input)
+       {
+           foreach (var pbck4DocumentDto in input)
+           {
+               if (pbck4DocumentDto.IsDeleted)
+               {
+                   var pbck4Doc = _repositoryPbck4Documents.GetByID(pbck4DocumentDto.PBCK4_DOCUMENT_ID);
+                   if (pbck4Doc != null)
+                       _repositoryPbck4Documents.Delete(pbck4Doc);
+               }
+               else
+               {
+                   if (pbck4DocumentDto.PBCK4_DOCUMENT_ID == 0)
+                        _repositoryPbck4Documents.Insert(Mapper.Map<PBCK4_DOCUMENT>(pbck4DocumentDto));
+               }
+           }
        }
 
        //private void GovPartialApproveDocument(Pbck4WorkflowDocumentInput input)

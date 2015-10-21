@@ -861,7 +861,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<WasteDto, WasteDetail>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.RejectCigaretteStick,
-                    opt => opt.MapFrom(src => src.MarkerRejectStickQty + src.PackerRejectStickQty))
+                    opt => opt.MapFrom(src => src.PackerRejectStickQty))
                 .ForMember(dest => dest.WasteQtyGram,
                     opt => opt.MapFrom(src => src.DustWasteGramQty + src.FloorWasteGramQty))
                 .ForMember(dest => dest.WasteQtyStick,
