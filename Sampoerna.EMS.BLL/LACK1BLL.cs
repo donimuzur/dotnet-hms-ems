@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Core.Common.CommandTrees;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
@@ -478,39 +479,40 @@ namespace Sampoerna.EMS.BLL
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-                var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-                {
-                    CreatedUser = dbData.CREATED_BY,
-                    CurrentUser = input.UserId,
-                    DocumentStatus = dbData.STATUS,
-                    UserRole = input.UserRole,
-                    NppbkcId = dbData.NPPBKC_ID,
-                    DocumentNumber = dbData.LACK1_NUMBER
-                });
-
-                if (!isOperationAllow)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
                 //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
                 //dbData.APPROVED_BY_POA = input.UserId;
                 //dbData.APPROVED_DATE_POA = DateTime.Now;
                 
                 if (input.UserRole == Enums.UserRole.POA)
                 {
-                    //Add Changes
-                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
-                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    dbData.APPROVED_BY_POA = input.UserId;
-                    dbData.APPROVED_DATE_POA = DateTime.Now;
+                    if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+                    {
+                        //Add Changes
+                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        dbData.APPROVED_BY_POA = input.UserId;
+                        dbData.APPROVED_DATE_POA = DateTime.Now;
+                    }
+                    else
+                    {
+                        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                    }
                 }
                 else
                 {
-                    //Add Changes
-                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                    dbData.APPROVED_BY_MANAGER = input.UserId;
-                    dbData.APPROVED_DATE_MANAGER = DateTime.Now;
-
+                    //manager
+                    if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        //Add Changes
+                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        dbData.APPROVED_BY_MANAGER = input.UserId;
+                        dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+                    }
+                    else
+                    {
+                        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                    }
                 }
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
