@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
@@ -73,7 +76,7 @@ namespace Sampoerna.EMS.BLL.Services
             foreach (var back1Documents in input.Back1Documents)
             {
                 back1Documents.BACK1 = dbBack1.BACK1_ID;
-                dbBack1.BACK1_DOCUMENT.Add(back1Documents);
+                dbBack1.BACK1_DOCUMENT.Add(AutoMapper.Mapper.Map<BACK1_DOCUMENT>(back1Documents));
 
             }
 
@@ -89,6 +92,24 @@ namespace Sampoerna.EMS.BLL.Services
 
             return dbBack1;
 
+        }
+
+        public void InsertOrDeleteBack1Documents(List<BACK1_DOCUMENTDto> input)
+        {
+            foreach (var back1DocumentDto in input)
+            {
+                if (back1DocumentDto.IsDeleted)
+                {
+                    var back1Doc = _repositoryBac1Documents.GetByID(back1DocumentDto.BACK1_DOCUMENT_ID);
+                    if (back1Doc != null)
+                        _repositoryBac1Documents.Delete(back1Doc);
+                }
+                else
+                {
+                    if (back1DocumentDto.BACK1_DOCUMENT_ID == 0)
+                        _repositoryBac1Documents.Insert(Mapper.Map<BACK1_DOCUMENT>(back1DocumentDto));
+                }
+            }
         }
     }
 }

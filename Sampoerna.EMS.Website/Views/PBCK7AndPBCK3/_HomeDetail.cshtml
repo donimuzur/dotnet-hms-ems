@@ -97,23 +97,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                @*<div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK7 Gov Status</label>
-                                        <div class="col-md-8">
-                                            @if (Model.Pbck7Status == Enums.DocumentStatus.WaitingGovApproval)
-                                            {
-                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control" })
-                                            }
-                                            else
-                                            {
-                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
-
-                                            }
-                                        </div>
-                                    </div>
-                                </div>*@
-                              
+                                
                             </div>
                         </div>
                     </div>
@@ -132,7 +116,7 @@
                 </div>
                 <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
                     <div class="panel-body">
-                        <a href="javascript:void(0)"  class="btn btn-blue">Upload</a>
+                        @*<a href="javascript:void(0)"  class="btn btn-blue">Upload</a>*@
                         <div class="table-container" id="table-upload">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -254,7 +238,8 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK3 Gov Status</label>
                                         <div class="col-md-8">
-                                           @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3GovStatus, new { @class = "form-control", @disabled = "disabled" })
+                                            @*@Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })*@
                                            
                                         </div>
                                     </div>

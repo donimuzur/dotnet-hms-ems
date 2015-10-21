@@ -1580,11 +1580,13 @@ namespace Sampoerna.EMS.BLL
 
            result.ReportDetails.HeaderImage = string.Empty;
 
-           if (headerFooterData.IS_HEADER_SET.HasValue && headerFooterData.IS_HEADER_SET.Value)
+           if (headerFooterData != null)
            {
-               result.ReportDetails.HeaderImage = headerFooterData.HEADER_IMAGE_PATH;
+               if (headerFooterData.IS_HEADER_SET.HasValue && headerFooterData.IS_HEADER_SET.Value)
+               {
+                   result.ReportDetails.HeaderImage = headerFooterData.HEADER_IMAGE_PATH;
+               }
            }
-
            return result;
         }
 

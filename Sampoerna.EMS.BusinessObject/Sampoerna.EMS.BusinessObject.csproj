@@ -123,9 +123,11 @@
     </Compile>
     <Compile Include="DTOs\Back1Dto.cs" />
     <Compile Include="DTOs\BACK1_DOCUMENTDto.cs" />
+    <Compile Include="DTOs\BACK3_DOCUMENTDto.cs" />
     <Compile Include="DTOs\BLOCK_STOCKDto.cs" />
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
     <Compile Include="DTOs\CK1Dto.cs" />
+    <Compile Include="DTOs\CK2_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Ck4cDecreeDocDto.cs" />
     <Compile Include="DTOs\Ck4CDto.cs" />
     <Compile Include="DTOs\Ck4cReportDto.cs" />
