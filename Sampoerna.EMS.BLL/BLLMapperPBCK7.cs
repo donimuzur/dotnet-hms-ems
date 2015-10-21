@@ -233,6 +233,17 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
                 .ForMember(dest => dest.ExciseValue, opt => opt.MapFrom(src => src.EXCISE_VALUE))
                 ;
+            Mapper.CreateMap<BACK1_DOCUMENT, BACK1_DOCUMENTDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<BACK1_DOCUMENTDto, BACK1_DOCUMENT>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<BACK3_DOCUMENT, BACK3_DOCUMENTDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<BACK3_DOCUMENTDto, BACK3_DOCUMENT>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<CK2_DOCUMENT, CK2_DOCUMENTDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<CK2_DOCUMENTDto, CK2_DOCUMENT>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<PBCK7, Pbck73PrintOutDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PbckId, opt => opt.MapFrom(src => src.PBCK7_ID))

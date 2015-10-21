@@ -1031,18 +1031,18 @@ namespace Sampoerna.EMS.BLL
            //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
            //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-           var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-           {
-               CreatedUser = dbData.CREATED_BY,
-               CurrentUser = input.UserId,
-               DocumentStatus = dbData.STATUS,
-               UserRole = input.UserRole,
-               NppbkcId = dbData.NPPBKC_ID,
-               DocumentNumber = dbData.PBCK4_NUMBER
-           });
+           //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+           //{
+           //    CreatedUser = dbData.CREATED_BY,
+           //    CurrentUser = input.UserId,
+           //    DocumentStatus = dbData.STATUS,
+           //    UserRole = input.UserRole,
+           //    NppbkcId = dbData.NPPBKC_ID,
+           //    DocumentNumber = dbData.PBCK4_NUMBER
+           //});
 
-           if (!isOperationAllow)
-               throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+           //if (!isOperationAllow)
+           //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
            string oldValue = EnumHelper.GetDescription(dbData.STATUS);
@@ -1050,26 +1050,36 @@ namespace Sampoerna.EMS.BLL
 
            if (input.UserRole == Enums.UserRole.POA)
            {
-               dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-               dbData.APPROVED_BY_POA = input.UserId;
-               dbData.APPROVED_BY_POA_DATE = DateTime.Now;
+               if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+               {
+                   dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                   dbData.APPROVED_BY_POA = input.UserId;
+                   dbData.APPROVED_BY_POA_DATE = DateTime.Now;
 
-               //get poa printed name
-               string poaPrintedName = "";
-               var poaData = _poaBll.GetDetailsById(input.UserId);
-               if (poaData != null)
-                   poaPrintedName = poaData.PRINTED_NAME;
+                   //get poa printed name
+                   string poaPrintedName = "";
+                   var poaData = _poaBll.GetDetailsById(input.UserId);
+                   if (poaData != null)
+                       poaPrintedName = poaData.PRINTED_NAME;
 
-               dbData.POA_PRINTED_NAME = poaPrintedName;
+                   dbData.POA_PRINTED_NAME = poaPrintedName;
 
-               newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                   newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+               }
+               else
+                   throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
            }
            else if (input.UserRole == Enums.UserRole.Manager)
            {
-               dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-               dbData.APPROVED_BY_MANAGER = input.UserId;
-               dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
-               newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+               if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+               {
+                   dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                   dbData.APPROVED_BY_MANAGER = input.UserId;
+                   dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+                   newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+               }
+               else
+                   throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
            }
 
 
@@ -1580,11 +1590,13 @@ namespace Sampoerna.EMS.BLL
 
            result.ReportDetails.HeaderImage = string.Empty;
 
-           if (headerFooterData.IS_HEADER_SET.HasValue && headerFooterData.IS_HEADER_SET.Value)
+           if (headerFooterData != null)
            {
-               result.ReportDetails.HeaderImage = headerFooterData.HEADER_IMAGE_PATH;
+               if (headerFooterData.IS_HEADER_SET.HasValue && headerFooterData.IS_HEADER_SET.Value)
+               {
+                   result.ReportDetails.HeaderImage = headerFooterData.HEADER_IMAGE_PATH;
+               }
            }
-
            return result;
         }
 

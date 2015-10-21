@@ -70,7 +70,7 @@ namespace Sampoerna.EMS.Contract
 
         Pbck73PrintOutDto GetPbck7PrintOutData(int pbck7Id);
 
-        Pbck73PrintOutDto GetPbck3PrintOutData(int pbck3Id);
+        void UpdateUploadedFileCompletedPbck3(List<BACK3_DOCUMENTDto> inputBack3, List<CK2_DOCUMENTDto> inputCk2);
 
     }
 }

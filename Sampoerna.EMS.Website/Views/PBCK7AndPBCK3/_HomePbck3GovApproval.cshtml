@@ -121,7 +121,7 @@
                         </a>
                     </h4>
                 </div>
-                <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse" id="collapseThree" >
+                <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse" id="collapseThree">
                     <div class="panel-body">
 
                         <div class="table-container" id="table-upload">
@@ -335,27 +335,56 @@
 
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK3 Gov Status<span class="red">*</span></label>
-                                        <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(x => x.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
+                            @if (Model.Pbck3Status == Enums.DocumentStatus.Completed)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">PBCK3 Gov Status</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(x => x.Pbck3GovStatusDescription,  new { @class = "form-control", @disabled="disabled" })
 
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        
+                                            <div class="row">
+                                                <label class="col-md-4">Comment</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                       
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div id="divComment">
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="row">
-                                            <label class="col-md-4">Add Comment<span class="red">*</span></label>
+                                            <label class="col-md-4">PBCK3 Gov Status<span class="red">*</span></label>
                                             <div class="col-md-8">
-                                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                                                @Html.EnumDropDownListFor(x => x.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div id="divComment">
+                                            <div class="row">
+                                                <label class="col-md-4">Add Comment<span class="red">*</span></label>
+                                                <div class="col-md-8">
+                                                    @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
+
+
                         </div>
                     </div>
                 </div>
@@ -376,88 +405,170 @@
                         </a>
                     </h4>
                 </div>
-                <div aria-labelledby="headingFive" role="tabpanel" class="panel-collapse collapse in" id="collapseFive" >
+                <div aria-labelledby="headingFive" role="tabpanel" class="panel-collapse collapse in" id="collapseFive">
                     <div class="panel-body">
                         <div role="form" class="form-excise">
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">BACK-3 No</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Back3Number, new { @class = "form-control", @maxlength = "35" })
+                            @if (Model.Pbck3Status == Enums.DocumentStatus.Completed)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">BACK-3 No</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Back3Number, new { @class = "form-control", @disabled = "disabled" })
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">CK-2 No</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Ck2Number, new { @class = "form-control", @maxlength = "35" })
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 No</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Number, new { @class = "form-control", @disabled = "disabled" })
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
 
-                            </div>
+                                <div class="row">
 
-                            <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">BACK-3 Date</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Back3Date, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">BACK-3 Date</label>
-                                        <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Back3Date, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 Date</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Date, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">CK-2 Date</label>
-                                        <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Ck2Date,"{0:dd MMM yyyy}", new { @class = "form-control"})
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 Value</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Value, new { @class = "form-control", @disabled = "disabled" })
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-6">
-                                    <div class="row">
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">BACK-3 No</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Back3Number, new { @class = "form-control", @maxlength = "35" })
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 No</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Number, new { @class = "form-control", @maxlength = "35" })
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">CK-2 Value</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Ck2Value, new { @class = "form-control", @maxlength = "10" })
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">BACK-3 Date</label>
+                                            <div class="col-md-8">
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.Back3Date, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 Date</label>
+                                            <div class="col-md-8">
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.Ck2Date, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 Value</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Value, new { @class = "form-control", @maxlength = "10" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
 
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">BACK-3 Doc</label>
                                         <div class="col-md-8">
-
+                                            @Html.HiddenFor(model => model.Back3Id)
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="file-upload" id="poa-files">
+                                                        @if (Model.Back3Documents != null)
+                                                        {
+                                                            for (int i = 0; i < Model.Back3Documents.Count(); i++)
+                                                            {
 
+                                                                @Html.HiddenFor(model => model.Back3Documents[i].BACK3_DOC_ID)
+                                                                @Html.HiddenFor(model => model.Back3Documents[i].IsDeleted)
+
+                                                                <div class="row">
+                                                                    <div class="col-sm-10">
+                                                                        <a href="@Url.Content(Model.Back3Documents[i].FILE_PATH)">@Model.Back3Documents[i].FILE_NAME</a>
+
+                                                                    </div>
+                                                                    <div class="col-sm-2">
+                                                                        <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck3(this,"Back3Documents_", "@i") '><i class="fa fa-times"></i></button>
+                                                                    </div>
+                                                                </div>
+
+                                                            }
+                                                        }
                                                     </div>
                                                 </div>
 
@@ -476,11 +587,30 @@
                                     <div class="row">
                                         <label class="col-md-4">CK-2 Doc</label>
                                         <div class="col-md-8">
-
+                                            @Html.HiddenFor(model => model.Ck2Id)
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="file-upload" id="poa-files2">
+                                                        @if (Model.Ck2Documents != null)
+                                                        {
+                                                            for (int i = 0; i < Model.Ck2Documents.Count(); i++)
+                                                            {
 
+                                                                @Html.HiddenFor(model => model.Ck2Documents[i].CK2_DOC_ID)
+                                                                @Html.HiddenFor(model => model.Ck2Documents[i].IsDeleted)
+
+                                                                <div class="row">
+                                                                    <div class="col-sm-10">
+                                                                        <a href="@Url.Content(Model.Ck2Documents[i].FILE_PATH)">@Model.Ck2Documents[i].FILE_NAME</a>
+
+                                                                    </div>
+                                                                    <div class="col-sm-2">
+                                                                        <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck3(this,"Ck2Documents_", "@i") '><i class="fa fa-times"></i></button>
+                                                                    </div>
+                                                                </div>
+
+                                                            }
+                                                        }
                                                     </div>
                                                 </div>
 
@@ -497,64 +627,7 @@
 
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">BACK-3 Uploaded Doc</label>
-                                        <div class="col-md-8">
-                                            <div class="file-upload" id="back3-files">
-                                                @if (Model.Back3Documents != null)
-                                                {
-                                                    foreach (var file in Model.Back3Documents)
-                                                    {
 
-                                                        <div class="row">
-                                                            <div class="col-sm-10">
-                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                            </div>
-                                                            @*<div class="col-sm-2">
-                                                                        <button class="btn btn-danger full" type="button" onclick="removeDocBack3(@file.BACK3_DOC_ID, '@Url.Action("RemoveDocBack1", "Pbck7AndPbck3")' , this) "><i class=" fa fa-times"></i></button>
-                                                                    </div>*@
-                                                        </div>
-
-                                                    }
-
-                                                }
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">CK-2 Uploaded Doc</label>
-                                        <div class="col-md-8">
-                                            <div class="file-upload" id="ck2-files">
-                                                @if (Model.Ck2Documents != null)
-                                                {
-                                                    foreach (var file in Model.Ck2Documents)
-                                                    {
-
-                                                        <div class="row">
-                                                            <div class="col-sm-10">
-                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    }
-
-                                                }
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
 
                         </div>
                     </div>
@@ -728,9 +801,11 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-9">
-                                <input type="file" class="file-inputs" data-filename-placement="inside" id="Pbck3Back3FileUploadFileList_0_" name="Pbck3Back3FileUploadFileList[0]">
+                                <input type="file" class="form-control" data-filename-placement="inside" id="Pbck3Back3FileUploadFileList_0_" name="Pbck3Back3FileUploadFileList[0]">
                             </div>
-
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-danger full" onclick="removeUploadButton(0);">Remove</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -761,9 +836,11 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-9">
-                                <input type="file" class="file-inputs" data-filename-placement="inside" id="Pbck3Ck2FileUploadFileList_0_" name="Pbck3Ck2FileUploadFileList[0]">
+                                <input type="file" class="form-control" data-filename-placement="inside" id="Pbck3Ck2FileUploadFileList_0_" name="Pbck3Ck2FileUploadFileList[0]">
                             </div>
-
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-danger full" onclick="removeUploadButton(0);">Remove</button>
+                            </div>
                         </div>
                     </div>
                 </div>

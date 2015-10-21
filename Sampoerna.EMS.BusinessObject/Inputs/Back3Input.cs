@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -13,6 +14,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Back3Number { get; set; }
         public DateTime? Back3Date { get; set; }
 
-        public List<BACK3_DOCUMENT> Back3Documents { get; set; }
+        public List<BACK3_DOCUMENTDto> Back3Documents { get; set; }
     }
 }
