@@ -182,6 +182,14 @@ namespace Sampoerna.EMS.BLL
             var nppbkcList = dbData.ToList().Select(d => d.ZAIDM_EX_NPPBKC).Distinct();
             return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(nppbkcList.ToList());
         }
-        
+
+        private bool IsNppbkcImport(string id)
+        {
+            
+            bool isImport = _repositoryT001w.Get(x => x.NPPBKC_IMPORT_ID == id).Any();
+
+            return isImport;
+        }
+
     }
 }

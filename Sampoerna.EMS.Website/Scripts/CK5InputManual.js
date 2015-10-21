@@ -24,14 +24,14 @@ function ClearValidation() {
 }
 
 function EditRow(o) {
-    //debugger;
+    debugger;
     var nRow = o.parents('tr');
-    var plant = $("#SourcePlantId").find("option:selected").val();
+    var plant = nRow.find("td").eq(19).html();
     
 
-    if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
-        plant = $("#DestPlantId").find("option:selected").val();
-    }
+    //if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+    //    plant = $("#DestPlantId").find("option:selected").val();
+    //}
 
     
     var goodTypeGroupId = $("#GoodType").val();
@@ -41,11 +41,11 @@ function EditRow(o) {
     $('#btnUpdateMaterial').show();
 
     //set value
-    if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
-        plant = $("#DestPlantId").find("option:selected").val();
-    }
+    //if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+    //    plant = $("#DestPlantId").find("option:selected").val();
+    //}
     
-    $("#uploadMaterialPlant").val(plant);
+   // $("#uploadMaterialPlant").val(nRow.find("td").eq(19).html());
     $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
     
     $('#uploadMaterialNumber').find('option:not(:first)').remove();
@@ -71,10 +71,10 @@ function EditRow(o) {
     $('#uploadMaterialDesc').val(nRow.find("td").eq(15).html());
 
     //===Fixing Bug CK5 no. 110====
-    $('#uploadMaterialPlant').val(nRow.find("td").eq(18).html());
+    $('#uploadMaterialPlant').val(nRow.find("td").eq(19).html());
     //=============================
     
-    $('#uploadMaterialId').val(nRow.find("td").eq(19).html());
+    $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
     
     ClearValidation();
     
@@ -179,8 +179,8 @@ function UpdateRow() {
                 
                 $(this).find('td').eq(16).text(exciseQty);
                 $(this).find('td').eq(17).text(exciseUOM);
-
-                $(this).find('td').eq(19).text(materialId);
+                $(this).find('td').eq(18).text(materialId);
+                $(this).find('td').eq(19).text($('#uploadMaterialPlant').val());
                
             }
         });
@@ -235,6 +235,7 @@ function AddRow() {
                 "<td style='display: none'>" + exciseQty + "</td>" +
                 "<td style='display: none'>" + exciseUOM + "</td>" +
                 "<td style='display: none'>0</td>" +
+                "<td style='display: none'>" + $('#uploadMaterialPlant').val() + "</td>" +
                 "</tr>");
         
         $('#CK5UploadSave').enable();

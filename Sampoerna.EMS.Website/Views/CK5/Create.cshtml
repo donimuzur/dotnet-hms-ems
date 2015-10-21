@@ -47,11 +47,11 @@
                         @Html.HiddenFor(model => model.SourceKppbcName)
                         @Html.HiddenFor(model => model.SourcePlantName)
                         
-                        @if (!Model.IsCk5PortToImporter)
-                        {
+                        @*@if (!Model.IsCk5PortToImporter)
+                        {*@
                               @Html.HiddenFor(model => model.SourceCompanyName)
                               @Html.HiddenFor(model => model.SourceAddress)
-                        }
+                        @*}*@
                         
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
