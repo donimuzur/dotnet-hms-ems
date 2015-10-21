@@ -456,33 +456,36 @@
 
                     $('.checkexport').on('click', function (e) {
                          //e.preventDefault();
-                        var checked = document.querySelectorAll('input:checked');
+                    //    var checked = document.querySelectorAll('input:checked');
 
-                        if (checked.length === 1) {
-                            for (var i = 1; i < 37; i++) {
-                                table.column(i).visible(false);
-                            }
-                            table.column(0).visible(true);
+                    //    if (checked.length === 1) {
+                    //        for (var i = 1; i < 37; i++) {
+                    //            table.column(i).visible(false);
+                    //        }
+                    //        table.column(0).visible(true);
                             
                             // Get the column API object
                             var column = table.column($(this).attr('datacolumn'));
 
-                            // Toggle the visibility
-                            column.visible(!column.visible());
-                            $('#pbckTable').parents('div.dataTables_wrapper').first().show();
-                        } else {
-                            // Get the column API object
-                            var column = table.column($(this).attr('datacolumn'));
+                    //        // Toggle the visibility
+                    //        column.visible(!column.visible());
+                    //        $('#pbckTable').parents('div.dataTables_wrapper').first().show();
+                    //    } else {
+                    //        // Get the column API object
+                    //        var column = table.column($(this).attr('datacolumn'));
 
                             // Toggle the visibility
                             column.visible(!column.visible());
-                        }
+                        
+                    //    }
                             
                        
                     });
+                 
 
                     for (var i = 7; i < 37; i++) {
                         table.column(i).visible(false);
+                        table.column(37).visible(false);
                     }
 
                     $('#selecctall').change(function () {
@@ -493,6 +496,7 @@
                             var table = $('#pbckTable').DataTable();
                             for (var i = 0; i < 37; i++) {
                                 table.column(i).visible(true);
+                               
                             }
                         } else {
                             $('.checkexport').each(function () {
