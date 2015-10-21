@@ -20,7 +20,8 @@
                             <div class="row">
                                 <label class="col-md-4">CK-2 No</label>
                                 <div class="col-md-8">
-                                    @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
+                                    @Html.TextBoxFor(model => model.Ck2Dto.Ck2Number, new { @class = "form-control", @disabled = "disabled" })
+                                    @*@if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
                                     {
                                         @Html.TextBoxFor(x => x.Ck2Dto.Ck2Number, new {@class = "form-control"})
                                     }
@@ -28,7 +29,7 @@
                                     {
                                         @Html.TextBox("_ck2Number", Model.Ck2Dto.Ck2Number, new { @class = "form-control", @disabled = "disabled" })
 
-                                    }
+                                    }*@
                                 </div>
                             </div>
                         </div>
@@ -40,7 +41,8 @@
                             <div class="row">
                                 <label class="col-md-4">BACK-3 No</label>
                                 <div class="col-md-8">
-                                    @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
+                                    @Html.TextBoxFor(model => model.Back3Dto.Back3Number, new { @class = "form-control", @disabled = "disabled" })
+                                    @*@if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.GovApproved)
                                     {
                                         @Html.TextBoxFor(x => x.Back3Dto.Back3Number, new {@class = "form-control"})
                                     }
@@ -48,8 +50,8 @@
                                     {
                                         @Html.TextBox("_back3Number", Model.Back3Dto.Back3Number, new { @class = "form-control", @disabled="disabled" })
 
-                                    }
-                                        </div>
+                                    }*@
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
