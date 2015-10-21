@@ -65,6 +65,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode+stickercode));
             model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
+
             
             if (model.IsFromSap.HasValue && model.IsFromSap.Value)
             {
@@ -218,6 +219,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             model.PrintingPriceValueStr = model.PrintingPrice == null ? string.Empty : model.PrintingPrice.ToString();
+            model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
             model = InitEdit(model);
 
             model.IsAllowDelete = !model.IsFromSAP;
