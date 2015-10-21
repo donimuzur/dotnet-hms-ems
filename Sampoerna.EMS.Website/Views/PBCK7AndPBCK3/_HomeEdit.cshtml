@@ -264,7 +264,8 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-3 Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
+                                            @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            @*<div class="input-group date">
                                                 @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
                                                 {
                                                     @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new {@class = "form-control"})
@@ -276,7 +277,7 @@
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
-                                            </div>
+                                            </div>*@
                                         </div>
                                     </div>
                                 </div>
@@ -284,7 +285,8 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK3 Gov Status</label>
                                         <div class="col-md-8">
-                                            @if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
+                                            @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3GovStatus, new { @class = "form-control", @disabled = "disabled" })
+                                            @*@if (Model.Pbck3Dto.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval)
                                             {
                                                 @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
                                             }
@@ -292,7 +294,7 @@
                                             {
                                                 @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
 
-                                            }
+                                            }*@
                                         </div>
                                     </div>
                                 </div>

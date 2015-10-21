@@ -1,6 +1,9 @@
 ﻿
+using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
@@ -41,24 +44,38 @@ namespace Sampoerna.EMS.BLL.Services
             dbCk2.CK2_DATE = input.Ck2Date;
             dbCk2.CK2_VALUE = input.Ck2Value;
 
-            ////delete child first
-            //foreach (var ck2Doc in dbCk2.CK2_DOCUMENT.ToList())
+            InsertOrDeleteCk2Item(input.Ck2Documents);
+
+            //foreach (var ck2Document in input.Ck2Documents)
             //{
-            //    _repositoryCk2Documents.Delete(ck2Doc);
+            //    ck2Document.CK2_ID = dbCk2.CK2_ID;
+            //    ck2Document.CK2_DOC_ID = 0;
+            //    //dbCk2.CK2_DOCUMENT.Add(ck2Document);
+            //    _repositoryCk2Documents.InsertOrUpdate(ck2Document);
+
             //}
-
-            foreach (var ck2Document in input.Ck2Documents)
-            {
-                ck2Document.CK2_ID = dbCk2.CK2_ID;
-                ck2Document.CK2_DOC_ID = 0;
-                //dbCk2.CK2_DOCUMENT.Add(ck2Document);
-                _repositoryCk2Documents.InsertOrUpdate(ck2Document);
-
-            }
 
             //dbBack1.BACK1_DOCUMENT = input.Back1Documents;
 
             _repository.InsertOrUpdate(dbCk2);
+        }
+
+        public void InsertOrDeleteCk2Item(List<CK2_DOCUMENTDto> input)
+        {
+            foreach (var ck2DocumentDto in input)
+            {
+                if (ck2DocumentDto.IsDeleted)
+                {
+                    var ck2Doc = _repositoryCk2Documents.GetByID(ck2DocumentDto.CK2_DOC_ID);
+                    if (ck2Doc != null)
+                        _repositoryCk2Documents.Delete(ck2Doc);
+                }
+                else
+                {
+                    if (ck2DocumentDto.CK2_DOC_ID == 0)
+                        _repositoryCk2Documents.Insert(Mapper.Map<CK2_DOCUMENT>(ck2DocumentDto));
+                }
+            }
         }
 
         public bool IsExistCk2DocumentByPbck3(int pbck3Id)
