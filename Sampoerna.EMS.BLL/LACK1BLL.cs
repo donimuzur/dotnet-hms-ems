@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Core.Common.CommandTrees;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
@@ -128,6 +130,17 @@ namespace Sampoerna.EMS.BLL
                     Lack1Number = string.Empty
                 };
             }
+            
+            //check if exists
+            var isExists = IsExistLack1Data(input);
+            if (!isExists.Success) return new Lack1CreateOutput()
+            {
+                Success = isExists.Success,
+                ErrorCode = isExists.ErrorCode,
+                ErrorMessage = isExists.ErrorMessage,
+                Id = null,
+                Lack1Number = string.Empty
+            };
 
             var rc = new Lack1CreateOutput()
             {
@@ -210,6 +223,7 @@ namespace Sampoerna.EMS.BLL
 
         public SaveLack1Output SaveEdit(Lack1SaveEditInput input)
         {
+            bool isModified = false;
             var rc = new SaveLack1Output()
             {
                 Success = false
@@ -252,7 +266,7 @@ namespace Sampoerna.EMS.BLL
                 destination.Lack1Id = dbData.LACK1_ID;
                 destination.Lack1Number = dbData.LACK1_NUMBER;
                 destination.Lack1Level = dbData.LACK1_LEVEL;
-                destination.SubmissionDate = origin.SubmissionDate;
+                destination.SubmissionDate = input.Detail.SubmissionDate;
                 destination.SupplierCompanyName = origin.SupplierCompanyName;
                 destination.SupplierCompanyCode = origin.SupplierCompanyCode;
                 destination.WasteQty = input.Detail.WasteQty;
@@ -265,7 +279,7 @@ namespace Sampoerna.EMS.BLL
                 destination.GovStatus = input.Detail.GovStatus;
                 destination.DecreeDate = input.Detail.DecreeDate;
 
-                SetChangesHistory(origin, destination, input.UserId);
+                isModified = SetChangesHistory(origin, destination, input.UserId);
 
                 //delete first
                 _lack1TrackingService.DeleteByLack1Id(dbData.LACK1_ID);
@@ -311,7 +325,7 @@ namespace Sampoerna.EMS.BLL
             {
                 var origin = Mapper.Map<Lack1DetailsDto>(dbData);
 
-                SetChangesHistory(origin, input.Detail, input.UserId);
+                isModified = SetChangesHistory(origin, input.Detail, input.UserId);
             }
             
             dbData.SUBMISSION_DATE = input.Detail.SubmissionDate;
@@ -336,6 +350,7 @@ namespace Sampoerna.EMS.BLL
             rc.Success = true;
             rc.Id = dbData.LACK1_ID;
             rc.Lack1Number = dbData.LACK1_NUMBER;
+            rc.IsModifiedHistory = isModified;
 
             //set workflow history
             var getUserRole = _poaBll.GetUserRole(input.UserId);
@@ -411,7 +426,10 @@ namespace Sampoerna.EMS.BLL
             dbData.ACTION_DATE = DateTime.Now;
             dbData.FORM_TYPE_ID = Enums.FormType.LACK1;
 
-            _workflowHistoryBll.Save(dbData);
+            if (!input.IsModified && input.ActionType == Enums.ActionType.Submit)
+                _workflowHistoryBll.UpdateHistoryModifiedForSubmit(dbData);
+            else
+                _workflowHistoryBll.Save(dbData);
 
         }
 
@@ -461,39 +479,40 @@ namespace Sampoerna.EMS.BLL
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-                var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-                {
-                    CreatedUser = dbData.CREATED_BY,
-                    CurrentUser = input.UserId,
-                    DocumentStatus = dbData.STATUS,
-                    UserRole = input.UserRole,
-                    NppbkcId = dbData.NPPBKC_ID,
-                    DocumentNumber = dbData.LACK1_NUMBER
-                });
-
-                if (!isOperationAllow)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
                 //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
                 //dbData.APPROVED_BY_POA = input.UserId;
                 //dbData.APPROVED_DATE_POA = DateTime.Now;
                 
                 if (input.UserRole == Enums.UserRole.POA)
                 {
-                    //Add Changes
-                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
-                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    dbData.APPROVED_BY_POA = input.UserId;
-                    dbData.APPROVED_DATE_POA = DateTime.Now;
+                    if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+                    {
+                        //Add Changes
+                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        dbData.APPROVED_BY_POA = input.UserId;
+                        dbData.APPROVED_DATE_POA = DateTime.Now;
+                    }
+                    else
+                    {
+                        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                    }
                 }
                 else
                 {
-                    //Add Changes
-                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                    dbData.APPROVED_BY_MANAGER = input.UserId;
-                    dbData.APPROVED_DATE_MANAGER = DateTime.Now;
-
+                    //manager
+                    if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                    {
+                        //Add Changes
+                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        dbData.APPROVED_BY_MANAGER = input.UserId;
+                        dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+                    }
+                    else
+                    {
+                        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                    }
                 }
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
@@ -1039,8 +1058,9 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
-        private void SetChangesHistory(Lack1DetailsDto origin, Lack1DetailsDto data, string userId)
+        private bool SetChangesHistory(Lack1DetailsDto origin, Lack1DetailsDto data, string userId)
         {
+            var rc = false;
             var changesData = new Dictionary<string, bool>
             {
                 { "BUKRS", origin.Bukrs == data.Bukrs },
@@ -1166,9 +1186,10 @@ namespace Sampoerna.EMS.BLL
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);
+                    rc = true;
                 }
             }
-
+            return rc;
         }
 
         private string SetDisplayPbck1DecreeDate(IEnumerable<MONTH> months, DateTime dt)
@@ -1186,17 +1207,39 @@ namespace Sampoerna.EMS.BLL
             return day + " " + monthName + " " + year;
         }
 
-        private Lack1GeneratedOutput GenerateLack1Data(Lack1GenerateDataParamInput input)
+        private Lack1GeneratedOutput ValidationOnGenerateLack1Data(ref Lack1GenerateDataParamInput input)
         {
-            var oReturn = new Lack1GeneratedOutput()
+
+            #region Validation
+
+            //Check Excisable Group Type if exists
+            var checkExcisableGroupType = _exGroupTypeService.GetGroupTypeDetailByGoodsType(input.ExcisableGoodsType);
+            if (checkExcisableGroupType == null)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound),
+                    Data = null
+                };
+            }
+
+            if (checkExcisableGroupType.EX_GROUP_TYPE_ID != null)
+                input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
+
+            #endregion
+
+            return new Lack1GeneratedOutput()
             {
                 Success = true,
                 ErrorCode = string.Empty,
                 ErrorMessage = string.Empty
             };
+        }
 
-            #region Validation
-
+        private Lack1GeneratedOutput IsExistLack1Data(Lack1GenerateDataParamInput input)
+        {
             //check if already exists with same selection criteria
             var lack1Check = _lack1Service.GetBySelectionCriteria(new Lack1GetBySelectionCriteriaParamInput()
             {
@@ -1206,7 +1249,8 @@ namespace Sampoerna.EMS.BLL
                 ReceivingPlantId = input.ReceivedPlantId,
                 SupplierPlantId = input.SupplierPlantId,
                 PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear
+                PeriodYear = input.PeriodYear,
+                Lack1Level = input.Lack1Level
             });
 
             if (input.IsCreateNew)
@@ -1238,23 +1282,27 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            //Check Excisable Group Type if exists
-            var checkExcisableGroupType = _exGroupTypeService.GetGroupTypeDetailByGoodsType(input.ExcisableGoodsType);
-            if (checkExcisableGroupType == null)
+            return new Lack1GeneratedOutput()
             {
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound),
-                    Data = null
-                };
-            }
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
+        }
 
-            #endregion
+        private Lack1GeneratedOutput GenerateLack1Data(Lack1GenerateDataParamInput input)
+        {
 
-            if (checkExcisableGroupType.EX_GROUP_TYPE_ID != null)
-                input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
+            var outValidation = ValidationOnGenerateLack1Data(ref input);
+
+            if (!outValidation.Success) return outValidation;
+
+            var oReturn = new Lack1GeneratedOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
 
             var rc = new Lack1GeneratedDto
             {
@@ -1392,7 +1440,8 @@ namespace Sampoerna.EMS.BLL
         {
 
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
-            ck4CItemInput.IsHigherFromApproved = true;
+            ck4CItemInput.IsHigherFromApproved = false;
+            ck4CItemInput.IsCompletedOnly = true;
             var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
 
             var prodTypeData = _prodTypeService.GetAll();
