@@ -50,7 +50,14 @@
                                         <div class="row">
                                             <label class="col-md-4">Plant</label>
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.SourcePlantId, new { @disabled = false, @class = "form-control" })
+                                                @if (Model.IsCk5PortToImporter && Model.IsDomesticAlcohol)
+                                                {
+                                                    @Html.TextBoxFor(model => model.SourcePlantName, new { @disabled = false, @class = "form-control" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(model => model.SourcePlantId, new { @disabled = false, @class = "form-control" })
+                                                }
                                             </div>
                                         </div>
                                     </div>

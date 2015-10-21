@@ -365,6 +365,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                var listProduction = new List<ProductionUploadItems>();
+
+                //check validation
                 foreach (var item in modelDto.UploadItems)
                 {
                     var company = _companyBll.GetById(item.CompanyCode);
@@ -384,7 +387,6 @@ namespace Sampoerna.EMS.Website.Controllers
                         item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
                         item.Qty = Convert.ToString(Convert.ToDecimal(item.Qty) * 1000);
                     }
-
 
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
@@ -408,10 +410,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         return RedirectToAction("UploadManualProduction");
                     }
 
-                    _productionBll.SaveUpload(item, CurrentUser.USER_ID);
-                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                       );
+                    listProduction.Add(item);
                 }
+
+                //do save
+                foreach (var data in listProduction)
+                {
+                    _productionBll.SaveUpload(data, CurrentUser.USER_ID);
+                }
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
             }
 

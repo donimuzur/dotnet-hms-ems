@@ -488,7 +488,15 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId, string sourceNppbkcId, string destPlantId, DateTime submissionDate, string goodTypeGroupId, Enums.CK5Type ck5Type)
         {
             //var dbPlantSource = _plantBll.GetT001ById(sourcePlantId);
-            var dbPlantDest = _plantBll.GetT001WById(destPlantId);
+            T001WDto dbPlantDest = null;
+            if (ck5Type == Enums.CK5Type.PortToImporter)
+            {
+                dbPlantDest = _plantBll.GetT001WByIdImport(destPlantId);
+            }
+            else
+            {
+                dbPlantDest = _plantBll.GetT001WById(destPlantId);
+            }
             var model = Mapper.Map<CK5PlantModel>(dbPlantDest);
 
             int? goodtypeenum = null;
@@ -499,6 +507,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (ck5Type == Enums.CK5Type.PortToImporter)
             {
                 destNppbkcId = dbPlantDest.NPPBKC_IMPORT_ID;
+                model.NPPBCK_ID = destNppbkcId;
             }
 
             if (string.IsNullOrEmpty(goodTypeGroupId))
@@ -635,7 +644,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                 if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol ||
                                     model.Ck5Type == Enums.CK5Type.PortToImporter)
                                 {
-                                    output = _ck5Bll.GetQuotaRemainAndDatePbck1ItemExternal(model.SourcePlantId,
+                                    output = _ck5Bll.GetQuotaRemainAndDatePbck1ItemExternal(model.SourcePlantName,
                                     model.SourceNppbkcId,
                                     model.SubmissionDate.Value, model.DestNppbkcId, (int)model.GoodType);
                                 }
@@ -652,9 +661,9 @@ namespace Sampoerna.EMS.Website.Controllers
                             }
                         }
 
-
+                        
                         var saveResult = SaveCk5ToDatabase(model);
-
+                        
                         if (model.Ck5Type == Enums.CK5Type.MarketReturn)
                             AddMessageInfo("Success create CK-5 Market Return", Enums.MessageInfoType.Success);
                         else
@@ -693,6 +702,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new CK5FormViewModel();
+            model.SourcePlantId = plantId;
             if (data != null)
             {
                 foreach (var datarow in data.DataRows)
@@ -814,7 +824,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
                     model.IsDomesticAlcohol = true;
-                    
+
+                }
+                else if (model.Ck5Type == Enums.CK5Type.PortToImporter)
+                {
+                    model.IsCk5PortToImporter = true;
                 }
 
 
@@ -836,8 +850,15 @@ namespace Sampoerna.EMS.Website.Controllers
                         model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
                         //
                         //decimal currentCk5 = output.QtyCk5;//- model.GrandTotalEx;
+                        if (output.QtyCk5 == 0)
+                        {
+                            model.Ck5TotalExciseable = "0";
+                        }
+                        else
+                        {
+                            model.Ck5TotalExciseable = (output.QtyCk5 - model.GrandTotalEx).ToString();
+                        }
 
-                        model.Ck5TotalExciseable = (output.QtyCk5 - model.GrandTotalEx).ToString();
                         model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
 
                         model.PbckUom = output.PbckUom;
@@ -1017,7 +1038,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentNumber = model.SubmissionNumber;
                 input.NppbkcId = model.SourceNppbkcId;
                 if (model.Ck5Type == Enums.CK5Type.PortToImporter)
+                {
                     input.NppbkcId = model.DestNppbkcId;
+                    model.IsCk5PortToImporter = true;
+                }
+                    
 
                 input.PoaApprove = ck5Details.Ck5Dto.APPROVED_BY_POA;
 
@@ -1047,7 +1072,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
                         model.Ck5Type != Enums.CK5Type.Manual)
                     {
                         var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);

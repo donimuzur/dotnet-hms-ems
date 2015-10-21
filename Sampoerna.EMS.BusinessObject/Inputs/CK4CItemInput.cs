@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ReceivedPlantId { get; set; }
         public Enums.Lack1Level? Lack1Level { get; set; }
         public bool IsHigherFromApproved { get; set; }
+        public bool IsCompletedOnly { get; set; }
         public List<string> MaterialIdList { get; set; }
     }
 }

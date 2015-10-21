@@ -303,6 +303,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                     return RedirectToAction("ListByPlant");
                 }
+                AddMessageInfo("Save failed : " + saveOutput.ErrorMessage, Enums.MessageInfoType.Info);
+                return CreateInitial(model);
             }
             catch (DbEntityValidationException ex)
             {
@@ -668,7 +670,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (isSubmit)
                     {
-                        Lack1Workflow(model.Lack1Id, Enums.ActionType.Submit, string.Empty);
+                        Lack1Workflow(model.Lack1Id, Enums.ActionType.Submit, string.Empty, saveResult.IsModifiedHistory);
                         AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
                         return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
                     }
@@ -944,7 +946,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
-        private void Lack1Workflow(int id, Enums.ActionType actionType, string comment)
+        private void Lack1Workflow(int id, Enums.ActionType actionType, string comment, bool isModified = false)
         {
             var input = new Lack1WorkflowDocumentInput()
             {
@@ -952,7 +954,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 UserId = CurrentUser.USER_ID,
                 UserRole = CurrentUser.UserRole,
                 ActionType = actionType,
-                Comment = comment
+                Comment = comment,
+                IsModified = isModified
             };
 
             _lack1Bll.Lack1Workflow(input);
