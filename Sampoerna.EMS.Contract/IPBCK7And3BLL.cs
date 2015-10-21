@@ -67,5 +67,10 @@ namespace Sampoerna.EMS.Contract
         List<GetListFaCodeByPlantOutput> GetListFaCodeByPlant(string plantId);
 
         GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId, string faCode);
+
+        Pbck73PrintOutDto GetPbck7PrintOutData(int pbck7Id);
+
+        Pbck73PrintOutDto GetPbck3PrintOutData(int pbck3Id);
+
     }
 }

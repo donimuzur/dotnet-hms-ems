@@ -221,6 +221,34 @@ namespace Sampoerna.EMS.BLL
               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
               .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
               ;
+
+            Mapper.CreateMap<PBCK7_ITEM, Pbck73ItemPrintOutDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.ProdTypeAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
+                .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.BRAND_CE))
+                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.PBCK7_QTY))
+                .ForMember(dest => dest.SeriesValue, opt => opt.MapFrom(src => src.SERIES_VALUE))
+                .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE))
+                .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+                .ForMember(dest => dest.ExciseValue, opt => opt.MapFrom(src => src.EXCISE_VALUE))
+                ;
+
+            Mapper.CreateMap<PBCK7, Pbck73PrintOutDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PbckId, opt => opt.MapFrom(src => src.PBCK7_ID))
+                .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PBCK7_NUMBER))
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => Mapper.Map<List<Pbck73ItemPrintOutDto>>(src.PBCK7_ITEM)))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC))
+                .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => src.DOCUMENT_TYPE))
+                .ForMember(dest => dest.ExecDateFrom, opt => opt.MapFrom(src => src.EXEC_DATE_FROM))
+                .ForMember(dest => dest.ExecDateTo, opt => opt.MapFrom(src => src.EXEC_DATE_TO))
+                ;
+
+            Mapper.CreateMap<PBCK3, Pbck73PrintOutDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PbckId, opt => opt.MapFrom(src => src.PBCK3_ID))
+                .ForMember(dest => dest.PbckNumber, opt => opt.MapFrom(src => src.PBCK3_NUMBER))
+                ;
+
         }
     }
 }
