@@ -1,8 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.IO;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using CrystalDecisions.CrystalReports.Engine;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Ajax.Utilities;
@@ -289,7 +287,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model = InitEditList(model);
             model.IsCreateNew = false;
 
-            model.ControllerAction = model.Status == Enums.DocumentStatus.WaitingGovApproval ? "GovApproveDocument" : "Edit";
+            model.ControllerAction = model.Status == Enums.DocumentStatus.WaitingGovApproval || model.Status == Enums.DocumentStatus.Completed ? "GovApproveDocument" : "Edit";
 
             return View(model);
         }
@@ -330,7 +328,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (isSubmit)
                     {
-                        Lack2Workflow(model.Lack2Id, Enums.ActionType.Submit, string.Empty);
+                        Lack2Workflow(model.Lack2Id, Enums.ActionType.Submit, string.Empty, saveResult.IsModifiedHistory);
                         AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
                         return RedirectToAction("Detail", "Lack2", new {id = model.Lack2Id});
                     }
@@ -440,7 +438,8 @@ namespace Sampoerna.EMS.Website.Controllers
         private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
         {
             bool isAllow = CurrentUser.USER_ID == userId;
-            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected))
+            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected 
+                || status == Enums.DocumentStatus.WaitingGovApproval || status == Enums.DocumentStatus.Completed))
             {
                 isAllow = false;
             }
@@ -505,7 +504,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                input.ManagerApprove = curUser.USER_ID;
+                input.ManagerApprove = lack2Data.ApprovedByManager;
                 model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
 
@@ -1634,7 +1633,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region -------------- workflow --------------
 
-        private void Lack2Workflow(int id, Enums.ActionType actionType, string comment)
+        private void Lack2Workflow(int id, Enums.ActionType actionType, string comment, bool isModified = false)
         {
             var input = new Lack2WorkflowDocumentInput()
             {
@@ -1642,7 +1641,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 UserId = CurrentUser.USER_ID,
                 UserRole = CurrentUser.UserRole,
                 ActionType = actionType,
-                Comment = comment
+                Comment = comment,
+                IsModified = isModified
             };
 
             _lack2Bll.Lack2Workflow(input);
@@ -2056,7 +2056,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-
+        
     }
 
 }

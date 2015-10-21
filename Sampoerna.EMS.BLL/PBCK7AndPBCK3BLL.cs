@@ -54,6 +54,7 @@ namespace Sampoerna.EMS.BLL
         private IPbck3Services _pbck3Services;
         private CK2Services _ck2Services;
         private IBack3Services _back3Services;
+        private IWorkflowBLL _workflowBll;
 
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -85,6 +86,7 @@ namespace Sampoerna.EMS.BLL
             _pbck3Services = new Pbck3Services(_uow, _logger);
             _ck2Services = new CK2Services(_uow, _logger);
             _back3Services = new Back3Services(_uow, _logger);
+            _workflowBll = new WorkflowBLL(_uow, _logger);
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -1384,9 +1386,22 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+            //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+            //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            {
+                CreatedUser = dbData.CREATED_BY,
+                CurrentUser = input.UserId,
+                DocumentStatus = dbData.STATUS,
+                UserRole = input.UserRole,
+                NppbkcId = dbData.NPPBKC,
+                DocumentNumber = dbData.PBCK7_NUMBER
+            });
+
+            if (!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
             string newValue = "";
@@ -1943,9 +1958,29 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+            //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+            //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            string nppbkcId = "";
+            var outputResult = GetPbck3DetailsById(input.DocumentId);
+            if (outputResult.Pbck3CompositeDto.FromPbck7)
+                nppbkcId = outputResult.Pbck3CompositeDto.Pbck7Composite.NppbkcId;
+            else
+                nppbkcId = outputResult.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            {
+                CreatedUser = dbData.CREATED_BY,
+                CurrentUser = input.UserId,
+                DocumentStatus = dbData.STATUS.HasValue ? dbData.STATUS.Value : Enums.DocumentStatus.Draft,
+                UserRole = input.UserRole,
+                NppbkcId = nppbkcId,
+                DocumentNumber = dbData.PBCK3_NUMBER
+            });
+
+            if (!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
             string newValue = "";
@@ -2470,9 +2505,51 @@ namespace Sampoerna.EMS.BLL
             return rc;
         }
 
-       
 
 
+        public List<GetListFaCodeByPlantOutput> GetListFaCodeByPlant(string plantId)
+        {
+            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+
+            return Mapper.Map<List<GetListFaCodeByPlantOutput>>(dbBrand);
+        }
+
+        public GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId , string faCode)
+        {
+            var result = new GetBrandItemsByPlantAndFaCodeOutput();
+            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, faCode);
+            if (dbBrand == null)
+            {
+                result.PlantId = plantId;
+                result.FaCode = faCode;
+                result.ProductAlias = "";
+                result.BrandName = "";
+                result.BrandContent = "0";
+                result.Hje = "0";
+                result.Tariff = "0";
+                result.SeriesValue = "";
+            }
+            else
+            {
+
+                if (dbBrand.ZAIDM_EX_PRODTYP != null)
+                    result.ProductAlias = dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
+
+
+                result.BrandName = dbBrand.BRAND_CE;
+                if (dbBrand.ZAIDM_EX_SERIES != null)
+                    result.SeriesValue = dbBrand.ZAIDM_EX_SERIES.SERIES_CODE;
+
+                result.BrandContent = ConvertHelper.ConvertToDecimalOrZero(dbBrand.BRAND_CONTENT).ToString();
+
+                result.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value.ToString() : "0";
+                result.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value.ToString() : "0";
+                
+
+            }
+
+            return result;
+        }
     }
 
 

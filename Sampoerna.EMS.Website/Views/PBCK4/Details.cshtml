@@ -1,4 +1,5 @@
-﻿@using Sampoerna.EMS.Website.Helpers
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
 
 @using (Html.BeginForm(Model.ActionType, "PBCK4", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
@@ -21,7 +22,7 @@
                     }
                     else
                     {
-                        if (Model.AllowGovApproveAndReject)
+                        if (Model.AllowGovApproveAndReject || Model.DocumentStatus == Enums.DocumentStatus.Completed)
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
@@ -61,7 +62,8 @@
                         @Html.HiddenFor(model => model.NppbkcId)
                         @Html.HiddenFor(model => model.NppbkcDesc)
 
-                        @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+                        @if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+                            || Model.DocumentStatus == Enums.DocumentStatus.Completed)
                         {
                             @Html.HiddenFor(model => model.Pbck4Id)
                             
@@ -305,7 +307,8 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/Pbck4Script.js"></script>
-    @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+    @if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+        || Model.DocumentStatus == Enums.DocumentStatus.Completed)
     {
 
         <script src="~/Scripts/UploadExcel.js"></script>

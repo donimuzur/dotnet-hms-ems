@@ -13,5 +13,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string FILE_NAME { get; set; }
         public string FILE_PATH { get; set; }
         public int PBCK4_ID { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

@@ -54,6 +54,7 @@ namespace Sampoerna.EMS.BLL
         private IBack1Services _back1Services;
         private IPbck3Services _pbck3Services;
         private ILFA1BLL _lfa1Bll;
+        private IWorkflowBLL _workflowBll;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
@@ -91,6 +92,7 @@ namespace Sampoerna.EMS.BLL
             _back1Services = new Back1Services(_uow, _logger);
             _pbck3Services = new Pbck3Services(_uow,_logger);
             _lfa1Bll = new LFA1BLL(_uow, _logger);
+            _workflowBll = new WorkflowBLL(_uow, _logger);
         }
         
 
@@ -1330,9 +1332,27 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager)
+            //if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
+            //    dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
+            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            {
+                CreatedUser = dbData.CREATED_BY,
+                CurrentUser = input.UserId,
+                DocumentStatus = dbData.STATUS_ID,
+                UserRole = input.UserRole,
+                NppbkcId = nppbkcId,
+                DocumentNumber = dbData.SUBMISSION_NUMBER
+            });
+
+            if (!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
             string newValue = "";
