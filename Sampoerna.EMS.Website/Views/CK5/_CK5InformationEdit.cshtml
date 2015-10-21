@@ -51,16 +51,21 @@
                                         <div class="row">
                                             <label class="col-md-4">Plant<span class="red">*</span></label>
                                             <div class="col-md-8">
-
-                                                @if (!Model.IsCk5ImporterToPlant)
+                                                @if (Model.IsCk5PortToImporter || Model.IsDomesticAlcohol)
                                                 {
                                                     @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
+
                                                 }
-                                                else
+                                                else if (!Model.IsCk5ImporterToPlant)
                                                 {
                                                     @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control", style = "display : none" })
                                                     var sourcePlantText = Model.SourcePlantId + " - " + Model.SourcePlantName;
                                                     @Html.TextBox("plantname", sourcePlantText, new { @class = "form-control", @disabled = "true" })
+
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
                                                 }
 
                                             </div>

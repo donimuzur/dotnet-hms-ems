@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -13,10 +11,7 @@ using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Spreadsheet;
-using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -27,6 +22,7 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PBCK7AndPBCK3;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
@@ -103,7 +99,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             // ReSharper disable once PossibleInvalidOperationException
-            var pbck3 = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(id);
+            //var pbck3 = _pbck7Pbck3Bll.GetPbck3ByPbck7Id(id);
+            var pbck3 = _pbck7Pbck3Bll.GetPbck3ById(id);
 
             //add to print history
             var input = new PrintHistoryDto()
@@ -289,6 +286,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (nppbkc != null)
             {
                 drow["TextTo"] = nppbkc.TEXT_TO;
+                drow["NppbkcCity"] = nppbkc.CITY;
                 var vendor = _lfa1Bll.GetById(nppbkc.KPPBC_ID);
                 if (vendor != null)
                 {
@@ -296,31 +294,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
             drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType).ToLower();
-            drow["NppbkcCity"] = nppbkc.CITY;
             drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMMM yyyy") : pbck3Date.ToString("dd MMMM yyyy");
 
             dt.Rows.Add(drow);
 
             var dtDetail = dsPbck7.Tables[1];
-            var totalPbck7Qty = pbck7.UploadItems.Sum(d => d.Pbck7Qty.HasValue ? d.Pbck7Qty.Value : 0);
-            var totalExciseValue = pbck7.UploadItems.Sum(d => d.ExciseValue.HasValue ? d.ExciseValue.Value : 0);
-            foreach (var item in pbck7.UploadItems)
-            {
-                DataRow drowDetail;
-                drowDetail = dtDetail.NewRow();
-                drowDetail[0] = item.ProdTypeAlias;
-                drowDetail[1] = item.Brand;
-                drowDetail[2] = item.Content.HasValue ? item.Content.Value.ToString("N2") : "-";
-                drowDetail[3] = item.Pbck7Qty.HasValue ? item.Pbck7Qty.Value.ToString("N2") : "-";
-                drowDetail[4] = item.SeriesValue;
-                drowDetail[5] = item.Hje.HasValue ? item.Hje.Value.ToString("N2") : "-";
-                drowDetail[6] = item.Tariff.HasValue ? item.Tariff.Value.ToString("N2") : "-";
-                drowDetail[7] = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
-                drowDetail[8] = totalExciseValue.ToString("N2");
-                drowDetail[9] = totalPbck7Qty.ToString("N2");
-                dtDetail.Rows.Add(drowDetail);
 
+
+            if (pbck7.UploadItems != null && pbck7.UploadItems.Count > 0)
+            {
+                var totalPbck7Qty = pbck7.UploadItems.Sum(d => d.Pbck7Qty.HasValue ? d.Pbck7Qty.Value : 0);
+                var totalExciseValue = pbck7.UploadItems.Sum(d => d.ExciseValue.HasValue ? d.ExciseValue.Value : 0);
+                foreach (var item in pbck7.UploadItems)
+                {
+                    DataRow drowDetail;
+                    drowDetail = dtDetail.NewRow();
+                    drowDetail[0] = item.ProdTypeAlias;
+                    drowDetail[1] = item.Brand;
+                    drowDetail[2] = item.Content.HasValue ? item.Content.Value.ToString("N2") : "-";
+                    drowDetail[3] = item.Pbck7Qty.HasValue ? item.Pbck7Qty.Value.ToString("N2") : "-";
+                    drowDetail[4] = item.SeriesValue;
+                    drowDetail[5] = item.Hje.HasValue ? item.Hje.Value.ToString("N2") : "-";
+                    drowDetail[6] = item.Tariff.HasValue ? item.Tariff.Value.ToString("N2") : "-";
+                    drowDetail[7] = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
+                    drowDetail[8] = totalExciseValue.ToString("N2");
+                    drowDetail[9] = totalPbck7Qty.ToString("N2");
+                    dtDetail.Rows.Add(drowDetail);
+
+                }
             }
+            
             // object of data row 
 
             ReportClass rpt = new ReportClass();
@@ -345,29 +348,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (System.IO.File.Exists(Server.MapPath(imagePath)))
                 {
                     fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    // initialise the binary reader from file streamobject 
+                    br = new BinaryReader(fs);
+                    // define the byte array of filelength 
+                    imgbyte = new byte[fs.Length + 1];
+                    // read the bytes from the binary reader 
+                    imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+
+                    br.Close();
+                    // close the binary reader 
+                    fs.Close();
+                    // close the file stream 
                 }
-                else
-                {
-                    // if photo does not exist show the nophoto.jpg file 
-                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                }
-                // initialise the binary reader from file streamobject 
-                br = new BinaryReader(fs);
-                // define the byte array of filelength 
-                imgbyte = new byte[fs.Length + 1];
-                // read the bytes from the binary reader 
-                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
-
-
-                br.Close();
-                // close the binary reader 
-                fs.Close();
-                // close the file stream 
-
-
-
-
-
             }
             catch (Exception ex)
             {
@@ -710,6 +703,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.Pbck7Number;
                 input.NppbkcId = model.NppbkcId;
+                input.ManagerApprove = model.ApprovedByManager;
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
@@ -1875,10 +1869,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CurrentMenu = PageInfo;
 
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
-                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                
                 model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
 
+                if (existingData.Pbck3CompositeDto.FromPbck7)
+                    model.WorkflowHistoryPbck7 =
+                        Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                else
+                {
+                    model.Ck5FormViewModel =
+                        Mapper.Map<CK5FormViewModel>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto);
 
+                    model.Ck5FormViewModel.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5MaterialDto);
+
+                    model.Ck5FormViewModel.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.ListWorkflowHistorys);
+
+                }
                 return View("EditPbck3", model);
             }
             catch (Exception ex)
@@ -2006,21 +2012,34 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = Mapper.Map<Pbck3ViewModel>(existingData.Pbck3CompositeDto);
 
 
-                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                //model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
 
                 model.MainMenu = _mainMenu;
                 model.CurrentMenu = PageInfo;
 
-
-                //  model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
-
-                //var changesHistoryPbck = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK7, id.ToString());
-                //model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changesHistoryPbck);
-
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
-                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                
                 model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(existingData.Pbck3CompositeDto.PBCK3_NUMBER));
+                string nppbkcId = "";
 
+                if (model.FromPbck7)
+                {
+                    model.WorkflowHistoryPbck7 =
+                        Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                    nppbkcId = model.NppbkcId;
+                }
+                else
+                {
+                    model.Ck5FormViewModel =
+                      Mapper.Map<CK5FormViewModel>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto);
+
+                    model.Ck5FormViewModel.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5MaterialDto);
+
+                    model.Ck5FormViewModel.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.ListWorkflowHistorys);
+
+                    nppbkcId = model.Ck5FormViewModel.SourceNppbkcId;
+                }
 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput();
@@ -2031,8 +2050,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUser = CurrentUser.USER_ID;
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.Pbck3Number;
-                input.NppbkcId = model.NppbkcId;
-
+                input.NppbkcId = nppbkcId;
+                input.ManagerApprove = model.APPROVED_BY_MANAGER;
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
@@ -2043,7 +2062,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
-                //model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
 
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocumentPbck3";
@@ -2239,6 +2258,116 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
             return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
+        }
+
+        [EncryptedParameter]
+        public FileResult PrintOut(int id)
+        {
+            return PrintPreview(id, true, "PBCK-7");
+        }
+
+        [EncryptedParameter]
+        public FileResult PrintOutPbck3(int id)
+        {
+            return PrintPreview(id, false, "PBCK-3");
+        }
+
+        #region "Input Manual
+
+        [HttpPost]
+        public JsonResult GetListFaCode(string plantId)
+        {
+
+            var brandOutput = _pbck7Pbck3Bll.GetListFaCodeByPlant(plantId);
+           
+            return Json(brandOutput);
+        }
+
+        [HttpPost]
+        public JsonResult GetBrandItems(string plantId, string faCode)
+        {
+
+            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode);
+            
+            return Json(brandOutput);
+        }
+
+        #endregion
+
+        public void ExportXlsPbck3(int pbckId)
+        {
+            
+            var pathFile = CreateXlsFilePbck3(pbckId);
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsFilePbck3(int pbckId)
+        {
+            var slDocument = new SLDocument();
+
+            //todo check
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK3, pbckId.ToString());
+
+            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+
+            int iRow = 1;
+
+            //create header
+            slDocument.SetCellValue(iRow, 1, "DATE");
+            slDocument.SetCellValue(iRow, 2, "FIELD");
+            slDocument.SetCellValue(iRow, 3, "OLD VALUE");
+            slDocument.SetCellValue(iRow, 4, "NEW VALUE");
+            slDocument.SetCellValue(iRow, 5, "USER");
+
+            iRow++;
+
+            foreach (var changesHistoryItemModel in model)
+            {
+                slDocument.SetCellValue(iRow, 1,
+                    changesHistoryItemModel.MODIFIED_DATE.HasValue
+                        ? changesHistoryItemModel.MODIFIED_DATE.Value.ToString("dd MMM yyyy")
+                        : string.Empty);
+                slDocument.SetCellValue(iRow, 2, changesHistoryItemModel.FIELD_NAME);
+                slDocument.SetCellValue(iRow, 3, changesHistoryItemModel.OLD_VALUE);
+                slDocument.SetCellValue(iRow, 4, changesHistoryItemModel.NEW_VALUE);
+                slDocument.SetCellValue(iRow, 5, changesHistoryItemModel.USERNAME);
+
+                iRow++;
+            }
+
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //SLStyle styleHeader = slDocument.CreateStyle();
+            //styleHeader.Font.Bold = true;
+
+            slDocument.AutoFitColumn(1, 5);
+            slDocument.SetCellStyle(1, 1, iRow - 1, 5, styleBorder);
+            //slDocument.SetCellStyle(1, 1, 1, iColumn - 1, styleHeader);
+
+            var fileName = "PBCK3" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath("~/Content/upload/"), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
         }
 
     }

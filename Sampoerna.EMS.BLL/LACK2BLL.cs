@@ -85,6 +85,10 @@ namespace Sampoerna.EMS.BLL
                 {
                     input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
                 }
+                else
+                {
+                    input.NppbkcList = new List<string>();
+                }
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
@@ -220,6 +224,7 @@ namespace Sampoerna.EMS.BLL
 
         public Lack2SaveEditOutput SaveEdit(Lack2SaveEditInput input)
         {
+            bool isModified = false;
             var rc = new Lack2SaveEditOutput()
             {
                 Success = false
@@ -282,7 +287,7 @@ namespace Sampoerna.EMS.BLL
                 destination.Lack2Id = dbData.LACK2_ID;
                 destination.Lack2Number = dbData.LACK2_NUMBER;
                 
-                SetChangesHistory(origin, destination, input.UserId);
+                isModified = SetChangesHistory(origin, destination, input.UserId);
 
                 //delete first
                 _lack2ItemService.DeleteDataList(dbData.LACK2_ITEM);
@@ -299,7 +304,7 @@ namespace Sampoerna.EMS.BLL
             {
                 var origin = Mapper.Map<Lack2Dto>(dbData);
                 var destination = Mapper.Map<Lack2Dto>(input);
-                SetChangesHistory(origin, destination, input.UserId);
+                isModified = SetChangesHistory(origin, destination, input.UserId);
             }
             
             dbData.SUBMISSION_DATE = input.SubmissionDate;
@@ -316,12 +321,19 @@ namespace Sampoerna.EMS.BLL
             dbData.EX_GOOD_TYP = input.ExcisableGoodsType;
             dbData.EX_TYP_DESC = input.ExcisableGoodsTypeDesc;
 
+            if (dbData.STATUS == Enums.DocumentStatus.Rejected)
+            {
+                //add history for changes status from rejected to draft
+                WorkflowStatusAddChanges(new Lack2WorkflowDocumentInput(){ DocumentId = dbData.LACK2_ID, UserId = input.UserId }, dbData.STATUS, Enums.DocumentStatus.Draft);
+                dbData.STATUS = Enums.DocumentStatus.Draft;
+            }
+            
             _uow.SaveChanges();
 
             rc.Success = true;
             rc.Id = dbData.LACK2_ID;
             rc.Lack2Number = dbData.LACK2_NUMBER;
-
+            rc.IsModifiedHistory = isModified;
             //set workflow history
             var getUserRole = _poaBll.GetUserRole(input.UserId);
 
@@ -342,6 +354,11 @@ namespace Sampoerna.EMS.BLL
         }
         
         #region workflow
+
+        //private void Lack2WorkflowAfterCompleted(Lack2WorkflowDocumentInput input)
+        //{
+             
+        //}
 
         public void Lack2Workflow(Lack2WorkflowDocumentInput input)
         {
@@ -384,7 +401,10 @@ namespace Sampoerna.EMS.BLL
             dbData.ACTION_DATE = DateTime.Now;
             dbData.FORM_TYPE_ID = Enums.FormType.LACK2;
 
-            _workflowHistoryBll.Save(dbData);
+            if (!input.IsModified && input.ActionType == Enums.ActionType.Submit)
+                _workflowHistoryBll.UpdateHistoryModifiedForSubmit(dbData);
+            else
+                _workflowHistoryBll.Save(dbData);
 
         }
 
@@ -454,10 +474,9 @@ namespace Sampoerna.EMS.BLL
                 //dbData.APPROVED_BY_POA = input.UserId;
                 //dbData.APPROVED_DATE_POA = DateTime.Now;
                 //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-
                 if (input.UserRole == Enums.UserRole.POA)
                 {
+                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
                     dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
                     //dbData.APPROVED_BY_POA = input.UserId;
                     //dbData.APPROVED_DATE_POA = DateTime.Now;
@@ -466,6 +485,7 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
+                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
                     dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
                     dbData.APPROVED_BY_MANAGER = input.UserId;
                     dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
@@ -493,14 +513,23 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
                 //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Draft);
-
-                //change back to draft
-                dbData.STATUS = Enums.DocumentStatus.Draft;
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
                 //todo ask
-                dbData.APPROVED_BY = null;
-                dbData.APPROVED_DATE = null;
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    //manager reject
+                    dbData.APPROVED_BY_MANAGER = null;
+                    dbData.APPROVED_BY_MANAGER_DATE = null;
+                }
+                else
+                {
+                    //poa reject
+                    dbData.APPROVED_BY = null;
+                    dbData.APPROVED_DATE = null;
+                }
+
+                dbData.STATUS = Enums.DocumentStatus.Rejected;
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
             }
@@ -594,15 +623,21 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
                 //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
-                dbData.STATUS = Enums.DocumentStatus.GovRejected;
+                
+                dbData.STATUS = Enums.DocumentStatus.Rejected;
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                //dbData.APPROVED_BY = input.UserId;
-                //dbData.APPROVED_DATE = DateTime.Now;
+                
+                //set to null
+                dbData.APPROVED_BY = null;
+                dbData.APPROVED_BY_MANAGER = null;
+                dbData.APPROVED_BY_MANAGER_DATE = null;
+                dbData.APPROVED_DATE = null;
+
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
@@ -1005,8 +1040,9 @@ namespace Sampoerna.EMS.BLL
             return rc;
         }
         
-        private void SetChangesHistory(Lack2Dto origin, Lack2Dto data, string userId)
+        private bool SetChangesHistory(Lack2Dto origin, Lack2Dto data, string userId)
         {
+            var rc = false;
             var changesData = new Dictionary<string, bool>
             {
                 { "Company Code", origin.Burks == data.Burks },
@@ -1088,8 +1124,10 @@ namespace Sampoerna.EMS.BLL
                             break;
                     }
                     _changesHistoryBll.AddHistory(changes);
+                    rc = true;
                 }
             }
+            return rc;
         }
 
         #endregion

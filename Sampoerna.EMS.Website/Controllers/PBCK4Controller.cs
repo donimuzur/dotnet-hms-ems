@@ -107,11 +107,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             Pbck4GetByParamInput input;
             List<Pbck4Dto> dbData;
+
             if (filter == null)
             {
                 //Get All
                 input = new Pbck4GetByParamInput();
                 input.IsCompletedDocument = isCompletedDocument;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
 
                 dbData = _pbck4Bll.GetPbck4ByParam(input);
                 return Mapper.Map<List<Pbck4Item>>(dbData);
@@ -121,6 +124,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             input = Mapper.Map<Pbck4GetByParamInput>(filter);
             input.IsCompletedDocument = isCompletedDocument;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             dbData = _pbck4Bll.GetPbck4ByParam(input);
             return Mapper.Map<List<Pbck4Item>>(dbData);
@@ -299,7 +304,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.Pbck4Number;
                 input.NppbkcId = model.NppbkcId;
-
+                input.ManagerApprove = model.APPROVED_BY_MANAGER;
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
@@ -321,8 +326,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocument";
-                //else if (model.AllowGiCreated)
-                //    model.ActionType = "CK5GICreated";
+                else if (model.DocumentStatus == Enums.DocumentStatus.Completed)
+                    model.ActionType = "UpdateUploadedFilefterCompleted";
                 //else if (model.AllowGrCreated)
                 //    model.ActionType = "CK5GRCreated";
 
@@ -671,6 +676,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         XmlPBCK4DataWriter rt = new XmlPBCK4DataWriter();
                         rt.CreatePbck4Xml(pbck4XmlDto);
+
+                        //send mail after that
+                        _pbck4Bll.SendMailCompletedPbck4Document(input);
                     }
 
                 }
@@ -762,8 +770,9 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var currentUserId = CurrentUser.USER_ID;
+                if (model.Pbck4FileUploadModelList == null)
+                    model.Pbck4FileUploadModelList = new List<Pbck4FileUploadViewModel>();
 
-                model.Pbck4FileUploadModelList = new List<Pbck4FileUploadViewModel>();
                 if (model.Pbck4FileUploadFileList != null)
                 {
                     foreach (var item in model.Pbck4FileUploadFileList)
@@ -778,7 +787,9 @@ namespace Sampoerna.EMS.Website.Controllers
                             {
                                 FILE_NAME = filenameCk5Check,
                                 FILE_PATH = SaveUploadedFile(item, model.Pbck4Id, "B"),
-                                DOC_TYPE = 1 //back1
+                                DOC_TYPE = 1, //back1,
+                                PBCK4_ID = model.Pbck4Id,
+                                IsDeleted = false
                             };
                             model.Pbck4FileUploadModelList.Add(pbck4UploadFile);
                         }
@@ -791,7 +802,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
                 }
 
-                model.Pbck4FileUploadModelList2 = new List<Pbck4FileUploadViewModel>();
+                if (model.Pbck4FileUploadModelList2 == null)
+                    model.Pbck4FileUploadModelList2 = new List<Pbck4FileUploadViewModel>();
+
                 if (model.Pbck4FileUploadFileList2 != null)
                 {
                     foreach (var item in model.Pbck4FileUploadFileList2)
@@ -806,7 +819,9 @@ namespace Sampoerna.EMS.Website.Controllers
                             {
                                 FILE_NAME = filenameCk5Check,
                                 FILE_PATH = SaveUploadedFile(item, model.Pbck4Id,"C"),
-                                DOC_TYPE = 2 //ck-3
+                                DOC_TYPE = 2 , //ck-3
+                                PBCK4_ID = model.Pbck4Id,
+                                IsDeleted = false
                             };
                             model.Pbck4FileUploadModelList2.Add(pbck4UploadFile);
                         }
@@ -826,6 +841,127 @@ namespace Sampoerna.EMS.Website.Controllers
                     AddMessageInfo("Success Gov PartialApproved Document", Enums.MessageInfoType.Success);
                 else if (model.GovStatus == Enums.DocumentStatusGov.Rejected)
                     AddMessageInfo("Success Gov Reject Document", Enums.MessageInfoType.Success);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+        }
+
+        [HttpPost]
+        public ActionResult UpdateUploadedFilefterCompleted(Pbck4FormViewModel model)
+        {
+         
+
+            try
+            {
+                var currentUserId = CurrentUser.USER_ID;
+                if (model.Pbck4FileUploadModelList == null)
+                    model.Pbck4FileUploadModelList = new List<Pbck4FileUploadViewModel>();
+
+                if (model.Pbck4FileUploadFileList != null)
+                {
+                    foreach (var item in model.Pbck4FileUploadFileList)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new Pbck4FileUploadViewModel
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck4Id, "B"),
+                                DOC_TYPE = 1, //back1,
+                                PBCK4_ID = model.Pbck4Id,
+                                IsDeleted = false
+                            };
+                            model.Pbck4FileUploadModelList.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+                else
+                {
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                }
+
+                bool ExistDocument = false;
+
+                foreach (var uploadModelList in model.Pbck4FileUploadModelList)
+                {
+                    if (uploadModelList.IsDeleted == false)
+                    {
+                        ExistDocument = true;
+                        break;
+                    }
+                }
+                if (!ExistDocument)
+                {
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                }
+
+                if (model.Pbck4FileUploadModelList2 == null)
+                    model.Pbck4FileUploadModelList2 = new List<Pbck4FileUploadViewModel>();
+
+                if (model.Pbck4FileUploadFileList2 != null)
+                {
+                    foreach (var item in model.Pbck4FileUploadFileList2)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new Pbck4FileUploadViewModel
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck4Id, "C"),
+                                DOC_TYPE = 2, //ck-3
+                                PBCK4_ID = model.Pbck4Id,
+                                IsDeleted = false
+                            };
+                            model.Pbck4FileUploadModelList2.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+                else
+                {
+                    AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                }
+
+                ExistDocument = false;
+
+                foreach (var uploadModelList in model.Pbck4FileUploadModelList2)
+                {
+                    if (uploadModelList.IsDeleted == false)
+                    {
+                        ExistDocument = true;
+                        break;
+                    }
+                }
+
+                if (!ExistDocument)
+                {
+                    AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                }
+
+                var pbckDocument = Mapper.Map<List<PBCK4_DOCUMENTDto>>(model.Pbck4FileUploadModelList);
+                pbckDocument.AddRange(Mapper.Map<List<PBCK4_DOCUMENTDto>>(model.Pbck4FileUploadModelList2));
+
+                _pbck4Bll.UpdateUploadedFileCompleted(pbckDocument);
+
+                AddMessageInfo("Success Update Document PBCK-4", Enums.MessageInfoType.Success);
+
 
             }
             catch (Exception ex)

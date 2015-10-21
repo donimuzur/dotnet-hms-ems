@@ -47,6 +47,7 @@ namespace Sampoerna.EMS.Website
                  .ForMember(dest => dest.Pbck3Id, opt => opt.MapFrom(src => src.Pbck3Id))
                  .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.Pbck3Number))
                  .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.Pbck7Number))
+                 .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.Ck5Number))
                
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbckId))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.Pbck3Date.HasValue ? src.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty))
@@ -93,7 +94,7 @@ namespace Sampoerna.EMS.Website
                  .ForMember(dest => dest.Pbck7GovStatus, opt => opt.MapFrom(src => src.Pbck7GovStatus))
                  .ForMember(dest => dest.Pbck7GovStatusDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Pbck7GovStatus)))
                  .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => Mapper.Map<List<Pbck7UploadViewModel>>(src.UploadItems)))
-                 
+                  
                   ;
 
             Mapper.CreateMap<Pbck7Pbck3CreateViewModel, Pbck7AndPbck3Dto>().IgnoreAllNonExisting()

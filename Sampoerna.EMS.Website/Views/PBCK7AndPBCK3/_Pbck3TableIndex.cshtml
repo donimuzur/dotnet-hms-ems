@@ -6,6 +6,7 @@
             <th class="toggle-row"> Filter </th>
             <th>PBCK-3 No</th>
             <th>PBCK-7 No</th>
+            <th>CK-5 No</th>
             <th>Reported Date</th>
             <th>NPPBKC</th>
             <th>Plant</th>
@@ -23,6 +24,7 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -31,13 +33,19 @@
             <tr>
                 <td class="action">
                     <a href="@Url.Action("DetailPbck3", "PBCK7AndPBCK3", new { id = item.Pbck3Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("EditPbck3", "PBCK7AndPBCK3", new { id = item.Pbck3Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    @if (!Model.IsCompletedDoc)
+                    {
+                        <a href="@Url.Action("EditPbck3", "PBCK7AndPBCK3", new {id = item.Pbck3Id})" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    }
                 </td>
                 <td>
                     @item.Pbck3Number
                 </td>
                 <td>
                     @item.Pbck7Number
+                </td>
+                <td>
+                    @item.Ck5Number
                 </td>
                 <td>
                     @item.ReportedOn
@@ -58,4 +66,3 @@
         }
     </tbody>
 </table>
-

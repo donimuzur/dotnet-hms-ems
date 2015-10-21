@@ -140,9 +140,10 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PBCK3, Pbck3Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck3Id, opt => opt.MapFrom(src => src.PBCK3_ID))
                .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.PBCK3_NUMBER))
-               .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.PBCK7.PBCK7_NUMBER))
+               .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.PBCK7.PBCK7_NUMBER ))
+               .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src =>  src.CK5.SUBMISSION_NUMBER))
                .ForMember(dest => dest.Pbck3Date, opt => opt.MapFrom(src => src.PBCK3_DATE))
-               .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID))
+               .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7 != null ? src.PBCK7_ID : src.CK5_ID))
                .ForMember(dest => dest.Pbck3Status, opt => opt.MapFrom(src => src.STATUS))
                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE))
@@ -150,8 +151,8 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
                .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.APPROVED_BY))
                .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE))
-                   .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.PBCK7.NPPBKC))
-             .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PBCK7.PLANT_ID + "-" + src.PBCK7.PLANT_NAME))
+               .ForMember(dest => dest.NppbckId, opt => opt.MapFrom(src => src.PBCK7 != null ? src.PBCK7.NPPBKC : src.CK5.SOURCE_PLANT_NPPBKC_ID))
+               .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PBCK7 != null ? src.PBCK7.PLANT_ID + "-" + src.PBCK7.PLANT_NAME : src.CK5.SOURCE_PLANT_ID + "-" + src.CK5.SOURCE_PLANT_NAME))
                ;
 
             Mapper.CreateMap<BACK3, Back3Dto>().IgnoreAllNonExisting()
@@ -215,6 +216,11 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Ck2Date, opt => opt.MapFrom(src => src.Ck2Date))
                 .ForMember(dest => dest.Ck2Value, opt => opt.MapFrom(src => src.Ck2Value))
                 ;
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, GetListFaCodeByPlantOutput>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+              .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+              ;
         }
     }
 }

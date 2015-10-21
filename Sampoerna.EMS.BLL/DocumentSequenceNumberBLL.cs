@@ -156,7 +156,7 @@ namespace Sampoerna.EMS.BLL
                 var t001Data =
                     _t001KReporRepository.Get(
                         c =>
-                            c.T001W.NPPBKC_ID == input.NppbkcId && c.T001W.IS_MAIN_PLANT.HasValue &&
+                            (c.T001W.NPPBKC_ID == input.NppbkcId || c.T001W.NPPBKC_IMPORT_ID == input.NppbkcId)  && c.T001W.IS_MAIN_PLANT.HasValue &&
                             c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
 
                 if (t001Data == null || t001Data.T001 == null)

@@ -54,6 +54,7 @@ namespace Sampoerna.EMS.BLL
         private IPbck3Services _pbck3Services;
         private CK2Services _ck2Services;
         private IBack3Services _back3Services;
+        private IWorkflowBLL _workflowBll;
 
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -85,6 +86,7 @@ namespace Sampoerna.EMS.BLL
             _pbck3Services = new Pbck3Services(_uow, _logger);
             _ck2Services = new CK2Services(_uow, _logger);
             _back3Services = new Back3Services(_uow, _logger);
+            _workflowBll = new WorkflowBLL(_uow, _logger);
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -294,11 +296,11 @@ namespace Sampoerna.EMS.BLL
             }
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
-                queryFilter = queryFilter.And(c => c.PBCK7.NPPBKC == input.NppbkcId);
+                queryFilter = queryFilter.And(c => (c.PBCK7.NPPBKC == input.NppbkcId || c.CK5.SOURCE_PLANT_NPPBKC_ID == input.NppbkcId));
             }
             if (!string.IsNullOrEmpty(input.PlantId))
             {
-                queryFilter = queryFilter.And(c => c.PBCK7.PLANT_ID == input.PlantId);
+                queryFilter = queryFilter.And(c => c.PBCK7.PLANT_ID == input.PlantId || c.CK5.SOURCE_PLANT_ID == input.PlantId);
             }
             if (!string.IsNullOrEmpty(input.Poa))
             {
@@ -330,7 +332,7 @@ namespace Sampoerna.EMS.BLL
             Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = n => n.OrderByDescending(z => z.CREATED_DATE);
         
 
-            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7");
+            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7, CK5");
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -440,7 +442,7 @@ namespace Sampoerna.EMS.BLL
 
         public Pbck3Dto GetPbck3ById(int id)
         {
-            var data = _repositoryPbck3.Get(c => c.PBCK3_ID == id);
+            var data = _repositoryPbck3.Get(c => c.PBCK3_ID == id, null, "PBCK7");
             return Mapper.Map<Pbck3Dto>(data.FirstOrDefault());
         }
 
@@ -1384,9 +1386,22 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+            //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+            //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            {
+                CreatedUser = dbData.CREATED_BY,
+                CurrentUser = input.UserId,
+                DocumentStatus = dbData.STATUS,
+                UserRole = input.UserRole,
+                NppbkcId = dbData.NPPBKC,
+                DocumentNumber = dbData.PBCK7_NUMBER
+            });
+
+            if (!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
             string newValue = "";
@@ -1598,15 +1613,7 @@ namespace Sampoerna.EMS.BLL
 
                 AddWorkflowHistory(input);
             }
-
-           
-           
-
-            
-
         }
-
-      
 
         private void GovRejectedDocument(Pbck7Pbck3WorkflowDocumentInput input)
         {
@@ -1638,7 +1645,7 @@ namespace Sampoerna.EMS.BLL
         {
             var output = new Pbck3Output();
 
-            var data = _repositoryPbck3.Get(p => p.PBCK3_ID == id, null, "PBCK7, CK5, PBCK7.BACK1, PBCK7.PBCK7_ITEM").FirstOrDefault();
+            var data = _repositoryPbck3.Get(p => p.PBCK3_ID == id, null, "PBCK7, CK5, PBCK7.BACK1, PBCK7.PBCK7_ITEM, CK5.CK5_MATERIAL").FirstOrDefault();
             if (data == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1654,23 +1661,38 @@ namespace Sampoerna.EMS.BLL
             }
             else//from ck5 market return
             {
-                
+                result.FromPbck7 = false;
+
+                result.Ck5Composite.Ck5Dto = Mapper.Map<CK5Dto>(data.CK5);
+                //details
+                result.Ck5Composite.Ck5MaterialDto = Mapper.Map<List<CK5MaterialDto>>(data.CK5.CK5_MATERIAL);
+
+                //workflow history
+                var input = new GetByFormNumberInput();
+                input.FormNumber = data.CK5.SUBMISSION_NUMBER;
+                input.DocumentStatus = data.CK5.STATUS_ID;
+                input.NPPBKC_Id = data.CK5.SOURCE_PLANT_NPPBKC_ID;
+
+                result.Ck5Composite.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
+
             }
 
             //back1
-            if (result.FromPbck7)
+            BACK1 dbBack1 = null;
+            dbBack1 = result.FromPbck7
+                ? _back1Services.GetBack1ByPbck7Id(result.Pbck7Composite.Pbck7Id)
+                : _back1Services.GetBack1ByCk5Id(result.Ck5Composite.Ck5Dto.CK5_ID);
+            
+
+            if (dbBack1 != null)
             {
-                var dbBack1 = _back1Services.GetBack1ByPbck7Id(result.Pbck7Composite.Pbck7Id);
-                if (dbBack1 != null)
+                result.Back1Id = dbBack1.BACK1_ID;
+                result.Back1Number = dbBack1.BACK1_NUMBER;
+                result.Back1Date = dbBack1.BACK1_DATE;
+                result.Back1Documents = new List<BACK1_DOCUMENT>();
+                if (dbBack1.BACK1_DOCUMENT != null)
                 {
-                    result.Back1Id = dbBack1.BACK1_ID;
-                    result.Back1Number = dbBack1.BACK1_NUMBER;
-                    result.Back1Date = dbBack1.BACK1_DATE;
-                    result.Back1Documents = new List<BACK1_DOCUMENT>();
-                    if (dbBack1.BACK1_DOCUMENT != null)
-                    {
-                        result.Back1Documents = dbBack1.BACK1_DOCUMENT.ToList();
-                    }
+                    result.Back1Documents = dbBack1.BACK1_DOCUMENT.ToList();
                 }
             }
 
@@ -1936,9 +1958,29 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+            //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+            //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            string nppbkcId = "";
+            var outputResult = GetPbck3DetailsById(input.DocumentId);
+            if (outputResult.Pbck3CompositeDto.FromPbck7)
+                nppbkcId = outputResult.Pbck3CompositeDto.Pbck7Composite.NppbkcId;
+            else
+                nppbkcId = outputResult.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            {
+                CreatedUser = dbData.CREATED_BY,
+                CurrentUser = input.UserId,
+                DocumentStatus = dbData.STATUS.HasValue ? dbData.STATUS.Value : Enums.DocumentStatus.Draft,
+                UserRole = input.UserRole,
+                NppbkcId = nppbkcId,
+                DocumentNumber = dbData.PBCK3_NUMBER
+            });
+
+            if (!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
             string newValue = "";
@@ -2263,6 +2305,11 @@ namespace Sampoerna.EMS.BLL
                 nppbkcId = pbck3CompositeDto.Pbck7Composite.NppbkcId;
                 plantId = pbck3CompositeDto.Pbck7Composite.PlantId;
             }
+            else
+            {
+                nppbkcId = pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+                plantId = pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_ID;
+            }
 
             var poaList = _poaBll.GetPoaByNppbkcId(nppbkcId);
 
@@ -2458,9 +2505,51 @@ namespace Sampoerna.EMS.BLL
             return rc;
         }
 
-       
 
 
+        public List<GetListFaCodeByPlantOutput> GetListFaCodeByPlant(string plantId)
+        {
+            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+
+            return Mapper.Map<List<GetListFaCodeByPlantOutput>>(dbBrand);
+        }
+
+        public GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId , string faCode)
+        {
+            var result = new GetBrandItemsByPlantAndFaCodeOutput();
+            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, faCode);
+            if (dbBrand == null)
+            {
+                result.PlantId = plantId;
+                result.FaCode = faCode;
+                result.ProductAlias = "";
+                result.BrandName = "";
+                result.BrandContent = "0";
+                result.Hje = "0";
+                result.Tariff = "0";
+                result.SeriesValue = "";
+            }
+            else
+            {
+
+                if (dbBrand.ZAIDM_EX_PRODTYP != null)
+                    result.ProductAlias = dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
+
+
+                result.BrandName = dbBrand.BRAND_CE;
+                if (dbBrand.ZAIDM_EX_SERIES != null)
+                    result.SeriesValue = dbBrand.ZAIDM_EX_SERIES.SERIES_CODE;
+
+                result.BrandContent = ConvertHelper.ConvertToDecimalOrZero(dbBrand.BRAND_CONTENT).ToString();
+
+                result.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value.ToString() : "0";
+                result.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value.ToString() : "0";
+                
+
+            }
+
+            return result;
+        }
     }
 
 

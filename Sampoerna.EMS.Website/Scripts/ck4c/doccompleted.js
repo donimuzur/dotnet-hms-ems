@@ -19,7 +19,9 @@ function uploadSk() {
     for (var i = 0; i < file_sk ; i++) {
         var fileName = $('#Details_Ck4cDecreeFiles_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        poa_sk.push(name);
+        if (name != '') {
+            poa_sk.push(name);
+        }
     }
 
     //$('#poa-files').html("");

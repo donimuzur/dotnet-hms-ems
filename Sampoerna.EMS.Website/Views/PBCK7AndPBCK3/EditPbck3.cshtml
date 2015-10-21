@@ -14,11 +14,15 @@
                
                 <h3>PBCK-3</h3>
                 <label class="status">@Model.Pbck3StatusDescription</label>
-
                 @if (Model.FromPbck7)
                 {
                     <h3>PBCK-7</h3>
                     <label class="status">@Model.Pbck7StatusDescription</label>
+                }
+                else
+                {
+                    <h3>CK-5 MARKET RETURN</h3>
+                    <label class="status">@Model.Ck5FormViewModel.DocumentStatusDescription</label>
                 }
                 <div class="action-button">
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
@@ -85,10 +89,16 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     
     <script type="text/javascript">
+        $('#MenuPBCK3Index').addClass('active');
+        
         $('#btnBack').click(function (e) {
             location.href = '@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")';
         });
 
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXlsPbck3", "PBCK7AndPBCK3", new { pbckId = Model.Pbck3Id })';
+        });
+        
         $("#btnSave").click(function () {
             $('#formPbck3Edit').submit();
         });
@@ -101,8 +111,8 @@
         
         $("#btnSubmitConfirm").click(function () {
             //if (ValidatePbck7Form()) {
-                $('#IsSaveSubmit').val('true');
-                $('#formPbck3Edit').submit();
+            $('#IsSaveSubmit').val('true');
+            $('#formPbck3Edit').submit();
             //}
         });
         

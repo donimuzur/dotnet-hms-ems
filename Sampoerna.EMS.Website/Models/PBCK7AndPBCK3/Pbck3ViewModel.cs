@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
@@ -18,6 +19,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
             Back1Documents = new List<BACK1_DOCUMENT>();
             Ck2Documents = new List<CK2_DOCUMENT>();
+
+            Ck5FormViewModel = new CK5FormViewModel();
         }
         public int Pbck3Id { get; set; }
         public string Pbck3Number { get; set; }
@@ -25,7 +28,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
-
+        public string APPROVED_BY_MANAGER { get; set; }
+        public DateTime? APPROVED_BY_MANAGER_DATE { get; set; }
         
         public Enums.DocumentStatus Pbck3Status { get; set; }
         public string Pbck3StatusDescription { get; set; }
@@ -89,9 +93,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public bool AllowApproveAndReject { get; set; }
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowManagerReject { get; set; }
+        public bool AllowPrintDocument { get; set; }
 
         public string ActionType { get; set; }
 
         public string Comment { get; set; }
+
+        public CK5FormViewModel Ck5FormViewModel { get; set; }
     }
 }

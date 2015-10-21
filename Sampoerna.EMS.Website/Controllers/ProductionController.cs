@@ -365,6 +365,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                var listProduction = new List<ProductionUploadItems>();
+
+                //check validation
                 foreach (var item in modelDto.UploadItems)
                 {
                     var company = _companyBll.GetById(item.CompanyCode);
@@ -384,7 +387,6 @@ namespace Sampoerna.EMS.Website.Controllers
                         item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
                         item.Qty = Convert.ToString(Convert.ToDecimal(item.Qty) * 1000);
                     }
-
 
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
@@ -408,10 +410,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         return RedirectToAction("UploadManualProduction");
                     }
 
-                    _productionBll.SaveUpload(item, CurrentUser.USER_ID);
-                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                       );
+                    listProduction.Add(item);
                 }
+
+                //do save
+                foreach (var data in listProduction)
+                {
+                    _productionBll.SaveUpload(data, CurrentUser.USER_ID);
+                }
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
             }
 
@@ -447,12 +455,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                     var item = new ProductionUploadItems();
-                    var brandCe = _brandRegistrationBll.GetById(dataRow[1], dataRow[2]);
+                    
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
-                    item.BrandDescription = brandCe.BRAND_CE;
+                    item.BrandDescription = dataRow[3];
                     item.QtyPacked = dataRow[4];
                     item.Qty = dataRow[5];
                     item.Uom = dataRow[6];

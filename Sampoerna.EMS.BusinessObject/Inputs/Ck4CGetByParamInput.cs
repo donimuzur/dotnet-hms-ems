@@ -66,5 +66,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
      
         public string PlantId { get; set; }
 
+        public bool isForExport { get; set; }
     }
 }

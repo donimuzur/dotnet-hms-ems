@@ -140,5 +140,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public  Ck2Dto Ck2Dto { get; set; }
 
+        public decimal RequestedQty { get; set; }
+        public int FiscalYear { get; set; }
     }
 }
