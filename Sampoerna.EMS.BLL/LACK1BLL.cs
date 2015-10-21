@@ -568,16 +568,15 @@ namespace Sampoerna.EMS.BLL
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
+                    input.AdditionalDocumentData.DecreeDate);
 
                 dbData.LACK1_DOCUMENT = null;
                 dbData.STATUS = Enums.DocumentStatus.Completed;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
-
-                //dbData.APPROVED_BY_POA = input.UserId;
-                //dbData.APPROVED_DATE_POA = DateTime.Now;
-
+                
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }
 
@@ -600,6 +599,8 @@ namespace Sampoerna.EMS.BLL
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
+                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
+                    input.AdditionalDocumentData.DecreeDate);
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
 
@@ -608,10 +609,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-
-                //dbData.APPROVED_BY_POA = input.UserId;
-                //dbData.APPROVED_DATE_POA = DateTime.Now;
-
+                
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }
 
@@ -631,14 +629,22 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
                 //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
+                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
+                    input.AdditionalDocumentData.DecreeDate);
 
-                dbData.STATUS = Enums.DocumentStatus.GovRejected;
+                dbData.STATUS = Enums.DocumentStatus.Rejected;
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
-                //dbData.APPROVED_BY_POA = input.UserId;
-                //dbData.APPROVED_DATE_POA = DateTime.Now;
+
+                //set to null
+                dbData.APPROVED_BY_POA = null;
+                dbData.APPROVED_BY_MANAGER = null;
+                dbData.APPROVED_DATE_MANAGER = null;
+                dbData.APPROVED_DATE_POA = null;
+
+                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }
@@ -647,6 +653,26 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        private void WorkflowDecreeDateAddChanges(int? documentId, string userId, DateTime? origin, DateTime? updated)
+        {
+            if (origin == updated) return;
+            //set changes log
+            if (documentId == null) return;
+            var changes = new CHANGES_HISTORY
+            {
+                FORM_TYPE_ID = Enums.MenuList.LACK2,
+                // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+                FORM_ID = documentId.Value.ToString(),
+                FIELD_NAME = "Decree Date",
+                NEW_VALUE = origin.HasValue ? origin.Value.ToString("dd-MM-yyyy") : "NULL",
+                OLD_VALUE = updated.HasValue ? updated.Value.ToString("dd-MM-yyyy") : "NULL",
+                MODIFIED_BY = userId,
+                MODIFIED_DATE = DateTime.Now
+            };
+
+            _changesHistoryBll.AddHistory(changes);
+        }
+        
         private void WorkflowStatusAddChanges(Lack1WorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
         {
             //set changes log
