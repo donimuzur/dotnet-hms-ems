@@ -461,7 +461,7 @@
                 //e.preventDefault();
                 //reset table (only show action and number)
                 var checked = document.querySelectorAll('input:checked');
-                console.log(checked[0].getAttribute("id"));
+                //console.log(checked[0].getAttribute("id"));
                 for (var i = 1; i < 38; i++) {
                     table.column(i).visible(false);
                 }
@@ -474,12 +474,13 @@
                         if (checked[i].getAttribute("id") != 'selecctall') {
                             var index = checked[i].attributes[4].nodeValue;
                             table.column(parseInt(index - 1)).visible(true);
-                        } 
+                        }
+
                     }
                     $('#pbckTable').parents('div.dataTables_wrapper').first().show();
-                    
+
                 } else {
-                    console.log(checked.length);
+                    //console.log(checked.length);
                     $('#pbckTable').parents('div.dataTables_wrapper').first().show();
                 }
 
@@ -489,7 +490,6 @@
 
             for (var i = 7; i < 38; i++) {
                 table.column(i).visible(false);
-                //table.column(37).visible(false);
             }
 
             $('#selecctall').change(function () {
@@ -499,7 +499,7 @@
                     //    table.column(i).visible(true);
                     //}
                     // Show a column
-                    
+
                     var table = $('#pbckTable').DataTable();
                     for (var i = 0; i < 38; i++) {
                         table.column(i).visible(true);
@@ -507,6 +507,7 @@
                     }
                     $('#pbckTable').parents('div.dataTables_wrapper').first().show();
                 } else {
+                    $('.checkexport').prop('checked', this.checked = false);
                     var table = $('#pbckTable').DataTable();
                     for (var i = 0; i < 38; i++) {
                         table.column(i).visible(false);
