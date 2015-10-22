@@ -2633,7 +2633,7 @@ namespace Sampoerna.EMS.BLL
 
             rc.HeaderFooter = headerFooterData;
             rc.PrintedDate = DateReportString(dbData.PBCK7_DATE);
-
+            rc = SetExecutionDate(rc);
             return rc;
         }
 
@@ -2684,7 +2684,7 @@ namespace Sampoerna.EMS.BLL
 
             rc.HeaderFooter = headerFooterData;
             rc.PrintedDate = DateReportString(dbData.PBCK3_DATE);
-
+            rc = SetExecutionDate(rc);
             return rc;
         }
 
@@ -2737,6 +2737,16 @@ namespace Sampoerna.EMS.BLL
             }
             if (nppbkcData.START_DATE.HasValue)
                 data.NppbkcStartDate = DateReportString(nppbkcData.START_DATE.Value);
+            return data;
+        }
+
+        private Pbck73PrintOutDto SetExecutionDate(Pbck73PrintOutDto data)
+        {
+            if (data.ExecDateFrom.HasValue && data.ExecDateTo.HasValue)
+            {
+                data.ExecDateDisplayString = DateReportString(data.ExecDateFrom.Value) + " - " +
+                                             DateReportString(data.ExecDateTo.Value);
+            }
             return data;
         }
 
