@@ -1640,6 +1640,9 @@ namespace Sampoerna.EMS.BLL
                 inputPbck3.Pbck7Id = dbData.PBCK7_ID;
                 inputPbck3.NppbkcId = dbData.NPPBKC;
                 inputPbck3.UserId = input.UserId;
+                inputPbck3.Pbck7ExecFrom = dbData.EXEC_DATE_FROM;
+                inputPbck3.Pbck7ExecTo = dbData.EXEC_DATE_TO;
+
                var pbck3Number = _pbck3Services.InsertPbck3FromPbck7(inputPbck3);
 
                 var inputWorkflowHistoryPbck3 = new Pbck3WorkflowDocumentInput();
@@ -1804,8 +1807,9 @@ namespace Sampoerna.EMS.BLL
             var changesData = new Dictionary<string, bool>();
 
             changesData.Add("PBCK-3 DATE", origin.Pbck3Date == dataModified.Pbck3Date);
+            changesData.Add("EXEC_DATE_FROM", origin.EXEC_DATE_FROM == dataModified.EXEC_DATE_FROM);
+            changesData.Add("EXEC_DATE_TO", origin.EXEC_DATE_TO == dataModified.EXEC_DATE_TO);
             
-
             foreach (var listChange in changesData)
             {
                 if (listChange.Value == false)
@@ -1816,14 +1820,23 @@ namespace Sampoerna.EMS.BLL
                     changes.FIELD_NAME = listChange.Key;
                     changes.MODIFIED_BY = userId;
                     changes.MODIFIED_DATE = DateTime.Now;
+
                     switch (listChange.Key)
                     {
                         case "PBCK-3 DATE":
                             changes.OLD_VALUE = origin.Pbck3Date.HasValue ? origin.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty;
                             changes.NEW_VALUE = dataModified.Pbck3Date.HasValue ? dataModified.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty; 
                             break;
-                      
+                        case "EXEC_DATE_FROM":
+                            changes.OLD_VALUE = origin.EXEC_DATE_FROM.ToString("dd MMM yyyy");
+                            changes.NEW_VALUE = dataModified.EXEC_DATE_FROM.ToString("dd MMM yyyy");
+                            break;
+                        case "EXEC_DATE_TO":
+                             changes.OLD_VALUE = origin.EXEC_DATE_TO.ToString("dd MMM yyyy");
+                            changes.NEW_VALUE = dataModified.EXEC_DATE_TO.ToString("dd MMM yyyy");
+                            break;
                     }
+
                     _changesHistoryBll.AddHistory(changes);
                     isModified = true;
                 }
@@ -1860,6 +1873,9 @@ namespace Sampoerna.EMS.BLL
                     pbck3Date = input.Pbck3Dto.Pbck3Date.Value;
                 dbData.PBCK3_DATE = pbck3Date;
 
+
+                dbData.EXEC_DATE_FROM = input.Pbck3Dto.EXEC_DATE_FROM;
+                dbData.EXEC_DATE_TO = input.Pbck3Dto.EXEC_DATE_TO;
 
                 if (dbData.STATUS == Enums.DocumentStatus.Rejected)
                 {
