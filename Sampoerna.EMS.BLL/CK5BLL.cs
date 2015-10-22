@@ -1359,19 +1359,22 @@ namespace Sampoerna.EMS.BLL
             string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
             if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+            //string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
+            //if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            //    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
 
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-            {
-                CreatedUser = dbData.CREATED_BY,
-                CurrentUser = input.UserId,
-                DocumentStatus = dbData.STATUS_ID,
-                UserRole = input.UserRole,
-                NppbkcId = nppbkcId,
-                DocumentNumber = dbData.SUBMISSION_NUMBER
-            });
+            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            //{
+            //    CreatedUser = dbData.CREATED_BY,
+            //    CurrentUser = input.UserId,
+            //    DocumentStatus = dbData.STATUS_ID,
+            //    UserRole = input.UserRole,
+            //    NppbkcId = nppbkcId,
+            //    DocumentNumber = dbData.SUBMISSION_NUMBER
+            //});
 
-            if (!isOperationAllow)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            //if (!isOperationAllow)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
@@ -1387,10 +1390,7 @@ namespace Sampoerna.EMS.BLL
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
                 }
                 else
-                {
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-                }
-                
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
@@ -1402,10 +1402,7 @@ namespace Sampoerna.EMS.BLL
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
                 }
                 else
-                {
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-                }
-                
             }
 
 

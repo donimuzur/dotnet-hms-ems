@@ -8,6 +8,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract.Services;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -53,7 +54,12 @@ namespace Sampoerna.EMS.BLL.Services
             if (input.IsHigherFromApproved)
             {
                 queryFilterCk4C =
-                    queryFilterCk4C.And(c => (int) c.CK4C.STATUS >= (int) Core.Enums.DocumentStatus.Approved);
+                    queryFilterCk4C.And(c => (int) c.CK4C.STATUS >= (int) Enums.DocumentStatus.Approved);
+            }
+
+            if (input.IsCompletedOnly)
+            {
+                queryFilterCk4C = queryFilterCk4C.And(c => c.CK4C.STATUS == Enums.DocumentStatus.Completed);
             }
 
             if (input.MaterialIdList.Count > 0)

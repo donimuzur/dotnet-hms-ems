@@ -1,7 +1,9 @@
 ﻿
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
@@ -40,31 +42,36 @@ namespace Sampoerna.EMS.BLL.Services
             dbBack3.PBCK3_ID = input.Pbck3Id;
             dbBack3.BACK3_NUMBER = input.Back3Number;
             dbBack3.BACK3_DATE = input.Back3Date;
-           
-            ////delete child first
-            //foreach (var back3Doc in dbBack3.BACK3_DOCUMENT.ToList())
-            //{
-            //    _repositoryBack3Documents.Delete(back3Doc);
-            //}
 
+            InsertOrDeleteBack3Item(input.Back3Documents);
 
             //foreach (var back3Document in input.Back3Documents)
             //{
             //    back3Document.BACK3_ID = dbBack3.BACK3_ID;
             //    back3Document.BACK3_DOC_ID = 0;
-            //    dbBack3.BACK3_DOCUMENT.Add(back3Document);
+            //    _repositoryBack3Documents.InsertOrUpdate(back3Document);
 
             //}
-
-            foreach (var back3Document in input.Back3Documents)
-            {
-                back3Document.BACK3_ID = dbBack3.BACK3_ID;
-                back3Document.BACK3_DOC_ID = 0;
-                _repositoryBack3Documents.InsertOrUpdate(back3Document);
-
-            }
         
             _repository.InsertOrUpdate(dbBack3);
+        }
+
+        public void InsertOrDeleteBack3Item(List<BACK3_DOCUMENTDto> input)
+        {
+            foreach (var back3DocumentDto in input)
+            {
+                if (back3DocumentDto.IsDeleted)
+                {
+                    var back3Doc = _repositoryBack3Documents.GetByID(back3DocumentDto.BACK3_DOC_ID);
+                    if (back3Doc != null)
+                        _repositoryBack3Documents.Delete(back3Doc);
+                }
+                else
+                {
+                    if (back3DocumentDto.BACK3_DOC_ID == 0)
+                        _repositoryBack3Documents.Insert(Mapper.Map<BACK3_DOCUMENT>(back3DocumentDto));
+                }
+            }
         }
 
         public bool IsExistBack3DocumentByPbck3(int pbck3Id)
