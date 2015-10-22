@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poabll;
         private string includeTable = "PBCK7_ITEM";
         private WorkflowHistoryBLL _workflowHistoryBll;
+        private ILFA1BLL _lfaBll;
 
         private IDocumentSequenceNumberBLL _docSeqNumBll;
         private IBrandRegistrationService _brandRegistrationServices;
@@ -55,6 +56,8 @@ namespace Sampoerna.EMS.BLL
         private CK2Services _ck2Services;
         private IBack3Services _back3Services;
         private IWorkflowBLL _workflowBll;
+        private IHeaderFooterBLL _headerFooterBll;
+        private IMonthBLL _monthBll;
 
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -87,6 +90,9 @@ namespace Sampoerna.EMS.BLL
             _ck2Services = new CK2Services(_uow, _logger);
             _back3Services = new Back3Services(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
+            _lfaBll = new LFA1BLL(_uow, _logger);
+            _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
+            _monthBll = new MonthBLL(_uow, _logger);
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -2612,6 +2618,156 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        #region ------------- Get Print Out Data -------------
+
+        public Pbck73PrintOutDto GetPbck7PrintOutData(int pbck7Id)
+        {
+            var dbData = _repositoryPbck7.Get(c => c.PBCK7_ID == pbck7Id, null, "PBCK7_ITEM").FirstOrDefault();
+
+            if (dbData == null) return null;
+
+            var rc = Mapper.Map<Pbck73PrintOutDto>(dbData);
+
+            //set exclude on mapper
+            //get POA Data
+            var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            rc = SetPoaData(rc, poaId);
+
+            //Get Company Data
+            rc = SetCompanyData(rc, dbData.PLANT_ID);
+
+            //get nppbkc data
+            rc = SetNppbkcData(rc, dbData.NPPBKC);
+
+            //set header footer data by CompanyCode and FormTypeId
+            var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+            {
+                FormTypeId = Enums.FormType.PBCK7,
+                CompanyCode = rc.CompanyCode
+            });
+
+            rc.HeaderFooter = headerFooterData;
+            rc.PrintedDate = DateReportString(dbData.PBCK7_DATE);
+            rc = SetExecutionDate(rc);
+            return rc;
+        }
+
+        public Pbck73PrintOutDto GetPbck3PrintOutData(int pbck3Id)
+        {
+            var dbData = _repositoryPbck3.Get(c => c.PBCK3_ID == pbck3Id, null, "PBCK7, PBCK7.PBCK7_ITEM, CK5, CK5.CK5_MATERIAL").FirstOrDefault();
+
+            if (dbData == null) return null;
+
+            var rc = Mapper.Map<Pbck73PrintOutDto>(dbData);
+
+            //set exclude on mapper
+            //get POA Data
+            var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            rc = SetPoaData(rc, poaId);
+
+            
+            if (dbData.PBCK7_ID.HasValue)
+            {
+                //data come from PBCK7
+                if (dbData.PBCK7 != null)
+                {
+                    rc = SetCompanyData(rc, dbData.PBCK7.PLANT_ID);
+                    rc = SetNppbkcData(rc, dbData.PBCK7.NPPBKC);
+
+                    //set Items
+                    rc.Items = Mapper.Map<List<Pbck73ItemPrintOutDto>>(dbData.PBCK7.PBCK7_ITEM);
+                }
+            }
+            else
+            {
+                //data come from CK5
+                if (dbData.CK5 != null)
+                {
+                    rc = SetCompanyData(rc, dbData.CK5.SOURCE_PLANT_ID);
+                    rc = SetNppbkcData(rc, dbData.CK5.SOURCE_PLANT_NPPBKC_ID);
+                    //get from CK5_Material, but need to process
+                    //todo: ask to get Items//rc.Items = Mapper.Map<List<Pbck73ItemPrintOutDto>>(dbData.CK5.CK5_MATERIAL);
+                }
+            }
+
+            //set header footer data by CompanyCode and FormTypeId
+            var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+            {
+                FormTypeId = Enums.FormType.PBCK3,
+                CompanyCode = rc.CompanyCode
+            });
+
+            rc.HeaderFooter = headerFooterData;
+            rc.PrintedDate = DateReportString(dbData.PBCK3_DATE);
+            rc = SetExecutionDate(rc);
+            return rc;
+        }
+
+        private string DateReportString(DateTime dt)
+        {
+            var monthPeriodFrom = _monthBll.GetMonth(dt.Month);
+            return dt.ToString("dd") + " " + monthPeriodFrom.MONTH_NAME_IND +
+                                   " " + dt.ToString("yyyy");
+        }
+
+        private Pbck73PrintOutDto SetPoaData(Pbck73PrintOutDto data, string poaId)
+        {
+            var poaData = _poabll.GetById(poaId);
+            if (poaData != null)
+            {
+                data.PoaId = poaData.POA_ID;
+                data.PoaName = poaData.PRINTED_NAME;
+                data.PoaTitle = poaData.TITLE;
+            }
+            else
+            {
+                data.PoaId = "-";
+                data.PoaName = "-";
+                data.PoaTitle = "-";
+            }
+            return data;
+        }
+
+        private Pbck73PrintOutDto SetCompanyData(Pbck73PrintOutDto data, string plantId)
+        {
+            var t001KData = _t001Kbll.GetByBwkey(plantId);
+            if (t001KData == null) return data;
+            data.CompanyCode = t001KData.BUKRS;
+            data.CompanyName = t001KData.BUTXT;
+            data.CompanyAddress = t001KData.SPRAS;
+            return data;
+        }
+
+        private Pbck73PrintOutDto SetNppbkcData(Pbck73PrintOutDto data, string nppbkcId)
+        {
+            var nppbkcData = _nppbkcbll.GetById(nppbkcId);
+            if (nppbkcData == null) return data;
+            data.NppbkcId = nppbkcData.NPPBKC_ID;
+            data.NppbkcTextTo = nppbkcData.TEXT_TO;
+            data.NppbkcCity = nppbkcData.CITY;
+            var vendor = _lfaBll.GetById(nppbkcData.KPPBC_ID);
+            if (vendor != null)
+            {
+                data.VendorCity = vendor.ORT01;
+            }
+            if (nppbkcData.START_DATE.HasValue)
+                data.NppbkcStartDate = DateReportString(nppbkcData.START_DATE.Value);
+            return data;
+        }
+
+        private Pbck73PrintOutDto SetExecutionDate(Pbck73PrintOutDto data)
+        {
+            if (data.ExecDateFrom.HasValue && data.ExecDateTo.HasValue)
+            {
+                data.ExecDateDisplayString = DateReportString(data.ExecDateFrom.Value) + " - " +
+                                             DateReportString(data.ExecDateTo.Value);
+            }
+            return data;
+        }
+
+        #endregion
+
     }
 
 
