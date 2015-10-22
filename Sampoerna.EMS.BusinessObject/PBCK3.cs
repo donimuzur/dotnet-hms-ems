@@ -37,6 +37,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string REJECTED_BY { get; set; }
         public Nullable<System.DateTime> REJECTED_DATE { get; set; }
         public Nullable<long> CK5_ID { get; set; }
+        public System.DateTime EXEC_DATE_FROM { get; set; }
+        public System.DateTime EXEC_DATE_TO { get; set; }
     
         public virtual ICollection<BACK3> BACK3 { get; set; }
         public virtual ICollection<CK2> CK2 { get; set; }
