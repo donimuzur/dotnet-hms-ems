@@ -18,7 +18,10 @@
     param.Noted = $('#Noted').val();
     param.CompanyName = $('#Bukrs').find("option:selected").text();
     param.IsCreateNew = $('#IsCreateNew').val();
-
+    if ($('#Lack1Id').length) {
+        param.Lack1Id = $('#Lack1Id').val();
+    }
+    
     var plantAttr = $('#LevelPlantId').attr('disabled');
     /* For some browsers, `attr` is undefined; for others,
      `attr` is false.  Check for both.
@@ -110,12 +113,12 @@ function saveClick() {
     if (isValid) {
         isValid = saveInputValidation();
     }
-    if (isValid) {
-        isValid = checkJumlahProduksi();
-    }
-    if (isValid) {
-        isValid = checkIncomeListItem();
-    }
+    //if (isValid) {
+    //    isValid = checkJumlahProduksi();
+    //}
+    //if (isValid) {
+    //    isValid = checkIncomeListItem();
+    //}
     if (isValid) {
         $('#CreateLack1Form').submit();
     } else {

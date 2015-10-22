@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.BLL.Services
         }
 
 
-        public void InsertPbck3FromCk5MarketReturn(InsertPbck3FromCk5MarketReturnInput input)
+        public string InsertPbck3FromCk5MarketReturn(InsertPbck3FromCk5MarketReturnInput input)
         {
             //generate pbck3number
            
@@ -50,7 +50,37 @@ namespace Sampoerna.EMS.BLL.Services
             };
 
             _repository.InsertOrUpdate(dbPbck3);
+         
+            return dbPbck3.PBCK3_NUMBER;
+        }
 
+        public string InsertPbck3FromPbck7(InsertPbck3FromPbck7Input input)
+        {
+            //generate pbck3number
+
+            var generateNumberInput = new GenerateDocNumberInput()
+            {
+                Year = DateTime.Now.Year,
+                Month = DateTime.Now.Month,
+                NppbkcId = input.NppbkcId,
+                FormType = Enums.FormType.PBCK3
+            };
+
+            var dbPbck3 = new PBCK3
+            {
+                PBCK3_NUMBER = _documentSequenceNumberBll.GenerateNumber(generateNumberInput),
+                PBCK3_DATE = DateTime.Now,
+                STATUS = Enums.DocumentStatus.Draft,
+                CREATED_BY = input.UserId,
+                CREATED_DATE = DateTime.Now,
+                PBCK7_ID = input.Pbck7Id,
+                EXEC_DATE_FROM = input.Pbck7ExecFrom,
+                EXEC_DATE_TO = input.Pbck7ExecTo
+            };
+
+            _repository.InsertOrUpdate(dbPbck3);
+
+            return dbPbck3.PBCK3_NUMBER;
         }
     }
 }

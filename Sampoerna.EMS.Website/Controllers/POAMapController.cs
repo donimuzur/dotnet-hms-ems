@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
@@ -17,9 +18,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changeHistoryBll;
         private Enums.MenuList _mainMenu;
         private IPOABLL _poabll;
+        private IPlantBLL _plantbll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
        
-        public POAMapController(IPageBLL pageBLL, IPOABLL poabll, IPOAMapBLL poaMapBll, IZaidmExNPPBKCBLL nppbkcbll, IChangesHistoryBLL changeHistorybll) 
+        public POAMapController(IPageBLL pageBLL, IPOABLL poabll, IPOAMapBLL poaMapBll, IZaidmExNPPBKCBLL nppbkcbll,IPlantBLL plantbll, IChangesHistoryBLL changeHistorybll) 
             : base(pageBLL, Enums.MenuList.POAMap) 
         {
             _poaMapBLL = poaMapBll;
@@ -27,6 +29,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _mainMenu = Enums.MenuList.MasterData;
             _nppbkcbll = nppbkcbll;
             _poabll = poabll;
+            _plantbll = plantbll;
         }
         //
         // GET: /POA/
@@ -179,7 +182,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetPlantOfNppbck(string nppbkcId)
         {
-            var data = _nppbkcbll.GetById(nppbkcId).T001W;
+            //var data = _nppbkcbll.GetById(nppbkcId).T001W;
+            var data = _plantbll.GetPlantByNppbkc(nppbkcId);
             if (data == null)
             {
                 return null;

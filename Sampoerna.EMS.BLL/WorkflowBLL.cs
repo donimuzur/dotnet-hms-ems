@@ -43,7 +43,8 @@ namespace Sampoerna.EMS.BLL
         {
             bool isEditable = false;
 
-            if ((input.DocumentStatus == Enums.DocumentStatus.Rejected || input.DocumentStatus == Enums.DocumentStatus.Draft  || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval) && input.CreatedUser == input.CurrentUser)
+            if ((input.DocumentStatus == Enums.DocumentStatus.Rejected || input.DocumentStatus == Enums.DocumentStatus.Draft  
+                || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval || input.DocumentStatus == Enums.DocumentStatus.GovRejected) && input.CreatedUser == input.CurrentUser)
                 isEditable = true;
             else
                 isEditable = false;
@@ -132,11 +133,15 @@ namespace Sampoerna.EMS.BLL
         {
             //if (input.CreatedUser == input.CurrentUser)
             //    return false;
+            var completedEdit = false;
+            if(input.FormType == Enums.FormType.PBCK1 && input.DocumentStatus == Enums.DocumentStatus.Completed){
+                completedEdit = true;
+            }
 
-            if (input.DocumentStatus != Enums.DocumentStatus.WaitingGovApproval)
+            if (input.DocumentStatus != Enums.DocumentStatus.WaitingGovApproval && !completedEdit)
                 return false;
 
-            if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval || completedEdit)
             {
                 if (input.UserRole == Enums.UserRole.Manager)
                     return false;
@@ -235,6 +240,22 @@ namespace Sampoerna.EMS.BLL
                 return input.CurrentUser == input.PoaApprove;
             }
             return false;
+        }
+
+        public bool AllowStoGiCompleted(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.StoRecGICompleted;
+        }
+
+        public bool AllowStoGrCreated(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.StoRecGRCompleted;
         }
     }
 }

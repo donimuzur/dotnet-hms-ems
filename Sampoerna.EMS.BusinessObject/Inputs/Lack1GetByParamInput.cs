@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Comment { get; set; }
         public Enums.ActionType ActionType { get; set; }
         public string DocumentNumber { get; set; }
+        public bool IsModified { get; set; }
 
         public Lack1WorkflowDocumentData AdditionalDocumentData { get; set; }
 
@@ -94,6 +95,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public bool IsCreateNew { get; set; }
 
+        public int Lack1Id { get; set; }
     }
 
     public class Lack1GetLatestLack1ByParamInput
@@ -116,6 +118,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SupplierPlantId { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
+        public Enums.Lack1Level Lack1Level { get; set; }
     }
 
     public class Lack1CreateParamInput : Lack1GenerateDataParamInput

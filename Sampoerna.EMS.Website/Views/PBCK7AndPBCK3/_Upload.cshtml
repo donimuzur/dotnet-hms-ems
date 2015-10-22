@@ -13,22 +13,28 @@
             <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="file" name="itemExcelFile" id="itemExcelFile">
-                           </div>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="button" class="btn btn-grey" id="btn-generate-upload" value="Generate">
+                        
+                        <div class="col-md-12">
+
+                            <input type="file" class="file-inputs" data-filename-placement="inside" name="itemExcelFile" id="itemExcelFile">
+                            <input type="button" id="btn-generate-upload" class="btn btn-grey" value="Generate" />
                             <input type="button" class="btn btn-blue" id="btn-save-upload" value="Save" disabled />
 
-
                         </div>
+
+                     
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @if (!Model.AllowGovApproveAndReject)
+    {
+      
+       <input type="button" class="btn btn-blue" id="btnAddRow" value="New Input" />
+
+    }
+
     <div class="table-container" id="UploadLIst">
         @Html.Partial("_UploadList")
     </div>

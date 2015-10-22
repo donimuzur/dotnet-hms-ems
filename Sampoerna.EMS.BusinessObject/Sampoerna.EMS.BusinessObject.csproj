@@ -122,9 +122,12 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="DTOs\Back1Dto.cs" />
+    <Compile Include="DTOs\BACK1_DOCUMENTDto.cs" />
+    <Compile Include="DTOs\BACK3_DOCUMENTDto.cs" />
     <Compile Include="DTOs\BLOCK_STOCKDto.cs" />
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
     <Compile Include="DTOs\CK1Dto.cs" />
+    <Compile Include="DTOs\CK2_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Ck4cDecreeDocDto.cs" />
     <Compile Include="DTOs\Ck4CDto.cs" />
     <Compile Include="DTOs\Ck4cReportDto.cs" />
@@ -151,6 +154,7 @@
     <Compile Include="DTOs\Lack1TrackingDto.cs" />
     <Compile Include="DTOs\Lack2DetailReportDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
+    <Compile Include="DTOs\Lack2GeneratedDto.cs" />
     <Compile Include="DTOs\Lack2SummaryReportDto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
@@ -165,6 +169,7 @@
     <Compile Include="DTOs\Pbck1QuotaDto.cs" />
     <Compile Include="DTOs\Pbck1ReportDto.cs" />
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
+    <Compile Include="DTOs\Pbck3CompositeDto.cs" />
     <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck4ItemDto.cs" />
     <Compile Include="DTOs\Pbck4ReportDto.cs" />
@@ -172,6 +177,7 @@
     <Compile Include="DTOs\Pbck4XmlDto.cs" />
     <Compile Include="DTOs\PBCK4_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
+    <Compile Include="DTOs\Pbck7PrintOutDto.cs" />
     <Compile Include="DTOs\POADto.cs" />
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
@@ -213,8 +219,11 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Inputs\Back1Input.cs" />
+    <Compile Include="Inputs\Back3Input.cs" />
+    <Compile Include="Inputs\Ck2Input.cs" />
     <Compile Include="Inputs\CK4CItemInput.cs" />
     <Compile Include="Inputs\Ck4CGetByParamInput.cs" />
+    <Compile Include="DTOs\CK5ExternalSupplierDto.cs" />
     <Compile Include="Inputs\CK5Input.cs" />
     <Compile Include="Inputs\CK5MaterialInput.cs" />
     <Compile Include="Inputs\CK5UploadFileDocumentsInput.cs" />
@@ -235,10 +244,12 @@
     <Compile Include="Inputs\Pbck4ItemsInput.cs" />
     <Compile Include="Inputs\Pbck7AndPbck3Input.cs" />
     <Compile Include="Inputs\Pbck4Inputs.cs" />
+    <Compile Include="Inputs\Pbck7ItemsInput.cs" />
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\ProductionUploadItemsInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
+    <Compile Include="Inputs\UserPlantMapInputs.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
     <Compile Include="Inputs\WasteGetByParamInput.cs" />
     <Compile Include="Inputs\WasteUploadItemsInput.cs" />
@@ -299,8 +310,13 @@
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\InventoryMovementOutputs.cs" />
+    <Compile Include="Outputs\Pbck3Output.cs" />
+    <Compile Include="Outputs\Lack2CreateOutput.cs" />
+    <Compile Include="Outputs\Lack2GeneratedOutput.cs" />
+    <Compile Include="Outputs\Lack2SaveEditOutput.cs" />
     <Compile Include="Outputs\Pbck4ItemsOutput.cs" />
     <Compile Include="Outputs\Pbck4Ouputs.cs" />
+    <Compile Include="Outputs\Pbck7Outputs.cs" />
     <Compile Include="Outputs\ProductionGetByIdOutput.cs" />
     <Compile Include="Outputs\HeaderFooterOutput.cs" />
     <Compile Include="Outputs\Lack1GeneratedOutput.cs" />

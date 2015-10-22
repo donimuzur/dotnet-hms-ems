@@ -163,7 +163,9 @@ namespace Sampoerna.EMS.XMLReader
                     .Select(cl => new PRODUCTION()
                             {
                                 COMPANY_CODE = cl.First().COMPANY_CODE,
+                                COMPANY_NAME = cl.First().COMPANY_NAME,
                                 WERKS = cl.First().WERKS,
+                                PLANT_NAME = cl.First().PLANT_NAME,
                                 PRODUCTION_DATE = cl.First().PRODUCTION_DATE,
                                 FA_CODE = cl.First().FA_CODE,
                                 UOM = cl.First().UOM,
@@ -271,17 +273,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.PROD_QTY_STICK = item.QTY;
                                         
                         }
-                        else
-                        {
-                                        
-                            //item.QTY_PACKED = existingProduction.QTY_PACKED;
-                            if ( String.IsNullOrEmpty(item.BATCH))
-                            {
-                                item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
-                            }
-                            
-
-                        }
+                        
 
                         break;
                     case "KG":
@@ -302,7 +294,7 @@ namespace Sampoerna.EMS.XMLReader
                             //item.QTY_PACKED = existingProduction.QTY_PACKED;
                             if (String.IsNullOrEmpty(item.BATCH))
                             {
-                                item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
                             }
                         }
                         break;
@@ -311,12 +303,26 @@ namespace Sampoerna.EMS.XMLReader
                 var existingBrand = GetMaterialBrand(item.FA_CODE, item.WERKS);
                 if (existingBrand != null)
                 {
-                    var tempPack = decimal.Floor(item.QTY.Value/decimal.Parse(existingBrand.BRAND_CONTENT));
-                    var tempQtyPacked = tempPack*int.Parse(existingBrand.BRAND_CONTENT);
+                    int tempContent = 1;
+                    if (int.TryParse(existingBrand.BRAND_CONTENT, out tempContent))
+                    {
+                        if (item.QTY != null)
+                        {
+                            decimal tempPack = decimal.Floor(item.QTY.Value/tempContent);
+                            decimal tempQtyPacked = tempPack*tempContent;
 
-                    item.QTY_PACKED = tempQtyPacked;
-                    item.QTY_UNPACKED = item.QTY - item.QTY_PACKED;
-                    item.PROD_QTY_STICK = item.QTY;
+                            item.QTY_PACKED = tempQtyPacked;
+                            //item.QTY_UNPACKED = item.QTY - item.QTY_PACKED;
+                            item.PROD_QTY_STICK = item.QTY;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception(String.Format("Brand {0} - {1} dont have recognized content value",existingBrand.FA_CODE,existingBrand.WERKS));
+                    }
+
+
+                    
                 }
             }
             

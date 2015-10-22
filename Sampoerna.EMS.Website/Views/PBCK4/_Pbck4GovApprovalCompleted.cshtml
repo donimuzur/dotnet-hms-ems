@@ -1,0 +1,76 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
+@using Sampoerna.EMS.Website.Helpers
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Status Gov</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.GovStatusDesc, new { @class = "form-control", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6" id="divComment">
+        <div class="row">
+            <label class="col-md-4">Add Comment</label>
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.CommentGov, new { @rows = "5",@class = "col-md-9 GovReject", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">BACK-1 No</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.BACK1_NO, new { @class = "form-control", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">CK-3 No</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.CK3_NO, new { @class = "form-control", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">BACK-1 Date</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.BACK1_DATE, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">CK-3 Date</label>
+            <div class="col-md-8">
+               @Html.TextBoxFor(model => model.CK3_DATE, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">CK-3 Office Value</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.GovStatusDesc, new { @class = "form-control", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+</div>

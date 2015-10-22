@@ -9,15 +9,18 @@
             <th> Finish Goods </th>
             <th> Description </th>
             <th> Quantity Packed </th>
-            <th> Quantity </th>
+            <th> Produced Qty </th>
             <th> Uom </th>
-            <th> Date </th>
+            <th> Daily Production Date </th>
+            <th> Created By - Date </th>
+
         </tr>
 
     </thead>
     <thead class="filters">
         <tr>
             <th> Filter </th>
+            <th> </th>
             <th> </th>
             <th> </th>
             <th> </th>
@@ -62,6 +65,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ProductionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy) - @Html.DisplayFor(modelItem => item.CreatedDate)
                 </td>
 
             </tr>

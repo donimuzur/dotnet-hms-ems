@@ -1,5 +1,4 @@
 ﻿var file_sk = 0;
-
 $('#upload-file-sk').click(function () {
 
     uploadSk();
@@ -10,7 +9,7 @@ $('#file-decree-doc-container').on('click', '.add-files', (function () {
     file_sk++;
     $('#file-decree-doc-container').append(' <div class="row"><div class="col-sm-9"> ' +
                                  '<input type="file" id="Detail_Pbck1DecreeFiles_' + file_sk + '_" name="Detail.Pbck1DecreeFiles[' + file_sk + ']" class="form-control">' +
-                             '</div><div class="col-sm-3"><button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + file_sk + ', $(this))">Remove</button>' +
+                             '</div><div class="col-sm-3"><button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + file_sk + ')">Remove</button>' +
                              '</div></div>');
 }));
 
@@ -19,7 +18,9 @@ function uploadSk() {
     for (var i = 0; i <= file_sk ; i++) {
         var fileName = $('#Detail_Pbck1DecreeFiles_' + i + '_').val();
         var name = fileName.replace("C:\\fakepath\\", "");
-        poa_sk.push(name);
+        if (name != '') {
+            poa_sk.push(name);
+        }
     }
 
     //$('#poa-files').html("");
@@ -42,21 +43,31 @@ function uploadSk() {
         $('#poa-files').append(mm);
     }
 }
-
+var active = true;
 function removeUploadButton(index, obj) {
-    if (index > 0) {
-        file_sk--;
+    if (!active)
+        return;
+    active = false;
+    $('#Detail_Pbck1DecreeFiles_' + index + '_').closest(".row").remove();
+    $("#poa_sk"+index).remove();
+    var i = 0;
+    $("div[id^=poa_sk]").each(function () {
+        $(this).attr("id", "poa_sk" + i);
+        $(this).find("button").attr("onclick", "removeUploadButton(" + i + ")");
+        i++;
+    });
 
-        $('#Detail_Pbck1DecreeFiles_' + index + '_').remove();
-        obj.remove();
-        $('#file-decree-doc-container').html("");
-        $('#file-decree-doc-container').html('<div class="row"><div class="col-sm-4"><button type="button"  class="btn btn-primary full add-files">Add Files</button></div></div>');
-        for (var i = 0; i <= file_sk; i++) {
-            $('#file-decree-doc-container').append('<div class="row"><div class="col-sm-9"> ' +
-                            '<input type="file" id="Detail_Pbck1DecreeFiles_' + i + '_" name="Detail.Pbck1DecreeFiles[' + i + ']" class="form-control">' +
-                        '</div><div class="col-sm-3"><button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + i + ', $(this))">Remove</button>' +
-                        '</div></div>');
+    var j = 0;
+    $("input[id^=Detail_Pbck1DecreeFiles_]").each(function () {
+        $(this).attr("id", "Detail_Pbck1DecreeFiles_" + j + "_");
+        $(this).attr("name", "Detail.Pbck1DecreeFiles[" + j + "]");
+        $(this).closest(".row").find(".col-sm-3 button").attr("onclick", "removeUploadButton(" + j + ")");
+        j++;
+    });
 
-        }
-    }
+    file_sk--;
+    active = true;
+}
+function removeDecree(obj) {
+    $(obj).closest(".row").remove();
 }

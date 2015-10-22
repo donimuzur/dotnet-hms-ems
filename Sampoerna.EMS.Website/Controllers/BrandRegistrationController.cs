@@ -64,6 +64,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode+stickercode));
+            model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
 
             
             if (model.IsFromSap.HasValue && model.IsFromSap.Value)
@@ -151,10 +152,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dbBrand = new ZAIDM_EX_BRAND();
 
                 dbBrand = Mapper.Map<ZAIDM_EX_BRAND>(model);
-
                 if (dbBrand.STICKER_CODE.Length > 18)
                     dbBrand.STICKER_CODE = dbBrand.STICKER_CODE.Substring(0, 17);
                 dbBrand.CREATED_DATE = DateTime.Now;
+                dbBrand.CREATED_BY = CurrentUser.USER_ID;
                 dbBrand.IS_FROM_SAP = false;
                 dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
@@ -167,6 +168,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     _brandRegistrationBll.Save(dbBrand);
+                    AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE);
+
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
                 }
@@ -216,6 +219,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             model.PrintingPriceValueStr = model.PrintingPrice == null ? string.Empty : model.PrintingPrice.ToString();
+            model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
             model = InitEdit(model);
 
             model.IsAllowDelete = !model.IsFromSAP;
@@ -427,7 +431,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Delete(string plant, string facode,string stickercode)
         {
             var decodeFacode = HttpUtility.UrlDecode(facode);
-            AddHistoryDelete(plant, Url.Encode(decodeFacode));
+            AddHistoryDelete(plant, decodeFacode, stickercode);
             var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode);
             
             if(isDeleted)
@@ -438,11 +442,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
-        private void AddHistoryDelete(string plant, string facode)
+        private void AddHistoryDelete(string plant, string facode, string stickercode)
         {
             var history = new CHANGES_HISTORY();
             history.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
-            history.FORM_ID = plant + facode;
+            history.FORM_ID = plant + facode + stickercode;
             history.FIELD_NAME = "IS_DELETED";
             history.OLD_VALUE = "false";
             history.NEW_VALUE = "true";
@@ -451,6 +455,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
             _changesHistoryBll.AddHistory(history);
         }
+        private void AddHistoryCreate(string plant, string facode, string stickercode)
+        {
+            var history = new CHANGES_HISTORY();
+            history.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
+            history.FORM_ID = plant + facode + stickercode;
+            history.FIELD_NAME = "NEW_DATA";
+            history.OLD_VALUE = "";
+            history.NEW_VALUE = "";
+            history.MODIFIED_DATE = DateTime.Now;
+            history.MODIFIED_BY = CurrentUser.USER_ID;
+
+            _changesHistoryBll.AddHistory(history);
+        }
+
         [HttpPost]
         public JsonResult GetPlantByStickerCode(string mn)
         {

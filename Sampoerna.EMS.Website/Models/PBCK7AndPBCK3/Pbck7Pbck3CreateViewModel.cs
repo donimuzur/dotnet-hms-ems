@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
             Pbck3Dto =new Pbck3Dto();
             Ck2Dto = new Ck2Dto();
             Back3Dto = new Back3Dto();
+            UploadItems = new List<Pbck7UploadViewModel>();
         }
         public List<PrintHistoryItemModel> PrintHistoryListPbck3 { get; set; }
         
@@ -42,7 +43,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public DateTime? Pbck7Date { get; set; }
         [Required]
         public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
-        
+        public string DocumentTypeDescription { get; set; }
+
         [Required]
         public DateTime? ExecDateFrom { get; set; }
          [Required]
@@ -78,7 +80,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public Enums.DocumentTypePbck7AndPbck3 DocumentTypeList { get; set; }
 
-        public List<Pbck7ItemUpload> UploadItems { get; set; }
+        public List<Pbck7UploadViewModel> UploadItems { get; set; }
         public List<WorkflowHistoryViewModel> WorkflowHistoryPbck7 { get; set; }
         public List<WorkflowHistoryViewModel> WorkflowHistoryPbck3 { get; set; }
 
@@ -112,7 +114,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public string ActionTypePbck3 { get; set; }
 
-        public Enums.DocumentStatusGov? Pbck7GovStatus { get; set; }
+        public Enums.DocumentStatusGov Pbck7GovStatus { get; set; }
+        public string Pbck7GovStatusDesc { get; set; }
 
         public Enums.DocumentStatusGov Pbck7GovStatusList { get; set; }
 
@@ -121,9 +124,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentStatusGov? Back1GovStatus { get; set; }
         public Enums.DocumentStatusGov Back1GovStatusList { get; set; }
 
-        public List<HttpPostedFileBase> DocumentsPostBack1 { get; set; }
-
-
+        public List<HttpPostedFileBase> DocumentsPostBack { get; set; }
         
         public Enums.DocumentStatusGov Pbck3GovStatusList { get; set; }
 
@@ -139,5 +140,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public  Ck2Dto Ck2Dto { get; set; }
 
+        public decimal RequestedQty { get; set; }
+        public int FiscalYear { get; set; }
     }
 }

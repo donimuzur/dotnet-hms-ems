@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public string Lack1Number { get; set; }
+        public bool IsModifiedHistory { get; set; }
     }
 
     public class Lack1CreateOutput : BLLBaseOutput

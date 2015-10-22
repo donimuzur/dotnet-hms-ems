@@ -13,6 +13,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         }
         public List<Lack1DetailReportItemModel> DetailList { get; set; }
         public Lack1SearchDetailReportViewModel SearchView { get; set; }
+
+        public Lack1SearchDetailReportViewModel ExportSearchView { get; set; }
     }
 
     public class Lack1SearchDetailReportViewModel

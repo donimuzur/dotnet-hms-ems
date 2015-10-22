@@ -219,7 +219,9 @@ function prodConvGenerateClick(url) {
         formData.append("prodConvExcelFile", file);
     }
     formData.append("nppbkc", $("#Detail_NppbkcId").val());
-
+    formData.append("isNppbckImportChecked", $("#Detail_IsNppbkcImport").is(':checked'));
+    
+    console.log(formData);
     $.ajax({
         url: url,
         type: 'POST',
@@ -411,34 +413,65 @@ function ajaxLoadCompany(formData, url) {
 }
 
 function ValidateGovInput() {
+
     var result = true;
     var requestQty = parseInt($("input[name='Detail.RequestQty']:hidden").val());
     var approvedQty = parseInt($('#Detail_QtyApproved').val());
     var govStatus = $('#Detail_StatusGov').find("option:selected").val();
+    if (!completedDocument) {
+        if (approvedQty > requestQty) {
+            $('#modalBodyMessage').text('PBCK1 Quota Exceeded');
+            $('#ModalPbck1ValidateGov').modal('show');
 
-    if (approvedQty > requestQty) {
-        $('#modalBodyMessage').text('PBCK1 Quota Exceeded');
-        $('#ModalPbck1ValidateGov').modal('show');
-
-        AddValidationClass(false, 'Detail_QtyApproved');
-        result = false;
-    }
-
-    if (govStatus == '') {
-        AddValidationClass(false, 'Detail_StatusGov');
-        result = false;
-    }
-
-    if ($('#Detail_DecreeDate').val() == '') {
-        AddValidationClass(false, 'Detail_DecreeDate');
-        result = false;
-    }
-
-    if ($('#Detail_StatusGov').val() == 'Rejected') {
-        if ($('#Detail_Comment').val() == '') {
-            AddValidationClass(false, 'Detail_Comment');
+            AddValidationClass(false, 'Detail_QtyApproved');
             result = false;
         }
+
+        if (govStatus == '') {
+            AddValidationClass(false, 'Detail_StatusGov');
+            result = false;
+        }
+
+        if ($('#Detail_DecreeDate').val() == '') {
+            AddValidationClass(false, 'Detail_DecreeDate');
+            result = false;
+        }
+
+        if ($('#Detail_StatusGov').val() == 'Rejected') {
+            if ($('#Detail_Comment').val() == '') {
+                AddValidationClass(false, 'Detail_Comment');
+                result = false;
+            }
+        }
+    } else if ($('#Detail_StatusGov').val() != "" || $('#Detail_DecreeDate').val() != '') {
+        if (approvedQty > requestQty) {
+            $('#modalBodyMessage').text('PBCK1 Quota Exceeded');
+            $('#ModalPbck1ValidateGov').modal('show');
+
+            AddValidationClass(false, 'Detail_QtyApproved');
+            result = false;
+        }
+
+        if (govStatus == '') {
+            AddValidationClass(false, 'Detail_StatusGov');
+            result = false;
+        }
+
+        if ($('#Detail_DecreeDate').val() == '') {
+            AddValidationClass(false, 'Detail_DecreeDate');
+            result = false;
+        }
+
+        if ($('#Detail_StatusGov').val() == 'Rejected') {
+            if ($('#Detail_Comment').val() == '') {
+                AddValidationClass(false, 'Detail_Comment');
+                result = false;
+            }
+        }
+    } else {
+        $('#Detail_StatusGov').rules('remove', 'required');
+        $('#Detail_DecreeDate').rules('remove', 'required');
+        result = true;
     }
 
     return result;

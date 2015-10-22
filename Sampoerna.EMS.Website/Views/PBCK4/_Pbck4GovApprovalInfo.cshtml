@@ -1,0 +1,86 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
+@using Sampoerna.EMS.Website.Helpers
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Status Gov<span class="red">*</span></label>
+            <div class="col-md-8">
+                @Html.EnumDropDownListFor(model => model.GovStatus, Model.GovStatusList, "Select", new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6" id="divComment">
+        <div class="row">
+            <label class="col-md-4">Add Comment<span class="red">*</span></label>
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">BACK-1 No</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.BACK1_NO, new { @class = "form-control", @maxlength = "35" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">CK-3 No</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.CK3_NO, new { @class = "form-control", @maxlength = "35" })
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">BACK-1 Date</label>
+            <div class="col-md-8">
+                <div class="input-group date">
+                    @Html.TextBoxFor(model => model.BACK1_DATE, new { @class = "form-control" })
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">CK-3 Date</label>
+            <div class="col-md-8">
+                <div class="input-group date">
+                    @Html.TextBoxFor(model => model.CK3_DATE, new { @class = "form-control" })
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">CK-3 Office Value</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.CK3_OFFICE_VALUE, new { @class = "form-control", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+</div>

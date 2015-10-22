@@ -21,7 +21,7 @@
                 <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                     <div class="panel-body">
                         <div class="form-excise" role="form">
-                            @if (Model.IsCk5PortToImporter)
+                            @*@if (Model.IsCk5PortToImporter)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
@@ -43,21 +43,27 @@
                                 </div>
                             }
                             else
-                            {
+                            {*@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             <label class="col-md-4">Plant<span class="red">*</span></label>
                                             <div class="col-md-8">
-                                                @if (!Model.IsCk5ImporterToPlant)
+                                                @if (Model.IsCk5PortToImporter || Model.IsDomesticAlcohol)
                                                 {
                                                     @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new {@class = "form-control"})
+                                                    
+                                                }
+                                                else if (Model.IsCk5ImporterToPlant)
+                                                {
+                                                    @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new {@class = "form-control", style = "display : none"})
+                                                    var sourcePlantText = Model.SourcePlantId + " - " + Model.SourcePlantName;
+                                                    @Html.TextBox("plantname", sourcePlantText, new {@class = "form-control", @disabled = "true"})
+                                                    
                                                 }
                                                 else
                                                 {
-                                                    @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new {@class = "form-control", style="display : none"})
-                                                    var sourcePlantText = Model.SourcePlantId + " - " + Model.SourcePlantName;
-                                                    @Html.TextBox("plantname", sourcePlantText, new { @class = "form-control", @disabled = "true" })
+                                                    @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new {@class = "form-control"})
                                                 }
                                                 
                                             </div>
@@ -67,7 +73,15 @@
                                         <div class="row">
                                             <label class="col-md-4">NPWP</label>
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.SourceNpwp, new { @disabled = "disabled", @class = "form-control" })
+                                                @if(Model.IsDomesticAlcohol || Model.IsCk5PortToImporter)
+                                                {
+                                                    @Html.TextBoxFor(model => model.SourceNpwp, new { @class = "form-control" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(model => model.SourceNpwp, new {@readonly = "readonly", @class = "form-control"})
+                                                }
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -105,7 +119,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            }
+                            @*}*@
                         </div>
                     </div>
                 </div>
@@ -363,7 +377,17 @@
                                     <div class="row">
                                         <label class="col-md-4">Excise Goods Type<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            @Html.EnumDropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })
+                                            @if (Model.IsDomesticAlcohol)
+                                            {
+                                                @Html.HiddenFor(model => model.GoodType, new {@class = "form-control"})
+                                                @Html.TextBoxFor(model => model.GoodTypeName, new {@class = "form-control", @readonly = "readonly"})
+                                            }
+                                            else
+                                            {
+                                                @Html.EnumDropDownListFor(model => model.GoodType, Model.GoodTypeList, "Select", new { @class = "form-control" })    
+                                            }
+                                            
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -454,7 +478,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsCk5Manual)
+                            @if (!Model.IsCk5Export && !Model.IsCk5Manual)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
@@ -585,6 +609,7 @@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].UsdValue)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Note)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].MaterialDesc)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].CK5_MATERIAL_ID)
                                         <tr>
                                             @*<td style="display: none"></td>*@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>

@@ -45,6 +45,7 @@ namespace Sampoerna.EMS.BLL
        private IPlantBLL _plantBll;
        private IBlockStockBLL _blockStockBll;
        private IHeaderFooterBLL _headerFooterBll;
+       private IWorkflowBLL _workflowBll;
 
        private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
 
@@ -71,12 +72,33 @@ namespace Sampoerna.EMS.BLL
            _plantBll = new PlantBLL(_uow, _logger);
            _blockStockBll = new BlockStockBLL(_uow,_logger);
            _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
+           _workflowBll = new WorkflowBLL(_uow, _logger);
        }
 
        public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
        {
 
            Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
+
+           if (input.UserRole == Enums.UserRole.POA)
+           {
+               var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+               queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+
+
+           }
+           else if (input.UserRole == Enums.UserRole.Manager)
+           {
+               var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+               var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+               queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK4_NUMBER));
+           }
+           else
+           {
+               queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+           }
 
            if (!string.IsNullOrEmpty(input.NppbkcId))
            {
@@ -109,11 +131,11 @@ namespace Sampoerna.EMS.BLL
 
            if (input.IsCompletedDocument)
            {
-               queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+               queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled);
            }
            else
            {
-               queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+               queryFilter = queryFilter.And(c => !(c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled));
            }
 
            Func<IQueryable<PBCK4>, IOrderedQueryable<PBCK4>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
@@ -173,6 +195,8 @@ namespace Sampoerna.EMS.BLL
 
        public Pbck4Dto SavePbck4(Pbck4SaveInput input)
        {
+           bool isModified = false;
+
            //workflowhistory
            var inputWorkflowHistory = new Pbck4WorkflowHistoryInput();
 
@@ -186,8 +210,8 @@ namespace Sampoerna.EMS.BLL
 
                //set changes history
                var origin = Mapper.Map<Pbck4Dto>(dbData);
-               
-               SetChangesHistory(origin, input.Pbck4Dto, input.UserId);
+
+               isModified = SetChangesHistory(origin, input.Pbck4Dto, input.UserId);
 
                Mapper.Map<Pbck4Dto, PBCK4>(input.Pbck4Dto, dbData);
 
@@ -280,8 +304,11 @@ namespace Sampoerna.EMS.BLL
                throw;
            }
 
+           var resultDto = Mapper.Map<Pbck4Dto>(dbData);
+           resultDto.IsModifiedHistory = isModified;
 
-           return Mapper.Map<Pbck4Dto>(dbData);
+           return resultDto;
+
        }
 
        private void AddWorkflowHistory(Pbck4WorkflowHistoryInput input)
@@ -304,7 +331,10 @@ namespace Sampoerna.EMS.BLL
            dbData.ROLE = input.UserRole;
            dbData.ACTION_DATE = DateTime.Now;
 
-           _workflowHistoryBll.Save(dbData);
+           if (!input.IsModified && input.ActionType == Enums.ActionType.Submit)
+               _workflowHistoryBll.UpdateHistoryModifiedForSubmit(dbData);
+           else
+               _workflowHistoryBll.Save(dbData);
        }
 
        private void AddWorkflowHistory(Pbck4WorkflowDocumentInput input)
@@ -317,12 +347,15 @@ namespace Sampoerna.EMS.BLL
            inputWorkflowHistory.UserRole = input.UserRole;
            inputWorkflowHistory.ActionType = input.ActionType;
            inputWorkflowHistory.Comment = input.Comment;
+           inputWorkflowHistory.IsModified = input.IsModified;
 
            AddWorkflowHistory(inputWorkflowHistory);
        }
        
-       private void SetChangesHistory(Pbck4Dto origin, Pbck4Dto data, string userId)
+       private bool SetChangesHistory(Pbck4Dto origin, Pbck4Dto data, string userId)
        {
+           bool isModified = false;
+
             var changesData = new Dictionary<string, bool>();
 
            changesData.Add("PLANT_ID", origin.PlantId == data.PlantId);
@@ -386,7 +419,9 @@ namespace Sampoerna.EMS.BLL
                }
                
                _changesHistoryBll.AddHistory(changes);
+               isModified = true;
            }
+           return isModified;
        }
 
        private void SetChangeHistory(string oldValue, string newValue, string fieldName, string userId, string ck5Id)
@@ -645,15 +680,12 @@ namespace Sampoerna.EMS.BLL
                    CancelledDocument(input);
                    break;
                case Enums.ActionType.GovApprove:
+               case Enums.ActionType.GovPartialApprove:
                    GovApproveDocument(input);
-                   isNeedSendNotif = true;
+                   //isNeedSendNotif = true;
                    break;
                case Enums.ActionType.GovReject:
                    GovRejectedDocument(input);
-                   break;
-               case Enums.ActionType.GovPartialApprove:
-                   GovPartialApproveDocument(input);
-                   isNeedSendNotif = true;
                    break;
               
            }
@@ -666,7 +698,12 @@ namespace Sampoerna.EMS.BLL
            _uow.SaveChanges();
        }
 
-       
+       public void SendMailCompletedPbck4Document(Pbck4WorkflowDocumentInput input)
+       {
+           input.ActionType = Enums.ActionType.GovApprove;
+           SendEmailWorkflow(input);
+       }
+
        private void SendEmailWorkflow(Pbck4WorkflowDocumentInput input)
        {
          
@@ -991,35 +1028,58 @@ namespace Sampoerna.EMS.BLL
            if (dbData == null)
                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-           if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-               dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
-               throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+           //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+           //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
+           //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+           //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+           //{
+           //    CreatedUser = dbData.CREATED_BY,
+           //    CurrentUser = input.UserId,
+           //    DocumentStatus = dbData.STATUS,
+           //    UserRole = input.UserRole,
+           //    NppbkcId = dbData.NPPBKC_ID,
+           //    DocumentNumber = dbData.PBCK4_NUMBER
+           //});
+
+           //if (!isOperationAllow)
+           //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
 
            string oldValue = EnumHelper.GetDescription(dbData.STATUS);
            string newValue = "";
 
            if (input.UserRole == Enums.UserRole.POA)
            {
-               dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-               dbData.APPROVED_BY_POA = input.UserId;
-               dbData.APPROVED_BY_POA_DATE = DateTime.Now;
+               if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+               {
+                   dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                   dbData.APPROVED_BY_POA = input.UserId;
+                   dbData.APPROVED_BY_POA_DATE = DateTime.Now;
 
-               //get poa printed name
-               string poaPrintedName = "";
-               var poaData = _poaBll.GetDetailsById(input.UserId);
-               if (poaData != null)
-                   poaPrintedName = poaData.PRINTED_NAME;
+                   //get poa printed name
+                   string poaPrintedName = "";
+                   var poaData = _poaBll.GetDetailsById(input.UserId);
+                   if (poaData != null)
+                       poaPrintedName = poaData.PRINTED_NAME;
 
-               dbData.POA_PRINTED_NAME = poaPrintedName;
+                   dbData.POA_PRINTED_NAME = poaPrintedName;
 
-               newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                   newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+               }
+               else
+                   throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
            }
            else if (input.UserRole == Enums.UserRole.Manager)
            {
-               dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-               dbData.APPROVED_BY_MANAGER = input.UserId;
-               dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
-               newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+               if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+               {
+                   dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                   dbData.APPROVED_BY_MANAGER = input.UserId;
+                   dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+                   newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+               }
+               else
+                   throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
            }
 
 
@@ -1220,8 +1280,8 @@ namespace Sampoerna.EMS.BLL
            SetChangesHistory(origin, input, input.UserId);
            
            //Add Changes
-           if (dbData.GOV_STATUS != Enums.DocumentStatusGov.FullApproved)
-               WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+           if (dbData.GOV_STATUS != input.GovStatusInput)
+               WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, input.GovStatusInput);
            
            dbData.BACK1_NO = input.AdditionalDocumentData.Back1No;
            dbData.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
@@ -1231,7 +1291,7 @@ namespace Sampoerna.EMS.BLL
            
            dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
 
-           dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
+           dbData.GOV_STATUS = input.GovStatusInput;
 
            dbData.MODIFIED_DATE = DateTime.Now;
            dbData.MODIFIED_BY = input.UserId;
@@ -1239,7 +1299,8 @@ namespace Sampoerna.EMS.BLL
            var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
            pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
 
-           dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+           //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+           InsertOrDeletePbck4Item(pbckDocument);
 
            //update item updated
            foreach (var pbck4ItemDto in input.UploadItemDto)
@@ -1247,113 +1308,147 @@ namespace Sampoerna.EMS.BLL
                UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
            }
 
+           input.DocumentNumber = dbData.PBCK4_NUMBER;
+
+           AddWorkflowHistory(input);
+
            if (IsCompletedWorkflow(dbData))
            {
                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
 
                dbData.STATUS = Enums.DocumentStatus.Completed;
-               
+               input.ActionType = Enums.ActionType.Completed;
+
                AddWorkflowHistory(input);
            }
           
+           //set back for email workflow
+           if (input.GovStatusInput == Enums.DocumentStatusGov.FullApproved)
+               input.ActionType = Enums.ActionType.GovApprove;
+           else if (input.GovStatusInput == Enums.DocumentStatusGov.PartialApproved)
+               input.ActionType = Enums.ActionType.GovPartialApprove;
 
-           input.DocumentNumber = dbData.PBCK4_NUMBER;
+          
            
        }
 
-       private void GovPartialApproveDocument(Pbck4WorkflowDocumentInput input)
+       public void UpdateUploadedFileCompleted(List<PBCK4_DOCUMENTDto> input)
        {
-           var dbData = _repository.GetByID(input.DocumentId);
-
-           if (dbData == null)
-               throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-           if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-               throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-           //prepare for set changes history
-           var origin = Mapper.Map<Pbck4Dto>(dbData);
-
-
-           //add to change log
-           SetChangesHistory(origin, input, input.UserId);
-
-           //Add Changes
-           if (dbData.GOV_STATUS != Enums.DocumentStatusGov.PartialApproved)
-               WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
-
-           dbData.BACK1_NO = input.AdditionalDocumentData.Back1No;
-           dbData.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
-
-           dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
-           dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-
-           dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
-
-           dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-
-           dbData.MODIFIED_DATE = DateTime.Now;
-           dbData.MODIFIED_BY = input.UserId;
-
-           var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
-           pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
-
-           dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
-
-           //update item updated
-           foreach (var pbck4ItemDto in input.UploadItemDto)
-           {
-               UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
-           }
-
-           if (IsCompletedWorkflow(dbData))
-           {
-               WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-
-               dbData.STATUS = Enums.DocumentStatus.Completed;
-
-               AddWorkflowHistory(input);
-           }
-
-
-           input.DocumentNumber = dbData.PBCK4_NUMBER;
-
-           //var dbData = _repository.GetByID(input.DocumentId);
-
-           //if (dbData == null)
-           //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-           //if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-           //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-           ////Add Changes
-           //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-           //WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
-
-           //dbData.STATUS = Enums.DocumentStatus.Completed;
-
-           //dbData.BACK1_NO = input.AdditionalDocumentData.Back1No;
-           //dbData.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
-
-           //dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
-           //dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-           
-           //dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
-
-           //dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-
-           //dbData.MODIFIED_DATE = DateTime.Now;
-           //dbData.MODIFIED_BY = input.UserId;
-
-           //var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
-           //pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
-
-           //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
-
-           //input.DocumentNumber = dbData.PBCK4_NUMBER;
-
-           //AddWorkflowHistory(input);
+           InsertOrDeletePbck4Item(input);
+           _uow.SaveChanges();
        }
+
+       private void InsertOrDeletePbck4Item(List<PBCK4_DOCUMENTDto> input)
+       {
+           foreach (var pbck4DocumentDto in input)
+           {
+               if (pbck4DocumentDto.IsDeleted)
+               {
+                   var pbck4Doc = _repositoryPbck4Documents.GetByID(pbck4DocumentDto.PBCK4_DOCUMENT_ID);
+                   if (pbck4Doc != null)
+                       _repositoryPbck4Documents.Delete(pbck4Doc);
+               }
+               else
+               {
+                   if (pbck4DocumentDto.PBCK4_DOCUMENT_ID == 0)
+                        _repositoryPbck4Documents.Insert(Mapper.Map<PBCK4_DOCUMENT>(pbck4DocumentDto));
+               }
+           }
+       }
+
+       //private void GovPartialApproveDocument(Pbck4WorkflowDocumentInput input)
+       //{
+       //    var dbData = _repository.GetByID(input.DocumentId);
+
+       //    if (dbData == null)
+       //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+       //    if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+       //        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+       //    //prepare for set changes history
+       //    var origin = Mapper.Map<Pbck4Dto>(dbData);
+
+
+       //    //add to change log
+       //    SetChangesHistory(origin, input, input.UserId);
+
+       //    //Add Changes
+       //    if (dbData.GOV_STATUS != Enums.DocumentStatusGov.PartialApproved)
+       //        WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
+
+       //    dbData.BACK1_NO = input.AdditionalDocumentData.Back1No;
+       //    dbData.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
+
+       //    dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
+       //    dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
+
+       //    dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
+
+       //    dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
+
+       //    dbData.MODIFIED_DATE = DateTime.Now;
+       //    dbData.MODIFIED_BY = input.UserId;
+
+       //    var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
+       //    pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
+
+       //    dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+
+       //    //update item updated
+       //    foreach (var pbck4ItemDto in input.UploadItemDto)
+       //    {
+       //        UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
+       //    }
+
+       //    if (IsCompletedWorkflow(dbData))
+       //    {
+       //        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+
+       //        dbData.STATUS = Enums.DocumentStatus.Completed;
+
+       //        AddWorkflowHistory(input);
+       //    }
+
+
+       //    input.DocumentNumber = dbData.PBCK4_NUMBER;
+
+       //    //var dbData = _repository.GetByID(input.DocumentId);
+
+       //    //if (dbData == null)
+       //    //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+       //    //if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+       //    //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+       //    ////Add Changes
+       //    //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+       //    //WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
+
+       //    //dbData.STATUS = Enums.DocumentStatus.Completed;
+
+       //    //dbData.BACK1_NO = input.AdditionalDocumentData.Back1No;
+       //    //dbData.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
+
+       //    //dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
+       //    //dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
+           
+       //    //dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
+
+       //    //dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
+
+       //    //dbData.MODIFIED_DATE = DateTime.Now;
+       //    //dbData.MODIFIED_BY = input.UserId;
+
+       //    //var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
+       //    //pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
+
+       //    //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+
+       //    //input.DocumentNumber = dbData.PBCK4_NUMBER;
+
+       //    //AddWorkflowHistory(input);
+       //}
 
        private void GovRejectedDocument(Pbck4WorkflowDocumentInput input)
        {
@@ -1366,10 +1461,10 @@ namespace Sampoerna.EMS.BLL
                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
            //Add Changes
-           WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
+           WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
            WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
 
-           dbData.STATUS = Enums.DocumentStatus.GovRejected;
+           dbData.STATUS = Enums.DocumentStatus.Rejected;
            dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
 
            dbData.MODIFIED_DATE = DateTime.Now;
@@ -1495,11 +1590,13 @@ namespace Sampoerna.EMS.BLL
 
            result.ReportDetails.HeaderImage = string.Empty;
 
-           if (headerFooterData.IS_HEADER_SET.HasValue && headerFooterData.IS_HEADER_SET.Value)
+           if (headerFooterData != null)
            {
-               result.ReportDetails.HeaderImage = headerFooterData.HEADER_IMAGE_PATH;
+               if (headerFooterData.IS_HEADER_SET.HasValue && headerFooterData.IS_HEADER_SET.Value)
+               {
+                   result.ReportDetails.HeaderImage = headerFooterData.HEADER_IMAGE_PATH;
+               }
            }
-
            return result;
         }
 
@@ -1702,7 +1799,7 @@ namespace Sampoerna.EMS.BLL
             //get from pbck4 
 
             var dbPbck4 = _repository.Get(c => c.PLANT_ID == plant &&
-                        (c.STATUS != Enums.DocumentStatus.Cancelled), null, "PBCK4_ITEM");
+                        (c.STATUS != Enums.DocumentStatus.Cancelled && c.STATUS != Enums.DocumentStatus.Completed), null, "PBCK4_ITEM");
 
             decimal blockStockUsed =
                 dbPbck4.Sum(

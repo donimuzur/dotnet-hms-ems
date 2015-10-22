@@ -1,0 +1,439 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck3ViewModel
+@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@{
+
+}
+
+<div id="information" class="tab-pane active" role="tabpanel">
+    <div class="tab-wrapper">
+
+      
+        @if (Model.FromPbck7)
+        {
+            @Html.Partial("_Pbck3Pbck7Info")
+        }
+        else
+        {
+            @Html.Partial("_Pbck3Ck5Info")
+        }
+
+        <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionFour" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                            BACK-1
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-1 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Back1Number, new { @disabled = "disabled", @class = "form-control" })
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-1 Date</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Back1Date, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4"></label>
+                                        <div class="col-md-8">
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+
+                                        <label class="col-md-4"></label>
+                                        <div class="col-md-8">
+
+                                            @if (Model.Back1Documents != null)
+                                            {
+                                                foreach (var file in Model.Back1Documents)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <i class="fa fa-file"></i>
+                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                        </div>
+
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div aria-multiselectable="true" role="tablist" id="accordionSix" class="panel-group">
+            <div class="panel panel-default">
+                <div id="headingSix" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapseSix" aria-expanded="true" href="#collapseSix" data-parent="#accordion" data-toggle="collapse" class="">
+                            PBCK-3 Detail
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="headingSix" role="tabpanel" class="panel-collapse collapse in" id="collapseSix" style="">
+                    <div class="panel-body">
+                        <div role="form" class="form-excise">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Pbck3Number, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Date</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new {@class = "form-control"})
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Exec From</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.EXEC_DATE_FROM, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.EXEC_DATE_FROM, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Exec To</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.EXEC_DATE_TO, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.EXEC_DATE_TO, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Gov Status</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Pbck3GovStatusDescription, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     
+        @if (Model.FromPbck7)
+        {
+             <div class="panel-group not-upload" id="accordion-8" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-8" href="#collapse8" aria-expanded="true" aria-controls="collapse8">
+                            Workflow History PBCK7
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th>Account Name</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.WorkflowHistoryPbck7 != null)
+                                    {
+                                        foreach (var history in Model.WorkflowHistoryPbck7)
+                                        {
+                                    <tr>
+                                        <td>@history.USERNAME</td>
+                                        <td>@history.Role </td>
+                                        <td>@history.ACTION </td>
+                                        <td>@history.ACTION_DATE</td>
+                                        <td>@history.COMMENT</td>
+                                    </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        }
+        else
+        {
+            <div class="panel-group not-upload" id="accordion-8" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-8" href="#collapse8" aria-expanded="true" aria-controls="collapse8">
+                            Workflow History CK-5
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th>Account Name</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.WorkflowHistoryPbck7 != null)
+                                    {
+                                        foreach (var history in Model.Ck5FormViewModel.WorkflowHistory)
+                                        {
+                                    <tr>
+                                        <td>@history.USERNAME</td>
+                                        <td>@history.Role </td>
+                                        <td>@history.ACTION </td>
+                                        <td>@history.ACTION_DATE</td>
+                                        <td>@history.COMMENT</td>
+                                    </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        }
+
+       
+
+        <div class="panel-group not-upload" id="accordion-9" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-9" href="#collapse9" aria-expanded="true" aria-controls="collapse9">
+                            Workflow History PBCK3
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse9" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th>Account Name</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.WorkflowHistoryPbck3 != null)
+                                    {
+                                        foreach (var history in Model.WorkflowHistoryPbck3)
+                                        {
+                                    <tr>
+                                        <td>@history.USERNAME</td>
+                                        <td>@history.Role </td>
+                                        <td>@history.ACTION </td>
+                                        <td>@history.ACTION_DATE</td>
+                                        <td>@history.COMMENT</td>
+                                    </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+

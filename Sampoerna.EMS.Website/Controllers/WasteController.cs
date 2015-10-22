@@ -146,14 +146,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<WasteDto>(model);
-                var company = _companyBll.GetById(model.CompanyCode);
-                var plant = _plantBll.GetT001WById(model.PlantWerks);
-                var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
-
-                //get desc
-                data.CompanyName = company.BUTXT;
-                data.PlantName = plant.NAME1;
-                data.BrandDescription = brandDesc.BRAND_CE;
+               
 
                 //waste reject
                 data.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
@@ -261,14 +254,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var dbWasteNew = Mapper.Map<WasteDto>(model);
-            var company = _companyBll.GetById(model.CompanyCode);
-            var plant = _plantBll.GetT001WById(model.PlantWerks);
-            var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
-
-            dbWasteNew.CompanyName = company.BUTXT;
-            dbWasteNew.PlantName = plant.NAME1;
-            dbWasteNew.BrandDescription = brandDesc.BRAND_CE;
-
+            
             //reject
             dbWasteNew.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
             dbWasteNew.PackerRejectStickQty = model.PackerStr == null ? 0 : Convert.ToDecimal(model.PackerStr);
@@ -382,11 +368,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                var listWaste = new List<WasteUploadItems>();
+
+                //check validation
                 foreach (var item in modelDto.UploadItems)
                 {
                     var company = _companyBll.GetById(item.CompanyCode);
                     var plant = _plantBll.GetT001WById(item.PlantWerks);
                     var brandCe = _brandRegistrationBll.GetById(item.PlantWerks, item.FaCode);
+
+                    if (brandCe.IS_DELETED == true || (brandCe.STATUS == false || brandCe.STATUS == null))
+                    {
+                        AddMessageInfo("Data Brand Description Is Inactive", Enums.MessageInfoType.Error);
+                        return RedirectToAction("UploadManualWaste");
+                    }
 
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
@@ -398,6 +393,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     item.CreatedDate = DateTime.Now;
+                    item.CreatedBy = CurrentUser.USER_ID;
 
                     var existingData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
                     Convert.ToDateTime(item.WasteProductionDate));
@@ -408,12 +404,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         return RedirectToAction("UploadManualWaste");
                     }
 
-
-
-                    _wasteBll.SaveUpload(item);
-                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                       );
+                    listWaste.Add(item);
                 }
+
+                //do save
+                foreach(var data in listWaste)
+                {
+                    _wasteBll.SaveUpload(data);
+                }
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
             }
 
             catch (Exception ex)
@@ -440,33 +440,31 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     var item = new WasteUploadItems();
-
+                   
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = dataRow[3];
-                    item.MarkerRejectStickQty = dataRow[4] == "" || dataRow[4] =="-" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    item.PackerRejectStickQty = dataRow[5] == "" || dataRow[5] =="-"? 0: Convert.ToDecimal(dataRow[5]);
-                    item.DustWasteGramQty = dataRow[6] == "" || dataRow[6] =="-" ? 0 : Convert.ToDecimal(dataRow[6]);
-                    item.FloorWasteGramQty = dataRow[7] == "" || dataRow[7] == "-" ? 0 : Convert.ToDecimal(dataRow[7]);
-                    item.DustWasteStickQty = dataRow[8] == "" || dataRow[8] == "-" ? 0 : Convert.ToDecimal(dataRow[8]);
-                    item.FloorWasteStickQty = dataRow[9] == "" || dataRow[9] == "-" ? 0 : Convert.ToDecimal(dataRow[9]);
-                    item.WasteProductionDate = DateTime.FromOADate(Convert.ToDouble(dataRow[10])).ToString("dd MMM yyyy");
+                    item.MarkerRejectStickQty = dataRow[4];
+                    item.PackerRejectStickQty = dataRow[5];
+                    item.DustWasteGramQty = dataRow[6];
+                    item.FloorWasteGramQty = dataRow[7];
+                    item.DustWasteStickQty = dataRow[8];
+                    item.FloorWasteStickQty = dataRow[9];
+                    item.WasteProductionDate = dataRow[10]; 
                    
                     {
                         model.Add(item);
                     }
-
-                    var input = Mapper.Map<List<WasteUploadItemsInput>>(model);
-                    var outputResult = _wasteBll.ValidationWasteUploadDocumentProcess(input);
-
-                    model = Mapper.Map<List<WasteUploadItems>>(outputResult);
-
-
+                    
                 }
             }
 
+            var input = Mapper.Map<List<WasteUploadItemsInput>>(model);
+            var outputResult = _wasteBll.ValidationWasteUploadDocumentProcess(input);
+
+            model = Mapper.Map<List<WasteUploadItems>>(outputResult);
             return Json(model);
 
 

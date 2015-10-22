@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
 
         public string PlantId { get; set; }
         public SelectList PlantIdList { get; set; }
+        public bool isForExport { get; set; }
 
     }
 
@@ -44,36 +45,42 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string Period { get; set; }
         public string Month { get; set; }
         public string Year { get; set; }
+        public string PoaApproved { get; set; }
+        public string ManagerApproved { get; set; }
         public string Status { get; set; }
 
         public List<string> ProductionDate { get; set; }
         public List<string> FaCode { get; set; }
         public List<string> TobaccoProductType { get; set; }
         public List<string> BrandDescription { get; set; }
-        public List<decimal> Hje { get; set; }
-        public List<decimal> Tariff { get; set; }
-        public List<decimal> Content { get; set; }
-        public List<decimal> PackedQty { get; set; }
-        public List<decimal> PackedQtyInPack { get; set; }
-        public List<decimal> UnPackQty { get; set; }
-        public List<decimal> ProducedQty { get; set; }
+        public List<string> Hje { get; set; }
+        public List<string> Tariff { get; set; }
+        public List<string> Content { get; set; }
+        public List<string> PackedQty { get; set; }
+        public List<string> PackedQtyInPack { get; set; }
+        public List<string> UnPackQty { get; set; }
+        public List<string> ProducedQty { get; set; }
         public List<string> UomProducedQty { get; set; }
         public List<string> Remarks { get; set; }
     }
 
-    public class Ck4CExportSummaryReportsViewModel : Ck4CSearchSummaryReportsViewModel
+    public class Ck4CExportSummaryReportsViewModel
     {
+        public string Ck4CNumber { get; set; }
+        public string Plant { get; set; }
         public bool NoRow { get; set; }
-        public bool Ck4CNumber { get; set; }
+        public bool Ck4CNo { get; set; }
         public bool CeOffice { get; set; }
         public bool BasedOn { get; set; }
-        public new bool PlantId { get; set; }
+        public bool PlantId { get; set; }
         public bool PlantDescription { get; set; }
         public bool LicenseNumber { get; set; }
         public bool ReportPeriod { get; set; }
         public bool Period { get; set; }
         public bool Month { get; set; }
         public bool Year { get; set; }
+        public bool PoaApproved { get; set; }
+        public bool ManagerApproved { get; set; }
         public bool Status { get; set; }
 
         public bool ProductionDate { get; set; }

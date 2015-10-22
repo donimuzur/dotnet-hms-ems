@@ -29,13 +29,16 @@
             <tr>
                 <td class="action">
                     <a href="@Url.Action("Detail", "PBCK7AndPBCK3", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("Edit", "PBCK7AndPBCK3", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    @if (!Model.IsCompletedDoc)
+                    {
+                        <a href="@Url.Action("Edit", "PBCK7AndPBCK3", new {id = item.Id})" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    }
                 </td>
                 <td>
                     @item.Pbck7Number
                 </td>
                 <td>
-                   @item.ReportedOn  
+                    @item.ReportedOn
                 </td>
                 <td>
                     @item.NppbkcId
@@ -53,4 +56,3 @@
         }
     </tbody>
 </table>
-

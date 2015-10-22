@@ -14,104 +14,238 @@
         <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
             <div class="panel-body">
                 <div class="form-excise" role="form">
-                    <div class="row">
-                        
 
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <label class="col-md-4">BACK-1 No</label>
-                                <div class="col-md-8">
-                                    @if(Model.Pbck7Status == Enums.DocumentStatus.GovApproved)
+                    @if (Model.AllowGovApproveAndReject || Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                                {
+                                    <label class="col-md-4">PBCK7 Gov Status</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Pbck7GovStatusDesc, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                }
+                                else
+                                {
+                                    <label class="col-md-4">PBCK7 Gov Status<span class="red">*</span></label>
+                                    <div class="col-md-8">
+                                        @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control" })
+                                    </div>
+                                }
+
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
                                     {
-                                        @Html.TextBoxFor(x => x.Back1Dto.Back1Number, new {@class = "form-control"})
+                                    <label class="col-md-4">BACK-1 No</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Back1Dto.Back1Number, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
                                     }
                                     else
                                     {
-                                        @Html.TextBox("back1_number", Model.Back1Dto.Back1Number, new { @class = "form-control", @disabled = "disabled" })
-
-                                    }
-                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <label class="col-md-4">BACK-1 Date</label>
-                                <div class="col-md-8">
-                                    <div class="input-group date">
-                                        @if(Model.Pbck7Status == Enums.DocumentStatus.GovApproved)
-                                        {
-                                            @Html.TextBoxFor(x => x.Back1Dto.Back1Date, new {@class = "form-control"})
-                                        }
-                                        else
-                                        {
-                                            @Html.TextBox("back1_date", Model.Back1Dto.Back1Date, new { @class = "form-control", @disabled="disabled" })
-
-                                        }
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
+                                    <label class="col-md-4">BACK-1 No <span class="red">*</span></label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(x => x.Back1Dto.Back1Number, new {@class = "form-control"})
                                     </div>
+                                    }
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <label class="col-md-4">Back1 Document</label>
-                                <div class="col-md-8">
-                                    <div class="file-upload" id="back1-files">
-                                        @if (Model.Back1Dto != null)
-                                        {
-                                            if (Model.Back1Dto.Documents != null)
-                                            {
 
-                                                foreach (var file in Model.Back1Dto.Documents)
-                                                {
+                        <div class="row">
+                            <div class="col-md-6">
+                                @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                                {
 
-                                                    <div class="row">
-                                                        <div class="col-sm-10">
-                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                        </div>
-                                                        <div class="col-sm-2">
-                                                            <button class="btn btn-danger full" type="button" onclick=" removeDocBack1(@file.BACK1_DOCUMENT_ID, '@Url.Action("RemoveDocBack1", "Pbck7AndPbck3")', this) "><i class="fa fa-times"></i></button>
-                                                        </div>
-                                                    </div>
-
-                                                }
-                                            }
-                                        }
-
-                                    </div>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            @if (Model.Pbck7Status == Enums.DocumentStatus.GovApproved)
-                                            {
-                                                <button class="btn btn-primary full" type="button" data-toggle="modal" data-target=".upload-file-back1">Add File</button>
-                                            }
-                                            else
-                                            {
-                                                <button class="btn btn-primary full" type="button">Add File</button>
+                                        @*<label class="col-md-4">Comment</label>
+                                        <div class="col-md-8">
+                                            @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
+                                        </div>*@
+                                    </div>
 
-                                            }
+                                }
+                                else
+                                {
+                                    <div id="divComment">
+                                        <div class="row">
+                                            <label class="col-md-4">Add Comment<span class="red">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                                            </div>
                                         </div>
                                     </div>
+
+                                }
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                                    {
+                                        <label class="col-md-4">BACK-1 Date </label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Back1Dto.Back1Date, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <label class="col-md-4">BACK-1 Date <span class="red">*</span></label>
+                                        <div class="col-md-8">
+
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(x => x.Back1Dto.Back1Date, new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4"></label>
+                                    <div class="col-md-8">
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+
+                                    <label class="col-md-4">Back1 Doc <span class="red">*</span></label>
+                                    <div class="col-md-8">
+                                        @Html.HiddenFor(model => model.Back1Dto.Back1Id)
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="file-upload" id="poa-files">
+                                                    @if (Model.Back1Dto != null && Model.Back1Dto.Documents != null)
+                                                    {
+                                                        for (int i = 0; i < Model.Back1Dto.Documents.Count(); i++)
+                                                        {
+
+                                                            @Html.HiddenFor(model => model.Back1Dto.Documents[i].BACK1_DOCUMENT_ID)
+                                                            @Html.HiddenFor(model => model.Back1Dto.Documents[i].IsDeleted)
+
+                                                            <div class="row">
+                                                                <div class="col-sm-10">
+                                                                    <a href="@Url.Content(Model.Back1Dto.Documents[i].FILE_PATH)">@Model.Back1Dto.Documents[i].FILE_NAME</a>
+
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck7(this,"Back1Dto_Documents_", "@i") '><i class="fa fa-times"></i></button>
+                                                                </div>
+                                                            </div>
+
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".back-1">Add File</button>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
 
 
-                    </div>
-                    @if (Model.Pbck7Status == Enums.DocumentStatus.GovApproved)
-                    {
-                        @Html.Partial("_FileUploadBack1")
                     }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="col-md-4">PBCK7 Gov Status</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Pbck7GovStatusDesc, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">BACK-1 No</label>
+                                    <div class="col-md-8">
+
+                                        @Html.TextBoxFor(model => model.Back1Dto.Back1Number, new { @disabled = "disabled", @class = "form-control" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">BACK-1 Date</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Back1Dto.Back1Date, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    }
+
+
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@* Modal upload dialog *@
+
+<div class="modal fade in upload-file ems-modal back-1" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">BACK-1 Doc Attachment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="file-sk-container" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary full add-files">Add Files</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <input type="file" class="form-control" data-filename-placement="inside" id="DocumentsPostBack_0_" name="DocumentsPostBack[0]">
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-danger full" onclick="removeUploadButton(0);">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" id="upload-file-sk" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* end Modal upload dialog *@

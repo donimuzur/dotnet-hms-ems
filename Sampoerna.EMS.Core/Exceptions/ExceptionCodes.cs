@@ -68,14 +68,29 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("Total Usage less than or equals to zero ")]
             TotalUsageLessThanEqualTpZero,
 
-            [Description("Generate Number error : The company data has not be set")]
+            [Description("Generate Number error : The company data has not be set, please make sure all nppbkc has a main plant")]
             GenerateNumberCompanyDataHasNotSet,
             [Description("Generate Number error : The company alias has not be set")]
             GenerateNumberCompanyAliasHasNotSet,
             [Description("Generate Number error : The plant data has not be set")]
             GenerateNumberPlantDataHasNotSet,
             [Description("Generate Number error : The city alias has not be set")]
-            GenerateNumberCityAliasHasNotSet
+            GenerateNumberCityAliasHasNotSet,
+            [Description("A record with same parameter is already exist")]
+            Lack2DuplicateSelectionCriteria,
+
+            [Description("Missing Ck5 data selected")]
+            MissingCk5DataSelected,
+
+            [Description("Convertion to SAP in Material Master is null")]
+            ConvertedSAPNull,
+
+            [Description("Convertion to SAP Base UOM in Material Master not exist")]
+            ConvertedSAPNotExist,
+
+            [Description("Missing PBCK-1 Data regarding to selection criteria.")]
+            Lack1MissingPbck1Selected
+
         }
         
         /// <summary>

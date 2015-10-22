@@ -23,6 +23,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public bool IsCompletedDocument { get; set; }
+
+        public string UserId { get; set; }
+
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Pbck4SaveInput
@@ -41,6 +45,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
         public Enums.ActionType ActionType { get; set; }
         public string Comment { get; set; }
+        public bool IsModified { get; set; }
     }
 
     public class Pbck4WorkflowDocumentInput
@@ -55,6 +60,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Pbck4WorkflowDocumentData AdditionalDocumentData { get; set; }
 
         public List<Pbck4ItemDto> UploadItemDto { get; set; }
+
+        public Enums.DocumentStatusGov GovStatusInput { get; set; }
+        public bool IsModified { get; set; }
     }
 
     public class Pbck4WorkflowDocumentData

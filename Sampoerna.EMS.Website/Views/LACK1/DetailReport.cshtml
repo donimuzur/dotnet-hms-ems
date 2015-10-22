@@ -99,6 +99,16 @@
                     </div>
                 </div>
             </div>
+            @using (Html.BeginForm("ExportDetailReport", "LACK1", FormMethod.Post, new { @id = "ExportXlsDetailReports" }))
+            {
+                @Html.HiddenFor(model => model.ExportSearchView.CompanyCode)
+                @Html.HiddenFor(model => model.ExportSearchView.NppbkcId)
+                @Html.HiddenFor(model => model.ExportSearchView.ReceivingPlantId)
+                @Html.HiddenFor(model => model.ExportSearchView.SupplierPlantId)
+                @Html.HiddenFor(model => model.ExportSearchView.PeriodFrom)
+                @Html.HiddenFor(model => model.ExportSearchView.PeriodTo)
+                @Html.HiddenFor(model => model.ExportSearchView.ExcisableGoodsType)
+            }
         </div>
     </div>
     <div id="contenttable" class="table-container">
@@ -115,53 +125,26 @@
         $('#MenuLack1Report').addClass('open');
         $('#MenuLack1DetailReport').addClass('active');
 
-        $(document).ready(function () {
-
-            //setupDataTables();
-
-            $('#SearchView_CompanyCode').on('change', function () {
+        $(document).ready(function() {
+        
+            $('#SearchView_CompanyCode').on('change', function() {
                 OnCompanyCodeChange();
             });
 
-            $('#SearchView_NppbkcId').on('change', function () {
+            $('#SearchView_NppbkcId').on('change', function() {
                 OnNppbkcIdChange();
             });
 
-            $('#SearchView_ExcisableGoodsType').on('change', function () {
+            $('#SearchView_ExcisableGoodsType').on('change', function() {
                 OnExcisableGoodsTypeChange();
             });
 
-            var now = new Date();
-
-            $('#btn-export-to-excel').click(function () {
-                $("#lack1Table").table2excel({
-                    name: "Worksheet Name",
-                    filename: "lack1_detailreport_" + now.format('ddMMyyyyHHmmss') //do not include extension
-                });
+            $('#btn-export-to-excel').click(function() {
+                exportDetailReport();
             });
 
         });
-
-        function setupDataTables() {
-
-            // DataTable
-            var table = null;
-            if ($.fn.dataTable.isDataTable('#lack1Table')) {
-                table = $('#lack1Table').DataTable();
-                table.destroy();
-            }
-
-            table = $('#lack1Table').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "zeroRecords": "No records found",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
-
-        }
-
+        
         function OnCompanyCodeChange() {
             if ($("#SearchView_CompanyCode").length) {
                 var companyCode = $('#SearchView_CompanyCode').find("option:selected").val();
@@ -211,7 +194,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data.SupplierList;
                         $('#SearchView_SupplierPlantId').append('<option value="">All</option>');
                         if (list.length > 0) {
@@ -233,7 +216,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data.ReceivePlantList;
                         $('#SearchView_ReceivingPlantId').append('<option value="">All</option>');
                         if (list.length > 0) {
@@ -255,7 +238,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data.ExGoodTypeList;
                         $('#SearchView_ExcisableGoodsType').append('<option value="">All</option>');
                         if (list.length > 0) {
@@ -276,7 +259,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data.SupplierList;
                         $('#SearchView_SupplierPlantId').append('<option value="">All</option>');
                         if (list.length > 0) {
@@ -298,7 +281,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         var list = data;
                         $('#SearchView_NppbkcId').append('<option value="">All</option>');
                         if (list.length > 0) {
@@ -311,6 +294,17 @@
             } else {
                 $('#SearchView_NppbkcId').append('<option value="">All</option>');
             }
+        }
+
+        function exportDetailReport() {
+            $('#ExportSearchView_CompanyCode').val($('#SearchView_CompanyCode').find("option:selected").val());
+            $('#ExportSearchView_NppbkcId').val($('#SearchView_NppbkcId').find("option:selected").val());
+            $('#ExportSearchView_ReceivingPlantId').val($('#SearchView_ReceivingPlantId').find("option:selected").val());
+            $('#ExportSearchView_ExcisableGoodsType').val($('#SearchView_ExcisableGoodsType').find("option:selected").val());
+            $('#ExportSearchView_SupplierPlantId').val($('#SearchView_SupplierPlantId').find("option:selected").val());
+            $('#ExportSearchView_PeriodFrom').val($('#SearchView_PeriodFrom').find("option:selected").val());
+            $('#ExportSearchView_PeriodTo').val($('#SearchView_PeriodTo').find("option:selected").val());
+            $('#ExportXlsDetailReports').submit();
         }
 
     </script>

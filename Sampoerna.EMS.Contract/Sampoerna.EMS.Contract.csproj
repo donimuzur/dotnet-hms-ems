@@ -44,11 +44,13 @@
   <ItemGroup>
     <Compile Include="IBACK1BLL.cs" />
     <Compile Include="IBack1Services.cs" />
+    <Compile Include="IBack3Services.cs" />
     <Compile Include="IBlockStockBLL.cs" />
     <Compile Include="IBrandRegistrationBLL.cs" />
     <Compile Include="IChangesHistoryBLL.cs" />
     <Compile Include="ICK1BLL.cs" />
     <Compile Include="ICK1Services.cs" />
+    <Compile Include="ICK2Services.cs" />
     <Compile Include="ICK4CBLL.cs" />
     <Compile Include="ICK4CDecreeDocBLL.cs" />
     <Compile Include="ICK4CItemBLL.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Services\ICK4CItemService.cs" />
     <Compile Include="Services\ICK5MaterialService.cs" />
     <Compile Include="Services\ICK5Service.cs" />
+    <Compile Include="Services\IExcisableGoodsTypeService.cs" />
     <Compile Include="Services\IExGroupTypeService.cs" />
     <Compile Include="Services\IInventoryMovementService.cs" />
     <Compile Include="Services\ILack1IncomeDetailService.cs" />
@@ -117,9 +120,14 @@
     <Compile Include="Services\ILack1ProductionDetailService.cs" />
     <Compile Include="Services\ILACK1Service.cs" />
     <Compile Include="Services\ILack1TrackingService.cs" />
+    <Compile Include="Services\ILack2DocumentService.cs" />
+    <Compile Include="Services\ILack2ItemService.cs" />
+    <Compile Include="Services\ILack2Service.cs" />
     <Compile Include="Services\IPBCK1Service.cs" />
     <Compile Include="Services\IT001KService.cs" />
+    <Compile Include="Services\IT001Service.cs" />
     <Compile Include="Services\IT001WService.cs" />
+    <Compile Include="Services\IUserPlantMapService.cs" />
     <Compile Include="Services\IZaidmExNppbkcService.cs" />
     <Compile Include="Services\IZaidmExProdTypeService.cs" />
   </ItemGroup>

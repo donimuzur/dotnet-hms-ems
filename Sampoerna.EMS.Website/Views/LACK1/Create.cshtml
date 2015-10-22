@@ -13,18 +13,28 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>List by NPPBKC</h3>
+                
+                    @if (Model.Lack1Level == Enums.Lack1Level.Nppbkc)
+                    {
+                        /* LACK-1 Plant Level */
+                        <h3>List by NPPBKC</h3>
+                    }
+                    else if (Model.Lack1Level == Enums.Lack1Level.Plant)
+                    {
+                        /* LACK-1 Plant Level */
+                        <h3>List by Plant</h3>
+                    }
                 <label class="status">Draft</label>
                 <div class="action-button">
                     <input type="button" class="btn btn-blue" onclick="saveClick()" value="Save" />
                     @if (Model.Lack1Level == Enums.Lack1Level.Nppbkc)
                     {
-                        /* LACK-1 Plant Level */
+                        /* LACK-1 NPPBKC Level */
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-nppbkc-list" />
                     }
                     else if (Model.Lack1Level == Enums.Lack1Level.Plant)
                     {
-                        /* LACK-1 NPPBKC Level */
+                        /* LACK-1 Plant Level */
                         <input type="button" value="Back" class="btn btn-grey" id="btn-back-plant-list" />
                     }
                 </div>
@@ -158,6 +168,16 @@
                 /*load supplier list*/
                 ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
 
+            }
+        }
+
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
             }
         }
 

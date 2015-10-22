@@ -27,5 +27,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string CutFilterCode { get; set; }
         public string IsDeleted { get; set; }
         public string IsActive { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

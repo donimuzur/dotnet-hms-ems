@@ -6,47 +6,24 @@
     ViewBag.Title = "Detail";
 }
 
-@using (Html.BeginForm("Detail", "PBCK7AndPBCK3", FormMethod.Post, new {@id = "form-pbck7-detail", @class = "form-excise", role = "form", enctype = "multipart/form-data"}))
+@using (Html.BeginForm(Model.ActionType, "PBCK7AndPBCK3", FormMethod.Post, new {@id = "form-pbck7-detail", @class = "form-excise", role = "form", enctype = "multipart/form-data"}))
 {
-    @Html.HiddenFor(x=>x.ActionType)
-    @Html.HiddenFor(x => x.IsSaveSubmit)
-    @Html.HiddenFor(x => x.ActionTypePbck3)
-    @Html.HiddenFor(x => x.IsSaveSubmitPbck3)
-    @Html.HiddenFor(x => x.Id)
-    @Html.HiddenFor(x => x.Pbck3Dto.Pbck3Id)
-    @Html.HiddenFor(x => x.CreatedBy)
-    @Html.HiddenFor(x => x.CreatedDate)
-    @Html.HiddenFor(x => x.ModifiedBy)
-    @Html.HiddenFor(x => x.ModifiedDate)
-    @Html.HiddenFor(x => x.ApprovedBy)
-    @Html.HiddenFor(x => x.ApprovedDate)
-    @Html.HiddenFor(x => x.ApprovedByManager)
-    @Html.HiddenFor(x => x.ApprovedDateManager)
-    @Html.HiddenFor(x => x.RejectedBy)
-    @Html.HiddenFor(x => x.RejectedDate)
-    @Html.HiddenFor(x => x.Pbck7Status)
-    @Html.HiddenFor(x => x.Pbck3Dto.Pbck3Status)
-    @Html.HiddenFor(x => x.Pbck3Dto.CreatedBy)
-    @Html.HiddenFor(x => x.Pbck3Dto.CreateDate)
-    @Html.HiddenFor(x => x.Pbck3Dto.ModifiedBy)
-    @Html.HiddenFor(x => x.Pbck3Dto.ModifiedDate)
-    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedBy)
-    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedDate)
-    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedByManager)
-    @Html.HiddenFor(x => x.Pbck3Dto.ApprovedDateManager)
-    @Html.HiddenFor(x => x.Pbck3Dto.RejectedBy)
-    @Html.HiddenFor(x => x.Pbck3Dto.RejectedDate)
+  
+    
+    
+  
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>PBCK-3</h3>
-                <label class="status">@Model.Pbck3StatusName</label>
+                @*<h3>PBCK-3</h3>
+                <label class="status">@Model.Pbck3StatusName</label>*@
                 <h3>PBCK-7</h3>
                 <label class="status">@Model.Pbck7StatusName</label>
                 <div class="action-button">
-                    @if (Model.Pbck7Status != Enums.DocumentStatus.Completed)
-                    {
-                        if (Model.AllowApproveAndReject)
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
+                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
+
+                        @if (Model.AllowApproveAndReject)
                         {
                             <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
 
@@ -54,37 +31,18 @@
                         }
                         else
                         {
+                            if (Model.AllowGovApproveAndReject || Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                            {
+                                <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                            }
+
                             if (Model.AllowManagerReject)
                             {
                                 <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck7" />
                             }
                         }
-
-                      }
-                    else
-                    {
-                        if (Model.AllowApproveAndRejectPbck3)
-                        {
-                            <input type="button" class="btn btn-blue" value="Approve" id="btnApprovePbck3" />
-
-                            <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck3" />
-                        }
-                        else
-                        {
-                            if (Model.AllowManagerRejectPbck3)
-                            {
-                                <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck3" />
-                            }
-                        }
-
-
-                    }
-                  
-                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
-                    @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
-                    {
-                        <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Id })')" />
-                    }
+                    
+                   
                 </div>
             </div>
         </div>
@@ -100,24 +58,25 @@
                     <ul role="tablist" class="nav nav-tabs">
                         <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
                         <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck7" href="#printoutpbck7">Print Out PBCK-7</a></li>
-                        <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck3" href="#printoutpbck3">Print Out PBCK-3</a></li>
-                        <li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
 
-                        </ul>
-
+                    </ul>
+                    @Html.HiddenFor(x => x.ActionType)
+                    @Html.HiddenFor(x => x.IsSaveSubmit)
+                    @Html.HiddenFor(x => x.Id)
+                    @Html.HiddenFor(x => x.Pbck7Number)
+                    @Html.HiddenFor(x => x.CreatedBy)
+                    @Html.HiddenFor(x => x.CreatedDate)
+                    @Html.HiddenFor(x => x.Pbck7Status)
+                    @Html.HiddenFor(x => x.Pbck7StatusName)
+                    
+                  
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.Partial("_HomeDetail")
                         @Html.Partial("_PrintOutPbck7")
-                        @Html.Partial("_PrintOutPbck3")    
-                        @Html.Partial("_Upload")
-                        <div role="tabpanel" class="tab-pane" id="changes">
-                            <div class="table-container">
-                                @Html.Partial("_ChangesHistoryTable", Model)
-                            </div>
-                        </div>
-
+                        @Html.Partial("_Pbck7ChangeLog")
+                       
 
                        
                     </div>
@@ -127,8 +86,7 @@
         </div>
     </div>
 }
-@if (Model.Pbck7Status != Enums.DocumentStatus.Completed)
-{
+
     <div id="pbck7ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -175,82 +133,97 @@
             </div>
         </div>
     </div>
-}
-else
-{
-    <div id="pbck3ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h3>Approve</h3>
-                </div>
-                <div class="modal-body">
-                    Approve Documents  ?
-                </div>
-                <div class="modal-footer">
-                    <input type="button" id="btnApproveConfirmPbck3" class="btn btn-blue" value="Yes" />
-                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
-                </div>
+
+    
+
+<div id="ModalPbck7ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Missing attach files</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
             </div>
         </div>
     </div>
-    <div id="pbck3RejectModal" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">Reject PBCK-3 document</h4>
-                </div>
-                @using (Html.BeginForm("RejectDocumentPbck3", "Pbck7AndPbck3"))
-                {
-                    <div class="modal-body">
-                        @Html.HiddenFor(model => model.Pbck3Dto.Pbck3Id)
-                        <div class="form-excise" role="form">
-                            <div class="row">
-                                <label class="col-md-3">Add Comment<span class="red">*</span></label>
-                                <div class="col-md-9">
-                                    @Html.TextAreaFor(model => model.Pbck3Dto.Comment, new { @rows = "5", @class = "col-md-9" })
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                        <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmRejectPbck3" />
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-
-}
-
-
-
-
+</div>
 
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/Pbck7Script.js"></script>
+    <script src="~/Scripts/Pbck7ScriptDocUpload.js"></script>
+   
     <script type="text/javascript">
-        var uploaditems = [];
-        $("#btnApproveConfirm").click(function () {
-            $('#ActionType').val('Approve');
-            $('#form-pbck7-detail').submit();
+
+        var isCompleteView = '@Model.Pbck7Status';
+        if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()') {
+            $('#MenuPBCK7CompleteIndex').addClass('active');
+        } else {
+            $('#MenuPBCK7Index').addClass('active');
+        }
+
+        $('#btnBack').click(function(e) {
+            if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()')
+                location.href = '@Url.Action("Pbck7Completed", "PBCK7AndPBCK3")';
+            else
+                location.href = '@Url.Action("Index", "PBCK7AndPBCK3")';
         });
-        
-        $("#btnApproveConfirmPbck3").click(function () {
+
+
+        $('#btn-changelog-export-xls').click(function() {
+            location.href = '@Url.Action("ExportXls", "PBCK7AndPBCK3", new {pbckId = Model.Id})';
+        });
+
+        $("#btnApproveConfirm").click(function() {
+            //$('#ActionType').val('Approve');
+            //$('#form-pbck7-detail').submit();
+            window.location = "@Url.Action("ApproveDocument", "PBCK7AndPBCK3", new {id = @Model.Id})";
+        });
+
+        $("#btnSaveGovStatus").click(function() {
+            if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()') {
+                $('#form-pbck7-detail').submit();
+            } else {
+                if (ValidateGovInput()) {
+                    $('#form-pbck7-detail').submit();
+                }
+            }
+        });
+
+        $('#divComment').hide();
+
+        $('#Pbck7GovStatus').on('change', function(e) {
+            var valueSelected = this.value;
+
+            $('#divComment').hide();
+
+
+            if (valueSelected == 'Rejected') {
+                $('#divComment').show();
+
+            }
+
+        });
+
+
+        $("#btnApproveConfirmPbck3").click(function() {
             $('#ActionType').val('ApprovePbck3');
             $('#form-pbck7-detail').submit();
         });
-        $('#btnApprove').click(function () {
+        $('#btnApprove').click(function() {
 
             $('#pbck7ApproveModal').modal('show');
         });
-        $('#btnApprovePbck3').click(function () {
+        $('#btnApprovePbck3').click(function() {
 
             $('#pbck3ApproveModal').modal('show');
         });
@@ -265,168 +238,14 @@ else
         $('#btn-generate-upload').click(function() {
             uploadXmlFile();
         });
-        $('#btn-save-upload').click(function() {
 
-            $('#tab-information').addClass('active');
-            $('#information').addClass('active');
-            $('#tab-upload').removeClass("active");
-            $('#upload').removeClass("active");
-            $('#body-tb-upload').html('');
-            for (var i = 0; i < uploaditems.length; i++) {
-                var tr = '<tr>' +
-                    createColumn(i + 1) +
-                    createColumnWithHiddenField(uploaditems[i].FaCode, 'UploadItems[' + i + '].FaCode') +
-                    createColumnWithHiddenField(uploaditems[i].ProdTypeAlias, 'UploadItems[' + i + '].ProdTypeAlias') +
-                    createColumnWithHiddenField(uploaditems[i].Brand, 'UploadItems[' + i + '].Brand') +
-                    createColumnWithHiddenField(uploaditems[i].Content, 'UploadItems[' + i + '].Content') +
-                    createColumnWithHiddenField(uploaditems[i].Pbck7Qty, 'UploadItems[' + i + '].Pbck7Qty') +
-                    createColumnWithHiddenField(uploaditems[i].Back1Qty, 'UploadItems[' + i + '].Back1Qty') +
-                    createColumnWithHiddenField(uploaditems[i].SeriesValue, 'UploadItems[' + i + '].SeriesValue') +
-                    createColumnWithHiddenField(uploaditems[i].Hje, 'UploadItems[' + i + '].Hje') +
-                    createColumnWithHiddenField(uploaditems[i].Tariff, 'UploadItems[' + i + '].Tariff') +
-                    createColumnWithHiddenField(uploaditems[i].FiscalYear, 'UploadItems[' + i + '].FiscalYear') +
-                    createColumnWithHiddenField(uploaditems[i].ExciseValue, 'UploadItems[' + i + '].ExciseValue') + '</tr>';
-                $('#body-tb-upload').append(tr);
-            }
-        });
 
-        function toUploadTab() {
-
-            $('#tab-information').removeClass('active');
-            $('#information').removeClass('active');
-            $('#tab-upload').addClass("active");
-            $('#upload').addClass("active");
-            //$('#tab-upload').click();
-            //$('#tab-upload').children()[0].click();
-
-        }
-
-        function createColumn(text) {
-            return '<td>' + text + '</td>';
-        }
-
-        function createColumnWithHiddenField(text, name) {
-            return '<td><input type="hidden" name="' + name + '" value="' + text + '">' + text + '</td>';
-        }
-
-        function uploadXmlFile() {
-
-            var postUrl = '@Url.Action("UploadFile", "PBCK7AndPBCK3")';
-            var fileName = $('[name="itemExcelFile"]').val().trim();
-            var pos = fileName.lastIndexOf('.');
-            var extension = (pos <= 0) ? '' : fileName.substring(pos);
-            if (extension != '.xlsx') {
-                alert('Please browse a correct excel file to upload');
-                return false;
-            }
-
-            var formData = new FormData();
-            var totalFiles = document.getElementById("itemExcelFile").files.length;
-            var plantId = $('#PlantId').val();
-            for (var i = 0; i < totalFiles; i++) {
-                var file = document.getElementById("itemExcelFile").files[i];
-                formData.append("itemExcelFile", file);
-                formData.append("plantId", plantId);
-
-            }
-            $.ajax({
-                type: "POST",
-                url: postUrl,
-                data: formData,
-                dataType: 'html',
-                contentType: false,
-                processData: false,
-
-                success: function(response) {
-
-                    $('#tb-upload-excel').html('');
-                    uploaditems = JSON.parse(response);
-
-                    for (var i = 0; i < uploaditems.length; i++) {
-                        var tr = '<tr>' +
-                            createColumn(i + 1) +
-                            createColumn(uploaditems[i].FaCode) +
-                            createColumn(uploaditems[i].ProdTypeAlias) +
-                            createColumn(uploaditems[i].Brand) +
-                            createColumn(uploaditems[i].Content) +
-                            createColumn(uploaditems[i].Pbck7Qty) +
-                            createColumn(uploaditems[i].Back1Qty) +
-                            createColumn(uploaditems[i].SeriesValue) +
-                            createColumn(uploaditems[i].Hje) +
-                            createColumn(uploaditems[i].Tariff) +
-                            createColumn(uploaditems[i].FiscalYear) +
-                            createColumn(uploaditems[i].ExciseValue) + '</tr>';
-                        $('#tb-upload-excel').append(tr);
-                    }
-                    $('#btn-save-upload').enable();
-                }
-            });
-        }
-
-        ;
-
-        function ajaxGetPoaByNppbkc(nppbkc) {
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetPoaByNppbkcId", "LACK2")',
-                data: { nppbkcid: nppbkc },
-                success: function(data) {
-                    $('#displayPoaList').html('');
-                    var poalist = '';
-                    for (var i = 0; i < data.length; i++) {
-
-                        poalist += data[i].PRINTED_NAME;
-                        if (data.length - 1 != i) {
-                            poalist += ', ';
-                        }
-                    }
-                    $('#displayPoaList').html(poalist);
-                }
-            });
-
-        }
-
-        function ajaxGetPlantByNppbkc(nppbkc) {
-
-            $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetPlantByNppbkcId", "LACK2")',
-                    data: { nppbkcid: nppbkc },
-                    success: function(data) {
-                        $('#PlantId').html('');
-
-                        for (var i = 0; i < data.length; i++) {
-                            $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
-
-                        }
-
-                    }
-                }
-            );
-
-        }
-
-        $('#NppbkcId').change(function() {
-
-            if ($(this).length) {
-                var nppbkc = $(this).find("option:selected").val();
-
-                $('#PlantId').html('');
-                if (nppbkc != '') {
-                    ajaxGetPlantByNppbkc(nppbkc);
-                    ajaxGetPoaByNppbkc(nppbkc);
-                }
-            }
-
-        });
-        
         function printPreview(url) {
 
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
         }
-        
+
         function PrintOutClick(reportUrl, addHistoryUrl, id) {
 
             window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
@@ -435,13 +254,14 @@ else
                 type: 'POST',
                 url: addHistoryUrl,
                 data: { id: id },
-                success: function (response) {
+                success: function(response) {
                     $('#PrintOutHistoryTable').html("");
                     $('#PrintOutHistoryTable').html(response);
                     ResetPrintHistoryDataTable();
                 }
             });
         }
+
         function ResetPrintHistoryDataTable() {
             // DataTable
             var table = null;
@@ -461,26 +281,23 @@ else
 
 
         }
-        $('#btnRejectPbck7').click(function () {
+
+        $('#btnRejectPbck7').click(function() {
             $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
 
             $('#pbck7RejectModal').modal('show');
         });
-        $('#btnRejectPbck3').click(function () {
-            $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
 
-            $('#pbck3RejectModal').modal('show');
-        });
-        $('#Comment').bind('input propertychange', function () {
+        $('#Comment').bind('input propertychange', function() {
 
             $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
-           
+
             if (this.value.length) {
                 $('#btnConfirmRejectPbck7').removeAttr('disabled');
-              
+
             }
         });
-        $('#Pbck3Dto_Comment').bind('input propertychange', function () {
+        $('#Pbck3Dto_Comment').bind('input propertychange', function() {
 
             $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
 

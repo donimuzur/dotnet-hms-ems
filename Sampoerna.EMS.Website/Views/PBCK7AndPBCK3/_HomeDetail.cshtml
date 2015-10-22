@@ -25,8 +25,6 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-7 No</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(x => x.Id)
-                                            @Html.HiddenFor(x=>x.Pbck7Number)
                                             @Html.TextBox("pbck7_no", Model.Pbck7Number, new {@class = "form-control", @disabled = "disabled"})
                                         </div>
                                     </div>
@@ -35,12 +33,8 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-7 Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.TextBox("pbck7_date", Model.Pbck7Date, new { @class = "form-control", @disabled = "disabled", @Value = Model.Pbck7Date.Value.ToString("dd MMM yyyy") })
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                            @Html.TextBoxFor(model => model.Pbck7Date, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -50,7 +44,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Document Type</label>
                                         <div class="col-md-8">
-                                           @Html.EnumDropDownListFor(model => model.DocumentType, Model.DocumentTypeList, "Select", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.DocumentTypeDescription, new { @disabled = "disabled", @class = "form-control" })
+                                            @*@Html.EnumDropDownListFor(model => model.DocumentType, Model.DocumentTypeList, "Select", new { @class = "form-control", @disabled = "disabled" })*@
                                         </div>
                                     </div>
                                 </div>
@@ -58,13 +53,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Exec Date From</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.HiddenFor(x => x.ExecDateFrom)
-                                                @Html.TextBox("exec_date_from", Model.ExecDateFrom, new {@class = "form-control", @disabled="disabled", @Value = Model.ExecDateFrom.HasValue ? Model.ExecDateFrom.Value.ToString("dd MMM yyyy") : null})
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                           @Html.TextBoxFor(model => model.ExecDateFrom, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -72,13 +61,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Exec Date To</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
-                                                @Html.HiddenFor(x=>x.ExecDateTo)
-                                                @Html.TextBox("exec_date_to", Model.ExecDateTo, new {@class = "form-control", @disabled="disabled",@Value = Model.ExecDateFrom.HasValue ? Model.ExecDateFrom.Value.ToString("dd MMM yyyy") : null})
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                           @Html.TextBoxFor(model => model.ExecDateTo, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -86,8 +69,7 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(x=>x.NppbkcId)
-                                            @Html.DropDownList("_nppbck", Model.NppbkIdList, Model.NppbkcId, new {@class = "form-control", @disabled="disabled"})
+                                          @Html.TextBoxFor(model => model.NppbkcId, new { @disabled = "disabled", @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -95,7 +77,6 @@
                                     <div class="row">
                                         <label class="col-md-4">Lampiran</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(x=>x.Lampiran)
                                             @Html.TextBox("_lampiran", Model.Lampiran, new { @class = "form-control", @disabled="disabled" })
                                         </div>
                                     </div>
@@ -104,8 +85,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Plant ID</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(x=>x.PlantId)
-                                            @Html.DropDownList("_plantid", Model.PlantList, Model.PlantId, new {@class = "form-control", @disabled="disabled"})
+                                           @Html.TextBoxFor(model => model.PlantId, new { @disabled = "disabled", @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -113,27 +93,11 @@
                                     <div class="row">
                                         <label class="col-md-4">POA</label>
                                         <div class="col-md-8">
-                                            @Html.TextArea("poalist", null, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList" })
+                                            @Html.TextArea("poalist", null, new { @class = "form-control", @disabled = "disabled", @id = "displayPoaList", @rows="5" })
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">PBCK7 Gov Status</label>
-                                        <div class="col-md-8">
-                                            @if (Model.Pbck7Status == Enums.DocumentStatus.WaitingGovApproval)
-                                            {
-                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control" })
-                                            }
-                                            else
-                                            {
-                                                @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
-
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                              
+                                
                             </div>
                         </div>
                     </div>
@@ -152,7 +116,7 @@
                 </div>
                 <div aria-labelledby="headingThree" role="tabpanel" class="panel-collapse collapse in" id="collapseThree" style="">
                     <div class="panel-body">
-                        <a href="javascript:void(0)"  class="btn btn-blue">Upload</a>
+                        @*<a href="javascript:void(0)"  class="btn btn-blue">Upload</a>*@
                         <div class="table-container" id="table-upload">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -260,12 +224,13 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK-3 Date</label>
                                         <div class="col-md-8">
-                                            <div class="input-group date">
+                                            @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            @*<div class="input-group date">
                                                 @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3Date, new { @class = "form-control", @disabled = "disabled" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
-                                            </div>
+                                            </div>*@
                                         </div>
                                     </div>
                                 </div>
@@ -273,7 +238,8 @@
                                     <div class="row">
                                         <label class="col-md-4">PBCK3 Gov Status</label>
                                         <div class="col-md-8">
-                                           @Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Pbck3Dto.Pbck3GovStatus, new { @class = "form-control", @disabled = "disabled" })
+                                            @*@Html.EnumDropDownListFor(x => x.Pbck3Dto.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control", @disabled = "disabled" })*@
                                            
                                         </div>
                                     </div>
@@ -287,9 +253,9 @@
             </div>
         </div>
 
-        @Html.Partial("_Back", Model)
+        @*@Html.Partial("_Back", Model)*@
         @Html.Partial("_WorkflowHistoryPbck7", Model)
-        @Html.Partial("_WorkflowHistoryPbck3", Model)
+        
     </div>
 </div>
 

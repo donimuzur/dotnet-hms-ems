@@ -1,0 +1,425 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck3ViewModel
+
+<div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion-2" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    Origin Plant
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="panel-body">
+                <div class="form-excise" role="form">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Plant</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.SourcePlantId, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">NPWP</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.SourceNpwp, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">NPPBKC ID</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.SourceNppbkcId, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Company Name</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.SourceCompanyName, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Address</label>
+                                <div class="col-md-8">
+                                    @Html.TextAreaFor(model => model.Ck5FormViewModel.SourceAddress, new { @row = "5", @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">KPPBC Name, Office ID</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.SourceKppbcName, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                   
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel-group" id="accordion-3" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                    Destination Plant
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <div class="panel-body">
+                <div class="form-excise" role="form">
+
+                   
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Plant</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestPlantId, new { @disabled = false, @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">NPWP</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestNpwp, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">NPPBKC ID</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestNppbkcId, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Company Name</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestCompanyName, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Address</label>
+                                    <div class="col-md-8">
+                                        @Html.TextAreaFor(model => model.Ck5FormViewModel.DestAddress, new { @disabled = "disabled", @class = "form-control", @row = "5" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">KPPBC Name, Office ID</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestKppbcName, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                   
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    CK-5 Detail
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">CK-5 Type</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.Ck5Type, new { @disabled = false, @class = "form-control" })
+
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">KPPBC City</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.KppBcCity, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">@Html.LabelFor(model => model.Ck5FormViewModel.CeOfficeCode)</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.CeOfficeCode, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Submission Number</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.SubmissionNumber, new { @class = "form-control", @disabled = "disabled" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Submission Date</label>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.Ck5FormViewModel.SubmissionDate)
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Registration Number</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.RegistrationNumber, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Registration Date</label>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.Ck5FormViewModel.RegistrationDate)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Goods Type Group</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.GoodTypeName, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Excise Settlement</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.ExciseSettlementDesc, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Excise Status</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.ExciseStatusDesc, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Request Type</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.RequestTypeDesc, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="panel-group" id="accordion-6" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="heading6">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion-6" href="#collapse6" aria-expanded="true" aria-controls="collapse6">
+                    Notification Data
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapse6" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading6">
+            <div class="panel-body">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Invoice Number</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.InvoiceNumber, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Invoice Date</label>
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.Ck5FormViewModel.InvoiceDate)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Carriage Method</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.CarriageMethodDesc, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Grand Total Exciseable</label>
+                                <div class="col-md-4">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.GrandTotalEx, new { @disabled = false, @class = "form-control" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.PackageUomName, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="panel-group" id="accordion-5" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="heading5">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion-5" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                    Upload
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
+            <div class="panel-body">
+
+                <div class="table-container" id="ck5DetailMaterialTable">
+                    <table id="Ck5UploadTable" class="table table-bordered table-striped js-options-table">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th style="display: none"></th>
+                                <th>Material Number</th>
+                                <th>Qty</th>
+                                <th>UOM</th>
+                                <th>Convertion</th>
+                                <th>Converted Qty</th>
+                                <th>Converted UOM</th>
+                                <th>HJE</th>
+                                <th>Tariff</th>
+                                <th>Excise Value</th>
+                                <th>USD Value</th>
+                                <th>Note</th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int counter = 1;
+
+                                if (Model != null)
+                                {
+                                    foreach (var row in Model.Ck5FormViewModel.UploadItemModels)
+                                    {
+                                        <tr>
+                                            <td class="action">
+                                                <a href="#" onclick=" RemoveRow($(this));" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i></a>
+                                                <a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                            </td>
+                                            <td style="display: none">@counter</td>
+                                            <td>@row.Brand</td>
+                                            <td>@row.Qty</td>
+                                            <td>@row.Uom</td>
+                                            <td>@row.Convertion</td>
+                                            <td>@row.ConvertedQty</td>
+                                            <td>@row.ConvertedUom</td>
+                                            <td>@row.Hje</td>
+                                            <td>@row.Tariff</td>
+                                            <td>@row.ExciseValue</td>
+                                            <td>@row.UsdValue</td>
+                                            <td>@row.Note</td>
+                                            
+                                        </tr>
+
+                                        counter = counter + 1;
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+

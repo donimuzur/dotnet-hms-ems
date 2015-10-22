@@ -70,6 +70,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IWorkflowSettingBLL, WorkflowSettingBLL>();
             container.Register<IEmailTemplateBLL, EmailTemplateBLL>();
 
+            container.Register<IPbck1DecreeDocBLL, Pbck1DecreeDocBLL>();
             container.Register<IPbck1ProdPlanBLL, Pbck1ProdPlanBLL>();
             container.Register<ILACK1BLL, LACK1BLL>();
             container.Register<ILACK2BLL, LACK2BLL>();

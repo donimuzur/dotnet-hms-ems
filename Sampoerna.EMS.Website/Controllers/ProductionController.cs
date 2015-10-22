@@ -138,18 +138,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<ProductionDto>(model);
-                var company = _companyBll.GetById(model.CompanyCode);
-                var plant = _plantBll.GetT001WById(model.PlantWerks);
-                var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
-
-                data.CompanyName = company.BUTXT;
-                data.PlantName = plant.NAME1;
-                data.BrandDescription = brandDesc.BRAND_CE;
+             
                 data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
                 data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
-
-                data.CreatedDate = DateTime.Now;
-
+                
 
                 try
                 {
@@ -168,6 +160,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
 
+            }
+            else
+            {
+                var errorlist = ModelState.Values.Select(x => x.Errors).Single();
+
+                var errMsg = "";
+
+                foreach(var error in errorlist){
+                    errMsg = error.ErrorMessage +"\n";
+                }
+                AddMessageInfo(errMsg, Enums.MessageInfoType.Error
+                           );
             }
             model = InitCreate(model);
             return View(model);
@@ -253,20 +257,11 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var dbPrductionNew = Mapper.Map<ProductionDto>(model);
-            var company = _companyBll.GetById(model.CompanyCode);
-            var plant = _plantBll.GetT001WById(model.PlantWerks);
-            var brandDesc = _brandRegistrationBll.GetById(model.PlantWerks, model.FaCode);
-
-            dbPrductionNew.CompanyName = company.BUTXT;
-            dbPrductionNew.PlantName = plant.NAME1;
-            dbPrductionNew.BrandDescription = brandDesc.BRAND_CE;
-
+           
             dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
             dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
             dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
-
-
-
+            
             try
             {
                 if (!ModelState.IsValid)
@@ -370,11 +365,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                var listProduction = new List<ProductionUploadItems>();
+
+                //check validation
                 foreach (var item in modelDto.UploadItems)
                 {
                     var company = _companyBll.GetById(item.CompanyCode);
                     var plant = _plantBll.GetT001WById(item.PlantWerks);
                     var brandCe = _brandRegistrationBll.GetById(item.PlantWerks, item.FaCode);
+
+                    if (brandCe.IS_DELETED == true || (brandCe.STATUS == false || brandCe.STATUS == null))
+                    {
+                        AddMessageInfo("Data Brand Description Is Inactive", Enums.MessageInfoType.Error);
+                        return RedirectToAction("UploadManualProduction");
+                    }
 
                     if (item.Uom == "TH")
                     {
@@ -390,7 +394,6 @@ namespace Sampoerna.EMS.Website.Controllers
                         item.Qty = Convert.ToString(Convert.ToDecimal(item.Qty) * 1000);
                     }
 
-
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
 
@@ -401,6 +404,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     item.CreatedDate = DateTime.Now;
+                    item.CreatedBy = CurrentUser.USER_ID;
 
                     var existingData = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
                         Convert.ToDateTime(item.ProductionDate));
@@ -412,10 +416,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         return RedirectToAction("UploadManualProduction");
                     }
 
-                    _productionBll.SaveUpload(item, CurrentUser.USER_ID);
-                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                       );
+                    listProduction.Add(item);
                 }
+
+                //do save
+                foreach (var data in listProduction)
+                {
+                    _productionBll.SaveUpload(data, CurrentUser.USER_ID);
+                }
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
             }
 
@@ -451,6 +461,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                     var item = new ProductionUploadItems();
+                    
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
@@ -460,49 +471,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.Qty = dataRow[5];
                     item.Uom = dataRow[6];
                     item.ProductionDate = dataRow[7];
-
-
-                    //decimal tempDecimal;
-                    //if (decimal.TryParse(dataRow[4], out tempDecimal) || dataRow[4] == "" || dataRow[4] == "-")
-                    //{
-                    //    item.QtyPacked = dataRow[4] == "" || dataRow[4] == "-" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    //}
-                    //else
-                    //{
-                    //    qtyPacked = dataRow[4];
-                    //}
-
-                    //if (decimal.TryParse(dataRow[5], out tempDecimal) || dataRow[5] == "" || dataRow[5] == "-")
-                    //{
-                    //    item.Qty = dataRow[5] == "" || dataRow[5] == "-" ? 0 : Convert.ToDecimal(dataRow[5]);
-                    //}
-                    //else
-                    //{
-                    //    qty = dataRow[5];
-                    //}
-
-                    //var dateParam = DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy");
-                    //if (DateTime.TryParse(DateTime.FromOADate(Convert.ToDouble(dataRow[7])).ToString("dd MMM yyyy"), "dd MMM yyyy", DateTimeStyles.NoCurrentDateDefault, out temp))
-                    //{
-                    //    item.ProductionDate = string.Empty;
-                    //}
-
-                    // true if it doesnot contain letters
-                   
-
-
-                    //string pattern = "dd MMM yyyy";
-                    //if (DateTime.TryParseExact(dataRow[7], pattern, CultureInfo.InvariantCulture,
-                    //                           DateTimeStyles.None,
-                    //                           out temp))
-                    //{
-                    //    // dt is the parsed value
-                    //}
-                    //else
-                    //{
-                    //    // Invalid string
-                    //}
-
+                    
                     model.Add(item);
 
 

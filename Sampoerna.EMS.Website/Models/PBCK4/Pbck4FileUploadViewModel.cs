@@ -12,5 +12,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string FILE_NAME { get; set; }
         public string FILE_PATH { get; set; }
         public int PBCK4_ID { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

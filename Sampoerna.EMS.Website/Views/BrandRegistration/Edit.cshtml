@@ -93,7 +93,14 @@
                                                             @if (Model.IsFromSAP)
                                                             {
                                                                 @Html.HiddenFor(model => model.PersonalizationCode)
-                                                                @Html.TextBox("percode", Model.PersonalizationCode + "-" + Model.PersonalizationCodeDescription, new { @class = "form-control", disabled = "disabled" })
+                                                                if (!String.IsNullOrEmpty(Model.PersonalizationCode) && !String.IsNullOrEmpty(Model.PersonalizationCodeDescription))
+                                                                 {
+                                                                     @Html.TextBox("percode", Model.PersonalizationCode + "-" + Model.PersonalizationCodeDescription, new {@class = "form-control", disabled = "disabled"})
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                    @Html.TextBox("percode", "", new { @class = "form-control", disabled = "disabled" })
+                                                                 }
                                                             }
                                                             else
                                                             {
@@ -110,7 +117,14 @@
                                                             @if (Model.IsFromSAP)
                                                             {
                                                                 @Html.HiddenFor(model => model.ProductCode)
-                                                                @Html.TextBox("prodcode", Model.ProductCode + "-" + Model.ProductType + " [" + Model.ProductAlias + "]", new { @class = "form-control", disabled = "disabled" })
+                                                                if (!String.IsNullOrEmpty(Model.ProductCode) && !String.IsNullOrEmpty(Model.ProductType) && !String.IsNullOrEmpty(Model.ProductAlias))
+                                                                {
+                                                                    @Html.TextBox("prodcode", Model.ProductCode + "-" + Model.ProductType + " [" + Model.ProductAlias + "]", new {@class = "form-control", disabled = "disabled"})
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBox("prodcode", "", new { @class = "form-control", disabled = "disabled" })
+                                                                }
                                                             }
                                                             else
                                                             {
@@ -191,8 +205,8 @@
                                                         <div class="col-md-8">
                                                             @if (Model.IsFromSAP)
                                                             {
-                                                                @Html.HiddenFor(model => model.SeriesCode)
-                                                                @Html.TextBox("seriescode", Model.SeriesCode + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.SeriesId)
+                                                                @Html.TextBox("seriescode", Model.SeriesId + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
                                                             }
                                                             else
                                                             {

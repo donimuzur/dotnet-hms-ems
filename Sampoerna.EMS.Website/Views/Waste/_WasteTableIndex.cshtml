@@ -11,10 +11,11 @@
             <th> Plant </th>
             <th> Finish Goods </th>
             <th> Brand Description </th>
-            <th> Reject Cigarette (sticks) </th>
+            <th> Reject Packer (sticks) </th>
             <th> Waste QTY (gram) </th>
             <th> Waste QTY (stick) </th>
             <th> Waste Production Date </th>
+            <th> Created By - Date </th>
         </tr>
 
     </thead>
@@ -27,6 +28,7 @@
             <th> </th>
             <th> </th>
             <th> </th>
+            <th></th>
             <th></th>
             <th></th>
 
@@ -65,6 +67,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.WasteProductionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy) - @Html.DisplayFor(modelItem => item.CreatedDate)
                 </td>
             </tr>
         }

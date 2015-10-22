@@ -1,7 +1,7 @@
 ﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2IndexViewModel
 
 @{
-    ViewBag.Title = "LACK2";
+    ViewBag.Title = "LACK-2";
 }
 
 <div class="container-wrap title-page">
@@ -24,7 +24,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterOpenDocument", "LACK2",
+                @using (Ajax.BeginForm(Model.FilterActionController, "LACK2",
                         new AjaxOptions
                         {
                             HttpMethod = "POST",
@@ -95,7 +95,6 @@
                             </div>
                         </div>
                     </div>
-
                 }
             </div>
 
@@ -123,6 +122,7 @@
 
             $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
+                $('#ReportedOn').val('');
             });
             // DataTable
             var table = null;
