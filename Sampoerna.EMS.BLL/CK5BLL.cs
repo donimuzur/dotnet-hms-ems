@@ -1379,17 +1379,33 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
-                dbData.APPROVED_BY_POA = input.UserId;
-                dbData.APPROVED_DATE_POA = DateTime.Now;
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApproval)
+                {
+                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.APPROVED_BY_POA = input.UserId;
+                    dbData.APPROVED_DATE_POA = DateTime.Now;
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                }
+                else
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                }
+                
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
-                dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
-                dbData.APPROVED_BY_MANAGER = input.UserId;
-                dbData.APPROVED_DATE_MANAGER = DateTime.Now;
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.APPROVED_BY_MANAGER = input.UserId;
+                    dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                }
+                else
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                }
+                
             }
 
 
@@ -3080,7 +3096,7 @@ namespace Sampoerna.EMS.BLL
             var ck5Ref = _repository.Get(
                     x => x.STATUS_ID != Enums.DocumentStatus.Cancelled, null, "").Select(x=> x.CK5_REF_ID).ToList();
 
-            queryFilter = queryFilter.And(x => ck5Ref.Contains(x.CK5_ID));
+            queryFilter = queryFilter.And(x => !ck5Ref.Contains(x.CK5_ID));
             queryFilter = queryFilter.And(x => x.CK5_TYPE == Enums.CK5Type.PortToImporter);
             queryFilter = queryFilter.And(x => x.STATUS_ID == Enums.DocumentStatus.Completed);
             var data =

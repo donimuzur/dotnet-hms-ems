@@ -23,8 +23,8 @@ function ClearValidation() {
     AddValidationClass(true, 'uploadMaterialConvertion');
 }
 
-function EditRow(o) {
-    debugger;
+function EditRow(o,url) {
+    //debugger;
     var nRow = o.parents('tr');
     var plant = nRow.find("td").eq(19).html();
     
@@ -35,7 +35,7 @@ function EditRow(o) {
 
     
     var goodTypeGroupId = $("#GoodType").val();
-    ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: plant, goodTypeGroup: goodTypeGroupId });
+    ajaxGetListMaterial(url, { plantId: plant, goodTypeGroup: goodTypeGroupId });
     
     $('#btnSaveMaterial').hide();
     $('#btnUpdateMaterial').show();

@@ -85,10 +85,9 @@ namespace Sampoerna.EMS.XMLReader
                                     var matUom = new MATERIAL_UOM();
                                     matUom.STICKER_CODE = stickerCode;
                                     matUom.WERKS = item.WERKS;
-                                    matUom.UMREZ =
-                                        Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREZ")));
-                                    matUom.UMREN =
-                                        Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREN")));
+                                    var umrez = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREZ")));
+                                    var umren = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREN")));
+                                    matUom.UMREN = umrez/umren;
                                     matUom.MEINH = _xmlMapper.GetElementValue(element.Element("MEINH"));
 
                                     item.MATERIAL_UOM.Add(matUom);
