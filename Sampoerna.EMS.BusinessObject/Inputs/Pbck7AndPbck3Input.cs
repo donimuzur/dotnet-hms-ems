@@ -61,6 +61,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int Pbck7Id { get; set; }
         public string NppbkcId { get; set; }
         public string UserId { get; set; }
+        public DateTime Pbck7ExecFrom { get; set; }
+        public DateTime Pbck7ExecTo { get; set; }
     }
 
     public class Pbck7Pbck3SaveInput

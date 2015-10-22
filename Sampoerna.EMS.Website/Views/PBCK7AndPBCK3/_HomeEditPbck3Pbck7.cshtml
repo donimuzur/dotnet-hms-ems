@@ -130,16 +130,16 @@
                                         <div class="col-md-8">
                                             @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
                                             {
-                                            <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new {@class = "form-control"})
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new {@class = "form-control"})
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
                                             }
                                             else
                                             {
-                                            @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
                                             }
                                         </div>
                                     </div>
@@ -147,6 +147,51 @@
 
 
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Exec From</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.EXEC_DATE_FROM, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.EXEC_DATE_FROM, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Exec To</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.EXEC_DATE_TO, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.EXEC_DATE_TO, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">

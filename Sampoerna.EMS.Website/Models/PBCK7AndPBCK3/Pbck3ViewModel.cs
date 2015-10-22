@@ -32,6 +32,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string APPROVED_BY_MANAGER { get; set; }
         public DateTime? APPROVED_BY_MANAGER_DATE { get; set; }
         
+        public DateTime EXEC_DATE_FROM { get; set; }
+        public DateTime EXEC_DATE_TO { get; set; }
+
         public Enums.DocumentStatus Pbck3Status { get; set; }
         public string Pbck3StatusDescription { get; set; }
         public Enums.DocumentStatusGov Pbck3GovStatus { get; set; }
