@@ -549,7 +549,7 @@
         $('#Ck5UploadModal').modal('show');
     });
     $("#btnSaveMaterial").click(function () {
-        AddRow();
+        AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")');
     });
 
     $("#uploadMaterialNumber").change(function () {

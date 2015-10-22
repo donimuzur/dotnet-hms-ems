@@ -1423,6 +1423,17 @@ namespace Sampoerna.EMS.BLL
             //set Pbck-1 Data by selection criteria
             rc = SetPbck1DataBySelectionCriteria(rc, input);
 
+            if (rc.Pbck1List.Count == 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected),
+                    Data = null
+                };
+            }
+
             var productionList = GetProductionDetailBySelectionCriteria(input);
 
             if (productionList.Count == 0)

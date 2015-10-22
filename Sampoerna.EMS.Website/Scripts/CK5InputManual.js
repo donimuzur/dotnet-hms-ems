@@ -23,11 +23,11 @@ function ClearValidation() {
     AddValidationClass(true, 'uploadMaterialConvertion');
 }
 
-function EditRow(o) {
-    debugger;
+function EditRow(o,url) {
+    //debugger;
     var nRow = o.parents('tr');
     var plant = nRow.find("td").eq(19).html();
-    
+    var materialnumber = nRow.find("td").eq(2).html();
 
     //if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
     //    plant = $("#DestPlantId").find("option:selected").val();
@@ -35,7 +35,7 @@ function EditRow(o) {
 
     
     var goodTypeGroupId = $("#GoodType").val();
-    ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: plant, goodTypeGroup: goodTypeGroupId });
+    ajaxGetListMaterial(url, { plantId: plant, goodTypeGroup: goodTypeGroupId }, materialnumber);
     
     $('#btnSaveMaterial').hide();
     $('#btnUpdateMaterial').show();
@@ -53,7 +53,7 @@ function EditRow(o) {
     $('#uploadMaterialNumber').append('<option>' + nRow.find("td").eq(2).html() + '</option>');
     //=============================
 
-    $('#uploadMaterialNumber').val(nRow.find("td").eq(2).html());
+    $('#uploadMaterialNumber').val(materialnumber);
     $('#uploadMaterialQty').val(nRow.find("td").eq(3).html());
 
     $('#uploadMaterialUom').val(nRow.find("td").eq(4).html());
@@ -189,7 +189,7 @@ function UpdateRow() {
         $('#CK5UploadSave').enable();
     }
 }
-function AddRow() {
+function AddRow(url) {
 
     if (ValidateManual()) {
         
@@ -211,7 +211,7 @@ function AddRow() {
 
         var classAction = '<td class="action">' +
             '<a href="#" onclick=" RemoveRow($(this)); "data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i></a>' +
-            '<a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>' +
+            '<a href="#" onclick=" EditRow($(this),\''+url+'\'); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>' +
             '</td>';
 
         $("#Ck5UploadTable tbody").append(
