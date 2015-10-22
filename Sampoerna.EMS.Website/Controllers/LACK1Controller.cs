@@ -1222,7 +1222,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void ExportSummaryReportsToExcel(Lack1SummaryReportViewModel model)
         {
-            var dataSummaryReport = SearchSummaryReports(model.SearchView);
+            var dataSummaryReport = SearchSummaryReports(model.ExportModel);
 
             //todo: to automapper
             var src = Mapper.Map<List<Lack1ExportSummaryDataModel>>(dataSummaryReport);
@@ -1507,11 +1507,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(selectListSource, "ValueField", "TextField");
         }
 
-        public void ExportDetailReport(Lack1SearchDetailReportViewModel model)
+        public void ExportDetailReport(Lack1DetailReportViewModel model)
         {
             string pathFile = "";
 
-            pathFile = CreateXlsDetailReport(model);
+            pathFile = CreateXlsDetailReport(model.ExportSearchView);
             
             var newFile = new FileInfo(pathFile);
 
