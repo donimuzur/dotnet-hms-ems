@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using AutoMapper;
+using AutoMapper.Internal;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -2672,6 +2673,37 @@ namespace Sampoerna.EMS.BLL
                     rc = SetNppbkcData(rc, dbData.CK5.SOURCE_PLANT_NPPBKC_ID);
                     //get from CK5_Material, but need to process
                     //todo: ask to get Items//rc.Items = Mapper.Map<List<Pbck73ItemPrintOutDto>>(dbData.CK5.CK5_MATERIAL);
+                    rc.Items = new List<Pbck73ItemPrintOutDto>();
+                    if (dbData.CK5.CK5_MATERIAL != null && dbData.CK5.CK5_MATERIAL.Count > 0)
+                    {
+                        //proses
+                        foreach (var item in dbData.CK5.CK5_MATERIAL)
+                        {
+                            var itemToInsert = new Pbck73ItemPrintOutDto()
+                            {
+                                FaCode = item.BRAND,
+                                ProdTypeAlias = "",
+                                Brand = "",
+                                Qty = item.CONVERTED_QTY,
+                                Content = null, //todo: ask to analyst
+                                SeriesValue = "",
+                                Hje = item.HJE,
+                                Tariff = item.TARIFF,
+                                ExciseValue = item.EXCISE_VALUE
+                            };
+
+                            var brandData = _brandRegistrationServices.GetByPlantIdAndFaCode(item.PLANT_ID, item.BRAND);
+                            if (brandData != null)
+                            {
+                                itemToInsert.Brand = brandData.BRAND_CE;
+                                itemToInsert.ProdTypeAlias = brandData.ZAIDM_EX_PRODTYP != null
+                                    ? brandData.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS
+                                    : "-";
+                                itemToInsert.SeriesValue = brandData.SERIES_CODE;
+                            }
+                            rc.Items.Add(itemToInsert);
+                        }
+                    }
                 }
             }
 
