@@ -772,8 +772,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model = InitEdit(model);
 
-                
-
                 model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
@@ -1465,6 +1463,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 input.SealingNumber = model.SealingNotifNumber;
                 input.SealingDate = model.SealingNotifDate;
+                input.GIDate = model.GiDate;
+
 
                 _ck5Bll.CK5Workflow(input);
 
@@ -1518,7 +1518,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.UnSealingNumber = model.UnSealingNotifNumber;
                 input.UnSealingDate = model.UnsealingNotifDate;
 
-                
+                input.GRDate = model.GrDate;
+
                 _ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);

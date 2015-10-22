@@ -835,6 +835,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("DESTINATION_COUNTRY", origin.DEST_COUNTRY_NAME == data.DEST_COUNTRY_NAME);
 
             changesData.Add("SUBMISSION_DATE", origin.SUBMISSION_DATE == data.SUBMISSION_DATE);
+            changesData.Add("REDUCE_TRIAL", origin.REDUCE_TRIAL == data.REDUCE_TRIAL);
 
             foreach (var listChange in changesData)
             {
@@ -914,6 +915,11 @@ namespace Sampoerna.EMS.BLL
                     case "SUBMISSION_DATE":
                         changes.OLD_VALUE = origin.SUBMISSION_DATE != null ? origin.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         changes.NEW_VALUE = data.SUBMISSION_DATE != null ? data.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+                        break;
+
+                    case "REDUCE_TRIAL":
+                        changes.OLD_VALUE = origin.REDUCE_TRIAL.HasValue && origin.REDUCE_TRIAL.Value ? "True" : "False";
+                        changes.NEW_VALUE = data.REDUCE_TRIAL.HasValue && data.REDUCE_TRIAL.Value ? "True" : "False";
                         break;
                 }
                 _changesHistoryBll.AddHistory(changes);
@@ -1562,9 +1568,15 @@ namespace Sampoerna.EMS.BLL
             string newValue = dbData.CK5_TYPE == Enums.CK5Type.PortToImporter ? 
                 EnumHelper.GetDescription(Enums.DocumentStatus.TFPosting) : 
                 EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
-            
+
             if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+            {
+                if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial && dbData.REDUCE_TRIAL.HasValue &&
+                    dbData.REDUCE_TRIAL.Value)
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GICreated);
+                else
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+            }
 
             //set change history
             if (oldValue != newValue)
@@ -1576,9 +1588,19 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                dbData.STATUS_ID = dbData.CK5_TYPE == Enums.CK5Type.Manual
-                ? Enums.DocumentStatus.Completed
-                : Enums.DocumentStatus.CreateSTO;
+                if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
+                {
+                    if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial && dbData.REDUCE_TRIAL.HasValue &&
+                        dbData.REDUCE_TRIAL.Value)
+                        dbData.STATUS_ID = Enums.DocumentStatus.GICreated;
+                    else
+                        dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                }
+                else
+                    dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
+                //dbData.STATUS_ID = dbData.CK5_TYPE == Enums.CK5Type.Manual
+                //? Enums.DocumentStatus.Completed
+                //: Enums.DocumentStatus.CreateSTO;
             }
             
 
@@ -1781,6 +1803,35 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "SEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
             dbData.SEALING_NOTIF_DATE = input.SealingDate;
 
+            //ck5 manual and trial
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
+            {
+                if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial && dbData.REDUCE_TRIAL.HasValue &&
+                    dbData.REDUCE_TRIAL.Value)
+                {
+                    oldValue = dbData.GI_DATE.HasValue ? dbData.GI_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+                    newValue = input.GIDate.HasValue ? input.GIDate.Value.ToString("dd MMM yyyy") : string.Empty;
+                    //set change history
+                    if (oldValue != newValue)
+                        SetChangeHistory(oldValue, newValue, "GI_DATE", input.UserId, dbData.CK5_ID.ToString());
+                    dbData.GI_DATE = input.GIDate;
+
+                    if (!string.IsNullOrEmpty(input.SealingNumber)
+                        && input.SealingDate.HasValue
+                        && input.GIDate.HasValue)
+                    {
+                        oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+                        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GRCreated);
+                        //set change history
+                        SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+
+                        dbData.STATUS_ID = Enums.DocumentStatus.GRCreated;
+                    }
+
+                }
+            }
+
+
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);
@@ -1829,22 +1880,54 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
 
-            if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
             {
-                if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
-                    && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
-                    && dbData.SEALING_NOTIF_DATE.HasValue
-                    && dbData.UNSEALING_NOTIF_DATE.HasValue)
+                if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial && dbData.REDUCE_TRIAL.HasValue &&
+                    dbData.REDUCE_TRIAL.Value)
                 {
-
-                    oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+                    oldValue = dbData.GR_DATE.HasValue ? dbData.GR_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+                    newValue = input.GRDate.HasValue ? input.GRDate.Value.ToString("dd MMM yyyy") : string.Empty;
                     //set change history
-                    SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+                    if (oldValue != newValue)
+                        SetChangeHistory(oldValue, newValue, "GR_DATE", input.UserId, dbData.CK5_ID.ToString());
+                    dbData.GR_DATE = input.GRDate;
 
-                    dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                    if (!string.IsNullOrEmpty(input.UnSealingNumber)
+                        && input.UnSealingDate.HasValue
+                        && input.GRDate.HasValue)
+                    {
+                        oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+                        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+                        //set change history
+                        SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+
+                        dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                    }
+
                 }
             }
+            else
+            {
+
+
+                if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
+                {
+                    if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
+                        && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
+                        && dbData.SEALING_NOTIF_DATE.HasValue
+                        && dbData.UNSEALING_NOTIF_DATE.HasValue)
+                    {
+
+                        oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+                        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+                        //set change history
+                        SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+
+                        dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                    }
+                }
+            }
+
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             AddWorkflowHistory(input);

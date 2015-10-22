@@ -1,5 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 @using Sampoerna.EMS.Website.Helpers
+@using Sampoerna.EMS.Core
 
 @Html.HiddenFor(model => model.SubmissionNumber)
 @Html.HiddenFor(model => model.SubmissionDate)
@@ -392,11 +393,38 @@
                                     <div class="row">
                                         <label class="col-md-4">Request Type</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.RequestTypeDesc, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.RequestTypeDesc, new { @disabled     = false, @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            @if (Model.IsCk5Manual)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-5 Manual Type</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck5ManualTypeString, new { @class = "form-control", @disabled = false })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @if (Model.Ck5ManualType == Enums.Ck5ManualType.Trial)
+                                    {
+                                        <div class="col-md-6">
+                                            <div class="row" id="ck5TrialPbck1Reduce">
+                                                <label class="col-md-4">Reduce PBCK-1</label>
+                                                <div class="col-md-8">
+                                                    @Html.CheckBoxFor(model => model.IsReducePbck1Ck5Trial, new { @class = "checkbox", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+
+                            }
                         </div>
 
                     </div>

@@ -1,6 +1,8 @@
 ﻿
 function OnReadyFunction(ck5Type) {
     
+    $('#ck5TrialPbck1Reduce').hide();
+    
     if (ck5Type == 'Completed' || ck5Type == 'Cancelled') {
         $('#MenuCK5Completed').addClass('active');
     } else if (ck5Type == 'PortToImporter' || ck5Type == 'ImporterToPlant') {
@@ -8,6 +10,7 @@ function OnReadyFunction(ck5Type) {
     } else if (ck5Type == 'Export') {
         $('#MenuCK5Export').addClass('active');
     } else if (ck5Type == 'Manual') {
+        $('#ck5TrialPbck1Reduce').show();
         $('#MenuCK5Manual').addClass('active');
     } else {
         $('#MenuCK5Domestic').addClass('active');

@@ -99,6 +99,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string APPROVED_BY_MANAGER { get; set; }
 
         public Sampoerna.EMS.Core.Enums.Ck5ManualType CK5_MANUAL_TYPE { get; set; }
+        public Nullable<bool> REDUCE_TRIAL { get; set; }
 
         public string RemainQuota;
        public long CK5_REF_ID { get; set; }
