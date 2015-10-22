@@ -377,6 +377,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     var plant = _plantBll.GetT001WById(item.PlantWerks);
                     var brandCe = _brandRegistrationBll.GetById(item.PlantWerks, item.FaCode);
 
+                    if (brandCe.IS_DELETED == true || (brandCe.STATUS == false || brandCe.STATUS == null))
+                    {
+                        AddMessageInfo("Data Brand Description Is Inactive", Enums.MessageInfoType.Error);
+                        return RedirectToAction("UploadManualWaste");
+                    }
+
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
 
