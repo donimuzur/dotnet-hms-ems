@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PrintHistory;
@@ -18,7 +19,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
             WorkflowHistoryPbck7 = new List<WorkflowHistoryViewModel>();
 
             Back1Documents = new List<BACK1_DOCUMENT>();
-            Ck2Documents = new List<CK2_DOCUMENT>();
+            Ck2Documents = new List<CK2_DOCUMENTDto>();
 
             Ck5FormViewModel = new CK5FormViewModel();
         }
@@ -77,14 +78,14 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string Ck2Number { get; set; }
         public DateTime? Ck2Date { get; set; }
         public decimal? Ck2Value { get; set; }
-        public List<CK2_DOCUMENT> Ck2Documents { get; set; }
+        public List<CK2_DOCUMENTDto> Ck2Documents { get; set; }
         public List<HttpPostedFileBase> Pbck3Ck2FileUploadFileList { get; set; }
 
         //back3
         public int Back3Id { get; set; }
         public string Back3Number { get; set; }
         public DateTime? Back3Date { get; set; }
-        public List<BACK3_DOCUMENT> Back3Documents { get; set; }
+        public List<BACK3_DOCUMENTDto> Back3Documents { get; set; }
         public List<HttpPostedFileBase> Pbck3Back3FileUploadFileList { get; set; }
        
 

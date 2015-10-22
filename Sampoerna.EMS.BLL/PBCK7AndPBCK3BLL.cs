@@ -769,6 +769,22 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
 
         }
+
+        private void SetChangeHistoryPbck3(string oldValue, string newValue, string fieldName, string userId, string pbck7Id)
+        {
+            var changes = new CHANGES_HISTORY();
+            changes.FORM_TYPE_ID = Enums.MenuList.PBCK3;
+            changes.FORM_ID = pbck7Id;
+            changes.FIELD_NAME = fieldName;
+            changes.MODIFIED_BY = userId;
+            changes.MODIFIED_DATE = DateTime.Now;
+
+            changes.OLD_VALUE = oldValue;
+            changes.NEW_VALUE = newValue;
+
+            _changesHistoryBll.AddHistory(changes);
+
+        }
         
         public Pbck7AndPbck3Dto SavePbck7(Pbck7Pbck3SaveInput input)
         {
@@ -1389,18 +1405,18 @@ namespace Sampoerna.EMS.BLL
             //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
             //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-            {
-                CreatedUser = dbData.CREATED_BY,
-                CurrentUser = input.UserId,
-                DocumentStatus = dbData.STATUS,
-                UserRole = input.UserRole,
-                NppbkcId = dbData.NPPBKC,
-                DocumentNumber = dbData.PBCK7_NUMBER
-            });
+            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            //{
+            //    CreatedUser = dbData.CREATED_BY,
+            //    CurrentUser = input.UserId,
+            //    DocumentStatus = dbData.STATUS,
+            //    UserRole = input.UserRole,
+            //    NppbkcId = dbData.NPPBKC,
+            //    DocumentNumber = dbData.PBCK7_NUMBER
+            //});
 
-            if (!isOperationAllow)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            //if (!isOperationAllow)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
@@ -1408,27 +1424,37 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.APPROVED_BY = input.UserId;
+                    dbData.APPROVED_DATE = DateTime.Now;
 
-                //get poa printed name
-                string poaPrintedName = "";
-                var poaData = _poaBll.GetDetailsById(input.UserId);
-                if (poaData != null)
-                    poaPrintedName = poaData.PRINTED_NAME;
+                    ////get poa printed name
+                    //string poaPrintedName = "";
+                    //var poaData = _poaBll.GetDetailsById(input.UserId);
+                    //if (poaData != null)
+                    //    poaPrintedName = poaData.PRINTED_NAME;
 
-                //todo add field poa
-                //dbData.POA_PRINTED_NAME = poaPrintedName;
+                    ////todo add field poa
+                    ////dbData.POA_PRINTED_NAME = poaPrintedName;
 
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                dbData.APPROVED_BY_MANAGER = input.UserId;
-                dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.APPROVED_BY_MANAGER = input.UserId;
+                    dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
 
 
@@ -1550,6 +1576,13 @@ namespace Sampoerna.EMS.BLL
                 return false;
 
             return true;
+        }
+
+        public void UpdateUploadedFileCompletedPbck7(List<BACK1_DOCUMENTDto> input)
+        {
+            
+            _back1Services.InsertOrDeleteBack1Documents(input);
+            _uow.SaveChanges();
         }
 
         private void GovApproveDocument(Pbck7Pbck3WorkflowDocumentInput input)
@@ -1946,7 +1979,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             //set change history
-            SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
+            SetChangeHistoryPbck3(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
 
 
         }
@@ -1961,25 +1994,25 @@ namespace Sampoerna.EMS.BLL
             //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
             //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-            string nppbkcId = "";
-            var outputResult = GetPbck3DetailsById(input.DocumentId);
-            if (outputResult.Pbck3CompositeDto.FromPbck7)
-                nppbkcId = outputResult.Pbck3CompositeDto.Pbck7Composite.NppbkcId;
-            else
-                nppbkcId = outputResult.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+            //string nppbkcId = "";
+            //var outputResult = GetPbck3DetailsById(input.DocumentId);
+            //if (outputResult.Pbck3CompositeDto.FromPbck7)
+            //    nppbkcId = outputResult.Pbck3CompositeDto.Pbck7Composite.NppbkcId;
+            //else
+            //    nppbkcId = outputResult.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_NPPBKC_ID;
 
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-            {
-                CreatedUser = dbData.CREATED_BY,
-                CurrentUser = input.UserId,
-                DocumentStatus = dbData.STATUS.HasValue ? dbData.STATUS.Value : Enums.DocumentStatus.Draft,
-                UserRole = input.UserRole,
-                NppbkcId = nppbkcId,
-                DocumentNumber = dbData.PBCK3_NUMBER
-            });
+            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            //{
+            //    CreatedUser = dbData.CREATED_BY,
+            //    CurrentUser = input.UserId,
+            //    DocumentStatus = dbData.STATUS.HasValue ? dbData.STATUS.Value : Enums.DocumentStatus.Draft,
+            //    UserRole = input.UserRole,
+            //    NppbkcId = nppbkcId,
+            //    DocumentNumber = dbData.PBCK3_NUMBER
+            //});
 
-            if (!isOperationAllow)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            //if (!isOperationAllow)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
@@ -1987,27 +2020,37 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.APPROVED_BY = input.UserId;
+                    dbData.APPROVED_DATE = DateTime.Now;
 
-                //get poa printed name
-                string poaPrintedName = "";
-                var poaData = _poaBll.GetDetailsById(input.UserId);
-                if (poaData != null)
-                    poaPrintedName = poaData.PRINTED_NAME;
+                    ////get poa printed name
+                    //string poaPrintedName = "";
+                    //var poaData = _poaBll.GetDetailsById(input.UserId);
+                    //if (poaData != null)
+                    //    poaPrintedName = poaData.PRINTED_NAME;
 
-                //todo add field poa
-                //dbData.POA_PRINTED_NAME = poaPrintedName;
+                    ////todo add field poa
+                    ////dbData.POA_PRINTED_NAME = poaPrintedName;
 
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                dbData.APPROVED_BY_MANAGER = input.UserId;
-                dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.APPROVED_BY_MANAGER = input.UserId;
+                    dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
 
 
@@ -2016,7 +2059,7 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistoryPbck3(input);
 
             //set change history
-            SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
+            SetChangeHistoryPbck3(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
 
         }
 
@@ -2047,7 +2090,7 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistoryPbck3(input);
 
             //set change history
-            SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
+            SetChangeHistoryPbck3(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
         }
 
         private bool IsCompletedWorkflowPbck3(Pbck3WorkflowDocumentInput input)
@@ -2080,6 +2123,15 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
+        public void UpdateUploadedFileCompletedPbck3(List<BACK3_DOCUMENTDto> inputBack3, List<CK2_DOCUMENTDto> inputCk2)
+        {
+
+            _back3Services.InsertOrDeleteBack3Item(inputBack3);
+            _ck2Services.InsertOrDeleteCk2Item(inputCk2);
+            _uow.SaveChanges();
+        }
+
+
         private void GovApproveDocumentPbck3(Pbck3WorkflowDocumentInput input)
         {
             var dbData = _repositoryPbck3.GetByID(input.DocumentId);
@@ -2090,12 +2142,6 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            ////prepare for set changes history
-            //var origin = Mapper.Map<Pbck4Dto>(dbData);
-
-
-            ////add to change log
-            //SetChangesHistory(origin, input, input.UserId);
 
             //Add Changes
             if (dbData.GOV_STATUS != input.GovStatusInput)

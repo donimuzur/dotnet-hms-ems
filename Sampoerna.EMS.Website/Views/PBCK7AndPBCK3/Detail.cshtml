@@ -31,7 +31,7 @@
                         }
                         else
                         {
-                            if (Model.AllowGovApproveAndReject)
+                            if (Model.AllowGovApproveAndReject || Model.Pbck7Status == Enums.DocumentStatus.Completed)
                             {
                                 <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                             }
@@ -58,8 +58,6 @@
                     <ul role="tablist" class="nav nav-tabs">
                         <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
                         <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck7" href="#printoutpbck7">Print Out PBCK-7</a></li>
-                        @*<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck3" href="#printoutpbck3">Print Out PBCK-3</a></li>*@
-                        @*<li role="presentation" id="tab-upload" ><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>*@
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
 
                     </ul>
@@ -77,8 +75,6 @@
                     <div class="tab-content">
                         @Html.Partial("_HomeDetail")
                         @Html.Partial("_PrintOutPbck7")
-                        @*@Html.Partial("_PrintOutPbck3")*@  
-                        @*@Html.Partial("_Upload")*@
                         @Html.Partial("_Pbck7ChangeLog")
                        
 
@@ -167,15 +163,14 @@
     <script src="~/Scripts/Pbck7ScriptDocUpload.js"></script>
    
     <script type="text/javascript">
-        $('#MenuPBCK7Index').addClass('active');
-        
+
         var isCompleteView = '@Model.Pbck7Status';
-        if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()'){
+        if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()') {
             $('#MenuPBCK7CompleteIndex').addClass('active');
         } else {
             $('#MenuPBCK7Index').addClass('active');
         }
-        
+
         $('#btnBack').click(function(e) {
             if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()')
                 location.href = '@Url.Action("Pbck7Completed", "PBCK7AndPBCK3")';
@@ -185,126 +180,131 @@
 
 
         $('#btn-changelog-export-xls').click(function() {
-            location.href = '@Url.Action("ExportXls", "PBCK7AndPBCK3", new { pbckId = Model.Id })';
+            location.href = '@Url.Action("ExportXls", "PBCK7AndPBCK3", new {pbckId = Model.Id})';
         });
 
-    $("#btnApproveConfirm").click(function () {
-        //$('#ActionType').val('Approve');
-        //$('#form-pbck7-detail').submit();
-        window.location = "@Url.Action("ApproveDocument", "PBCK7AndPBCK3", new { id = @Model.Id })";
-    });
+        $("#btnApproveConfirm").click(function() {
+            //$('#ActionType').val('Approve');
+            //$('#form-pbck7-detail').submit();
+            window.location = "@Url.Action("ApproveDocument", "PBCK7AndPBCK3", new {id = @Model.Id})";
+        });
 
-    $("#btnSaveGovStatus").click(function () {
-        if (ValidateGovInput()) {
-            $('#form-pbck7-detail').submit();
-            @*window.location = "@Url.Action("GovApproveDocument", "PBCK7AndPBCK3", new { id = @Model.Id })";*@
-        }
-    });
-
-    $('#divComment').hide();
-
-    $('#Pbck7GovStatus').on('change', function (e) {
-        var valueSelected = this.value;
+        $("#btnSaveGovStatus").click(function() {
+            if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()') {
+                $('#form-pbck7-detail').submit();
+            } else {
+                if (ValidateGovInput()) {
+                    $('#form-pbck7-detail').submit();
+                }
+            }
+        });
 
         $('#divComment').hide();
 
+        $('#Pbck7GovStatus').on('change', function(e) {
+            var valueSelected = this.value;
 
-        if (valueSelected == 'Rejected') {
-            $('#divComment').show();
-
-        }
-
-    });
+            $('#divComment').hide();
 
 
-    $("#btnApproveConfirmPbck3").click(function () {
-        $('#ActionType').val('ApprovePbck3');
-        $('#form-pbck7-detail').submit();
-    });
-    $('#btnApprove').click(function () {
+            if (valueSelected == 'Rejected') {
+                $('#divComment').show();
 
-        $('#pbck7ApproveModal').modal('show');
-    });
-    $('#btnApprovePbck3').click(function () {
-
-        $('#pbck3ApproveModal').modal('show');
-    });
-    $("#btnSubmitConfirm").click(function () {
-        $('#IsSaveSubmit').val('true');
-        $('#form-pbck7-edit').submit();
-    });
-    $('#btnSubmitDocument').click(function () {
-
-        $('#pbck7Modal').modal('show');
-    });
-    $('#btn-generate-upload').click(function () {
-        uploadXmlFile();
-    });
-
-
-    function printPreview(url) {
-
-        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
-    }
-
-    function PrintOutClick(reportUrl, addHistoryUrl, id) {
-
-        window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
-        $.ajax({
-            type: 'POST',
-            url: addHistoryUrl,
-            data: { id: id },
-            success: function (response) {
-                $('#PrintOutHistoryTable').html("");
-                $('#PrintOutHistoryTable').html(response);
-                ResetPrintHistoryDataTable();
             }
+
         });
-    }
-    function ResetPrintHistoryDataTable() {
-        // DataTable
-        var table = null;
-        if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
-            table = $('#printHistoryTable').DataTable();
-            table.destroy();
+
+
+        $("#btnApproveConfirmPbck3").click(function() {
+            $('#ActionType').val('ApprovePbck3');
+            $('#form-pbck7-detail').submit();
+        });
+        $('#btnApprove').click(function() {
+
+            $('#pbck7ApproveModal').modal('show');
+        });
+        $('#btnApprovePbck3').click(function() {
+
+            $('#pbck3ApproveModal').modal('show');
+        });
+        $("#btnSubmitConfirm").click(function() {
+            $('#IsSaveSubmit').val('true');
+            $('#form-pbck7-edit').submit();
+        });
+        $('#btnSubmitDocument').click(function() {
+
+            $('#pbck7Modal').modal('show');
+        });
+        $('#btn-generate-upload').click(function() {
+            uploadXmlFile();
+        });
+
+
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
         }
 
-        table = $('#printHistoryTable').DataTable(
-            {
-                "sDom": "Rlfrtip",
-                "language": {
-                    "zeroRecords": "No records found",
-                    "infoFiltered": "(filtered from _MAX_ total records)"
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function(response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
                 }
             });
+        }
 
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
 
-    }
-    $('#btnRejectPbck7').click(function () {
-        $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
 
-        $('#pbck7RejectModal').modal('show');
-    });
-
-    $('#Comment').bind('input propertychange', function () {
-
-        $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
-
-        if (this.value.length) {
-            $('#btnConfirmRejectPbck7').removeAttr('disabled');
 
         }
-    });
-    $('#Pbck3Dto_Comment').bind('input propertychange', function () {
 
-        $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
+        $('#btnRejectPbck7').click(function() {
+            $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
 
-        if (this.value.length) {
-            $('#btnConfirmRejectPbck3').removeAttr('disabled');
+            $('#pbck7RejectModal').modal('show');
+        });
 
-        }
-    });
+        $('#Comment').bind('input propertychange', function() {
+
+            $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
+
+            if (this.value.length) {
+                $('#btnConfirmRejectPbck7').removeAttr('disabled');
+
+            }
+        });
+        $('#Pbck3Dto_Comment').bind('input propertychange', function() {
+
+            $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
+
+            if (this.value.length) {
+                $('#btnConfirmRejectPbck3').removeAttr('disabled');
+
+            }
+        });
     </script>
 }
