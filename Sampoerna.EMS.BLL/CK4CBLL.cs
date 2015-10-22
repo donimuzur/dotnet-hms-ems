@@ -214,6 +214,7 @@ namespace Sampoerna.EMS.BLL
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
             var nppbkc = ck4cData.NppbkcId;
             var firstText = actionType == Enums.ActionType.Reject ? " Document" : string.Empty;
+            var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -245,8 +246,6 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Submit:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
-
                         if (approveRejectedPoa != "")
                         {
                             var poaApproveId = _userBll.GetUserById(approveRejectedPoa);
@@ -317,8 +316,8 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
-                    var poaApprove = _userBll.GetUserById(ck4cData.ApprovedByPoa);
-                    var poaId = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
+                    var poaApprove = _userBll.GetUserById(approveRejectedPoa);
+                    var poaId = approveRejectedPoa == "" ? ck4cData.CreatedBy : approveRejectedPoa;
 
                     rc.To.Add(userDetail.EMAIL);
                     if (poaApprove != null)
