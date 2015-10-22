@@ -1,6 +1,8 @@
 ﻿
 
+using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 
 namespace Sampoerna.EMS.Contract
@@ -12,5 +14,7 @@ namespace Sampoerna.EMS.Contract
         void SaveBack3ByPbck3Id(SaveBack3ByPbck3IdInput input);
 
         bool IsExistBack3DocumentByPbck3(int pbck3Id);
+
+        void InsertOrDeleteBack3Item(List<BACK3_DOCUMENTDto> input);
     }
 }

@@ -259,6 +259,7 @@ namespace Sampoerna.EMS.BLL.Services
                 c => c.BUKRS == input.CompanyCode && c.NPPBKC_ID == input.NppbkcId
                      && c.EX_GOODTYP == input.ExcisableGoodsType
                      && c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId
+                     && c.LACK1_LEVEL == input.Lack1Level
                      && c.PERIOD_MONTH == input.PeriodMonth && c.PERIOD_YEAR == input.PeriodYear;
             if (!string.IsNullOrEmpty(input.ReceivingPlantId))
             {

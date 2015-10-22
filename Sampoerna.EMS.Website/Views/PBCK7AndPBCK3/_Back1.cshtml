@@ -15,61 +15,96 @@
             <div class="panel-body">
                 <div class="form-excise" role="form">
 
-                    @if (Model.AllowGovApproveAndReject)
+                    @if (Model.AllowGovApproveAndReject || Model.Pbck7Status == Enums.DocumentStatus.Completed)
                     {
                         <div class="row">
                             <div class="col-md-6">
-
-
-                                <label class="col-md-4">PBCK7 Gov Status<span class="red">*</span></label>
-                                <div class="col-md-8">
-                                    @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control" })
-                                </div>
-
+                                @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                                {
+                                    <label class="col-md-4">PBCK7 Gov Status</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Pbck7GovStatusDesc, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                }
+                                else
+                                {
+                                    <label class="col-md-4">PBCK7 Gov Status<span class="red">*</span></label>
+                                    <div class="col-md-8">
+                                        @Html.EnumDropDownListFor(x => x.Pbck7GovStatus, Model.Pbck7GovStatusList, "select", new { @class = "form-control" })
+                                    </div>
+                                }
 
 
                             </div>
 
                             <div class="col-md-6">
                                 <div class="row">
+                                    @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                                    {
+                                    <label class="col-md-4">BACK-1 No</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Back1Dto.Back1Number, new { @disabled = "disabled", @class = "form-control" })
+                                    </div>
+                                    }
+                                    else
+                                    {
                                     <label class="col-md-4">BACK-1 No <span class="red">*</span></label>
                                     <div class="col-md-8">
-
-                                        @Html.TextBoxFor(x => x.Back1Dto.Back1Number, new { @class = "form-control" })
-
-
+                                        @Html.TextBoxFor(x => x.Back1Dto.Back1Number, new {@class = "form-control"})
                                     </div>
+                                    }
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
-                                <div id="divComment">
+                                @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                                {
+
                                     <div class="row">
-                                        <label class="col-md-4">Add Comment<span class="red">*</span></label>
+                                        @*<label class="col-md-4">Comment</label>
                                         <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                                            @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
+                                        </div>*@
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    <div id="divComment">
+                                        <div class="row">
+                                            <label class="col-md-4">Add Comment<span class="red">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+
+                                }
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">BACK-1 Date <span class="red">*</span></label>
-                                    <div class="col-md-8">
-
-                                        <div class="input-group date">
-                                            @Html.TextBoxFor(x => x.Back1Dto.Back1Date, new { @class = "form-control" })
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
+                                    @if (Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                                    {
+                                        <label class="col-md-4">BACK-1 Date </label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Back1Dto.Back1Date, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
                                         </div>
+                                    }
+                                    else
+                                    {
+                                        <label class="col-md-4">BACK-1 Date <span class="red">*</span></label>
+                                        <div class="col-md-8">
 
-
-
-
-                                    </div>
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(x => x.Back1Dto.Back1Date, new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -87,13 +122,32 @@
                             <div class="col-md-6">
                                 <div class="row">
 
-                                    <label class="col-md-4">Back1 Document <span class="red">*</span></label>
+                                    <label class="col-md-4">Back1 Doc <span class="red">*</span></label>
                                     <div class="col-md-8">
-
+                                        @Html.HiddenFor(model => model.Back1Dto.Back1Id)
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="file-upload" id="poa-files">
+                                                    @if (Model.Back1Dto != null && Model.Back1Dto.Documents != null)
+                                                    {
+                                                        for (int i = 0; i < Model.Back1Dto.Documents.Count(); i++)
+                                                        {
 
+                                                            @Html.HiddenFor(model => model.Back1Dto.Documents[i].BACK1_DOCUMENT_ID)
+                                                            @Html.HiddenFor(model => model.Back1Dto.Documents[i].IsDeleted)
+
+                                                            <div class="row">
+                                                                <div class="col-sm-10">
+                                                                    <a href="@Url.Content(Model.Back1Dto.Documents[i].FILE_PATH)">@Model.Back1Dto.Documents[i].FILE_NAME</a>
+
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck7(this,"Back1Dto_Documents_", "@i") '><i class="fa fa-times"></i></button>
+                                                                </div>
+                                                            </div>
+
+                                                        }
+                                                    }
                                                 </div>
                                             </div>
 
@@ -110,43 +164,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4"></label>
-                                    <div class="col-md-8">
 
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="row">
-
-                                    <label class="col-md-4"></label>
-                                    <div class="col-md-8">
-
-                                        @if (Model.Back1Dto != null && Model.Back1Dto.Documents != null)
-                                        {
-                                            foreach (var file in Model.Back1Dto.Documents)
-                                            {
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <i class="fa fa-file"></i>
-                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                    </div>
-
-                                                </div>
-                                            }
-                                        }
-                                    </div>
-
-                                </div>
-                            </div>
-
-
-                        </div>
                     }
                     else
                     {
@@ -172,7 +190,7 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                               
+
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
@@ -184,7 +202,7 @@
                             </div>
                         </div>
 
-                       
+
                     }
 
 
@@ -214,9 +232,11 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-9">
-                                <input type="file" class="file-inputs" data-filename-placement="inside" id="DocumentsPostBack_0_" name="DocumentsPostBack[0]">
+                                <input type="file" class="form-control" data-filename-placement="inside" id="DocumentsPostBack_0_" name="DocumentsPostBack[0]">
                             </div>
-
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-danger full" onclick="removeUploadButton(0);">Remove</button>
+                            </div>
                         </div>
                     </div>
                 </div>

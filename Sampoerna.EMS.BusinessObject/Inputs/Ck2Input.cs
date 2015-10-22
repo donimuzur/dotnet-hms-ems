@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -13,6 +14,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? Ck2Date { get; set; }
         public decimal? Ck2Value { get; set; }
 
-        public List<CK2_DOCUMENT> Ck2Documents { get; set; }
+        public List<CK2_DOCUMENTDto> Ck2Documents { get; set; }
     }
 }

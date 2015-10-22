@@ -113,12 +113,12 @@ function saveClick() {
     if (isValid) {
         isValid = saveInputValidation();
     }
-    if (isValid) {
-        isValid = checkJumlahProduksi();
-    }
-    if (isValid) {
-        isValid = checkIncomeListItem();
-    }
+    //if (isValid) {
+    //    isValid = checkJumlahProduksi();
+    //}
+    //if (isValid) {
+    //    isValid = checkIncomeListItem();
+    //}
     if (isValid) {
         $('#CreateLack1Form').submit();
     } else {

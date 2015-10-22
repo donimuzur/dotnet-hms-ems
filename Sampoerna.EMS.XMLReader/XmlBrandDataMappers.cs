@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Common.EntitySql;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -54,16 +55,14 @@ namespace Sampoerna.EMS.XMLReader
                         item.BRAND_CONTENT = _xmlMapper.GetElementValue(xElement.Element("CONTENT"));
                         item.CREATED_BY = _xmlMapper.GetElementValue(xElement.Element("MODIFIED_BY"));
                         var pcodeCode = _xmlMapper.GetElementValue(xElement.Element("PER_CODE"));
-                        //var pCode = new XmlPCodeDataMapper(null).GetPCode(pcodeCode);
-                        //if (pCode == null)
+                        //var existingpcode = GetPcode(pcodeCode);
+                        //if (existingpcode != null)
                         //{
-                        //    var pCodeToAdd = new ZAIDM_EX_PCODE();
-                        //    pCodeToAdd.PER_CODE = pcodeCode;
-                        //    pCodeToAdd.PER_DESC = xElement.Element("PER_DESC") == null ? null : xElement.Element("PER_DESC").Value;
-                        //    pCodeToAdd.CREATED_DATE = DateTime.Now;
-                        //    _xmlMapper.InsertToDatabase(pCodeToAdd);
+                        //    item.PER_CODE = pcodeCode;
+                        //    item.PER_CODE_DESC = existingpcode.PER_DESC;
                         //}
-                        item.PER_CODE = pcodeCode;
+                            item.PER_CODE = pcodeCode; 
+                        
                         item.BRAND_CE = _xmlMapper.GetElementValue(xElement.Element("BRAND_CE"));
                         item.SKEP_NO = _xmlMapper.GetElementValue(xElement.Element("SKEP_NO"));
                         item.SKEP_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("SKEP_DATE")));
@@ -179,9 +178,21 @@ namespace Sampoerna.EMS.XMLReader
                 .GetByID(plantid, facode,stickercode);
             return existingData;
         }
-        
 
 
+        public ZAIDM_EX_PCODE GetPcode(string pcode)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_PCODE>()
+                .GetByID(pcode);
+            return existingData;
+        }
+
+        public ZAIDM_EX_PRODTYP GetProdType(string prodType)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_PRODTYP>()
+                .GetByID(prodType);
+            return existingData;
+        }
 
     }
 }

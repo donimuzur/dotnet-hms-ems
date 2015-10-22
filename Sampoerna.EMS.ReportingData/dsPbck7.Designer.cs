@@ -330,11 +330,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnTotalCukai;
             
-            private global::System.Data.DataColumn columnReportingDate;
-            
             private global::System.Data.DataColumn columnPreview;
-            
-            private global::System.Data.DataColumn columnDecreeDate;
             
             private global::System.Data.DataColumn columnNomor;
             
@@ -348,9 +344,13 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnNppbkcCity;
             
-            private global::System.Data.DataColumn columnPbckDate;
-            
             private global::System.Data.DataColumn columnPoaTitle;
+            
+            private global::System.Data.DataColumn columnExecutionDate;
+            
+            private global::System.Data.DataColumn columnNppbkcDate;
+            
+            private global::System.Data.DataColumn columnReportingDate;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -451,25 +451,9 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn ReportingDateColumn {
-                get {
-                    return this.columnReportingDate;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn PreviewColumn {
                 get {
                     return this.columnPreview;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn DecreeDateColumn {
-                get {
-                    return this.columnDecreeDate;
                 }
             }
             
@@ -523,17 +507,33 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn PbckDateColumn {
+            public global::System.Data.DataColumn PoaTitleColumn {
                 get {
-                    return this.columnPbckDate;
+                    return this.columnPoaTitle;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn PoaTitleColumn {
+            public global::System.Data.DataColumn ExecutionDateColumn {
                 get {
-                    return this.columnPoaTitle;
+                    return this.columnExecutionDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn NppbkcDateColumn {
+                get {
+                    return this.columnNppbkcDate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ReportingDateColumn {
+                get {
+                    return this.columnReportingDate;
                 }
             }
             
@@ -583,17 +583,17 @@ namespace Sampoerna.EMS.ReportingData {
                         string Footer, 
                         string TotalKemasan, 
                         string TotalCukai, 
-                        string ReportingDate, 
                         string Preview, 
-                        string DecreeDate, 
                         string Nomor, 
                         string Lampiran, 
                         string TextTo, 
                         string VendorCity, 
                         string DocumentType, 
                         string NppbkcCity, 
-                        string PbckDate, 
-                        string PoaTitle) {
+                        string PoaTitle, 
+                        string ExecutionDate, 
+                        string NppbkcDate, 
+                        string ReportingDate) {
                 MasterRow rowMasterRow = ((MasterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         PoaName,
@@ -604,17 +604,17 @@ namespace Sampoerna.EMS.ReportingData {
                         Footer,
                         TotalKemasan,
                         TotalCukai,
-                        ReportingDate,
                         Preview,
-                        DecreeDate,
                         Nomor,
                         Lampiran,
                         TextTo,
                         VendorCity,
                         DocumentType,
                         NppbkcCity,
-                        PbckDate,
-                        PoaTitle};
+                        PoaTitle,
+                        ExecutionDate,
+                        NppbkcDate,
+                        ReportingDate};
                 rowMasterRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowMasterRow);
                 return rowMasterRow;
@@ -645,17 +645,17 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnFooter = base.Columns["Footer"];
                 this.columnTotalKemasan = base.Columns["TotalKemasan"];
                 this.columnTotalCukai = base.Columns["TotalCukai"];
-                this.columnReportingDate = base.Columns["ReportingDate"];
                 this.columnPreview = base.Columns["Preview"];
-                this.columnDecreeDate = base.Columns["DecreeDate"];
                 this.columnNomor = base.Columns["Nomor"];
                 this.columnLampiran = base.Columns["Lampiran"];
                 this.columnTextTo = base.Columns["TextTo"];
                 this.columnVendorCity = base.Columns["VendorCity"];
                 this.columnDocumentType = base.Columns["DocumentType"];
                 this.columnNppbkcCity = base.Columns["NppbkcCity"];
-                this.columnPbckDate = base.Columns["PbckDate"];
                 this.columnPoaTitle = base.Columns["PoaTitle"];
+                this.columnExecutionDate = base.Columns["ExecutionDate"];
+                this.columnNppbkcDate = base.Columns["NppbkcDate"];
+                this.columnReportingDate = base.Columns["ReportingDate"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -677,12 +677,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnTotalKemasan);
                 this.columnTotalCukai = new global::System.Data.DataColumn("TotalCukai", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTotalCukai);
-                this.columnReportingDate = new global::System.Data.DataColumn("ReportingDate", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnReportingDate);
                 this.columnPreview = new global::System.Data.DataColumn("Preview", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPreview);
-                this.columnDecreeDate = new global::System.Data.DataColumn("DecreeDate", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnDecreeDate);
                 this.columnNomor = new global::System.Data.DataColumn("Nomor", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnNomor);
                 this.columnLampiran = new global::System.Data.DataColumn("Lampiran", typeof(string), null, global::System.Data.MappingType.Element);
@@ -695,10 +691,14 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnDocumentType);
                 this.columnNppbkcCity = new global::System.Data.DataColumn("NppbkcCity", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnNppbkcCity);
-                this.columnPbckDate = new global::System.Data.DataColumn("PbckDate", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnPbckDate);
                 this.columnPoaTitle = new global::System.Data.DataColumn("PoaTitle", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPoaTitle);
+                this.columnExecutionDate = new global::System.Data.DataColumn("ExecutionDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnExecutionDate);
+                this.columnNppbkcDate = new global::System.Data.DataColumn("NppbkcDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNppbkcDate);
+                this.columnReportingDate = new global::System.Data.DataColumn("ReportingDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnReportingDate);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1342,22 +1342,6 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string ReportingDate {
-                get {
-                    try {
-                        return ((string)(this[this.tableMaster.ReportingDateColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'ReportingDate\' in table \'Master\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableMaster.ReportingDateColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string Preview {
                 get {
                     try {
@@ -1369,22 +1353,6 @@ namespace Sampoerna.EMS.ReportingData {
                 }
                 set {
                     this[this.tableMaster.PreviewColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string DecreeDate {
-                get {
-                    try {
-                        return ((string)(this[this.tableMaster.DecreeDateColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'DecreeDate\' in table \'Master\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableMaster.DecreeDateColumn] = value;
                 }
             }
             
@@ -1486,22 +1454,6 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string PbckDate {
-                get {
-                    try {
-                        return ((string)(this[this.tableMaster.PbckDateColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'PbckDate\' in table \'Master\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableMaster.PbckDateColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string PoaTitle {
                 get {
                     try {
@@ -1513,6 +1465,54 @@ namespace Sampoerna.EMS.ReportingData {
                 }
                 set {
                     this[this.tableMaster.PoaTitleColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ExecutionDate {
+                get {
+                    try {
+                        return ((string)(this[this.tableMaster.ExecutionDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ExecutionDate\' in table \'Master\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaster.ExecutionDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string NppbkcDate {
+                get {
+                    try {
+                        return ((string)(this[this.tableMaster.NppbkcDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'NppbkcDate\' in table \'Master\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaster.NppbkcDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ReportingDate {
+                get {
+                    try {
+                        return ((string)(this[this.tableMaster.ReportingDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ReportingDate\' in table \'Master\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaster.ReportingDateColumn] = value;
                 }
             }
             
@@ -1614,18 +1614,6 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsReportingDateNull() {
-                return this.IsNull(this.tableMaster.ReportingDateColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetReportingDateNull() {
-                this[this.tableMaster.ReportingDateColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsPreviewNull() {
                 return this.IsNull(this.tableMaster.PreviewColumn);
             }
@@ -1634,18 +1622,6 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetPreviewNull() {
                 this[this.tableMaster.PreviewColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsDecreeDateNull() {
-                return this.IsNull(this.tableMaster.DecreeDateColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetDecreeDateNull() {
-                this[this.tableMaster.DecreeDateColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1722,18 +1698,6 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsPbckDateNull() {
-                return this.IsNull(this.tableMaster.PbckDateColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetPbckDateNull() {
-                this[this.tableMaster.PbckDateColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsPoaTitleNull() {
                 return this.IsNull(this.tableMaster.PoaTitleColumn);
             }
@@ -1742,6 +1706,42 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetPoaTitleNull() {
                 this[this.tableMaster.PoaTitleColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsExecutionDateNull() {
+                return this.IsNull(this.tableMaster.ExecutionDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetExecutionDateNull() {
+                this[this.tableMaster.ExecutionDateColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsNppbkcDateNull() {
+                return this.IsNull(this.tableMaster.NppbkcDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetNppbkcDateNull() {
+                this[this.tableMaster.NppbkcDateColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsReportingDateNull() {
+                return this.IsNull(this.tableMaster.ReportingDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetReportingDateNull() {
+                this[this.tableMaster.ReportingDateColumn] = global::System.Convert.DBNull;
             }
         }
         

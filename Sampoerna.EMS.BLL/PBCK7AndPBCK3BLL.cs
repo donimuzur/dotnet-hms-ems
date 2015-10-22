@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using AutoMapper;
+using AutoMapper.Internal;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -39,6 +40,7 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poabll;
         private string includeTable = "PBCK7_ITEM";
         private WorkflowHistoryBLL _workflowHistoryBll;
+        private ILFA1BLL _lfaBll;
 
         private IDocumentSequenceNumberBLL _docSeqNumBll;
         private IBrandRegistrationService _brandRegistrationServices;
@@ -55,6 +57,8 @@ namespace Sampoerna.EMS.BLL
         private CK2Services _ck2Services;
         private IBack3Services _back3Services;
         private IWorkflowBLL _workflowBll;
+        private IHeaderFooterBLL _headerFooterBll;
+        private IMonthBLL _monthBll;
 
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -87,6 +91,9 @@ namespace Sampoerna.EMS.BLL
             _ck2Services = new CK2Services(_uow, _logger);
             _back3Services = new Back3Services(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
+            _lfaBll = new LFA1BLL(_uow, _logger);
+            _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
+            _monthBll = new MonthBLL(_uow, _logger);
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -769,6 +776,22 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
 
         }
+
+        private void SetChangeHistoryPbck3(string oldValue, string newValue, string fieldName, string userId, string pbck7Id)
+        {
+            var changes = new CHANGES_HISTORY();
+            changes.FORM_TYPE_ID = Enums.MenuList.PBCK3;
+            changes.FORM_ID = pbck7Id;
+            changes.FIELD_NAME = fieldName;
+            changes.MODIFIED_BY = userId;
+            changes.MODIFIED_DATE = DateTime.Now;
+
+            changes.OLD_VALUE = oldValue;
+            changes.NEW_VALUE = newValue;
+
+            _changesHistoryBll.AddHistory(changes);
+
+        }
         
         public Pbck7AndPbck3Dto SavePbck7(Pbck7Pbck3SaveInput input)
         {
@@ -1389,18 +1412,18 @@ namespace Sampoerna.EMS.BLL
             //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
             //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-            {
-                CreatedUser = dbData.CREATED_BY,
-                CurrentUser = input.UserId,
-                DocumentStatus = dbData.STATUS,
-                UserRole = input.UserRole,
-                NppbkcId = dbData.NPPBKC,
-                DocumentNumber = dbData.PBCK7_NUMBER
-            });
+            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            //{
+            //    CreatedUser = dbData.CREATED_BY,
+            //    CurrentUser = input.UserId,
+            //    DocumentStatus = dbData.STATUS,
+            //    UserRole = input.UserRole,
+            //    NppbkcId = dbData.NPPBKC,
+            //    DocumentNumber = dbData.PBCK7_NUMBER
+            //});
 
-            if (!isOperationAllow)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            //if (!isOperationAllow)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
@@ -1408,27 +1431,37 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.APPROVED_BY = input.UserId;
+                    dbData.APPROVED_DATE = DateTime.Now;
 
-                //get poa printed name
-                string poaPrintedName = "";
-                var poaData = _poaBll.GetDetailsById(input.UserId);
-                if (poaData != null)
-                    poaPrintedName = poaData.PRINTED_NAME;
+                    ////get poa printed name
+                    //string poaPrintedName = "";
+                    //var poaData = _poaBll.GetDetailsById(input.UserId);
+                    //if (poaData != null)
+                    //    poaPrintedName = poaData.PRINTED_NAME;
 
-                //todo add field poa
-                //dbData.POA_PRINTED_NAME = poaPrintedName;
+                    ////todo add field poa
+                    ////dbData.POA_PRINTED_NAME = poaPrintedName;
 
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                dbData.APPROVED_BY_MANAGER = input.UserId;
-                dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.APPROVED_BY_MANAGER = input.UserId;
+                    dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
 
 
@@ -1552,6 +1585,13 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
+        public void UpdateUploadedFileCompletedPbck7(List<BACK1_DOCUMENTDto> input)
+        {
+            
+            _back1Services.InsertOrDeleteBack1Documents(input);
+            _uow.SaveChanges();
+        }
+
         private void GovApproveDocument(Pbck7Pbck3WorkflowDocumentInput input)
         {
             var dbData = _repositoryPbck7.GetByID(input.DocumentId);
@@ -1601,6 +1641,9 @@ namespace Sampoerna.EMS.BLL
                 inputPbck3.Pbck7Id = dbData.PBCK7_ID;
                 inputPbck3.NppbkcId = dbData.NPPBKC;
                 inputPbck3.UserId = input.UserId;
+                inputPbck3.Pbck7ExecFrom = dbData.EXEC_DATE_FROM;
+                inputPbck3.Pbck7ExecTo = dbData.EXEC_DATE_TO;
+
                var pbck3Number = _pbck3Services.InsertPbck3FromPbck7(inputPbck3);
 
                 var inputWorkflowHistoryPbck3 = new Pbck3WorkflowDocumentInput();
@@ -1765,8 +1808,9 @@ namespace Sampoerna.EMS.BLL
             var changesData = new Dictionary<string, bool>();
 
             changesData.Add("PBCK-3 DATE", origin.Pbck3Date == dataModified.Pbck3Date);
+            changesData.Add("EXEC_DATE_FROM", origin.EXEC_DATE_FROM == dataModified.EXEC_DATE_FROM);
+            changesData.Add("EXEC_DATE_TO", origin.EXEC_DATE_TO == dataModified.EXEC_DATE_TO);
             
-
             foreach (var listChange in changesData)
             {
                 if (listChange.Value == false)
@@ -1777,14 +1821,23 @@ namespace Sampoerna.EMS.BLL
                     changes.FIELD_NAME = listChange.Key;
                     changes.MODIFIED_BY = userId;
                     changes.MODIFIED_DATE = DateTime.Now;
+
                     switch (listChange.Key)
                     {
                         case "PBCK-3 DATE":
                             changes.OLD_VALUE = origin.Pbck3Date.HasValue ? origin.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty;
                             changes.NEW_VALUE = dataModified.Pbck3Date.HasValue ? dataModified.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty; 
                             break;
-                      
+                        case "EXEC_DATE_FROM":
+                            changes.OLD_VALUE = origin.EXEC_DATE_FROM.ToString("dd MMM yyyy");
+                            changes.NEW_VALUE = dataModified.EXEC_DATE_FROM.ToString("dd MMM yyyy");
+                            break;
+                        case "EXEC_DATE_TO":
+                             changes.OLD_VALUE = origin.EXEC_DATE_TO.ToString("dd MMM yyyy");
+                            changes.NEW_VALUE = dataModified.EXEC_DATE_TO.ToString("dd MMM yyyy");
+                            break;
                     }
+
                     _changesHistoryBll.AddHistory(changes);
                     isModified = true;
                 }
@@ -1821,6 +1874,9 @@ namespace Sampoerna.EMS.BLL
                     pbck3Date = input.Pbck3Dto.Pbck3Date.Value;
                 dbData.PBCK3_DATE = pbck3Date;
 
+
+                dbData.EXEC_DATE_FROM = input.Pbck3Dto.EXEC_DATE_FROM;
+                dbData.EXEC_DATE_TO = input.Pbck3Dto.EXEC_DATE_TO;
 
                 if (dbData.STATUS == Enums.DocumentStatus.Rejected)
                 {
@@ -1946,7 +2002,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             //set change history
-            SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
+            SetChangeHistoryPbck3(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
 
 
         }
@@ -1961,25 +2017,25 @@ namespace Sampoerna.EMS.BLL
             //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
             //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager)
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-            string nppbkcId = "";
-            var outputResult = GetPbck3DetailsById(input.DocumentId);
-            if (outputResult.Pbck3CompositeDto.FromPbck7)
-                nppbkcId = outputResult.Pbck3CompositeDto.Pbck7Composite.NppbkcId;
-            else
-                nppbkcId = outputResult.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+            //string nppbkcId = "";
+            //var outputResult = GetPbck3DetailsById(input.DocumentId);
+            //if (outputResult.Pbck3CompositeDto.FromPbck7)
+            //    nppbkcId = outputResult.Pbck3CompositeDto.Pbck7Composite.NppbkcId;
+            //else
+            //    nppbkcId = outputResult.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_NPPBKC_ID;
 
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-            {
-                CreatedUser = dbData.CREATED_BY,
-                CurrentUser = input.UserId,
-                DocumentStatus = dbData.STATUS.HasValue ? dbData.STATUS.Value : Enums.DocumentStatus.Draft,
-                UserRole = input.UserRole,
-                NppbkcId = nppbkcId,
-                DocumentNumber = dbData.PBCK3_NUMBER
-            });
+            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            //{
+            //    CreatedUser = dbData.CREATED_BY,
+            //    CurrentUser = input.UserId,
+            //    DocumentStatus = dbData.STATUS.HasValue ? dbData.STATUS.Value : Enums.DocumentStatus.Draft,
+            //    UserRole = input.UserRole,
+            //    NppbkcId = nppbkcId,
+            //    DocumentNumber = dbData.PBCK3_NUMBER
+            //});
 
-            if (!isOperationAllow)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            //if (!isOperationAllow)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
@@ -1987,27 +2043,37 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                dbData.APPROVED_BY = input.UserId;
-                dbData.APPROVED_DATE = DateTime.Now;
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.APPROVED_BY = input.UserId;
+                    dbData.APPROVED_DATE = DateTime.Now;
 
-                //get poa printed name
-                string poaPrintedName = "";
-                var poaData = _poaBll.GetDetailsById(input.UserId);
-                if (poaData != null)
-                    poaPrintedName = poaData.PRINTED_NAME;
+                    ////get poa printed name
+                    //string poaPrintedName = "";
+                    //var poaData = _poaBll.GetDetailsById(input.UserId);
+                    //if (poaData != null)
+                    //    poaPrintedName = poaData.PRINTED_NAME;
 
-                //todo add field poa
-                //dbData.POA_PRINTED_NAME = poaPrintedName;
+                    ////todo add field poa
+                    ////dbData.POA_PRINTED_NAME = poaPrintedName;
 
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
-                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                dbData.APPROVED_BY_MANAGER = input.UserId;
-                dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.APPROVED_BY_MANAGER = input.UserId;
+                    dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                }
+                else
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
 
 
@@ -2016,7 +2082,7 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistoryPbck3(input);
 
             //set change history
-            SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
+            SetChangeHistoryPbck3(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
 
         }
 
@@ -2047,7 +2113,7 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistoryPbck3(input);
 
             //set change history
-            SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
+            SetChangeHistoryPbck3(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
         }
 
         private bool IsCompletedWorkflowPbck3(Pbck3WorkflowDocumentInput input)
@@ -2080,6 +2146,15 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
+        public void UpdateUploadedFileCompletedPbck3(List<BACK3_DOCUMENTDto> inputBack3, List<CK2_DOCUMENTDto> inputCk2)
+        {
+
+            _back3Services.InsertOrDeleteBack3Item(inputBack3);
+            _ck2Services.InsertOrDeleteCk2Item(inputCk2);
+            _uow.SaveChanges();
+        }
+
+
         private void GovApproveDocumentPbck3(Pbck3WorkflowDocumentInput input)
         {
             var dbData = _repositoryPbck3.GetByID(input.DocumentId);
@@ -2090,12 +2165,6 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            ////prepare for set changes history
-            //var origin = Mapper.Map<Pbck4Dto>(dbData);
-
-
-            ////add to change log
-            //SetChangesHistory(origin, input, input.UserId);
 
             //Add Changes
             if (dbData.GOV_STATUS != input.GovStatusInput)
@@ -2550,6 +2619,187 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        #region ------------- Get Print Out Data -------------
+
+        public Pbck73PrintOutDto GetPbck7PrintOutData(int pbck7Id)
+        {
+            var dbData = _repositoryPbck7.Get(c => c.PBCK7_ID == pbck7Id, null, "PBCK7_ITEM").FirstOrDefault();
+
+            if (dbData == null) return null;
+
+            var rc = Mapper.Map<Pbck73PrintOutDto>(dbData);
+
+            //set exclude on mapper
+            //get POA Data
+            var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            rc = SetPoaData(rc, poaId);
+
+            //Get Company Data
+            rc = SetCompanyData(rc, dbData.PLANT_ID);
+
+            //get nppbkc data
+            rc = SetNppbkcData(rc, dbData.NPPBKC);
+
+            //set header footer data by CompanyCode and FormTypeId
+            var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+            {
+                FormTypeId = Enums.FormType.PBCK7,
+                CompanyCode = rc.CompanyCode
+            });
+
+            rc.HeaderFooter = headerFooterData;
+            rc.PrintedDate = DateReportString(dbData.PBCK7_DATE);
+            rc = SetExecutionDate(rc);
+            return rc;
+        }
+
+        public Pbck73PrintOutDto GetPbck3PrintOutData(int pbck3Id)
+        {
+            var dbData = _repositoryPbck3.Get(c => c.PBCK3_ID == pbck3Id, null, "PBCK7, PBCK7.PBCK7_ITEM, CK5, CK5.CK5_MATERIAL").FirstOrDefault();
+
+            if (dbData == null) return null;
+
+            var rc = Mapper.Map<Pbck73PrintOutDto>(dbData);
+
+            //set exclude on mapper
+            //get POA Data
+            var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            rc = SetPoaData(rc, poaId);
+
+            
+            if (dbData.PBCK7_ID.HasValue)
+            {
+                //data come from PBCK7
+                if (dbData.PBCK7 != null)
+                {
+                    rc = SetCompanyData(rc, dbData.PBCK7.PLANT_ID);
+                    rc = SetNppbkcData(rc, dbData.PBCK7.NPPBKC);
+
+                    //set Items
+                    rc.Items = Mapper.Map<List<Pbck73ItemPrintOutDto>>(dbData.PBCK7.PBCK7_ITEM);
+                }
+            }
+            else
+            {
+                //data come from CK5
+                if (dbData.CK5 != null)
+                {
+                    rc = SetCompanyData(rc, dbData.CK5.SOURCE_PLANT_ID);
+                    rc = SetNppbkcData(rc, dbData.CK5.SOURCE_PLANT_NPPBKC_ID);
+                    //get from CK5_Material, but need to process
+                    //todo: ask to get Items//rc.Items = Mapper.Map<List<Pbck73ItemPrintOutDto>>(dbData.CK5.CK5_MATERIAL);
+                    rc.Items = new List<Pbck73ItemPrintOutDto>();
+                    if (dbData.CK5.CK5_MATERIAL != null && dbData.CK5.CK5_MATERIAL.Count > 0)
+                    {
+                        //proses
+                        foreach (var item in dbData.CK5.CK5_MATERIAL)
+                        {
+                            var itemToInsert = new Pbck73ItemPrintOutDto()
+                            {
+                                FaCode = item.BRAND,
+                                ProdTypeAlias = "",
+                                Brand = "",
+                                Qty = item.CONVERTED_QTY,
+                                Content = null, //todo: ask to analyst
+                                SeriesValue = "",
+                                Hje = item.HJE,
+                                Tariff = item.TARIFF,
+                                ExciseValue = item.EXCISE_VALUE
+                            };
+
+                            var brandData = _brandRegistrationServices.GetByPlantIdAndFaCode(item.PLANT_ID, item.BRAND);
+                            if (brandData != null)
+                            {
+                                itemToInsert.Brand = brandData.BRAND_CE;
+                                itemToInsert.ProdTypeAlias = brandData.ZAIDM_EX_PRODTYP != null
+                                    ? brandData.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS
+                                    : "-";
+                                itemToInsert.SeriesValue = brandData.SERIES_CODE;
+                            }
+                            rc.Items.Add(itemToInsert);
+                        }
+                    }
+                }
+            }
+
+            //set header footer data by CompanyCode and FormTypeId
+            var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
+            {
+                FormTypeId = Enums.FormType.PBCK3,
+                CompanyCode = rc.CompanyCode
+            });
+
+            rc.HeaderFooter = headerFooterData;
+            rc.PrintedDate = DateReportString(dbData.PBCK3_DATE);
+            rc = SetExecutionDate(rc);
+            return rc;
+        }
+
+        private string DateReportString(DateTime dt)
+        {
+            var monthPeriodFrom = _monthBll.GetMonth(dt.Month);
+            return dt.ToString("dd") + " " + monthPeriodFrom.MONTH_NAME_IND +
+                                   " " + dt.ToString("yyyy");
+        }
+
+        private Pbck73PrintOutDto SetPoaData(Pbck73PrintOutDto data, string poaId)
+        {
+            var poaData = _poabll.GetById(poaId);
+            if (poaData != null)
+            {
+                data.PoaId = poaData.POA_ID;
+                data.PoaName = poaData.PRINTED_NAME;
+                data.PoaTitle = poaData.TITLE;
+            }
+            else
+            {
+                data.PoaId = "-";
+                data.PoaName = "-";
+                data.PoaTitle = "-";
+            }
+            return data;
+        }
+
+        private Pbck73PrintOutDto SetCompanyData(Pbck73PrintOutDto data, string plantId)
+        {
+            var t001KData = _t001Kbll.GetByBwkey(plantId);
+            if (t001KData == null) return data;
+            data.CompanyCode = t001KData.BUKRS;
+            data.CompanyName = t001KData.BUTXT;
+            data.CompanyAddress = t001KData.SPRAS;
+            return data;
+        }
+
+        private Pbck73PrintOutDto SetNppbkcData(Pbck73PrintOutDto data, string nppbkcId)
+        {
+            var nppbkcData = _nppbkcbll.GetById(nppbkcId);
+            if (nppbkcData == null) return data;
+            data.NppbkcId = nppbkcData.NPPBKC_ID;
+            data.NppbkcTextTo = nppbkcData.TEXT_TO;
+            data.NppbkcCity = nppbkcData.CITY;
+            var vendor = _lfaBll.GetById(nppbkcData.KPPBC_ID);
+            if (vendor != null)
+            {
+                data.VendorCity = vendor.ORT01;
+            }
+            if (nppbkcData.START_DATE.HasValue)
+                data.NppbkcStartDate = DateReportString(nppbkcData.START_DATE.Value);
+            return data;
+        }
+
+        private Pbck73PrintOutDto SetExecutionDate(Pbck73PrintOutDto data)
+        {
+            if (data.ExecDateFrom.HasValue && data.ExecDateTo.HasValue)
+            {
+                data.ExecDateDisplayString = DateReportString(data.ExecDateFrom.Value) + " - " +
+                                             DateReportString(data.ExecDateTo.Value);
+            }
+            return data;
+        }
+
+        #endregion
+
     }
 
 
