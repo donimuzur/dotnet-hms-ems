@@ -245,11 +245,23 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Submit:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var poaList = _poabll.GetPoaByNppbkcId(nppbkc);
-                        foreach (var poaDto in poaList)
+                        var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
+
+                        if (approveRejectedPoa != "")
                         {
-                            rc.To.Add(poaDto.POA_EMAIL);
+                            var poaApproveId = _userBll.GetUserById(approveRejectedPoa);
+
+                            rc.To.Add(poaApproveId.EMAIL);
                         }
+                        else
+                        {
+                            var poaList = _poabll.GetPoaByNppbkcId(nppbkc);
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.To.Add(poaDto.POA_EMAIL);
+                            }
+                        }
+                        
                         rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
