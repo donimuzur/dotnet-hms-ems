@@ -87,7 +87,7 @@
 @section Scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
-    
+    <script src="~/Scripts/Pbck3Script.js"></script>
     <script type="text/javascript">
         $('#MenuPBCK3Index').addClass('active');
         
@@ -100,7 +100,10 @@
         });
         
         $("#btnSave").click(function () {
-            $('#formPbck3Edit').submit();
+            if (ValidatePbck3Form()) {
+                $('#formPbck3Edit').submit();
+            }
+           
         });
 
         $("#btnSubmitDocument").click(function() {

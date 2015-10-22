@@ -73,7 +73,9 @@ namespace Sampoerna.EMS.BLL.Services
                 STATUS = Enums.DocumentStatus.Draft,
                 CREATED_BY = input.UserId,
                 CREATED_DATE = DateTime.Now,
-                PBCK7_ID = input.Pbck7Id
+                PBCK7_ID = input.Pbck7Id,
+                EXEC_DATE_FROM = input.Pbck7ExecFrom,
+                EXEC_DATE_TO = input.Pbck7ExecTo
             };
 
             _repository.InsertOrUpdate(dbPbck3);
