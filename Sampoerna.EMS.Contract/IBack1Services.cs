@@ -1,4 +1,6 @@
-﻿using Sampoerna.EMS.BusinessObject;
+﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 
 namespace Sampoerna.EMS.Contract
@@ -12,5 +14,7 @@ namespace Sampoerna.EMS.Contract
         void SaveBack1ByPbck7Id(SaveBack1ByPbck7IdInput input);
 
         BACK1 GetBack1ByPbck7Id(int pbck7Id);
+
+        void InsertOrDeleteBack1Documents(List<BACK1_DOCUMENTDto> input);
     }
 }

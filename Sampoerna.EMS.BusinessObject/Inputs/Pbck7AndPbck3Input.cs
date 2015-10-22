@@ -61,6 +61,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int Pbck7Id { get; set; }
         public string NppbkcId { get; set; }
         public string UserId { get; set; }
+        public DateTime Pbck7ExecFrom { get; set; }
+        public DateTime Pbck7ExecTo { get; set; }
     }
 
     public class Pbck7Pbck3SaveInput
@@ -108,7 +110,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Back1No { get; set; }
         public DateTime? Back1Date { get; set; }
 
-        public List<BACK1_DOCUMENT> Back1FileUploadList { get; set; }
+        public List<BACK1_DOCUMENTDto> Back1FileUploadList { get; set; }
     
       
     }
@@ -143,12 +145,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string Back3No { get; set; }
         public DateTime? Back3Date { get; set; }
-        public List<BACK3_DOCUMENT> Back3FileUploadList { get; set; }
+        public List<BACK3_DOCUMENTDto> Back3FileUploadList { get; set; }
 
         public string Ck2No { get; set; }
         public DateTime? Ck2Date { get; set; }
         public decimal? Ck2Value { get; set; }
-        public List<CK2_DOCUMENT> Ck2FileUploadList { get; set; }
+        public List<CK2_DOCUMENTDto> Ck2FileUploadList { get; set; }
 
     }
 }

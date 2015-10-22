@@ -1,4 +1,37 @@
-﻿function ValidateGovInput() {
+﻿
+function ValidatePbck3Form() {
+    var result = true;
+
+ 
+    if ($('#PBCK3_DATE').val() == '') {
+        AddValidationClass(false, 'PBCK3_DATE');
+        result = false;
+    }
+
+ 
+    if ($('#EXEC_DATE_FROM').val() == '') {
+        AddValidationClass(false, 'EXEC_DATE_FROM');
+        result = false;
+    }
+
+    if ($('#EXEC_DATE_TO').val() == '') {
+        AddValidationClass(false, 'EXEC_DATE_TO');
+        result = false;
+    }
+
+
+    if (!result) {
+        $('#collapseSix').removeClass('collapse');
+        $('#collapseSix').addClass('in');
+        $("#collapseSix").css({ height: "auto" });
+    }
+
+
+    return result;
+}
+
+
+function ValidateGovInput() {
     var result = true;
 
   

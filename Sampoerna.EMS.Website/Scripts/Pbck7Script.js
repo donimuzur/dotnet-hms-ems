@@ -280,26 +280,26 @@ function ValidatePbck3() {
     return true;
 }
 
-function ValidateGovInput() {
-    var result = true;
-    var govStatus = $('#Pbck7GovStatus').find("option:selected").val();
+//function ValidateGovInput() {
+//    var result = true;
+//    var govStatus = $('#Pbck7GovStatus').find("option:selected").val();
 
 
-    if (govStatus == '') {
-        AddValidationClass(false, 'Pbck7GovStatus');
-        result = false;
-    }
+//    if (govStatus == '') {
+//        AddValidationClass(false, 'Pbck7GovStatus');
+//        result = false;
+//    }
 
 
-    if ($('#Pbck7GovStatus').val() == 'Rejected') {
-        if ($('#Comment').val() == '') {
-            AddValidationClass(false, 'Comment');
-            result = false;
-        }
-    }
+//    if ($('#Pbck7GovStatus').val() == 'Rejected') {
+//        if ($('#Comment').val() == '') {
+//            AddValidationClass(false, 'Comment');
+//            result = false;
+//        }
+//    }
 
-    return result;
-}
+//    return result;
+//}
 
 
 function ValidatePbck7Form() {
