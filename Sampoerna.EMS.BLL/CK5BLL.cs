@@ -318,7 +318,7 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                //input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
                 return;
             //if domestic not check quota
@@ -1363,18 +1363,18 @@ namespace Sampoerna.EMS.BLL
             //if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
             //    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
 
-            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-            //{
-            //    CreatedUser = dbData.CREATED_BY,
-            //    CurrentUser = input.UserId,
-            //    DocumentStatus = dbData.STATUS_ID,
-            //    UserRole = input.UserRole,
-            //    NppbkcId = nppbkcId,
-            //    DocumentNumber = dbData.SUBMISSION_NUMBER
-            //});
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            {
+                CreatedUser = dbData.CREATED_BY,
+                CurrentUser = input.UserId,
+                DocumentStatus = dbData.STATUS_ID,
+                UserRole = input.UserRole,
+                NppbkcId = nppbkcId,
+                DocumentNumber = dbData.SUBMISSION_NUMBER
+            });
 
-            //if (!isOperationAllow)
-            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            if (!isOperationAllow)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
