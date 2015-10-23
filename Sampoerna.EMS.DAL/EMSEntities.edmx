@@ -1159,7 +1159,7 @@
           <Property Name="ACTION" Type="int" Nullable="false" />
           <Property Name="ACTION_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ACTION_DATE" Type="datetime" />
-          <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
+          <Property Name="COMMENT" Type="nvarchar(max)" />
           <Property Name="ROLE" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="WORKFLOW_STATE">
@@ -4751,7 +4751,7 @@
           <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
           <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
-          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMMENT" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ROLE" Type="EMSModel.UserRole" Nullable="false" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
         </EntityType>
