@@ -232,9 +232,9 @@
     </script>
     @if ((Model.Detail.Status == Enums.DocumentStatus.Completed) && Model.AllowGovApproveAndReject)
     {
-    <script type="text/javascript">
-        completedDocument = true;
-    </script>
+        <script type="text/javascript">
+            completedDocument = true;
+        </script>
     }
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -254,7 +254,7 @@
                 $('#btnApprove').show();
                 $('#btnReject').show();
                 $('#btnCancel').show();
-                
+
             }
         }
 
@@ -291,8 +291,8 @@
                     $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
                 }
             });
-            
-            $("#btnApprove").click(function () {
+
+            $("#btnApprove").click(function() {
 
                 $('#btnConfirm').show();
                 $('#btnNo').show();
@@ -303,12 +303,12 @@
                 $('#Pbck1ModalApprove').modal('show');
 
             });
-            
-            $("#btnConfirm").click(function () {
-                window.location = "@Url.Action("ApproveDocument", "Pbck1", new { id = @Model.Detail.Pbck1Id })";
+
+            $("#btnConfirm").click(function() {
+                window.location = "@Url.Action("ApproveDocument", "Pbck1", new {id = @Model.Detail.Pbck1Id})";
             });
 
-            $("#btnReject").click(function () {
+            $("#btnReject").click(function() {
                 $('#btnConfirmReject').attr('disabled', 'disabled');
                 $('#Detail_Comment').val('');
                 $('#btnClose').show();
@@ -316,8 +316,8 @@
                 $('#Pbck1ModalReject').modal('show');
 
             });
-            
-            $('#Detail_Comment').bind('input propertychange', function () {
+
+            $('#Detail_Comment').bind('input propertychange', function() {
 
                 $('#btnConfirmReject').attr('disabled', 'disabled');
 
@@ -613,7 +613,7 @@
                     loadSupplierPlant();
                     disableSupplierFormInput(true);
                 }
-                if(isCurrentManager)
+                if (isCurrentManager)
                     $("#Detail_SupplierPlant").attr("disabled", "disabled");
             }
         }
@@ -697,9 +697,15 @@
             $('#Detail_HiddendSupplierAddress').val($('#SupInfo_SupplierAddress').val());
             $('#Detail_HiddenSupplierKppbcId').val($('#SupInfo_SupplierKppkbc').val());
             $('#Detail_SupplierPlant').val($('#SupInfo_SupplierPlantName').val());
-            $('#Detail_SupplierPhone').val($('#SupInfo_SupplierPhone').val());
+            //$('#Detail_SupplierPhone').val($('#SupInfo_SupplierPhone').val());
 
             var nppbkcid = $('#Detail_NppbkcId').find("option:selected").val();
+
+            if ($('#Detail_NppbkcId').is('input, select')) {
+                console.log('1111');
+                nppbkcid = $('#Detail_NppbkcId').val();
+                console.log(nppbkcid);
+            }
 
             if ($('#SupInfo_SupplierPlantWerks').val() == '') {
                 disableSupplierFormInput(false);
@@ -746,25 +752,23 @@
     </script>
     @if ((Model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval || Model.Detail.Status == Enums.DocumentStatus.Completed) && Model.AllowGovApproveAndReject)
     {
-       <script type="text/javascript">
-           $(document).ready(function () {
-               var valueSelected = $('#Detail_StatusGov').val();
-               var request = $("input[name='Detail.RequestQty']:hidden").val();
-               $('#divComment').hide();
-               $("input[name='Detail.QtyApproved']:text").prop("readonly", true);
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var valueSelected = $('#Detail_StatusGov').val();
+                var request = $("input[name='Detail.RequestQty']:hidden").val();
+                $('#divComment').hide();
+                $("input[name='Detail.QtyApproved']:text").prop("readonly", true);
 
-               if (valueSelected == 'Rejected') {
-                   $('#divComment').show();
-                   $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
-               }
-               else if (valueSelected == 'PartialApproved') {
-                   $("input[name='Detail.QtyApproved']:text").prop("readonly", false);
-                   $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
-               }
-               else if (valueSelected == 'FullApproved') {
-                   $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
-               }
-           });
-       </script>
+                if (valueSelected == 'Rejected') {
+                    $('#divComment').show();
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                } else if (valueSelected == 'PartialApproved') {
+                    $("input[name='Detail.QtyApproved']:text").prop("readonly", false);
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
+                } else if (valueSelected == 'FullApproved') {
+                    $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }
+            });
+        </script>
     }
 }
