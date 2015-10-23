@@ -190,20 +190,10 @@
                                                     @Html.TextBoxFor(model => model.ReturnQty, new { @class = "form-control", maxlength = "12" })
                                                 </div>
                                                 <div class="col-md-6">
+                                                    @Html.HiddenFor(model => model.IncomeListCount)
                                                     @Html.DropDownListFor(model => model.ReturnUom, Model.ReturnUomList, "Select", new { @class = "form-control" })
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Note</label>
-                                        <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.IncomeListCount)
-                                            @Html.TextAreaFor(model => model.Noted, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
