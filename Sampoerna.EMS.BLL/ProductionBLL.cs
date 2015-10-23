@@ -332,22 +332,15 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.QtyPacked.ToString();
                             changes.FIELD_NAME = "Qty Packed" + isFromSapString;
                             break;
-                            break;
                         case "QTY":
                             changes.OLD_VALUE = origin.Qty.ToString();
                             changes.NEW_VALUE = data.Qty.ToString();
                             changes.FIELD_NAME = "Produced Qty" + isFromSapString;
                             break;
-                            break;
                         case "UOM":
                             changes.OLD_VALUE = origin.Uom;
                             changes.NEW_VALUE = data.Uom;
                             changes.FIELD_NAME = "Uom";
-                            break;
-                        case "PROD_QTY_STICK":
-                            changes.OLD_VALUE = origin.ProdQtyStick.ToString();
-                            changes.NEW_VALUE = data.ProdQtyStick.ToString();
-                            changes.FIELD_NAME = "Product Qty Stick";
                             break;
                         default: break;
                     }
