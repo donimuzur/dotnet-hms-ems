@@ -1131,6 +1131,97 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
+        public ActionResult DetailsView(long id)
+        {
+            var model = new CK5FormViewModel();
+
+            try
+            {
+                var ck5Details = _ck5Bll.GetDetailsCK5(id);
+
+
+                Mapper.Map(ck5Details.Ck5Dto, model);
+
+                model.SourcePlantId = model.SourcePlantId + " - " + model.SourcePlantName;
+                model.DestPlantId = model.DestPlantId + " - " + model.DestPlantName;
+
+                if (model.Ck5Type == Enums.CK5Type.MarketReturn)
+                {
+                    model.MainMenu = Enums.MenuList.CK5MRETURN;
+                    model.IsMarketReturn = true;
+
+                    var back1Data = _ck5Bll.GetBack1ByCk5Id(model.Ck5Id);
+
+                    model.Back1Number = back1Data.Back1Number;
+                    model.Back1Date = back1Data.Back1Date;
+
+                    if (!string.IsNullOrEmpty(model.Back1Number) || model.Back1Date.HasValue
+                        || !string.IsNullOrEmpty(model.RegistrationNumber)
+                        || model.RegistrationDate.HasValue)
+                        model.GovStatus = Enums.CK5GovStatus.GovApproved;
+                }
+                else
+                    model.MainMenu = Enums.MenuList.CK5;
+
+                model.CurrentMenu = PageInfo;
+                // model = GetInitDetailsData(model);
+                model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
+                model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
+
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
+
+                model.CreatedBy = ck5Details.Ck5Dto.CREATED_BY;
+
+                model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
+
+                var outputHistory = _workflowHistoryBll.GetStatusGovHistory(ck5Details.Ck5Dto.SUBMISSION_NUMBER);
+                model.GovStatusDesc = outputHistory.StatusGov;
+                model.CommentGov = outputHistory.Comment;
+
+                if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
+                  || model.Ck5Type == Enums.CK5Type.MarketReturn)
+                {
+
+                }
+                else
+                {
+                    if (model.Ck5Type != Enums.CK5Type.Export &&
+                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        model.Ck5Type != Enums.CK5Type.Manual)
+                    {
+
+                        //force to show 0 instead error message
+                        try
+                        {
+                            var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
+
+                            model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
+                            model.Ck5TotalExciseable = (outputQuota.QtyCk5 - model.GrandTotalEx).ToString();
+                            model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
+                        }
+                        catch (Exception ex)
+                        {
+                            model.Pbck1QtyApproved = "0";
+                            model.Ck5TotalExciseable = "0";
+                            model.RemainQuota = "0";
+                        }
+                       
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                model.MainMenu = Enums.MenuList.CK5;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View(model);
+        }
+
         private CK5Dto SaveCk5ToDatabase(CK5FormViewModel model)
         {
             //process save

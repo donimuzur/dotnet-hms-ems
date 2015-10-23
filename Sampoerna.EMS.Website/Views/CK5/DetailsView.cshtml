@@ -1,0 +1,142 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
+
+@using (Html.BeginForm(Model.ActionType, "CK5", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>@Model.Ck5Type.ToString() &nbsp; #@Model.SubmissionNumber</h3>
+                <label class="status">@Model.DocumentStatusDescription</label>
+                <div class="action-button">
+
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.HiddenFor(model => model.Ck5Id)
+                        @Html.HiddenFor(model => model.Ck5Type)
+                        @Html.HiddenFor(model => model.DocumentStatus)
+
+                        @Html.Partial("_CK5InformationDetails")
+                        @Html.Partial("_CK5Printout")
+                        @Html.Partial("_CK5ChangeLog")
+
+
+
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+}
+
+
+@section scripts {
+    <script src="~/Scripts/CK5Scripts.js"></script>
+  
+    <script type="text/javascript">
+    $(document).ready(function () {
+
+
+
+        if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
+            OnReadyFunction('@Model.DocumentStatus');
+
+        } else {
+            OnReadyFunction('@Model.Ck5Type.ToString()');
+        }
+      
+
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
+        });
+
+        $('#btnBack').click(function (e) {
+
+            if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()')
+                location.href = '@Url.Action("CK5Completed", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                location.href = '@Url.Action("Index", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                location.href = '@Url.Action("Index", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                location.href = '@Url.Action("CK5Export", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                location.href = '@Url.Action("CK5Import", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                location.href = '@Url.Action("CK5Manual", "CK5")';
+            else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+
+        });
+
+      
+    });
+
+   
+    function printPreview(url) {
+
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+    }
+
+    function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+        window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        $.ajax({
+            type: 'POST',
+            url: addHistoryUrl,
+            data: { id: id },
+            success: function (response) {
+                $('#PrintOutHistoryTable').html("");
+                $('#PrintOutHistoryTable').html(response);
+                ResetPrintHistoryDataTable();
+            }
+        });
+    }
+
+    function ResetPrintHistoryDataTable() {
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+            table = $('#printHistoryTable').DataTable();
+            table.destroy();
+        }
+
+        table = $('#printHistoryTable').DataTable(
+            {
+                "sDom": "Rlfrtip",
+                "language": {
+                    "zeroRecords": "No records found",
+                    "infoFiltered": "(filtered from _MAX_ total records)"
+                }
+            });
+
+
+    }
+
+    
+    </script>
+}
