@@ -211,8 +211,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T001W.NAME1))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.USER.FIRST_NAME + " " + src.USER.LAST_NAME))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE));
+                .ForMember(dest => dest.UserName,
+                    opt => opt.MapFrom(src => src.USER.FIRST_NAME + " " + src.USER.LAST_NAME))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Yes" : "No"));
 
             Mapper.CreateMap<UserPlantMapDto, USER_PLANT_MAP>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.USER_PLANT_MAP_ID, opt => opt.MapFrom(src => src.Id))

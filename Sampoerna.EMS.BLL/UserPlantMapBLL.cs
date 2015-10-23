@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
@@ -33,6 +34,11 @@ namespace Sampoerna.EMS.BLL
         public List<USER_PLANT_MAP> GetAll()
         {
             return _userPlantService.GetAll();
+        }
+
+        public List<USER_PLANT_MAP> GetAllOrderByUserId()
+        {
+            return _userPlantService.GetAll().OrderBy(a=>a.USER_ID).ToList();
         }
 
         public USER_PLANT_MAP GetById(int id)
