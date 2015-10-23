@@ -1219,6 +1219,7 @@
     <Content Include="Views\PBCK7AndPBCK3\_Pbck7InputManual.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4GovApprovalInfo.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4GovApprovalCompleted.cshtml" />
+    <Content Include="Views\CK5\DetailsView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
