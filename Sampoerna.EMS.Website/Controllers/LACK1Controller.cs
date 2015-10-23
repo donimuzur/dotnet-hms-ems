@@ -1222,7 +1222,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void ExportSummaryReportsToExcel(Lack1SummaryReportViewModel model)
         {
-            var dataSummaryReport = SearchSummaryReports(model.SearchView);
+            var dataSummaryReport = SearchSummaryReports(model.ExportModel);
 
             //todo: to automapper
             var src = Mapper.Map<List<Lack1ExportSummaryDataModel>>(dataSummaryReport);
@@ -1507,11 +1507,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(selectListSource, "ValueField", "TextField");
         }
 
-        public void ExportDetailReport(Lack1SearchDetailReportViewModel model)
+        public void ExportDetailReport(Lack1DetailReportViewModel model)
         {
             string pathFile = "";
 
-            pathFile = CreateXlsDetailReport(model);
+            pathFile = CreateXlsDetailReport(model.ExportSearchView);
             
             var newFile = new FileInfo(pathFile);
 
@@ -1537,12 +1537,31 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument = CreateHeaderExcel(slDocument, out endColumnIndex);
             
             int iRow = 3; //starting row data
+
+            var needToMerge = new List<DetailReportNeedToMerge>();
             
             foreach (var item in dataDetailReport)
             {
                 int iColumn = 1;
+                
                 if (item.TrackingConsolidations.Count > 0)
                 {
+
+                    var iStartRow = iRow;
+                    var iEndRow = iStartRow;
+
+                    item.TrackingConsolidations =
+                        item.TrackingConsolidations.OrderBy(o => o.Ck5Number)
+                            .ThenBy(o => o.Ck5RegistrationNumber)
+                            .ThenBy(o => o.Ck5RegistrationDate)
+                            .ThenBy(o => o.Ck5GrDate)
+                            .ToList();
+
+                    var lastCk5Number = item.TrackingConsolidations[0].Ck5Number;
+                    var lastCk5RegDate = item.TrackingConsolidations[0].Ck5RegistrationDate;
+                    var lastCk5RegNumber = item.TrackingConsolidations[0].Ck5RegistrationNumber;
+                    var lastCk5GrDate = item.TrackingConsolidations[0].Ck5GrDate;
+
                     int dataCount = item.TrackingConsolidations.Count - 1;
                     //first record
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
@@ -1586,6 +1605,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         iRow++;
                         iColumn = 2;
+
+                        var curCk5Number = item.TrackingConsolidations[i].Ck5Number;
+                        var curCk5RegDate = item.TrackingConsolidations[i].Ck5RegistrationDate;
+                        var curCk5RegNumber = item.TrackingConsolidations[i].Ck5RegistrationNumber;
+                        var curCk5GrDate = item.TrackingConsolidations[i].Ck5GrDate;
+
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5Number);
                         iColumn++;
 
@@ -1614,8 +1639,44 @@ namespace Sampoerna.EMS.Website.Controllers
                         iColumn++;
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomId);
-                    }
 
+                        if (lastCk5GrDate == curCk5GrDate && lastCk5Number == curCk5Number &&
+                            lastCk5RegDate == curCk5RegDate && lastCk5RegNumber == curCk5RegNumber)
+                        {
+                            iEndRow = iRow;
+                            if (i == item.TrackingConsolidations.Count - 1)
+                            {
+                                if (iStartRow != iEndRow)
+                                {
+                                    //need to merge
+                                    needToMerge.Add(new DetailReportNeedToMerge()
+                                    {
+                                        StartRowIndex = iStartRow,
+                                        EndRowIndex = iEndRow
+                                    });
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (iStartRow != iEndRow)
+                            {
+                                //need to merge
+                                needToMerge.Add(new DetailReportNeedToMerge()
+                                {
+                                    StartRowIndex = iStartRow,
+                                    EndRowIndex = iEndRow
+                                });
+                            }
+                            iStartRow = iRow;
+                            iEndRow = iStartRow;
+                        }
+                        lastCk5GrDate = curCk5GrDate;
+                        lastCk5Number = curCk5Number;
+                        lastCk5RegDate = curCk5RegDate;
+                        lastCk5RegNumber = curCk5RegNumber;
+                    }
+                    
                 }
                 else
                 {
@@ -1633,6 +1694,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 iRow++;
             }
+
+            slDocument = DetailReportDoingMerge(slDocument, needToMerge);
 
             return CreateXlsFileDetailReports(slDocument, endColumnIndex,  iRow - 1);
 
@@ -1731,6 +1794,43 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SaveAs(path);
 
             return path;
+        }
+
+        private SLDocument DetailReportDoingMerge(SLDocument slDocument, List<DetailReportNeedToMerge> items)
+        {
+            if (items.Count <= 0) return slDocument;
+
+            foreach (var item in items)
+            {
+                //need set to empty cell first before doing merge
+                for (int i = item.StartRowIndex + 1; i < item.EndRowIndex; i++)
+                {
+                    slDocument.SetCellValue(i, 2, string.Empty);
+                    slDocument.SetCellValue(i, 3, string.Empty);
+                    slDocument.SetCellValue(i, 4, string.Empty);
+                    slDocument.SetCellValue(i, 5, string.Empty);
+                }
+
+                //Ck-5 Number
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 2, item.EndRowIndex, 2);
+
+                //Ck-5 Registration Number
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 3, item.EndRowIndex, 3);
+
+                //Ck-5 Registration Date
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 4, item.EndRowIndex, 4);
+
+                //Ck-5 GR Date
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 5, item.EndRowIndex, 5);
+            }
+
+            return slDocument;
+        }
+
+        private class DetailReportNeedToMerge
+        {
+            public int StartRowIndex { get; set; }
+            public int EndRowIndex { get; set; }
         }
 
         #endregion
