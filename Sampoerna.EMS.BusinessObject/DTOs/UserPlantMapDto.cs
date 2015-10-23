@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +18,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string PlantName { get; set; }
 
-        public bool IsActive { get; set; }
+        public string IsActive { get; set; }
     }
 }

@@ -11,5 +11,7 @@ namespace Sampoerna.EMS.Website.Models.UserPlantMap
     {
         public List<UserPlantMapDto> UserPlantMaps { get; set; }
 
+        public string IsActive { get; set; }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
+using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
@@ -41,7 +42,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            model.UserPlantMaps = Mapper.Map<List<UserPlantMapDto>>(_userPlantMapBll.GetAll());
+            var userPlantDb = _userPlantMapBll.GetAllOrderByUserId();
+            model.UserPlantMaps = Mapper.Map<List<UserPlantMapDto>>(userPlantDb);
+           
             return View("Index", model);
         }
 
