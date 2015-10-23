@@ -1042,7 +1042,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     input.NppbkcId = model.DestNppbkcId;
                     model.IsCk5PortToImporter = true;
                 }
-                    
+
+                if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+                {
+                    model.IsCk5ImporterToPlant = true;
+                }
 
                 input.PoaApprove = ck5Details.Ck5Dto.APPROVED_BY_POA;
 
