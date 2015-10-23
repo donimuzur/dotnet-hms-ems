@@ -320,6 +320,7 @@ namespace Sampoerna.EMS.BLL
                     var plantFromMaster = _t001WServices.GetById(input.Detail.LevelPlantId);
                     dbData.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
                 }
+                dbData.NOTED = generatedData.Data.Noted;
             }
             else
             {
@@ -334,7 +335,7 @@ namespace Sampoerna.EMS.BLL
             dbData.WASTE_UOM = input.Detail.WasteUom;
             dbData.RETURN_QTY = input.Detail.ReturnQty;
             dbData.RETURN_UOM = input.Detail.ReturnUom;
-            dbData.NOTED = input.Detail.Noted;
+            
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
 
