@@ -77,6 +77,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 input.WasteProductionDate = Convert.ToDateTime(input.WasteProductionDate).ToString();
             }
+            input.UserId = CurrentUser.USER_ID;
 
             var dbData = _wasteBll.GetAllByParam(input);
             var result = Mapper.Map<List<WasteDetail>>(dbData);
