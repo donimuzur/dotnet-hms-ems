@@ -12,11 +12,11 @@ using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using DocumentFormat.OpenXml.Spreadsheet;
-using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
@@ -153,223 +153,6 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", data);
         }
         #endregion
-
-        private DataSet CreatePbck7Ds()
-        {
-            DataSet ds = new DataSet("dsPbck7");
-
-            DataTable dt = new DataTable("Master");
-
-            // object of data row 
-            DataRow drow;
-            dt.Columns.Add("PoaName", Type.GetType("System.String"));
-            dt.Columns.Add("CompanyName", Type.GetType("System.String"));
-            dt.Columns.Add("CompanyAddress", Type.GetType("System.String"));
-            dt.Columns.Add("Nppbkc", Type.GetType("System.String"));
-            dt.Columns.Add("Header", Type.GetType("System.Byte[]"));
-            dt.Columns.Add("Footer", Type.GetType("System.String"));
-            dt.Columns.Add("TotalKemasan", Type.GetType("System.String"));
-            dt.Columns.Add("TotalCukai", Type.GetType("System.String"));
-            dt.Columns.Add("PrintedDate", Type.GetType("System.String"));
-            dt.Columns.Add("Preview", Type.GetType("System.String"));
-            dt.Columns.Add("DecreeDate", Type.GetType("System.String"));
-            dt.Columns.Add("Nomor", Type.GetType("System.String"));
-            dt.Columns.Add("Lampiran", Type.GetType("System.String"));
-            dt.Columns.Add("TextTo", Type.GetType("System.String"));
-            dt.Columns.Add("VendorCity", Type.GetType("System.String"));
-            dt.Columns.Add("DocumentType", Type.GetType("System.String"));
-            dt.Columns.Add("NppbkcCity", Type.GetType("System.String"));
-            dt.Columns.Add("PbckDate", Type.GetType("System.String"));
-            dt.Columns.Add("PoaTitle", Type.GetType("System.String"));
-            //detail
-            DataTable dtDetail = new DataTable("Detail");
-            dtDetail.Columns.Add("Jenis", Type.GetType("System.String"));
-            dtDetail.Columns.Add("Merek", Type.GetType("System.String"));
-            dtDetail.Columns.Add("IsiKemasan", Type.GetType("System.String"));
-
-            dtDetail.Columns.Add("JmlKemasan", Type.GetType("System.String"));
-            dtDetail.Columns.Add("SeriPitaCukai", Type.GetType("System.String"));
-            dtDetail.Columns.Add("Hje", Type.GetType("System.String"));
-            dtDetail.Columns.Add("Tariff", Type.GetType("System.String"));
-            dtDetail.Columns.Add("JmlCukai", Type.GetType("System.String"));
-            dtDetail.Columns.Add("SumJmlCukai", Type.GetType("System.String"));
-            dtDetail.Columns.Add("SumJmlKemasan", Type.GetType("System.String"));
-            ds.Tables.Add(dt);
-            ds.Tables.Add(dtDetail);
-            return ds;
-        }
-
-        [EncryptedParameter]
-        public FileResult PrintPreviewPbck7(int id)
-        {
-            return PrintPreview(id, true, "Preview PBCK-7");
-        }
-        [EncryptedParameter]
-        public FileResult PrintPreviewPbck3(int id)
-        {
-            return PrintPreview(id, false, "Preview PBCK-3");
-        }
-        public FileResult PrintPreview(int id, bool isPbck7, string title)
-        {
-            string poaId = string.Empty;
-            var dsPbck7 = CreatePbck7Ds();
-            var dt = dsPbck7.Tables[0];
-            DataRow drow;
-            drow = dt.NewRow();
-            var pbck7 = new Pbck7AndPbck3Dto();
-            if (isPbck7)
-            {
-                pbck7 = _pbck7Pbck3Bll.GetPbck7ById(id);
-                poaId = !string.IsNullOrEmpty(pbck7.ApprovedBy) ? pbck7.ApprovedBy : pbck7.CreatedBy;
-            }
-            else
-            {
-                var pbck3Data = _pbck7Pbck3Bll.GetPbck3ById(id);
-                pbck7 = _pbck7Pbck3Bll.GetPbck7ById(pbck3Data.Pbck7Id);
-                pbck7.Pbck3Dto = pbck3Data;
-                poaId = !string.IsNullOrEmpty(pbck3Data.ApprovedBy) ? pbck3Data.ApprovedBy : pbck3Data.CreatedBy;
-            }
-            var poaData = _poaBll.GetById(poaId);
-            if (poaData != null)
-            {
-                drow["PoaName"] = poaData.PRINTED_NAME;
-                drow["PoaTitle"] = poaData.TITLE;
-            }
-            else
-            {
-                drow["PoaName"] = "-";
-                drow["PoaTitle"] = "-";
-            }
-
-            var company = _plantBll.GetId(pbck7.PlantId);
-            var nppbkc = _nppbkcBll.GetById(pbck7.NppbkcId);
-
-            if (company != null)
-            {
-                drow["CompanyName"] = company.COMPANY_NAME;
-                drow["CompanyAddress"] = company.COMPANY_ADDRESS;
-                var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
-                {
-                    CompanyCode = company.COMPANY_CODE,
-                    FormTypeId = Enums.FormType.LACK2
-                });
-
-                drow["Nppbkc"] = pbck7.NppbkcId + " tanggal " + nppbkc.START_DATE.Value.ToString("dd MMMM yyyy");
-                if (headerFooter != null)
-                {
-                    drow["Header"] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
-                    drow["Footer"] = headerFooter.FOOTER_CONTENT;
-                }
-            }
-            var detailItem = pbck7.UploadItems;
-            var totalKemasan = 0;
-            var totalCukai = 0.0;
-            if (detailItem != null)
-            {
-                foreach (var item in detailItem)
-                {
-                    totalKemasan += Convert.ToInt32(item.Content);
-                    totalCukai += Convert.ToDouble(item.ExciseValue);
-                }
-            }
-
-            drow["TotalKemasan"] = totalKemasan;
-            drow["TotalCukai"] = totalCukai;
-            var pbck3Date = DateTime.Now;
-            if (pbck7.Pbck3Dto.Pbck3Date.HasValue)
-                pbck3Date = pbck7.Pbck3Dto.Pbck3Date.Value;
-            drow["PrintedDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMM yyyy") : pbck3Date.ToString("dd MMM yyyy");
-            drow["Preview"] = title;
-            drow["Nomor"] = isPbck7 ? pbck7.Pbck7Number : pbck7.Pbck3Dto.Pbck3Number;
-            drow["Lampiran"] = pbck7.Lampiran;
-
-            if (nppbkc != null)
-            {
-                drow["TextTo"] = nppbkc.TEXT_TO;
-                drow["NppbkcCity"] = nppbkc.CITY;
-                var vendor = _lfa1Bll.GetById(nppbkc.KPPBC_ID);
-                if (vendor != null)
-                {
-                    drow["VendorCity"] = vendor.ORT01;
-                }
-            }
-            drow["DocumentType"] = EnumHelper.GetDescription(pbck7.DocumentType).ToLower();
-            drow["PbckDate"] = isPbck7 ? pbck7.Pbck7Date.ToString("dd MMMM yyyy") : pbck3Date.ToString("dd MMMM yyyy");
-
-            dt.Rows.Add(drow);
-
-            var dtDetail = dsPbck7.Tables[1];
-
-
-            if (pbck7.UploadItems != null && pbck7.UploadItems.Count > 0)
-            {
-                var totalPbck7Qty = pbck7.UploadItems.Sum(d => d.Pbck7Qty.HasValue ? d.Pbck7Qty.Value : 0);
-                var totalExciseValue = pbck7.UploadItems.Sum(d => d.ExciseValue.HasValue ? d.ExciseValue.Value : 0);
-                foreach (var item in pbck7.UploadItems)
-                {
-                    DataRow drowDetail;
-                    drowDetail = dtDetail.NewRow();
-                    drowDetail[0] = item.ProdTypeAlias;
-                    drowDetail[1] = item.Brand;
-                    drowDetail[2] = item.Content.HasValue ? item.Content.Value.ToString("N2") : "-";
-                    drowDetail[3] = item.Pbck7Qty.HasValue ? item.Pbck7Qty.Value.ToString("N2") : "-";
-                    drowDetail[4] = item.SeriesValue;
-                    drowDetail[5] = item.Hje.HasValue ? item.Hje.Value.ToString("N2") : "-";
-                    drowDetail[6] = item.Tariff.HasValue ? item.Tariff.Value.ToString("N2") : "-";
-                    drowDetail[7] = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
-                    drowDetail[8] = totalExciseValue.ToString("N2");
-                    drowDetail[9] = totalPbck7Qty.ToString("N2");
-                    dtDetail.Rows.Add(drowDetail);
-
-                }
-            }
-            
-            // object of data row 
-
-            ReportClass rpt = new ReportClass();
-            string report_path = ConfigurationManager.AppSettings["Report_Path"];
-            rpt.FileName = Path.Combine(report_path, "PBCK7", "Pbck7Report.rpt");
-            rpt.Load();
-            rpt.SetDataSource(dsPbck7);
-
-            Stream stream = rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-            rpt.Close();
-            return File(stream, "application/pdf");
-        }
-
-        private byte[] GetHeader(string imagePath)
-        {
-            byte[] imgbyte = null;
-            try
-            {
-
-                FileStream fs;
-                BinaryReader br;
-
-                if (System.IO.File.Exists(Server.MapPath(imagePath)))
-                {
-                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    // initialise the binary reader from file streamobject 
-                    br = new BinaryReader(fs);
-                    // define the byte array of filelength 
-                    imgbyte = new byte[fs.Length + 1];
-                    // read the bytes from the binary reader 
-                    imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
-
-
-                    br.Close();
-                    // close the binary reader 
-                    fs.Close();
-                    // close the file stream 
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-            return imgbyte;
-            // Return Datatable After Image Row Insertion
-
-        }
 
         private Pbck7IndexViewModel InitPbck7ViewModel(Pbck7IndexViewModel model)
         {
@@ -2203,19 +1986,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
         }
-
-        [EncryptedParameter]
-        public FileResult PrintOut(int id)
-        {
-            return PrintPreview(id, true, "PBCK-7");
-        }
-
-        [EncryptedParameter]
-        public FileResult PrintOutPbck3(int id)
-        {
-            return PrintPreview(id, false, "PBCK-3");
-        }
-
+        
         #region "Input Manual
 
         [HttpPost]
@@ -2313,6 +2084,179 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return path;
         }
+
+        #region ------------- Print Out dan Print Preview ------------
+
+        [EncryptedParameter]
+        public ActionResult PrintPreviewPbck7(int? id)
+        {
+            //Get Report Source
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbckData = _pbck7Pbck3Bll.GetPbck7PrintOutData(id.Value);
+            if (pbckData == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(pbckData, "Preview PBCK-7");
+
+            return File(stream, "application/pdf");
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintPreviewPbck3(int? id)
+        {
+            //Get Report Source
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbckData = _pbck7Pbck3Bll.GetPbck3PrintOutData(id.Value);
+            if (pbckData == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(pbckData, "Preview PBCK-3");
+
+            return File(stream, "application/pdf");
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintOut(int? id)
+        {
+            //Get Report Source
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbckData = _pbck7Pbck3Bll.GetPbck7PrintOutData(id.Value);
+            if (pbckData == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(pbckData, "PBCK-7");
+
+            return File(stream, "application/pdf");
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintOutPbck3(int? id)
+        {
+            //Get Report Source
+            if (!id.HasValue)
+                HttpNotFound();
+
+            // ReSharper disable once PossibleInvalidOperationException
+            var pbckData = _pbck7Pbck3Bll.GetPbck3PrintOutData(id.Value);
+            if (pbckData == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(pbckData, "PBCK-3");
+
+            return File(stream, "application/pdf");
+        }
+        
+        private Stream GetReport(Pbck73PrintOutDto data, string printTitle)
+        {
+            var dataSet = SetDataSetReport(data, printTitle);
+
+            var rpt = new ReportClass
+            {
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "PBCK7\\Pbck7Report.rpt"
+            };
+            rpt.Load();
+            rpt.SetDataSource(dataSet);
+            Stream stream = rpt.ExportToStream(ExportFormatType.PortableDocFormat);
+            rpt.Close();
+            return stream;
+        }
+
+        private DataSet SetDataSetReport(Pbck73PrintOutDto data, string printTitle)
+        {
+            var dsReport = new dsPbck7();
+
+            //master info
+            var dMasterRow = dsReport.Master.NewMasterRow();
+            dMasterRow.PoaName = data.PoaName;
+            dMasterRow.PoaTitle = data.PoaTitle;
+            dMasterRow.CompanyName = data.CompanyName;
+            dMasterRow.CompanyAddress = data.CompanyAddress;
+            dMasterRow.Nppbkc = data.NppbkcId;
+            if (!string.IsNullOrEmpty(data.HeaderFooter.HEADER_IMAGE_PATH)) dMasterRow.Header = GetHeader(data.HeaderFooter.HEADER_IMAGE_PATH);
+            dMasterRow.Footer = data.HeaderFooter.FOOTER_CONTENT;
+            dMasterRow.Preview = printTitle;
+            dMasterRow.Nomor = data.PbckNumber;
+            dMasterRow.Lampiran = data.Lampiran;
+            dMasterRow.TextTo = data.NppbkcTextTo;
+            dMasterRow.NppbkcCity = data.NppbkcCity;
+            dMasterRow.VendorCity = data.VendorCity;
+            dMasterRow.DocumentType = EnumHelper.GetDescription(data.DocumentType);
+            dMasterRow.ExecutionDate = data.ExecDateDisplayString;
+            dMasterRow.NppbkcDate = data.NppbkcStartDate;
+            dMasterRow.ReportingDate = data.PrintedDate;
+
+            dsReport.Master.AddMasterRow(dMasterRow);
+
+            //set detail item
+            if (data.Items.Count > 0)
+            {
+                var totalQty = data.Items.Sum(d => d.Qty.HasValue ? d.Qty.Value : 0);
+                var totalExciseValue = data.Items.Sum(d => d.ExciseValue.HasValue ? d.ExciseValue.Value : 0);
+                foreach (var item in data.Items)
+                {
+                    var detailRow = dsReport.Detail.NewDetailRow();
+
+                    detailRow.Jenis = item.ProdTypeAlias;
+                    detailRow.Merek = item.Brand;
+                    detailRow.IsiKemasan = item.Content.HasValue ? item.Content.Value.ToString("N2") : "-";
+                    detailRow.JmlKemasan = item.Qty.HasValue ? item.Qty.Value.ToString("N2") : "-";
+                    detailRow.SeriPitaCukai = item.SeriesValue;
+                    detailRow.Hje = item.Hje.HasValue ? item.Hje.Value.ToString("N2") : "-";
+                    detailRow.Tariff = item.Tariff.HasValue ? item.Tariff.Value.ToString("N2") : "-";
+                    detailRow.JmlCukai = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
+                    detailRow.SumJmlCukai = totalExciseValue.ToString("N2");
+                    detailRow.SumJmlKemasan = totalQty.ToString("N2");
+
+                    dsReport.Detail.AddDetailRow(detailRow);
+                }
+            }
+
+            return dsReport;
+        }
+
+        private byte[] GetHeader(string imagePath)
+        {
+            byte[] imgbyte = null;
+            try
+            {
+
+                FileStream fs;
+                BinaryReader br;
+
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    // initialise the binary reader from file streamobject 
+                    br = new BinaryReader(fs);
+                    // define the byte array of filelength 
+                    imgbyte = new byte[fs.Length + 1];
+                    // read the bytes from the binary reader 
+                    imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+
+                    br.Close();
+                    // close the binary reader 
+                    fs.Close();
+                    // close the file stream 
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return imgbyte;
+            // Return Datatable After Image Row Insertion
+        }
+
+        #endregion
 
     }
 

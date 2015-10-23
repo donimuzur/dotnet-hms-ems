@@ -721,18 +721,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Summary Reports
 
-        public ActionResult Summary()
-        {
-            var model = new Lack2SummaryReportModel
-            {
-                CompanyList = GlobalFunctions.GetCompanyList(_companyBll),
-                NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
-                PlantList = GlobalFunctions.GetPlantAll()
-            };
-
-            return View("Summary");
-        }
-
         private SelectList GetLack2CompanyCodeList(List<Lack2SummaryReportDto> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
@@ -1220,7 +1208,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var fileName = "LACK2" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
 
-            var path = Path.Combine(Server.MapPath(Constans.CK5FolderPath), fileName);
+            var path = Path.Combine(Server.MapPath(Constans.Lack2FolderPaht), fileName);
 
 
             slDocument.SaveAs(path);

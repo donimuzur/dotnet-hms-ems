@@ -349,7 +349,7 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BLegalizeData, new { @class = "checkbox checkexport", @datacolumn = "24" })Legaliize Data
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BLegalizeData, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "24" })Legaliize Data
                                                     </label>
                                                 </div>
                                             </div>
@@ -484,14 +484,6 @@
             $('#ExportModel_Creator').val($('#SearchView_Creator').find("option:selected").val());
             $('#ExportModel_Approver').val($('#SearchView_Approver').find("option:selected").val());
         }
-
-
-        $("#btnConfirm").click(function() {
-            GetSearchSummaryReports();
-            $('#ExportSummaryReportsForms').submit();
-
-
-        });
-
+        
     </script>
 }

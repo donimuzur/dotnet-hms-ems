@@ -177,6 +177,7 @@
     <Compile Include="DTOs\Pbck4XmlDto.cs" />
     <Compile Include="DTOs\PBCK4_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
+    <Compile Include="DTOs\Pbck7PrintOutDto.cs" />
     <Compile Include="DTOs\POADto.cs" />
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
@@ -437,6 +438,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WORKFLOW_STATE_USERS.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ZAAP_SHIFT_RPT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAIDM_EX_BRAND.cs">

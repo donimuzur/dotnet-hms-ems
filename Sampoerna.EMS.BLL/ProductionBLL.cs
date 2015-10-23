@@ -12,6 +12,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -141,6 +142,8 @@ namespace Sampoerna.EMS.BLL
 
             if (origin != null)
             {
+                dbProduction.CREATED_DATE = origin.CREATED_DATE;
+                dbProduction.CREATED_BY = origin.CREATED_BY;
 
                 if (dbProduction.COMPANY_CODE != origin.COMPANY_CODE || dbProduction.WERKS != origin.WERKS ||
                   dbProduction.FA_CODE != origin.FA_CODE
@@ -793,6 +796,5 @@ namespace Sampoerna.EMS.BLL
 
             return data;
         }
-
     }
 }

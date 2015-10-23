@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? MarkerRejectStickQty { get; set; }
         public decimal? PackerRejectStickQty { get; set; }
         public DateTime WasteProductionDate { get; set; }
+        public DateTime WasteProductionDateX { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
         public decimal? DustWasteGramQty { get; set; }

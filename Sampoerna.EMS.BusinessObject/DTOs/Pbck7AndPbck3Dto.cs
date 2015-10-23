@@ -52,6 +52,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Plant { get; set; }
 
         public bool IsModifiedHistory { get; set; }
+
+        public DateTime EXEC_DATE_FROM { get; set; }
+        public DateTime EXEC_DATE_TO { get; set; }
        
     }
 

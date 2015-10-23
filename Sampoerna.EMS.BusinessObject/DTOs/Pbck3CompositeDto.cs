@@ -32,6 +32,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string REJECTED_BY { get; set; }
         public Nullable<System.DateTime> REJECTED_DATE { get; set; }
         public Nullable<long> CK5_ID { get; set; }
+        public DateTime EXEC_DATE_FROM { get; set; }
+        public DateTime EXEC_DATE_TO { get; set; }
 
        //pbck7
         public Pbck3Pbck7DtoComposite Pbck7Composite { get; set; } 
