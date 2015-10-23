@@ -318,9 +318,33 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
-                //input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
-                return;
+            {
+                if (input.Ck5Dto.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial
+                    && input.Ck5Dto.REDUCE_TRIAL.HasValue
+                    && input.Ck5Dto.REDUCE_TRIAL.Value)
+                {
+                    var quotaResult = GetQuotaRemainAndDatePbck1Item(input.Ck5Dto.SOURCE_PLANT_ID,
+                        input.Ck5Dto.SOURCE_PLANT_NPPBKC_ID,
+                        input.Ck5Dto.SUBMISSION_DATE.HasValue?input.Ck5Dto.SUBMISSION_DATE.Value : DateTime.Now, 
+                        input.Ck5Dto.DEST_PLANT_NPPBKC_ID,
+                        (int) input.Ck5Dto.EX_GOODS_TYPE);
+
+                    if (string.IsNullOrEmpty(quotaResult.Pbck1Number))
+                        throw new BLLException(ExceptionCodes.BLLExceptions.Pbck1RefNull);
+                    if (quotaResult.RemainQuota < input.Ck5Dto.GRAND_TOTAL_EX)
+                        throw new BLLException(ExceptionCodes.BLLExceptions.CK5QuotaExceeded);
+                    
+                    input.Ck5Dto.PbckNumber = quotaResult.Pbck1Number;
+                    input.Ck5Dto.PBCK1_DECREE_ID = quotaResult.Pbck1Id;
+                    input.Ck5Dto.PBCK1_DECREE_ID = quotaResult.Pbck1Id;
+                   // testNumber = quotaResult.Pbck1Number;
+                    return;
+
+                }
+                else 
+                    return;
+            }
             //if domestic not check quota
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Domestic)
             {
