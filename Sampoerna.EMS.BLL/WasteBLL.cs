@@ -31,6 +31,7 @@ namespace Sampoerna.EMS.BLL
         private IPlantBLL _plantBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
         private ChangesHistoryBLL _changesHistoryBll;
+        private IUserPlantMapBLL _userPlantBll;
 
         public WasteBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -46,6 +47,7 @@ namespace Sampoerna.EMS.BLL
             _companyBll = new CompanyBLL(_uow, _logger);
             _plantBll = new PlantBLL(_uow, _logger);
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
+            _userPlantBll = new UserPlantMapBLL(_uow, _logger);
         }
         public List<WasteDto> GetAllByParam(WasteGetByParamInput input)
         {
@@ -62,6 +64,12 @@ namespace Sampoerna.EMS.BLL
             {
                 var dt = Convert.ToDateTime(input.WasteProductionDate);
                 queryFilter = queryFilter.And(c => c.WASTE_PROD_DATE == dt);
+            }
+            if (!string.IsNullOrEmpty(input.UserId))
+            {
+                var listUserPlant = _userPlantBll.GetPlantByUserId(input.UserId);
+
+                queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS));
             }
 
             Func<IQueryable<WASTE>, IOrderedQueryable<WASTE>> orderBy = null;
