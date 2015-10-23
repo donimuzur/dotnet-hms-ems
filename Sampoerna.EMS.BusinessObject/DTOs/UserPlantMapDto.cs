@@ -16,5 +16,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UserName { get; set; }
 
         public string PlantName { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

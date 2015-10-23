@@ -27,6 +27,7 @@
                             <th class="toggle-row"> Filter </th>
                             <th>User ID</th>
                             <th>Plant</th>
+                            <th>Active</th>
                         </tr>
                     </thead>
                     <thead class="filters">
@@ -34,11 +35,13 @@
                             <th>Action</th>
                             <th></th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @{
-                            var firstUserName = Model.UserPlantMaps.Count > 0 ?  Model.UserPlantMaps[0].UserId : null;
+                            var firstUserName = Model.UserPlantMaps.Count > 0 ? Model.UserPlantMaps[0].UserId : null;
+                           
                         }
                         @foreach (var item in Model.UserPlantMaps.OrderBy(x => x.UserId).GroupBy(x=>x.UserId))
                         {
@@ -61,6 +64,9 @@
                                     {
                                         <p>@(plant.PlantId + "-" +plant.PlantName)</p>
                                     }
+                                </td>
+                                <td>
+                                   @Html.Display("active", Model.UserPlantMaps[4].IsActive)
                                 </td>
                                   
                             </tr>
