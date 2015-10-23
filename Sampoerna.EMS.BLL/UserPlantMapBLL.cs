@@ -82,5 +82,19 @@ namespace Sampoerna.EMS.BLL
 
             return list;
         }
+
+        public List<string> GetNppbkcByUserId(string id)
+        {
+            var list = new List<string>();
+
+            var data = _userPlantService.GetByUserId(id);
+
+            foreach (var item in data)
+            {
+                list.Add(item.T001W.NPPBKC_ID);
+            }
+
+            return list;
+        }
     }
 }

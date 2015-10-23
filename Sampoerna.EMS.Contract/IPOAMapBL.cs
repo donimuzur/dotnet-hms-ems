@@ -14,5 +14,6 @@ namespace Sampoerna.EMS.Contract
         POA_MAP GetByNppbckId(string nppbkc, string plant, string poa);
 
         List<string> GetPlantByPoaId(string id);
+        List<string> GetNppbkcByPoaId(string id);
     }
 }
