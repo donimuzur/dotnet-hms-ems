@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.Contract
         List<T001WCompositeDto> GetAuthorizdePlant(UserPlantMapGetAuthorizedPlant input);
         List<ZAIDM_EX_NPPBKCCompositeDto> GetAuthorizedNppbkc(UserPlantMapGetAuthorizedNppbkc input);
 
+        List<string> GetPlantByUserId(string id);
         List<USER_PLANT_MAP> GetAllOrderByUserId();
     }
 }
