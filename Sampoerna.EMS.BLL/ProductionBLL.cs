@@ -12,6 +12,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -141,6 +142,8 @@ namespace Sampoerna.EMS.BLL
 
             if (origin != null)
             {
+                dbProduction.CREATED_DATE = origin.CREATED_DATE;
+                dbProduction.CREATED_BY = origin.CREATED_BY;
 
                 if (dbProduction.COMPANY_CODE != origin.COMPANY_CODE || dbProduction.WERKS != origin.WERKS ||
                   dbProduction.FA_CODE != origin.FA_CODE
@@ -329,22 +332,15 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.QtyPacked.ToString();
                             changes.FIELD_NAME = "Qty Packed" + isFromSapString;
                             break;
-                            break;
                         case "QTY":
                             changes.OLD_VALUE = origin.Qty.ToString();
                             changes.NEW_VALUE = data.Qty.ToString();
                             changes.FIELD_NAME = "Produced Qty" + isFromSapString;
                             break;
-                            break;
                         case "UOM":
                             changes.OLD_VALUE = origin.Uom;
                             changes.NEW_VALUE = data.Uom;
                             changes.FIELD_NAME = "Uom";
-                            break;
-                        case "PROD_QTY_STICK":
-                            changes.OLD_VALUE = origin.ProdQtyStick.ToString();
-                            changes.NEW_VALUE = data.ProdQtyStick.ToString();
-                            changes.FIELD_NAME = "Product Qty Stick";
                             break;
                         default: break;
                     }
@@ -793,6 +789,5 @@ namespace Sampoerna.EMS.BLL
 
             return data;
         }
-
     }
 }

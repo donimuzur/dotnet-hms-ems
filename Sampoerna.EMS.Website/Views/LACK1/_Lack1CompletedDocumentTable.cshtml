@@ -7,6 +7,7 @@
             <th class="toggle-row"> Filter </th>
             <th>Lack-1 Number</th>
             <th>Company</th>
+            <th>NPPBKC</th>
             <th>Plant</th>
             <th>Tobacco Goods Type</th>
             <th>Supplier</th>
@@ -17,6 +18,7 @@
     <thead class="filters">
         <tr>
             <th>Action</th>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -38,6 +40,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.Company)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.NppbkcId)
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.PlantId)

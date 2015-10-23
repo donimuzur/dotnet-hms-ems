@@ -440,6 +440,9 @@
     <Compile Include="WORKFLOW_STATE_USERS.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="ZAAP_SHIFT_RPT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="ZAIDM_EX_BRAND.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

@@ -77,6 +77,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 input.WasteProductionDate = Convert.ToDateTime(input.WasteProductionDate).ToString();
             }
+            input.UserId = CurrentUser.USER_ID;
 
             var dbData = _wasteBll.GetAllByParam(input);
             var result = Mapper.Map<List<WasteDetail>>(dbData);
@@ -279,12 +280,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 var isNewData = _wasteBll.Save(dbWasteNew, CurrentUser.USER_ID);
                 var message = Constans.SubmitMessage.Updated;
 
-                if (isNewData)
+                if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX || model.FaCode != model.FaCodeX
+                        || Convert.ToDateTime(model.WasteProductionDate) != Convert.ToDateTime(model.WasteProductionDateX))
                 {
+                    MoveOldChangeLogHistory(model);
                     _wasteBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
-               Convert.ToDateTime(model.WasteProductionDateX));
+                                                    Convert.ToDateTime(model.WasteProductionDateX));
                 }
-
+                
                 AddMessageInfo(message, Enums.MessageInfoType.Success);
 
 
@@ -502,5 +505,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        private void MoveOldChangeLogHistory(WasteDetail item)
+        {
+            DateTime DateX = Convert.ToDateTime(item.WasteProductionDateX);
+            DateTime Date = Convert.ToDateTime(item.WasteProductionDate);
+
+            var listHistory = _changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                  "Waste_" + item.CompanyCodeX + "_" + item.PlantWerksX + "_" + item.FaCodeX + "_" + DateX.ToString("ddMMMyyyy"));
+
+            var oldFormId = "Waste_" + item.CompanyCode + "_" + item.PlantWerks + "_" + item.FaCode + "_" + Date.ToString("ddMMMyyyy");
+
+            foreach (var data in listHistory)
+            {
+                _changeHistoryBll.MoveHistoryToNewData(data, oldFormId);
+            }
+        }
     }
 }

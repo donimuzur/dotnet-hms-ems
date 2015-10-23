@@ -9,6 +9,7 @@ using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
 using iTextSharp.text.pdf.qrcode;
 using Microsoft.Ajax.Utilities;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -284,6 +285,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX || model.FaCode != model.FaCodeX
                         || Convert.ToDateTime(model.ProductionDate) != Convert.ToDateTime(model.ProductionDateX))
                     {
+                        MoveOldChangeLogHistory(dbPrductionNew);
                         _productionBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX, Convert.ToDateTime(model.ProductionDateX));
                     }
                 }
@@ -524,6 +526,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        private void MoveOldChangeLogHistory(ProductionDto item)
+        {
+            DateTime productionDateX = Convert.ToDateTime(item.ProductionDateX);
+            DateTime productionDate = Convert.ToDateTime(item.ProductionDate);
 
+            var listHistory = _changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                  "Daily_" + item.CompanyCodeX + "_" + item.PlantWerksX + "_" + item.FaCodeX + "_" + productionDateX.ToString("ddMMMyyyy"));
+
+            var oldFormId = "Daily_" + item.CompanyCode + "_" + item.PlantWerks + "_" + item.FaCode + "_" + productionDate.ToString("ddMMMyyyy");
+
+            foreach(var data in listHistory)
+            {
+                _changeHistoryBll.MoveHistoryToNewData(data, oldFormId);
+            }
+        }
     }
 }
