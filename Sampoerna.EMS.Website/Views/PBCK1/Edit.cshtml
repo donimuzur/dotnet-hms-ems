@@ -43,7 +43,7 @@
                     }
 
 
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" id="btnPreview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
 
                     @if (Model.DocStatus.HasValue && (Model.DocStatus.Value == Enums.DocumentStatus.Draft || Model.DocStatus.Value == Enums.DocumentStatus.Rejected))
@@ -254,7 +254,7 @@
                 $('#btnApprove').show();
                 $('#btnReject').show();
                 $('#btnCancel').show();
-
+                $('#btnPreview').show();
             }
         }
 
