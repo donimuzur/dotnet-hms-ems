@@ -130,7 +130,7 @@ namespace Sampoerna.EMS.BLL
                     Lack1Number = string.Empty
                 };
             }
-            
+
             //check if exists
             var isExists = IsExistLack1Data(input);
             if (!isExists.Success) return new Lack1CreateOutput()
@@ -244,7 +244,7 @@ namespace Sampoerna.EMS.BLL
             //{
             //    isNeedToRegenerate = IsNeedToRegenerate(generateInput, dbData);
             //}
-            
+
             if (isNeedToRegenerate)
             {
                 //do regenerate data
@@ -318,7 +318,7 @@ namespace Sampoerna.EMS.BLL
                 else
                 {
                     var plantFromMaster = _t001WServices.GetById(input.Detail.LevelPlantId);
-                    dbData.LACK1_PLANT = new List<LACK1_PLANT>() {Mapper.Map<LACK1_PLANT>(plantFromMaster)};
+                    dbData.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
                 }
             }
             else
@@ -327,7 +327,7 @@ namespace Sampoerna.EMS.BLL
 
                 isModified = SetChangesHistory(origin, input.Detail, input.UserId);
             }
-            
+
             dbData.SUBMISSION_DATE = input.Detail.SubmissionDate;
             dbData.LACK1_LEVEL = input.Detail.Lack1Level;
             dbData.WASTE_QTY = input.Detail.WasteQty;
@@ -371,7 +371,7 @@ namespace Sampoerna.EMS.BLL
             return rc;
 
         }
-        
+
         public Lack1DetailsDto GetDetailsById(int id)
         {
             var dbData = _lack1Service.GetDetailsById(id);
@@ -482,7 +482,7 @@ namespace Sampoerna.EMS.BLL
                 //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
                 //dbData.APPROVED_BY_POA = input.UserId;
                 //dbData.APPROVED_DATE_POA = DateTime.Now;
-                
+
                 if (input.UserRole == Enums.UserRole.POA)
                 {
                     if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
@@ -576,7 +576,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
-                
+
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }
 
@@ -609,7 +609,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
                 dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-                
+
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }
 
@@ -672,7 +672,7 @@ namespace Sampoerna.EMS.BLL
 
             _changesHistoryBll.AddHistory(changes);
         }
-        
+
         private void WorkflowStatusAddChanges(Lack1WorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
         {
             //set changes log
@@ -975,7 +975,7 @@ namespace Sampoerna.EMS.BLL
 
             return selected.Count == 0 ? new List<Lack1Dto>() : selected;
         }
-        
+
         public Lack1GeneratedOutput GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
         {
             return GenerateLack1Data(input);
@@ -1459,13 +1459,24 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.PeriodYear = input.PeriodYear;
-            rc.Noted = input.Noted;
+
+            //format for noted
+            var wasteNoted = GeneratedNoteFormat("Waste Amount", input.WasteAmount, input.WasteAmountUom);
+            var returnNoted = GeneratedNoteFormat("Return Amount", input.ReturnAmount, input.ReturnAmountUom);
+            rc.Noted = string.Join(Environment.NewLine, new List<string>() { wasteNoted, returnNoted }).Replace(Environment.NewLine, "<br />");
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage;
 
             oReturn.Data = rc;
 
             return oReturn;
+        }
+
+        private string GeneratedNoteFormat(string prefix, decimal? nominal, string uomId)
+        {
+            if (nominal.HasValue)
+                return prefix + " : " + nominal.Value.ToString("N2") + " " + uomId;
+            return "";
         }
 
         /// <summary>
@@ -1748,7 +1759,7 @@ namespace Sampoerna.EMS.BLL
 
                     var receiving =
                         data.LACK1_TRACKING.Where(
-                                c =>receivingMvtType.Contains(c.INVENTORY_MOVEMENT.MVT))
+                                c => receivingMvtType.Contains(c.INVENTORY_MOVEMENT.MVT))
                             .ToList();
 
                     var mvtTypeForUsage = new List<string>

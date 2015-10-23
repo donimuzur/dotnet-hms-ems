@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -146,6 +147,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
                 .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => (src.BeginingBalance - src.Usage + src.TotalIncome)))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
+                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Noted.Replace("<br />", Environment.NewLine)))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingItemModel>>(src.Lack1Pbck1Mapping)))

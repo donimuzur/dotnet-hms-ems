@@ -198,7 +198,9 @@
                         </td>
                         <td rowspan="@rowCount">
                             <!-- Noted -->
-                            @Model.Noted
+                            @if (!string.IsNullOrEmpty(Model.Noted)) {
+                                @Model.Noted
+                            }
                         </td>
                     </tr>
                 <!-- More row if exists -->
@@ -260,8 +262,7 @@
                             @Model.EndingBalance.ToString("N0")
                         </td>
                         <td>
-                            @if (!string.IsNullOrEmpty(@Model.Noted))
-                            {
+                            @if (!string.IsNullOrEmpty(Model.Noted)) {
                                 @Model.Noted
                             }
                         </td>
