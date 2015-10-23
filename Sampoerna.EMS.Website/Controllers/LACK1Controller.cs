@@ -1644,6 +1644,18 @@ namespace Sampoerna.EMS.Website.Controllers
                             lastCk5RegDate == curCk5RegDate && lastCk5RegNumber == curCk5RegNumber)
                         {
                             iEndRow = iRow;
+                            if (i == item.TrackingConsolidations.Count - 1)
+                            {
+                                if (iStartRow != iEndRow)
+                                {
+                                    //need to merge
+                                    needToMerge.Add(new DetailReportNeedToMerge()
+                                    {
+                                        StartRowIndex = iStartRow,
+                                        EndRowIndex = iEndRow
+                                    });
+                                }
+                            }
                         }
                         else
                         {
