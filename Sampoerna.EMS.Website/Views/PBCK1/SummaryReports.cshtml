@@ -142,7 +142,7 @@
                                             <div class="toggle-title">
                                                 Toggle column <i class="fa fa-chevron-down"></i>
                                             </div>
-                                            <div class="toggle-component" >
+                                            <div class="toggle-component">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input type="checkbox" id="selecctall" /><b>Select All</b>
@@ -397,16 +397,16 @@
     @* ReSharper disable UnknownCssClass *@
     @* ReSharper disable Html.IdNotResolved *@
     <script type="text/javascript" language="javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             setupDataTables();
             $('#MenuPBCK1SummaryReports').addClass('active');
 
-            $('#SearchView_CompanyCode').change(function() {
+            $('#SearchView_CompanyCode').change(function () {
                 GetListNPPBKC_ID();
             });
 
             $('#selecctall').prop('checked', false);
-            $('.checkexport').each(function() {
+            $('.checkexport').each(function () {
                 this.checked = false;
             });
             $('#checkboxDefault1').prop('checked', true);
@@ -427,7 +427,7 @@
 
             table = $('#pbckTable').DataTable(
                 {
-                    "order": [[0, 'asc'], [2, 'asc']],
+                    "order": [[0, 'asc'], [1, 'asc']],
                     "sDom": "Rlfrtip",
                     "language": {
                         "zeroRecords": "No records found",
@@ -446,9 +446,9 @@
             //});
 
 
-            $('#btnFILTER').on('click', function(e) {
+            $('#btnFILTER').on('click', function (e) {
                 $('#selecctall').prop('checked', false);
-                $('.checkexport').each(function() {
+                $('.checkexport').each(function () {
                     this.checked = false;
                 });
                 $('#checkboxDefault1').prop('checked', true);
@@ -458,12 +458,11 @@
                 $('#checkboxDefault5').prop('checked', true);
             });
 
-            $('.checkexport').on('click', function(e) {
+            $('.checkexport').on('click', function (e) {
                 //e.preventDefault();
                 table.column(0).visible(true);
                 table.column(1).visible(true);
                 
-
                 // Get the column API object
                 var column = table.column($(this).attr('datacolumn'));
 
@@ -472,17 +471,12 @@
                 $('#pbckTable').parents('div.dataTables_wrapper').first().show();
             });
 
-            //$('input:checkbox').on('click', function() {
-            //    $('input:checkbox').attr("disabled", true);
-            //    setTimeout($(".checkexport").removeAttr("disabled"), 2000);
-            //});
-
             for (var i = 7; i < 38; i++) {
                 table.column(i).visible(false);
-                //table.column(37).visible(false);
+
             }
 
-            $('#selecctall').change(function() {
+            $('#selecctall').change(function () {
                 if ($(this).is(':checked')) {
                     $('.checkexport').prop('checked', this.checked);
                     // Show a column
@@ -490,7 +484,7 @@
                     var table = $('#pbckTable').DataTable();
                     for (var i = 0; i < 38; i++) {
                         table.column(i).visible(true);
-                       
+
                     }
                     table.column(0).visible(true);
                     table.column(1).visible(true);
@@ -498,15 +492,13 @@
                     $('#pbckTable').parents('div.dataTables_wrapper').first().show();
 
                 } else {
-                    $('.checkexport').each(function() {
+                    $('.checkexport').each(function () {
                         this.checked = false;
 
                     });
                     var table = $('#pbckTable').DataTable();
                     for (var i = 0; i < 38; i++) {
                         table.column(i).visible(false);
-                        
-                       
 
                     }
                     $('#pbckTable').parents('div.dataTables_wrapper').first().hide();
@@ -523,7 +515,7 @@
             $(".selectreset").val($(".selectreset option:first").val());
         }
 
-        $("#btnExport").click(function() {
+        $("#btnExport").click(function () {
             $('#ExportModel_CompanyCode').val($('#SearchView_CompanyCode').find("option:selected").val());
             $('#ExportModel_YearFrom').val($('#SearchView_YearFrom').find("option:selected").val());
             $('#ExportModel_YearTo').val($('#SearchView_YearTo').find("option:selected").val());
@@ -532,7 +524,7 @@
         });
 
 
-        $("#btnConfirm").click(function() {
+        $("#btnConfirm").click(function () {
             $('#ExportModel_CompanyCode').val($('#SearchView_CompanyCode').find("option:selected").val());
             $('#ExportModel_YearFrom').val($('#SearchView_YearFrom').find("option:selected").val());
             $('#ExportModel_YearTo').val($('#SearchView_YearTo').find("option:selected").val());
@@ -555,10 +547,10 @@
                 type: 'POST',
                 url: url,
                 data: { companyId: formData },
-                success: function(data) {
+                success: function (data) {
                     $("#SearchView_NppbkcId").empty();
                     $("#SearchView_NppbkcId").append("<option value=''>All</option>");
-                    $.each(data, function(index, val) {
+                    $.each(data, function (index, val) {
                         $("#SearchView_NppbkcId").append("<option value='" + val + "'>" + val + "</option>");
                     });
                 }
