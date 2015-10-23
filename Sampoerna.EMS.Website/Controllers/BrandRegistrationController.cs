@@ -167,8 +167,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 try
                 {
+                     AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE); 
                     _brandRegistrationBll.Save(dbBrand);
-                    AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE);
+                    
 
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
@@ -254,7 +255,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
-            dbBrand.CREATED_BY = CurrentUser.USER_ID;
+            //dbBrand.CREATED_BY = CurrentUser.USER_ID;
             if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
                 dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
             try
