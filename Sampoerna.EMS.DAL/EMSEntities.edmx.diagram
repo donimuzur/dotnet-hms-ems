@@ -239,6 +239,7 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" />
         <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="0.75" PointY="11.75" />
+        <EntityTypeShape EntityType="EMSModel.ZAAP_SHIFT_RPT" Width="1.5" PointX="11.375" PointY="7.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1178,6 +1178,31 @@
           <Property Name="WORKFLOW_STATE_ID" Type="bigint" Nullable="false" />
           <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="ZAAP_SHIFT_RPT">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="PRODUCTION_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
+          <Property Name="UOM" Type="nvarchar" MaxLength="5" />
+          <Property Name="PRODUCTION_DATE" Type="datetime" Nullable="false" />
+          <Property Name="BATCH" Type="nvarchar" MaxLength="35" />
+          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="BUNDLE" Type="int" />
+          <Property Name="MARKET" Type="nvarchar" MaxLength="2" />
+          <Property Name="DOCGMVTER" Type="nvarchar" MaxLength="35" />
+          <Property Name="MATDOC" Type="nvarchar" MaxLength="10" />
+          <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="SHIFT" Type="nvarchar" MaxLength="10" />
+        </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
             <PropertyRef Name="WERKS" />
@@ -3127,6 +3152,7 @@
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="Self.WORKFLOW_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_STATE" EntityType="Self.WORKFLOW_STATE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="Self.WORKFLOW_STATE_USERS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZAAP_SHIFT_RPT" EntityType="Self.ZAAP_SHIFT_RPT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="Self.ZAIDM_EX_BRAND" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="Self.ZAIDM_EX_GOODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="Self.ZAIDM_EX_KPPBC" Schema="dbo" store:Type="Tables" />
@@ -4388,6 +4414,7 @@
             <End Role="PBCK1_PROD_CONVERTER" EntitySet="PBCK1_PROD_CONVERTER" />
           </AssociationSet>
           <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
+          <EntitySet Name="ZAAP_SHIFT_RPT" EntityType="EMSModel.ZAAP_SHIFT_RPT" />
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -7820,6 +7847,31 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LAST_SHIFT" Type="Int32" />
         </EntityType>
+        <EntityType Name="ZAAP_SHIFT_RPT">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="PRODUCTION_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BUNDLE" Type="Int32" />
+          <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="MATDOC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9233,6 +9285,29 @@
                 <ScalarProperty Name="UOM" ColumnName="UOM" />
                 <ScalarProperty Name="QTY_PACKED" ColumnName="QTY_PACKED" />
                 <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAAP_SHIFT_RPT">
+            <EntityTypeMapping TypeName="EMSModel.ZAAP_SHIFT_RPT">
+              <MappingFragment StoreEntitySet="ZAAP_SHIFT_RPT">
+                <ScalarProperty Name="SHIFT" ColumnName="SHIFT" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
+                <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
+                <ScalarProperty Name="DOCGMVTER" ColumnName="DOCGMVTER" />
+                <ScalarProperty Name="MARKET" ColumnName="MARKET" />
+                <ScalarProperty Name="BUNDLE" ColumnName="BUNDLE" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="BATCH" ColumnName="BATCH" />
+                <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
                 <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
