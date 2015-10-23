@@ -13,9 +13,9 @@
         public string SupplierPlantId { get; set; }
         public string ExcisableGoodsType { get; set; }
         public string ExcisableGoodsTypeDesc { get; set; }
-        public decimal WasteAmount { get; set; }
+        public decimal? WasteAmount { get; set; }
         public string WasteAmountUom { get; set; }
-        public decimal ReturnAmount { get; set; }
+        public decimal? ReturnAmount { get; set; }
         public string ReturnAmountUom { get; set; }
 
         public int Lack1Level { get; set; }

@@ -1694,12 +1694,12 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed); ;
+            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Rejected); ;
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
-            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+            dbData.STATUS_ID = Enums.DocumentStatus.Rejected;
          
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
