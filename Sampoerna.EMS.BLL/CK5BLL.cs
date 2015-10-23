@@ -1783,7 +1783,7 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
-            AddWorkflowHistory(input);
+            //AddWorkflowHistory(input);
         }
 
         private void GrCreatedDocument(CK5WorkflowDocumentInput input)
@@ -1843,11 +1843,13 @@ namespace Sampoerna.EMS.BLL
                     SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+                    input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+                    AddWorkflowHistory(input);
                 }
             }
-            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-
-            AddWorkflowHistory(input);
+           
         }
 
         public void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input)
@@ -1984,11 +1986,13 @@ namespace Sampoerna.EMS.BLL
                     SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+                    input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+                    AddWorkflowHistory(input);
                 }
             //}
-            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-
-            AddWorkflowHistory(input);
+          
         }
         #endregion
 
