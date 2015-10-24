@@ -23,8 +23,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private IUserPlantMapBLL _userPlantMapBll;
         private IPlantBLL _plantBll;
-        
-        public UserPlantMapController(IPageBLL pageBLL, IUserPlantMapBLL userPlantMapBll, IPlantBLL plantBll, IChangesHistoryBLL changeHistorybll) 
+        private IUnitOfWork _uow;
+
+        public UserPlantMapController(IPageBLL pageBLL, IUserPlantMapBLL userPlantMapBll, IPlantBLL plantBll, IChangesHistoryBLL changeHistorybll, IUnitOfWork uow) 
             : base(pageBLL, Enums.MenuList.POAMap) 
         {
             
@@ -43,7 +44,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             var userPlantDb = _userPlantMapBll.GetAllOrderByUserId();
-            model.UserPlantMaps = Mapper.Map<List<UserPlantMapDto>>(userPlantDb);
+            model.UserPlantMaps = Mapper.Map<List<UserPlantMapDetail>>(userPlantDb);
            
             return View("Index", model);
         }
@@ -246,6 +247,23 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetPlantByNppbkc(string nppbkcid)
         {
             return Json(_plantBll.GetPlantByNppbkc(nppbkcid));
+        }
+
+        public ActionResult Active(int id)
+        {
+            try
+            {
+              var userPlantMap = _userPlantMapBll.GetById(id);
+
+              _userPlantMapBll.Active(userPlantMap);
+                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+            }
+            catch (Exception ex)
+            {
+                TempData[Constans.SubmitType.Update] = ex.Message;
+            }
+            return RedirectToAction("Index");
+            
         }
 
     }

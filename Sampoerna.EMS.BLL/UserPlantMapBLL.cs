@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BLL.Services;
@@ -15,6 +16,7 @@ namespace Sampoerna.EMS.BLL
     {
         private ILogger _logger;
         private IUnitOfWork _uow;
+        private IGenericRepository<USER_PLANT_MAP> _repository;
 
         private IUserPlantMapService _userPlantService;
 
@@ -23,6 +25,7 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
             _userPlantService = new UserPlantMapService(_uow, _logger);
+            _repository = _uow.GetGenericRepository<USER_PLANT_MAP>();
         }
         
         public void Save(USER_PLANT_MAP userPlantMap)
@@ -36,15 +39,18 @@ namespace Sampoerna.EMS.BLL
             return _userPlantService.GetAll();
         }
 
-        public List<USER_PLANT_MAP> GetAllOrderByUserId()
+        public List<UserPlantMapDto> GetAllOrderByUserId()
         {
-            return _userPlantService.GetAll().OrderBy(a=>a.USER_ID).ToList();
+            var dbData = _userPlantService.GetAll().OrderBy(a=>a.USER_ID).ToList();
+
+            return Mapper.Map<List<UserPlantMapDto>>(dbData);
         }
 
-        public USER_PLANT_MAP GetById(int id)
+        public UserPlantMapDto GetById(int id)
         {
+            var dbData = _userPlantService.GetById(id);
             //return _repository.Get(p => p.USER_PLANT_MAP_ID == id, null, _includeTables).FirstOrDefault();
-            return _userPlantService.GetById(id);
+            return Mapper.Map<UserPlantMapDto>(dbData);
         }
 
         public List<USER_PLANT_MAP> GetByUserId(string id)
@@ -87,6 +93,25 @@ namespace Sampoerna.EMS.BLL
             }
 
             return list;
+        }
+
+        public void Active(UserPlantMapDto isActive)
+        {
+            var activeUser = GetById(isActive.Id);
+            //if (activeUser.IsActive == "True")
+            //{
+            //    activeUser.IsActive = "False";
+            //}
+            //else
+            //{
+            //    activeUser.IsActive = "True";
+            //}
+
+            activeUser.UserId = "CWIRADAN";
+          
+            var dbData = Mapper.Map<USER_PLANT_MAP>(activeUser);
+            _repository.Update(dbData);
+            _uow.SaveChanges();
         }
     }
 }
