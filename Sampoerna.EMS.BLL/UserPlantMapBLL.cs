@@ -98,17 +98,15 @@ namespace Sampoerna.EMS.BLL
         public void Active(UserPlantMapDto isActive)
         {
             var activeUser = GetById(isActive.Id);
-            //if (activeUser.IsActive == "True")
-            //{
-            //    activeUser.IsActive = "False";
-            //}
-            //else
-            //{
-            //    activeUser.IsActive = "True";
-            //}
-
-            activeUser.UserId = "CWIRADAN";
-          
+            if (activeUser.IsActive == "True")
+            {
+                activeUser.IsActive = "False";
+            }
+            else
+            {
+                activeUser.IsActive = "True";
+            }
+            
             var dbData = Mapper.Map<USER_PLANT_MAP>(activeUser);
             _repository.Update(dbData);
             _uow.SaveChanges();

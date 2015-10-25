@@ -219,7 +219,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.USER_PLANT_MAP_ID, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.UserId))
-                .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IsActive));
+                .ForMember(dest => dest.IS_ACTIVE, opt => opt.ResolveUsing<StringToBooleanResolver>().FromMember(src => src.IsActive));
 
 
             #region ExGoodTyp

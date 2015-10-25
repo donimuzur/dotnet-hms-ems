@@ -6,6 +6,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL.Services
@@ -35,7 +36,14 @@ namespace Sampoerna.EMS.BLL.Services
 
         public USER_PLANT_MAP GetById(int id)
         {
-            return _repository.Get(p => p.USER_PLANT_MAP_ID == id, null, _includeTables).FirstOrDefault();
+            var dbResult = _repository.GetByID(id);
+
+            if (dbResult == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            return dbResult;
         }
 
         public List<USER_PLANT_MAP> GetByUserId(string id)
