@@ -89,8 +89,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             ConvertedSAPNotExist,
 
             [Description("Missing PBCK-1 Data regarding to selection criteria.")]
-            Lack1MissingPbck1Selected
+            Lack1MissingPbck1Selected,
 
+             [Description("PBCK-7 Error BACK-1 QTY Value.")]
+            Pbck7ItemErrorBack1QtyValue
         }
         
         /// <summary>

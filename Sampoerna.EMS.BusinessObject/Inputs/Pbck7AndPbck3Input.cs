@@ -97,7 +97,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public Pbck7WorkflowDocumentData AdditionalDocumentData { get; set; }
 
-        //public List<Pbck7ItemUpload> UploadItemDto { get; set; }
+        public List<PBCK7_ITEMDto> Pbck7ItemDtos { get; set; }
 
         public Enums.FormType FormType { get; set; }
         public Enums.DocumentStatusGov StatusGovInput { get; set; }

@@ -318,8 +318,32 @@
                                         <div class="col-md-8">
                                             @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
                                             {
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                            }
+                                            else
+                                            {
+                                            @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Exec From</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
                                                 <div class="input-group date">
-                                                    @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    @Html.TextBoxFor(model => model.EXEC_DATE_FROM, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-calendar"></i>
                                                     </span>
@@ -327,11 +351,32 @@
                                             }
                                             else
                                             {
-                                                @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.EXEC_DATE_FROM, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
                                             }
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Exec To</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.EXEC_DATE_TO, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.EXEC_DATE_TO, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
 
                             </div>
 
@@ -342,20 +387,20 @@
                                         <div class="row">
                                             <label class="col-md-4">PBCK3 Gov Status</label>
                                             <div class="col-md-8">
-                                                @Html.TextBoxFor(x => x.Pbck3GovStatusDescription,  new { @class = "form-control", @disabled="disabled" })
+                                                @Html.TextBoxFor(x => x.Pbck3GovStatusDescription, new { @class = "form-control", @disabled = "disabled" })
 
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        
-                                            <div class="row">
-                                                <label class="col-md-4">Comment</label>
-                                                <div class="col-md-8">
-                                                    @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
-                                                </div>
+
+                                        <div class="row">
+                                            <label class="col-md-4">Comment</label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
                                             </div>
-                                       
+                                        </div>
+
                                     </div>
                                 </div>
                             }

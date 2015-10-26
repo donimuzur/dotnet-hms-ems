@@ -15,5 +15,6 @@ namespace Sampoerna.EMS.Contract
 
         List<string> GetPlantByPoaId(string id);
         List<string> GetNppbkcByPoaId(string id);
+        List<string> GetCompanyByPoaId(string id);
     }
 }

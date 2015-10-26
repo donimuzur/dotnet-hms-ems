@@ -59,8 +59,25 @@ function ValidateGovInput() {
 
     }
 
-   
+    if ($('#Ck2Value').val() != '') {
+        if ($.isNumeric($('#Ck2Value').val()) == false) {
+            AddValidationClass(false, 'Ck2Value');
+            result = false;
+        }
 
+        var ck2Value = parseFloat($('#Ck2Value').val());
+        if (ck2Value <= 0) {
+            AddValidationClass(false, 'Ck2Value');
+            result = false;
+        }
+    }
+    if (result == false) {
+        $('#collapseFive').removeClass('collapse');
+        $('#collapseFive').addClass('in');
+        $("#collapseFive").css({ height: "auto" });
+
+    }
+    
     return result;
 }
 

@@ -117,7 +117,7 @@ function ValidateManualPbck7() {
         AddValidationClass(false, 'uploadPbck7Qty');
         result = false;
     } else {
-        if (parseFloat($('#uploadPbck7Qty').val()) < 0) {
+        if (parseFloat($('#uploadPbck7Qty').val()) <= 0) {
             AddValidationClass(false, 'uploadPbck7Qty');
             result = false;
         }
