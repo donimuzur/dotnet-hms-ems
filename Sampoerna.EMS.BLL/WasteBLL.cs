@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationBLL _brandRegistrationBll;
         private ChangesHistoryBLL _changesHistoryBll;
         private IUserPlantMapBLL _userPlantBll;
+        private IPOAMapBLL _poaMapBll;
 
         public WasteBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -48,6 +49,7 @@ namespace Sampoerna.EMS.BLL
             _plantBll = new PlantBLL(_uow, _logger);
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
+            _poaMapBll = new POAMapBLL(_uow, _logger);
         }
         public List<WasteDto> GetAllByParam(WasteGetByParamInput input)
         {
@@ -69,7 +71,9 @@ namespace Sampoerna.EMS.BLL
             {
                 var listUserPlant = _userPlantBll.GetPlantByUserId(input.UserId);
 
-                queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS));
+                var listPoaPlant = _poaMapBll.GetPlantByPoaId(input.UserId);
+
+                queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS) || listPoaPlant.Contains(c.WERKS));
             }
 
             Func<IQueryable<WASTE>, IOrderedQueryable<WASTE>> orderBy = null;

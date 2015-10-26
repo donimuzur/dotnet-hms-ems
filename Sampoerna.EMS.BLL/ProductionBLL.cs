@@ -35,6 +35,8 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IWasteBLL _wasteBll;
         private IUnitOfMeasurementBLL _uomBll;
+        private IUserPlantMapBLL _userPlantBll;
+        private IPOAMapBLL _poaMapBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -51,6 +53,8 @@ namespace Sampoerna.EMS.BLL
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _wasteBll = new WasteBLL(_logger, _uow);
             _uomBll = new UnitOfMeasurementBLL(uow, _logger);
+            _userPlantBll = new UserPlantMapBLL(_uow, _logger);
+            _poaMapBll = new POAMapBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -68,6 +72,14 @@ namespace Sampoerna.EMS.BLL
             {
                 var dt = Convert.ToDateTime(input.ProoductionDate);
                 queryFilter = queryFilter.And(c => c.PRODUCTION_DATE == dt);
+            }
+            if (!string.IsNullOrEmpty(input.UserId))
+            {
+                var listUserPlant = _userPlantBll.GetPlantByUserId(input.UserId);
+
+                var listPoaPlant = _poaMapBll.GetPlantByPoaId(input.UserId);
+
+                queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS) || listPoaPlant.Contains(c.WERKS));
             }
 
             Func<IQueryable<PRODUCTION>, IOrderedQueryable<PRODUCTION>> orderBy = null;

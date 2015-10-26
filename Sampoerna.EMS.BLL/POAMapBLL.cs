@@ -57,5 +57,33 @@ namespace Sampoerna.EMS.BLL
         {
             return _uow.GetGenericRepository<POA_MAP>().Get(p=>p.NPPBKC_ID == nppbkc && p.WERKS == plant && p.POA_ID == poa, null, _includeProperties).FirstOrDefault();
         }
+        
+        public List<string> GetPlantByPoaId(string id)
+        {
+            var list = new List<string>();
+
+            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id, null, _includeProperties);
+
+            foreach (var item in data)
+            {
+                list.Add(item.WERKS);
+            }
+
+            return list;
+        }
+        
+        public List<string> GetNppbkcByPoaId(string id)
+        {
+            var list = new List<string>();
+
+            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id, null, _includeProperties);
+
+            foreach (var item in data)
+            {
+                list.Add(item.NPPBKC_ID);
+            }
+
+            return list;
+        }
     }
 }
