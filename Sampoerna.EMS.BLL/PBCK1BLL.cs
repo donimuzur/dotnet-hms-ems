@@ -1611,9 +1611,11 @@ namespace Sampoerna.EMS.BLL
                 }
                 rc.Detail.NppbkcAddress = "- " + string.Join(Environment.NewLine + "- ", nppbkcDetails.T001W.Select(d => d.ADDRESS).ToArray());
                 var mainPlant = nppbkcDetails.T001W.FirstOrDefault(c => c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value);
-                if (mainPlant != null)
+                //get plant where nppbckid is nppbckid_import
+                var plantImport = _plantBll.GetMainPlantByNppbkcId(dbData.NPPBKC_ID);
+                if (mainPlant != null || plantImport != null)
                 {
-                    rc.Detail.PlantPhoneNumber = mainPlant.PHONE;
+                    rc.Detail.PlantPhoneNumber = mainPlant == null ? plantImport.PHONE : mainPlant.PHONE;
 
                     //Get BrandRegistration Data
                     //var brandRegistrationDataByMainPlant = _brandRegistrationBll.GetByPlantId(mainPlant.WERKS);

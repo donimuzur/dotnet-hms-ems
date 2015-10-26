@@ -49,11 +49,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private IHeaderFooterBLL _headerFooterBll;
         private IPrintHistoryBLL _printHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IUserPlantMapBLL _userPlantBll;
+        private IPOAMapBLL _poaMapBll;
 
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
             IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll,
             IDocumentSequenceNumberBLL documentSequenceNumberBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IZaidmExProdTypeBLL prodTypeBll,
-            IHeaderFooterBLL headerFooterBll, IPrintHistoryBLL printHistoryBll, IChangesHistoryBLL changesHistoryBll)
+            IHeaderFooterBLL headerFooterBll, IPrintHistoryBLL printHistoryBll, IChangesHistoryBLL changesHistoryBll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _ck4CBll = ck4Cbll;
@@ -74,6 +76,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _headerFooterBll = headerFooterBll;
             _printHistoryBll = printHistoryBll;
             _changesHistoryBll = changesHistoryBll;
+            _userPlantBll = userPlantBll;
+            _poaMapBll = poaMapBll;
         }
 
         #region Index Document List
@@ -94,7 +98,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private Ck4CIndexDocumentListViewModel InitIndexDocumentListViewModel(
             Ck4CIndexDocumentListViewModel model)
         {
-            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll); ;
             model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
             switch (model.Ck4CType)
@@ -179,34 +183,21 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion
 
         #region Json
-        [HttpPost]
-        public JsonResult CompanyListPartialProduction(string companyId)
-        {
-            var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
-
-            var model = new Ck4CIndexViewModel() { PlanIdList = listPlant };
-
-            return Json(model);
-
-        }
-
-        [HttpPost]
-        public JsonResult CompanyListPartialCk4CWaste(string companyId)
-        {
-            var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
-
-            var model = new Ck4CIndexWasteProductionViewModel() { PlanIdList = listPlant };
-
-            return Json(model);
-
-        }
 
         [HttpPost]
         public JsonResult CompanyListPartialCk4CDocument(string companyId)
         {
             var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
 
-            var model = new Ck4CIndexDocumentListViewModel() { PlanList = listPlant };
+            var userPlant = _userPlantBll.GetPlantByUserId(CurrentUser.USER_ID);
+
+            var poaMap = _poaMapBll.GetPlantByPoaId(CurrentUser.USER_ID);
+
+            var filterPlant = listPlant.Where(x => userPlant.Contains(x.Value) || poaMap.Contains(x.Value));
+
+            var newListPlant = new SelectList(filterPlant, "Value", "Text");
+
+            var model = new Ck4CIndexDocumentListViewModel() { PlanList = newListPlant };
 
             return Json(model);
         }
@@ -214,7 +205,9 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetNppbkcByCompanyId(string companyId)
         {
-            return Json(_nppbkcbll.GetNppbkcsByCompany(companyId));
+            var data = _nppbkcbll.GetNppbkcsByCompany(companyId);
+
+            return Json(data);
         }
 
         [HttpPost]
@@ -285,9 +278,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Ck4CIndexDocumentListViewModel InitialModel(Ck4CIndexDocumentListViewModel model)
         {
+            var comp = GlobalFunctions.GetCompanyList(_companyBll);
+            var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctComp = comp.Where(x => userComp.Contains(x.Value) || poaComp.Contains(x.Value));
+            var getComp = new SelectList(distinctComp, "Value", "Text");
+
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.CompanyNameList = getComp;
             model.PeriodList = Ck4cPeriodList();
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearList = Ck4cYearList();

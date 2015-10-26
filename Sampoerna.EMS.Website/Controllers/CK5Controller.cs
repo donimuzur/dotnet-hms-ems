@@ -909,7 +909,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             else
                             {
                                 if (model.Ck5Type != Enums.CK5Type.Export &&
-                                    model.Ck5Type != Enums.CK5Type.PortToImporter && 
+                                    //model.Ck5Type != Enums.CK5Type.PortToImporter && 
                                     model.Ck5Type != Enums.CK5Type.Manual)
                                 {
 
