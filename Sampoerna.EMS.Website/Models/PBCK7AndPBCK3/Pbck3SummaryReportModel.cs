@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public bool IsSelectDocType { get; set; }
         public bool IsSelectPbck7 { get; set; }
-
+        public bool IsSelectCk5No { get; set; }
         public bool IsSelectStatus { get; set; }
 
         public bool IsSelectDate { get; set; }
@@ -83,29 +83,18 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
     public class Pbck3SummaryReportItem
     {
         public string Pbck3Number { get; set; }
-        
         public  string Pbck7Number { get; set; }
+        public string Ck5Number { get; set; }
+
         public DateTime? Pbck3Date { get; set; }
-
-       
         public string PlantName { get; set; }
-
         public string DocumentType { get; set; }
-
         public string Nppbkc { get; set; }
-
-        
-      
         public string Pbck3Status { get; set; }
-
         public string Back3No { get; set; }
-
         public DateTime? Back3Date { get; set; }
-
         public string Ck2No { get; set; }
-
         public DateTime? Ck2Date { get; set; }
-
         public Decimal? Ck2Value { get; set; }
     }
 }
