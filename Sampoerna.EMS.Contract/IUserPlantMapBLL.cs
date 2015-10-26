@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.Contract
         List<ZAIDM_EX_NPPBKCCompositeDto> GetAuthorizedNppbkc(UserPlantMapGetAuthorizedNppbkc input);
 
         List<string> GetPlantByUserId(string id);
+        List<string> GetNppbkcByUserId(string id);
         List<UserPlantMapDto> GetAllOrderByUserId();
         void Active(UserPlantMapDto isActive);
     }

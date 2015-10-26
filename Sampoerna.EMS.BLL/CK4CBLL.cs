@@ -42,6 +42,8 @@ namespace Sampoerna.EMS.BLL
         private ICK4CDecreeDocBLL _ck4cDecreeDocBll;
         private IWasteBLL _wasteBll;
         private IProductionBLL _productionBll;
+        private IPOAMapBLL _poaMapBll;
+        private IUserPlantMapBLL _userPlantBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -67,6 +69,8 @@ namespace Sampoerna.EMS.BLL
             _ck4cDecreeDocBll = new CK4CDecreeDocBLL(_uow, _logger);
             _wasteBll = new WasteBLL(_logger, _uow);
             _productionBll = new ProductionBLL(_logger, _uow);
+            _poaMapBll = new POAMapBLL(_uow, _logger);
+            _userPlantBll = new UserPlantMapBLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -699,9 +703,11 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+                var listNppbkc = _userPlantBll.GetNppbkcByUserId(input.UserId);
 
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+                var nppbkc = _poaMapBll.GetNppbkcByPoaId(input.UserId);
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
@@ -712,7 +718,9 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+                var listNppbkc = _userPlantBll.GetNppbkcByUserId(input.UserId);
+
+                queryFilter = queryFilter.And(c => listNppbkc.Contains(c.NPPBKC_ID));
             }
 
             queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
