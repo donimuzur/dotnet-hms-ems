@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.Contract
 
         List<USER_PLANT_MAP> GetAll();
 
-        UserPlantMapDto GetById(int id);
+        USER_PLANT_MAP GetById(int id);
 
         List<USER_PLANT_MAP> GetByUserId(string id);
         USER_PLANT_MAP GetByUserIdAndPlant(string userid, string plantid);
@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.Contract
 
         List<string> GetPlantByUserId(string id);
         List<string> GetNppbkcByUserId(string id);
-        List<UserPlantMapDto> GetAllOrderByUserId();
-        void Active(UserPlantMapDto isActive);
+        List<USER_PLANT_MAP> GetAllOrderByUserId();
+        void Active(int isActive);
     }
 }

@@ -39,18 +39,17 @@ namespace Sampoerna.EMS.BLL
             return _userPlantService.GetAll();
         }
 
-        public List<UserPlantMapDto> GetAllOrderByUserId()
+        public List<USER_PLANT_MAP> GetAllOrderByUserId()
         {
-            var dbData = _userPlantService.GetAll().OrderBy(a=>a.USER_ID).ToList();
 
-            return Mapper.Map<List<UserPlantMapDto>>(dbData);
+            return  _userPlantService.GetAll().OrderBy(a => a.USER_ID).ToList();
         }
 
-        public UserPlantMapDto GetById(int id)
+        public USER_PLANT_MAP GetById(int id)
         {
-            var dbData = _userPlantService.GetById(id);
+           
             //return _repository.Get(p => p.USER_PLANT_MAP_ID == id, null, _includeTables).FirstOrDefault();
-            return Mapper.Map<UserPlantMapDto>(dbData);
+            return _userPlantService.GetById(id);
         }
 
         public List<USER_PLANT_MAP> GetByUserId(string id)
@@ -95,20 +94,20 @@ namespace Sampoerna.EMS.BLL
             return list;
         }
 
-        public void Active(UserPlantMapDto isActive)
+        public void Active(int isActive)
         {
-            var activeUser = GetById(isActive.Id);
-            if (activeUser.IsActive == "True")
+            var activeUser = GetById(isActive);
+
+            if (activeUser.IS_ACTIVE == true)
             {
-                activeUser.IsActive = "False";
+                activeUser.IS_ACTIVE = false;
             }
             else
             {
-                activeUser.IsActive = "True";
+                activeUser.IS_ACTIVE = true;
             }
             
-            var dbData = Mapper.Map<USER_PLANT_MAP>(activeUser);
-            _repository.Update(dbData);
+            _repository.Update(activeUser);
             _uow.SaveChanges();
         }
 

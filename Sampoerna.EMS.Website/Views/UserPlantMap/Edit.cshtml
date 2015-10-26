@@ -17,9 +17,9 @@
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
                     @{
-                        var isActive = Model.UserPlantMap.IsActive; 
+                        var isActive = Model.UserPlantMap.IsActive == "Yes" ? true : false; 
                     }
-                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">@(isActive == "True" ? "DEACTIVE" : "ACTIVE")</a>
+                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">@(isActive == true ? "DEACTIVE" : "ACTIVE")</a>
 
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
                 </div>
@@ -297,7 +297,7 @@
         }
 
         var activeUser = function () {
-            window.location = "@Url.Action("Active", "UserPlantMap", new {id = @Model.UserPlantMap.Id})";
+            window.location = "@Url.Action("Active", "UserPlantMap", new {id = @Model.UserPlantMap.Id)";
         };
 
         var confirmDeletePOA = function () {

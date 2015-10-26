@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUnitOfWork _uow;
 
         public UserPlantMapController(IPageBLL pageBLL, IUserPlantMapBLL userPlantMapBll, IPlantBLL plantBll, IChangesHistoryBLL changeHistorybll, IUnitOfWork uow) 
-            : base(pageBLL, Enums.MenuList.POAMap) 
+            : base(pageBLL, Enums.MenuList.UserPlantMap) 
         {
             
             _changeHistoryBll = changeHistorybll;
@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             var userPlantDb = _userPlantMapBll.GetAllOrderByUserId();
-            model.UserPlantMaps = Mapper.Map<List<UserPlantMapDetail>>(userPlantDb);
+            model.UserPlantMaps = Mapper.Map<List<UserPlantMapDto>>(userPlantDb);
            
             return View("Index", model);
         }
@@ -253,10 +253,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-              var userPlantMap = _userPlantMapBll.GetById(id);
+                _userPlantMapBll.Active(id);
 
-              _userPlantMapBll.Active(userPlantMap);
-                TempData[Constans.SubmitType.Update] = Constans.SubmitMessage.Updated;
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {
