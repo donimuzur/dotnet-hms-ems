@@ -597,13 +597,15 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (!string.IsNullOrEmpty(data.HeaderFooter.HEADER_IMAGE_PATH))
                     dMasterRow.Header = GetHeader(data.HeaderFooter.HEADER_IMAGE_PATH);
-                dMasterRow.Footer = data.HeaderFooter.FOOTER_CONTENT.Replace("<br />", Environment.NewLine);    
+                dMasterRow.Footer = !string.IsNullOrEmpty(data.HeaderFooter.FOOTER_CONTENT) ? data.HeaderFooter.FOOTER_CONTENT.Replace("<br />", Environment.NewLine) : string.Empty;    
             }
 
+            dsReport.Lack1.AddLack1Row(dMasterRow);
+            
             //for total
             var prodList = Mapper.Map<List<Lack1ProductionDetailItemModel>>(data.Lack1ProductionDetail);
             var summaryProductionList = ProcessSummaryProductionDetails(prodList);
-            var totalSummaryProductionList = string.Join(Environment.NewLine, 
+            var totalSummaryProductionList = string.Join(Environment.NewLine,
                 summaryProductionList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
             //for each Excisable Goods Type
             var summaryProductionJenis = string.Join(Environment.NewLine,
@@ -611,14 +613,12 @@ namespace Sampoerna.EMS.Website.Controllers
             var summaryProductionAmount = string.Join(Environment.NewLine,
                 prodList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
 
-            dsReport.Lack1.AddLack1Row(dMasterRow);
-
             //set detail item
             if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
 
             var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
             var endingBalance = (data.BeginingBalance - data.Usage + data.TotalIncome);
-            var noted = data.Noted.Replace("<br />", Environment.NewLine);
+            var noted = !string.IsNullOrEmpty(data.Noted) ? data.Noted.Replace("<br />", Environment.NewLine) : string.Empty;
             foreach (var item in data.Lack1IncomeDetail)
             {
                 var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
