@@ -96,5 +96,28 @@ namespace Sampoerna.EMS.BLL
 
             return list;
         }
+
+        public List<string> GetCompanyByUserId(string id)
+        {
+            var list = new List<string>();
+
+            var data = _userPlantService.GetByUserId(id);
+
+            var company = string.Empty;
+
+            foreach (var item in data)
+            {
+                var comp = item.T001W.T001K.BUKRS;
+
+                if (company != comp)
+                {
+                    list.Add(comp);
+
+                    company = comp;
+                }
+            }
+
+            return list;
+        }
     }
 }

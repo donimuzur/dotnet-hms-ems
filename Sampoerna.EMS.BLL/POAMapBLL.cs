@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<POA_MAP> _repository;
         private ChangesHistoryBLL _changeBLL;
-         private string _includeProperties = "T001W, POA, POA.USER";
+        private string _includeProperties = "T001W, POA, POA.USER";
         public POAMapBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -81,6 +81,31 @@ namespace Sampoerna.EMS.BLL
             foreach (var item in data)
             {
                 list.Add(item.NPPBKC_ID);
+            }
+
+            return list;
+        }
+
+        public List<string> GetCompanyByPoaId(string id)
+        {
+            _includeProperties += ", T001W.T001K";
+
+            var list = new List<string>();
+
+            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id, null, _includeProperties);
+
+            var company = string.Empty;
+
+            foreach (var item in data)
+            {
+                var comp = item.T001W.T001K.BUKRS;
+
+                if (company != comp)
+                {
+                    list.Add(comp);
+
+                    company = comp;
+                }
             }
 
             return list;
