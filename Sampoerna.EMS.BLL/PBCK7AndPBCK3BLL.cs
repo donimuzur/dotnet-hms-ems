@@ -189,7 +189,7 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK3>(input.ShortOrderColum));
             }
 
-            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7");
+            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7, CK5");
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);

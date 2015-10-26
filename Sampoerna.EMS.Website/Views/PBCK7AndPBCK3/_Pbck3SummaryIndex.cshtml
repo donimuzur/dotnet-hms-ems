@@ -5,6 +5,7 @@
                        <tr>
                            <th class="toggle-row">Pbck-3 No</th>
                            <th>Pbck-7 No</th>
+                           <th>CK-5 No</th>
                            <th>NPPBKC</th>
                            <th>Plant</th>
                            <th>Date</th>
@@ -26,14 +27,15 @@
 
                                    <td>@item.Pbck3Number</td>
                                    <td>@item.Pbck7Number</td>
+                                   <td>@item.Ck5Number</td>
                                    <td>@item.NppbckId</td>
                                    <td>@item.Plant</td>
                                    <td>@item.Pbck3Date.Value.ToString("dd MMM yyyy")</td>
                                    <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.Pbck3Status)</td>
                                    <td>@(item.Back3Dto != null ? item.Back3Dto.Back3Number : string.Empty)</td>
-                                   <td>@(item.Back3Dto != null ? item.Back3Dto.Back3Date : null)</td>
+                                   <td>@(item.Back3Dto != null && item.Back3Dto.Back3Date.HasValue ? item.Back3Dto.Back3Date.Value.ToString("dd MMM yyyy") : null)</td>
                                    <td>@(item.Ck2Dto != null ? item.Ck2Dto.Ck2Number : string.Empty)</td>
-                                   <td>@(item.Ck2Dto != null ? item.Ck2Dto.Ck2Date : null)</td>
+                                   <td>@(item.Ck2Dto != null && item.Ck2Dto.Ck2Date.HasValue ? item.Ck2Dto.Ck2Date.Value.ToString("dd MMM yyyy") : null)</td>
                                    <td>@(item.Ck2Dto != null ? item.Ck2Dto.Ck2Value : 0)</td>
                                </tr>
                            }
