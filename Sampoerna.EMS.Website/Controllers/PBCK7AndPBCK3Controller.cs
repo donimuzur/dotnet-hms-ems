@@ -921,6 +921,26 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 input.AdditionalDocumentData.Back1FileUploadList = model.Back1Dto.Documents;
 
+                if (model.Pbck7GovStatus == Enums.DocumentStatusGov.FullApproved
+                    || model.Pbck7GovStatus == Enums.DocumentStatusGov.PartialApproved)
+                {
+
+                    if (model.Pbck7GovStatus == Enums.DocumentStatusGov.PartialApproved)
+                    {
+                        foreach (var uploadItem in model.UploadItems)
+                        {
+                            if (!ConvertHelper.IsNumeric(uploadItem.Back1Qty)
+                                || uploadItem.Back1Qty == "0")
+                            {
+                                AddMessageInfo("PBCK-7 Error BACK-1 QTY Value.", Enums.MessageInfoType.Error);
+                                return false;
+                            }
+                        }
+                    }
+
+                    input.Pbck7ItemDtos = Mapper.Map<List<PBCK7_ITEMDto>>(model.UploadItems);
+                }
+
                 _pbck7Pbck3Bll.PBCK7Workflow(input);
 
                 return true;
