@@ -42,7 +42,8 @@ namespace Sampoerna.EMS.BLL
         public List<USER_PLANT_MAP> GetAllOrderByUserId()
         {
 
-            return  _userPlantService.GetAll().OrderBy(a => a.USER_ID).ToList();
+            var dbData = _userPlantService.GetAll().GroupBy(grp => grp.USER_ID).SelectMany(u => u.OrderBy(grp => grp.USER_ID)).ToList();
+            return dbData;
         }
 
         public USER_PLANT_MAP GetById(int id)
@@ -94,20 +95,23 @@ namespace Sampoerna.EMS.BLL
             return list;
         }
 
-        public void Active(int isActive)
+        public void Active(string isActive)
         {
-            var activeUser = GetById(isActive);
-
-            if (activeUser.IS_ACTIVE == true)
+            var activeUser = GetByUserId(isActive);
+            foreach (var userPlantMap in activeUser)
             {
-                activeUser.IS_ACTIVE = false;
+                if (userPlantMap.IS_ACTIVE == true)
+                {
+                    userPlantMap.IS_ACTIVE = false;
+                }
+                else
+                {
+                    userPlantMap.IS_ACTIVE = true;
+                }
+                _repository.Update(userPlantMap);
             }
-            else
-            {
-                activeUser.IS_ACTIVE = true;
-            }
-            
-            _repository.Update(activeUser);
+           
+         
             _uow.SaveChanges();
         }
 

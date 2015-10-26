@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -249,7 +250,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(_plantBll.GetPlantByNppbkc(nppbkcid));
         }
 
-        public ActionResult Active(int id)
+        public ActionResult Active(string id)
         {
             try
             {
