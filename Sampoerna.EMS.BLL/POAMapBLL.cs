@@ -71,5 +71,19 @@ namespace Sampoerna.EMS.BLL
 
             return list;
         }
+        
+        public List<string> GetNppbkcByPoaId(string id)
+        {
+            var list = new List<string>();
+
+            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id, null, _includeProperties);
+
+            foreach (var item in data)
+            {
+                list.Add(item.NPPBKC_ID);
+            }
+
+            return list;
+        }
     }
 }
