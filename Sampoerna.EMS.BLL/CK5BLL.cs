@@ -1783,7 +1783,7 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
-            AddWorkflowHistory(input);
+            //AddWorkflowHistory(input);
         }
 
         private void GrCreatedDocument(CK5WorkflowDocumentInput input)
@@ -1843,11 +1843,13 @@ namespace Sampoerna.EMS.BLL
                     SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+                    input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+                    //AddWorkflowHistory(input);
                 }
             }
-            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-
-            AddWorkflowHistory(input);
+           
         }
 
         public void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input)
@@ -1984,11 +1986,13 @@ namespace Sampoerna.EMS.BLL
                     SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+                    input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+                    //AddWorkflowHistory(input);
                 }
             //}
-            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-
-            AddWorkflowHistory(input);
+          
         }
         #endregion
 
@@ -2747,7 +2751,11 @@ namespace Sampoerna.EMS.BLL
             foreach (var ck5MaterialDto in dataXmlDto.Ck5Material)
             {
                 var material = _materialBll.getByID(ck5MaterialDto.BRAND, dataXmlDto.SOURCE_PLANT_ID);
+                if (material == null)
+                {
 
+                    throw new Exception(String.Format("Material {0} in {1} is not found in material master", ck5MaterialDto.BRAND, dataXmlDto.SOURCE_PLANT_ID));
+                }
                 if (ck5MaterialDto.CONVERTED_UOM == material.BASE_UOM_ID)
                     continue;
 
@@ -2763,15 +2771,15 @@ namespace Sampoerna.EMS.BLL
                         ck5MaterialDto.CONVERTED_QTY = ck5MaterialDto.CONVERTED_QTY * umren.Value;
                     else
                     {
-                        Exception ex = new Exception("convertion value in material master is null");
-                        throw ex;
+                        
+                        throw new Exception(String.Format("Conversion value for {0} in {1} to {2} is not found in material master",ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID,ck5MaterialDto.CONVERTED_UOM_ID));
                     }
                     ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
                 }
                 else
                 {
-                    Exception ex = new Exception("convertion to " + material.BASE_UOM_ID + " not exist");
-                    throw ex;
+
+                    throw new Exception(String.Format("Material Conversion {0} in {1} is not found in material master", ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID));
                 }
                 // ck5MaterialDto.CONVERTED_UOM_ID
             }

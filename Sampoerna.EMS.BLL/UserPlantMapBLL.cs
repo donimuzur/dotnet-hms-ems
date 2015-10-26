@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
@@ -14,6 +16,7 @@ namespace Sampoerna.EMS.BLL
     {
         private ILogger _logger;
         private IUnitOfWork _uow;
+        private IGenericRepository<USER_PLANT_MAP> _repository;
 
         private IUserPlantMapService _userPlantService;
 
@@ -22,6 +25,7 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
             _userPlantService = new UserPlantMapService(_uow, _logger);
+            _repository = _uow.GetGenericRepository<USER_PLANT_MAP>();
         }
         
         public void Save(USER_PLANT_MAP userPlantMap)
@@ -35,8 +39,16 @@ namespace Sampoerna.EMS.BLL
             return _userPlantService.GetAll();
         }
 
+        public List<USER_PLANT_MAP> GetAllOrderByUserId()
+        {
+
+            var dbData = _userPlantService.GetAll().GroupBy(grp => grp.USER_ID).SelectMany(u => u.OrderBy(grp => grp.USER_ID)).ToList();
+            return dbData;
+        }
+
         public USER_PLANT_MAP GetById(int id)
         {
+           
             //return _repository.Get(p => p.USER_PLANT_MAP_ID == id, null, _includeTables).FirstOrDefault();
             return _userPlantService.GetById(id);
         }
@@ -78,6 +90,63 @@ namespace Sampoerna.EMS.BLL
             foreach (var item in data)
             {
                 list.Add(item.PLANT_ID);
+            }
+
+            return list;
+        }
+
+        public void Active(string isActive)
+        {
+            var activeUser = GetByUserId(isActive);
+            foreach (var userPlantMap in activeUser)
+            {
+                if (userPlantMap.IS_ACTIVE == true)
+                {
+                    userPlantMap.IS_ACTIVE = false;
+                }
+                else
+                {
+                    userPlantMap.IS_ACTIVE = true;
+                }
+                _repository.Update(userPlantMap);
+            }
+           
+         
+            _uow.SaveChanges();
+        }
+
+        public List<string> GetNppbkcByUserId(string id)
+        {
+            var list = new List<string>();
+
+            var data = _userPlantService.GetByUserId(id);
+
+            foreach (var item in data)
+            {
+                list.Add(item.T001W.NPPBKC_ID);
+            }
+
+            return list;
+        }
+
+        public List<string> GetCompanyByUserId(string id)
+        {
+            var list = new List<string>();
+
+            var data = _userPlantService.GetByUserId(id);
+
+            var company = string.Empty;
+
+            foreach (var item in data)
+            {
+                var comp = item.T001W.T001K.BUKRS;
+
+                if (company != comp)
+                {
+                    list.Add(comp);
+
+                    company = comp;
+                }
             }
 
             return list;

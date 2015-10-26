@@ -58,11 +58,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
-                ProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
-
-                Details = Mapper.Map<List<ProductionDetail>>(_productionBll.GetAllByParam(new ProductionGetByParamInput()))
+                ProductionDate = DateTime.Today.ToString("dd MMM yyyy")
             });
-
 
             return View("Index", data);
         }
@@ -71,6 +68,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantAll();
+
+            var input = Mapper.Map<ProductionGetByParamInput>(model);
+            input.ProoductionDate = null;
+            input.UserId = CurrentUser.USER_ID;
+
+            var dbData = _productionBll.GetAllByParam(input);
+
+            model.Details = Mapper.Map<List<ProductionDetail>>(dbData);
 
             return model;
         }
@@ -83,6 +88,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 input.ProoductionDate = Convert.ToDateTime(input.ProoductionDate).ToString();
             }
+            input.UserId = CurrentUser.USER_ID;
 
             var dbData = _productionBll.GetAllByParam(input);
             var result = Mapper.Map<List<ProductionDetail>>(dbData);

@@ -48,6 +48,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerksList = GlobalFunctions.GetPlantAll();
 
+            var input = Mapper.Map<WasteGetByParamInput>(model);
+            input.WasteProductionDate = null;
+            input.UserId = CurrentUser.USER_ID;
+
+            var dbData = _wasteBll.GetAllByParam(input);
+
+            model.Details = Mapper.Map<List<WasteDetail>>(dbData);
+
             return model;
         }
 
@@ -60,10 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
-                WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
-                Details = Mapper.Map<List<WasteDetail>>(_wasteBll.GetAllByParam(new WasteGetByParamInput()))
-
-
+                WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy")
             });
 
             return View("Index", data);
