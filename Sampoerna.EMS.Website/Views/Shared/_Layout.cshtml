@@ -327,7 +327,7 @@
                         case Enums.MenuList.PBCK7:
                         <div class="list-group">
 
-                            <div class="collapse-menu open">
+                            <div id="MenuPbck7OpenDocument" class="collapse-menu open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
                                     <span>Document List</span>
@@ -341,15 +341,15 @@
 
                                 </ul>
                             </div>
-                            <div class="collapse-menu">
+                            <div id="MenuPbck7Report" class="collapse-menu">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-signal"></i>
                                     <span>Report</span>
                                     <i class="down fa fa-caret-down"></i>
                                 </a>
                                 <ul class="child list">
-                                    <li><a href="@Url.Action("Pbck7SummaryReport", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>Pbck-7 Summary</a></li>
-                                    <li><a href="@Url.Action("Pbck3SummaryReport", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>Pbck-3 Summary</a></li>
+                                    <li><a id="MenuPbck7SummaryReport" href=" @Url.Action("Pbck7SummaryReport", "PBCK7AndPBCK3") "><i class=" fa fa-angle-right"></i>Pbck-7 Summary</a></li>
+                                    <li><a id="MenuPbck3SummaryReport" href="@Url.Action("Pbck3SummaryReport", "PBCK7AndPBCK3")"><i class="fa fa-angle-right"></i>Pbck-3 Summary</a></li>
 
                                 </ul>
                             </div>
