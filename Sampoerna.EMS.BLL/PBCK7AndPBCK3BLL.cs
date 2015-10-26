@@ -1017,6 +1017,9 @@ namespace Sampoerna.EMS.BLL
                 if (!ConvertHelper.IsNumeric(pbck7ItemInput.Pbck7Qty))
                     messageList.Add("PBCK-7 Qty not valid");
 
+                if (ConvertHelper.ConvertToDecimalOrZero(pbck7ItemInput.Pbck7Qty) <= 0)
+                    messageList.Add("PBCK-7 Qty Must > 0");
+
                 if (!ConvertHelper.IsNumeric(pbck7ItemInput.FiscalYear))
                     messageList.Add("Fiscal Year not valid");
 

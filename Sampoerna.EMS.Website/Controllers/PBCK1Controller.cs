@@ -1257,7 +1257,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 foreach(var item in oldDoc){
-                    if(!model.Pbck1OldDecreeFilesID.Contains(item)){
+                    if((model.Pbck1OldDecreeFilesID != null && !model.Pbck1OldDecreeFilesID.Contains(item)) || model.Pbck1OldDecreeFilesID == null){
                         _pbck1DecreeDocBll.RemoveDoc(item);
                     }
                 }

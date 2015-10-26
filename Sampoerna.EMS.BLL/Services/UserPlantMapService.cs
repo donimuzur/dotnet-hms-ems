@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.BLL.Services
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER_PLANT_MAP> _repository;
-        private string _includeTables = "USER, T001W";
+        private string _includeTables = "USER, T001W, T001W.T001K";
 
         public UserPlantMapService(IUnitOfWork uow, ILogger logger)
         {
