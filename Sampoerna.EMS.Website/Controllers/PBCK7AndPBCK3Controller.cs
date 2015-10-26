@@ -999,7 +999,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private void InitSummaryReportsPbck3(Pbck3SummaryReportModel model)
         {
-            model.MainMenu = Enums.MenuList.PBCK3;
+            model.MainMenu = Enums.MenuList.PBCK7;
             model.CurrentMenu = PageInfo;
 
             model.PlantList = GlobalFunctions.GetPlantAll();
@@ -1072,7 +1072,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public void ExportSummaryReportsToExcel(Pbck7SummaryReportModel model)
         {
 
-            var input = Mapper.Map<Pbck7SummaryInput>(model);
+            var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
             var src = (from b in result
                        select new Pbck7SummaryReportItem()
@@ -1198,7 +1198,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public void ExportSummaryReportsToExcelPbck3(Pbck3SummaryReportModel model)
         {
 
-            var input = Mapper.Map<Pbck3SummaryInput>(model);
+            var input = Mapper.Map<Pbck3SummaryInput>(model.ExportModel);
             var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             var src = (from b in result
                        select new Pbck3SummaryReportItem()

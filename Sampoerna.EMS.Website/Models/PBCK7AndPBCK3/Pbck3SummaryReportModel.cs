@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Pbck3SummaryReportModel()
         {
             ReportItems = new List<Pbck3Dto>();
-            ExportModel = new Pbck3ExportModel();
+            //ExportModel = new Pbck3ExportModel();
         }
         public string SelectedNumber { get; set; }
         public string SelectedNppbkc { get; set; }
