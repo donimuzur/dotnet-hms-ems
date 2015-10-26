@@ -245,7 +245,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.LatestSaldo, opt => opt.MapFrom(src => src.LATEST_SALDO))
                 .ForMember(dest => dest.LatestSaldoUomId, opt => opt.MapFrom(src => src.LATEST_SALDO_UOM))
                 .ForMember(dest => dest.LatestSaldoUomName,
-                    opt => opt.MapFrom(src => src.UOM1 != null ? src.UOM1.UOM_DESC : string.Empty));
+                    opt => opt.MapFrom(src => src.UOM1 != null ? src.UOM1.UOM_DESC : string.Empty))
+                    .ForMember(dest => dest.CK5List, opt => opt.MapFrom(src => src.CK5));
 
             #endregion
 

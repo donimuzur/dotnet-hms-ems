@@ -1352,6 +1352,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     item.PoaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(item.NppbkcId).Select(c => c.PRINTED_NAME).ToList();
                 }
+                model.SearchView.pbck1NumberList = new SelectList(model.DetailsList.Select(c => c.Pbck1Number).AsEnumerable());
             }
             catch (Exception ex)
             {
@@ -1448,7 +1449,60 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.YearFrom = model.ExportModel.YearFrom;
             model.SearchView.YearTo = model.ExportModel.YearTo;
             model.SearchView.NppbkcId = model.ExportModel.NppbkcId;
+            model.SearchView.pbck1Number = model.ExportModel.pbck1NumberCode;
             var dataSummaryReport = SearchSummaryReports(model.SearchView);
+
+            List<ExportSummaryDataModel> dataExport = new List<ExportSummaryDataModel>();
+
+            foreach (var d in dataSummaryReport)
+            {
+                var exportModel = new ExportSummaryDataModel();
+                exportModel.Company = d.NppbkcCompanyName;
+                exportModel.Nppbkc = "'" + d.NppbkcId;
+                exportModel.Kppbc = d.NppbkcKppbcName;
+                exportModel.Pbck1Number = "'" + d.Pbck1Number;
+                exportModel.Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray());
+                exportModel.OriginalNppbkc = "'" + d.SupplierNppbkcId;
+                exportModel.OriginalKppbc = "'" + d.SupplierKppbcName;
+                exportModel.OriginalAddress = d.SupplierAddress;
+                          // ReSharper disable once PossibleInvalidOperationException
+                exportModel.ExcGoodsAmount = d.QtyApproved == null
+                    ? "0.00"
+                    : String.Format("{0:n}", d.QtyApproved.Value);
+                exportModel.Status = d.StatusName;
+                exportModel.Pbck1Type = d.Pbck1Type.ToString();
+                exportModel.SupplierPortName = d.SupplierPortName;
+                exportModel.SupplierPlant = d.SupplierPlant;
+                exportModel.GoodTypeDesc = d.GoodTypeDesc;
+                exportModel.PlanProdFrom = d.PlanProdFrom == null ? "-" : d.PlanProdFrom.Value.ToString("dd MMMM yyyy");
+                exportModel.PlanProdTo = d.PlanProdTo == null ? "-" : d.PlanProdTo.Value.ToString("dd MMMM yyyy");
+                exportModel.SupplierPhone = d.SupplierPhone;
+                exportModel.PoaList = d.PoaList == null
+                    ? ""
+                    : d.PoaList.Count > 0 ? string.Join("<br />", d.PoaList.ToArray()) : "";
+                exportModel.Reference = d.Pbck1ReferenceNumber;
+                exportModel.LACKFrom = d.Lack1FromMonthName + d.Lack1FormYear;
+                exportModel.LACKTo = d.Lack1ToMonthName + d.Lack1ToYear;
+                exportModel.LatestSaldo = d.LatestSaldo == null ? "0.00" : String.Format("{0:n}", d.LatestSaldo.Value);
+                exportModel.PeriodFrom = d.PeriodFrom.ToString("dd MMMM yyyy");
+                exportModel.PeriodTo = d.PeriodTo == null ? "-" : d.PeriodTo.Value.ToString("dd MMMM yyyy");
+                exportModel.ReportedOn = d.ReportedOn == null ? "" : d.ReportedOn.Value.ToString("dd MMMM yyyy");
+                exportModel.RequestQty = d.RequestQty == null ? "" : d.RequestQty.Value.ToString("dd MMMM yyyy");
+                           exportModel.StatusGov = d.StatusGovName,
+                exportModel.QtyApproved = d.QtyApproved == null ? "" : String.Format("{0:n}", d.QtyApproved.Value);
+                exportModel.DecreeDate = d.DecreeDate == null ? "" : d.DecreeDate.Value.ToString("dd MMMM yyyy");
+                exportModel.SupplierCompany = d.SupplierCompany;
+                exportModel.IsNppbkcImport = d.IsNppbkcImport ? "Yes" : "No";
+                exportModel.ApprovedByPoaId = String.IsNullOrEmpty(d.ApprovedByPoaId) ? "-" : d.ApprovedByPoaId;
+                exportModel.ApprovedByManagerId = String.IsNullOrEmpty(d.ApprovedByManagerId)
+                    ? "-"
+                    : d.ApprovedByManagerId;
+                exportModel.LatestSaldoUomName = String.IsNullOrEmpty(d.LatestSaldoUomName) ? "-" : d.LatestSaldoUomName;
+                exportModel.RequestQtyUomName = String.IsNullOrEmpty(d.RequestQtyUomName) ? "-" : d.RequestQtyUomName;
+                exportModel.DocNumberCk5 = d.CK5List.Select(c => c.DocumentNumber).ToList();
+                exportModel.StatusDocCk5 = d.CK5List.Select(c => c.Status).ToList();
+                exportModel.GrandTotalExcisableCk5 = d.CK5List.Select(c => c.Qty).ToList();
+            }
 
             //todo: to automapper
             var src = (from d in dataSummaryReport
@@ -1489,7 +1543,10 @@ namespace Sampoerna.EMS.Website.Controllers
                            ApprovedByPoaId = String.IsNullOrEmpty(d.ApprovedByPoaId) ? "-" : d.ApprovedByPoaId,
                            ApprovedByManagerId = String.IsNullOrEmpty(d.ApprovedByManagerId) ? "-" : d.ApprovedByManagerId,
                            LatestSaldoUomName = String.IsNullOrEmpty(d.LatestSaldoUomName) ? "-" : d.LatestSaldoUomName,
-                           RequestQtyUomName = String.IsNullOrEmpty(d.RequestQtyUomName) ? "-" : d.RequestQtyUomName
+                           RequestQtyUomName = String.IsNullOrEmpty(d.RequestQtyUomName) ? "-" : d.RequestQtyUomName,
+                           DocNumberCk5 = d.CK5List.Select(c => c.DocumentNumber).ToList(),
+                           StatusDocCk5 = d.CK5List.Select(c => c.Status).ToList(),
+                           GrandTotalExcisableCk5 = d.CK5List.Select(c => c.Qty).ToList()
                        }).ToList();
 
             var grid = new System.Web.UI.WebControls.GridView
@@ -1786,6 +1843,30 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "RequestQtyUomName",
                     HeaderText = "RequestQtyUomName"
+                });
+            }
+            if (model.ExportModel.DocNumberCk5)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DocNumberCk5",
+                    HeaderText = "Doc Number CK-5"
+                });
+            }
+            if (model.ExportModel.StatusDoc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "StatusDocCk5",
+                    HeaderText = "Status Doc CK-5"
+                });
+            }
+            if (model.ExportModel.GrandTotalExciseable)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "GrandTotalExcisableCk5",
+                    HeaderText = "Grand Total Exciseable"
                 });
             }
 

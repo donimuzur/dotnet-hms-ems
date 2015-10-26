@@ -1520,6 +1520,8 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.NPPBKC_BUKRS == input.CompanyCode);
             if (!string.IsNullOrEmpty(input.NppbkcId))
                 queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+            if (!string.IsNullOrEmpty(input.pbck1Number))
+                queryFilter = queryFilter.And(c => c.NUMBER == input.pbck1Number);
 
             var pbck1Data = GetPbck1Data(queryFilter, input.SortOrderColumn);
 
