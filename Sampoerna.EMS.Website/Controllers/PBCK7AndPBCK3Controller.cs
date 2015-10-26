@@ -999,7 +999,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private void InitSummaryReportsPbck3(Pbck3SummaryReportModel model)
         {
-            model.MainMenu = Enums.MenuList.PBCK3;
+            model.MainMenu = Enums.MenuList.PBCK7;
             model.CurrentMenu = PageInfo;
 
             model.PlantList = GlobalFunctions.GetPlantAll();
@@ -1069,10 +1069,9 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Pbck3SummaryReport");
         }
 
-        public void ExportSummaryReportsToExcel(Pbck7SummaryReportModel model)
+        private string CreateXlsSummaryReportsPbck7(Pbck7SummaryReportModel model)
         {
-
-            var input = Mapper.Map<Pbck7SummaryInput>(model);
+            var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
             var src = (from b in result
                        select new Pbck7SummaryReportItem()
@@ -1081,6 +1080,7 @@ namespace Sampoerna.EMS.Website.Controllers
                            Pbck7Number = b.Pbck7Number,
                            Nppbkc = b.NppbkcId,
                            PlantName = b.PlantId + "-" + b.PlantName,
+                           DocumentType = EnumHelper.GetDescription(b.DocumentType),
                            Pbck7Date = b.Pbck7Date,
                            Pbck7Status = EnumHelper.GetDescription(b.Pbck7Status),
                            ExecFrom = b.ExecDateFrom,
@@ -1090,121 +1090,505 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                        }).ToList();
-            var grid = new GridView
+
+            var dataSummaryReport = src.OrderBy(a => a.Pbck7Number);
+
+            int iRow = 1;
+            var slDocument = new SLDocument();
+
+            //create header
+            slDocument = CreateHeaderExcelPbck7(slDocument, model.ExportModel);
+
+            iRow++;
+            int iColumn = 1;
+            foreach (var data in dataSummaryReport)
             {
-                DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
-                AutoGenerateColumns = false
-            };
-            if (model.ExportModel.IsSelectPbck7No)
-            {
-                grid.Columns.Add(new BoundField()
+
+                iColumn = 1;
+                if (model.ExportModel.IsSelectPbck7No)
                 {
-                    DataField = "Pbck7Number",
-                    HeaderText = "Number"
-                });
-            }
-            if (model.ExportModel.IsSelectNppbkc)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck7Number);
+                    iColumn = iColumn + 1;
+                }
+                if (model.ExportModel.IsSelectNppbkc)
                 {
-                    DataField = "Nppbkc",
-                    HeaderText = "Nppbkc"
-                });
-            }
-            if (model.ExportModel.IsSelectPlant)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn, data.Nppbkc);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectPlant)
                 {
-                    DataField = "PlantName",
-                    HeaderText = "Plant"
-                });
-            }
-            if (model.ExportModel.IsSelectDate)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantName);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectDate)
                 {
-                    DataField = "Pbck7Date",
-                    HeaderText = "Date"
-                });
-            }
-            if (model.ExportModel.IsSelectExecFrom)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn,
+                        data.Pbck7Date.HasValue ? data.Pbck7Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    
+                    iColumn = iColumn + 1;
+                }
+                if (model.ExportModel.IsSelectDocType)
                 {
-                    DataField = "ExecFrom",
-                    HeaderText = "Exec Date From"
-                });
-            }
-            if (model.ExportModel.IsSelectExecFrom)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn, data.DocumentType);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectStatus)
                 {
-                    DataField = "ExecTo",
-                    HeaderText = "Exec To From"
-                });
-            }
-            if (model.ExportModel.IsSelectBack1No)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck7Status);
+                    iColumn = iColumn + 1;
+                }
+
+
+                if (model.ExportModel.IsSelectExecFrom)
                 {
-                    DataField = "Back1No",
-                    HeaderText = "Back-1 No"
-                });
-            }
-            if (model.ExportModel.IsSelectBack1Date)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn,
+                        data.ExecFrom.HasValue ? data.ExecFrom.Value.ToString("dd MMM yyyy") : string.Empty);
+                    
+                    iColumn = iColumn + 1;
+                }
+                if (model.ExportModel.IsSelectExecTo)
                 {
-                    DataField = "Back1Date",
-                    HeaderText = "Back-1 Date"
-                });
-            }
-            if (model.ExportModel.IsSelectStatus)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn,
+                        data.ExecTo.HasValue ? data.ExecTo.Value.ToString("dd MMM yyyy") : string.Empty);
+
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectBack1No)
                 {
-                    DataField = "Pbck7Status",
-                    HeaderText = "Status"
-                });
-            }
-            if (src.Count == 0)
-            {
-                grid.ShowHeaderWhenEmpty = true;
+                    slDocument.SetCellValue(iRow, iColumn, data.Back1No);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectBack1Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn,
+                        data.Back1Date.HasValue ? data.Back1Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    iColumn = iColumn + 1;
+                }
+
+              
+                iRow++;
             }
 
-            grid.DataBind();
+            return CreateXlsFileSummaryReportsPbck7(slDocument, iColumn, iRow);
 
-            var fileName = "PBCK7" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
-            Response.ClearContent();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-            //'Excel 2003 : "application/vnd.ms-excel"
-            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-
-            var sw = new StringWriter();
-            var htw = new HtmlTextWriter(sw);
-
-            grid.RenderControl(htw);
-
-            Response.Output.Write(sw.ToString());
-
-            Response.Flush();
-
-            Response.End();
         }
+
+        private SLDocument CreateHeaderExcelPbck7(SLDocument slDocument, Pbck7ExportModel modelExport)
+        {
+            int iColumn = 1;
+            int iRow = 1;
+
+            if (modelExport.IsSelectPbck7No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectNppbkc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Nppbkc");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPlant)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectDocType)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Document Type");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectStatus)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectExecFrom)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Exec Date From");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectExecTo)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Exec Date To");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectBack1No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Back-1 No");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectBack1Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Back-1 Date");
+                iColumn = iColumn + 1;
+            }
+
+           
+            return slDocument;
+
+        }
+
+        private string CreateXlsFileSummaryReportsPbck7(SLDocument slDocument, int iColumn, int iRow)
+        {
+
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
+            slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
+
+            var fileName = "PBCK7" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath(Constans.CK5FolderPath), fileName);
+
+
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        public void ExportSummaryReportsToExcel(Pbck7SummaryReportModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsSummaryReportsPbck7(model);
+
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+
+
+            //var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
+            //var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
+            //var src = (from b in result
+            //           select new Pbck7SummaryReportItem()
+            //           {
+
+            //               Pbck7Number = b.Pbck7Number,
+            //               Nppbkc = b.NppbkcId,
+            //               PlantName = b.PlantId + "-" + b.PlantName,
+            //               Pbck7Date = b.Pbck7Date,
+            //               Pbck7Status = EnumHelper.GetDescription(b.Pbck7Status),
+            //               ExecFrom = b.ExecDateFrom,
+            //               ExecTo = b.ExecDateTo,
+            //               Back1No = b.Back1Dto != null ? b.Back1Dto.Back1Number : string.Empty,
+            //               Back1Date = b.Back1Dto != null ? b.Back1Dto.Back1Date : null
+
+
+            //           }).ToList();
+            //var grid = new GridView
+            //{
+            //    DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
+            //    AutoGenerateColumns = false
+            //};
+            //if (model.ExportModel.IsSelectPbck7No)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Pbck7Number",
+            //        HeaderText = "Number"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectNppbkc)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Nppbkc",
+            //        HeaderText = "Nppbkc"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectPlant)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "PlantName",
+            //        HeaderText = "Plant"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectDate)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Pbck7Date",
+            //        HeaderText = "Date"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectExecFrom)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "ExecFrom",
+            //        HeaderText = "Exec Date From"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectExecFrom)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "ExecTo",
+            //        HeaderText = "Exec To From"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectBack1No)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Back1No",
+            //        HeaderText = "Back-1 No"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectBack1Date)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Back1Date",
+            //        HeaderText = "Back-1 Date"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectStatus)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Pbck7Status",
+            //        HeaderText = "Status"
+            //    });
+            //}
+            //if (src.Count == 0)
+            //{
+            //    grid.ShowHeaderWhenEmpty = true;
+            //}
+
+            //grid.DataBind();
+
+            //var fileName = "PBCK7" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            //Response.ClearContent();
+            //Response.Buffer = true;
+            //Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            //Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            ////'Excel 2003 : "application/vnd.ms-excel"
+            ////'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            //var sw = new StringWriter();
+            //var htw = new HtmlTextWriter(sw);
+
+            //grid.RenderControl(htw);
+
+            //Response.Output.Write(sw.ToString());
+
+            //Response.Flush();
+
+            //Response.End();
+        }
+
+
 
         public void ExportSummaryReportsToExcelPbck3(Pbck3SummaryReportModel model)
         {
 
-            var input = Mapper.Map<Pbck3SummaryInput>(model);
+            string pathFile = "";
+
+            pathFile = CreateXlsSummaryReportsPbck3(model);
+
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+
+            //var input = Mapper.Map<Pbck3SummaryInput>(model.ExportModel);
+            //var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
+            //var src = (from b in result
+            //           select new Pbck3SummaryReportItem()
+            //           {
+            //               Pbck3Number = b.Pbck3Number,
+            //               Pbck7Number = b.Pbck7Number,
+            //               Ck5Number = b.Ck5Number,
+            //               Nppbkc = b.NppbckId,
+            //               PlantName = b.Plant,
+            //               Pbck3Date = b.Pbck3Date,
+            //               Pbck3Status = EnumHelper.GetDescription(b.Pbck3Status),
+            //               Back3No = b.Back3Dto != null ? b.Back3Dto.Back3Number : string.Empty,
+            //               Back3Date = b.Back3Dto != null ? b.Back3Dto.Back3Date : null,
+            //               Ck2No = b.Ck2Dto != null ? b.Ck2Dto.Ck2Number : string.Empty,
+            //               Ck2Date = b.Ck2Dto != null ? b.Ck2Dto.Ck2Date : null,
+            //               Ck2Value = b.Ck2Dto != null ? b.Ck2Dto.Ck2Value : 0
+
+
+            //           }).ToList();
+            //var grid = new GridView
+            //{
+            //    DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
+            //    AutoGenerateColumns = false
+            //};
+            //if (model.ExportModel.IsSelectPbck3No)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Pbck3Number",
+            //        HeaderText = "Number"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectPbck7)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Pbck7Number",
+            //        HeaderText = "PBCK-7"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectNppbkc)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Nppbkc",
+            //        HeaderText = "Nppbkc"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectPlant)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "PlantName",
+            //        HeaderText = "Plant"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectDate)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Pbck3Date",
+            //        HeaderText = "Date"
+            //    });
+            //}
+
+            //if (model.ExportModel.IsSelectStatus)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Pbck3Status",
+            //        HeaderText = "Status"
+            //    });
+            //}
+
+            //if (model.ExportModel.IsSelectBack3No)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Back3No",
+            //        HeaderText = "BACK-3 No"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectBack3Date)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Back3Date",
+            //        HeaderText = "BACK-3 Date"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectCk2No)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Ck2No",
+            //        HeaderText = "CK-2 No"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectCk2Date)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Ck2Date",
+            //        HeaderText = "CK-2 Date"
+            //    });
+            //}
+            //if (model.ExportModel.IsSelectCk2Value)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Ck2Value",
+            //        HeaderText = "CK-2 Value"
+            //    });
+            //}
+            //if (src.Count == 0)
+            //{
+            //    grid.ShowHeaderWhenEmpty = true;
+            //}
+
+            //grid.DataBind();
+
+            //var fileName = "PBCK3" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            //Response.ClearContent();
+            //Response.Buffer = true;
+            //Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            //Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            ////'Excel 2003 : "application/vnd.ms-excel"
+            ////'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            //var sw = new StringWriter();
+            //var htw = new HtmlTextWriter(sw);
+
+            //grid.RenderControl(htw);
+
+            //Response.Output.Write(sw.ToString());
+
+            //Response.Flush();
+
+            //Response.End();
+        }
+
+        private string CreateXlsSummaryReportsPbck3(Pbck3SummaryReportModel model)
+        {
+            var input = Mapper.Map<Pbck3SummaryInput>(model.ExportModel);
             var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             var src = (from b in result
                        select new Pbck3SummaryReportItem()
                        {
                            Pbck3Number = b.Pbck3Number,
                            Pbck7Number = b.Pbck7Number,
+                           Ck5Number = b.Ck5Number,
                            Nppbkc = b.NppbckId,
                            PlantName = b.Plant,
                            Pbck3Date = b.Pbck3Date,
@@ -1214,131 +1598,207 @@ namespace Sampoerna.EMS.Website.Controllers
                            Ck2No = b.Ck2Dto != null ? b.Ck2Dto.Ck2Number : string.Empty,
                            Ck2Date = b.Ck2Dto != null ? b.Ck2Dto.Ck2Date : null,
                            Ck2Value = b.Ck2Dto != null ? b.Ck2Dto.Ck2Value : 0
-
-
                        }).ToList();
-            var grid = new GridView
+            var dataSummaryReport = src.OrderBy(a => a.Pbck3Number);
+
+            int iRow = 1;
+            var slDocument = new SLDocument();
+
+            //create header
+            slDocument = CreateHeaderExcelPbck3(slDocument, model.ExportModel);
+
+            iRow++;
+            int iColumn = 1;
+            foreach (var data in dataSummaryReport)
             {
-                DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
-                AutoGenerateColumns = false
-            };
-            if (model.ExportModel.IsSelectPbck3No)
-            {
-                grid.Columns.Add(new BoundField()
+
+                iColumn = 1;
+                if (model.ExportModel.IsSelectPbck3No)
                 {
-                    DataField = "Pbck3Number",
-                    HeaderText = "Number"
-                });
-            }
-            if (model.ExportModel.IsSelectPbck7)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck3Number);
+                    iColumn = iColumn + 1;
+                }
+                if (model.ExportModel.IsSelectPbck7)
                 {
-                    DataField = "Pbck7Number",
-                    HeaderText = "PBCK-7"
-                });
-            }
-            if (model.ExportModel.IsSelectNppbkc)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck7Number);
+                    iColumn = iColumn + 1;
+                }
+                if (model.ExportModel.IsSelectCk5No)
                 {
-                    DataField = "Nppbkc",
-                    HeaderText = "Nppbkc"
-                });
-            }
-            if (model.ExportModel.IsSelectPlant)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5Number);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectNppbkc)
                 {
-                    DataField = "PlantName",
-                    HeaderText = "Plant"
-                });
-            }
-            if (model.ExportModel.IsSelectDate)
-            {
-                grid.Columns.Add(new BoundField()
+                    slDocument.SetCellValue(iRow, iColumn, data.Nppbkc);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectPlant)
                 {
-                    DataField = "Pbck3Date",
-                    HeaderText = "Date"
-                });
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantName);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn,
+                        data.Pbck3Date.HasValue ? data.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty);
+
+                    iColumn = iColumn + 1;
+                }
+               
+                if (model.ExportModel.IsSelectStatus)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck3Status);
+                    iColumn = iColumn + 1;
+                }
+
+
+
+                if (model.ExportModel.IsSelectBack3No)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Back3No);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectBack3Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn,
+                        data.Back3Date.HasValue ? data.Back3Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectCk2No)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck2No);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectCk2Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn,
+                        data.Ck2Date.HasValue ? data.Ck2Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    iColumn = iColumn + 1;
+                }
+                if (model.ExportModel.IsSelectCk2Value)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck2Value.HasValue ? data.Ck2Value.Value.ToString() : string.Empty);
+                    iColumn = iColumn + 1;
+                }
+
+                iRow++;
             }
 
-            if (model.ExportModel.IsSelectStatus)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Pbck3Status",
-                    HeaderText = "Status"
-                });
-            }
+            return CreateXlsFileSummaryReportsPbck3(slDocument, iColumn, iRow);
 
-            if (model.ExportModel.IsSelectBack3No)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Back3No",
-                    HeaderText = "BACK-3 No"
-                });
-            }
-            if (model.ExportModel.IsSelectBack3Date)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Back3Date",
-                    HeaderText = "BACK-3 Date"
-                });
-            }
-            if (model.ExportModel.IsSelectCk2No)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Ck2No",
-                    HeaderText = "CK-2 No"
-                });
-            }
-            if (model.ExportModel.IsSelectCk2Date)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Ck2Date",
-                    HeaderText = "CK-2 Date"
-                });
-            }
-            if (model.ExportModel.IsSelectCk2Value)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Ck2Value",
-                    HeaderText = "CK-2 Value"
-                });
-            }
-            if (src.Count == 0)
-            {
-                grid.ShowHeaderWhenEmpty = true;
-            }
-
-            grid.DataBind();
-
-            var fileName = "PBCK3" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
-            Response.ClearContent();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-            //'Excel 2003 : "application/vnd.ms-excel"
-            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-
-            var sw = new StringWriter();
-            var htw = new HtmlTextWriter(sw);
-
-            grid.RenderControl(htw);
-
-            Response.Output.Write(sw.ToString());
-
-            Response.Flush();
-
-            Response.End();
         }
+
+        private SLDocument CreateHeaderExcelPbck3(SLDocument slDocument, Pbck3ExportModel modelExport)
+        {
+            int iColumn = 1;
+            int iRow = 1;
+
+            if (modelExport.IsSelectPbck3No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-3 NO");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectPbck7)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-7 NO");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCk5No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 NO");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectNppbkc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "NPPBKC");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPlant)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectStatus)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
+                iColumn = iColumn + 1;
+            }
+
+
+            if (modelExport.IsSelectBack3No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "BACK-3 NO");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectBack3Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "BACK-3 Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCk2No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 NO");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCk2Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCk2Value)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 Value");
+                iColumn = iColumn + 1;
+            }
+
+
+            return slDocument;
+
+        }
+
+        private string CreateXlsFileSummaryReportsPbck3(SLDocument slDocument, int iColumn, int iRow)
+        {
+
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
+            slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
+
+            var fileName = "PBCK3" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath(Constans.CK5FolderPath), fileName);
+
+
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+
 
         [HttpPost]
         public ActionResult RejectDocumentPbck7(Pbck7Pbck3CreateViewModel model)

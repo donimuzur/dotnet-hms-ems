@@ -189,7 +189,7 @@ namespace Sampoerna.EMS.BLL
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK3>(input.ShortOrderColum));
             }
 
-            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7");
+            var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7, CK5");
             if (dbData == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -1016,6 +1016,9 @@ namespace Sampoerna.EMS.BLL
 
                 if (!ConvertHelper.IsNumeric(pbck7ItemInput.Pbck7Qty))
                     messageList.Add("PBCK-7 Qty not valid");
+
+                if (ConvertHelper.ConvertToDecimalOrZero(pbck7ItemInput.Pbck7Qty) <= 0)
+                    messageList.Add("PBCK-7 Qty Must > 0");
 
                 if (!ConvertHelper.IsNumeric(pbck7ItemInput.FiscalYear))
                     messageList.Add("Fiscal Year not valid");

@@ -70,7 +70,14 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.SelectedPlant))
                 .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.SelectedNumber))
                 .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.From))
-                .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.To))
+                .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.To));
+
+            Mapper.CreateMap<Pbck7ExportModel, Pbck7SummaryInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.Plant))
+                .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.Pbck7No))
+                .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.FromYear))
+                .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.ToYear))
                 ;
             Mapper.CreateMap<Pbck3SummaryReportModel, Pbck3SummaryInput>().IgnoreAllNonExisting()
             .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.SelectedNppbkc))
@@ -79,6 +86,14 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.From))
             .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.To))
             ;
+
+            Mapper.CreateMap<Pbck3ExportModel, Pbck3SummaryInput>().IgnoreAllNonExisting()
+          .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
+          .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.Plant))
+          .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.Pbck7No))
+          .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.FromYear))
+          .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.ToYear))
+          ;
 
             #endregion
 
