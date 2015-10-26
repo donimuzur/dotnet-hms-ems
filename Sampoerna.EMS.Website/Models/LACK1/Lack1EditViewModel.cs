@@ -40,7 +40,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal? WasteQty { get; set; }
         public string WasteUom { get; set; }
         public string WasteUomDesc { get; set; }
-        public decimal ReturnQty { get; set; }
+        public decimal? ReturnQty { get; set; }
         public string ReturnUom { get; set; }
         public string ReturnUomDesc { get; set; }
         public Enums.DocumentStatus Status { get; set; }

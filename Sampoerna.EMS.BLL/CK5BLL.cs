@@ -318,7 +318,7 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                //input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
                 return;
             //if domestic not check quota
@@ -1356,22 +1356,25 @@ namespace Sampoerna.EMS.BLL
             //    dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager)
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+            string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
+            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
             //string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
             //if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
             //    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
 
-            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-            //{
-            //    CreatedUser = dbData.CREATED_BY,
-            //    CurrentUser = input.UserId,
-            //    DocumentStatus = dbData.STATUS_ID,
-            //    UserRole = input.UserRole,
-            //    NppbkcId = nppbkcId,
-            //    DocumentNumber = dbData.SUBMISSION_NUMBER
-            //});
+            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            {
+                CreatedUser = dbData.CREATED_BY,
+                CurrentUser = input.UserId,
+                DocumentStatus = dbData.STATUS_ID,
+                UserRole = input.UserRole,
+                NppbkcId = nppbkcId,
+                DocumentNumber = dbData.SUBMISSION_NUMBER
+            });
 
-            //if (!isOperationAllow)
-            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            if (!isOperationAllow)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
@@ -1691,12 +1694,12 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed); ;
+            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Rejected); ;
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
-            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+            dbData.STATUS_ID = Enums.DocumentStatus.Rejected;
          
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
@@ -1780,7 +1783,7 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
-            AddWorkflowHistory(input);
+            //AddWorkflowHistory(input);
         }
 
         private void GrCreatedDocument(CK5WorkflowDocumentInput input)
@@ -1840,11 +1843,13 @@ namespace Sampoerna.EMS.BLL
                     SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+                    input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+                    AddWorkflowHistory(input);
                 }
             }
-            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-
-            AddWorkflowHistory(input);
+           
         }
 
         public void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input)
@@ -1981,11 +1986,13 @@ namespace Sampoerna.EMS.BLL
                     SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+                    input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+                    AddWorkflowHistory(input);
                 }
             //}
-            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-
-            AddWorkflowHistory(input);
+          
         }
         #endregion
 
@@ -3090,7 +3097,7 @@ namespace Sampoerna.EMS.BLL
             var ck5Ref = _repository.Get(
                     x => x.STATUS_ID != Enums.DocumentStatus.Cancelled, null, "").Select(x=> x.CK5_REF_ID).ToList();
 
-            queryFilter = queryFilter.And(x => ck5Ref.Contains(x.CK5_ID));
+            queryFilter = queryFilter.And(x => !ck5Ref.Contains(x.CK5_ID));
             queryFilter = queryFilter.And(x => x.CK5_TYPE == Enums.CK5Type.PortToImporter);
             queryFilter = queryFilter.And(x => x.STATUS_ID == Enums.DocumentStatus.Completed);
             var data =

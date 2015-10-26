@@ -42,6 +42,12 @@ function OnReadyFunction(ck5Type) {
         for (var i = 0; i < datarows.length; i++) {
             data += '<tr>';
             if (columnLength > 0) {
+                
+                if (datarows[i][13].length > 0) {
+                    $('#modalBodyMessage').text('Item Material Not Valid');
+                    $('#ModalCk5Material').modal('show');
+                    return;
+                }
                 data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
@@ -824,13 +830,14 @@ function ValidateGRCreated() {
 
 
 
-function ajaxGetListMaterial(url, formData) {
+function ajaxGetListMaterial(url, formData,materialid) {
     if (formData.plantId) {
         $.ajax({
             type: 'POST',
             url: url,
             data: formData,
             success: function (data) {
+                //debugger;
                 var listMaterial = $('#uploadMaterialNumber');
                 listMaterial.empty();
                 
@@ -838,7 +845,12 @@ function ajaxGetListMaterial(url, formData) {
 
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
-                        list += "<option value='" + data[i].MaterialNumber + "'>" + data[i].MaterialNumber  + "</option>";
+                        if (materialid == data[i].MaterialNumber) {
+                            list += "<option value='" + data[i].MaterialNumber + "' selected='true'>" + data[i].MaterialNumber + "</option>";
+                        } else {
+                            list += "<option value='" + data[i].MaterialNumber + "'>" + data[i].MaterialNumber + "</option>";
+                        }
+                        
                     }
                   
                 }

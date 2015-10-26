@@ -42,6 +42,8 @@ namespace Sampoerna.EMS.BLL
         private ICK4CDecreeDocBLL _ck4cDecreeDocBll;
         private IWasteBLL _wasteBll;
         private IProductionBLL _productionBll;
+        private IPOAMapBLL _poaMapBll;
+        private IUserPlantMapBLL _userPlantBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -67,6 +69,8 @@ namespace Sampoerna.EMS.BLL
             _ck4cDecreeDocBll = new CK4CDecreeDocBLL(_uow, _logger);
             _wasteBll = new WasteBLL(_logger, _uow);
             _productionBll = new ProductionBLL(_logger, _uow);
+            _poaMapBll = new POAMapBLL(_uow, _logger);
+            _userPlantBll = new UserPlantMapBLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
@@ -194,7 +198,7 @@ namespace Sampoerna.EMS.BLL
         {
             var ck4cData = Mapper.Map<Ck4CDto>(_repository.Get(c => c.CK4C_ID == input.DocumentId, null, includeTables).FirstOrDefault());
 
-            var mailProcess = ProsesMailNotificationBody(ck4cData, input.ActionType, input.Comment);
+            var mailProcess = ProsesMailNotificationBody(ck4cData, input);
 
             //distinct double To email
             List<string> ListTo = mailProcess.To.Distinct().ToList();
@@ -207,13 +211,14 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private Ck4cMailNotification ProsesMailNotificationBody(Ck4CDto ck4cData, Enums.ActionType actionType, string comment)
+        private Ck4cMailNotification ProsesMailNotificationBody(Ck4CDto ck4cData, Ck4cWorkflowDocumentInput input)
         {
             var bodyMail = new StringBuilder();
             var rc = new Ck4cMailNotification();
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
             var nppbkc = ck4cData.NppbkcId;
-            var firstText = actionType == Enums.ActionType.Reject ? " Document" : string.Empty;
+            var firstText = input.ActionType == Enums.ActionType.Reject ? " Document" : string.Empty;
+            var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -230,9 +235,9 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : CK-4C</td></tr>");
             bodyMail.AppendLine();
-            if (actionType == Enums.ActionType.Reject || actionType == Enums.ActionType.GovReject)
+            if (input.ActionType == Enums.ActionType.Reject || input.ActionType == Enums.ActionType.GovReject)
             {
-                bodyMail.Append("<tr><td>Comment</td><td> : " + comment + "</td></tr>");
+                bodyMail.Append("<tr><td>Comment</td><td> : " + input.Comment + "</td></tr>");
                 bodyMail.AppendLine();
             }
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK4C/Details/" + ck4cData.Ck4CId + "'>link</a> to show detailed information</i></td></tr>");
@@ -240,16 +245,26 @@ namespace Sampoerna.EMS.BLL
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
-            switch (actionType)
+            switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        var poaList = _poabll.GetPoaByNppbkcId(nppbkc);
-                        foreach (var poaDto in poaList)
+                        if (approveRejectedPoa != "")
                         {
-                            rc.To.Add(poaDto.POA_EMAIL);
+                            var poaApproveId = _userBll.GetUserById(approveRejectedPoa);
+
+                            rc.To.Add(poaApproveId.EMAIL);
                         }
+                        else
+                        {
+                            var poaList = _poabll.GetPoaByNppbkcId(nppbkc);
+                            foreach (var poaDto in poaList)
+                            {
+                                rc.To.Add(poaDto.POA_EMAIL);
+                            }
+                        }
+                        
                         rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
@@ -305,13 +320,14 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
-                    var poaApprove = _userBll.GetUserById(ck4cData.ApprovedByPoa);
-                    var poaId = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
+                    var poaApprove = _userBll.GetUserById(approveRejectedPoa);
+                    var poaId = approveRejectedPoa == "" ? ck4cData.CreatedBy : approveRejectedPoa;
+                    var managerMail = GetManagerEmail(poaId) == "" ? GetManagerEmail(input.UserId) : GetManagerEmail(poaId);
 
                     rc.To.Add(userDetail.EMAIL);
                     if (poaApprove != null)
                         rc.CC.Add(poaApprove.EMAIL);
-                    rc.CC.Add(GetManagerEmail(poaId));
+                    rc.CC.Add(managerMail);
 
                     rc.IsCCExist = true;
                     break;
@@ -358,9 +374,14 @@ namespace Sampoerna.EMS.BLL
 
         private string GetManagerEmail(string poaId)
         {
+            var managerMail = string.Empty;
+
             var managerId = _poabll.GetManagerIdByPoaId(poaId);
             var managerDetail = _userBll.GetUserById(managerId);
-            return managerDetail.EMAIL;
+
+            managerMail = managerDetail == null ? string.Empty : managerDetail.EMAIL;
+
+            return managerMail;
         }
 
         private class Ck4cMailNotification
@@ -682,9 +703,11 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+                var listNppbkc = _userPlantBll.GetNppbkcByUserId(input.UserId);
 
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+                var nppbkc = _poaMapBll.GetNppbkcByPoaId(input.UserId);
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
             }
             else if (input.UserRole == Enums.UserRole.Manager)
             {
@@ -695,7 +718,9 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+                var listNppbkc = _userPlantBll.GetNppbkcByUserId(input.UserId);
+
+                queryFilter = queryFilter.And(c => listNppbkc.Contains(c.NPPBKC_ID));
             }
 
             queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);

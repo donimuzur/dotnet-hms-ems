@@ -31,6 +31,8 @@ namespace Sampoerna.EMS.BLL
         private IPlantBLL _plantBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
         private ChangesHistoryBLL _changesHistoryBll;
+        private IUserPlantMapBLL _userPlantBll;
+        private IPOAMapBLL _poaMapBll;
 
         public WasteBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -46,6 +48,8 @@ namespace Sampoerna.EMS.BLL
             _companyBll = new CompanyBLL(_uow, _logger);
             _plantBll = new PlantBLL(_uow, _logger);
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
+            _userPlantBll = new UserPlantMapBLL(_uow, _logger);
+            _poaMapBll = new POAMapBLL(_uow, _logger);
         }
         public List<WasteDto> GetAllByParam(WasteGetByParamInput input)
         {
@@ -62,6 +66,14 @@ namespace Sampoerna.EMS.BLL
             {
                 var dt = Convert.ToDateTime(input.WasteProductionDate);
                 queryFilter = queryFilter.And(c => c.WASTE_PROD_DATE == dt);
+            }
+            if (!string.IsNullOrEmpty(input.UserId))
+            {
+                var listUserPlant = _userPlantBll.GetPlantByUserId(input.UserId);
+
+                var listPoaPlant = _poaMapBll.GetPlantByPoaId(input.UserId);
+
+                queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS) || listPoaPlant.Contains(c.WERKS));
             }
 
             Func<IQueryable<WASTE>, IOrderedQueryable<WASTE>> orderBy = null;
@@ -106,19 +118,22 @@ namespace Sampoerna.EMS.BLL
 
             var dbWaste = Mapper.Map<WASTE>(wasteDto);
 
-            var origin = _repository.GetByID(dbWaste.COMPANY_CODE, dbWaste.WERKS, dbWaste.FA_CODE,
-                dbWaste.WASTE_PROD_DATE);
+            var origin = _repository.GetByID(wasteDto.CompanyCodeX, wasteDto.PlantWerksX, wasteDto.FaCodeX,
+                wasteDto.WasteProductionDateX);
 
             var originDto = Mapper.Map<WasteDto>(origin);
 
+            dbWaste.CREATED_BY = userId;
+            dbWaste.CREATED_DATE = DateTime.Now;
+
             if (originDto != null)
             {
+                dbWaste.CREATED_BY = origin.CREATED_BY;
+                dbWaste.CREATED_DATE = origin.CREATED_DATE;
+
                 SetChange(originDto, wasteDto, userId);
                 isNewData = false;
             }
-
-            dbWaste.CREATED_BY = userId;
-            dbWaste.CREATED_DATE = DateTime.Now;
 
             _repository.InsertOrUpdate(dbWaste);
             _uow.SaveChanges();

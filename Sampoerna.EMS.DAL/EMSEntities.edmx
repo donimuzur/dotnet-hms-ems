@@ -274,6 +274,7 @@
           <Property Name="DEST_COUNTRY_NAME" Type="nvarchar" MaxLength="30" />
           <Property Name="CK5_MANUAL_TYPE" Type="int" />
           <Property Name="CK5_REF_ID" Type="bigint" />
+          <Property Name="REDUCE_TRIAL" Type="bit" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -1106,6 +1107,7 @@
           <Property Name="USER_PLANT_MAP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="IS_ACTIVE" Type="bit" />
         </EntityType>
         <EntityType Name="VIRTUAL_PLANT_MAP">
           <Key>
@@ -1157,7 +1159,7 @@
           <Property Name="ACTION" Type="int" Nullable="false" />
           <Property Name="ACTION_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ACTION_DATE" Type="datetime" />
-          <Property Name="COMMENT" Type="nvarchar" MaxLength="50" />
+          <Property Name="COMMENT" Type="nvarchar(max)" />
           <Property Name="ROLE" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="WORKFLOW_STATE">
@@ -1176,6 +1178,31 @@
           <Property Name="WF_STATE_USER_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="WORKFLOW_STATE_ID" Type="bigint" Nullable="false" />
           <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ZAAP_SHIFT_RPT">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="PRODUCTION_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
+          <Property Name="UOM" Type="nvarchar" MaxLength="5" />
+          <Property Name="PRODUCTION_DATE" Type="datetime" Nullable="false" />
+          <Property Name="BATCH" Type="nvarchar" MaxLength="35" />
+          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="BUNDLE" Type="int" />
+          <Property Name="MARKET" Type="nvarchar" MaxLength="2" />
+          <Property Name="DOCGMVTER" Type="nvarchar" MaxLength="35" />
+          <Property Name="MATDOC" Type="nvarchar" MaxLength="10" />
+          <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="SHIFT" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -3126,6 +3153,7 @@
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="Self.WORKFLOW_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_STATE" EntityType="Self.WORKFLOW_STATE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="Self.WORKFLOW_STATE_USERS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZAAP_SHIFT_RPT" EntityType="Self.ZAAP_SHIFT_RPT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_BRAND" EntityType="Self.ZAIDM_EX_BRAND" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_GOODTYP" EntityType="Self.ZAIDM_EX_GOODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="Self.ZAIDM_EX_KPPBC" Schema="dbo" store:Type="Tables" />
@@ -4051,15 +4079,6 @@
             <End Role="T001W" EntitySet="T001W" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
-          <EntitySet Name="USER_PLANT_MAP" EntityType="EMSModel.USER_PLANT_MAP" />
-          <AssociationSet Name="FK_USER_PLANT_MAP_T001W" Association="EMSModel.FK_USER_PLANT_MAP_T001W">
-            <End Role="T001W" EntitySet="T001W" />
-            <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_USER_PLANT_MAP_USER" Association="EMSModel.FK_USER_PLANT_MAP_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
-          </AssociationSet>
           <EntitySet Name="PBCK3_PBCK7" EntityType="EMSModel.PBCK3_PBCK7" />
           <AssociationSet Name="FK_PBCK3_PBCK7_APPROVED_USER" Association="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER">
             <End Role="USER" EntitySet="USER" />
@@ -4387,6 +4406,16 @@
             <End Role="PBCK1_PROD_CONVERTER" EntitySet="PBCK1_PROD_CONVERTER" />
           </AssociationSet>
           <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
+          <EntitySet Name="ZAAP_SHIFT_RPT" EntityType="EMSModel.ZAAP_SHIFT_RPT" />
+          <EntitySet Name="USER_PLANT_MAP" EntityType="EMSModel.USER_PLANT_MAP" />
+          <AssociationSet Name="FK_USER_PLANT_MAP_T001W" Association="EMSModel.FK_USER_PLANT_MAP_T001W">
+            <End Role="T001W" EntitySet="T001W" />
+            <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_PLANT_MAP_USER" Association="EMSModel.FK_USER_PLANT_MAP_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -4722,7 +4751,7 @@
           <Property Name="ACTION" Type="EMSModel.ActionType" Nullable="false" />
           <Property Name="ACTION_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ACTION_DATE" Type="DateTime" Precision="3" />
-          <Property Name="COMMENT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMMENT" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ROLE" Type="EMSModel.UserRole" Nullable="false" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_WORKFLOW_HISTORY_USER" FromRole="WORKFLOW_HISTORY" ToRole="USER" />
         </EntityType>
@@ -4894,6 +4923,7 @@
           <Property Name="CK5_REF_ID" Type="Int64" />
           <NavigationProperty Name="BACK1" Relationship="EMSModel.FK_BACK1_CK5" FromRole="CK5" ToRole="BACK1" />
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_CK5" FromRole="CK5" ToRole="PBCK3" />
+          <Property Name="REDUCE_TRIAL" Type="Boolean" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -5220,7 +5250,6 @@
           <NavigationProperty Name="POA3" Relationship="EMSModel.FK_POA_USER" FromRole="USER" ToRole="POA" />
           <NavigationProperty Name="POA_MAP" Relationship="EMSModel.FK_POA_MAP_CREATED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
           <NavigationProperty Name="POA_MAP1" Relationship="EMSModel.FK_POA_MAP_MODIFIED_BY_USER" FromRole="USER" ToRole="POA_MAP" />
-          <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER" ToRole="USER_PLANT_MAP" />
           <NavigationProperty Name="PBCK3_PBCK7" Relationship="EMSModel.FK_PBCK3_PBCK7_APPROVED_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
           <NavigationProperty Name="PBCK3_PBCK71" Relationship="EMSModel.FK_PBCK3_PBCK7_CREATED_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
           <NavigationProperty Name="PBCK3_PBCK72" Relationship="EMSModel.FK_PBCK3_PBCK7_MODIFIED_USER" FromRole="USER" ToRole="PBCK3_PBCK7" />
@@ -5246,6 +5275,7 @@
           <NavigationProperty Name="PBCK31" Relationship="EMSModel.FK_PBCK3_MODIFIED_USER" FromRole="USER" ToRole="PBCK3" />
           <NavigationProperty Name="PBCK32" Relationship="EMSModel.FK_PBCK3_REJECT" FromRole="USER" ToRole="PBCK3" />
           <NavigationProperty Name="PBCK33" Relationship="EMSModel.FK_PBCK3_USER" FromRole="USER" ToRole="PBCK3" />
+          <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER" ToRole="USER_PLANT_MAP" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -5874,8 +5904,8 @@
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="T001W" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="T001W" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="T001K" Relationship="EMSModel.FK_T001K_T001W" FromRole="T001W" ToRole="T001K" />
-          <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="T001W" ToRole="USER_PLANT_MAP" />
           <Property Name="NPPBKC_IMPORT_ID" Type="String" Unicode="true" FixedLength="false" MaxLength="15" />
+          <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="T001W" ToRole="USER_PLANT_MAP" />
         </EntityType>
         <Association Name="FK_HEADER_FOOTER_HEADER_FOOTER">
           <End Type="EMSModel.T001" Role="T001" Multiplicity="1" />
@@ -6193,40 +6223,6 @@
             </Principal>
             <Dependent Role="T001K">
               <PropertyRef Name="BWKEY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="USER_PLANT_MAP">
-          <Key>
-            <PropertyRef Name="USER_PLANT_MAP_ID" />
-          </Key>
-          <Property Name="USER_PLANT_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="USER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="USER_PLANT_MAP" ToRole="T001W" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER_PLANT_MAP" ToRole="USER" />
-        </EntityType>
-        <Association Name="FK_USER_PLANT_MAP_T001W">
-          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
-          <End Type="EMSModel.USER_PLANT_MAP" Role="USER_PLANT_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="T001W">
-              <PropertyRef Name="WERKS" />
-            </Principal>
-            <Dependent Role="USER_PLANT_MAP">
-              <PropertyRef Name="PLANT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_USER_PLANT_MAP_USER">
-          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
-          <End Type="EMSModel.USER_PLANT_MAP" Role="USER_PLANT_MAP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="USER_PLANT_MAP">
-              <PropertyRef Name="USER_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7818,6 +7814,66 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LAST_SHIFT" Type="Int32" />
         </EntityType>
+        <EntityType Name="ZAAP_SHIFT_RPT">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="PRODUCTION_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BUNDLE" Type="Int32" />
+          <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="MATDOC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="USER_PLANT_MAP">
+          <Key>
+            <PropertyRef Name="USER_PLANT_MAP_ID" />
+          </Key>
+          <Property Name="USER_PLANT_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="IS_ACTIVE" Type="Boolean" />
+          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="USER_PLANT_MAP" ToRole="T001W" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER_PLANT_MAP" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_USER_PLANT_MAP_T001W">
+          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
+          <End Type="EMSModel.USER_PLANT_MAP" Role="USER_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="USER_PLANT_MAP">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_PLANT_MAP_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.USER_PLANT_MAP" Role="USER_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="USER_PLANT_MAP">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8140,7 +8196,8 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="CK5_REF_ID" ColumnName="CK5_REF_ID" />
+          <ScalarProperty Name="REDUCE_TRIAL" ColumnName="REDUCE_TRIAL" />
+                <ScalarProperty Name="CK5_REF_ID" ColumnName="CK5_REF_ID" />
                 <ScalarProperty Name="CK5_MANUAL_TYPE" ColumnName="CK5_MANUAL_TYPE" />
                 <ScalarProperty Name="DEST_COUNTRY_NAME" ColumnName="DEST_COUNTRY_NAME" />
                 <ScalarProperty Name="DEST_COUNTRY_CODE" ColumnName="DEST_COUNTRY_CODE" />
@@ -8593,15 +8650,6 @@
                 <ScalarProperty Name="MENGETAHUI" ColumnName="MENGETAHUI" />
                 <ScalarProperty Name="KPPBC_TYPE" ColumnName="KPPBC_TYPE" />
                 <ScalarProperty Name="KPPBC_ID" ColumnName="KPPBC_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="USER_PLANT_MAP">
-            <EntityTypeMapping TypeName="EMSModel.USER_PLANT_MAP">
-              <MappingFragment StoreEntitySet="USER_PLANT_MAP">
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
-                <ScalarProperty Name="USER_PLANT_MAP_ID" ColumnName="USER_PLANT_MAP_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -9233,6 +9281,39 @@
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
                 <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAAP_SHIFT_RPT">
+            <EntityTypeMapping TypeName="EMSModel.ZAAP_SHIFT_RPT">
+              <MappingFragment StoreEntitySet="ZAAP_SHIFT_RPT">
+                <ScalarProperty Name="SHIFT" ColumnName="SHIFT" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
+                <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
+                <ScalarProperty Name="DOCGMVTER" ColumnName="DOCGMVTER" />
+                <ScalarProperty Name="MARKET" ColumnName="MARKET" />
+                <ScalarProperty Name="BUNDLE" ColumnName="BUNDLE" />
+                <ScalarProperty Name="QTY" ColumnName="QTY" />
+                <ScalarProperty Name="BATCH" ColumnName="BATCH" />
+                <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_PLANT_MAP">
+            <EntityTypeMapping TypeName="EMSModel.USER_PLANT_MAP">
+              <MappingFragment StoreEntitySet="USER_PLANT_MAP">
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="USER_PLANT_MAP_ID" ColumnName="USER_PLANT_MAP_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

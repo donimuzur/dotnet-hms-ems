@@ -12,6 +12,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -34,6 +35,8 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IWasteBLL _wasteBll;
         private IUnitOfMeasurementBLL _uomBll;
+        private IUserPlantMapBLL _userPlantBll;
+        private IPOAMapBLL _poaMapBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -50,6 +53,8 @@ namespace Sampoerna.EMS.BLL
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _wasteBll = new WasteBLL(_logger, _uow);
             _uomBll = new UnitOfMeasurementBLL(uow, _logger);
+            _userPlantBll = new UserPlantMapBLL(_uow, _logger);
+            _poaMapBll = new POAMapBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -67,6 +72,14 @@ namespace Sampoerna.EMS.BLL
             {
                 var dt = Convert.ToDateTime(input.ProoductionDate);
                 queryFilter = queryFilter.And(c => c.PRODUCTION_DATE == dt);
+            }
+            if (!string.IsNullOrEmpty(input.UserId))
+            {
+                var listUserPlant = _userPlantBll.GetPlantByUserId(input.UserId);
+
+                var listPoaPlant = _poaMapBll.GetPlantByPoaId(input.UserId);
+
+                queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS) || listPoaPlant.Contains(c.WERKS));
             }
 
             Func<IQueryable<PRODUCTION>, IOrderedQueryable<PRODUCTION>> orderBy = null;
@@ -141,6 +154,8 @@ namespace Sampoerna.EMS.BLL
 
             if (origin != null)
             {
+                dbProduction.CREATED_DATE = origin.CREATED_DATE;
+                dbProduction.CREATED_BY = origin.CREATED_BY;
 
                 if (dbProduction.COMPANY_CODE != origin.COMPANY_CODE || dbProduction.WERKS != origin.WERKS ||
                   dbProduction.FA_CODE != origin.FA_CODE
@@ -329,22 +344,15 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.QtyPacked.ToString();
                             changes.FIELD_NAME = "Qty Packed" + isFromSapString;
                             break;
-                            break;
                         case "QTY":
                             changes.OLD_VALUE = origin.Qty.ToString();
                             changes.NEW_VALUE = data.Qty.ToString();
                             changes.FIELD_NAME = "Produced Qty" + isFromSapString;
                             break;
-                            break;
                         case "UOM":
                             changes.OLD_VALUE = origin.Uom;
                             changes.NEW_VALUE = data.Uom;
                             changes.FIELD_NAME = "Uom";
-                            break;
-                        case "PROD_QTY_STICK":
-                            changes.OLD_VALUE = origin.ProdQtyStick.ToString();
-                            changes.NEW_VALUE = data.ProdQtyStick.ToString();
-                            changes.FIELD_NAME = "Product Qty Stick";
                             break;
                         default: break;
                     }
@@ -793,6 +801,5 @@ namespace Sampoerna.EMS.BLL
 
             return data;
         }
-
     }
 }

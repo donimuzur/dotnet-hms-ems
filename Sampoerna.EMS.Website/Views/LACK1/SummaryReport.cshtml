@@ -172,7 +172,7 @@
                     </div>
                 </div>
             </div>
-            @using (Html.BeginForm("ExportSummaryReportsToExcel", "Lack1", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+            @using (Html.BeginForm("ExportSummaryReports", "Lack1", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
             {
                 <div class="white-wrapper toggle-wrapper">
                     <div class="form-excise" role="form">
@@ -546,11 +546,6 @@
             $('#ExportModel_CreatedDate').val($('#SearchView_CreatedDate').val());
             $('#ExportModel_ApprovedDate').val($('#SearchView_ApprovedDate').val());
         }
-
-        $("#btnConfirm").click(function () {
-            GetSearchSummaryReports();
-            $('#ExportSummaryReportsForms').submit();
-        });
 
     </script>
 }
