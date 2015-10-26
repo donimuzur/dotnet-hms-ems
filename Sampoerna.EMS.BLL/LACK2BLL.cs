@@ -133,6 +133,17 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
+            //check if exists
+            var isExists = IsExistLack2Data(input);
+            if (!isExists.Success) return new Lack2CreateOutput()
+            {
+                Success = isExists.Success,
+                ErrorCode = isExists.ErrorCode,
+                ErrorMessage = isExists.ErrorMessage,
+                Id = null,
+                Lack2Number = string.Empty
+            };
+
             var rc = new Lack2CreateOutput()
             {
                 Success = false,
@@ -944,6 +955,46 @@ namespace Sampoerna.EMS.BLL
 
         private Lack2GeneratedOutput GenerateLack2Data(Lack2GenerateDataParamInput input)
         {
+            var validationResult = ValidateOnGenerateLack2Data(ref input);
+            if (!validationResult.Success) return validationResult;
+
+            var rc = new Lack2GeneratedOutput
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty,
+                Data = new Lack2GeneratedDto()
+            };
+            
+            //get ck5 data
+            var ck5Selected = _ck5Service.GetForLack2ByParam(new Ck5GetForLack2ByParamInput()
+            {
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                SourcePlantId = input.SourcePlantId,
+                ExGroupTypeId = input.ExGroupTypeId,
+                CompanyCode = input.CompanyCode,
+                NppbkcId = input.NppbkcId
+            });
+
+            if (ck5Selected.Count == 0)
+            {
+                return new Lack2GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingCk5DataSelected.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingCk5DataSelected),
+                    Data = null
+                };
+            }
+
+            rc.Data.Ck5Items = Mapper.Map<List<Lack2GeneratedItemDto>>(ck5Selected);
+
+            return rc;
+        }
+
+        private Lack2GeneratedOutput ValidateOnGenerateLack2Data(ref Lack2GenerateDataParamInput input)
+        {
             var rc = new Lack2GeneratedOutput()
             {
                 Success = true,
@@ -969,6 +1020,14 @@ namespace Sampoerna.EMS.BLL
             if (checkExcisableGroupType.EX_GROUP_TYPE_ID.HasValue)
                 input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
             
+            #endregion
+
+            return rc;
+
+        }
+
+        private Lack2GeneratedOutput IsExistLack2Data(Lack2GenerateDataParamInput input)
+        {
             //check if already exists with same selection criteria
             var lackCheck = _lack2Service.GetBySelectionCriteria(new Lack2GetBySelectionCriteriaParamInput()
             {
@@ -1009,37 +1068,15 @@ namespace Sampoerna.EMS.BLL
                     };
                 }
             }
-            
-            #endregion
 
-            //get ck5 data
-            rc.Data = new Lack2GeneratedDto();
-            var ck5Selected = _ck5Service.GetForLack2ByParam(new Ck5GetForLack2ByParamInput()
+            return new Lack2GeneratedOutput()
             {
-                PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear,
-                SourcePlantId = input.SourcePlantId,
-                ExGroupTypeId = input.ExGroupTypeId,
-                CompanyCode = input.CompanyCode,
-                NppbkcId = input.NppbkcId
-            });
-
-            if (ck5Selected.Count == 0)
-            {
-                return new Lack2GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.MissingCk5DataSelected.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingCk5DataSelected),
-                    Data = null
-                };
-            }
-
-            rc.Data.Ck5Items = Mapper.Map<List<Lack2GeneratedItemDto>>(ck5Selected);
-
-            return rc;
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
         }
-        
+
         private bool SetChangesHistory(Lack2Dto origin, Lack2Dto data, string userId)
         {
             var rc = false;
