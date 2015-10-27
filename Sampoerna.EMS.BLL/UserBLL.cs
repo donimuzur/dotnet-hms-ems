@@ -108,5 +108,11 @@ namespace Sampoerna.EMS.BLL
 
             return data;
         }
+
+
+        public List<USER> GetUsersNotPoa()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -507,6 +507,17 @@ namespace Sampoerna.EMS.Website.Code
 
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
+
+        public static SelectList GetUserNotPoa(string poaId)
+        {
+            IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
+          
+            var users = userBll.GetUsers();
+          
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
     }
 
 }
