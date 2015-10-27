@@ -768,6 +768,14 @@
                 } else if (valueSelected == 'FullApproved') {
                     $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
                 }
+
+                var qtyText = $("input[name='Detail.QtyApproved']:text").val();
+                var qtyApproved = $("input[name='Detail.QtyApproved']:hidden").val();
+                var decQty = ThausandSeperator(qtyApproved, 2);
+                var correctQty = changeToNumber(decQty);
+                
+                $("input[name='Detail.QtyApproved']:hidden").val(correctQty);
+                $("input[name='Detail.QtyApproved']:text").val(qtyText);
             });
         </script>
     }

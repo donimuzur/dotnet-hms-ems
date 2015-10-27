@@ -111,7 +111,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PBCK3> PBCK3 { get; set; }
         public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
         public virtual DbSet<PRODUCTION> PRODUCTION { get; set; }
-        public virtual DbSet<ZAAP_SHIFT_RPT> ZAAP_SHIFT_RPT { get; set; }
         public virtual DbSet<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
+        public virtual DbSet<ZAAP_SHIFT_RPT> ZAAP_SHIFT_RPT { get; set; }
     }
 }

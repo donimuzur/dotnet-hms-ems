@@ -58,6 +58,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
     </Compile>
+    <Compile Include="dsLack1.cs">
+      <DependentUpon>dsLack1.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dsLack1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsLack1.xsd</DependentUpon>
+    </Compile>
     <Compile Include="dsLack2.cs">
       <DependentUpon>dsLack2.xsd</DependentUpon>
       <SubType>Component</SubType>
@@ -129,6 +138,17 @@
     </None>
     <None Include="dsHeaderFooter.xss">
       <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
+    </None>
+    <None Include="dsLack1.xsc">
+      <DependentUpon>dsLack1.xsd</DependentUpon>
+    </None>
+    <None Include="dsLack1.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsLack1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsLack1.xss">
+      <DependentUpon>dsLack1.xsd</DependentUpon>
     </None>
     <None Include="dsLack2.xsc">
       <DependentUpon>dsLack2.xsd</DependentUpon>

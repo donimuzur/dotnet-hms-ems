@@ -24,6 +24,7 @@ using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.UOM;
 using Sampoerna.EMS.Website.Models.UserAuthorization;
+using Sampoerna.EMS.Website.Models.UserPlantMap;
 using Sampoerna.EMS.Website.Models.VirtualMappingPlant;
 using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Models.Waste;
@@ -831,17 +832,17 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantWerks))
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCode))
                 .ForMember(dest => dest.ProoductionDate, opt => opt.MapFrom(src => src.ProductionDate));
-                
+
 
             Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
-               
+
             Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting();
-            
+
             Mapper.CreateMap<ProductionUploadViewModel, ProductionDto>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<ProductionUploadItemsInput, ProductionUploadItems>().IgnoreAllNonExisting();
-                //.ForMember(dest => dest.QtyPacked, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.QtyPacked))
-                //.ForMember(dest => dest.Qty, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.Qty));
+            //.ForMember(dest => dest.QtyPacked, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.QtyPacked))
+            //.ForMember(dest => dest.Qty, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.Qty));
 
             Mapper.CreateMap<ProductionUploadItems, ProductionUploadItemsInput>().IgnoreAllNonExisting();
 
@@ -878,7 +879,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.WasteProductionDate, opt => opt.MapFrom(src => src.WasteProductionDate));
 
             Mapper.CreateMap<WasteDetail, WasteDto>().IgnoreAllNonExisting();
-                
+
             Mapper.CreateMap<WasteUploadViewModel, WasteDto>().IgnoreAllNonExisting()
             .ForMember(dest => dest.UploadItems, opt => opt.MapFrom(src => src.UploadItems));
 
@@ -887,7 +888,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<WasteUploadItemsInput, WasteUploadItemsOuput>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<WasteUploadItemsOuput, WasteUploadItems>().IgnoreAllNonExisting();
-                 
+
             #endregion
 
 
@@ -898,6 +899,15 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<CK5ExternalSupplierDto, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.SUPPLIER_PLANT));
+
+            #region User Plant Map
+            //Mapper.CreateMap<UserPlantMapDetail, UserPlantMapDto>().IgnoreAllNonExisting();
+            //Mapper.CreateMap<UserPlantMapDto, UserPlantMapDetail>().IgnoreAllNonExisting()
+            //    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => Convert.ToBoolean(src.IsActive) == true ? "Yes" : "No"));
+            #endregion
+           
+
+
         }
     }
 

@@ -52,7 +52,7 @@ namespace Sampoerna.EMS.BLL.Services
             var data = _repository.Get(
                     p => p.SOURCE_PLANT_NPPBKC_ID == input.NppbkcId && p.SOURCE_PLANT_COMPANY_CODE == input.CompanyCode &&
                         p.GI_DATE.HasValue && p.GI_DATE.Value.Month == input.PeriodMonth && p.GI_DATE.Value.Year == input.PeriodYear &&
-                        p.CK5_TYPE != Enums.CK5Type.Export &&
+                        p.CK5_TYPE != Enums.CK5Type.Export && p.STATUS_ID == Enums.DocumentStatus.Completed &&
                         p.SOURCE_PLANT_ID == input.SourcePlantId && (int)p.EX_GOODS_TYPE == input.ExGroupTypeId).ToList();
 
             return data;
