@@ -1762,6 +1762,29 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
        }
 
+        public List<GetListBrandByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId)
+        {
+            var output = new List<GetListBrandByPlantOutput>();
+
+            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+            foreach (var zaidmExBrand in dbBrand)
+            {
+                var blockStock = GetBlockedStockQuota(plantId, zaidmExBrand.FA_CODE);
+                if (blockStock.BlockedStockRemainingCount > 0)
+                {
+                    var blockstockOutput = new GetListBrandByPlantOutput();
+                    blockstockOutput.PlantId = plantId;
+                    blockstockOutput.FaCode = zaidmExBrand.FA_CODE;
+                    blockstockOutput.RemainingBlockQuota = blockStock.BlockedStockRemainingCount;
+
+                    output.Add(blockstockOutput);
+                }
+            }
+
+            return output;
+            //return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
+        }
+
         public List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId)
         {
             var dbCk1 = _ck1Services.GetCk1ByNppbkc(nppbkcId);
@@ -1772,6 +1795,7 @@ namespace Sampoerna.EMS.BLL
         public GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode)
        {
            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+            
             return Mapper.Map<GetBrandItemsOutput>(dbBrand);
        }
 
@@ -1811,6 +1835,7 @@ namespace Sampoerna.EMS.BLL
             result.BlockedStock = blockStock.ToString();
             result.BlockedStockUsed = blockStockUsed.ToString();
             result.BlockedStockRemaining = (blockStock - blockStockUsed).ToString();
+            result.BlockedStockRemainingCount = blockStock - blockStockUsed;
 
             return result;
 
