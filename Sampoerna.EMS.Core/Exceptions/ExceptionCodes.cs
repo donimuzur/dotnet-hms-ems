@@ -94,6 +94,10 @@ namespace Sampoerna.EMS.Core.Exceptions
              [Description("PBCK-7 Error BACK-1 QTY Value.")]
             Pbck7ItemErrorBack1QtyValue,
 
+            
+             [Description("PBCK-7 Error BACK-1 Value More or Same than Requested QTY Value.")]
+             Pbck7ItemBack1MoreThanQtyValue,
+
              [Description("Error Item/Material empty.")]
              MaterialOrItemErrorEmpty,
 
@@ -101,7 +105,13 @@ namespace Sampoerna.EMS.Core.Exceptions
              Pbck4ItemErrorRequestedQtyValue,
 
              [Description("PBCK-4 Error CK-3 Office Value.")]
-             Pbck4ErrorCk3OfficeValue
+             Pbck4ErrorCk3OfficeValue,
+
+             [Description("PBCK-4 Error BACK-1 QTY Value.")]
+             Pbck4ItemErrorBack1QtyValue,
+
+             [Description("PBCK-4 Error BACK-1 Value More or Same than Requested QTY Value.")]
+             Pbck4ItemBack1MoreThanQtyValue
         }
         
         /// <summary>

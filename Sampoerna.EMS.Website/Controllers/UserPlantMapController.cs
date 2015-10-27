@@ -43,9 +43,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new UserPlantMapIndexViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-
+            var userIdPlant = _userPlantMapBll.GetUser();
             var userPlantDb = _userPlantMapBll.GetAllOrderByUserId();
+            model.UserPlantList = Mapper.Map<List<UserPlantMapDetail>>(userIdPlant);
             model.UserPlantMaps = Mapper.Map<List<UserPlantMapDto>>(userPlantDb);
+           
            
             return View("Index", model);
         }

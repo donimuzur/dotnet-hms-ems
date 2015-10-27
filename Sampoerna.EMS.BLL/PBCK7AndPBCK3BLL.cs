@@ -1615,6 +1615,9 @@ namespace Sampoerna.EMS.BLL
                             || pbck7ItemDto.BACK1_QTY.Value <= 0)
                             throw new BLLException(ExceptionCodes.BLLExceptions.Pbck7ItemErrorBack1QtyValue);
 
+                        if (pbck7ItemDto.BACK1_QTY >= pbck7ItemDto.PBCK7_QTY)
+                            throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ItemBack1MoreThanQtyValue);
+
                         pbck7Item.BACK1_QTY = pbck7ItemDto.BACK1_QTY;
                     }
                     _repositoryPbck7Item.Update(pbck7Item);
