@@ -1569,8 +1569,10 @@ namespace Sampoerna.EMS.BLL
        }
       
        public Pbck4ReportDto GetPbck4ReportDataById(int id)
-        {
-            var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
+       {
+           string includeTablesReport = includeTables + ",PBCK4_ITEM.CK1.CK1_ITEM";
+
+           var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTablesReport).FirstOrDefault();
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1629,6 +1631,21 @@ namespace Sampoerna.EMS.BLL
                    pbck4Matrikck1.Ck1Date = DateReportDisplayString(pbck4Item.CK1.CK1_DATE, false);
                    pbck4Matrikck1.Ck1OrderQty = 0;//todo ask
                    //pbck4Matrikck1.Ck1RequestedQty = 0;//todo ask
+
+                   if (pbck4Item.CK1.CK1_ITEM != null)
+                   {
+
+                       foreach (var ck1Item in pbck4Item.CK1.CK1_ITEM)
+                       {
+                           if (ck1Item.FA_CODE == pbck4Item.FA_CODE
+                               && ck1Item.WERKS == pbck4Item.PLANT_ID)
+                           {
+                               pbck4Matrikck1.Ck1OrderQty = ck1Item.MENGE.HasValue ? ck1Item.MENGE.Value : 0;
+                               break;
+                           }
+                       }
+                   }
+                  
                }
 
                pbck4Matrikck1.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
