@@ -1169,6 +1169,7 @@ namespace Sampoerna.EMS.BLL
 
         public void Pbck1Workflow(Pbck1WorkflowDocumentInput input)
         {
+            
             var isNeedSendNotif = true;
             switch (input.ActionType)
             {
@@ -1374,14 +1375,14 @@ namespace Sampoerna.EMS.BLL
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 
-            AddWorkflowHistory(input);
+                AddWorkflowHistory(input);
 
         }
 
         private void GovPartialApproveDocument(Pbck1WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
-
+            var origin = Mapper.Map<Pbck1Dto>(dbData);
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1405,6 +1406,11 @@ namespace Sampoerna.EMS.BLL
 
             //dbData.APPROVED_BY_POA = input.UserId;
             //dbData.APPROVED_DATE_POA = DateTime.Now;
+
+            
+            var inputNew = Mapper.Map<Pbck1Dto>(dbData);
+
+            SetChangesHistory(origin, inputNew, input.UserId);
 
             AddWorkflowHistory(input);
         }
