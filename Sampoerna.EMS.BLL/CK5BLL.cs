@@ -3104,6 +3104,7 @@ namespace Sampoerna.EMS.BLL
             queryFilter = queryFilter.And(x => !ck5Ref.Contains(x.CK5_ID));
             queryFilter = queryFilter.And(x => x.CK5_TYPE == Enums.CK5Type.PortToImporter);
             queryFilter = queryFilter.And(x => x.STATUS_ID == Enums.DocumentStatus.Completed);
+            queryFilter = queryFilter.Or(x => x.CK5_ID == currentCk5ref);
             var data =
                 _repository.Get(queryFilter, null, "").ToList();
 

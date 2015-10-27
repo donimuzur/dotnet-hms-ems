@@ -1046,6 +1046,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
                 {
                     model.IsCk5ImporterToPlant = true;
+                    model.Ck5RefList = GlobalFunctions.GetCk5RefPortToImporter(_ck5Bll, model.Ck5RefId);
                 }
 
                 input.PoaApprove = ck5Details.Ck5Dto.APPROVED_BY_POA;
@@ -1148,6 +1149,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.SourcePlantId = model.SourcePlantId + " - " + model.SourcePlantName;
                 model.DestPlantId = model.DestPlantId + " - " + model.DestPlantName;
+                if (model.Ck5Type == Enums.CK5Type.PortToImporter)
+                {
+                    
+                    model.IsCk5PortToImporter = true;
+                }
+
+                if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
+                {
+                    model.IsCk5ImporterToPlant = true;
+                    model.Ck5RefList = GlobalFunctions.GetCk5RefPortToImporter(_ck5Bll, model.Ck5RefId);
+                }
 
                 if (model.Ck5Type == Enums.CK5Type.MarketReturn)
                 {

@@ -482,9 +482,9 @@ namespace Sampoerna.EMS.Website.Code
         }
 
 
-        public static SelectList GetCk5RefPortToImporter(ICK5BLL ck5Bll, long ck5ref)
+        public static SelectList GetCk5RefPortToImporter(ICK5BLL ck5Bll, long ck5Ref)
         {
-            var data = ck5Bll.GetAllCompletedPortToImporter();
+            var data = ck5Bll.GetAllCompletedPortToImporter(ck5Ref);
             return  new SelectList(data,"CK5_ID","SUBMISSION_NUMBER");
         }
 
