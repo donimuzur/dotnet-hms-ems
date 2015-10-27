@@ -9,5 +9,7 @@ namespace Sampoerna.EMS.Contract
         BLOCK_STOCKDto GetBlockStockById(long id);
 
         List<BLOCK_STOCKDto> GetBlockStockByPlantAndMaterialId(string plantId, string materialId);
+
+        List<BLOCK_STOCKDto> GetBlockStockByPlantAndQtyMoreThanZero(string plantId);
     }
 }

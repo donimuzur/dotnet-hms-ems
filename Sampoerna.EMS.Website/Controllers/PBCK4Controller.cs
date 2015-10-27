@@ -1659,8 +1659,9 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetListFaCode(string plantId)
         {
+            var brandOutput = _pbck4Bll.GetListFaCodeHaveBlockStockByPlant(plantId);
 
-            var brandOutput = _pbck4Bll.GetListBrandByPlant(plantId);
+            //var brandOutput = _pbck4Bll.GetListBrandByPlant(plantId);
             //var model = Mapper.Map<List<Pbck4InputManualViewModel>>(dbMaterial);
 
             return Json(brandOutput);
