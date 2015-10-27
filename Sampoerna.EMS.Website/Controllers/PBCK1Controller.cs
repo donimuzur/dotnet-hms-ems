@@ -1466,35 +1466,16 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.pbck1Number = model.ExportModel.pbck1NumberCode;
             var dataSummaryReport = SearchSummaryReports(model.SearchView);
 
-            List<ExportSummaryDataModel> dataExport = new List<ExportSummaryDataModel>();
+            var exportModel = Mapper.Map<List<ExportSummaryDataModel>>(dataSummaryReport);
 
-            foreach (var d in dataSummaryReport)
+            foreach (var item in dataSummaryReport)
             {
-                if (d.CK5List.Any())
-                {
-                    foreach (var ck5 in d.CK5List)
-                    {
-                        var exportModel = Mapper.Map<ExportSummaryDataModel>(d);
-                        exportModel.DocNumberCk5 = ck5.DocumentNumber;
-                        exportModel.StatusDocCk5 = ck5.Status;
-                        exportModel.GrandTotalExcisableCk5 = ck5.Qty;
-                        dataExport.Add(exportModel);
-                    }
-                }
-                else
-                {
-                    var exportModel = Mapper.Map<ExportSummaryDataModel>(d);
-                    exportModel.DocNumberCk5 = "-";
-                    exportModel.StatusDocCk5 = "-";
-                    exportModel.GrandTotalExcisableCk5 = "-";
-                    dataExport.Add(exportModel);
-                }
                 
             }
 
             var grid = new System.Web.UI.WebControls.GridView
             {
-                DataSource = dataExport.OrderBy(c => c.Nppbkc).ToList(),
+                DataSource = exportModel.OrderBy(c => c.Nppbkc).ToList(),
                 AutoGenerateColumns = false
             };
             if (model.ExportModel.Company)
@@ -1739,7 +1720,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     DataField = "DecreeDate",
                     HeaderText = "DecreeDate"
                 });
-            } 
+            }
             if (model.ExportModel.IsNppbkcImport)
             {
                 grid.Columns.Add(new BoundField()
@@ -1747,7 +1728,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     DataField = "IsNppbkcImport",
                     HeaderText = "IsNppbkcImport"
                 });
-            } 
+            }
             if (model.ExportModel.SupplierCompany)
             {
                 grid.Columns.Add(new BoundField()
@@ -1793,7 +1774,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "DocNumberCk5",
-                    HeaderText = "Doc Number CK-5"
+                    HeaderText = "Doc Number CK-5",
+                    HtmlEncode = false
                 });
             }
             if (model.ExportModel.StatusDoc)
@@ -1801,7 +1783,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "StatusDocCk5",
-                    HeaderText = "Status Doc CK-5"
+                    HeaderText = "Status Doc CK-5",
+                    HtmlEncode = false
                 });
             }
             if (model.ExportModel.GrandTotalExciseable)
@@ -1809,11 +1792,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "GrandTotalExcisableCk5",
-                    HeaderText = "Grand Total Exciseable"
+                    HeaderText = "Grand Total Exciseable",
+                    HtmlEncode = false
                 });
             }
 
-            if (dataExport.Count == 0)
+            if (exportModel.Count == 0)
             {
                 grid.ShowHeaderWhenEmpty = true;
             }
@@ -2152,7 +2136,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (data != null && data.Count > 0)
             {
                 var summaryJenis = string.Join(Environment.NewLine, summaryData.Select(d => d.ProductAlias));
-                var summaryTotal = string.Join(Environment.NewLine, summaryData.Select(d => d.Total.ToString("N0")));
+                var summaryTotal = string.Join(Environment.NewLine, summaryData.Select(d => String.Format("{0:n}", d.Total)));
                 var dt = data.FirstOrDefault(c => !string.IsNullOrEmpty(c.Lack1UomId));
                 var uomId = string.Empty;
                 if (dt != null)

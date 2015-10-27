@@ -106,6 +106,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.LatestSaldoUomName, opt => opt.MapFrom(src => String.IsNullOrEmpty(src.LatestSaldoUomName) ? "-" : src.LatestSaldoUomName))
                 .ForMember(dest => dest.RequestQtyUomName, opt => opt.MapFrom(src => String.IsNullOrEmpty(src.RequestQtyUomName) ? "-" : src.RequestQtyUomName))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => String.Join("<br />", src.NppbkcPlants.Select(c => c.ADDRESS).ToArray())))
+                .ForMember(dest => dest.DocNumberCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => String.Format("'{0}", c.DocumentNumber)).ToArray())))
+                .ForMember(dest => dest.StatusDocCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => c.Status).ToArray())))
+                .ForMember(dest => dest.GrandTotalExcisableCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => c.Qty).ToArray())))
                 ;
             #endregion
 
