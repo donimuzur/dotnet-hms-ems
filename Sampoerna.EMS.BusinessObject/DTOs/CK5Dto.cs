@@ -88,6 +88,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<CK5_FILE_UPLOADDto> Ck5FileUploadDtos { get; set; }
 
+        public List<CK5MaterialDto> Ck5MaterialDtos { get; set; }
+
         public string SOURCE_PLANT_COMPANY_CODE { get; set; }
         public string DEST_PLANT_COMPANY_CODE { get; set; }
 
