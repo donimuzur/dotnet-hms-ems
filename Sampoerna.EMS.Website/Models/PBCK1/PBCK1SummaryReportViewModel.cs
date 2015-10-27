@@ -188,9 +188,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string ApprovedByManagerId { get; set; }
         public string LatestSaldoUomName { get; set; }
         public string RequestQtyUomName { get; set; }
-        public List<string> DocNumberCk5 { get; set; }
-        public List<string> StatusDocCk5 { get; set; }
-        public List<string> GrandTotalExcisableCk5 { get; set; }
+        public string DocNumberCk5 { get; set; }
+        public string StatusDocCk5 { get; set; }
+        public string GrandTotalExcisableCk5 { get; set; }
     }
 
 }
