@@ -98,7 +98,10 @@ namespace Sampoerna.EMS.Core.Exceptions
              MaterialOrItemErrorEmpty,
 
              [Description("PBCK-4 Error Requested QTY Value.")]
-             Pbck4ItemErrorRequestedQtyValue
+             Pbck4ItemErrorRequestedQtyValue,
+
+             [Description("PBCK-4 Error CK-3 Office Value.")]
+             Pbck4ErrorCk3OfficeValue
         }
         
         /// <summary>
