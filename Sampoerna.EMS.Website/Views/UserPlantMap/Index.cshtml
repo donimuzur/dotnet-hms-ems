@@ -51,8 +51,8 @@
                             <tr>
 
                                 <td class="action">
-                                    <a href="@Url.Action("Detail", "UserPlantMap", new { id = Model.UserPlantMaps[i].UserId })" data-toggle=" tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "UserPlantMap", new {id = Model.UserPlantMaps[i].UserId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Detail", "UserPlantMap", new { id = Model.UserPlantList[i].UserId })" data-toggle=" tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "UserPlantMap", new { id = Model.UserPlantList[i].UserId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(model => model.UserPlantList[i].UserId)
