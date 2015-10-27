@@ -236,10 +236,10 @@
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" />
         <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="0.75" PointY="11.75" />
-        <EntityTypeShape EntityType="EMSModel.ZAAP_SHIFT_RPT" Width="1.5" PointX="11.375" PointY="7.75" />
         <EntityTypeShape EntityType="EMSModel.USER_PLANT_MAP" Width="1.5" PointX="18" PointY="44.125" />
         <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_T001W" />
         <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_USER" />
+        <EntityTypeShape EntityType="EMSModel.ZAAP_SHIFT_RPT" Width="1.5" PointX="11.375" PointY="7.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
