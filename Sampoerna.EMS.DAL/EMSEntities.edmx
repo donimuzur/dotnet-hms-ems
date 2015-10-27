@@ -1181,10 +1181,7 @@
         </EntityType>
         <EntityType Name="ZAAP_SHIFT_RPT">
           <Key>
-            <PropertyRef Name="COMPANY_CODE" />
-            <PropertyRef Name="WERKS" />
-            <PropertyRef Name="FA_CODE" />
-            <PropertyRef Name="PRODUCTION_DATE" />
+            <PropertyRef Name="MATDOC" />
           </Key>
           <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
@@ -1196,7 +1193,7 @@
           <Property Name="BUNDLE" Type="int" />
           <Property Name="MARKET" Type="nvarchar" MaxLength="2" />
           <Property Name="DOCGMVTER" Type="nvarchar" MaxLength="35" />
-          <Property Name="MATDOC" Type="nvarchar" MaxLength="10" />
+          <Property Name="MATDOC" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
@@ -4406,7 +4403,6 @@
             <End Role="PBCK1_PROD_CONVERTER" EntitySet="PBCK1_PROD_CONVERTER" />
           </AssociationSet>
           <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
-          <EntitySet Name="ZAAP_SHIFT_RPT" EntityType="EMSModel.ZAAP_SHIFT_RPT" />
           <EntitySet Name="USER_PLANT_MAP" EntityType="EMSModel.USER_PLANT_MAP" />
           <AssociationSet Name="FK_USER_PLANT_MAP_T001W" Association="EMSModel.FK_USER_PLANT_MAP_T001W">
             <End Role="T001W" EntitySet="T001W" />
@@ -4416,6 +4412,7 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
           </AssociationSet>
+          <EntitySet Name="ZAAP_SHIFT_RPT" EntityType="EMSModel.ZAAP_SHIFT_RPT" />
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -7814,31 +7811,6 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LAST_SHIFT" Type="Int32" />
         </EntityType>
-        <EntityType Name="ZAAP_SHIFT_RPT">
-          <Key>
-            <PropertyRef Name="COMPANY_CODE" />
-            <PropertyRef Name="WERKS" />
-            <PropertyRef Name="FA_CODE" />
-            <PropertyRef Name="PRODUCTION_DATE" />
-          </Key>
-          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="BUNDLE" Type="Int32" />
-          <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="MATDOC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="USER_PLANT_MAP">
           <Key>
             <PropertyRef Name="USER_PLANT_MAP_ID" />
@@ -7874,6 +7846,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ZAAP_SHIFT_RPT">
+          <Key>
+            <PropertyRef Name="MATDOC" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BUNDLE" Type="Int32" />
+          <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="MATDOC" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9284,6 +9278,16 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="USER_PLANT_MAP">
+            <EntityTypeMapping TypeName="EMSModel.USER_PLANT_MAP">
+              <MappingFragment StoreEntitySet="USER_PLANT_MAP">
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="USER_PLANT_MAP_ID" ColumnName="USER_PLANT_MAP_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ZAAP_SHIFT_RPT">
             <EntityTypeMapping TypeName="EMSModel.ZAAP_SHIFT_RPT">
               <MappingFragment StoreEntitySet="ZAAP_SHIFT_RPT">
@@ -9304,16 +9308,6 @@
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
                 <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="USER_PLANT_MAP">
-            <EntityTypeMapping TypeName="EMSModel.USER_PLANT_MAP">
-              <MappingFragment StoreEntitySet="USER_PLANT_MAP">
-                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
-                <ScalarProperty Name="USER_PLANT_MAP_ID" ColumnName="USER_PLANT_MAP_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

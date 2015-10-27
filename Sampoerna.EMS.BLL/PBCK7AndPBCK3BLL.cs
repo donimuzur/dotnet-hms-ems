@@ -1595,6 +1595,39 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
+        private void UpdatePbck7ItemGovApproval(Enums.DocumentStatusGov govStatus, List<PBCK7_ITEMDto> listPbck7Item)
+        {
+            //string oldValue = "";
+            //string newValue = "";
+
+            foreach (var pbck7ItemDto in listPbck7Item)
+            {
+                var pbck7Item = _repositoryPbck7Item.GetByID(pbck7ItemDto.PBCK7_ITEM_ID);
+                if (pbck7Item != null)
+                {
+
+                    if (govStatus == Enums.DocumentStatusGov.FullApproved)
+                        pbck7Item.BACK1_QTY = pbck7Item.PBCK7_QTY;
+                    else if (govStatus == Enums.DocumentStatusGov.PartialApproved)
+                    {
+                        //back1 qty must be > 0
+                        if (!pbck7ItemDto.BACK1_QTY.HasValue
+                            || pbck7ItemDto.BACK1_QTY.Value <= 0)
+                            throw new BLLException(ExceptionCodes.BLLExceptions.Pbck7ItemErrorBack1QtyValue);
+
+                        if (pbck7ItemDto.BACK1_QTY >= pbck7ItemDto.PBCK7_QTY)
+                            throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ItemBack1MoreThanQtyValue);
+
+                        pbck7Item.BACK1_QTY = pbck7ItemDto.BACK1_QTY;
+                    }
+                    _repositoryPbck7Item.Update(pbck7Item);
+
+                    ////set change history
+                    //SetChangeHistoryPbck3(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
+                }
+            }
+        }
+
         private void GovApproveDocument(Pbck7Pbck3WorkflowDocumentInput input)
         {
             var dbData = _repositoryPbck7.GetByID(input.DocumentId);
@@ -1609,6 +1642,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData.GOV_STATUS != input.StatusGovInput)
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, input.StatusGovInput);
 
+            UpdatePbck7ItemGovApproval(input.StatusGovInput, input.Pbck7ItemDtos);
 
             dbData.GOV_STATUS = input.StatusGovInput;
 

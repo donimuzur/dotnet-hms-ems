@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
@@ -22,9 +24,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private IUserPlantMapBLL _userPlantMapBll;
         private IPlantBLL _plantBll;
-        
-        public UserPlantMapController(IPageBLL pageBLL, IUserPlantMapBLL userPlantMapBll, IPlantBLL plantBll, IChangesHistoryBLL changeHistorybll) 
-            : base(pageBLL, Enums.MenuList.POAMap) 
+        private IUnitOfWork _uow;
+
+        public UserPlantMapController(IPageBLL pageBLL, IUserPlantMapBLL userPlantMapBll, IPlantBLL plantBll, IChangesHistoryBLL changeHistorybll, IUnitOfWork uow) 
+            : base(pageBLL, Enums.MenuList.UserPlantMap) 
         {
             
             _changeHistoryBll = changeHistorybll;
@@ -40,8 +43,12 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new UserPlantMapIndexViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-
-            model.UserPlantMaps = Mapper.Map<List<UserPlantMapDto>>(_userPlantMapBll.GetAll());
+            var userIdPlant = _userPlantMapBll.GetUser();
+            var userPlantDb = _userPlantMapBll.GetAllOrderByUserId();
+            model.UserPlantList = Mapper.Map<List<UserPlantMapDetail>>(userIdPlant);
+            model.UserPlantMaps = Mapper.Map<List<UserPlantMapDto>>(userPlantDb);
+           
+           
             return View("Index", model);
         }
 
@@ -243,6 +250,22 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetPlantByNppbkc(string nppbkcid)
         {
             return Json(_plantBll.GetPlantByNppbkc(nppbkcid));
+        }
+
+        public ActionResult Active(string id)
+        {
+            try
+            {
+                _userPlantMapBll.Active(id);
+
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                TempData[Constans.SubmitType.Update] = ex.Message;
+            }
+            return RedirectToAction("Index");
+            
         }
 
     }

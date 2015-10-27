@@ -28,6 +28,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string PlantId { get; set; }
         public string FaCode { get; set; }
         public string StickerCode { get; set; }
+        public decimal RemainingBlockQuota { get; set; }
     }
 
     public class GetListCk1ByNppbkcOutput
@@ -62,6 +63,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string BlockedStock { get; set; }
         public string BlockedStockUsed { get; set; }
         public string BlockedStockRemaining { get; set; }
+        public decimal BlockedStockRemainingCount { get; set; }
 
         public string PlantId { get; set; }
         public string FaCode { get; set; }

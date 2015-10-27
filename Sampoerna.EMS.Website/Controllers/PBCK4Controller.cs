@@ -325,7 +325,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 if (model.AllowGovApproveAndReject)
+                {
                     model.ActionType = "GovApproveDocument";
+                    if (!pbck4Details.Pbck4Dto.CK3_OFFICE_VALUE.HasValue
+                        || pbck4Details.Pbck4Dto.CK3_OFFICE_VALUE.Value <= 0)
+                        model.CK3_OFFICE_VALUE = "";
+                }
                 else if (model.DocumentStatus == Enums.DocumentStatus.Completed)
                     model.ActionType = "UpdateUploadedFilefterCompleted";
                 //else if (model.AllowGrCreated)
@@ -634,13 +639,46 @@ namespace Sampoerna.EMS.Website.Controllers
             input.Comment = model.Comment;
             input.GovStatusInput = model.GovStatus;
 
-            input.UploadItemDto = new List<Pbck4ItemDto>();
-            foreach (var pbck4UploadItem in model.UploadItemModels)
-            {
-                if (pbck4UploadItem.IsUpdated)
-                    input.UploadItemDto.Add(Mapper.Map<Pbck4ItemDto>(pbck4UploadItem));
+            //input.UploadItemDto = new List<Pbck4ItemDto>();
+            //foreach (var pbck4UploadItem in model.UploadItemModels)
+            //{
+            //    if (pbck4UploadItem.IsUpdated)
+            //        input.UploadItemDto.Add(Mapper.Map<Pbck4ItemDto>(pbck4UploadItem));
                 
+            //}
+
+
+            if (model.GovStatus == Enums.DocumentStatusGov.FullApproved
+                || model.GovStatus == Enums.DocumentStatusGov.PartialApproved)
+            {
+
+                if (model.GovStatus == Enums.DocumentStatusGov.PartialApproved)
+                {
+                    foreach (var uploadItem in model.UploadItemModels)
+                    {
+                        if (!ConvertHelper.IsNumeric(uploadItem.ApprovedQty)
+                            || ConvertHelper.ConvertToDecimalOrZero(uploadItem.ApprovedQty) <= 0)
+                        {
+                            AddMessageInfo("PBCK-4 Error BACK-1 QTY Value.", Enums.MessageInfoType.Error);
+                            return false;
+                        }
+                    }
+                }
+
+                //manual first .. 
+                //input.UploadItemDto = Mapper.Map<List<Pbck4ItemDto>>(model.UploadItemModels);
+                input.UploadItemDto = new List<Pbck4ItemDto>();
+                foreach (var pbck4UploadItem in model.UploadItemModels)
+                {
+                    var uploadToUpdate = new Pbck4ItemDto();
+                    uploadToUpdate.PBCK4_ITEM_ID = pbck4UploadItem.PBCK4_ITEM_ID;
+                    uploadToUpdate.APPROVED_QTY = ConvertHelper.ConvertToDecimalOrZero(pbck4UploadItem.ApprovedQty);
+                    uploadToUpdate.REQUESTED_QTY = ConvertHelper.ConvertToDecimalOrZero(pbck4UploadItem.ReqQty);
+
+                    input.UploadItemDto.Add(uploadToUpdate);
+                }
             }
+
 
             input.AdditionalDocumentData = new Pbck4WorkflowDocumentData();
             input.AdditionalDocumentData.Back1No = model.BACK1_NO;
@@ -1659,8 +1697,9 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetListFaCode(string plantId)
         {
+            var brandOutput = _pbck4Bll.GetListFaCodeHaveBlockStockByPlant(plantId);
 
-            var brandOutput = _pbck4Bll.GetListBrandByPlant(plantId);
+            //var brandOutput = _pbck4Bll.GetListBrandByPlant(plantId);
             //var model = Mapper.Map<List<Pbck4InputManualViewModel>>(dbMaterial);
 
             return Json(brandOutput);

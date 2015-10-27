@@ -36,7 +36,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             return ((DateTime)value).ToString(CultureInfo.InvariantCulture);
         }
     }
-    
+
     /// <summary>
     /// Resolve decimal to a int
     /// </summary>
@@ -103,7 +103,24 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
- public class SourcePlantTextResolver : ValueResolver<T001W, string>
+    public class StringToBooleanResolver : ValueResolver<string, bool?>
+    {
+        protected override bool? ResolveCore(string source)
+        {
+            if (string.IsNullOrEmpty(source))
+            {
+                return true;
+            }
+
+            if (source == "Yes")
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class SourcePlantTextResolver : ValueResolver<T001W, string>
     {
         protected override string ResolveCore(T001W value)
         {
@@ -119,8 +136,8 @@ namespace Sampoerna.EMS.AutoMapperExtensions
     {
         protected override string ResolveCore(T001W value)
         {
-            return "KPPBC " + value.ZAIDM_EX_NPPBKC.CITY + " - " + value.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_ID; 
-            
+            return "KPPBC " + value.ZAIDM_EX_NPPBKC.CITY + " - " + value.ZAIDM_EX_NPPBKC.ZAIDM_EX_KPPBC.KPPBC_ID;
+
         }
     }
 
@@ -132,8 +149,8 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             string resultUOM = "Boxes";
 
             if (value.GRAND_TOTAL_EX.HasValue)
-               resultValue = value.GRAND_TOTAL_EX.Value.ToString();
-        
+                resultValue = value.GRAND_TOTAL_EX.Value.ToString();
+
             if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
                 resultUOM = value.PackageUomName;
 
@@ -191,7 +208,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
     {
         protected override string ResolveCore(CK5Dto value)
         {
-           
+
             if (value.IsCk5Export)
                 return value.DEST_COUNTRY_CODE + " - " + value.DEST_COUNTRY_NAME;
 
@@ -204,7 +221,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         protected override string ResolveCore(CK5Dto value)
         {
 
-            if (! string.IsNullOrEmpty(value.APPROVED_BY_POA))
+            if (!string.IsNullOrEmpty(value.APPROVED_BY_POA))
                 return value.APPROVED_BY_POA;
             if (!string.IsNullOrEmpty(value.APPROVED_BY_MANAGER))
                 return value.APPROVED_BY_MANAGER;
