@@ -246,7 +246,7 @@ function ValidateManualPbck4() {
         AddValidationClass(false, 'uploadReqQty');
         result = false;
     } else {
-        if (parseFloat($('#uploadReqQty').val()) < 0) {
+        if (parseFloat($('#uploadReqQty').val()) <= 0) {
             AddValidationClass(false, 'uploadReqQty');
             result = false;
         }
