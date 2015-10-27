@@ -48,7 +48,7 @@
                             <div class="row">
                                 <label class="col-md-4">Plant ID</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(x=>x.PlantId, Model.PlantList, "All", new {@class="form-control"})
+                                    @Html.DropDownListFor(x => x.PlantId, Model.PlantList, "All", new { @class = "form-control selectreset" })
                                 </div>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                                 <label class="col-md-4 long">Reported On</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        @Html.TextBoxFor(x => x.ReportedOn, new { @class = "form-control" })
+                                        @Html.TextBoxFor(x => x.ReportedOn, new { @class = "form-control selectreset" })
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
@@ -72,7 +72,7 @@
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
                                     <div id="divPoaList" class="col-md-8 ui-widget">
-                                        @Html.DropDownListFor(x => x.Poa, Model.PoaList, "All", new { @class = "form-control" })
+                                        @Html.DropDownListFor(x => x.Poa, Model.PoaList, "All", new { @class = "form-control selectreset" })
 
 
                                     </div>
@@ -111,7 +111,7 @@
 @section scripts
 {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script type="text/javascript" language="javascript" class="init">
+    <script type="text/javascript">
   
         $(document).ready(function () {
             setupDataTables();
@@ -125,9 +125,7 @@
         });
 
     function setupDataTables() {
-        $('#btn-reset-filter').click(function () {
-            $(".selectreset").val($(".selectreset option:first").val());
-        });
+       
         // DataTable
         var table = null;
         if ($.fn.dataTable.isDataTable('#Pbck7')) {
@@ -162,10 +160,12 @@
             });
         });
 
-
+        $('#btn-reset-filter').click(function () {
+            $(".selectreset").val($(".selectreset option:first").val());
+        });
     }
 
-    $("#NppbkcId").change(function () {
+    @*$("#NppbkcId").change(function () {
         if ($("#NppbkcId").length) {
             var npbkc = $(this).find("option:selected").text();
             $('#SearchInput_POA option').remove();
@@ -178,7 +178,7 @@
                 ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "PBCK7AndPBCK3")', { nppbkcId: npbkc });
             }
         }
-    });
+    });*@
 
   
 
