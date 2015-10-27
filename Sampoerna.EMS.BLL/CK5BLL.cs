@@ -3095,7 +3095,7 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-        public List<CK5> GetAllCompletedPortToImporter()
+        public List<CK5> GetAllCompletedPortToImporter(long currentCk5ref = 0)
         {
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
             var ck5Ref = _repository.Get(

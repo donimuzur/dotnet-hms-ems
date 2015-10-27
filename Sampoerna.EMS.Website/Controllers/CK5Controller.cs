@@ -353,7 +353,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.SourcePlantList = GlobalFunctions.GetPlantImportList();
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
-                model.Ck5RefList = GlobalFunctions.GetCk5RefPortToImporter(_ck5Bll);
+                model.Ck5RefList = GlobalFunctions.GetCk5RefPortToImporter(_ck5Bll,model.Ck5RefId);
             }
             else if (model.Ck5Type == Enums.CK5Type.PortToImporter)
             {
