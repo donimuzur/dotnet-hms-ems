@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.IsCk5Manual, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Manual))
                 .ForMember(dest => dest.IsWaitingGovApproval, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval))
                 .ForMember(dest => dest.Ck5FileUploadDtos, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.CK5_FILE_UPLOAD)))
+                .ForMember(dest => dest.Ck5MaterialDtos, opt => opt.MapFrom(src=> Mapper.Map<List<CK5MaterialDto>>(src.CK5_MATERIAL)))
                 .ForMember(dest => dest.GIDateStr, opt => opt.MapFrom(src => src.SUBMISSION_DATE == null ?string.Empty : Convert.ToDateTime(src.SUBMISSION_DATE).ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.NoDateWithFormat, opt => opt.MapFrom(src => src.REGISTRATION_DATE == null ? src.REGISTRATION_NUMBER : src.REGISTRATION_NUMBER + "-" + Convert.ToDateTime(src.REGISTRATION_DATE).ToString("dd.MM.yyyy")));
                 
