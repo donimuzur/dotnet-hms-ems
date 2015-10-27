@@ -34,6 +34,9 @@
                         @Html.HiddenFor(model => model.Ck5Id)
                         @Html.HiddenFor(model => model.Ck5Type)
                         @Html.HiddenFor(model => model.DocumentStatus)
+                        @Html.HiddenFor(model => model.IsCk5Export)
+                        @Html.HiddenFor(model => model.IsCk5PortToImporter)
+                        @Html.HiddenFor(model => model.IsCk5ImporterToPlant)
 
                         @Html.Partial("_CK5InformationDetails")
                         @Html.Partial("_CK5Printout")

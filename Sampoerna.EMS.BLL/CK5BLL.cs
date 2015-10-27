@@ -3095,7 +3095,7 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-        public List<CK5> GetAllCompletedPortToImporter()
+        public List<CK5> GetAllCompletedPortToImporter(long currentCk5ref = 0)
         {
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
             var ck5Ref = _repository.Get(
@@ -3104,6 +3104,7 @@ namespace Sampoerna.EMS.BLL
             queryFilter = queryFilter.And(x => !ck5Ref.Contains(x.CK5_ID));
             queryFilter = queryFilter.And(x => x.CK5_TYPE == Enums.CK5Type.PortToImporter);
             queryFilter = queryFilter.And(x => x.STATUS_ID == Enums.DocumentStatus.Completed);
+            queryFilter = queryFilter.Or(x => x.CK5_ID == currentCk5ref);
             var data =
                 _repository.Get(queryFilter, null, "").ToList();
 

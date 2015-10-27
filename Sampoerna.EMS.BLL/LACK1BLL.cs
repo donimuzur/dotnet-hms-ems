@@ -1559,7 +1559,8 @@ namespace Sampoerna.EMS.BLL
                 ExcisableGoodsType = input.ExcisableGoodsType,
                 SupplierPlantId = input.SupplierPlantId,
                 ReceivedPlantId = input.ReceivedPlantId,
-                PeriodTo = dtTo
+                PeriodTo = dtTo,
+                ExcludeLack1Id = input.Lack1Id
             });
 
             rc.BeginingBalance = 0;
