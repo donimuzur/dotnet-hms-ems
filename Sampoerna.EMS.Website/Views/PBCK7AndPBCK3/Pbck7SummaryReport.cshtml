@@ -195,14 +195,7 @@
                         $('#MenuPbck7OpenDocument').removeClass('open');
                         $('#MenuPbck7Report').addClass('open');
                         $('#MenuPbck7SummaryReport').addClass('active');
-                        
-                        //$('#selecctall').prop('checked', false);
-                        //$('.checkexport').each(function() {
-                        //    this.checked = false;
-                        //});
-                        //$('#checkboxDefault1').prop('checked', true);
-                        //$('#checkboxDefault2').prop('checked', true);
-                        //$('#checkboxDefault3').prop('checked', true);
+                     
                     });
 
 
@@ -224,60 +217,41 @@
                             });
 
 
-                        //$('#btnFILTER').on('click', function(e) {
-                        //    $('#selecctall').prop('checked', false);
-                        //    $('.checkexport').each(function() {
-                        //        this.checked = false;
-                        //    });
-                        //    $('#checkboxDefault1').prop('checked', true);
-                        //    $('#checkboxDefault2').prop('checked', true);
-                        //    $('#checkboxDefault3').prop('checked', true);
-
-                        //});
-
-
                         $('#selecctall').change(function() {
                             if ($(this).is(':checked')) {
-                                $('.checkexport').prop('checked', this.checked);
-                                // Show a column
-
-                                $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
-                                var table = $('#pbck7-summary').DataTable();
-                                for (var i = 0; i < 4; i++) {
+                                $('.checkexport').each(function () {
+                                    this.checked = true;
+                                });
+                                for (var i = 0; i < 10; i++) {
                                     table.column(i).visible(true);
                                 }
+                                $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
+                                
+                            
                             } else {
                                 $('.checkexport').each(function() {
                                     this.checked = false;
                                 });
+                                for (var i = 0; i < 10; i++) {
+                                    table.column(i).visible(false);
+                                }
                                 $('#pbck7-summary').parents('div.dataTables_wrapper').first().hide();
                             }
                         });
 
                         $('.checkexport').on('click', function(e) {
-                            //e.preventDefault();
-                            var checked = document.querySelectorAll('input:checked');
+                            var column = table.column($(this).attr('datacolumn'));
 
-                            if (checked.length === 1) {
-                                for (var i = 0; i < 10; i++) {
-                                    table.column(i).visible(false);
+                            column.visible(!column.visible());
+
+                            $('#pbck7-summary').parents('div.dataTables_wrapper').first().hide();
+
+                            for (var i = 0; i < 12; i++) {
+                                if (table.column(i).visible()) {
+                                    $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
+                                    return;
                                 }
-                                //table.column(0).visible(true);
-
-                                // Get the column API object
-                                var column = table.column($(this).attr('datacolumn'));
-
-                                // Toggle the visibility
-                                column.visible(!column.visible());
-                                $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
-                            } else {
-                                // Get the column API object
-                                var column = table.column($(this).attr('datacolumn'));
-
-                                // Toggle the visibility
-                                column.visible(!column.visible());
                             }
-
 
                         });
 

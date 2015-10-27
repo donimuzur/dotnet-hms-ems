@@ -207,19 +207,18 @@
                         $('#MenuPbck7Report').addClass('open');
                         $('#MenuPbck3SummaryReport').addClass('active');
 
-                       
+
                     });
 
 
                     function setupDataTables(blFirst) {
-                        
+
                         var table;
                         if ($.fn.dataTable.isDataTable('#pbck3-summary')) {
                             table = $('#pbck3-summary').DataTable();
                             table.destroy();
                         }
-                        
-                  
+
 
                         table = $('#pbck3-summary').DataTable(
                             {
@@ -231,61 +230,55 @@
                             });
 
 
-                  
-                        $('#selecctall').change(function () {
+                        $('#selecctall').change(function() {
                             if ($(this).is(':checked')) {
                                 $('.checkexport').prop('checked', this.checked);
                                 // Show a column
 
                                 $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
-                                var table = $('#pbck3-summary').DataTable();
+
                                 for (var i = 0; i < 12; i++) {
                                     table.column(i).visible(true);
                                 }
                             } else {
-                                $('.checkexport').each(function () {
+                                $('.checkexport').each(function() {
                                     this.checked = false;
                                 });
-                                $('#pbck3-summary').parents('div.dataTables_wrapper').first().hide();
-                            }
-                        });
-                        
 
-                        $('.checkexport').on('click', function(e) {
-                            //e.preventDefault();
-                            var checked = document.querySelectorAll('input:checked');
-
-                            if (checked.length === 1) {
                                 for (var i = 0; i < 12; i++) {
                                     table.column(i).visible(false);
                                 }
-                                //table.column(0).visible(true);
-
-                                // Get the column API object
-                                var column = table.column($(this).attr('datacolumn'));
-
-                                // Toggle the visibility
-                                column.visible(!column.visible());
-                                $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
-                            } else {
-                                // Get the column API object
-                                var column = table.column($(this).attr('datacolumn'));
-
-                                // Toggle the visibility
-                                column.visible(!column.visible());
+                                $('#pbck3-summary').parents('div.dataTables_wrapper').first().hide();
                             }
+                        });
+
+
+                        $('.checkexport').on('click', function(e) {
+
+                            var column = table.column($(this).attr('datacolumn'));
+                            
+                            column.visible(!column.visible());
+                         
+                            $('#pbck3-summary').parents('div.dataTables_wrapper').first().hide();
+
+                            for (var i = 0; i < 12; i++) {
+                                if (table.column(i).visible()) {
+                                    $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
+                                    return;
+                                }
+                            }
+
 
 
                         });
 
-                     
 
                         if (blFirst) {
                             for (var i = 5; i < 12; i++) {
                                 table.column(i).visible(false);
                             }
                         } else {
-                            $('.checkexport').each(function () {
+                            $('.checkexport').each(function() {
 
                                 // Get the column API object
                                 var column = table.column($(this).attr('datacolumn'));
@@ -311,7 +304,7 @@
 
                             });
                         });
-                        
+
                         setupDataTables(false);
                     }
 
