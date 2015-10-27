@@ -26,6 +26,6 @@ namespace Sampoerna.EMS.Contract
         List<string> GetCompanyByUserId(string id);
         List<USER_PLANT_MAP> GetAllOrderByUserId();
         void Active(string isActive);
-
+        List<UserPlantMapDto> GetUser();
     }
 }
