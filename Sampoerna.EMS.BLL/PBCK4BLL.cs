@@ -1286,6 +1286,11 @@ namespace Sampoerna.EMS.BLL
            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+           if (!string.IsNullOrEmpty(input.AdditionalDocumentData.Ck3OfficeValue))
+           {
+               if (ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue) <= 0)
+                   throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ErrorCk3OfficeValue);
+           }
            //prepare for set changes history
            var origin = Mapper.Map<Pbck4Dto>(dbData);
            
@@ -1302,8 +1307,13 @@ namespace Sampoerna.EMS.BLL
            
            dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
            dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-           
-           dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
+           if (!string.IsNullOrEmpty(input.AdditionalDocumentData.Ck3OfficeValue))
+           {
+               dbData.CK3_OFFICE_VALUE =
+                   ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
+           }
+           else
+               dbData.CK3_OFFICE_VALUE = null;
 
            dbData.GOV_STATUS = input.GovStatusInput;
 

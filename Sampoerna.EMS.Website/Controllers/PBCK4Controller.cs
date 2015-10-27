@@ -325,7 +325,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 if (model.AllowGovApproveAndReject)
+                {
                     model.ActionType = "GovApproveDocument";
+                    if (!pbck4Details.Pbck4Dto.CK3_OFFICE_VALUE.HasValue
+                        || pbck4Details.Pbck4Dto.CK3_OFFICE_VALUE.Value <= 0)
+                        model.CK3_OFFICE_VALUE = "";
+                }
                 else if (model.DocumentStatus == Enums.DocumentStatus.Completed)
                     model.ActionType = "UpdateUploadedFilefterCompleted";
                 //else if (model.AllowGrCreated)
