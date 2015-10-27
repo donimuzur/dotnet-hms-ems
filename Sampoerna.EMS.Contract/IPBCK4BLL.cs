@@ -29,6 +29,8 @@ namespace Sampoerna.EMS.Contract
 
        List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId);
 
+       List<GetListBrandByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId);
+
        List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId);
 
        GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode);

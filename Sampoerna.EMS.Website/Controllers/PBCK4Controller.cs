@@ -325,7 +325,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 if (model.AllowGovApproveAndReject)
+                {
                     model.ActionType = "GovApproveDocument";
+                    if (!pbck4Details.Pbck4Dto.CK3_OFFICE_VALUE.HasValue
+                        || pbck4Details.Pbck4Dto.CK3_OFFICE_VALUE.Value <= 0)
+                        model.CK3_OFFICE_VALUE = "";
+                }
                 else if (model.DocumentStatus == Enums.DocumentStatus.Completed)
                     model.ActionType = "UpdateUploadedFilefterCompleted";
                 //else if (model.AllowGrCreated)
@@ -1659,8 +1664,9 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetListFaCode(string plantId)
         {
+            var brandOutput = _pbck4Bll.GetListFaCodeHaveBlockStockByPlant(plantId);
 
-            var brandOutput = _pbck4Bll.GetListBrandByPlant(plantId);
+            //var brandOutput = _pbck4Bll.GetListBrandByPlant(plantId);
             //var model = Mapper.Map<List<Pbck4InputManualViewModel>>(dbMaterial);
 
             return Json(brandOutput);
