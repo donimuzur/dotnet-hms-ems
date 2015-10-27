@@ -51,6 +51,14 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(s => s.LAST_NAME.Contains(input.LastName));
             }
 
+            if (input.ListPoas.Any())
+            {
+                foreach (var data in input.ListPoas)
+                {
+                    queryFilter = queryFilter.And(p => !data.POA_ID.Contains(p.USER_ID));
+                }
+            }
+
             
           
             Func<IQueryable<USER>, IOrderedQueryable<USER>> orderBy = null;
@@ -109,10 +117,6 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-
-        public List<USER> GetUsersNotPoa()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.Contract
 
         USER GetUserById(string id);
 
-        List<USER> GetUsersNotPoa();
+        
         
     }
 }
