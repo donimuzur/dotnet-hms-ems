@@ -63,7 +63,7 @@ namespace Sampoerna.EMS.Contract
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId,string plantNppbkcId, DateTime submissionDate, string destPlantNppbkcId, int? goodtypegroupid);
 
        List<int> GetAllYearsByGiDate();
-       List<CK5> GetAllCompletedPortToImporter();
+       
 
        Back1DataOutput GetBack1ByCk5Id(long ck5Id);
 
@@ -77,5 +77,7 @@ namespace Sampoerna.EMS.Contract
 
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ItemExternal(string plantId, string plantNppbkcId,
            DateTime submissionDate, string destPlantNppbkcId, int? goodtypegroupid);
+
+       List<CK5> GetAllCompletedPortToImporter(long currentCk5ref = 0);
    }
 }
