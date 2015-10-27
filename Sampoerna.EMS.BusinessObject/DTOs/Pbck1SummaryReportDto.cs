@@ -65,5 +65,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<Pbck1SummaryReportDto> Pbck1Childs { get; set; }
         public Pbck1SummaryReportDto Pbck1Parent { get; set; }
+        public List<CK5Dto> CK5List { get; set; }
     }
 }

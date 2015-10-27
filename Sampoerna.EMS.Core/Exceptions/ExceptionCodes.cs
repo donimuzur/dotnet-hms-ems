@@ -92,7 +92,16 @@ namespace Sampoerna.EMS.Core.Exceptions
             Lack1MissingPbck1Selected,
 
              [Description("PBCK-7 Error BACK-1 QTY Value.")]
-            Pbck7ItemErrorBack1QtyValue
+            Pbck7ItemErrorBack1QtyValue,
+
+             [Description("Error Item/Material empty.")]
+             MaterialOrItemErrorEmpty,
+
+             [Description("PBCK-4 Error Requested QTY Value.")]
+             Pbck4ItemErrorRequestedQtyValue,
+
+             [Description("PBCK-4 Error CK-3 Office Value.")]
+             Pbck4ErrorCk3OfficeValue
         }
         
         /// <summary>
