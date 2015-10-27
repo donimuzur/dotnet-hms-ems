@@ -8,6 +8,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.LinqExtensions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -41,9 +42,16 @@ namespace Sampoerna.EMS.BLL
 
         public List<USER_PLANT_MAP> GetAllOrderByUserId()
         {
+            return    _userPlantService.GetAll().OrderBy(g => g.USER_ID).ToList();
+        }
+        public List<UserPlantMapDto> GetUser()
+        {
 
-            var dbData = _userPlantService.GetAll().GroupBy(grp => grp.USER_ID).SelectMany(u => u.OrderBy(grp => grp.USER_ID)).ToList();
-            return dbData;
+            var distintcUserId = _userPlantService.GetAll().DistinctBy(x => x.USER_ID).OrderBy(x => x.USER_ID).ToList();
+
+            return Mapper.Map<List<UserPlantMapDto>>(distintcUserId);
+            //return _userPlantService.GetAll().Select(x => new UserPlantMapDto { UserId = x.USER_ID }).Distinct().ToList();
+
         }
 
         public USER_PLANT_MAP GetById(int id)
