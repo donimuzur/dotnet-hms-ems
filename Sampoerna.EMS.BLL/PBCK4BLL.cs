@@ -193,9 +193,23 @@ namespace Sampoerna.EMS.BLL
            return output;
        }
 
+       private void ValidatePbck4ItemInForms(Pbck4SaveInput input)
+       {
+           if (input.Pbck4Items.Count == 0)
+               throw new BLLException(ExceptionCodes.BLLExceptions.MaterialOrItemErrorEmpty);
+
+           foreach (var pbck4ItemDto in input.Pbck4Items)
+           {
+               if (pbck4ItemDto.REQUESTED_QTY <= 0)
+                   throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ItemErrorRequestedQtyValue);
+           }
+       }
        public Pbck4Dto SavePbck4(Pbck4SaveInput input)
        {
            bool isModified = false;
+
+           //validate pbck4 item
+           ValidatePbck4ItemInForms(input);
 
            //workflowhistory
            var inputWorkflowHistory = new Pbck4WorkflowHistoryInput();

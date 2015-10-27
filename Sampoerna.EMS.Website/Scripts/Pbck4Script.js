@@ -21,6 +21,12 @@ function OnReadyFunction() {
         var columnLength = $('#pbck4TableItem').find("thead tr:first th").length;
         $('#pbck4TableItem tbody').html('');
        
+        if (!IsValidDataUpload()) {
+            $('#modalBodyMessage').text('PBCK-4 Item Not Valid');
+            $('#ModalPbck4Items').modal('show');
+            return;
+        }
+            
         var data = "";
         for (var i = 0; i < datarows.length; i++) {
             data += '<tr>';
