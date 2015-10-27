@@ -427,7 +427,7 @@ namespace Sampoerna.EMS.BLL
        private void SetChangeHistory(string oldValue, string newValue, string fieldName, string userId, string ck5Id)
        {
            var changes = new CHANGES_HISTORY();
-           changes.FORM_TYPE_ID = Enums.MenuList.CK5;
+           changes.FORM_TYPE_ID = Enums.MenuList.PBCK4;
            changes.FORM_ID = ck5Id;
            changes.FIELD_NAME = fieldName;
            changes.MODIFIED_BY = userId;
