@@ -1371,7 +1371,21 @@ namespace Sampoerna.EMS.BLL
 
            input.DocumentNumber = dbData.PBCK4_NUMBER;
 
-           AddWorkflowHistory(input);
+           var latestAction = _workflowHistoryBll.GetByFormNumber(input.DocumentNumber);
+
+           if (latestAction.LastOrDefault().ACTION != input.ActionType)
+           {
+               AddWorkflowHistory(input);
+           }
+           else
+           {
+               var latestWorkflow = latestAction.LastOrDefault();
+
+               latestWorkflow.ACTION_DATE = DateTime.Now;
+
+               _workflowHistoryBll.Save(latestWorkflow);
+           }
+               
 
            if (IsCompletedWorkflow(dbData))
            {
@@ -1613,7 +1627,6 @@ namespace Sampoerna.EMS.BLL
                pbck4Matrikck1.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
                pbck4Matrikck1.JenisHt = pbck4Item.PRODUCT_ALIAS;
                pbck4Matrikck1.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
-               pbck4Matrikck1.Ck1RequestedQty = pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0;
 
                pbck4Matrikck1.BrandName = pbck4Item.BRAND_NAME;
                if (pbck4Item.CK1 == null)
@@ -1627,7 +1640,10 @@ namespace Sampoerna.EMS.BLL
                {
                    pbck4Matrikck1.Ck1No = pbck4Item.CK1.CK1_NUMBER;
                    pbck4Matrikck1.Ck1Date = DateReportDisplayString(pbck4Item.CK1.CK1_DATE, false);
-                   pbck4Matrikck1.Ck1OrderQty = pbck4Item.CK1.CK1_ITEM.Sum(x => x.MENGE.Value);
+                   pbck4Matrikck1.Ck1OrderQty = pbck4Item.CK1.CK1_ITEM
+                       .Where(x => x.MATERIAL_ID == pbck4Item.STICKER_CODE 
+                           && x.FA_CODE == pbck4Item.FA_CODE && x.WERKS == pbck4Item.PLANT_ID)
+                       .Sum(x => x.MENGE.Value);
                    pbck4Matrikck1.Ck1RequestedQty = pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0;
                }
 
