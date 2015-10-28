@@ -2874,15 +2874,20 @@ namespace Sampoerna.EMS.Website.Controllers
             styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
+            styleBorder.SetWrapText(true);
+
+            //SLStyle styleWrap = slDocument.CreateStyle();
+            //styleWrap.SetWrapText(true);
+
             //SLStyle styleHeader = slDocument.CreateStyle();
             //styleHeader.Font.Bold = true;
 
             slDocument.AutoFitColumn(1, iColumn-1);
             slDocument.SetCellStyle(1, 1, iRow-1, iColumn-1, styleBorder);
-            //slDocument.SetCellStyle(1, 1, 1, iColumn - 1, styleHeader);
+           
 
             var fileName = "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
-            //var path = Path.Combine(Server.MapPath("~/Content/upload/"), fileName);
+           
             var path = Path.Combine(Server.MapPath(Constans.CK5FolderPath), fileName);
 
             //var outpu = new 
