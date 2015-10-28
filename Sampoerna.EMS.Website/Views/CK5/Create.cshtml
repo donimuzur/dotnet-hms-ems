@@ -457,8 +457,27 @@
 
             $('#Ck5UploadModal').modal('show');
         });
-        $("#btnSaveMaterial").click(function() {
-            AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")');
+        $("#btnSaveMaterial").click(function () {
+            var formData = {};
+            var materialNumber = $(this).find("option:selected").val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
+            var goodTypeGroupId = $("#GoodType").val();
+            var convertedUom = $('#uploadConvertedUom').val();
+
+            formData.materialNumber = materialNumber;
+            formData.plantId = sourcePlant;
+            formData.goodTypeGroup = goodTypeGroupId;
+            formData.convertedUom = convertedUom;
+            ajaxValidateMaterial('@Url.Action("ValidateMaterial","CK5")',formData,function(data){
+                if (data.success) {
+                    AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")');
+                }
+            });
+            
         });
 
         $("#uploadMaterialNumber").change(function() {

@@ -528,7 +528,7 @@ namespace Sampoerna.EMS.BLL
                         messageList.Add("Selected UOM must be in KG / G / L");
                     else
                     {
-
+                        //var tempOutput = 
                         var material = _materialBll.getByID(ck5MaterialInput.Brand, ck5MaterialInput.Plant);
                         if (material != null)
                         {
@@ -584,6 +584,45 @@ namespace Sampoerna.EMS.BLL
 
             //return outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid);
             return outputList;
+        }
+
+        public CK5MaterialOutput ValidateMaterial(string materialId,string plantId,string convertedUom)
+        {
+            var output = new CK5MaterialOutput();
+            var material = _materialBll.getByID(materialId, plantId);
+            if (material != null)
+            {
+                if (convertedUom == material.BASE_UOM_ID)
+                {
+                    output.IsValid = true;
+
+                }
+                    
+
+                var matUom = material.MATERIAL_UOM;
+
+                var isConvertionExist = matUom.Where(x => x.MEINH == convertedUom).Any();
+
+                if (isConvertionExist)
+                {
+                    //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
+                    var umren = matUom.Where(x => x.MEINH == convertedUom).Single().UMREN;
+                    if (umren == null)
+                    {
+                        output.Message= "convertion to SAP in material master is null";
+
+                    }
+
+                }
+                else
+                {
+                    output.Message="convertion to SAP Base UOM in material master not exist";
+                }
+            }
+            else
+                output.Message="convertion to SAP Base UOM in material master not exist";
+
+            return output;
         }
 
         private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs)

@@ -1274,8 +1274,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult ValidateMaterial(string materialNumber, string plantId, string goodTypeGroup,
             string convertedUom)
         {
-            
-            //_ck5Bll.GetValidateMaterial()
+            //var material = new 
+            //_ck5Bll.CK5MaterialProcess()
             return Json(new
             {
                 success = false,
