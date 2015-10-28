@@ -35,8 +35,18 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? UsageQty { get; set; }
         public string OriginalUomId { get; set; }
         public string ConvertedUomId { get; set; }
+        public string Batch { get; set; }
         #endregion 
+        public int MaterialCodeUsageRecCount { get; set; }
 
+    }
+
+    public class Lack1TrackingDetailReportDto
+    {
+        public string MaterialId { get; set; }
+        public decimal SumQty { get; set; }
+        public string Batch { get; set; }
+        public int RecordCount { get; set; }
     }
 
     public class Lack1Ck5MaterialDetailReportDto
