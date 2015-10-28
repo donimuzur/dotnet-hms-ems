@@ -2343,13 +2343,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private List<CK5SummaryReportsItem> SearchDataSummaryReports(CK5SearchSummaryReportsViewModel filter = null)
         {
             CK5GetSummaryReportByParamInput input;
-            List<CK5Dto> dbData;
+            List<Ck5SummaryReportDto> dbData;
             if (filter == null)
             {
                 //Get All
                 input = new CK5GetSummaryReportByParamInput();
 
-                dbData = _ck5Bll.GetSummaryReportsByParam(input);
+                dbData = _ck5Bll.GetSummaryReportsViewByParam(input);
                 return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
             }
 
@@ -2357,7 +2357,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             input = Mapper.Map<CK5GetSummaryReportByParamInput>(filter);
 
-            dbData = _ck5Bll.GetSummaryReportsByParam(input);
+            dbData = _ck5Bll.GetSummaryReportsViewByParam(input);
             return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
         }
       

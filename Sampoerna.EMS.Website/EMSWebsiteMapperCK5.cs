@@ -355,6 +355,8 @@ namespace Sampoerna.EMS.Website
                 //.ForMember(dest => dest.KppbcCity, opt => opt.MapFrom(src => src.supp))
                 //.ForMember(dest => dest.KppbcNo, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_ID));
                 ;
+
+                Mapper.CreateMap<Ck5SummaryReportDto, CK5SummaryReportsItem>().IgnoreAllNonExisting();
         }
     }
 }
