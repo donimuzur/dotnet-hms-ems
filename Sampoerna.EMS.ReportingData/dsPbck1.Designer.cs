@@ -2085,6 +2085,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnSumAllPenggunaan;
             
+            private global::System.Data.DataColumn columnUomTotal;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public RealisasiP3BKCDataTable() {
@@ -2296,6 +2298,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn UomTotalColumn {
+                get {
+                    return this.columnUomTotal;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2353,7 +2363,8 @@ namespace Sampoerna.EMS.ReportingData {
                         string SummaryJenis, 
                         string SummaryJumlah, 
                         string SumAllPemasukan, 
-                        string SumAllPenggunaan) {
+                        string SumAllPenggunaan, 
+                        string UomTotal) {
                 RealisasiP3BKCRow rowRealisasiP3BKCRow = ((RealisasiP3BKCRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         No,
@@ -2377,7 +2388,8 @@ namespace Sampoerna.EMS.ReportingData {
                         SummaryJenis,
                         SummaryJumlah,
                         SumAllPemasukan,
-                        SumAllPenggunaan};
+                        SumAllPenggunaan,
+                        UomTotal};
                 rowRealisasiP3BKCRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowRealisasiP3BKCRow);
                 return rowRealisasiP3BKCRow;
@@ -2422,6 +2434,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnSummaryJumlah = base.Columns["SummaryJumlah"];
                 this.columnSumAllPemasukan = base.Columns["SumAllPemasukan"];
                 this.columnSumAllPenggunaan = base.Columns["SumAllPenggunaan"];
+                this.columnUomTotal = base.Columns["UomTotal"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2471,6 +2484,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnSumAllPemasukan);
                 this.columnSumAllPenggunaan = new global::System.Data.DataColumn("SumAllPenggunaan", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSumAllPenggunaan);
+                this.columnUomTotal = new global::System.Data.DataColumn("UomTotal", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnUomTotal);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5012,6 +5027,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string UomTotal {
+                get {
+                    try {
+                        return ((string)(this[this.tableRealisasiP3BKC.UomTotalColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'UomTotal\' in table \'RealisasiP3BKC\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableRealisasiP3BKC.UomTotalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsNoNull() {
                 return this.IsNull(this.tableRealisasiP3BKC.NoColumn);
             }
@@ -5272,6 +5303,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetSumAllPenggunaanNull() {
                 this[this.tableRealisasiP3BKC.SumAllPenggunaanColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsUomTotalNull() {
+                return this.IsNull(this.tableRealisasiP3BKC.UomTotalColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetUomTotalNull() {
+                this[this.tableRealisasiP3BKC.UomTotalColumn] = global::System.Convert.DBNull;
             }
         }
         

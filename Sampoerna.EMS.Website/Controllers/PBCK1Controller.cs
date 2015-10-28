@@ -2219,7 +2219,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             detailRow.Jenis = prod.ProductAlias;
                             detailRow.Uom = uomId.ToLower() == "g" ? UomKG : uomId;
                             detailRow.UomBKC = prod.UomId;
-
+                            detailRow.UomTotal = uomId.ToLower() == "g" ? UomKG : uomId;
                             if (item.SaldoAwal.HasValue)
                             {
                                 saldoAwal = conversion * item.SaldoAwal.Value;
@@ -2292,6 +2292,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         detailRow.SummaryJumlah = summaryTotal;
                         detailRow.SumAllPemasukan = String.Format("{0:n}", sumPemasukan);
                         detailRow.SumAllPenggunaan = String.Format("{0:n}", sumPenggunaan);
+                        detailRow.UomTotal = uomId.ToLower() == "g" ? UomKG : uomId;
                         ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
                     }
                 }
