@@ -1788,7 +1788,19 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK1_TO_MONTH.Value, dbData.LACK1_TO_YEAR.Value);
 
             //Set ProdPlan
-            rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN).ToList();
+
+            //proses prodplan
+            var prodPlantList = dbData.PBCK1_PROD_PLAN;
+            if (dbData.PLAN_PROD_FROM.HasValue && dbData.PLAN_PROD_TO.HasValue)
+            {
+                prodPlantList =
+                    prodPlantList.Where(
+                        c =>
+                            dbData.PLAN_PROD_TO != null && (dbData.PLAN_PROD_FROM != null && (c.MONTH.HasValue && c.MONTH.Value >= dbData.PLAN_PROD_FROM.Value.Month &&
+                                                                                              c.MONTH.Value <= dbData.PLAN_PROD_TO.Value.Year))).ToList();
+            }
+
+            rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(prodPlantList).ToList();
             rc = SetPbck1ProdPlanList(rc);
 
             //set realisasi P3BKC
@@ -1837,7 +1849,7 @@ namespace Sampoerna.EMS.BLL
             }));
             
             //set summary
-            var groupedData = prodPlanList.GroupBy(p => new
+            var groupedData = prodPlanList.Where(c => c.Amount.HasValue).GroupBy(p => new
             {
                 p.ProdTypeCode,
                 p.ProdTypeName,
@@ -1889,6 +1901,18 @@ namespace Sampoerna.EMS.BLL
                 rc.Add(item);
             }
 
+            var maxData = rc.OrderBy(o => o.BulanId).LastOrDefault();
+
+            decimal? latestSaldo = null;
+            int? monthId = null;
+
+            if (maxData != null)
+            {
+                //got the last data
+                latestSaldo = maxData.SaldoAkhir;
+                monthId = maxData.BulanId;
+            }
+
             var monthNotInRealizationData = from x in monthList
                 where !(realizationData.Select(d => d.PeriodMonth).ToList().Contains(x.MONTH_ID))
                 select x;
@@ -1899,12 +1923,13 @@ namespace Sampoerna.EMS.BLL
                 BulanId = month.MONTH_ID,
                 ProductionList = new List<Pbck1RealisasiProductionDetailDto>(),
                 SaldoAkhir = null,
-                SaldoAwal = null,
+                SaldoAwal = monthId.HasValue && (monthId.Value + 1) == month.MONTH_ID ? latestSaldo : null,
                 Penggunaan = null,
                 Pemasukan = null,
                 Lack1UomId = string.Empty,
                 Lack1UomName = string.Empty
             }));
+
             rc = rc.OrderBy(o => o.BulanId).ToList();
 
             var selectFirstData = summaryProdList.FirstOrDefault(c => !string.IsNullOrEmpty(c.ExcisableGoodsTypeId));
