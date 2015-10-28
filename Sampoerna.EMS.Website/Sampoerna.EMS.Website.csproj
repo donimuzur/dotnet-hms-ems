@@ -1237,6 +1237,7 @@
     <Content Include="Views\PBCK4\_Pbck4GovApprovalCompleted.cshtml" />
     <Content Include="Views\CK5\DetailsView.cshtml" />
     <Content Include="Views\PBCK1\MonitoringMutasi.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadAdd.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
