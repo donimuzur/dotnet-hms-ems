@@ -2189,6 +2189,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     visibilityUomBkc = "l";//Liter
                 }
                 var month = "";
+                decimal? latestSaldo = null;
+                var latestUomId = string.Empty;
                 foreach (var item in data)
                 {
                     if (month != item.Bulan) { 
@@ -2219,7 +2221,9 @@ namespace Sampoerna.EMS.Website.Controllers
                             detailRow.Jenis = prod.ProductAlias;
                             detailRow.Uom = uomId.ToLower() == "g" ? UomKG : uomId;
                             detailRow.UomBKC = prod.UomId;
+                            latestUomId = detailRow.Uom;
                             detailRow.UomTotal = uomId.ToLower() == "g" ? UomKG : uomId;
+                            detailRow.UomSaldoAwal = latestUomId;
                             if (item.SaldoAwal.HasValue)
                             {
                                 saldoAwal = conversion * item.SaldoAwal.Value;
@@ -2243,6 +2247,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             item.SaldoAkhir = saldoAwal + pemasukan - penggunaan;
                             saldoAkhir = item.SaldoAkhir.Value;
                             saldoAkhirDisplay = saldoAkhir.ToString("N2");
+                            latestSaldo = saldoAkhir;
 
                             detailRow.PemasukanDisplay = pemasukanDisplay;
                             detailRow.Pemasukan = pemasukan;
@@ -2272,12 +2277,13 @@ namespace Sampoerna.EMS.Website.Controllers
                         detailRow.No = item.BulanId.ToString(CultureInfo.InvariantCulture);
 
                         detailRow.Jenis = "";
-                        detailRow.Uom = "";
+                        detailRow.UomSaldoAwal = item.SaldoAwal.HasValue && latestSaldo.HasValue ? latestUomId : string.Empty;
                         detailRow.UomBKC = "";
+                        detailRow.Uom = string.Empty;
 
                         detailRow.PemasukanDisplay = "";
                         detailRow.Pemasukan = 0;
-                        detailRow.SaldoAwalDisplay = "";
+                        detailRow.SaldoAwalDisplay = item.SaldoAwal.HasValue && latestSaldo.HasValue ? latestSaldo.Value.ToString("N2") : "";
                         detailRow.SaldoAwal = 0;
                         detailRow.PenggunaanDisplay = "";
                         detailRow.Penggunaan = 0;
