@@ -583,7 +583,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Ck1No = datarow[1];
                         uploadItem.ReqQty = datarow[2];
                         uploadItem.NoPengawas = datarow[3];
-                        uploadItem.ApprovedQty = datarow[4];
+                        uploadItem.ApprovedQty = datarow[4] == string.Empty ? datarow[2] : datarow[4];
                         uploadItem.Remark = datarow[5];
                         
                         uploadItem.Plant = plantId;
