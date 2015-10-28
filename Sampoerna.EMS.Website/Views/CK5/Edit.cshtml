@@ -52,7 +52,7 @@
 
 
 
-                        @Html.HiddenFor(model => model.SourceNpwp)
+                        
                         @Html.HiddenFor(model => model.SourceNppbkcId)
                         @Html.HiddenFor(model => model.SourceCompanyCode)
                         @Html.HiddenFor(model => model.SourceKppbcName)
@@ -61,6 +61,10 @@
                         @if (Model.IsCk5PortToImporter)
                         {
                             @Html.HiddenFor(model => model.SourcePlantId)
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.SourceNpwp)
                         }
                         @*else
                         {*@
