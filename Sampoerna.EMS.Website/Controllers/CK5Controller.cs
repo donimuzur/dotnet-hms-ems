@@ -1278,7 +1278,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //_ck5Bll.CK5MaterialProcess()
             return Json(new
             {
-                success = false,
+                success = true,
                 error = "error"
             });
         }
