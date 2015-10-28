@@ -73,6 +73,9 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ConvertedUomId { get; set; }
         public string Batch { get; set; }
         #endregion 
+
+        public int MaterialCodeUsageRecCount { get; set; }
+
     }
 
 }

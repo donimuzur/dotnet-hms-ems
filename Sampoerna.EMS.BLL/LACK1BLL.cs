@@ -1798,8 +1798,18 @@ namespace Sampoerna.EMS.BLL
                                           {
                                               PurchaseDoc = rec.INVENTORY_MOVEMENT.PURCH_DOC,
                                               MaterialCode = a.MaterialId,
-                                              UsageQty = a.SumQty
+                                              UsageQty = a.SumQty,
+                                              Batch = rec.INVENTORY_MOVEMENT.BATCH
                                           }).ToList();
+
+                    //get count of record group by Batch and Material Code on Usage Receiving
+                    for (int index = 0; index < usageReceiving.Count; index++)
+                    {
+                        var recordCount =
+                            usageReceiving.Count(d => d.Batch == usageReceiving[index].Batch &&
+                                                      d.MaterialCode == usageReceiving[index].MaterialCode);
+                        usageReceiving[index].MaterialCodeUsageRecCount = recordCount;
+                    }
 
                     var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
                     foreach (var d in ck5MaterialList)
@@ -1823,7 +1833,8 @@ namespace Sampoerna.EMS.BLL
                                 OriginalUomId = d.UomId,
                                 ConvertedUomId = d.ConvertedUomId,
                                 MaterialCode = d.MaterialId,
-                                Batch = string.Empty
+                                Batch = string.Empty,
+                                MaterialCodeUsageRecCount = 1 //set default to 1
                             });
                         }
                         else
@@ -1842,7 +1853,8 @@ namespace Sampoerna.EMS.BLL
                                 OriginalUomId = d.UomId,
                                 ConvertedUomId = d.ConvertedUomId,
                                 MaterialCode = d.MaterialId,
-                                Batch = rec.Batch
+                                Batch = rec.Batch,
+                                MaterialCodeUsageRecCount = rec.MaterialCodeUsageRecCount
                             });
                         }
                     }
@@ -1864,7 +1876,8 @@ namespace Sampoerna.EMS.BLL
                         OriginalUomId = d.UomId,
                         ConvertedUomId = d.ConvertedUomId,
                         MaterialCode = d.MaterialId,
-                        Batch = string.Empty
+                        Batch = string.Empty,
+                        MaterialCodeUsageRecCount = 1 //set default
                     }).ToList();
                     item.TrackingConsolidations.AddRange(usageConsolidationData);
                 }
