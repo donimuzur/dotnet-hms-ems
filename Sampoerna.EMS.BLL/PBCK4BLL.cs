@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.BLL
        private IHeaderFooterBLL _headerFooterBll;
        private IWorkflowBLL _workflowBll;
 
-       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
+       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1, PBCK4_ITEM.CK1.CK1_ITEM";
 
        public PBCK4BLL(IUnitOfWork uow, ILogger logger)
        {
@@ -1569,10 +1569,8 @@ namespace Sampoerna.EMS.BLL
        }
       
        public Pbck4ReportDto GetPbck4ReportDataById(int id)
-       {
-           string includeTablesReport = includeTables + ",PBCK4_ITEM.CK1.CK1_ITEM";
-
-           var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTablesReport).FirstOrDefault();
+        {
+            var dtData = _repository.Get(c => c.PBCK4_ID == id, null, includeTables).FirstOrDefault();
             if (dtData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1623,29 +1621,14 @@ namespace Sampoerna.EMS.BLL
                    pbck4Matrikck1.Ck1No = "";
                    pbck4Matrikck1.Ck1Date = "";
                    pbck4Matrikck1.Ck1OrderQty = 0;
-                   //pbck4Matrikck1.Ck1RequestedQty = 0;
+                   pbck4Matrikck1.Ck1RequestedQty = 0;
                }
                else
                {
                    pbck4Matrikck1.Ck1No = pbck4Item.CK1.CK1_NUMBER;
                    pbck4Matrikck1.Ck1Date = DateReportDisplayString(pbck4Item.CK1.CK1_DATE, false);
-                   pbck4Matrikck1.Ck1OrderQty = 0;//todo ask
-                   //pbck4Matrikck1.Ck1RequestedQty = 0;//todo ask
-
-                   if (pbck4Item.CK1.CK1_ITEM != null)
-                   {
-
-                       foreach (var ck1Item in pbck4Item.CK1.CK1_ITEM)
-                       {
-                           if (ck1Item.FA_CODE == pbck4Item.FA_CODE
-                               && ck1Item.WERKS == pbck4Item.PLANT_ID)
-                           {
-                               pbck4Matrikck1.Ck1OrderQty = ck1Item.MENGE.HasValue ? ck1Item.MENGE.Value : 0;
-                               break;
-                           }
-                       }
-                   }
-                  
+                   pbck4Matrikck1.Ck1OrderQty = pbck4Item.CK1.CK1_ITEM.Sum(x => x.MENGE.Value);
+                   pbck4Matrikck1.Ck1RequestedQty = pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0;
                }
 
                pbck4Matrikck1.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
