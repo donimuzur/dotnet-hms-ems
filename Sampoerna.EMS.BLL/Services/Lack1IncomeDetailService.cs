@@ -43,5 +43,10 @@ namespace Sampoerna.EMS.BLL.Services
 
         }
 
+        public List<LACK1_INCOME_DETAIL> GetLack1IncomeDetailByCk5Id(long ck5Id)
+        {
+            return _repository.Get(c => c.CK5_ID == ck5Id, null, "LACK1,LACK1.MONTH").ToList();
+        }
+
     }
 }

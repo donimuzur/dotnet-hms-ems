@@ -13,6 +13,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.LinqExtensions;
 using Sampoerna.EMS.MessagingService;
@@ -55,6 +56,8 @@ namespace Sampoerna.EMS.BLL
         private IPbck3Services _pbck3Services;
         private ILFA1BLL _lfa1Bll;
         private IWorkflowBLL _workflowBll;
+        private ILack1IncomeDetailService _lack1IncomeDetailService;
+        private ILack2ItemService _lack2ItemService;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
@@ -93,6 +96,9 @@ namespace Sampoerna.EMS.BLL
             _pbck3Services = new Pbck3Services(_uow,_logger);
             _lfa1Bll = new LFA1BLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
+
+            _lack1IncomeDetailService = new Lack1IncomeDetailService(_uow, _logger);
+            _lack2ItemService = new Lack2ItemService(_uow, _logger);
         }
         
 
@@ -2150,7 +2156,7 @@ namespace Sampoerna.EMS.BLL
 
             if (input.DateTo.HasValue)
             {
-                input.DateFrom = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
+                input.DateTo = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
                 queryFilter = queryFilter.And(c => c.SUBMISSION_DATE <= input.DateTo);
             }
 
@@ -2168,6 +2174,28 @@ namespace Sampoerna.EMS.BLL
 
            
             var mapResult = Mapper.Map<List<Ck5SummaryReportDto>>(rc.ToList());
+
+            foreach (var ck5SummaryReportDto in mapResult)
+            {
+                //get from lack1_income_detail
+                var dbLack1 = _lack1IncomeDetailService.GetLack1IncomeDetailByCk5Id(ck5SummaryReportDto.Ck5Id);
+                var lack1Result = dbLack1.FirstOrDefault(a => a.LACK1.STATUS == Enums.DocumentStatus.Completed);
+                if (lack1Result != null)
+                {
+                    ck5SummaryReportDto.Lack1 = lack1Result.LACK1.MONTH.MONTH_NAME_IND + " " +
+                                                lack1Result.LACK1.PERIOD_YEAR;
+                }
+
+                var dbLack2 = _lack2ItemService.GetLack2ItemByCk5Id(ck5SummaryReportDto.Ck5Id);
+                var lack2Result = dbLack2.FirstOrDefault(a => a.LACK2.STATUS == Enums.DocumentStatus.Completed);
+                if (lack2Result != null)
+                {
+                    ck5SummaryReportDto.Lack2 = lack2Result.LACK2.MONTH.MONTH_NAME_IND + " " +
+                                                lack2Result.LACK2.PERIOD_YEAR;
+                }
+
+                //get from lack2_item
+            }
 
             return mapResult;
 

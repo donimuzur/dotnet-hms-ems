@@ -7,5 +7,6 @@ namespace Sampoerna.EMS.Contract.Services
     {
         void DeleteByLack1Id(int lack1Id);
         void DeleteDataList(IEnumerable<LACK1_INCOME_DETAIL> listToDelete);
+        List<LACK1_INCOME_DETAIL> GetLack1IncomeDetailByCk5Id(long ck5Id);
     }
 }

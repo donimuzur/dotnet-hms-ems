@@ -305,17 +305,50 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         {
             string resultValue = "";
 
-            foreach (var ck5Material in dbCk5.CK5_MATERIAL)
-            {
-                string ck5Convertion = ck5Material.CONVERTION.HasValue ? ck5Material.CONVERTION.ToString() : "0";
-                resultValue += ck5Convertion + " " + ck5Material.CONVERTED_UOM + ";;";
-            }
+            var listGroup = dbCk5.CK5_MATERIAL.GroupBy(a => a.CONVERTED_UOM)
+              .Select(x => new CK5ReportMaterialGroupUomDto
+              {
+                  Uom = x.Key,
+                  SumUom = x.Sum(c => c.QTY.HasValue ? c.QTY.Value : 0)
+              }).ToList();
 
-            if (resultValue.Length > 0)
-            {
-                resultValue = resultValue.Substring(0, resultValue.Length - 2);
-                resultValue = resultValue.Replace(";;", "\r\n");
-            }
+
+            resultValue = string.Join(Environment.NewLine,
+                listGroup.Select(c => c.SumUom.ToString("#,##0.#0") + " " + c.Uom));
+
+
+            //foreach (var ck5Material in dbCk5.CK5_MATERIAL.GroupBy(a=> a.BRAND))
+            //{
+            //    string ck5Convertion = ck5Material.CONVERTION.HasValue ? ck5Material.CONVERTION.ToString() : "0";
+            //    resultValue += ck5Convertion + " " + ck5Material.CONVERTED_UOM + ";;";
+            //}
+
+            //if (resultValue.Length > 0)
+            //{
+            //    resultValue = resultValue.Substring(0, resultValue.Length - 2);
+            //    resultValue = resultValue.Replace(";;", "\r\n");
+            //}
+            return resultValue;
+        }
+    }
+
+    public class Ck5MaterialNumberBoxUomSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            var listGroup = dbCk5.CK5_MATERIAL.GroupBy(a => a.UOM)
+              .Select(x => new CK5ReportMaterialGroupUomDto
+              {
+                  Uom = x.Key,
+                  SumUom = x.Sum(c => c.QTY.HasValue ? c.QTY.Value : 0)
+              }).ToList();
+
+
+            resultValue = string.Join(Environment.NewLine,
+                listGroup.Select(c => c.SumUom.ToString("#,##0.#0") + " " + c.Uom));
+       
             return resultValue;
         }
     }
