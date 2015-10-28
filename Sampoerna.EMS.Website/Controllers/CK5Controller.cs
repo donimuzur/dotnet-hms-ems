@@ -1278,7 +1278,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //_ck5Bll.GetValidateMaterial()
             return Json(new
             {
-                success = true,
+                success = false,
                 error = "error"
             });
         }
@@ -1836,7 +1836,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     Back1Date = model.Back1Date
                 }
             };
-            _ck5Bll.CK5Workflow(input);
+            
 
             if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn) return true;
             try
@@ -1853,7 +1853,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
                 rt.CreateCK5Xml(ck5XmlDto);
-
+                _ck5Bll.CK5Workflow(input);
                 return true;
             }
             catch (Exception ex)
