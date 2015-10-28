@@ -1270,6 +1270,20 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_CK5UploadListOriginal", model);
         }
 
+
+        public JsonResult ValidateMaterial(string materialNumber, string plantId, string goodTypeGroup,
+            string convertedUom)
+        {
+            
+            _ck5Bll.GetValidateMaterial()
+            return Json(new
+            {
+                success = false,
+                error = "error"
+            });
+        }
+
+
         #endregion
 
         #region export xls
