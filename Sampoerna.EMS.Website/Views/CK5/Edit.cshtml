@@ -550,7 +550,7 @@
         $('#Ck5UploadModal').modal('show');
     });
     $("#btnSaveMaterial").click(function () {
-        AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")');
+        AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', '@Url.Action("ValidateMaterial", "CK5")');
     });
 
     $("#uploadMaterialNumber").change(function () {
@@ -572,7 +572,7 @@
 
     $("#btnUpdateMaterial").click(function () {
 
-        UpdateRow();
+        UpdateRow('@Url.Action("ValidateMaterial", "CK5")');
     });
 
     $("#Ck5RefId").change(function () {
