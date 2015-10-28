@@ -80,7 +80,7 @@ namespace Sampoerna.EMS.XMLReader
                             detail.FA_CODE = _xmlMapper.GetElementValue(xElementItem.Element("FA_CODE"));
                             detail.MATERIAL_ID = _xmlMapper.GetElementValue(xElementItem.Element("MATNR"));
                             detail.WERKS = _xmlMapper.GetElementValue(xElementItem.Element("WERKS"));
-
+                            detail.UOM = _xmlMapper.GetElementValue(xElementItem.Element("MEINS"));
                             var existingBrand = getBrand(detail.MATERIAL_ID, detail.FA_CODE, detail.WERKS);
                             if (existingBrand == null)
                             {
@@ -89,14 +89,22 @@ namespace Sampoerna.EMS.XMLReader
 
                             var lembaran = Convert.ToDecimal(_xmlMapper.GetElementValue(xElementItem.Element("MENGE")));
                             
-                            ////
-                            //var seriesValue = existingBrand.ZAIDM_EX_SERIES.SERIES_VALUE.HasValue
-                            //    ? existingBrand.ZAIDM_EX_SERIES.SERIES_VALUE.Value
-                            //    : 0;
-                            //detail.MENGE = lembaran*seriesValue;
-                            detail.MENGE = lembaran;
+                            //////
+                            if (detail.UOM.ToUpper() == "PC")
+                            {
+                                detail.MENGE = lembaran;
+                            }
+                            else
+                            {
+                                var seriesValue = existingBrand.ZAIDM_EX_SERIES.SERIES_VALUE.HasValue
+                                ? existingBrand.ZAIDM_EX_SERIES.SERIES_VALUE.Value
+                                : 0;
+                                detail.MENGE = lembaran * seriesValue;
+                            }
                             
-                            detail.UOM = _xmlMapper.GetElementValue(xElementItem.Element("MEINS"));
+                            //detail.MENGE = lembaran;
+                            
+                            
                             item.CK1_ITEM.Add(detail);
                         }
                         

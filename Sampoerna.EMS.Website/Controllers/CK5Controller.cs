@@ -1275,10 +1275,10 @@ namespace Sampoerna.EMS.Website.Controllers
             string convertedUom)
         {
             
-            _ck5Bll.GetValidateMaterial()
+            //_ck5Bll.GetValidateMaterial()
             return Json(new
             {
-                success = false,
+                success = true,
                 error = "error"
             });
         }
