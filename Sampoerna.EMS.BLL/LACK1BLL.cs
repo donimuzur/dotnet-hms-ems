@@ -1777,18 +1777,29 @@ namespace Sampoerna.EMS.BLL
                     };
 
                     var usage =
-                        data.LACK1_TRACKING.Where(c => mvtTypeForUsage.Contains(c.INVENTORY_MOVEMENT.MVT)).ToList();
+                        data.LACK1_TRACKING.Where(c => mvtTypeForUsage.Contains(c.INVENTORY_MOVEMENT.MVT)).Select(d => d.INVENTORY_MOVEMENT).ToList();
+
+                    //GROUP AND SUM QTY BY BATCH AND MATERIAL_ID
+                    var groupedUsage = usage.GroupBy(p => new
+                    {
+                        p.MATERIAL_ID,
+                        p.BATCH
+                    }).Select(g => new Lack1TrackingDetailReportDto()
+                    {
+                        MaterialId = g.Key.MATERIAL_ID,
+                        Batch = g.Key.BATCH,
+                        SumQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
+                    }).ToList();
 
                     var usageReceiving = (from rec in receiving
-                                          join a in usage on new { rec.INVENTORY_MOVEMENT.BATCH, rec.INVENTORY_MOVEMENT.MATERIAL_ID } equals
-                                              new { a.INVENTORY_MOVEMENT.BATCH, a.INVENTORY_MOVEMENT.MATERIAL_ID }
+                                          join a in groupedUsage on new { rec.INVENTORY_MOVEMENT.BATCH, rec.INVENTORY_MOVEMENT.MATERIAL_ID } equals
+                                              new { BATCH = a.Batch, MATERIAL_ID = a.MaterialId }
                                           select new Lack1TrackingConsolidationDetailReportDto()
                                           {
                                               PurchaseDoc = rec.INVENTORY_MOVEMENT.PURCH_DOC,
-                                              MaterialCode = a.INVENTORY_MOVEMENT.MATERIAL_ID,
-                                              UsageQty = a.INVENTORY_MOVEMENT.QTY.HasValue ? a.INVENTORY_MOVEMENT.QTY.Value : 0
+                                              MaterialCode = a.MaterialId,
+                                              UsageQty = a.SumQty
                                           }).ToList();
-
 
                     var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
                     foreach (var d in ck5MaterialList)
@@ -1811,7 +1822,8 @@ namespace Sampoerna.EMS.BLL
                                 UsageQty = null,
                                 OriginalUomId = d.UomId,
                                 ConvertedUomId = d.ConvertedUomId,
-                                MaterialCode = d.MaterialId
+                                MaterialCode = d.MaterialId,
+                                Batch = string.Empty
                             });
                         }
                         else
@@ -1829,7 +1841,8 @@ namespace Sampoerna.EMS.BLL
                                 UsageQty = rec.UsageQty,
                                 OriginalUomId = d.UomId,
                                 ConvertedUomId = d.ConvertedUomId,
-                                MaterialCode = d.MaterialId
+                                MaterialCode = d.MaterialId,
+                                Batch = rec.Batch
                             });
                         }
                     }
@@ -1850,13 +1863,15 @@ namespace Sampoerna.EMS.BLL
                         UsageQty = null,
                         OriginalUomId = d.UomId,
                         ConvertedUomId = d.ConvertedUomId,
-                        MaterialCode = d.MaterialId
+                        MaterialCode = d.MaterialId,
+                        Batch = string.Empty
                     }).ToList();
                     item.TrackingConsolidations.AddRange(usageConsolidationData);
                 }
+                item.TrackingConsolidations = item.TrackingConsolidations.OrderBy(o => o.MaterialCode).ThenBy(o => o.Batch).ToList();
                 rc.Add(item);
             }
-            return rc;
+            return rc.OrderBy(o => o.Lack1Id).ToList();
         }
 
         #endregion

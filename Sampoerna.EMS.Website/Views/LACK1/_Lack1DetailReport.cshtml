@@ -37,7 +37,7 @@
                     <td>@item.TrackingConsolidations[0].MaterialCode</td>
                     @if (item.TrackingConsolidations[0].UsageQty.HasValue)
                     {
-                        <td>@((-1 * item.TrackingConsolidations[0].UsageQty.Value).ToString("N2"))</td>
+                        <td>@((-1 * item.TrackingConsolidations[0].UsageQty.Value).ToString("N3"))</td>
                     }
                     else
                     {
@@ -59,7 +59,7 @@
                         <td>@item.TrackingConsolidations[i].MaterialCode</td>
                         @if (item.TrackingConsolidations[i].UsageQty.HasValue)
                         {
-                            <td>@((-1 * item.TrackingConsolidations[i].UsageQty.Value).ToString("N2"))</td>
+                            <td>@((-1 * item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"))</td>
                         }
                         else
                         {

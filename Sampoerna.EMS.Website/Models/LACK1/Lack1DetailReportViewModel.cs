@@ -71,6 +71,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal? UsageQty { get; set; }
         public string OriginalUomId { get; set; }
         public string ConvertedUomId { get; set; }
+        public string Batch { get; set; }
         #endregion 
     }
 
