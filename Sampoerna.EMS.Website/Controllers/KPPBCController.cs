@@ -17,7 +17,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private IZaidmExKPPBCBLL _kppbcbll;
         public KPPBCController(IPageBLL pageBLL, IZaidmExKPPBCBLL kppbcbll, IChangesHistoryBLL changeHistorybll) 
-            : base(pageBLL, Enums.MenuList.POAMap) 
+            : base(pageBLL, Enums.MenuList.KPPBC) 
         {
             
             _changeHistoryBll = changeHistorybll;

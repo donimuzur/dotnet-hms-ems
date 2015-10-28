@@ -52,7 +52,7 @@
 
 
 
-                        @Html.HiddenFor(model => model.SourceNpwp)
+                        
                         @Html.HiddenFor(model => model.SourceNppbkcId)
                         @Html.HiddenFor(model => model.SourceCompanyCode)
                         @Html.HiddenFor(model => model.SourceKppbcName)
@@ -61,6 +61,10 @@
                         @if (Model.IsCk5PortToImporter)
                         {
                             @Html.HiddenFor(model => model.SourcePlantId)
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.SourceNpwp)
                         }
                         @*else
                         {*@
@@ -550,7 +554,7 @@
         $('#Ck5UploadModal').modal('show');
     });
     $("#btnSaveMaterial").click(function () {
-        AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")');
+        AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', '@Url.Action("ValidateMaterial", "CK5")');
     });
 
     $("#uploadMaterialNumber").change(function () {
@@ -572,7 +576,7 @@
 
     $("#btnUpdateMaterial").click(function () {
 
-        UpdateRow();
+        UpdateRow('@Url.Action("ValidateMaterial", "CK5")');
     });
 
     $("#Ck5RefId").change(function () {

@@ -889,3 +889,18 @@ function removeExistingDocument(id) {
    // alert(id);
     $(id).parent().parent().parent().remove();
 }
+
+function ajaxValidateMaterial(url, formData,callback) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                callback(data);                
+
+
+            }
+        });
+    }
+}
