@@ -39,8 +39,12 @@
                         @Html.HiddenFor(model => model.CeOfficeCode)
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
-                     
-                        @Html.HiddenFor(model => model.SourceNpwp)
+                        
+                        @if (!Model.IsCk5PortToImporter)
+                        {
+                            @Html.HiddenFor(model => model.SourceNpwp)    
+                        }
+                        
                         @Html.HiddenFor(model => model.SourceNppbkcId)
                         @Html.HiddenFor(model => model.SourceCompanyCode)
                       
@@ -474,9 +478,27 @@
         }
     });
 
-    $("#btnUpdateMaterial").click(function () {
+        $("#btnUpdateMaterial").click(function () {
+            var formData = {};
+            var materialNumber = $(this).find("option:selected").val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
-        UpdateRow();
+            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
+            var goodTypeGroupId = $("#GoodType").val();
+            var convertedUom = $('#uploadConvertedUom').val();
+
+            formData.materialNumber = materialNumber;
+            formData.plantId = sourcePlant;
+            formData.goodTypeGroup = goodTypeGroupId;
+            formData.convertedUom = convertedUom;
+            ajaxValidateMaterial('@Url.Action("ValidateMaterial","CK5")',formData,function(data){
+                if(data.success){
+                    UpdateRow();
+                }    
+            });
+        
     });
 
     $("#Ck5RefId").change(function () {
