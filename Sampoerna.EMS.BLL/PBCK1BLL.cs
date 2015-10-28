@@ -612,8 +612,8 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "Status";
                             break;
                         case "STATUS_GOV":
-                            changes.OLD_VALUE = EnumHelper.GetDescription(origin.StatusGov);
-                            changes.NEW_VALUE = EnumHelper.GetDescription(data.StatusGov);
+                            changes.OLD_VALUE = origin.StatusGov.HasValue ? EnumHelper.GetDescription(origin.StatusGov) : "NULL";
+                            changes.NEW_VALUE = data.StatusGov.HasValue ? EnumHelper.GetDescription(data.StatusGov) : "NULL";
                             changes.FIELD_NAME = "Status Goverment";
                             break;
                         case "QTY_APPROVED":
@@ -1349,7 +1349,7 @@ namespace Sampoerna.EMS.BLL
         private void GovApproveDocument(Pbck1WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
-
+            var origin = Mapper.Map<Pbck1Dto>(dbData);
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1357,8 +1357,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
+            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            //WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
 
             dbData.STATUS = Enums.DocumentStatus.Completed;
 
@@ -1375,8 +1375,11 @@ namespace Sampoerna.EMS.BLL
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 
-                AddWorkflowHistory(input);
+            var inputNew = Mapper.Map<Pbck1Dto>(dbData);
 
+            SetChangesHistory(origin, inputNew, input.UserId);
+
+            AddWorkflowHistory(input);
         }
 
         private void GovPartialApproveDocument(Pbck1WorkflowDocumentInput input)
@@ -1390,8 +1393,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
+            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            //WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
