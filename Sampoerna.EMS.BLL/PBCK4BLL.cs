@@ -1371,7 +1371,21 @@ namespace Sampoerna.EMS.BLL
 
            input.DocumentNumber = dbData.PBCK4_NUMBER;
 
-           AddWorkflowHistory(input);
+           var latestAction = _workflowHistoryBll.GetByFormNumber(input.DocumentNumber);
+
+           if (latestAction.LastOrDefault().ACTION != input.ActionType)
+           {
+               AddWorkflowHistory(input);
+           }
+           else
+           {
+               var latestWorkflow = latestAction.LastOrDefault();
+
+               latestWorkflow.ACTION_DATE = DateTime.Now;
+
+               _workflowHistoryBll.Save(latestWorkflow);
+           }
+               
 
            if (IsCompletedWorkflow(dbData))
            {
