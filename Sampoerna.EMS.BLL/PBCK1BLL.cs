@@ -2231,7 +2231,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<Pbck1Dto> GetAllPbck1ByPbck1Ref(int pbckRef)
         {
-            var dbData = _repository.Get(p => p.PBCK1_REF == pbckRef && p.STATUS == Enums.DocumentStatus.Completed);
+            var dbData = _repository.Get(p => (p.PBCK1_ID == pbckRef || p.PBCK1_REF == pbckRef) && p.STATUS == Enums.DocumentStatus.Completed);
 
             return Mapper.Map<List<Pbck1Dto>>(dbData);
         }

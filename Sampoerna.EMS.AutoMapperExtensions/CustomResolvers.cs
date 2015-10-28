@@ -235,4 +235,88 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             return "";
         }
     }
+
+    public class Ck5MaterialHjeSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            foreach (var ck5Material in dbCk5.CK5_MATERIAL)
+            {
+                string ck5Hje = ck5Material.HJE.HasValue ? ck5Material.HJE.Value.ToString("#,##0.#0") : "0";
+                resultValue += ck5Material.BRAND + "-" + ck5Hje + ";;";
+            }
+
+            if (resultValue.Length > 0)
+            {
+                resultValue = resultValue.Substring(0, resultValue.Length - 2);
+                resultValue = resultValue.Replace(";;", "\r\n");
+            }
+            return resultValue;
+        }
+    }
+
+    public class Ck5MaterialTariffSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            foreach (var ck5Material in dbCk5.CK5_MATERIAL)
+            {
+                string ck5Hje = ck5Material.TARIFF.HasValue ? ck5Material.TARIFF.Value.ToString("#,##0.#0") : "0";
+                resultValue += ck5Material.BRAND + "-" + ck5Hje + ";;";
+            }
+
+            if (resultValue.Length > 0)
+            {
+                resultValue = resultValue.Substring(0, resultValue.Length - 2);
+                resultValue = resultValue.Replace(";;", "\r\n");
+            }
+            return resultValue;
+        }
+    }
+
+    public class Ck5MaterialExciseValueSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            foreach (var ck5Material in dbCk5.CK5_MATERIAL)
+            {
+                string ck5Hje = ck5Material.EXCISE_VALUE.HasValue ? ck5Material.EXCISE_VALUE.Value.ToString("#,##0.#0") : "0";
+                resultValue += ck5Material.BRAND + "-" + ck5Hje + ";;";
+            }
+
+            if (resultValue.Length > 0)
+            {
+                resultValue = resultValue.Substring(0, resultValue.Length - 2);
+                resultValue = resultValue.Replace(";;", "\r\n");
+            }
+            return resultValue;
+        }
+    }
+
+    public class Ck5MaterialConvertionSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            foreach (var ck5Material in dbCk5.CK5_MATERIAL)
+            {
+                string ck5Convertion = ck5Material.CONVERTION.HasValue ? ck5Material.CONVERTION.ToString() : "0";
+                resultValue += ck5Convertion + " " + ck5Material.CONVERTED_UOM + ";;";
+            }
+
+            if (resultValue.Length > 0)
+            {
+                resultValue = resultValue.Substring(0, resultValue.Length - 2);
+                resultValue = resultValue.Replace(";;", "\r\n");
+            }
+            return resultValue;
+        }
+    }
 }

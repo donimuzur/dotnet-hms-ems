@@ -399,13 +399,18 @@
 
         //$("#SearchView_Ck5Type option[value='7']").remove();
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            setupDataTables();
+            setupDataTables(true);
+            //$('#MenuCK5SummaryReports').addClass('active');
+
+            $('#MenuCk5OpenDocument').removeClass('open');
+           
+            $('#MenuCk5Report').addClass('open');
             $('#MenuCK5SummaryReports').addClass('active');
+            
 
-
-            $("#SearchView_Ck5Type").change(function () {
+            $("#SearchView_Ck5Type").change(function() {
                 if ($("#SearchView_Ck5Type").length) {
                     //var ck5Type = $('option:selected', $(this)).text(); //$(this).find("option:selected").val();
 
@@ -419,7 +424,7 @@
         });
 
 
-        function setupDataTables() {
+        function setupDataTables(blFirst) {
 
             // DataTable
             var table = null;
@@ -438,7 +443,7 @@
                 });
 
 
-            $('.checkexport').on('click', function (e) {
+            $('.checkexport').on('click', function(e) {
                 // e.preventDefault();
 
                 // Get the column API object
@@ -448,13 +453,29 @@
                 column.visible(!column.visible());
             });
 
-            for (var i = 11; i < 40; i++) {
-                table.column(i).visible(false);
+            if (blFirst) {
+                for (var i = 11; i < 40; i++) {
+                    table.column(i).visible(false);
+                }
+            } else {
+                $('.checkexport').each(function () {
+
+                    // Get the column API object
+                    var column = table.column($(this).attr('datacolumn'));
+
+                    // Toggle the visibility
+                    column.visible(false);
+                    if ($(this).is(':checked')) {
+                        // Toggle the visibility
+                        column.visible(true);
+                    }
+
+                });
             }
         }
 
         function ReloadDataTables() {
-            setupDataTables();
+            setupDataTables(false);
         }
 
         function OnReset() {
@@ -462,8 +483,8 @@
             $(".selectreset").val($(".selectreset option:first").val());
         }
 
-        $("#btnExport").click(function () {
-           // $('#Ck5Modal').modal('show');
+        $("#btnExport").click(function() {
+            // $('#Ck5Modal').modal('show');
             GetSearchSummaryReports();
             $('#ExportSummaryReportsForms').submit();
         });
@@ -482,7 +503,7 @@
         }
 
 
-        $("#btnConfirm").click(function () {
+        $("#btnConfirm").click(function() {
             GetSearchSummaryReports();
             $('#ExportSummaryReportsForms').submit();
 

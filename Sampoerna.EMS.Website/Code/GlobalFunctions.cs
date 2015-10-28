@@ -39,12 +39,13 @@ namespace Sampoerna.EMS.Website.Code
 
         public static SelectList GetCreatorList(object selectedValue = null)
         {
-            IPOABLL poaBll = MvcApplication.GetInstance<POABLL>();
+            //IPOABLL poaBll = MvcApplication.GetInstance<POABLL>();
             IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
-            var users = userBll.GetUsers(new UserInput
-            {
-                ListPoas = poaBll.GetAll()
-            });
+            var users = userBll.GetUsers();
+            //    new UserInput
+            //{
+            //    ListPoas = poaBll.GetAll()
+            //});
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
             return new SelectList(selectItemSource, "ValueField", "TextField", selectedValue);
         }
