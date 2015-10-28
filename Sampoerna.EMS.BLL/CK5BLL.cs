@@ -534,35 +534,44 @@ namespace Sampoerna.EMS.BLL
                         messageList.Add("Selected UOM must be in KG / G / L");
                     else
                     {
-                        //var tempOutput = 
-                        var material = _materialBll.getByID(ck5MaterialInput.Brand, ck5MaterialInput.Plant);
-                        if (material != null)
+                        var tempOutput = ValidateMaterial(ck5MaterialInput.Brand, ck5MaterialInput.Plant,
+                            ck5MaterialInput.ConvertedUom);
+                        if (tempOutput.IsValid)
                         {
-                            if (ck5MaterialInput.ConvertedUom == material.BASE_UOM_ID)
-                                continue;
-
-                            var matUom = material.MATERIAL_UOM;
-
-                            var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Any();
-
-                            if (isConvertionExist)
-                            {
-                                //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                                var umren = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Single().UMREN;
-                                if (umren == null)
-                                {
-                                    messageList.Add("convertion to SAP in material master is null");
-
-                                }
-
-                            }
-                            else
-                            {
-                                messageList.Add("convertion to SAP Base UOM in material master not exist");
-                            }
+                            continue;
                         }
                         else
-                            messageList.Add("convertion to SAP Base UOM in material master not exist");
+                        {
+                            messageList.Add(tempOutput.Message);
+                        }
+                        //var material = _materialBll.getByID(ck5MaterialInput.Brand, ck5MaterialInput.Plant);
+                        //if (material != null)
+                        //{
+                        //    if (ck5MaterialInput.ConvertedUom == material.BASE_UOM_ID)
+                        //        continue;
+
+                        //    var matUom = material.MATERIAL_UOM;
+
+                        //    var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Any();
+
+                        //    if (isConvertionExist)
+                        //    {
+                        //        //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
+                        //        var umren = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Single().UMREN;
+                        //        if (umren == null)
+                        //        {
+                        //            messageList.Add("convertion to SAP in material master is null");
+
+                        //        }
+
+                        //    }
+                        //    else
+                        //    {
+                        //        messageList.Add("convertion to SAP Base UOM in material master not exist");
+                        //    }
+                        //}
+                        //else
+                        //    messageList.Add("convertion to SAP Base UOM in material master not exist");
                     }
                 }
 
@@ -601,7 +610,7 @@ namespace Sampoerna.EMS.BLL
                 if (convertedUom == material.BASE_UOM_ID)
                 {
                     output.IsValid = true;
-
+                    return output;
                 }
                     
 
