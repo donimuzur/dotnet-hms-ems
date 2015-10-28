@@ -1567,7 +1567,7 @@ namespace Sampoerna.EMS.BLL
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
             queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed
-                && c.PBCK1_TYPE == Enums.PBCK1Type.New);
+                && c.PBCK1_TYPE == Enums.PBCK1Type.New || c.PBCK1_TYPE == Enums.PBCK1Type.Additional);
 
             if (input.YearFrom.HasValue)
                 queryFilter =
