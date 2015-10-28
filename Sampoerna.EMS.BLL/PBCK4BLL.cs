@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.BLL
        private IHeaderFooterBLL _headerFooterBll;
        private IWorkflowBLL _workflowBll;
 
-       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
+       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1, PBCK4_ITEM.CK1.CK1_ITEM";
 
        public PBCK4BLL(IUnitOfWork uow, ILogger logger)
        {
@@ -1276,6 +1276,39 @@ namespace Sampoerna.EMS.BLL
            dbData.APPROVED_QTY = approvedQty;
            _repositoryPbck4Items.Update(dbData);
        }
+
+       private void UpdatePbck4ItemGovApproval(Pbck4WorkflowDocumentInput input)
+       {
+           //string oldValue = "";
+           //string newValue = "";
+
+           foreach (var pbck4ItemDto in input.UploadItemDto)
+           {
+               var pbck4Item = _repositoryPbck4Items.GetByID(pbck4ItemDto.PBCK4_ITEM_ID);
+               if (pbck4Item != null)
+               {
+
+                   if (input.GovStatusInput == Enums.DocumentStatusGov.FullApproved)
+                       pbck4Item.APPROVED_QTY = pbck4Item.REQUESTED_QTY;
+                   else if (input.GovStatusInput == Enums.DocumentStatusGov.PartialApproved)
+                   {
+                       //back1 qty must be > 0
+                       if (!pbck4ItemDto.APPROVED_QTY.HasValue
+                           || pbck4ItemDto.APPROVED_QTY.Value <= 0)
+                           throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ItemErrorBack1QtyValue);
+
+                       if (pbck4ItemDto.APPROVED_QTY >= pbck4ItemDto.REQUESTED_QTY)
+                           throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ItemBack1MoreThanQtyValue);
+                       pbck4Item.APPROVED_QTY = pbck4ItemDto.APPROVED_QTY;
+                   }
+                   _repositoryPbck4Items.Update(pbck4Item);
+
+                   ////set change history
+                   //SetChangeHistoryPbck3(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
+               }
+           }
+       }
+
        private void GovApproveDocument(Pbck4WorkflowDocumentInput input)
        {
            var dbData = _repository.GetByID(input.DocumentId);
@@ -1291,6 +1324,10 @@ namespace Sampoerna.EMS.BLL
                if (ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue) <= 0)
                    throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ErrorCk3OfficeValue);
            }
+
+           //update pbck4-item
+           UpdatePbck4ItemGovApproval(input);
+
            //prepare for set changes history
            var origin = Mapper.Map<Pbck4Dto>(dbData);
            
@@ -1326,11 +1363,11 @@ namespace Sampoerna.EMS.BLL
            //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
            InsertOrDeletePbck4Item(pbckDocument);
 
-           //update item updated
-           foreach (var pbck4ItemDto in input.UploadItemDto)
-           {
-               UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
-           }
+           ////update item updated
+           //foreach (var pbck4ItemDto in input.UploadItemDto)
+           //{
+           //    UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
+           //}
 
            input.DocumentNumber = dbData.PBCK4_NUMBER;
 
@@ -1584,14 +1621,14 @@ namespace Sampoerna.EMS.BLL
                    pbck4Matrikck1.Ck1No = "";
                    pbck4Matrikck1.Ck1Date = "";
                    pbck4Matrikck1.Ck1OrderQty = 0;
-                   //pbck4Matrikck1.Ck1RequestedQty = 0;
+                   pbck4Matrikck1.Ck1RequestedQty = 0;
                }
                else
                {
                    pbck4Matrikck1.Ck1No = pbck4Item.CK1.CK1_NUMBER;
                    pbck4Matrikck1.Ck1Date = DateReportDisplayString(pbck4Item.CK1.CK1_DATE, false);
-                   pbck4Matrikck1.Ck1OrderQty = 0;//todo ask
-                   //pbck4Matrikck1.Ck1RequestedQty = 0;//todo ask
+                   pbck4Matrikck1.Ck1OrderQty = pbck4Item.CK1.CK1_ITEM.Sum(x => x.MENGE.Value);
+                   pbck4Matrikck1.Ck1RequestedQty = pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0;
                }
 
                pbck4Matrikck1.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;

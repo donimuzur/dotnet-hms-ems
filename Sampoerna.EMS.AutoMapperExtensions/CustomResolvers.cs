@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using AutoMapper;
 using AutoMapper.Internal;
 using Sampoerna.EMS.BusinessObject;
@@ -149,10 +150,15 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             string resultUOM = "Boxes";
 
             if (value.GRAND_TOTAL_EX.HasValue)
-                resultValue = value.GRAND_TOTAL_EX.Value.ToString();
+                resultValue = value.Ck5MaterialDtos.Sum(x => x.QTY).ToString();
 
             if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
-                resultUOM = value.PackageUomName;
+            {
+                var firstOrDefault = value.Ck5MaterialDtos.FirstOrDefault();
+                if (firstOrDefault != null)
+                    resultUOM = firstOrDefault.UOM;
+
+            }
 
             return resultValue + " " + resultUOM;
         }

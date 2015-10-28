@@ -145,8 +145,8 @@ namespace Sampoerna.EMS.BLL.Services
 
             Expression<Func<LACK1, bool>> queryFilter =
                 c => c.BUKRS == input.CompanyCode && c.LACK1_LEVEL == input.Lack1Level
-                     && c.NPPBKC_ID == input.NppbkcId && (int)c.STATUS >= (int)Core.Enums.DocumentStatus.Approved
-                     && c.EX_GOODTYP == input.ExcisableGoodsType
+                     && c.NPPBKC_ID == input.NppbkcId && c.STATUS == Enums.DocumentStatus.Completed
+                     && c.EX_GOODTYP == input.ExcisableGoodsType && c.LACK1_ID != input.ExcludeLack1Id
                      && c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId;
 
             if (input.Lack1Level == Core.Enums.Lack1Level.Plant)

@@ -2133,6 +2133,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //var convertedUomId = reportDto.Detail.ConvertedUomId;
             var realisasiUomId = reportDto.Detail.RealisasiUomId;
             var bkcExcisableGoodsTypeDesc = reportDto.Detail.RealisasiBkcExcisableGoodsTypeDesc;
+            var sumPemasukan = 0m;
+            var sumPenggunaan = 0m;
             if (data != null && data.Count > 0)
             {
                 var summaryJenis = string.Join(Environment.NewLine, summaryData.Select(d => d.ProductAlias));
@@ -2146,6 +2148,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 var UomKG = "kg";
+                
                 var visibilityUomPemasukan = "l"; //code : l (liter), k (kg) regarding to converted uom id
                 var visibilityUomPenggunaan = "l"; //code : l (liter), k (kg) regarding to converted uom id
                 var visibilityUomBkc = "l"; //code : l (liter), k (kg), b (batang) //from Excisable Goods Type on Brand Registration by Prod_Code in Lack1 Production Data
@@ -2185,9 +2188,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     conversionBkc = 1;
                     visibilityUomBkc = "l";//Liter
                 }
-
+                var month = "";
                 foreach (var item in data)
                 {
+                    if (month != item.Bulan) { 
+                        sumPemasukan += item.Pemasukan == null ? 0 : (conversion*item.Pemasukan.Value);
+                        sumPenggunaan += item.Penggunaan == null ? 0 : (conversion*item.Penggunaan.Value);
+                    }
+                    month = item.Bulan;
                     if (item.ProductionList.Count > 0)
                     {
                         foreach (var prod in item.ProductionList)
@@ -2211,7 +2219,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             detailRow.Jenis = prod.ProductAlias;
                             detailRow.Uom = uomId.ToLower() == "g" ? UomKG : uomId;
                             detailRow.UomBKC = prod.UomId;
-
+                            detailRow.UomTotal = uomId.ToLower() == "g" ? UomKG : uomId;
                             if (item.SaldoAwal.HasValue)
                             {
                                 saldoAwal = conversion * item.SaldoAwal.Value;
@@ -2251,6 +2259,8 @@ namespace Sampoerna.EMS.Website.Controllers
                             detailRow.VisibilityUomPenggunaan = visibilityUomPenggunaan;
                             detailRow.SummaryJenis = summaryJenis;
                             detailRow.SummaryJumlah = summaryTotal;
+                            detailRow.SumAllPemasukan = String.Format("{0:n}",sumPemasukan);
+                            detailRow.SumAllPenggunaan = String.Format("{0:n}",sumPenggunaan);
                             ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
                         }
                     }
@@ -2261,25 +2271,28 @@ namespace Sampoerna.EMS.Website.Controllers
                         detailRow.Bulan = item.Bulan;
                         detailRow.No = item.BulanId.ToString(CultureInfo.InvariantCulture);
 
-                        detailRow.Jenis = "-";
-                        detailRow.Uom = uomId.ToLower() == "g" ? UomKG : uomId;
-                        detailRow.UomBKC = "-";
+                        detailRow.Jenis = "";
+                        detailRow.Uom = "";
+                        detailRow.UomBKC = "";
 
-                        detailRow.PemasukanDisplay = "-";
+                        detailRow.PemasukanDisplay = "";
                         detailRow.Pemasukan = 0;
-                        detailRow.SaldoAwalDisplay = "-";
+                        detailRow.SaldoAwalDisplay = "";
                         detailRow.SaldoAwal = 0;
-                        detailRow.PenggunaanDisplay = "-";
+                        detailRow.PenggunaanDisplay = "";
                         detailRow.Penggunaan = 0;
-                        detailRow.JumlahDisplay = "-";
+                        detailRow.JumlahDisplay = "";
                         detailRow.Jumlah = 0;
                         detailRow.SaldoAkhir = 0;
-                        detailRow.SaldoAkhirDisplay = "-";
+                        detailRow.SaldoAkhirDisplay = "";
                         detailRow.VisibilityUomJumlahBkc = visibilityUomBkc;
                         detailRow.VisibilityUomPemasukan = visibilityUomPemasukan;
                         detailRow.VisibilityUomPenggunaan = visibilityUomPenggunaan;
                         detailRow.SummaryJenis = summaryJenis;
                         detailRow.SummaryJumlah = summaryTotal;
+                        detailRow.SumAllPemasukan = String.Format("{0:n}", sumPemasukan);
+                        detailRow.SumAllPenggunaan = String.Format("{0:n}", sumPenggunaan);
+                        detailRow.UomTotal = uomId.ToLower() == "g" ? UomKG : uomId;
                         ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
                     }
                 }
@@ -2308,6 +2321,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.VisibilityUomPenggunaan = "l";
                 detailRow.SummaryJenis = "";
                 detailRow.SummaryJumlah = "";
+                detailRow.SumAllPemasukan = String.Format("{0:n}", sumPemasukan);
+                detailRow.SumAllPenggunaan = String.Format("{0:n}", sumPenggunaan);
                 ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
             }
             return ds;
