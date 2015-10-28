@@ -609,7 +609,7 @@ namespace Sampoerna.EMS.BLL
                input.TotalHje = (ConvertHelper.GetDecimal(input.Hje)*ConvertHelper.GetDecimal(input.ReqQty)).ToString("f2");
 
                input.TotalStamps =
-                   (ConvertHelper.GetDecimal(input.Hje)*ConvertHelper.GetDecimal(input.ReqQty)*
+                   (ConvertHelper.GetDecimal(input.Tariff)*ConvertHelper.GetDecimal(input.ReqQty)*
                     ConvertHelper.GetDecimal(input.Content)).ToString("f2");
 
 
