@@ -39,8 +39,12 @@ namespace Sampoerna.EMS.Website.Code
 
         public static SelectList GetCreatorList(object selectedValue = null)
         {
+            IPOABLL poaBll = MvcApplication.GetInstance<POABLL>();
             IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
-            var users = userBll.GetUsers(new UserInput());
+            var users = userBll.GetUsers(new UserInput
+            {
+                ListPoas = poaBll.GetAll()
+            });
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
             return new SelectList(selectItemSource, "ValueField", "TextField", selectedValue);
         }
@@ -506,6 +510,17 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
 
             return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetUserNotPoa(string poaId)
+        {
+            IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
+          
+            var users = userBll.GetUsers();
+          
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
         }
     }
 
