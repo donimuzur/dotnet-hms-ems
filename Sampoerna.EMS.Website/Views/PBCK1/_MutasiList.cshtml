@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1MonitoringMutasiViewModel
+﻿@using DocumentFormat.OpenXml.Office.CustomUI
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1MonitoringMutasiViewModel
 
 <div id="table-mutasi-preview">
     <table id="monitoringMutasi" class="table table-bordered table-striped js-options-table">
@@ -12,6 +13,58 @@
                 <th>Grand Total Exciseable</th>
             </tr>
         </thead>
+        <tbody>
+            @{
+                int row = 1;
+
+                foreach (var item in Model.DetailsList)
+                 {
+                     <tr>
+                         <td>
+                             @row;
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.Pbck1Number);
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.TotalPbck1Quota);
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.QuotaRemaining);
+                         </td>
+                         <td>
+                             @if (item.Ck5List.Any())
+                             {
+                                 foreach (var ck5 in item.Ck5List)
+                                 {
+                                     @ck5.DocumentNumber <br />
+                                 }
+                             }
+                             else
+                             {
+                                 <text>-</text>
+                             }
+                            
+                         </td>
+                         <td>
+                             @if (item.Ck5List.Any())
+                             {
+                                 foreach (var ck5 in item.Ck5List)
+                                 {
+                                     @ck5.Qty <br />
+                                 }
+                             }
+                             else
+                             {
+                                 <text>-</text>
+                             }
+
+                         </td>
+
+                     </tr>
+                 }
+            }
+        </tbody>
 
     </table>
 </div>

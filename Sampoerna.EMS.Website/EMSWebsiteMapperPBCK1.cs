@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Poa, opt => opt.ResolveUsing<StringToNullableIntegerResolver>().FromMember(src => src.Poa))
                 .ForMember(dest => dest.Creator, opt => opt.ResolveUsing<StringToNullableIntegerResolver>().FromMember(src => src.Creator))
                 ;
-            
+
             Mapper.CreateMap<Pbck1ProdConvModel, Pbck1ProdConverterDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ProdTypeCode, opt => opt.MapFrom(src => src.ProductCode))
                 .ForMember(dest => dest.ProdTypeName, opt => opt.MapFrom(src => src.ProdTypeName))
@@ -138,6 +138,17 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received)))
                 .ForMember(dest => dest.Pbck1PeriodDisplay, opt => opt.MapFrom(src => (src.PeriodFrom.ToString("dd MMM yyyy") + " - " + src.PeriodTo.Value.ToString("dd MMM yyyy"))))
                 ;
+
+            #region Monitoring Mutasi
+
+            //Mapper.CreateMap<Pbck1MonitoringUsageDto, Pbck1MonitoringMutasiItem>().IgnoreAllNonExisting()
+            //    .ForMember(dest => dest.TotalPbck1Quota,
+            //        opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
+            //    .ForMember(dest => dest.QuotaRemaining,
+            //        opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received)));
+            //Mapper.CreateMap<Pbck1SummaryReportDto, Pbck1MonitoringMutasiItem>();
+            
+            #endregion
 
         }
     }
