@@ -3,6 +3,7 @@
 <table id="lack1Table" border="0" class="table table-bordered">
     <thead>
         <tr>
+            <th rowspan="2">LACK-1 Level</th>
             <th rowspan="2">Begining Balance</th>
             <th colspan="5">Receiving</th>
             <th colspan="5">Usage</th>
@@ -30,6 +31,7 @@
                 var lastBatch = item.TrackingConsolidations[0].Batch;
                 
                 <tr>
+                    <td rowspan="@item.TrackingConsolidations.Count">@item.Lack1LevelName</td>
                     <td rowspan="@item.TrackingConsolidations.Count">@item.BeginingBalance.ToString("N2")</td>
                     <td>@item.TrackingConsolidations[0].Ck5Number</td>
                     <td>@item.TrackingConsolidations[0].Ck5RegistrationNumber</td>
@@ -82,6 +84,7 @@
             else
             {
                 <tr>
+                    <td>@item.Lack1LevelName</td>
                     <td>@item.BeginingBalance.ToString("N2")</td>
                     <td>-</td>
                     <td>-</td>

@@ -245,6 +245,7 @@ namespace Sampoerna.EMS.Website
                 .IgnoreAllNonExisting();
 
             Mapper.CreateMap<Lack1DetailReportDto, Lack1DetailReportItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Lack1LevelName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Lack1Level)))
                 .ForMember(dest => dest.TrackingConsolidations, opt => opt.MapFrom(src
                     => Mapper.Map<List<Lack1TrackingConsolidationDetailReportItemModel>>(src.TrackingConsolidations)))
                 ;

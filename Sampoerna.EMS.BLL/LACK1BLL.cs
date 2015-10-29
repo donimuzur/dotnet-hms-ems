@@ -1681,6 +1681,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     Lack1Id = data.LACK1_ID,
                     Lack1Number = data.LACK1_NUMBER,
+                    Lack1Level = data.LACK1_LEVEL,
                     BeginingBalance = data.BEGINING_BALANCE,
                     EndingBalance = data.BEGINING_BALANCE + data.TOTAL_INCOME - data.USAGE,
                     TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>()
