@@ -21,7 +21,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
     public class Pbck1MonitoringMutasiItem
     {
-        public int Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }
 
         //include docnumber, GrandtotalExciseable from summaryReport
@@ -33,6 +32,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         [UIHint("FormatQty")]
         public decimal TotalPbck1Quota { get; set; }
+
+        public string pbck1Number { get; set; }
+        public SelectList pbck1NumberList { get; set; }
     }
 
     public class Pbck1FilterMonitoringMutasiViewModel

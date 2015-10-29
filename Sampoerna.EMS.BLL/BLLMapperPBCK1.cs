@@ -309,6 +309,8 @@ namespace Sampoerna.EMS.BLL
             #region Monitoring Mutasi
 
             Mapper.CreateMap<PBCK1, Pbck1MonitoringMutasiDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID))
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.NUMBER))
                 .ForMember(dest => dest.AdditionalExGoodsQuota, opt => opt.MapFrom(src => src.PBCK11 != null
                     ? src.PBCK11.Where(c => c.STATUS == Enums.DocumentStatus.Completed
                                             && c.QTY_APPROVED.HasValue)
@@ -318,7 +320,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.CK5 != null
                     ? src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX)
                     : 0))
-                .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE));
+                .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
+                 .ForMember(dest => dest.Ck5List, opt => opt.MapFrom(src => src.CK5)); 
 
 
             #endregion

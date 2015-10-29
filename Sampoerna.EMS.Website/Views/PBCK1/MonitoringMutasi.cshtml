@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1MonitoringMutasiViewModel
+﻿@using DocumentFormat.OpenXml.Office.CustomUI
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1MonitoringMutasiViewModel
 
 @{
     ViewBag.Title = "Monitoring Mutasi";
@@ -29,27 +30,38 @@
                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div role="form" class="form-excise">
-                                            <div class="row">
-                                                <div class="col-md-7">
-                                                    <label class="col-md-3">PBCK-1 Number</label>
-                                                    <div class="col-md-6">
-                                                        <select class="form-control"></select>
-                                                    </div>
-                                                </div>
+                                        @using (Ajax.BeginForm("FilterMutasiIndex", "Pbck1",
+                new AjaxOptions
+                {
+                    HttpMethod = "POST",
+                    InsertionMode = InsertionMode.Replace,
+                    UpdateTargetId = "contenttable",
+                    OnComplete = "ReloadDataTables"
 
-                                                <div class="col-md-4">
-                                                    <div class="row">
+                }))
+                                        {
+                                            <div role="form" class="form-excise">
+                                                <div class="row">
+                                                    <div class="col-md-7">
+                                                        <label class="col-md-3">PBCK-1 Number</label>
                                                         <div class="col-md-6">
-                                                            <button class="btn btn-blue full">FILTER</button>
+                                                            @Html.DropDownListFor(model => model.pbck1Number, Model.pbck1NumberList, "All", new { @class = "form-control selectreset" })
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <button class="btn btn-blue full">RESET</button>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <input type="submit" class="btn btn-blue full" value="FILTER">
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn btn-blue full">RESET</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        }
                                     </div>
 
                                 </div>
@@ -64,23 +76,42 @@
         @Html.Partial("_MutasiList")
     </div>
 </div>
+
 @section scripts
 {
-    <script type="text/javascript" language="javascript" class="init">
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
         $('#MenuPBCK1MonitoringMutasi').addClass('active');
 
-        $(document).ready(function () {
+
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
+            });
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#DailyProduction')) {
+                table = $('#monitoringMutasi').DataTable();
+                table.destroy();
+            }
+
+            table = $('#monitoringMutasi').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
 
             // Setup - add a text input to each footer cell
             $('#monitoringMutasi .filters th').each(function () {
                 var idx = $(this).index();
-                if (idx != 0 && idx != 4) {
-                    $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
                 }
             });
-
-            // DataTable
-            var table = $('#monitoringMutasi').DataTable();
 
             // Apply the search
             table.columns().eq(0).each(function (colIdx) {
@@ -91,8 +122,22 @@
                         .draw();
                 });
             });
+        }
+
+        $(document).ready(function () {
+            setupDataTables();
         });
 
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            setupDataTables();
+        }
 
     </script>
 

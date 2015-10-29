@@ -2505,6 +2505,7 @@ namespace Sampoerna.EMS.BLL
         public List<Pbck1MonitoringMutasiDto> GetMonitoringMutasiByParam(Pbck1GetMonitoringMutasiByParamInput input)
         {
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
+           
             if (!string.IsNullOrEmpty(input.pbck1Number))
             {
                 queryFilter = queryFilter.And(c => c.NUMBER == input.pbck1Number);
@@ -2517,7 +2518,7 @@ namespace Sampoerna.EMS.BLL
                     orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(input.SortOrderColumn));
                 }
 
-                var dbData = _repository.Get(queryFilter, orderBy);
+                var dbData = _repository.Get(queryFilter, orderBy,"CK5");
                 if (dbData == null)
                 {
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);

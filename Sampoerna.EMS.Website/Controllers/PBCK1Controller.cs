@@ -2725,6 +2725,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult MonitoringMutasi()
         {
+            
             var model = InitMonitoringMutasi(new Pbck1MonitoringMutasiViewModel
             {
                 MainMenu = _mainMenu,
@@ -2736,7 +2737,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Pbck1MonitoringMutasiViewModel InitMonitoringMutasi(Pbck1MonitoringMutasiViewModel model)
         {
-            model.pbck1NumberList = new SelectList(model.DetailsList.Select(c => c.Pbck1Number).AsEnumerable());
+            var monitoringDtos = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput());
+            model.pbck1NumberList = new SelectList(monitoringDtos, "Pbck1Number", "Pbck1Number");
+            
             var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
 
             var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
@@ -2746,6 +2749,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        [HttpPost]
+        public PartialViewResult FilterMutasiIndex(Pbck1MonitoringMutasiViewModel model)
+        {
+            var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
+         
+
+            var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
+            var result = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbData);
+            var viewModel = new Pbck1MonitoringMutasiViewModel ();
+            viewModel.DetailsList = result;
+            return PartialView("_MutasiList", viewModel);
+        }
 
 
         #endregion
