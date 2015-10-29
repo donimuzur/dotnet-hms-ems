@@ -44,9 +44,17 @@
 
 
                     <input type="button" class="btn btn-grey" value="Print Preview" id="btnPreview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
-                    <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    
+                    @if (Model.DocStatus.HasValue && Model.DocStatus.Value == Enums.DocumentStatus.Completed)
+                    {
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-doc" />
+                    }
+                    else
+                    {
+                        <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
+                    }
 
-                    @if (Model.DocStatus.HasValue && (Model.DocStatus.Value == Enums.DocumentStatus.Draft || Model.DocStatus.Value == Enums.DocumentStatus.Rejected))
+                    @if (Model.DocStatus.HasValue && (Model.DocStatus.Value == Enums.DocumentStatus.Draft || Model.DocStatus.Value == Enums.DocumentStatus.Rejected || Model.DocStatus.Value == Enums.DocumentStatus.GovRejected))
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }
@@ -334,6 +342,10 @@
 
             $('#btnCancel').click(function(e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
+            });
+
+            $('#btn-back-completed-doc').click(function (e) {
+                location.href = '@Url.Action("CompletedDocument", "Pbck1")';
             });
 
             $("#Detail_SupplierPortId").change(function() {

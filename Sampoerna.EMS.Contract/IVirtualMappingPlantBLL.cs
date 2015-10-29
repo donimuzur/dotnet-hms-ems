@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -11,10 +10,8 @@ namespace Sampoerna.EMS.Contract
         VIRTUAL_PLANT_MAP GetByIdIncludeChild(int id);
         List<VIRTUAL_PLANT_MAP> GetAll();
         bool Save(VIRTUAL_PLANT_MAP virtualPlant);
-        // SaveVirtualMappingPlantOutput Save(VIRTUAL_PLANT_MAP virtualPlantMap);
 
+        bool Delete(int id, string userId);
 
-
-        void Delete(int id, string p);
     }
 }
