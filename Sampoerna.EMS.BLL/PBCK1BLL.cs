@@ -227,7 +227,8 @@ namespace Sampoerna.EMS.BLL
                 dbData.PBCK1_PROD_CONVERTER = Mapper.Map<List<PBCK1_PROD_CONVERTER>>(input.Pbck1.Pbck1ProdConverter);
                 dbData.PBCK1_PROD_PLAN = Mapper.Map<List<PBCK1_PROD_PLAN>>(input.Pbck1.Pbck1ProdPlan);
                 dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.Pbck1.Pbck1DecreeDoc);
-                if(dbData.STATUS == Enums.DocumentStatus.Rejected){
+                if (dbData.STATUS == Enums.DocumentStatus.Rejected || dbData.STATUS == Enums.DocumentStatus.GovRejected)
+                {
                     dbData.STATUS = Enums.DocumentStatus.Draft;
                 }
             }
@@ -1323,7 +1324,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected)
+            if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected && dbData.STATUS != Enums.DocumentStatus.GovRejected)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             if (dbData.CREATED_BY != input.UserId)
@@ -1683,7 +1684,35 @@ namespace Sampoerna.EMS.BLL
             if (pbck1Data == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            return Mapper.Map<List<Pbck1MonitoringUsageDto>>(pbck1Data);
+            var listData = Mapper.Map<List<Pbck1MonitoringUsageDto>>(pbck1Data);
+
+            listData = GetCorrectReceivedQuantity(listData);
+
+            return listData;
+        }
+
+        private List<Pbck1MonitoringUsageDto> GetCorrectReceivedQuantity(List<Pbck1MonitoringUsageDto> listData)
+        {
+            var list = listData;
+
+            foreach(var item in list)
+            {
+                var receivedAdditional = Convert.ToDecimal(0);
+
+                var listPbckAdditional = _repository.GetByID(item.Pbck1Id).PBCK11;
+
+                foreach (var data in listPbckAdditional)
+                {
+                    var additionalRec = _repository.GetByID(data.PBCK1_ID).CK5
+                                            .Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX);
+
+                    receivedAdditional += additionalRec.Value;
+                }
+
+                item.ReceivedAdditional = receivedAdditional;
+            }
+
+            return list;
         }
 
         #endregion

@@ -96,7 +96,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PeriodFrom, opt => opt.MapFrom(src => src.PeriodFrom.ToString("dd MMMM yyyy")))
                 .ForMember(dest => dest.PeriodTo, opt => opt.MapFrom(src => src.PeriodTo == null ? "-" : src.PeriodTo.Value.ToString("dd MMMM yyyy")))
                 .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn == null ? "" : src.ReportedOn.Value.ToString("dd MMMM yyyy")))
-                .ForMember(dest => dest.RequestQty, opt => opt.MapFrom(src => src.RequestQty == null ? "" : src.RequestQty.Value.ToString("dd MMMM yyyy")))
+                .ForMember(dest => dest.RequestQty, opt => opt.MapFrom(src => src.RequestQty == null ? "" : String.Format("{0:n}", src.RequestQty.Value)))
                 .ForMember(dest => dest.StatusGov, opt => opt.MapFrom(src => src.StatusGovName))
                 .ForMember(dest => dest.QtyApproved, opt => opt.MapFrom(src => src.QtyApproved == null ? "" : String.Format("{0:n}", src.QtyApproved.Value)))
                 .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DecreeDate == null ? "" : src.DecreeDate.Value.ToString("dd MMMM yyyy")))
