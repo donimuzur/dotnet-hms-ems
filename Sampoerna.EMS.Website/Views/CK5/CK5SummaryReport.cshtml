@@ -364,7 +364,11 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.LoadingPortName, new { @class = "checkbox checkexport", @datacolumn = "39" })Loading Port Name
                                                     </label>
                                                 </div>
-
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Status, new { @class = "checkbox checkexport", @datacolumn = "40" })Status
+                                                    </label>
+                                                </div>
 
 
 
@@ -452,7 +456,7 @@
                     $('.checkexport').each(function () {
                         this.checked = true;
                     });
-                    for (var i = 0; i < 40; i++) {
+                    for (var i = 0; i < 41; i++) {
                         table.column(i).visible(true);
                     }
                     $('#ck5Table').parents('div.dataTables_wrapper').first().show();
@@ -462,7 +466,7 @@
                     $('.checkexport').each(function () {
                         this.checked = false;
                     });
-                    for (var i = 0; i < 40; i++) {
+                    for (var i = 0; i < 41; i++) {
                         table.column(i).visible(false);
                     }
                     $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
@@ -480,7 +484,7 @@
                 
                 $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
 
-                for (var i = 0; i < 40; i++) {
+                for (var i = 0; i < 41; i++) {
                     if (table.column(i).visible()) {
                         $('#ck5Table').parents('div.dataTables_wrapper').first().show();
                         return;
@@ -490,7 +494,7 @@
             });
 
             if (blFirst) {
-                for (var i = 11; i < 40; i++) {
+                for (var i = 11; i < 41; i++) {
                     table.column(i).visible(false);
                 }
             } else {
