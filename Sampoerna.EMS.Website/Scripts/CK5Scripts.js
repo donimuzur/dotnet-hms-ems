@@ -741,7 +741,46 @@ function ValidateCk5Form(ck5Type) {
             result = false;
             //isValidCk5Detail = false;
         }
+
+        if ($('#IsFreeTextSource').is(':checked')) {
+            if ($('#SourcePlantId').val() == '') {
+                AddValidationClass(false, 'SourcePlantId');
+                result = false;
+                
+                $('#collapseTwo').removeClass('collapse');
+                $('#collapseTwo').addClass('in');
+                $("#collapseTwo").css({ height: "auto" });
+            }
+            
+            if ($('#SourcePlantNameManual').val() == '') {
+                AddValidationClass(false, 'SourcePlantNameManual');
+                result = false;
+                
+                $('#collapseTwo').removeClass('collapse');
+                $('#collapseTwo').addClass('in');
+                $("#collapseTwo").css({ height: "auto" });
+            }
+        }
         
+        if ($('#IsFreeTextDestination').is(':checked')) {
+            if ($('#DestPlantId').val() == '') {
+                AddValidationClass(false, 'DestPlantId');
+                result = false;
+
+                $('#collapseThree').removeClass('collapse');
+                $('#collapseThree').addClass('in');
+                $("#collapseThree").css({ height: "auto" });
+            }
+
+            if ($('#DestPlantNameManual').val() == '') {
+                AddValidationClass(false, 'DestPlantNameManual');
+                result = false;
+
+                $('#collapseThree').removeClass('collapse');
+                $('#collapseThree').addClass('in');
+                $("#collapseThree").css({ height: "auto" });
+            }
+        }
     }
 
     if (result) {

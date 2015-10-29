@@ -292,5 +292,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string DestCompanyNameManual { get; set; }
         public string DestAddressManual { get; set; }
         public string DestKppbcNameManual { get; set; }
+
+        public Enums.Ck5ManualFreeText? MANUAL_FREE_TEXT { get; set; }
     }
 }
