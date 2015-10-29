@@ -56,7 +56,7 @@
                                                     @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
 
                                                 }
-                                                else if (!Model.IsCk5ImporterToPlant)
+                                                else if (Model.IsCk5ImporterToPlant)
                                                 {
                                                     @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control", style = "display : none" })
                                                     var sourcePlantText = Model.SourcePlantId + " - " + Model.SourcePlantName;
