@@ -260,7 +260,7 @@
                 location.href = '@Url.Action("CK5MarketReturn", "CK5")';
 
         });
-        
+
         OnReadyFunction('@Model.Ck5Type.ToString()');
 
         var sourcePlant = $('#SourcePlantId').find("option:selected").val();
@@ -299,14 +299,14 @@
     $("#DestPlantId").change(function () {
         if ($("#DestPlantId").length) {
             //alert($('#SubmissionDate').val());
-            
+
             var isUseDest = false;
             if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
                 isUseDest = true;
                 RemoveTable();
             }
 
-            
+
 
             var destPlant = $(this).find("option:selected").val();
 
@@ -334,20 +334,20 @@
             } else {
 
                 @*if (isUseDest) {
-                    
+
                     ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetailsDest", "CK5")', { plantId: destPlant, ck5Type: '@Model.Ck5Type'});
                 } else {*@
 
 
-                    var submissionDate = $('#SubmissionDate').val();
-                    if (submissionDate == '')
-                        submissionDate = '@DateTime.Now';
+                var submissionDate = $('#SubmissionDate').val();
+                if (submissionDate == '')
+                    submissionDate = '@DateTime.Now';
 
-                    var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-                    var goodTypeGroupId = $("#GoodType").val();
-                    var sourceNppbkcId = $("#SourceNppbkcId").val();
+                var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                var goodTypeGroupId = $("#GoodType").val();
+                var sourceNppbkcId = $("#SourceNppbkcId").val();
 
-                    ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodTypeGroupId: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodTypeGroupId: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
 
                 //}
 
@@ -457,30 +457,10 @@
 
             $('#Ck5UploadModal').modal('show');
         });
-        $("#btnSaveMaterial").click(function() {
-            AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")');
-        });
-
-        $("#uploadMaterialNumber").change(function() {
-            if ($("#uploadMaterialNumber").length) {
-                var materialNumber = $(this).find("option:selected").val();
-
-
-                if (materialNumber == '') {
-                    $("#uploadMaterialHje").val('0');
-                    $("#uploadMaterialTariff").val('0');
-
-                } else {
-                    var sourcePlant = $("#uploadMaterialPlant").val(); // $("#SourcePlantId").find("option:selected").val();
-
-                    ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
-            }
-        }
-    });
-
-        $("#btnUpdateMaterial").click(function () {
-            var formData = {};
-            var materialNumber = $(this).find("option:selected").val();
+        $("#btnSaveMaterial").click(function () {
+            
+            var materialInput = {};
+            var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
             if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
@@ -489,16 +469,76 @@
             var goodTypeGroupId = $("#GoodType").val();
             var convertedUom = $('#uploadConvertedUom').val();
 
-            formData.materialNumber = materialNumber;
-            formData.plantId = sourcePlant;
-            formData.goodTypeGroup = goodTypeGroupId;
-            formData.convertedUom = convertedUom;
-            ajaxValidateMaterial('@Url.Action("ValidateMaterial","CK5")',formData,function(data){
-                if(data.success){
-                    UpdateRow();
-                }    
+            //materialInput.materialNumber = materialNumber;
+            //materialInput.plantId = sourcePlant;
+            //materialInput.goodTypeGroup = goodTypeGroupId;
+            //materialInput.convertedUom = convertedUom;
+            materialInput.Plant = sourcePlant;
+            materialInput.Brand = materialNumber;
+            materialInput.Qty = $('#uploadMaterialQty').val();
+            materialInput.Uom = $('#uploadMaterialUom').val();
+            materialInput.Convertion = $('#uploadMaterialConvertion').val();
+            materialInput.ConvertedUom = convertedUom;
+            materialInput.UsdValue = $('#uploadUsdValue').val();
+            materialInput.Note = $('#uploadNote').val();
+
+            materialInput.ExGoodsType = goodTypeGroupId;
+            ajaxValidateMaterial('@Url.Action("ValidateMaterial","CK5")', { input: materialInput }, function (data) {
+                AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', data);
+                
             });
-        
+
+    });
+
+    $("#uploadMaterialNumber").change(function () {
+        if ($("#uploadMaterialNumber").length) {
+            var materialNumber = $(this).find("option:selected").val();
+
+
+            if (materialNumber == '') {
+                $("#uploadMaterialHje").val('0');
+                $("#uploadMaterialTariff").val('0');
+
+            } else {
+                var sourcePlant = $("#uploadMaterialPlant").val(); // $("#SourcePlantId").find("option:selected").val();
+
+                ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+            }
+        }
+    });
+
+    $("#btnUpdateMaterial").click(function () {
+        var materialInput = {};
+        var materialNumber = $('#uploadMaterialNumber').val();
+        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+        if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+            sourcePlant = $("#DestPlantId").find("option:selected").val();
+        }
+        var goodTypeGroupId = $("#GoodType").val();
+        var convertedUom = $('#uploadConvertedUom').val();
+
+        //materialInput.materialNumber = materialNumber;
+        //materialInput.plantId = sourcePlant;
+        //materialInput.goodTypeGroup = goodTypeGroupId;
+        //materialInput.convertedUom = convertedUom;
+        materialInput.Plant = sourcePlant;
+        materialInput.Brand = materialNumber;
+        materialInput.Qty = $('#uploadMaterialQty').val();
+        materialInput.Uom = $('#uploadMaterialUom').val();
+        materialInput.Convertion = $('#uploadMaterialConvertion').val();
+        materialInput.ConvertedUom = convertedUom;
+        materialInput.UsdValue = $('#uploadUsdValue').val();
+        materialInput.Note = $('#uploadNote').val();
+
+        materialInput.ExGoodsType = goodTypeGroupId;
+        ajaxValidateMaterial('@Url.Action("ValidateMaterial","CK5")', { input: materialInput }, function (data) {
+            UpdateRow(data);
+            //if (data.success) {
+            //    UpdateRow(data);
+            //}
+        });
+
     });
 
     $("#Ck5RefId").change(function () {

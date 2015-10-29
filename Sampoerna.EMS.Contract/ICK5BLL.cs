@@ -81,5 +81,7 @@ namespace Sampoerna.EMS.Contract
            DateTime submissionDate, string destPlantNppbkcId, int? goodtypegroupid);
 
        List<CK5> GetAllCompletedPortToImporter(long currentCk5ref = 0);
+
+       CK5MaterialOutput ValidateMaterial(CK5MaterialInput input, Enums.ExGoodsType groupType);
    }
 }

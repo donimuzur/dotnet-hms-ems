@@ -41,6 +41,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string Qty { get; set; }
 
+        public string QtyPackaging { get; set; }
+
         public string UOM { get; set; }
 
         public string POA { get; set; }

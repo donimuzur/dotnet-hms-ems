@@ -534,35 +534,16 @@ namespace Sampoerna.EMS.BLL
                         messageList.Add("Selected UOM must be in KG / G / L");
                     else
                     {
-
-                        var material = _materialBll.getByID(ck5MaterialInput.Brand, ck5MaterialInput.Plant);
-                        if (material != null)
+                        var tempOutput = ValidateMaterialSapUom(ck5MaterialInput);
+                        if (tempOutput.IsValid)
                         {
-                            if (ck5MaterialInput.ConvertedUom == material.BASE_UOM_ID)
-                                continue;
-
-                            var matUom = material.MATERIAL_UOM;
-
-                            var isConvertionExist = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Any();
-
-                            if (isConvertionExist)
-                            {
-                                //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                                var umren = matUom.Where(x => x.MEINH == ck5MaterialInput.ConvertedUom).Single().UMREN;
-                                if (umren == null)
-                                {
-                                    messageList.Add("convertion to SAP in material master is null");
-
-                                }
-
-                            }
-                            else
-                            {
-                                messageList.Add("convertion to SAP Base UOM in material master not exist");
-                            }
+                            continue;
                         }
                         else
-                            messageList.Add("convertion to SAP Base UOM in material master not exist");
+                        {
+                            messageList.Add(tempOutput.Message);
+                        }
+                        
                     }
                 }
 
@@ -590,6 +571,125 @@ namespace Sampoerna.EMS.BLL
 
             //return outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid);
             return outputList;
+        }
+
+        private CK5MaterialOutput ValidateMaterialSapUom(CK5MaterialInput input)
+        {
+            var output = new CK5MaterialOutput();
+
+            output.IsValid = true;
+            
+                    
+            var material = _materialBll.getByID(input.Brand, input.Plant);
+            if (material != null)
+            {
+                if (input.ConvertedUom == material.BASE_UOM_ID)
+                    output.IsValid = true;
+
+                var matUom = material.MATERIAL_UOM;
+
+                var isConvertionExist = matUom.Where(x => x.MEINH == input.ConvertedUom).Any();
+
+                if (isConvertionExist)
+                {
+                    //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
+                    var umren = matUom.Where(x => x.MEINH == input.ConvertedUom).Single().UMREN;
+                    if (umren == null)
+                    {
+                        output.Message = "convertion to SAP in material master is null";
+                        output.IsValid = false;
+                    }
+
+                }
+                else
+                {
+                    output.Message = "convertion to SAP Base UOM in material master not exist";
+                    output.IsValid = false;
+                }
+            }
+            else
+            {
+                output.Message = "convertion to SAP Base UOM in material master not exist";
+                output.IsValid = false;
+            }
+                
+
+            return output;
+        }
+
+        public CK5MaterialOutput ValidateMaterial(CK5MaterialInput input, Enums.ExGoodsType groupType)
+        {
+            //var output = new CK5MaterialOutput();
+            var messageList = new List<string>();
+            var output = Mapper.Map<CK5MaterialOutput>(input);
+
+            //change to 
+            //zaidm_ex_material
+            //where werks and sticker_code
+            //validate
+            var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(input.Plant, input.Brand);
+            if (dbMaterial == null)
+                messageList.Add("Material Number Not Exist");
+            else
+            {
+                if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
+                    messageList.Add("Material is not Excisable goods");
+                else
+                {
+                    var exGroupType = _goodTypeGroupBLL.GetGroupByExGroupType(dbMaterial.EXC_GOOD_TYP);
+                    if (exGroupType.EX_GROUP_TYPE_ID != (int)groupType)
+                    {
+                        messageList.Add("This material good type is not matched");
+                    }
+                }
+            }
+            if (!Utils.ConvertHelper.IsNumeric(input.Qty))
+                messageList.Add("Qty not valid");
+
+            if (!_uomBll.IsUomIdExist(input.Uom))
+                messageList.Add("UOM not exist");
+
+            if (!Utils.ConvertHelper.IsNumeric(input.Convertion))
+                messageList.Add("Convertion not valid");
+
+            if (!_uomBll.IsUomIdExist(input.ConvertedUom))
+                messageList.Add("ConvertedUom not valid");
+            else
+            {
+                var uom = _uomBll.GetById(input.ConvertedUom);
+                if (!_allowedCk5Uom.Contains(uom.UOM_ID))
+                    messageList.Add("Selected UOM must be in KG / G / L");
+                else
+                {
+                    var tempOutput = ValidateMaterialSapUom(input);
+                    if (!tempOutput.IsValid)
+                    {
+                        messageList.Add(tempOutput.Message);
+                    }
+                    
+                }
+            }
+
+            if (!Utils.ConvertHelper.IsNumeric(input.UsdValue))
+                messageList.Add("UsdValue not valid");
+
+
+
+            if (messageList.Count > 0)
+            {
+                output.IsValid = false;
+                output.Message = "";
+                foreach (var message in messageList)
+                {
+                    output.Message += message + ";";
+                }
+            }
+            else
+            {
+                output.IsValid = true;
+            }
+
+            return output;
         }
 
         private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs)
