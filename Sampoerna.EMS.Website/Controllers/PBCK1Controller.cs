@@ -198,7 +198,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile, string goodType)
+        public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile, string goodType, DateTime? periodFrom, DateTime? periodTo)
         {
             var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
             var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
@@ -227,11 +227,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
 
-            var input = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan);
-            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input, goodType);
+            var input = new ValidatePbck1ProdPlanUploadParamInput()
+            {
+                ProdPlanData = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan),
+                ProdPlanPeriodFrom = periodFrom,
+                ProdPlanPeriodTo = periodTo,
+                GoodType = goodType
+            };
 
-            model.Detail.Pbck1ProdPlan = Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input);
 
+            model.Detail.Pbck1ProdPlan = !outputResult.Success ? new List<Pbck1ProdPlanModel>() : Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult.Data);
+            model.ProdPlanUploadValidateResult = new ProdPlanUploadResult()
+            {
+                IsSuccess = outputResult.Success,
+                ErrorMessage = outputResult.ErrorMessage
+            };
             return PartialView("_ProdPlanList", model);
         }
 

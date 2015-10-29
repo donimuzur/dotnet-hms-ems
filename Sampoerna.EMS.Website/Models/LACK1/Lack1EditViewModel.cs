@@ -45,7 +45,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ReturnUomDesc { get; set; }
         public Enums.DocumentStatus Status { get; set; }
         public string StatusDescription { get; set; }
-        public Enums.DocumentStatusGov? GovStatus { get; set; }
+        public Enums.DocumentStatusGovType2? GovStatus { get; set; }
         public string GovStatusDescription { get; set; }
         public DateTime? DecreeDate { get; set; }
         public string NppbkcId { get; set; }
@@ -95,7 +95,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public SelectList ExGoodTypeList { get; set; }
         public SelectList WasteUomList { get; set; }
         public SelectList ReturnUomList { get; set; }
-        public Enums.DocumentStatusGov DocGovStatusList { get; set; }
+        public Enums.DocumentStatusGovType2 DocGovStatusList { get; set; }
         
         public List<HttpPostedFileBase> DecreeFiles { get; set; }
         public Enums.ActionType GovApprovalActionType { get; set; }
