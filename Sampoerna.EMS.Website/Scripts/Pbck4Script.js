@@ -197,8 +197,9 @@ function GenerateXlsPbck4Items(url) {
         contentType: false,
         processData: false,
         success: function (response) {
-            $('#ProdConvContent').html("");
-            $('#ProdConvContent').html(response);
+            //$('#ProdConvContent').html("");
+            //$('#ProdConvContent').html(response);
+            $("#Ck5UploadTable tbody").append(response);
             
             if (IsValidDataUpload())
                 $('#Pbck4UploadSave').enable();

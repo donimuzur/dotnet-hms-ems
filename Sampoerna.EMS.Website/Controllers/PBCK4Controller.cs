@@ -606,7 +606,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(outputResult);
 
-            return PartialView("_Pbck4UploadList", model.UploadItemModels);
+            return PartialView("_Pbck4UploadAdd", model.UploadItemModels);
         }
 
         private void PBCK4Workflow(int id, Enums.ActionType actionType, string comment, bool isModified = false)
