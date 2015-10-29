@@ -1,0 +1,79 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Plant<span class="red">*</span></label>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(model => model.DestPlantId, new { @class = "form-control", @maxlength = "4" })
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.DestPlantNameManual, new { @class = "form-control", @maxlength = "30" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">NPWP</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DestNpwpManual, new { @class = "form-control", @maxlength = "30" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">NPPBKC ID</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DestNppbkcIdManual, new { @class = "form-control", @maxlength = "15" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Company Name</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DestCompanyNameManual, new { @class = "form-control", @maxlength = "35" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Company Code</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DestCompanyCodeManual, new { @class = "form-control", @maxlength = "4" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Address</label>
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.DestAddressManual, new { @rows = "5", @class = "form-control", @maxlength = "150" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">KPPBC Name, Office ID</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DestKppbcNameManual, new { @class = "form-control", @maxlength = "150" })
+
+            </div>
+        </div>
+    </div>
+
+</div>

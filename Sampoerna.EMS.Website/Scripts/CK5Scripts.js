@@ -1,4 +1,5 @@
 ﻿
+
 function OnReadyFunction(ck5Type) {
     
     if (ck5Type == 'Completed' || ck5Type == 'Cancelled') {
@@ -185,6 +186,13 @@ function GenerateXlsCk5Material(url, ck5Type) {
         formData.append("itemExcelFile", file);
         if (ck5Type == 'PortToImporter' || ck5Type == 'DomesticAlcohol')
             formData.append("plantId", $('#DestPlantId').val());
+        else if (ck5Type == 'Manual') {
+            if ($('#IsFreeTextSource').is(':checked')) {
+                formData.append("plantId", $('#DestPlantId').val());
+            } else {
+                formData.append("plantId", $('#SourcePlantId').val());
+            }
+        }
         else 
             formData.append("plantId", $('#SourcePlantId').val());
         
@@ -274,6 +282,12 @@ function ajaxGetDestPlantDetails(url, formData) {
                 if (formData.ck5Type != null && (formData.ck5Type == "PortToImporter" || formData.ck5Type == "DomesticAlcohol")) {
                     $("input[name='KppBcCity']").val(data.KppbcCity);
                     $("input[name='CeOfficeCode']").val(data.KppbcNo);
+                }
+                else if (formData.ck5Type != null && (formData.ck5Type == "Manual")) {
+                    if ($('#IsFreeTextSource').is(':checked')) {
+                        $("input[name='KppBcCity']").val(data.KppbcCity);
+                        $("input[name='CeOfficeCode']").val(data.KppbcNo);
+                    }
                 }
             }
         });

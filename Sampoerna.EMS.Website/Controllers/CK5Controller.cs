@@ -1243,6 +1243,31 @@ namespace Sampoerna.EMS.Website.Controllers
             //process save
             //if (model.Ck5Id >0)
 
+            //manual freetext
+            if (model.Ck5Type == Enums.CK5Type.Manual)
+            {
+                if (model.IsFreeTextSource)
+                {
+                    model.SourcePlantName = model.SourcePlantNameManual;
+                    model.SourceNpwp = model.SourceNpwpManual;
+                    model.SourceNppbkcId = model.SourceNppbkcIdManual;
+                    model.SourceCompanyCode = model.SourceCompanyCodeManual;
+                    model.SourceCompanyName = model.SourceCompanyNameManual;
+                    model.SourceAddress = model.SourceAddressManual;
+                    model.SourceKppbcName = model.SourceKppbcNameManual;
+                }
+                else if (model.IsFreeTextDestination)
+                {
+                    model.DestPlantName = model.DestPlantNameManual;
+                    model.DestNpwp = model.DestNpwpManual;
+                    model.DestNppbkcId = model.DestNppbkcIdManual;
+                    model.DestCompanyCode = model.DestCompanyCodeManual;
+                    model.DestCompanyName = model.DestCompanyNameManual;
+                    model.DestAddress = model.DestAddressManual;
+                    model.DestKppbcName = model.DestKppbcNameManual;
+                }
+            }
+
             var dataToSave = Mapper.Map<CK5Dto>(model);
           
             var input = new CK5SaveInput()
@@ -3371,6 +3396,33 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+
+        [HttpGet]
+        public ActionResult GetManualViewSource(bool isFreeTextSource)
+        {
+            var model = new CK5FormViewModel();
+            model.SourcePlantList = GlobalFunctions.GetPlantAll();
+            if (isFreeTextSource)
+            {
+                return PartialView("_CK5ManualPlantSource", model);
+            }
+          
+            return PartialView("_CK5OriginalPlantSource", model);
+        }
+
+        [HttpGet]
+        public ActionResult GetManualViewDestination(bool isFreeText)
+        {
+            var model = new CK5FormViewModel();
+            model.DestPlantList = GlobalFunctions.GetPlantAll();
+            if (isFreeText)
+            {
+                return PartialView("_CK5ManualPlantDestination", model);
+            }
+
+            
+            return PartialView("_CK5OriginalPlantDestination", model);
+        }
 
     }
 }

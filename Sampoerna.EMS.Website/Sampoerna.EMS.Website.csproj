@@ -1235,6 +1235,10 @@
     <Content Include="Views\PBCK4\_Pbck4GovApprovalInfo.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4GovApprovalCompleted.cshtml" />
     <Content Include="Views\CK5\DetailsView.cshtml" />
+    <Content Include="Views\CK5\_CK5ManualPlantSource.cshtml" />
+    <Content Include="Views\CK5\_CK5OriginalPlantSource.cshtml" />
+    <Content Include="Views\CK5\_CK5ManualPlantDestination.cshtml" />
+    <Content Include="Views\CK5\_CK5OriginalPlantDestination.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
