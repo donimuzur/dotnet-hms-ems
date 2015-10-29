@@ -1,0 +1,60 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Plant<span class="red">*</span></label>
+            <div class="col-md-8">
+
+                @Html.DropDownListFor(model => model.DestPlantId, Model.DestPlantList, "Select", new { @class = "form-control" })
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">NPWP</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DestNpwp, new { @disabled = "disabled", @class = "form-control" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">NPPBKC ID</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DestNppbkcId, new { @disabled = "disabled", @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Company Name</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DestCompanyName, new { @disabled = "disabled", @class = "form-control" })
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Address</label>
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.DestAddress, new { @disabled = "disabled", @class = "form-control", @rows = "5" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">KPPBC Name, Office ID</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.DestKppbcName, new { @disabled = "disabled", @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+</div>

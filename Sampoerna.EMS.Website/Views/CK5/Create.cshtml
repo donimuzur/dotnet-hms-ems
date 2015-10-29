@@ -6,8 +6,8 @@
 
 @using (Html.BeginForm("SaveCK5", "CK5", FormMethod.Post, new { @id = "SaveCk5Forms" }))
 {
-     @Html.AntiForgeryToken()
-    
+    @Html.AntiForgeryToken()
+
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -29,54 +29,54 @@
                         <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
                         <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
-                       
+
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Ck5Type)
-                        
+
                         @Html.HiddenFor(model => model.KppBcCity)
                         @Html.HiddenFor(model => model.CeOfficeCode)
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
-                        
+
                         @if (!Model.IsCk5PortToImporter)
                         {
-                            @Html.HiddenFor(model => model.SourceNpwp)    
+                            @Html.HiddenFor(model => model.SourceNpwp)
                         }
-                        
+
                         @Html.HiddenFor(model => model.SourceNppbkcId)
                         @Html.HiddenFor(model => model.SourceCompanyCode)
-                      
+
                         @Html.HiddenFor(model => model.SourceKppbcName)
                         @Html.HiddenFor(model => model.SourcePlantName)
-                        
+
                         @*@if (!Model.IsCk5PortToImporter)
-                        {*@
-                              @Html.HiddenFor(model => model.SourceCompanyName)
-                              @Html.HiddenFor(model => model.SourceAddress)
+                            {*@
+                        @Html.HiddenFor(model => model.SourceCompanyName)
+                        @Html.HiddenFor(model => model.SourceAddress)
                         @*}*@
-                        
+
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyCode)
-                       
+
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
-                     
+
                         @if (!Model.IsCk5Export)
                         {
                             @Html.HiddenFor(model => model.DestCompanyName)
                             @Html.HiddenFor(model => model.DestAddress)
                         }
-                        
+
                         @Html.HiddenFor(model => model.PbckDecreeId)
                         @Html.HiddenFor(model => model.PbckDecreeNumber)
                         @Html.HiddenFor(model => model.Pbck1QtyApproved)
                         @Html.HiddenFor(model => model.Ck5TotalExciseable)
                         @Html.HiddenFor(model => model.RemainQuota)
                         @Html.HiddenFor(model => model.PbckUom)
-                        
+
                         @Html.HiddenFor(model => model.IsCk5Export)
                         @Html.HiddenFor(model => model.IsCk5PortToImporter)
                         @Html.HiddenFor(model => model.IsDomesticAlcohol)
@@ -86,7 +86,7 @@
                         @Html.Partial("_CK5InformationCreate")
                         @Html.Partial("_CK5Printout")
                         @Html.Partial("_CK5UploadCreate")
-                        
+
                     </div>
                 </div>
             </div>
@@ -238,87 +238,125 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script src="~/Scripts/CK5InputManual.js"></script>
-  
+
     <script type="text/javascript">
-    var editor;
-    $(document).ready(function () {
+        var editor;
+        $(document).ready(function () {
 
-        $('#btnBack').click(function (e) {
-            //alert('@Enums.CK5Type.Domestic.ToString()');
+            $('#btnBack').click(function (e) {
+                //alert('@Enums.CK5Type.Domestic.ToString()');
 
-            if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
-                location.href = '@Url.Action("Index", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
-                location.href = '@Url.Action("Index", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
-                location.href = '@Url.Action("CK5Export", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
-                location.href = '@Url.Action("CK5Import", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
-                location.href = '@Url.Action("CK5Manual", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
-                location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+                if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                    location.href = '@Url.Action("CK5Export", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                    location.href = '@Url.Action("CK5Import", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                    location.href = '@Url.Action("CK5Manual", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+
+            });
+
+            OnReadyFunction('@Model.Ck5Type.ToString()');
+
+            var sourcePlant = $('#SourcePlantId').find("option:selected").val();
+
+            if (sourcePlant != '') {
+                //enable upload
+                $('#btnUploadInfo').enable(true);
+                $('#CK5UploadSubmitBtn').enable(true);
+            }
+
+            $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+            $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
+            $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+            $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
+
+            $("#btnSave").click(function () {
+
+                if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
+                    $('#SaveCk5Forms').submit();
+                }
+            });
+
+            $('#CK5UploadSubmitBtn').click(function () {
+                GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")', '@Model.Ck5Type.ToString()');
+            });
+
+
+            OnChangeDestinationPlant();
+            OnChangeSourcePlant();
 
         });
 
-        OnReadyFunction('@Model.Ck5Type.ToString()');
+        function OnChangeDestinationPlant() {
+            $("#DestPlantId").change(function () {
+                if ($("#DestPlantId").length) {
+                    //alert($('#SubmissionDate').val());
 
-        var sourcePlant = $('#SourcePlantId').find("option:selected").val();
+                    var isUseDest = false;
+                    if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                        isUseDest = true;
+                        RemoveTable();
+                    }
+                    else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
+                        if ($('#IsFreeTextSource').is(':checked')) {
+                            isUseDest = true;
+                            RemoveTable();
+                        }
+                    }
 
-        if (sourcePlant != '') {
-            //enable upload
-            $('#btnUploadInfo').enable(true);
-            $('#CK5UploadSubmitBtn').enable(true);
+                    var destPlant = $(this).find("option:selected").val();
+
+                    if (destPlant == '') {
+                        $("input[name='DestNpwp']").val('');
+                        $("input[name='DestNppbkcId']").val('');
+                        $("input[name='DestCompanyCode']").val('');
+                        $("input[name='DestCompanyName']").val('');
+                        $("*[name='DestAddress']").val('');
+                        $("input[name='DestKppbcName']").val('');
+                        $("input[name='DestPlantName']").val('');
+
+                        $("input[name='PbckDecreeId']").val('');
+                        $("input[name='PbckDecreeNumber']").val('');
+                        $("input[name='PbckDecreeDate']").val('');
+                        $("input[name='Pbck1QtyApproved']").val('0');
+                        $("input[name='Ck5TotalExciseable']").val('0');
+                        $("input[name='RemainQuota']").val('0');
+                        $("input[name='PbckUom']").val('');
+
+                        if (isUseDest) {
+                            $("input[name='KppBcCity']").val('');
+                            $("input[name='CeOfficeCode']").val('');
+                        }
+                    } else {
+                        var submissionDate = $('#SubmissionDate').val();
+                        if (submissionDate == '')
+                            submissionDate = '@DateTime.Now';
+
+                        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+                        var goodTypeGroupId = $("#GoodType").val();
+                        var sourceNppbkcId = $("#SourceNppbkcId").val();
+
+                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodTypeGroupId: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+
+
+                    }
+                }
+            });
         }
 
-        $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
-        $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
-        $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
-        $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
 
-        $("#btnSave").click(function () {
-
-            if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
-                $('#SaveCk5Forms').submit();
-            }
-        });
-
-        $('#CK5UploadSubmitBtn').click(function () {
-            GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")', '@Model.Ck5Type.ToString()');
-        });
-
-
-        //$('#Ck5UploadTable').dataTable().makeEditable({
-        //    sAddURL: "/CK5/AddData"
-        //});
-
-
-    });
-
-
-    $("#DestPlantId").change(function () {
-        if ($("#DestPlantId").length) {
-            //alert($('#SubmissionDate').val());
-
-            var isUseDest = false;
-            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
-                isUseDest = true;
-                RemoveTable();
-            }
-
-
-
-            var destPlant = $(this).find("option:selected").val();
-
-            if (destPlant == '') {
-                $("input[name='DestNpwp']").val('');
-                $("input[name='DestNppbkcId']").val('');
-                $("input[name='DestCompanyCode']").val('');
-                $("input[name='DestCompanyName']").val('');
-                $("*[name='DestAddress']").val('');
-                $("input[name='DestKppbcName']").val('');
-                $("input[name='DestPlantName']").val('');
-
+        $('#SubmissionDate').change(function () {
+            var goodTypeGroupId = $("#GoodType").val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+            var destPlant = $("#DestPlantId").find("option:selected").val();
+            var sourceNppbkcId = $("#SourceNppbkcId").val();
+            if (destPlant == '' || sourcePlant == '' || destPlant == '') {
                 $("input[name='PbckDecreeId']").val('');
                 $("input[name='PbckDecreeNumber']").val('');
                 $("input[name='PbckDecreeDate']").val('');
@@ -326,127 +364,92 @@
                 $("input[name='Ck5TotalExciseable']").val('0');
                 $("input[name='RemainQuota']").val('0');
                 $("input[name='PbckUom']").val('');
-
-                if (isUseDest) {
-                    $("input[name='KppBcCity']").val('');
-                    $("input[name='CeOfficeCode']").val('');
-                }
             } else {
-
-                @*if (isUseDest) {
-
-                    ajaxGetDestPlantDetailsPortToImporter('@Url.Action("GetSourcePlantDetailsDest", "CK5")', { plantId: destPlant, ck5Type: '@Model.Ck5Type'});
-                } else {*@
-
-
                 var submissionDate = $('#SubmissionDate').val();
                 if (submissionDate == '')
                     submissionDate = '@DateTime.Now';
 
-                var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-                var goodTypeGroupId = $("#GoodType").val();
-                var sourceNppbkcId = $("#SourceNppbkcId").val();
 
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodTypeGroupId: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
-
-                //}
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
 
             }
-        }
-    });
+        });
 
-    $('#SubmissionDate').change(function () {
-        var goodTypeGroupId = $("#GoodType").val();
-        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-        var destPlant = $("#DestPlantId").find("option:selected").val();
-        var sourceNppbkcId = $("#SourceNppbkcId").val();
-        if (destPlant == '' || sourcePlant == '' || destPlant == '') {
-            $("input[name='PbckDecreeId']").val('');
-            $("input[name='PbckDecreeNumber']").val('');
-            $("input[name='PbckDecreeDate']").val('');
-            $("input[name='Pbck1QtyApproved']").val('0');
-            $("input[name='Ck5TotalExciseable']").val('0');
-            $("input[name='RemainQuota']").val('0');
-            $("input[name='PbckUom']").val('');
-        } else {
-            var submissionDate = $('#SubmissionDate').val();
-            if (submissionDate == '')
-                submissionDate = '@DateTime.Now';
-
-
-            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
-
-        }
-    });
-
-    $("#GoodType").change(function () {
-        var goodTypeGroupId = $("#GoodType").val();
-        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-        var destPlant = $("#DestPlantId").find("option:selected").val();
-        var sourceNppbkcId = $("#SourceNppbkcId").val();
-        if (destPlant == '' || sourcePlant == '' || destPlant == '') {
-            $("input[name='PbckDecreeId']").val('');
-            $("input[name='PbckDecreeNumber']").val('');
-            $("input[name='PbckDecreeDate']").val('');
-            $("input[name='Pbck1QtyApproved']").val('0');
-            $("input[name='Ck5TotalExciseable']").val('0');
-            $("input[name='RemainQuota']").val('0');
-            $("input[name='PbckUom']").val('');
-        } else {
-            var submissionDate = $('#SubmissionDate').val();
-            if (submissionDate == '')
-                submissionDate = '@DateTime.Now';
-
-
-            ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
-
-        }
-
-    });
-
-    $("#SourcePlantId").change(function () {
-        if ($("#SourcePlantId").length) {
-            var sourcePlant = $(this).find("option:selected").val();
-
-            //remove table
-            try {
-                RemoveTable();
-            } catch (e) {
-
-            }
-            if (sourcePlant == '') {
-                $("input[name='SourceNpwp']").val('');
-                $("input[name='SourceNppbkcId']").val('');
-                $("input[name='SourceCompanyCode']").val('');
-                $("input[name='SourceCompanyName']").val('');
-                $("*[name='SourceAddress']").val('');
-                $("input[name='SourceKppbcName']").val('');
-                $("input[name='SourcePlantName']").val('');
-                //enable upload
-                $('#btnUploadInfo').enable(false);
-                $('#CK5UploadSubmitBtn').enable(false);
-
-                $("input[name='KppBcCity']").val('');
-                $("input[name='CeOfficeCode']").val('');
-
-
+        $("#GoodType").change(function () {
+            var goodTypeGroupId = $("#GoodType").val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+            var destPlant = $("#DestPlantId").find("option:selected").val();
+            var sourceNppbkcId = $("#SourceNppbkcId").val();
+            if (destPlant == '' || sourcePlant == '' || destPlant == '') {
+                $("input[name='PbckDecreeId']").val('');
+                $("input[name='PbckDecreeNumber']").val('');
+                $("input[name='PbckDecreeDate']").val('');
+                $("input[name='Pbck1QtyApproved']").val('0');
+                $("input[name='Ck5TotalExciseable']").val('0');
+                $("input[name='RemainQuota']").val('0');
+                $("input[name='PbckUom']").val('');
             } else {
+                var submissionDate = $('#SubmissionDate').val();
+                if (submissionDate == '')
+                    submissionDate = '@DateTime.Now';
 
-                ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+
             }
+
+        });
+
+        function OnChangeSourcePlant() {
+            $("#SourcePlantId").change(function () {
+                if ($("#SourcePlantId").length) {
+                    var sourcePlant = $(this).find("option:selected").val();
+
+                    //remove table
+                    try {
+                        RemoveTable();
+                    } catch (e) {
+
+                    }
+                    if (sourcePlant == '') {
+                        $("input[name='SourceNpwp']").val('');
+                        $("input[name='SourceNppbkcId']").val('');
+                        $("input[name='SourceCompanyCode']").val('');
+                        $("input[name='SourceCompanyName']").val('');
+                        $("*[name='SourceAddress']").val('');
+                        $("input[name='SourceKppbcName']").val('');
+                        $("input[name='SourcePlantName']").val('');
+                        //enable upload
+                        $('#btnUploadInfo').enable(false);
+                        $('#CK5UploadSubmitBtn').enable(false);
+
+                        $("input[name='KppBcCity']").val('');
+                        $("input[name='CeOfficeCode']").val('');
+
+
+                    } else {
+
+                        ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+                    }
+                }
+            });
         }
-    });
 
-    $("#btnAddRow").click(function () {
-        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
-        if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
-            sourcePlant = $("#DestPlantId").find("option:selected").val();
-        }
+        $("#btnAddRow").click(function () {
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
-        $("#uploadMaterialPlant").val(sourcePlant);
-        var goodTypeGroupId = $("#GoodType").val();
-        ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
+            else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
+                if ($('#IsFreeTextSource').is(':checked')) {
+                    sourcePlant = $("#DestPlantId").find("option:selected").val();
+                }
+            }
+            $("#uploadMaterialPlant").val(sourcePlant);
+            var goodTypeGroupId = $("#GoodType").val();
+            ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
 
             $('#btnSaveMaterial').show();
             $('#btnUpdateMaterial').hide();
@@ -458,7 +461,7 @@
             $('#Ck5UploadModal').modal('show');
         });
         $("#btnSaveMaterial").click(function () {
-            
+
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
@@ -466,6 +469,12 @@
             if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
                 sourcePlant = $("#DestPlantId").find("option:selected").val();
             }
+            else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
+                if ($('#IsFreeTextSource').is(':checked')) {
+                    sourcePlant = $("#DestPlantId").find("option:selected").val();
+                }
+            }
+            
             var goodTypeGroupId = $("#GoodType").val();
             var convertedUom = $('#uploadConvertedUom').val();
 
@@ -485,69 +494,157 @@
             materialInput.ExGoodsType = goodTypeGroupId;
             ajaxValidateMaterial('@Url.Action("ValidateMaterial","CK5")', { input: materialInput }, function (data) {
                 AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', data);
-                
+
             });
 
-    });
-
-    $("#uploadMaterialNumber").change(function () {
-        if ($("#uploadMaterialNumber").length) {
-            var materialNumber = $(this).find("option:selected").val();
-
-
-            if (materialNumber == '') {
-                $("#uploadMaterialHje").val('0');
-                $("#uploadMaterialTariff").val('0');
-
-            } else {
-                var sourcePlant = $("#uploadMaterialPlant").val(); // $("#SourcePlantId").find("option:selected").val();
-
-                ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
-            }
-        }
-    });
-
-    $("#btnUpdateMaterial").click(function () {
-        var materialInput = {};
-        var materialNumber = $('#uploadMaterialNumber').val();
-        var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-
-        if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
-            sourcePlant = $("#DestPlantId").find("option:selected").val();
-        }
-        var goodTypeGroupId = $("#GoodType").val();
-        var convertedUom = $('#uploadConvertedUom').val();
-
-        //materialInput.materialNumber = materialNumber;
-        //materialInput.plantId = sourcePlant;
-        //materialInput.goodTypeGroup = goodTypeGroupId;
-        //materialInput.convertedUom = convertedUom;
-        materialInput.Plant = sourcePlant;
-        materialInput.Brand = materialNumber;
-        materialInput.Qty = $('#uploadMaterialQty').val();
-        materialInput.Uom = $('#uploadMaterialUom').val();
-        materialInput.Convertion = $('#uploadMaterialConvertion').val();
-        materialInput.ConvertedUom = convertedUom;
-        materialInput.UsdValue = $('#uploadUsdValue').val();
-        materialInput.Note = $('#uploadNote').val();
-
-        materialInput.ExGoodsType = goodTypeGroupId;
-        ajaxValidateMaterial('@Url.Action("ValidateMaterial","CK5")', { input: materialInput }, function (data) {
-            UpdateRow(data);
-            //if (data.success) {
-            //    UpdateRow(data);
-            //}
         });
 
-    });
+        $("#uploadMaterialNumber").change(function () {
+            if ($("#uploadMaterialNumber").length) {
+                var materialNumber = $(this).find("option:selected").val();
 
-    $("#Ck5RefId").change(function () {
-        var refId = $("#Ck5RefId").val();
 
-        if (refId != null) {
-            window.location.href = '@Url.Action("CreateImporterToPlant", "CK5")' + "?idPortToImporter=" + refId;
+                if (materialNumber == '') {
+                    $("#uploadMaterialHje").val('0');
+                    $("#uploadMaterialTariff").val('0');
+
+                } else {
+                    var sourcePlant = $("#uploadMaterialPlant").val(); // $("#SourcePlantId").find("option:selected").val();
+
+                    ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                }
+            }
+        });
+
+        $("#btnUpdateMaterial").click(function () {
+            var materialInput = {};
+            var materialNumber = $('#uploadMaterialNumber').val();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
+            else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
+                if ($('#IsFreeTextSource').is(':checked')) {
+                    sourcePlant = $("#DestPlantId").find("option:selected").val();
+                }
+            }
+            var goodTypeGroupId = $("#GoodType").val();
+            var convertedUom = $('#uploadConvertedUom').val();
+
+            //materialInput.materialNumber = materialNumber;
+            //materialInput.plantId = sourcePlant;
+            //materialInput.goodTypeGroup = goodTypeGroupId;
+            //materialInput.convertedUom = convertedUom;
+            materialInput.Plant = sourcePlant;
+            materialInput.Brand = materialNumber;
+            materialInput.Qty = $('#uploadMaterialQty').val();
+            materialInput.Uom = $('#uploadMaterialUom').val();
+            materialInput.Convertion = $('#uploadMaterialConvertion').val();
+            materialInput.ConvertedUom = convertedUom;
+            materialInput.UsdValue = $('#uploadUsdValue').val();
+            materialInput.Note = $('#uploadNote').val();
+
+            materialInput.ExGoodsType = goodTypeGroupId;
+            ajaxValidateMaterial('@Url.Action("ValidateMaterial","CK5")', { input: materialInput }, function (data) {
+                UpdateRow(data);
+                //if (data.success) {
+                //    UpdateRow(data);
+                //}
+            });
+
+        });
+
+        $("#Ck5RefId").change(function () {
+            var refId = $("#Ck5RefId").val();
+
+            if (refId != null) {
+                window.location.href = '@Url.Action("CreateImporterToPlant", "CK5")' + "?idPortToImporter=" + refId;
+            }
+        });
+
+        $("#IsFreeTextSource").on('change', function () {
+            var isFreeText = false;
+            $('#IsFreeTextDestination').removeAttr("disabled");
+            if ($(this).is(':checked')) {
+                isFreeText = true;
+                $('#IsFreeTextDestination').attr("disabled", true);
+            }
+            ajaxGetManualView('@Url.Action("GetManualViewSource", "CK5")', { isFreeTextSource: isFreeText });
+        });
+
+        function ajaxGetManualView(url, formData) {
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    $("#divSourcePlant").html(data);
+                    OnChangeSourcePlant();
+
+
+                }
+            });
+
         }
-    });
+
+
+        $("#IsFreeTextDestination").on('change', function () {
+            var isFreeText = false;
+            $('#IsFreeTextSource').removeAttr("disabled");
+            if ($(this).is(':checked')) {
+                isFreeText = true;
+                $('#IsFreeTextSource').attr("disabled", true);
+            }
+
+            ajaxGetManualViewDestination('@Url.Action("GetManualViewDestination", "CK5")', { isFreeText: isFreeText });
+        });
+
+        function ajaxGetManualViewDestination(url, formData) {
+
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    $("#divDestinationPlant").html(data);
+
+                    OnChangeDestinationPlant();
+
+
+                }
+            });
+
+        }
+
+        $("#Ck5ManualType").change(function () {
+            if ($("#Ck5ManualType").length) {
+                var manualType = $(this).find("option:selected").val();
+                if (manualType == '@Enums.Ck5ManualType.Trial.ToString()') {
+
+                    if ($('#IsFreeTextSource').is(':checked')) {
+                        $('#IsFreeTextSource').prop('checked', false);
+                        //get original view
+                        ajaxGetManualView('@Url.Action("GetManualViewSource", "CK5")', { isFreeTextSource: false });
+                    }
+
+                    if ($('#IsFreeTextDestination').is(':checked')) {
+                        $('#IsFreeTextDestination').prop('checked', false);
+                        //get original view
+                        ajaxGetManualViewDestination('@Url.Action("GetManualViewDestination", "CK5")', { isFreeTextSource: false });
+                    }
+
+                    $('#IsFreeTextSource').attr("disabled", true);
+                    $('#IsFreeTextDestination').attr("disabled", true);
+
+                } else {
+                    $('#IsFreeTextSource').removeAttr("disabled");
+                    $('#IsFreeTextDestination').removeAttr("disabled");
+                }
+            }
+        });
 
     </script>
 }
