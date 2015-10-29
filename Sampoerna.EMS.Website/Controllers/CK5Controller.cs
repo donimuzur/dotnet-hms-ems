@@ -1650,6 +1650,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     case Enums.DocumentStatus.StoRecGICompleted:
                         input.ActionType = Enums.ActionType.StoRecGICompleted;
                         break;
+                    case Enums.DocumentStatus.WaitingForSealing:
+                        input.ActionType = Enums.ActionType.Sealed;
+                        break;
                     default:
                         AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
                         return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
@@ -1697,6 +1700,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         break;
                     case Enums.DocumentStatus.StoRecGRCompleted:
                         input.ActionType = Enums.ActionType.StoRecGRCompleted;
+                        break;
+                    case Enums.DocumentStatus.WaitingForUnSealing:
+                        input.ActionType = Enums.ActionType.UnSealed;
                         break;
                     default:
                         AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
@@ -1909,7 +1915,13 @@ namespace Sampoerna.EMS.Website.Controllers
             };
             
 
-            if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn) return true;
+            //if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn) return true;
+            if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn)
+            {
+                _ck5Bll.CK5Workflow(input);
+                return true;
+            }
+
             try
             {
                 //create xml file

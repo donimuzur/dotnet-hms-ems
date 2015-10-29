@@ -198,7 +198,8 @@ namespace Sampoerna.EMS.BLL
                 return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.GICreated ||
-                   input.DocumentStatus == Enums.DocumentStatus.GICompleted;
+                   input.DocumentStatus == Enums.DocumentStatus.GICompleted ||
+                    input.DocumentStatus == Enums.DocumentStatus.WaitingForSealing;
         }
 
         public bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input)
@@ -207,7 +208,8 @@ namespace Sampoerna.EMS.BLL
                 return false;
             
             return input.DocumentStatus == Enums.DocumentStatus.GRCreated ||
-                    input.DocumentStatus == Enums.DocumentStatus.GRCompleted;
+                    input.DocumentStatus == Enums.DocumentStatus.GRCompleted ||
+                    input.DocumentStatus == Enums.DocumentStatus.WaitingForUnSealing;
         }
 
         public bool AllowTfPostedPortToImporter(WorkflowAllowApproveAndRejectInput input)
@@ -257,5 +259,7 @@ namespace Sampoerna.EMS.BLL
 
             return input.DocumentStatus == Enums.DocumentStatus.StoRecGRCompleted;
         }
+
+      
     }
 }

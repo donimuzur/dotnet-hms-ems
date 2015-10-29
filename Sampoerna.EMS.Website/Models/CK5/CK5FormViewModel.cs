@@ -294,5 +294,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string DestKppbcNameManual { get; set; }
 
         public Enums.Ck5ManualFreeText? MANUAL_FREE_TEXT { get; set; }
+
+        public bool AllowSealing { get; set; }
+
+        public bool AllowUnSealing { get; set; }
     }
 }

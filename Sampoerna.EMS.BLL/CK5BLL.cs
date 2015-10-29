@@ -1209,11 +1209,13 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.GICreated:
                 case Enums.ActionType.GICompleted:
                 case Enums.ActionType.StoRecGICompleted:
+                case Enums.ActionType.Sealed:
                     GiCreatedDocument(input);
                     break;
                 case Enums.ActionType.GRCreated:
                 case Enums.ActionType.GRCompleted:
                 case Enums.ActionType.StoRecGRCompleted:
+                case Enums.ActionType.UnSealed:
                     GrCreatedDocument(input);
                     break;
                 case Enums.ActionType.CancelSAP:
@@ -1670,7 +1672,7 @@ namespace Sampoerna.EMS.BLL
                 EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
             
             if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
 
             //set change history
             if (oldValue != newValue)
@@ -1683,7 +1685,7 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 dbData.STATUS_ID = dbData.CK5_TYPE == Enums.CK5Type.Manual
-                ? Enums.DocumentStatus.Completed
+                ? Enums.DocumentStatus.WaitingForSealing
                 : Enums.DocumentStatus.CreateSTO;
             }
             
@@ -1870,7 +1872,8 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.GICreated &&
                 dbData.STATUS_ID != Enums.DocumentStatus.GICompleted &&
-                 dbData.STATUS_ID != Enums.DocumentStatus.StoRecGICompleted)
+                 dbData.STATUS_ID != Enums.DocumentStatus.StoRecGICompleted &&
+                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForSealing)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = dbData.SEALING_NOTIF_NUMBER;
@@ -1889,7 +1892,17 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
-            //AddWorkflowHistory(input);
+            //for manual
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual
+                && dbData.CK5_MANUAL_TYPE != Enums.Ck5ManualType.Trial)
+            {
+                //change status
+                dbData.STATUS_ID = Enums.DocumentStatus.WaitingForUnSealing;
+
+                //add to workflow
+                AddWorkflowHistory(input);
+            }
+            
         }
 
         private void GrCreatedDocument(CK5WorkflowDocumentInput input)
@@ -1901,7 +1914,8 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.GRCreated &&
                 dbData.STATUS_ID != Enums.DocumentStatus.GRCompleted &&
-                dbData.STATUS_ID != Enums.DocumentStatus.StoRecGRCompleted)
+                dbData.STATUS_ID != Enums.DocumentStatus.StoRecGRCompleted &&
+                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForUnSealing)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = dbData.SEALING_NOTIF_NUMBER;
@@ -1935,12 +1949,13 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
 
-            if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual &&
+                dbData.CK5_MANUAL_TYPE != Enums.Ck5ManualType.Trial)
             {
                 if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
-                    && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
-                    && dbData.SEALING_NOTIF_DATE.HasValue
-                    && dbData.UNSEALING_NOTIF_DATE.HasValue)
+                       && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
+                       && dbData.SEALING_NOTIF_DATE.HasValue
+                       && dbData.UNSEALING_NOTIF_DATE.HasValue)
                 {
 
                     oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
@@ -1952,10 +1967,33 @@ namespace Sampoerna.EMS.BLL
 
                     input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
-                    //AddWorkflowHistory(input);
+                    AddWorkflowHistory(input);
+                }
+
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
+                {
+                    if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
+                        && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
+                        && dbData.SEALING_NOTIF_DATE.HasValue
+                        && dbData.UNSEALING_NOTIF_DATE.HasValue)
+                    {
+
+                        oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+                        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+                        //set change history
+                        SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+
+                        dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+                        input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+                        //AddWorkflowHistory(input);
+                    }
                 }
             }
-           
         }
 
         public void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input)
