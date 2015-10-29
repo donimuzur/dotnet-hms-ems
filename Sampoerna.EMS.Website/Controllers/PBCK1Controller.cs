@@ -2721,6 +2721,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        #region Monitoring Mutasi
+
+        public ActionResult MonitoringMutasi()
+        {
+            var model = new Pbck1MonitoringMutasiViewModel();
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+
+            return View(model);
+        }
+
+
+
+        #endregion
 
     }
 }

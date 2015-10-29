@@ -275,6 +275,7 @@
           <Property Name="CK5_MANUAL_TYPE" Type="int" />
           <Property Name="CK5_REF_ID" Type="bigint" />
           <Property Name="REDUCE_TRIAL" Type="bit" />
+          <Property Name="MANUAL_FREE_TEXT" Type="int" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -4921,6 +4922,7 @@
           <NavigationProperty Name="BACK1" Relationship="EMSModel.FK_BACK1_CK5" FromRole="CK5" ToRole="BACK1" />
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_CK5" FromRole="CK5" ToRole="PBCK3" />
           <Property Name="REDUCE_TRIAL" Type="Boolean" />
+          <Property Name="MANUAL_FREE_TEXT" Type="EMSModel.Ck5ManualFreeText" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -7868,6 +7870,7 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EnumType Name="Ck5ManualFreeText" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualFreeText" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8190,7 +8193,8 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="REDUCE_TRIAL" ColumnName="REDUCE_TRIAL" />
+          <ScalarProperty Name="MANUAL_FREE_TEXT" ColumnName="MANUAL_FREE_TEXT" />
+                <ScalarProperty Name="REDUCE_TRIAL" ColumnName="REDUCE_TRIAL" />
                 <ScalarProperty Name="CK5_REF_ID" ColumnName="CK5_REF_ID" />
                 <ScalarProperty Name="CK5_MANUAL_TYPE" ColumnName="CK5_MANUAL_TYPE" />
                 <ScalarProperty Name="DEST_COUNTRY_NAME" ColumnName="DEST_COUNTRY_NAME" />
