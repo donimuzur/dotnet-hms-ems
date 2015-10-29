@@ -583,7 +583,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Ck1No = datarow[1];
                         uploadItem.ReqQty = datarow[2];
                         uploadItem.NoPengawas = datarow[3];
-                        uploadItem.ApprovedQty = datarow[4];
+                        uploadItem.ApprovedQty = datarow[4] == string.Empty ? datarow[2] : datarow[4];
                         uploadItem.Remark = datarow[5];
                         
                         uploadItem.Plant = plantId;
@@ -606,7 +606,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(outputResult);
 
-            return PartialView("_Pbck4UploadList", model.UploadItemModels);
+            return PartialView("_Pbck4UploadAdd", model.UploadItemModels);
         }
 
         private void PBCK4Workflow(int id, Enums.ActionType actionType, string comment, bool isModified = false)

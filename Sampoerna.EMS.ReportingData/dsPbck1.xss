@@ -9,7 +9,7 @@
     <Shape ID="DesignTable:Pbck1" ZOrder="5" X="174" Y="3" Height="390" Width="190" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="386" />
     <Shape ID="DesignTable:Pbck1ProdPlan" ZOrder="2" X="562" Y="182" Height="256" Width="169" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="252" />
     <Shape ID="DesignTable:Pbck1BrandRegistration" ZOrder="4" X="553" Y="10" Height="162" Width="206" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="158" />
-    <Shape ID="DesignTable:RealisasiP3BKC" ZOrder="1" X="888" Y="29" Height="255" Width="182" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="252" />
+    <Shape ID="DesignTable:RealisasiP3BKC" ZOrder="1" X="888" Y="29" Height="257" Width="182" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="253" />
     <Shape ID="DesignTable:HeaderFooter" ZOrder="3" X="374" Y="232" Height="67" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="63" />
   </Shapes>
   <Connectors />

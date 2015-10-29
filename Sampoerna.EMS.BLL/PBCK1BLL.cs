@@ -612,8 +612,8 @@ namespace Sampoerna.EMS.BLL
                             changes.FIELD_NAME = "Status";
                             break;
                         case "STATUS_GOV":
-                            changes.OLD_VALUE = EnumHelper.GetDescription(origin.StatusGov);
-                            changes.NEW_VALUE = EnumHelper.GetDescription(data.StatusGov);
+                            changes.OLD_VALUE = origin.StatusGov.HasValue ? EnumHelper.GetDescription(origin.StatusGov) : "NULL";
+                            changes.NEW_VALUE = data.StatusGov.HasValue ? EnumHelper.GetDescription(data.StatusGov) : "NULL";
                             changes.FIELD_NAME = "Status Goverment";
                             break;
                         case "QTY_APPROVED":
@@ -1349,7 +1349,7 @@ namespace Sampoerna.EMS.BLL
         private void GovApproveDocument(Pbck1WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
-
+            var origin = Mapper.Map<Pbck1Dto>(dbData);
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
@@ -1357,8 +1357,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
+            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            //WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
 
             dbData.STATUS = Enums.DocumentStatus.Completed;
 
@@ -1375,8 +1375,11 @@ namespace Sampoerna.EMS.BLL
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 
-                AddWorkflowHistory(input);
+            var inputNew = Mapper.Map<Pbck1Dto>(dbData);
 
+            SetChangesHistory(origin, inputNew, input.UserId);
+
+            AddWorkflowHistory(input);
         }
 
         private void GovPartialApproveDocument(Pbck1WorkflowDocumentInput input)
@@ -1390,8 +1393,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-            WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
+            //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
+            //WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.PartialApproved);
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
@@ -1564,7 +1567,7 @@ namespace Sampoerna.EMS.BLL
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
             queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed
-                && c.PBCK1_TYPE == Enums.PBCK1Type.New);
+                && c.PBCK1_TYPE == Enums.PBCK1Type.New || c.PBCK1_TYPE == Enums.PBCK1Type.Additional);
 
             if (input.YearFrom.HasValue)
                 queryFilter =
@@ -1788,7 +1791,19 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK1_TO_MONTH.Value, dbData.LACK1_TO_YEAR.Value);
 
             //Set ProdPlan
-            rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(dbData.PBCK1_PROD_PLAN).ToList();
+
+            //proses prodplan
+            var prodPlantList = dbData.PBCK1_PROD_PLAN;
+            if (dbData.PLAN_PROD_FROM.HasValue && dbData.PLAN_PROD_TO.HasValue)
+            {
+                prodPlantList =
+                    prodPlantList.Where(
+                        c =>
+                            dbData.PLAN_PROD_TO != null && (dbData.PLAN_PROD_FROM != null && (c.MONTH.HasValue && c.MONTH.Value >= dbData.PLAN_PROD_FROM.Value.Month &&
+                                                                                              c.MONTH.Value <= dbData.PLAN_PROD_TO.Value.Year))).ToList();
+            }
+
+            rc.ProdPlanList = Mapper.Map<List<Pbck1ReportProdPlanDto>>(prodPlantList).ToList();
             rc = SetPbck1ProdPlanList(rc);
 
             //set realisasi P3BKC
@@ -1837,7 +1852,7 @@ namespace Sampoerna.EMS.BLL
             }));
             
             //set summary
-            var groupedData = prodPlanList.GroupBy(p => new
+            var groupedData = prodPlanList.Where(c => c.Amount.HasValue).GroupBy(p => new
             {
                 p.ProdTypeCode,
                 p.ProdTypeName,
@@ -1889,6 +1904,18 @@ namespace Sampoerna.EMS.BLL
                 rc.Add(item);
             }
 
+            var maxData = rc.OrderBy(o => o.BulanId).LastOrDefault();
+
+            decimal? latestSaldo = null;
+            int? monthId = null;
+
+            if (maxData != null)
+            {
+                //got the last data
+                latestSaldo = maxData.SaldoAkhir;
+                monthId = maxData.BulanId;
+            }
+
             var monthNotInRealizationData = from x in monthList
                 where !(realizationData.Select(d => d.PeriodMonth).ToList().Contains(x.MONTH_ID))
                 select x;
@@ -1899,12 +1926,13 @@ namespace Sampoerna.EMS.BLL
                 BulanId = month.MONTH_ID,
                 ProductionList = new List<Pbck1RealisasiProductionDetailDto>(),
                 SaldoAkhir = null,
-                SaldoAwal = null,
+                SaldoAwal = monthId.HasValue && (monthId.Value + 1) == month.MONTH_ID ? latestSaldo : null,
                 Penggunaan = null,
                 Pemasukan = null,
                 Lack1UomId = string.Empty,
                 Lack1UomName = string.Empty
             }));
+
             rc = rc.OrderBy(o => o.BulanId).ToList();
 
             var selectFirstData = summaryProdList.FirstOrDefault(c => !string.IsNullOrEmpty(c.ExcisableGoodsTypeId));

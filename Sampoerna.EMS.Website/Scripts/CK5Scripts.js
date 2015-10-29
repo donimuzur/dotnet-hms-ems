@@ -905,7 +905,7 @@ function removeExistingDocument(id) {
 }
 
 function ajaxValidateMaterial(url, formData,callback) {
-    if (formData.plantId) {
+    //if (formData.plantId) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -916,5 +916,5 @@ function ajaxValidateMaterial(url, formData,callback) {
 
             }
         });
-    }
+    //}
 }

@@ -1295,17 +1295,33 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_CK5UploadListOriginal", model);
         }
 
-
-        public JsonResult ValidateMaterial(string materialNumber, string plantId, string goodTypeGroup,
-            string convertedUom)
+        [HttpPost]
+        public JsonResult ValidateMaterial(CK5MaterialInput input)
         {
+            //var material = new 
+            //_ck5Bll.CK5MaterialProcess()
+
+            //if (!string.IsNullOrEmpty(input.ExGoodsType))
+            //{
+                Enums.ExGoodsType goodTypeGroupId = input.ExGoodsType;
+                   // (Enums.ExGoodsType) Enum.Parse(typeof (Enums.ExGoodsType), goodTypeGroup);
+
+                var output = _ck5Bll.ValidateMaterial(input, goodTypeGroupId);
+                return Json(new
+                {
+                    success = output.IsValid,
+                    error = output.Message
+                });
+            //}
+            //else
+            //{
+            //    return Json(new
+            //    {
+            //        success = false,
+            //        error = "Good Type group not specified";
+            //    });
+            //}
             
-            //_ck5Bll.GetValidateMaterial()
-            return Json(new
-            {
-                success = true,
-                error = "error"
-            });
         }
 
 
@@ -1861,7 +1877,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     Back1Date = model.Back1Date
                 }
             };
-            _ck5Bll.CK5Workflow(input);
+            
 
             if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn) return true;
             try
@@ -1878,7 +1894,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
                 rt.CreateCK5Xml(ck5XmlDto);
-
+                _ck5Bll.CK5Workflow(input);
                 return true;
             }
             catch (Exception ex)
@@ -2662,6 +2678,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.LoadingPortName);
                     iColumn = iColumn + 1;
                 }
+                if (modelExport.Status)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Status);
+                    iColumn = iColumn + 1;
+                }
               
 
                 iRow++;
@@ -2881,6 +2902,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.LoadingPortName)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Loading Port Name");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Status)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
                 iColumn = iColumn + 1;
             }
             return slDocument;

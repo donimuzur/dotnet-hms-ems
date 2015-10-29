@@ -142,6 +142,27 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+    public class CK5ListIndexQtyPackagingResolver : ValueResolver<CK5Dto, string>
+    {
+        protected override string ResolveCore(CK5Dto value)
+        {
+            string resultValue = "";
+            string resultUOM = "Boxes";
+
+            if (value.GRAND_TOTAL_EX.HasValue)
+                resultValue = value.GRAND_TOTAL_EX.ToString();
+
+            
+            var firstOrDefault = value.Ck5MaterialDtos.FirstOrDefault();
+            if (firstOrDefault != null)
+                resultUOM = firstOrDefault.UOM;
+
+            
+
+            return resultValue + " " + resultUOM;
+        }
+    }
+
     public class CK5ListIndexQtyResolver : ValueResolver<CK5Dto, string>
     {
         protected override string ResolveCore(CK5Dto value)
@@ -150,13 +171,12 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             string resultUOM = "Boxes";
 
             if (value.GRAND_TOTAL_EX.HasValue)
-                resultValue = value.Ck5MaterialDtos.Sum(x => x.QTY).ToString();
+                resultValue = value.GRAND_TOTAL_EX.ToString();
+
 
             if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
             {
-                var firstOrDefault = value.Ck5MaterialDtos.FirstOrDefault();
-                if (firstOrDefault != null)
-                    resultUOM = firstOrDefault.UOM;
+                resultUOM = value.PACKAGE_UOM_ID;
 
             }
 
