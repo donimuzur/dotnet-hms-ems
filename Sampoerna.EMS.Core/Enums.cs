@@ -581,5 +581,15 @@ namespace Sampoerna.EMS.Core
             [Description("Rejected")]
             Rejected = 3
         }
+
+        public enum DocumentStatusGovType3
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 2,
+            [Description("Cancelled")]
+            Cancelled = 3
+        }
     }
 }
