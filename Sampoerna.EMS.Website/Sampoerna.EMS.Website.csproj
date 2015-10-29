@@ -1238,6 +1238,7 @@
     <Content Include="Views\CK5\DetailsView.cshtml" />
     <Content Include="Views\PBCK1\MonitoringMutasi.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4UploadAdd.cshtml" />
+    <Content Include="Views\PBCK1\_MutasiList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

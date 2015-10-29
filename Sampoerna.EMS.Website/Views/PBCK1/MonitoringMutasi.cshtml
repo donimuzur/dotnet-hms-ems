@@ -1,7 +1,66 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1MonitoringMutasiViewModel
+
 @{
-    ViewBag.Title = "MonitoringMutasi";
+    ViewBag.Title = "Monitoring Mutasi";
 }
 
-<h2>MonitoringMutasi</h2>
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div id="upload" class="tab-pane active" role="tabpanel">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div id="headingOne" role="tab" class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="">
+                                        Monitoring Mutasi
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div role="form" class="form-excise">
+                                            <div class="row">
+                                                <div class="col-md-7">
+                                                    <label class="col-md-3">PBCK-1 Number</label>
+                                                    <div class="col-md-6">
+                                                        <select class="form-control">
+                                                          
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <button class="btn btn-blue full">FILTER</button>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn btn-blue full">RESET</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
