@@ -1070,6 +1070,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     input.NppbkcId = model.DestNppbkcId;
                     model.IsCk5PortToImporter = true;
                 }
+                else if (model.Ck5Type == Enums.CK5Type.Manual &&
+                         model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                {
+                    input.NppbkcId = model.DestNppbkcId;
+                }
 
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
                 {
