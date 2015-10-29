@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -11,6 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         }
         public int Lack1Id { get; set; }
         public string Lack1Number { get; set; }
+        public Enums.Lack1Level Lack1Level { get; set; }
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1TrackingConsolidationDetailReportDto> TrackingConsolidations { get; set; }
