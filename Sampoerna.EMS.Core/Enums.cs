@@ -573,5 +573,13 @@ namespace Sampoerna.EMS.Core
             [Description("Dest Free Text")]
             DestFreeText = 2
         }
+
+        public enum DocumentStatusGovType2
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 3
+        }
     }
 }
