@@ -31,6 +31,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public DateTime? GrDateTo { get; set; }
         public DateTime? GiDateFrom { get; set; }
         public DateTime? GiDateTo { get; set; }
+        public Enums.Lack1Level? Lack1Level { get; set; }
 
         public SelectList CompanyCodeList { get; set; }
         public SelectList NppbkcIdList { get; set; }
@@ -39,6 +40,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public SelectList SupplierPlantIdList { get; set; }
         public SelectList PeriodFromList { get; set; }
         public SelectList PeriodToList { get; set; }
+        public Enums.Lack1Level Lack1LevelList { get; set; }
     }
 
     public class Lack1DetailReportItemModel
