@@ -107,7 +107,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string DestCompanyName { get; set; }
         public string LoadingPort { get; set; }
         public string LoadingPortName { get; set; }
-
+        public string Status { get; set; }
 
 
     }
@@ -156,6 +156,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool DestCompanyName { get; set; }
         public bool LoadingPort { get; set; }
         public bool LoadingPortName { get; set; }
+        public bool Status { get; set; }
     }
 
   
