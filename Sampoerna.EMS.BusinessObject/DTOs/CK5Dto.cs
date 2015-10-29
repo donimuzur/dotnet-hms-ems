@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -113,5 +114,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string NoDateWithFormat { get; set; }
 
         public bool IsModifiedHistory { get; set; }
+
+        public Enums.Ck5ManualFreeText? MANUAL_FREE_TEXT { get; set; }
     }
 }
