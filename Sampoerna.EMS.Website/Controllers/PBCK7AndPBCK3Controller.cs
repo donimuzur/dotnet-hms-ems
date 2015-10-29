@@ -2244,11 +2244,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 PBCK3GovWorkflow(model);
-                if (model.Pbck3GovStatus == Enums.DocumentStatusGov.FullApproved)
+                if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Approved)
                     AddMessageInfo("Success Gov FullApproved Document", Enums.MessageInfoType.Success);
-                else if (model.Pbck3GovStatus == Enums.DocumentStatusGov.PartialApproved)
+                else if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Cancelled)
                     AddMessageInfo("Success Gov PartialApproved Document", Enums.MessageInfoType.Success);
-                else if (model.Pbck3GovStatus == Enums.DocumentStatusGov.Rejected)
+                else if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Rejected)
                     AddMessageInfo("Success Gov Reject Document", Enums.MessageInfoType.Success);
 
             }
@@ -2374,9 +2374,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var actionType = Enums.ActionType.GovApprove;
 
-                if (model.Pbck3GovStatus == Enums.DocumentStatusGov.PartialApproved)
+                if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Cancelled)
                     actionType = Enums.ActionType.GovPartialApprove;
-                else if (model.Pbck3GovStatus == Enums.DocumentStatusGov.Rejected)
+                else if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Rejected)
                     actionType = Enums.ActionType.GovReject;
 
                 var input = new Pbck3WorkflowDocumentInput();
@@ -2404,8 +2404,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 try
                 {
-                    if (model.Pbck3GovStatus == Enums.DocumentStatusGov.PartialApproved ||
-                        model.Pbck3GovStatus == Enums.DocumentStatusGov.FullApproved)
+                    if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Approved)
                     {
 
                         //create xml file

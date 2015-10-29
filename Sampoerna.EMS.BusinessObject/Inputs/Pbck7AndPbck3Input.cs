@@ -136,7 +136,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
       
         public Enums.FormType FormType { get; set; }
-        public Enums.DocumentStatusGov GovStatusInput { get; set; }
+        public Enums.DocumentStatusGovType3 GovStatusInput { get; set; }
         public bool IsModified { get; set; }
     }
 
