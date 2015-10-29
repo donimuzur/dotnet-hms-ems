@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.Entity.Core.Common.EntitySql;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Text.RegularExpressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -767,11 +764,26 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-        public List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs, string goodType)
+        public ValidatePbck1ProdPlanUploadOutput ValidatePbck1ProdPlanUpload(ValidatePbck1ProdPlanUploadParamInput input)
         {
+
+            var rc = new ValidatePbck1ProdPlanUploadOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
+
             var messageList = new List<string>();
             var outputList = new List<Pbck1ProdPlanOutput>();
-            foreach (var inputItem in inputs) //   <--- go back to here --------+
+
+            //input validation
+            var periodFromMonth = 0;
+            var periodToMonth = 0;
+            var outValidation = ValidatePbck1ProdPlanUploadInput(input, out periodFromMonth, out periodToMonth);
+            if (!outValidation.Success) return outValidation;
+
+            foreach (var inputItem in input.ProdPlanData) //   <--- go back to here --------+
             {
                 messageList.Clear();
 
@@ -807,7 +819,17 @@ namespace Sampoerna.EMS.BLL
 
                 if (ValidateMonth(output.Month, out messages, out monthName))
                 {
-                    output.MonthName = monthName;
+                    var monthNumber = int.Parse(output.Month);
+                    if (monthNumber >= periodFromMonth && monthNumber <= periodToMonth)
+                    {
+                        output.MonthName = monthName;
+                    }
+                    else
+                    {
+                        //not valid
+                        output.IsValid = false;
+                        messageList.Add("Month is not in range of Period Plan");
+                    }
                 }
                 else
                 {
@@ -842,7 +864,7 @@ namespace Sampoerna.EMS.BLL
                 string uomName;
                 string uomId;
                 //validate by Uom Id
-                if (!ValidateUomId(output.BkcRequiredUomId, goodType, out messages, out uomName, out uomId))
+                if (!ValidateUomId(output.BkcRequiredUomId, input.GoodType, out messages, out uomName, out uomId))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -877,7 +899,80 @@ namespace Sampoerna.EMS.BLL
                 outputList.Add(output);
 
             }
-            return outputList;
+            rc.Data = outputList;
+            return rc;
+        }
+
+        private ValidatePbck1ProdPlanUploadOutput ValidatePbck1ProdPlanUploadInput(
+            ValidatePbck1ProdPlanUploadParamInput input, out int periodMonthFrom, out int periodMonthTo)
+        {
+            periodMonthFrom = 0;
+            periodMonthTo = 0;
+
+            if (!input.ProdPlanPeriodFrom.HasValue)
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Please specify Production Plan Period From"
+                };
+            }
+
+            if (!input.ProdPlanPeriodTo.HasValue)
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Please specify Production Plan Period To"
+                };
+            }
+
+            if (string.IsNullOrEmpty(input.GoodType))
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Please specify Excisable Goods Type"
+                };
+            }
+
+            var periodFromMonth = input.ProdPlanPeriodFrom.Value.Month;
+            var periodToMonth = input.ProdPlanPeriodTo.Value.Month;
+            var periodToYear = input.ProdPlanPeriodFrom.Value.Year;
+            var periodFromYear = input.ProdPlanPeriodFrom.Value.Year;
+
+            if (periodFromYear != periodToYear)
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Period Plan year is not same"
+                };
+            }
+
+            if (periodFromMonth >= periodToMonth)
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Period Plan From is greater than or equals with Period Plan To"
+                };
+            }
+
+            periodMonthFrom = periodFromMonth;
+            periodMonthTo = periodToMonth;
+
+            return new ValidatePbck1ProdPlanUploadOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
         }
 
         //private bool ValidateProductCode(string productCode, out List<string> message, out ZAIDM_EX_PRODTYP productData)
