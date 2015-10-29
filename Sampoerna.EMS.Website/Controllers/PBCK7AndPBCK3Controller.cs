@@ -2245,9 +2245,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 PBCK3GovWorkflow(model);
                 if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Approved)
-                    AddMessageInfo("Success Gov FullApproved Document", Enums.MessageInfoType.Success);
+                    AddMessageInfo("Success Gov Approved Document", Enums.MessageInfoType.Success);
                 else if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Cancelled)
-                    AddMessageInfo("Success Gov PartialApproved Document", Enums.MessageInfoType.Success);
+                    AddMessageInfo("Success Gov Cancelled Document", Enums.MessageInfoType.Success);
                 else if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Rejected)
                     AddMessageInfo("Success Gov Reject Document", Enums.MessageInfoType.Success);
 
@@ -2375,7 +2375,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var actionType = Enums.ActionType.GovApprove;
 
                 if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Cancelled)
-                    actionType = Enums.ActionType.GovPartialApprove;
+                    actionType = Enums.ActionType.GovCancel;
                 else if (model.Pbck3GovStatus == Enums.DocumentStatusGovType3.Rejected)
                     actionType = Enums.ActionType.GovReject;
 
