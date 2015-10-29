@@ -1373,17 +1373,17 @@ namespace Sampoerna.EMS.BLL
 
            var latestAction = _workflowHistoryBll.GetByFormNumber(input.DocumentNumber);
 
-           if (latestAction.LastOrDefault().ACTION != input.ActionType)
-           {
-               AddWorkflowHistory(input);
-           }
-           else
+           if (latestAction.LastOrDefault().ACTION == input.ActionType && latestAction.LastOrDefault().UserId == input.UserId)
            {
                var latestWorkflow = latestAction.LastOrDefault();
 
                latestWorkflow.ACTION_DATE = DateTime.Now;
 
                _workflowHistoryBll.Save(latestWorkflow);
+           }
+           else
+           {
+               AddWorkflowHistory(input);
            }
                
 
