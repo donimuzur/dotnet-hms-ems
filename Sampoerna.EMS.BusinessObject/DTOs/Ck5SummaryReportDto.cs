@@ -51,5 +51,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string DestCompanyName { get; set; }
         public string LoadingPort { get; set; }
         public string LoadingPortName { get; set; }
+        public string Status { get; set; }
     }
 }

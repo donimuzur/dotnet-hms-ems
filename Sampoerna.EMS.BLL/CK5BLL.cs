@@ -2055,7 +2055,7 @@ namespace Sampoerna.EMS.BLL
 
             //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
 
-            queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+            //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
 
 
             var rc = _repository.Get(queryFilter, null, includeTables);
@@ -2124,7 +2124,7 @@ namespace Sampoerna.EMS.BLL
 
             //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
 
-            queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+            //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
 
 
             var rc = _repository.Get(queryFilter, null, includeTables);
