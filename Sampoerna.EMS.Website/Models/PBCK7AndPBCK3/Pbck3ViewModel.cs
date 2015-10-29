@@ -40,7 +40,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public Enums.DocumentStatusGovType3 Pbck3GovStatus { get; set; }
         public string Pbck3GovStatusDescription { get; set; }
 
-        public Enums.DocumentStatusGov Pbck3GovStatusList { get; set; }
+        public Enums.DocumentStatusGovType3 Pbck3GovStatusList { get; set; }
 
         public List<WorkflowHistoryViewModel> WorkflowHistoryPbck3 { get; set; }
 

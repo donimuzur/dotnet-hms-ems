@@ -1675,7 +1675,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     var lastBatch = item.TrackingConsolidations[0].Batch;
 
                     int dataCount = item.TrackingConsolidations.Count - 1;
+
                     //first record
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
@@ -1716,7 +1721,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                     {
                         iRow++;
-                        iColumn = 2;
+                        iColumn = 3;
 
                         var curMaterialCode = item.TrackingConsolidations[i].MaterialCode;
                         var curBatch = item.TrackingConsolidations[i].Batch;
@@ -1787,6 +1792,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else
                 {
+                    
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
                     iColumn++;
 
@@ -1813,6 +1822,10 @@ namespace Sampoerna.EMS.Website.Controllers
             int iColumn = 1;
 
             //first row
+            slDocument.SetCellValue(1, iColumn, "LACK-1 Level");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
             slDocument.SetCellValue(1, iColumn, "Begining Balance");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
             iColumn = iColumn + 1;
@@ -1831,7 +1844,7 @@ namespace Sampoerna.EMS.Website.Controllers
             endColumnIndex = iColumn;
 
             //second row
-            iColumn = 2;
+            iColumn = 3;
             slDocument.SetCellValue(2, iColumn, "CK-5 Number");
             iColumn++;
             
@@ -1912,15 +1925,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 //need set to empty cell first before doing merge
                 for (int i = item.StartRowIndex + 1; i < item.EndRowIndex; i++)
                 {
-                    slDocument.SetCellValue(i, 8, string.Empty);
                     slDocument.SetCellValue(i, 9, string.Empty);
+                    slDocument.SetCellValue(i, 10, string.Empty);
                 }
 
                 //Material Code
-                slDocument.MergeWorksheetCells(item.StartRowIndex, 8, item.EndRowIndex, 8);
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 9, item.EndRowIndex, 9);
 
                 //Usage Qty
-                slDocument.MergeWorksheetCells(item.StartRowIndex, 9, item.EndRowIndex, 9);
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 10, item.EndRowIndex, 10);
                 
             }
 

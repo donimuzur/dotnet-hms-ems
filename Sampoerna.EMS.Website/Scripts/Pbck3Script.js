@@ -41,7 +41,7 @@ function ValidateGovInput() {
 
         $('#Pbck3GovStatus').focus();
     } else {
-        if ($('#Pbck3GovStatus').val() == 'Rejected') {
+        if ($('#Pbck3GovStatus').val() == 'Rejected' || $('#Pbck3GovStatus').val() == 'Cancelled') {
             if ($('#Comment').val() == '') {
                 AddValidationClass(false, 'Comment');
                 result = false;
