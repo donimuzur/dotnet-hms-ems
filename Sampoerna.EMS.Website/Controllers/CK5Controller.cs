@@ -1270,17 +1270,33 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_CK5UploadListOriginal", model);
         }
 
-
-        public JsonResult ValidateMaterial(string materialNumber, string plantId, string goodTypeGroup,
-            string convertedUom)
+        [HttpPost]
+        public JsonResult ValidateMaterial(CK5MaterialInput input)
         {
             //var material = new 
             //_ck5Bll.CK5MaterialProcess()
-            return Json(new
-            {
-                success = true,
-                error = "error"
-            });
+
+            //if (!string.IsNullOrEmpty(input.ExGoodsType))
+            //{
+                Enums.ExGoodsType goodTypeGroupId = input.ExGoodsType;
+                   // (Enums.ExGoodsType) Enum.Parse(typeof (Enums.ExGoodsType), goodTypeGroup);
+
+                var output = _ck5Bll.ValidateMaterial(input, goodTypeGroupId);
+                return Json(new
+                {
+                    success = output.IsValid,
+                    error = output.Message
+                });
+            //}
+            //else
+            //{
+            //    return Json(new
+            //    {
+            //        success = false,
+            //        error = "Good Type group not specified";
+            //    });
+            //}
+            
         }
 
 
