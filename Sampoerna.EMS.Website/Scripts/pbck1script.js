@@ -268,7 +268,9 @@ function prodPlanGenerateClick(url) {
         formData.append("prodPlanExcelFile", file);
     }
     formData.append("goodType", $("#Detail_GoodType").val());
-
+    formData.append("periodFrom", $("#Detail_PlanProdFrom").val());
+    formData.append("periodTo", $("#Detail_PlanProdTo").val());
+    console.log(formData);
     $.ajax({
         url: url,
         type: 'POST',
