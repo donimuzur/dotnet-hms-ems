@@ -110,6 +110,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.StatusDocCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => c.Status).ToArray())))
                 .ForMember(dest => dest.GrandTotalExcisableCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => c.Qty).ToArray())))
                 ;
+
             #endregion
 
             Mapper.CreateMap<Pbck1ProdPlanModel, Pbck1ProdPlanInput>().IgnoreAllNonExisting();
@@ -149,9 +150,17 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
                 .ForMember(dest => dest.QuotaRemaining,
                     opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received)))
-                .ForMember(dest => dest.pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number));
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number));
 
-
+            Mapper.CreateMap<Pbck1MonitoringMutasiItem, ExportMonitoringMutasiDataModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number))
+                .ForMember(dest => dest.TotalPbck1Quota, opt => opt.MapFrom(src => src.TotalPbck1Quota))
+                .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => src.QuotaRemaining))
+                .ForMember(dest => dest.DocNumberCk5,
+                    opt =>
+                        opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.DocumentNumber).ToArray())))
+                .ForMember(dest => dest.GrandTotalExciseable,
+                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.Qty).ToArray())));
 
             #endregion
 

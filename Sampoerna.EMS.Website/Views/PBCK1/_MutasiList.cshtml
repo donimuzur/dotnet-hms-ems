@@ -8,8 +8,9 @@
                 <th>PBCK-1 Number</th>
                 <th>Total PBCK-1 Quota</th>
                 <th>PBCK-1 Quota remaining</th>
-                <th>CK-5 number</th>
+                <th>CK-5 Number</th>
                 <th>Total Ex Good Type</th>
+                @*<th>CK5-Type</th>*@
             </tr>
         </thead>
         <tbody>
@@ -59,6 +60,20 @@
                              }
 
                          </td>
+                         @*<td>
+                             @if (item.Ck5List.Any())
+                             {
+                                 foreach (var ck5 in item.Ck5List)
+                                 {
+                                     @ck5.Ck5Type <br />
+                                 }
+                             }
+                             else
+                             {
+                                 <text>-</text>
+                             }
+
+                         </td>*@
 
                      </tr>
                      row = row + 1;

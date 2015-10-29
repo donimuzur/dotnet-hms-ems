@@ -2762,6 +2762,120 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_MutasiList", viewModel);
         }
 
+        [HttpPost]
+        public ActionResult ExportMonitoringMutasi(Pbck1ExportMonitoringMutasiViewModel model)
+        {
+            try
+            {
+                ExportMonitoringMutasiToExcel(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("MonitoringMutasi");
+        }
+
+        public void ExportMonitoringMutasiToExcel(Pbck1ExportMonitoringMutasiViewModel model)
+        {
+           
+            var dbResult = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput
+            {
+                pbck1Number = model.FilterPbck1Number
+            });
+
+            //todo refactor mapper
+            var mutasiItem = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbResult);
+
+            var dataToExport = Mapper.Map<List<ExportMonitoringMutasiDataModel>>(mutasiItem);
+
+            var grid = new GridView
+            {
+                DataSource = dataToExport,
+                AutoGenerateColumns = false
+            };
+
+            if (model.Pbck1Number)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "PBCK-1 Number"
+                });
+            }
+            if (model.TotalPbck1Quota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "TotalPbck1Quota",
+                    HeaderText = "Total PBCK-1 Quota"
+                });
+            }
+            if (model.QuotaRemaining)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QuotaRemaining",
+                    HeaderText = "PBCK-1 Quota remaining"
+                });
+            }
+           
+            if (model.DocNumberCk5)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DocNumberCk5",
+                    HeaderText = "CK-5 Number",
+                    HtmlEncode = false
+                });
+            }
+            if (model.GrandTotalExciseable)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "GrandTotalExciseable",
+                    HeaderText = "Total Ex Good Type",
+                    HtmlEncode = false
+                });
+            }
+            //if (model.ExportModel.Ck5Type)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Ck5Type",
+            //        HeaderText = "CK5-Type"
+            //    });
+            //}
+            
+
+            if (dataToExport.Count == 0)
+            {
+                grid.ShowHeaderWhenEmpty = true;
+            }
+
+            grid.DataBind();
+
+
+            var fileName = "PBCK1MonitoringMutasi" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
 
         #endregion
 
