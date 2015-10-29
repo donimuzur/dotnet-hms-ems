@@ -176,7 +176,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
 
             if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
             {
-               resultUOM = value.PACKAGE_UOM_ID;
+                resultUOM = value.PACKAGE_UOM_ID;
 
             }
 
