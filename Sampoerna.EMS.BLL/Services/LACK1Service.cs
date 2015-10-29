@@ -391,11 +391,17 @@ namespace Sampoerna.EMS.BLL.Services
                 var dtFrom = new DateTime(input.PeriodYearFrom.Value, input.PeriodMonthFrom.Value, 1);
                 queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) >= dtFrom);
             }
-            if (input.PeriodMonthTo.HasValue && input.PeriodYearTo.HasValue)
+            //if (input.PeriodMonthTo.HasValue && input.PeriodYearTo.HasValue)
+            //{
+            //    var dtTo = new DateTime(input.PeriodYearTo.Value, input.PeriodMonthTo.Value, 1);
+            //    queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) <= dtTo);
+            //}
+
+            if (input.Lack1Level.HasValue)
             {
-                var dtTo = new DateTime(input.PeriodYearTo.Value, input.PeriodMonthTo.Value, 1);
-                queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) <= dtTo);
+                queryFilter = queryFilter.And(c => c.LACK1_LEVEL == input.Lack1Level.Value);
             }
+
             return _repository.Get(queryFilter, null, incTables).ToList();
         }
 
