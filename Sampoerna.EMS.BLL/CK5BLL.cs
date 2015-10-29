@@ -184,15 +184,19 @@ namespace Sampoerna.EMS.BLL
                 else if (input.Ck5Type == Enums.CK5Type.Manual)
                 {
                     queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft)));
+                       queryFilter.And(
+                           c =>
+                               (c.CREATED_BY == input.UserId ||
+                                (
+                                (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                 (c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                             nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
+                                  ) ||
+                                            nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
+                                            )
 
-                    queryFilter =
-                        queryFilter.And(c => (c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                              nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)) ||
-                                             nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID));
+                                )
+                                );
                 }
                 else
                 {
