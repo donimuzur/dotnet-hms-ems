@@ -54,7 +54,7 @@
                         <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                     }
 
-                    @if (Model.DocStatus.HasValue && (Model.DocStatus.Value == Enums.DocumentStatus.Draft || Model.DocStatus.Value == Enums.DocumentStatus.Rejected))
+                    @if (Model.DocStatus.HasValue && (Model.DocStatus.Value == Enums.DocumentStatus.Draft || Model.DocStatus.Value == Enums.DocumentStatus.Rejected || Model.DocStatus.Value == Enums.DocumentStatus.GovRejected))
                     {
                         <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
                     }
