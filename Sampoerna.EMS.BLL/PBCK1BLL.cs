@@ -1683,7 +1683,35 @@ namespace Sampoerna.EMS.BLL
             if (pbck1Data == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            return Mapper.Map<List<Pbck1MonitoringUsageDto>>(pbck1Data);
+            var listData = Mapper.Map<List<Pbck1MonitoringUsageDto>>(pbck1Data);
+
+            listData = GetCorrectReceivedQuantity(listData);
+
+            return listData;
+        }
+
+        private List<Pbck1MonitoringUsageDto> GetCorrectReceivedQuantity(List<Pbck1MonitoringUsageDto> listData)
+        {
+            var list = listData;
+
+            foreach(var item in list)
+            {
+                var receivedAdditional = Convert.ToDecimal(0);
+
+                var listPbckAdditional = _repository.GetByID(item.Pbck1Id).PBCK11;
+
+                foreach (var data in listPbckAdditional)
+                {
+                    var additionalRec = _repository.GetByID(data.PBCK1_ID).CK5
+                                            .Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX);
+
+                    receivedAdditional += additionalRec.Value;
+                }
+
+                item.ReceivedAdditional = receivedAdditional;
+            }
+
+            return list;
         }
 
         #endregion
