@@ -141,13 +141,17 @@ namespace Sampoerna.EMS.Website
 
             #region Monitoring Mutasi
 
-            //Mapper.CreateMap<Pbck1MonitoringUsageDto, Pbck1MonitoringMutasiItem>().IgnoreAllNonExisting()
-            //    .ForMember(dest => dest.TotalPbck1Quota,
-            //        opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
-            //    .ForMember(dest => dest.QuotaRemaining,
-            //        opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received)));
-            //Mapper.CreateMap<Pbck1SummaryReportDto, Pbck1MonitoringMutasiItem>();
-            
+            Mapper.CreateMap<Pbck1MonitoringMutasiViewModel, Pbck1GetMonitoringMutasiByParamInput>()
+                .IgnoreAllNonExisting()
+                .ForMember(dest => dest.pbck1Number, opt => opt.MapFrom(src => src.pbck1Number));
+
+            Mapper.CreateMap<Pbck1MonitoringUsageDto, Pbck1MonitoringMutasiItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TotalPbck1Quota,
+                    opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
+                .ForMember(dest => dest.QuotaRemaining,
+                    opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received)));
+           
+
             #endregion
 
         }

@@ -2725,12 +2725,25 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult MonitoringMutasi()
         {
-            var model = new Pbck1MonitoringMutasiViewModel();
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-
-
+            var model = InitMonitoringMutasi(new Pbck1MonitoringMutasiViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo
+            });
+          
             return View(model);
+        }
+
+        private Pbck1MonitoringMutasiViewModel InitMonitoringMutasi(Pbck1MonitoringMutasiViewModel model)
+        {
+            model.pbck1NumberList = new SelectList(model.DetailsList.Select(c => c.Pbck1Number).AsEnumerable());
+            var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
+
+            var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
+            model.DetailsList = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbData);
+
+            return model;
+
         }
 
 

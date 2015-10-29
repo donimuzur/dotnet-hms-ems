@@ -13,7 +13,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
             DetailsList = new List<Pbck1MonitoringMutasiItem>();
             SearchView = new Pbck1FilterMonitoringMutasiViewModel();
         }
-
+        public string pbck1Number { get; set; }
+        public SelectList pbck1NumberList { get; set; }
         public List<Pbck1MonitoringMutasiItem> DetailsList { get; set; }
         public Pbck1FilterMonitoringMutasiViewModel SearchView { get; set; }
     }
@@ -36,7 +37,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
     public class Pbck1FilterMonitoringMutasiViewModel
     {
-        
         public string pbck1Number { get; set; }
         public SelectList pbck1NumberList { get; set; }
     }

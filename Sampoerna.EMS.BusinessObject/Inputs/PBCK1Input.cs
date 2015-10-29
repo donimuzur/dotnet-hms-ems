@@ -116,7 +116,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string GoodTypeId { get; set; }
     }
 
-    public class Pbck1GetMonitoringMutasiInput
+    public class Pbck1GetMonitoringMutasiByParamInput
     {
         /// <summary>
         /// optional if want to sorting from query
