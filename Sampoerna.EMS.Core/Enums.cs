@@ -565,5 +565,13 @@ namespace Sampoerna.EMS.Core
             [Description("Market Return")]
             MarketReturn = 4
         }
+
+        public enum Ck5ManualFreeText
+        {
+            [Description("Source Free Text")]
+            SourceFreeText = 1,
+            [Description("Dest Free Text")]
+            DestFreeText = 2
+        }
     }
 }
