@@ -34,9 +34,7 @@
                                                 <div class="col-md-7">
                                                     <label class="col-md-3">PBCK-1 Number</label>
                                                     <div class="col-md-6">
-                                                        <select class="form-control">
-                                                          
-                                                        </select>
+                                                        <select class="form-control"></select>
                                                     </div>
                                                 </div>
 
@@ -62,8 +60,41 @@
             </div>
         </div>
     </div>
-    <div id="mutasiContenttable" class="table-container">
+    <div id="contenttable" class="table-container">
         @Html.Partial("_MutasiList")
     </div>
 </div>
+@section scripts
+{
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuPBCK1MonitoringMutasi').addClass('active');
+
+        $(document).ready(function () {
+
+            // Setup - add a text input to each footer cell
+            $('#monitoringMutasi .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 4) {
+                    $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
+                }
+            });
+
+            // DataTable
+            var table = $('#monitoringMutasi').DataTable();
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        });
+
+
+    </script>
+
+}
 
