@@ -7611,7 +7611,7 @@
           <Property Name="PBCK3_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PBCK3_DATE" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="PBCK7_ID" Type="Int32" />
-          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGovType3" />
           <Property Name="STATUS" Type="EMSModel.DocumentStatus" />
           <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
@@ -7872,6 +7872,7 @@
         </EntityType>
         <EnumType Name="Ck5ManualFreeText" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualFreeText" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGovType2" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType2" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="DocumentStatusGovType3" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType3" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

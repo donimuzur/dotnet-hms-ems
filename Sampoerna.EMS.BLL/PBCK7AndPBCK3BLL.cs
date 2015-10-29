@@ -1524,7 +1524,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void WorkflowStatusGovAddChangesPbck3(Pbck3WorkflowDocumentInput input, Enums.DocumentStatusGov? oldStatus, Enums.DocumentStatusGov newStatus)
+        private void WorkflowStatusGovAddChangesPbck3(Pbck3WorkflowDocumentInput input, Enums.DocumentStatusGovType3? oldStatus, Enums.DocumentStatusGovType3 newStatus)
         {
             //set changes log
             var changes = new CHANGES_HISTORY
@@ -2381,10 +2381,10 @@ namespace Sampoerna.EMS.BLL
 
             ////Add Changes
             WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.Rejected);
-            WorkflowStatusGovAddChangesPbck3(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
+            WorkflowStatusGovAddChangesPbck3(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType3.Rejected);
 
             dbData.STATUS = Enums.DocumentStatus.Rejected;
-            dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
+            dbData.GOV_STATUS = Enums.DocumentStatusGovType3.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
             dbData.MODIFIED_BY = input.UserId;
