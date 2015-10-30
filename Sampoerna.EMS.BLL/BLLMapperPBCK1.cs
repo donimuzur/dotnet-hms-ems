@@ -321,7 +321,7 @@ namespace Sampoerna.EMS.BLL
                     ? src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX)
                     : 0))
                 .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
-                 .ForMember(dest => dest.Ck5List, opt => opt.MapFrom(src => src.CK5)); 
+                 .ForMember(dest => dest.Ck5List, opt => opt.MapFrom(src => src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled))); 
 
 
             #endregion
