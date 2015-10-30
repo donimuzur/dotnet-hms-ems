@@ -2819,6 +2819,21 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "PBCK-1 Quota remaining"
                 });
             }
+            if (model.QuotaRemaining)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QuotaRemaining",
+                    HeaderText = "PBCK-1 Quota remaining"
+                });
+            } if (model.Received)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Received",
+                    HeaderText = "Total CK-5 Used"
+                });
+            }
            
             if (model.DocNumberCk5)
             {
@@ -2838,14 +2853,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
-            //if (model.ExportModel.Ck5Type)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Ck5Type",
-            //        HeaderText = "CK5-Type"
-            //    });
-            //}
+            if (model.UoM)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "UoM",
+                    HeaderText = "UoM",
+                    HtmlEncode = false
+                });
+            }
             
 
             if (dataToExport.Count == 0)

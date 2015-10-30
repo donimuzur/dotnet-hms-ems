@@ -633,7 +633,7 @@
                     if ($('#IsFreeTextDestination').is(':checked')) {
                         $('#IsFreeTextDestination').prop('checked', false);
                         //get original view
-                        ajaxGetManualViewDestination('@Url.Action("GetManualViewDestination", "CK5")', { isFreeTextSource: false });
+                        ajaxGetManualViewDestination('@Url.Action("GetManualViewDestination", "CK5")', { isFreeText: false });
                     }
 
                     $('#IsFreeTextSource').attr("disabled", true);
