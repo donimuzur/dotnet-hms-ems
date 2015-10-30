@@ -107,12 +107,17 @@
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBox("DocNumberCk5", new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })CK-5 number
+                                            @Html.CheckBox("Received", new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Total CK-5 Used
                                         </label>
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault5", @class = "checkbox checkexport", @datacolumn = "5" })Total Ex Good Type
+                                            @Html.CheckBox("DocNumberCk5", new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })CK-5 number
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault6", @class = "checkbox checkexport", @datacolumn = "6" })Total Ex Good Type
                                         </label>
                                     </div>
                                     @*<div class="checkbox">
@@ -158,8 +163,8 @@
             $('#checkboxDefault1').prop('checked', true);
             $('#checkboxDefault2').prop('checked', true);
             $('#checkboxDefault3').prop('checked', true);
-            $('#checkboxDefault4').prop('checked', true);
             $('#checkboxDefault5').prop('checked', true);
+            $('#checkboxDefault6').prop('checked', true);
             
 
         });
@@ -190,8 +195,8 @@
                 $('#checkboxDefault1').prop('checked', true);
                 $('#checkboxDefault2').prop('checked', true);
                 $('#checkboxDefault3').prop('checked', true);
-                $('#checkboxDefault4').prop('checked', true);
                 $('#checkboxDefault5').prop('checked', true);
+                $('#checkboxDefault6').prop('checked', true);
             });
 
             $('.checkexport').on('click', function (e) {
@@ -210,7 +215,7 @@
             //    table.column(i).visible(false);
 
             //}
-
+            table.column(4).visible(false);
           
             $('#selecctall').change(function () {
                 if ($(this).is(':checked')) {
@@ -218,7 +223,7 @@
                     // Show a column
                     $('#monitoringMutasi').parents('div.dataTables_wrapper').first().show();
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 6; i++) {
+                    for (var i = 0; i < 7; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -232,7 +237,7 @@
 
                     });
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 6; i++) {
+                    for (var i = 0; i < 7; i++) {
                         table.column(i).visible(false);
 
                     }
