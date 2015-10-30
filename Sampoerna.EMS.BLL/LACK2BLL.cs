@@ -393,10 +393,6 @@ namespace Sampoerna.EMS.BLL
                     GovRejectedDocument(input);
                     isNeedSendNotif = false;
                     break;
-                case Enums.ActionType.GovPartialApprove:
-                    GovPartialApproveDocument(input);
-                    //isNeedSendNotif = false;
-                    break;
             }
 
             //todo sent mail
@@ -584,41 +580,6 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(input);
 
-        }
-
-        private void GovPartialApproveDocument(Lack2WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
-            {
-                var dbData = _lack2Service.GetById(input.DocumentId.Value);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType2.Rejected);
-                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
-                    input.AdditionalDocumentData.DecreeDate);
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-
-                dbData.LACK2_DOCUMENT = null;
-                dbData.STATUS = Enums.DocumentStatus.Completed;
-                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Rejected;
-
-                //dbData.APPROVED_BY = input.UserId;
-                //dbData.APPROVED_DATE = DateTime.Now;
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-            }
-
-            AddWorkflowHistory(input);
         }
 
         private void GovRejectedDocument(Lack2WorkflowDocumentInput input)
