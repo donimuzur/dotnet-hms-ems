@@ -281,7 +281,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5FileDocumentItems, CK5UploadFileDocumentsInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.Uom))
-               // .ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.InvoiceDateDisplay))
+                .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
                 ;
 
             Mapper.CreateMap<CK5FileUploadDocumentsOutput, CK5FileDocumentItems>().IgnoreAllNonExisting()

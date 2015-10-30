@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Enums.RequestType REQUEST_TYPE_ID { get; set; }
 
         public DateTime? INVOICE_DATE { get; set; }
+        public DateTime? SUBMISSION_DATE { get; set; }
 
         public string SOURCE_PLANT_ID { get; set; }
         public string SOURCE_PLANT_NPWP { get; set; }
@@ -59,6 +60,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public Nullable<int> PBCK1_DECREE_ID { get; set; }
         public Enums.CarriageMethod? CARRIAGE_METHOD_ID { get; set; }
+
+        public Enums.Ck5ManualType? CK5_MANUAL_TYPE { get; set; }
 
         //export type
         public string LOADING_PORT { get; set; }
