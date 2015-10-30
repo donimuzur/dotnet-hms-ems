@@ -552,14 +552,11 @@ namespace Sampoerna.EMS.BLL
                     else
                     {
                         var tempOutput = ValidateMaterialSapUom(ck5MaterialInput);
-                        if (tempOutput.IsValid)
-                        {
-                            continue;
-                        }
-                        else
+                        if (!tempOutput.IsValid)
                         {
                             messageList.Add(tempOutput.Message);
                         }
+                        
                         
                     }
                 }
@@ -2945,6 +2942,8 @@ namespace Sampoerna.EMS.BLL
 
             var outputList = ValidateCk5UploadFileDocuments(inputs);
 
+            
+
             for (int i = 0; i < outputList.Count; i++)
             {
                 outputList[i].Message += outputListCk5Material[i].Message;
@@ -2989,8 +2988,67 @@ namespace Sampoerna.EMS.BLL
 
             }
 
+            ValidateQuotaFromUpload(outputList);
+
             return outputList;
         }
+
+        private void ValidateQuotaFromUpload(List<CK5FileUploadDocumentsOutput> outputs)
+        {
+            Dictionary<string, decimal> quotaRemaining = new Dictionary<string, decimal>();
+            //List<int> pbck1List = outputs.Where(x=> x.PBCK1_DECREE_ID.HasValue).Select(x => x.PBCK1_DECREE_ID.Value).Distinct().ToList();
+            //foreach (int pbck1Id in pbck1List)
+            //{
+                
+            //    pbck1QuotaRemaining.Add(pbck1Id, quotaOutput);
+            //}
+            foreach (CK5FileUploadDocumentsOutput output in outputs)
+            {
+                if (output.PBCK1_DECREE_ID.HasValue)
+                {
+                    var stringFilter = String.Format("{0},{1},{2},{3},{4}",
+                        output.SOURCE_PLANT_ID,
+                        output.SOURCE_PLANT_NPPBKC_ID,
+                        output.DEST_PLANT_NPPBKC_ID,
+                        output.SUBMISSION_DATE.Value.ToString("yyyymmdd"),
+                        (int)output.EX_GOODS_TYPE);
+
+                    if (!quotaRemaining.ContainsKey(stringFilter))
+                    {
+                        var quotaRemainObj = GetQuotaRemainAndDatePbck1Item(output.SOURCE_PLANT_ID,
+                            output.SOURCE_PLANT_NPPBKC_ID, output.SUBMISSION_DATE.Value,
+                            output.DEST_PLANT_NPPBKC_ID, (int) output.EX_GOODS_TYPE);
+
+                        quotaRemaining.Add(stringFilter, quotaRemainObj.RemainQuota);
+                    }
+
+                    if (quotaRemaining[stringFilter] - output.ConvertedQty < 0)
+                    {
+                        output.IsValid = false;
+                        output.Message = output.Message + "," + String.Format("pbck-1 quota remaining : {0} , Requested Qty : {1}", quotaRemaining[stringFilter], output.ConvertedQty);
+                    }
+                    quotaRemaining[stringFilter] = quotaRemaining[stringFilter] - output.ConvertedQty;
+
+                    
+                }
+
+
+            }
+        }
+
+        //private GetQuotaAndRemainOutput GetPbck1QuotaByPbck1Id(long pbck1id)
+        //{
+        //    GetQuotaAndRemainOutput output = new GetQuotaAndRemainOutput();
+        //    var pbck1 = _pbck1Bll.GetById(pbck1id);
+        //    if (pbck1.DecreeDate != null) output.Pbck1DecreeDate = pbck1.DecreeDate.Value.ToString("YYYY-MM-DD");
+
+        //    output.Pbck1Id = (int)pbck1id;
+        //    output.Pbck1Number = pbck1.Pbck1Number;
+        //    output.PbckUom = pbck1.RequestQtyUomId;
+        //    output.QtyApprovedPbck1 = (pbck1.QtyApproved != null) ? pbck1.QtyApproved.Value : 0;
+
+            
+        //}
 
         private CK5 ProcessInsertCk5(CK5SaveInput input)
         {

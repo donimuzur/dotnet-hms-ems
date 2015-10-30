@@ -333,7 +333,7 @@ namespace Sampoerna.EMS.BLL
             dbData.WASTE_UOM = input.Detail.WasteUom;
             dbData.RETURN_QTY = input.Detail.ReturnQty;
             dbData.RETURN_UOM = input.Detail.ReturnUom;
-            
+
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
 
@@ -342,6 +342,13 @@ namespace Sampoerna.EMS.BLL
                 //add history for changes status from rejected to draft
                 WorkflowStatusAddChanges(new Lack1WorkflowDocumentInput() { DocumentId = dbData.LACK1_ID, UserId = input.UserId }, dbData.STATUS, Enums.DocumentStatus.Draft);
                 dbData.STATUS = Enums.DocumentStatus.Draft;
+            }
+
+            if (dbData.GOV_STATUS.HasValue && dbData.GOV_STATUS.Value == Enums.DocumentStatusGovType2.Rejected)
+            {
+                //add history for changes status from rejected to draft
+                WorkflowStatusGovAddChanges(new Lack1WorkflowDocumentInput() { DocumentId = dbData.LACK1_ID, UserId = input.UserId }, dbData.GOV_STATUS, null);
+                dbData.GOV_STATUS = null;
             }
 
             _uow.SaveChanges();
@@ -406,12 +413,39 @@ namespace Sampoerna.EMS.BLL
                     GovRejectedDocument(input);
                     isNeedSendNotif = false;
                     break;
+                case Enums.ActionType.BackToGovApprovalAfterCompleted:
+                    //update gov status to NULL
+                    BackToGovApprovalAfterCompleted(input);
+                    isNeedSendNotif = false;
+                    break;
+                default:
+                    throw new BLLException(ExceptionCodes.BLLExceptions.InvalidWorkflowActionType);
             }
 
             //todo sent mail
             if (isNeedSendNotif)
                 SendEmailWorkflow(input);
             _uow.SaveChanges();
+        }
+
+        private void BackToGovApprovalAfterCompleted(Lack1WorkflowDocumentInput input)
+        {
+            if (input.DocumentId == null) return;
+            var dbData = _lack1Service.GetById(input.DocumentId.Value);
+            if (dbData.GOV_STATUS.HasValue && dbData.GOV_STATUS.Value == Enums.DocumentStatusGovType2.Approved)
+            {
+                //Add Changes
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, null);
+                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                dbData.GOV_STATUS = null;
+            }
+            else
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            }
+
+            AddWorkflowHistory(input);
         }
 
         private void AddWorkflowHistory(Lack1WorkflowDocumentInput input)
@@ -578,7 +612,7 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
 
         }
-        
+
         private void GovRejectedDocument(Lack1WorkflowDocumentInput input)
         {
             if (input.DocumentId != null)
@@ -652,7 +686,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void WorkflowStatusGovAddChanges(Lack1WorkflowDocumentInput input, Enums.DocumentStatusGovType2? oldStatus, Enums.DocumentStatusGovType2 newStatus)
+        private void WorkflowStatusGovAddChanges(Lack1WorkflowDocumentInput input, Enums.DocumentStatusGovType2? oldStatus, Enums.DocumentStatusGovType2? newStatus)
         {
             //set changes log
             var changes = new CHANGES_HISTORY
@@ -660,7 +694,7 @@ namespace Sampoerna.EMS.BLL
                 FORM_TYPE_ID = Enums.MenuList.LACK1,
                 FORM_ID = input.DocumentId.ToString(),
                 FIELD_NAME = "GOV_STATUS",
-                NEW_VALUE = EnumHelper.GetDescription(newStatus),
+                NEW_VALUE = newStatus.HasValue ? EnumHelper.GetDescription(newStatus) : "NULL",
                 OLD_VALUE = oldStatus.HasValue ? EnumHelper.GetDescription(oldStatus) : "NULL",
                 MODIFIED_BY = input.UserId,
                 MODIFIED_DATE = DateTime.Now
