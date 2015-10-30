@@ -33,5 +33,8 @@ namespace Sampoerna.EMS.Contract
 
         bool AllowStoGrCreated(WorkflowAllowApproveAndRejectInput input);
 
+        bool AllowGoodIssue(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowGoodReceive(WorkflowAllowApproveAndRejectInput input);
     }
 }

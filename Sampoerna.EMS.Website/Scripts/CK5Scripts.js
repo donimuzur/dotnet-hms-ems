@@ -881,7 +881,69 @@ function ValidateGRCreated() {
     return result;
 }
 
+function ValidateGoodIssue() {
+    var result = true;
 
+    if ($('#GiDate').val() == '') {
+        AddValidationClass(false, 'GiDate');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+
+    }
+    
+    if ($('#SealingNotifNumber').val() == '') {
+        AddValidationClass(false, 'SealingNotifNumber');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#SealingNotifNumber').focus();
+    }
+
+    if ($('#SealingNotifDate').val() == '') {
+        AddValidationClass(false, 'SealingNotifDate');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+
+    }
+    return result;
+}
+
+function ValidateGoodReceive() {
+    var result = true;
+
+    if ($('#GrDate').val() == '') {
+        AddValidationClass(false, 'GrDate');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#UnSealingNotifNumber').focus();
+    }
+    
+    if ($('#UnSealingNotifNumber').val() == '') {
+        AddValidationClass(false, 'UnSealingNotifNumber');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#UnSealingNotifNumber').focus();
+    }
+
+    if ($('#UnsealingNotifDate').val() == '') {
+        AddValidationClass(false, 'UnsealingNotifDate');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+
+    }
+    return result;
+}
 
 function ajaxGetListMaterial(url, formData,materialid) {
     if (formData.plantId) {

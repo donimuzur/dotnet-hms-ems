@@ -134,6 +134,14 @@ namespace Sampoerna.EMS.Core
             Rejected = 20,
             [Description("Waiting for Government Approval")]
             WaitingGovApproval = 25,
+            [Description("Waiting for Sealing")]
+            WaitingForSealing = 26,
+            [Description("Waiting for UnSealing")]
+            WaitingForUnSealing = 27,
+            [Description("Good Issue")]
+            GoodIssue = 28,
+            [Description("Good Receive")]
+            GoodReceive = 29,
             [Description("Government Approved")]
             GovApproved = 30,
             [Description("Government Rejected")]
@@ -272,6 +280,14 @@ namespace Sampoerna.EMS.Core
             Approve = 15,
             [Description("Reject")]
             Reject = 20,
+            [Description("Sealed")]
+            Sealed= 21,
+            [Description("UnSealed")]
+            UnSealed = 22,
+            [Description("Good Issue")]
+            GoodIssue = 23,
+            [Description("Good Receive")]
+            GoodReceive = 24,
             [Description("Gov Approve")]
             GovApprove = 25,
             [Description("Gov Partial Approve")]
