@@ -20,9 +20,9 @@
             <th>Request Type</th>
             <th>SOURCE PLANT</th>
             <th>DESTINATION PLANT</th>
-            <th>INVOICE NUMBER</th>
-            <th>INVOICE DATE</th>
-            <th>PBCK-1 NUMBER</th>
+            <th style="display:none">INVOICE NUMBER</th>
+            <th style="display:none">INVOICE DATE</th>
+            <th style="display:none">PBCK-1 NUMBER</th>
             <th>CARRIAGE METHOD</th>
             <th>GRAND TOTAL</th>
             <th>UOM</th>
@@ -123,9 +123,9 @@
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].RequestType)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].SourcePlantId)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].DestPlantId)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceNumber)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceDateDisplay)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].PbckDecreeNumber)</td>
+                    <td style="display:none">@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceNumber)</td>
+                    <td style="display:none">@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceDateDisplay)</td>
+                    <td style="display:none">@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].PbckDecreeNumber)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].CarriageMethod)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].GrandTotalEx)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Uom)</td>
