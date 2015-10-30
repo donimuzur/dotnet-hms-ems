@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal ReturnQty { get; set; }
         public string ReturnUom { get; set; }
         public Enums.DocumentStatus Status { get; set; }
-        public Enums.DocumentStatusGov? GovStatus { get; set; }
+        public Enums.DocumentStatusGovType2? GovStatus { get; set; }
         public DateTime? DecreeDate { get; set; }
         public DateTime CreateDate { get; set; }
         public string CreateBy { get; set; }
