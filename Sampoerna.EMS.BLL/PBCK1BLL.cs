@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.Entity.Core.Common.EntitySql;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Text.RegularExpressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -230,7 +227,8 @@ namespace Sampoerna.EMS.BLL
                 dbData.PBCK1_PROD_CONVERTER = Mapper.Map<List<PBCK1_PROD_CONVERTER>>(input.Pbck1.Pbck1ProdConverter);
                 dbData.PBCK1_PROD_PLAN = Mapper.Map<List<PBCK1_PROD_PLAN>>(input.Pbck1.Pbck1ProdPlan);
                 dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.Pbck1.Pbck1DecreeDoc);
-                if(dbData.STATUS == Enums.DocumentStatus.Rejected){
+                if (dbData.STATUS == Enums.DocumentStatus.Rejected || dbData.STATUS == Enums.DocumentStatus.GovRejected)
+                {
                     dbData.STATUS = Enums.DocumentStatus.Draft;
                 }
             }
@@ -767,11 +765,26 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-        public List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs, string goodType)
+        public ValidatePbck1ProdPlanUploadOutput ValidatePbck1ProdPlanUpload(ValidatePbck1ProdPlanUploadParamInput input)
         {
+
+            var rc = new ValidatePbck1ProdPlanUploadOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
+
             var messageList = new List<string>();
             var outputList = new List<Pbck1ProdPlanOutput>();
-            foreach (var inputItem in inputs) //   <--- go back to here --------+
+
+            //input validation
+            var periodFromMonth = 0;
+            var periodToMonth = 0;
+            var outValidation = ValidatePbck1ProdPlanUploadInput(input, out periodFromMonth, out periodToMonth);
+            if (!outValidation.Success) return outValidation;
+
+            foreach (var inputItem in input.ProdPlanData) //   <--- go back to here --------+
             {
                 messageList.Clear();
 
@@ -807,7 +820,17 @@ namespace Sampoerna.EMS.BLL
 
                 if (ValidateMonth(output.Month, out messages, out monthName))
                 {
-                    output.MonthName = monthName;
+                    var monthNumber = int.Parse(output.Month);
+                    if (monthNumber >= periodFromMonth && monthNumber <= periodToMonth)
+                    {
+                        output.MonthName = monthName;
+                    }
+                    else
+                    {
+                        //not valid
+                        output.IsValid = false;
+                        messageList.Add("Month is not in range of Period Plan");
+                    }
                 }
                 else
                 {
@@ -842,7 +865,7 @@ namespace Sampoerna.EMS.BLL
                 string uomName;
                 string uomId;
                 //validate by Uom Id
-                if (!ValidateUomId(output.BkcRequiredUomId, goodType, out messages, out uomName, out uomId))
+                if (!ValidateUomId(output.BkcRequiredUomId, input.GoodType, out messages, out uomName, out uomId))
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
@@ -877,7 +900,80 @@ namespace Sampoerna.EMS.BLL
                 outputList.Add(output);
 
             }
-            return outputList;
+            rc.Data = outputList;
+            return rc;
+        }
+
+        private ValidatePbck1ProdPlanUploadOutput ValidatePbck1ProdPlanUploadInput(
+            ValidatePbck1ProdPlanUploadParamInput input, out int periodMonthFrom, out int periodMonthTo)
+        {
+            periodMonthFrom = 0;
+            periodMonthTo = 0;
+
+            if (!input.ProdPlanPeriodFrom.HasValue)
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Please specify Production Plan Period From"
+                };
+            }
+
+            if (!input.ProdPlanPeriodTo.HasValue)
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Please specify Production Plan Period To"
+                };
+            }
+
+            if (string.IsNullOrEmpty(input.GoodType))
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Please specify Excisable Goods Type"
+                };
+            }
+
+            var periodFromMonth = input.ProdPlanPeriodFrom.Value.Month;
+            var periodToMonth = input.ProdPlanPeriodTo.Value.Month;
+            var periodToYear = input.ProdPlanPeriodFrom.Value.Year;
+            var periodFromYear = input.ProdPlanPeriodFrom.Value.Year;
+
+            if (periodFromYear != periodToYear)
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Period Plan year is not same"
+                };
+            }
+
+            if (periodFromMonth >= periodToMonth)
+            {
+                return new ValidatePbck1ProdPlanUploadOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Pbck1ProdPlanUploadInvalidParameter.ToString(),
+                    ErrorMessage = "Period Plan From is greater than or equals with Period Plan To"
+                };
+            }
+
+            periodMonthFrom = periodFromMonth;
+            periodMonthTo = periodToMonth;
+
+            return new ValidatePbck1ProdPlanUploadOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
         }
 
         //private bool ValidateProductCode(string productCode, out List<string> message, out ZAIDM_EX_PRODTYP productData)
@@ -1228,7 +1324,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected)
+            if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected && dbData.STATUS != Enums.DocumentStatus.GovRejected)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             if (dbData.CREATED_BY != input.UserId)
@@ -1567,7 +1663,7 @@ namespace Sampoerna.EMS.BLL
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
             queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed
-                && c.PBCK1_TYPE == Enums.PBCK1Type.New || c.PBCK1_TYPE == Enums.PBCK1Type.Additional);
+                && c.PBCK1_TYPE == Enums.PBCK1Type.New);
 
             if (input.YearFrom.HasValue)
                 queryFilter =
@@ -1588,7 +1684,35 @@ namespace Sampoerna.EMS.BLL
             if (pbck1Data == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            return Mapper.Map<List<Pbck1MonitoringUsageDto>>(pbck1Data);
+            var listData = Mapper.Map<List<Pbck1MonitoringUsageDto>>(pbck1Data);
+
+            listData = GetCorrectReceivedQuantity(listData);
+
+            return listData;
+        }
+
+        private List<Pbck1MonitoringUsageDto> GetCorrectReceivedQuantity(List<Pbck1MonitoringUsageDto> listData)
+        {
+            var list = listData;
+
+            foreach(var item in list)
+            {
+                var receivedAdditional = Convert.ToDecimal(0);
+
+                var listPbckAdditional = _repository.GetByID(item.Pbck1Id).PBCK11;
+
+                foreach (var data in listPbckAdditional)
+                {
+                    var additionalRec = _repository.GetByID(data.PBCK1_ID).CK5
+                                            .Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX);
+
+                    receivedAdditional += additionalRec.Value;
+                }
+
+                item.ReceivedAdditional = receivedAdditional;
+            }
+
+            return list;
         }
 
         #endregion
@@ -2406,5 +2530,32 @@ namespace Sampoerna.EMS.BLL
 
             return data;
         }
+
+        public List<Pbck1MonitoringMutasiDto> GetMonitoringMutasiByParam(Pbck1GetMonitoringMutasiByParamInput input)
+        {
+            Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
+           
+            if (!string.IsNullOrEmpty(input.pbck1Number))
+            {
+                queryFilter = queryFilter.And(c => c.NUMBER == input.pbck1Number);
+            }
+
+            Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
+            {
+                if (!string.IsNullOrEmpty(input.SortOrderColumn))
+                {
+                    orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(input.SortOrderColumn));
+                }
+
+                var dbData = _repository.Get(queryFilter, orderBy,"CK5");
+                if (dbData == null)
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                }
+                var mapResult = Mapper.Map<List<Pbck1MonitoringMutasiDto>>(dbData.ToList());
+                return mapResult;
+            }
+        }
+        
     }
 }

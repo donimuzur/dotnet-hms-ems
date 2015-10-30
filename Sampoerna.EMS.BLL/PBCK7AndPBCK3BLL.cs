@@ -325,11 +325,11 @@ namespace Sampoerna.EMS.BLL
 
             if (IsComplete)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled);
             }
             else
             {
-                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.Cancelled);
             }
             //Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = null;
             //if (!string.IsNullOrEmpty(input.ShortOrderColum))
@@ -1524,7 +1524,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void WorkflowStatusGovAddChangesPbck3(Pbck3WorkflowDocumentInput input, Enums.DocumentStatusGov? oldStatus, Enums.DocumentStatusGov newStatus)
+        private void WorkflowStatusGovAddChangesPbck3(Pbck3WorkflowDocumentInput input, Enums.DocumentStatusGovType3? oldStatus, Enums.DocumentStatusGovType3 newStatus)
         {
             //set changes log
             var changes = new CHANGES_HISTORY
@@ -1651,7 +1651,20 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.PBCK7_NUMBER;
 
-            AddWorkflowHistory(input);
+            var latestAction = _workflowHistoryBll.GetByFormNumber(input.DocumentNumber);
+
+            if (latestAction.LastOrDefault().ACTION == input.ActionType && latestAction.LastOrDefault().UserId == input.UserId)
+            {
+                var latestWorkflow = latestAction.LastOrDefault();
+
+                latestWorkflow.ACTION_DATE = DateTime.Now;
+
+                _workflowHistoryBll.Save(latestWorkflow);
+            }
+            else
+            {
+                AddWorkflowHistory(input);
+            }
 
 
             if (IsCompletedWorkflow(input))
@@ -1984,17 +1997,15 @@ namespace Sampoerna.EMS.BLL
                     RejectDocumentPbck3(input);
                     isNeedSendNotif = true;
                     break;
-
                 case Enums.ActionType.GovApprove:
-                case Enums.ActionType.GovPartialApprove:
                     GovApproveDocumentPbck3(input);
-
                     break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocumentPbck3(input);
                     break;
-              
-
+                case Enums.ActionType.GovCancel:
+                    GovCancelledDocument(input);
+                    break;
             }
 
          
@@ -2252,7 +2263,20 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.PBCK3_NUMBER;
 
-            AddWorkflowHistoryPbck3(input);
+            var latestAction = _workflowHistoryBll.GetByFormNumber(input.DocumentNumber);
+
+            if (latestAction.LastOrDefault().ACTION == input.ActionType && latestAction.LastOrDefault().UserId == input.UserId)
+            {
+                var latestWorkflow = latestAction.LastOrDefault();
+
+                latestWorkflow.ACTION_DATE = DateTime.Now;
+
+                _workflowHistoryBll.Save(latestWorkflow);
+            }
+            else
+            {
+                AddWorkflowHistoryPbck3(input);
+            }
 
             if (IsCompletedWorkflowPbck3(input))
             {
@@ -2355,10 +2379,10 @@ namespace Sampoerna.EMS.BLL
 
             ////Add Changes
             WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.Rejected);
-            WorkflowStatusGovAddChangesPbck3(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
+            WorkflowStatusGovAddChangesPbck3(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType3.Rejected);
 
             dbData.STATUS = Enums.DocumentStatus.Rejected;
-            dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
+            dbData.GOV_STATUS = Enums.DocumentStatusGovType3.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
             dbData.MODIFIED_BY = input.UserId;
@@ -2367,6 +2391,31 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistoryPbck3(input);
 
+        }
+
+        private void GovCancelledDocument(Pbck3WorkflowDocumentInput input)
+        {
+            var dbData = _repositoryPbck3.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            ////Add Changes
+            WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.Cancelled);
+            WorkflowStatusGovAddChangesPbck3(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType3.Cancelled);
+
+            dbData.STATUS = Enums.DocumentStatus.Cancelled;
+            dbData.GOV_STATUS = Enums.DocumentStatusGovType3.Cancelled;
+
+            dbData.MODIFIED_DATE = DateTime.Now;
+            dbData.MODIFIED_BY = input.UserId;
+
+            input.DocumentNumber = dbData.PBCK3_NUMBER;
+
+            AddWorkflowHistoryPbck3(input);
         }
 
         public void SendMailCompletedPbck3Document(Pbck3WorkflowDocumentInput input)

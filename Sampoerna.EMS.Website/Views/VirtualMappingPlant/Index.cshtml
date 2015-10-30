@@ -87,7 +87,7 @@
                                 <th> Company </th>
                                 <th> Import Virtual Plant </th>
                                 <th> Export Virtual Plant</th>
-                                <th> Deleted</th>
+                                <th> Active</th>
                             </tr>
 
                         </thead>
@@ -97,7 +97,7 @@
                                 <th> Company </th>
                                 <th> Import Virtual Plant </th>
                                 <th> Export Virtual Plant </th>
-                                <th> Deleted </th>
+                                <th> Active </th>
                             </tr>
                         </thead>
 
@@ -120,7 +120,7 @@
                                         @Html.DisplayFor(modelItem => item.ExportPlanName)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.IsDeletedString, new { @disabled = "disabled" })
+                                        @Html.DisplayFor(modelItem => item.IsActiveString, new { @disabled = "disabled" })
                                     </td>
 
                                 </tr>

@@ -869,6 +869,34 @@ namespace Sampoerna.EMS.Website.Controllers
                         
                     }
 
+                    if (model.Ck5Type == Enums.CK5Type.Manual)
+                    {
+                        if (ck5Details.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                        {
+                            model.IsFreeTextSource = true;
+                            model.SourcePlantNameManual = model.SourcePlantName;
+                            model.SourceNpwpManual = model.SourceNpwp;
+                            model.SourceNppbkcIdManual = model.SourceNppbkcId;
+                            model.SourceCompanyCodeManual = model.SourceCompanyCode;
+                            model.SourceCompanyNameManual = model.SourceCompanyName;
+                            model.SourceAddressManual = model.SourceAddress;
+                            model.SourceKppbcNameManual = model.SourceKppbcName;
+                        }
+                        else if (ck5Details.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.DestFreeText)
+                        {
+                            model.IsFreeTextDestination = true;
+                            model.DestPlantNameManual = model.DestPlantName;
+                            model.DestNpwpManual = model.DestNpwp;
+                            model.DestNppbkcIdManual = model.DestNppbkcId;
+                            model.DestCompanyCodeManual = model.DestCompanyCode;
+                            model.DestCompanyNameManual = model.DestCompanyName;
+                            model.DestAddressManual = model.DestAddress;
+                            model.DestKppbcNameManual = model.DestKppbcName;
+
+
+                        }
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -1041,6 +1069,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     input.NppbkcId = model.DestNppbkcId;
                     model.IsCk5PortToImporter = true;
+                }
+                else if (model.Ck5Type == Enums.CK5Type.Manual &&
+                         model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                {
+                    input.NppbkcId = model.DestNppbkcId;
                 }
 
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
@@ -1242,6 +1275,33 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             //process save
             //if (model.Ck5Id >0)
+
+            //manual freetext
+            if (model.Ck5Type == Enums.CK5Type.Manual)
+            {
+                if (model.IsFreeTextSource)
+                {
+                    model.SourcePlantName = model.SourcePlantNameManual;
+                    model.SourceNpwp = model.SourceNpwpManual;
+                    model.SourceNppbkcId = model.SourceNppbkcIdManual;
+                    model.SourceCompanyCode = model.SourceCompanyCodeManual;
+                    model.SourceCompanyName = model.SourceCompanyNameManual;
+                    model.SourceAddress = model.SourceAddressManual;
+                    model.SourceKppbcName = model.SourceKppbcNameManual;
+                    model.MANUAL_FREE_TEXT = Enums.Ck5ManualFreeText.SourceFreeText;
+                }
+                else if (model.IsFreeTextDestination)
+                {
+                    model.DestPlantName = model.DestPlantNameManual;
+                    model.DestNpwp = model.DestNpwpManual;
+                    model.DestNppbkcId = model.DestNppbkcIdManual;
+                    model.DestCompanyCode = model.DestCompanyCodeManual;
+                    model.DestCompanyName = model.DestCompanyNameManual;
+                    model.DestAddress = model.DestAddressManual;
+                    model.DestKppbcName = model.DestKppbcNameManual;
+                    model.MANUAL_FREE_TEXT = Enums.Ck5ManualFreeText.DestFreeText;
+                }
+            }
 
             var dataToSave = Mapper.Map<CK5Dto>(model);
           
@@ -3399,6 +3459,33 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+
+        [HttpGet]
+        public ActionResult GetManualViewSource(bool isFreeTextSource)
+        {
+            var model = new CK5FormViewModel();
+            model.SourcePlantList = GlobalFunctions.GetPlantAll();
+            if (isFreeTextSource)
+            {
+                return PartialView("_CK5ManualPlantSource", model);
+            }
+          
+            return PartialView("_CK5OriginalPlantSource", model);
+        }
+
+        [HttpGet]
+        public ActionResult GetManualViewDestination(bool isFreeText)
+        {
+            var model = new CK5FormViewModel();
+            model.DestPlantList = GlobalFunctions.GetPlantAll();
+            if (isFreeText)
+            {
+                return PartialView("_CK5ManualPlantDestination", model);
+            }
+
+            
+            return PartialView("_CK5OriginalPlantDestination", model);
+        }
 
     }
 }

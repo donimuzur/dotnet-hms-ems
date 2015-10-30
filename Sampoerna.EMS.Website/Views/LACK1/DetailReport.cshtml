@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailReportViewModel
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailReportViewModel
 
 <div class="container-wrap title-page">
     <div class="row">
@@ -87,6 +88,16 @@
                                     </div>
                                 </div>
                             </div>
+                             <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">LACK-1 Level</label>
+                                        <div class="col-md-8">
+                                            @Html.EnumDropDownListFor(model => model.SearchView.Lack1Level, Model.SearchView.Lack1LevelList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-2 col-md-offset-8">
                                     <button class="btn btn-blue full">FILTER</button>
@@ -108,6 +119,7 @@
                 @Html.HiddenFor(model => model.ExportSearchView.PeriodFrom)
                 @Html.HiddenFor(model => model.ExportSearchView.PeriodTo)
                 @Html.HiddenFor(model => model.ExportSearchView.ExcisableGoodsType)
+                @Html.HiddenFor(model => model.ExportSearchView.Lack1Level)
             }
         </div>
     </div>
@@ -304,6 +316,7 @@
             $('#ExportSearchView_SupplierPlantId').val($('#SearchView_SupplierPlantId').find("option:selected").val());
             $('#ExportSearchView_PeriodFrom').val($('#SearchView_PeriodFrom').find("option:selected").val());
             $('#ExportSearchView_PeriodTo').val($('#SearchView_PeriodTo').find("option:selected").val());
+            $('#ExportSearchView_Lack1Level').val($('#SearchView_Lack1Level').find("option:selected").val());
             $('#ExportXlsDetailReports').submit();
         }
 

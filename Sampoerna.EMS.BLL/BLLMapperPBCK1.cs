@@ -263,13 +263,13 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.NppbkcCompanyName, opt => opt.MapFrom(src => src.NPPBCK_BUTXT))
                 .ForMember(dest => dest.ExGoodsQuota, opt => opt.MapFrom(src => src.QTY_APPROVED))
                 .ForMember(dest => dest.PreviousFinalBalance, opt => opt.MapFrom(src => src.LATEST_SALDO))
-                .ForMember(dest => dest.AdditionalExGoodsQuota, opt => opt.MapFrom(src => src.PBCK11 != null ? 
-                    src.PBCK11.Where(c => c.STATUS == Enums.DocumentStatus.Completed 
+                .ForMember(dest => dest.AdditionalExGoodsQuota, opt => opt.MapFrom(src => src.PBCK11 != null ?
+                    src.PBCK11.Where(c => c.STATUS == Enums.DocumentStatus.Completed
                     && c.QTY_APPROVED.HasValue).Sum(s => s.QTY_APPROVED != null ? s.QTY_APPROVED.Value : 0) : 0))
-                    //todo: ambil dari QTY_RECEIVED di CK5 yang sekarang belum ada
+                //todo: ambil dari QTY_RECEIVED di CK5 yang sekarang belum ada
                 .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.CK5 != null ?
                     src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX) : 0))
-                    .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
+                .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
                 ;
 
             Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ReportProdPlanDto>().IgnoreAllNonExisting()
@@ -303,6 +303,26 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Penggunaan, opt => opt.MapFrom(src => src.Usage))
                 .ForMember(dest => dest.SaldoAkhir, opt => opt.MapFrom(src => (src.BeginingBalance + src.TotalIncome - src.Usage)))
                 ;
+
+            #endregion
+
+            #region Monitoring Mutasi
+
+            Mapper.CreateMap<PBCK1, Pbck1MonitoringMutasiDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID))
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.NUMBER))
+                .ForMember(dest => dest.AdditionalExGoodsQuota, opt => opt.MapFrom(src => src.PBCK11 != null
+                    ? src.PBCK11.Where(c => c.STATUS == Enums.DocumentStatus.Completed
+                                            && c.QTY_APPROVED.HasValue)
+                        .Sum(s => s.QTY_APPROVED != null ? s.QTY_APPROVED.Value : 0)
+                    : 0))
+                .ForMember(dest => dest.ExGoodsQuota, opt => opt.MapFrom(src => src.QTY_APPROVED))
+                .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.CK5 != null
+                    ? src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX)
+                    : 0))
+                .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
+                 .ForMember(dest => dest.Ck5List, opt => opt.MapFrom(src => src.CK5)); 
+
 
             #endregion
 
