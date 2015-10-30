@@ -1503,9 +1503,8 @@ namespace Sampoerna.EMS.BLL
             string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
             if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
-            //string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
-            //if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
-            //    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+            else if (dbData.CK5_TYPE == Enums.CK5Type.Manual && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
 
             var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
             {
