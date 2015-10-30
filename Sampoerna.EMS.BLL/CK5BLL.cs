@@ -552,14 +552,18 @@ namespace Sampoerna.EMS.BLL
                     else
                     {
                         var tempOutput = ValidateMaterialSapUom(ck5MaterialInput);
-                        if (tempOutput.IsValid)
-                        {
-                            continue;
-                        }
-                        else
+                        if (!tempOutput.IsValid)
                         {
                             messageList.Add(tempOutput.Message);
                         }
+                        //if (tempOutput.IsValid)
+                        //{
+                        //    continue;
+                        //}
+                        //else
+                        //{
+                        //    messageList.Add(tempOutput.Message);
+                        //}
                         
                     }
                 }

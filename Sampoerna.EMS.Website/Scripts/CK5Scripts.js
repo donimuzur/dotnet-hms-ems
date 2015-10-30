@@ -98,8 +98,8 @@ function OnReadyFunction(ck5Type) {
 
         $('#collapse5').addClass('in');
 
-       
-        if (ck5Type == 'Export' || ck5Type == 'Manual' || ck5Type == 'MarketReturn') {
+      
+        if (ck5Type == 'Export' || (ck5Type == 'Manual' && $('#IsReducePbck1Ck5Trial').is(':checked')) || ck5Type == 'MarketReturn') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
