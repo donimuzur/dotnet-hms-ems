@@ -3403,7 +3403,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             List<CK5FileUploadDocumentsOutput> outputResult;
             outputResult = _ck5Bll.CK5UploadFileDocumentsProcess(input);
-
+            
             model.Ck5FileDocumentItems = Mapper.Map<List<CK5FileDocumentItems>>(outputResult);
 
             return PartialView("_CK5UploadFileDocumentsList", model);
