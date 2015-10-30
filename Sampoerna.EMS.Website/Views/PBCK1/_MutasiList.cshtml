@@ -11,6 +11,7 @@
                 <th>Total CK-5 Used</th>
                 <th>CK-5 Number</th>
                 <th>Total Ex Good Type</th>
+                <th>UoM</th>
                 @*<th>CK5-Type</th>*@
             </tr>
         </thead>
@@ -50,12 +51,12 @@
                              }
                             
                          </td>
-                         <td>
+                         <td class="number">
                              @if (item.Ck5List.Any())
                              {
                                  foreach (var ck5 in item.Ck5List)
                                  {
-                                     @ck5.Qty <br />
+                                     @String.Format("{0:n}", @ck5.GRAND_TOTAL_EX) <br />
                                  }
                              }
                              else
@@ -64,12 +65,12 @@
                              }
 
                          </td>
-                         @*<td>
+                         <td>
                              @if (item.Ck5List.Any())
                              {
                                  foreach (var ck5 in item.Ck5List)
                                  {
-                                     @ck5.Ck5Type <br />
+                                     @ck5.PACKAGE_UOM_ID <br />
                                  }
                              }
                              else
@@ -77,8 +78,7 @@
                                  <text>-</text>
                              }
 
-                         </td>*@
-
+                         </td>
                      </tr>
                      row = row + 1;
                  }
