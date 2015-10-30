@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         /// Get from Received Amount in CK5(data come from SAP)
         /// </summary>
         public decimal Received { get; set; }
+        public decimal ReceivedAdditional { get; set; }
         public List<CK5Dto> Ck5List { get; set; }
      
     }

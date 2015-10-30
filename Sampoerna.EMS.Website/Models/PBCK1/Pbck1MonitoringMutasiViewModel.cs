@@ -35,6 +35,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         [UIHint("FormatQty")]
         public decimal TotalPbck1Quota { get; set; }
 
+        [UIHint("FormatQty")]
+        public decimal Received { get; set; }
+
     }
 
     public class Pbck1ExportMonitoringMutasiViewModel
@@ -46,6 +49,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool DocNumberCk5 { get; set; }
         public bool GrandTotalExciseable { get; set; }
         public bool Ck5Type { get; set; }
+        public bool Received { get; set; }
 
     }
 
@@ -56,5 +60,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string TotalPbck1Quota { get; set; }
         public string DocNumberCk5 { get; set; }
         public string GrandTotalExciseable { get; set; }
+        public string Received { get; set; }
     }
 }

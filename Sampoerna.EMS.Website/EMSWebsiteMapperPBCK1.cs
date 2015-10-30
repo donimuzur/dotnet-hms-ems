@@ -146,13 +146,13 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck1MonitoringMutasiViewModel, Pbck1GetMonitoringMutasiByParamInput>();
 
             Mapper.CreateMap<Pbck1MonitoringMutasiDto, Pbck1MonitoringMutasiItem>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.TotalPbck1Quota,
-                    opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
-                .ForMember(dest => dest.QuotaRemaining,
-                    opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received)))
+                .ForMember(dest => dest.Received, opt => opt.MapFrom(src => (src.Received + src.ReceivedAdditional)))
+                .ForMember(dest => dest.TotalPbck1Quota, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
+                .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received - src.ReceivedAdditional)))
                 .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number));
 
             Mapper.CreateMap<Pbck1MonitoringMutasiItem, ExportMonitoringMutasiDataModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.Received))
                 .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number))
                 .ForMember(dest => dest.TotalPbck1Quota, opt => opt.MapFrom(src => src.TotalPbck1Quota))
                 .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => src.QuotaRemaining))

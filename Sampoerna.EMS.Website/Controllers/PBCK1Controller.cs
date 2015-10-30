@@ -2819,6 +2819,21 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "PBCK-1 Quota remaining"
                 });
             }
+            if (model.QuotaRemaining)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QuotaRemaining",
+                    HeaderText = "PBCK-1 Quota remaining"
+                });
+            } if (model.Received)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Received",
+                    HeaderText = "Total CK-5 Used"
+                });
+            }
            
             if (model.DocNumberCk5)
             {
