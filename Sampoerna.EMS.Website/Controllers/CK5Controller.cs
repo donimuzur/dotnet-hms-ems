@@ -3351,43 +3351,56 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Note = datarow[7];
                         
                         uploadItem.Ck5Type = datarow[8];
-                        uploadItem.KppBcCityName = datarow[9];
-                        uploadItem.ExGoodType = datarow[10];
-                        uploadItem.ExciseSettlement = datarow[11];
-                        uploadItem.ExciseStatus = datarow[12];
-                        uploadItem.RequestType = datarow[13];
-                        uploadItem.SourcePlantId = datarow[14];
-                        uploadItem.DestPlantId = datarow[15];
-                        uploadItem.InvoiceNumber = datarow[16];
-                        uploadItem.InvoiceDateDisplay = datarow[17];
-                        uploadItem.PbckDecreeNumber = datarow[18];
+                        //if (datarow[9])
+                        int tempEnum;
+                        var isvalidInt = int.TryParse(datarow[9],out tempEnum);
+                        if (isvalidInt)
+                            uploadItem.CK5_MANUAL_TYPE = (Enums.Ck5ManualType)tempEnum;
+                        uploadItem.KppBcCityName = datarow[10];
+                        uploadItem.ExGoodType = datarow[11];
+
+                        isvalidInt = int.TryParse(uploadItem.ExGoodType,out tempEnum);
+                        if(isvalidInt)
+                            uploadItem.EX_GOODS_TYPE = (Enums.ExGoodsType)tempEnum;
+
+                        uploadItem.ExciseSettlement = datarow[12];
+                        uploadItem.ExciseStatus = datarow[13];
+                        uploadItem.RequestType = datarow[14];
+                        uploadItem.SourcePlantId = datarow[15];
+                        uploadItem.DestPlantId = datarow[16];
+                        uploadItem.InvoiceNumber = datarow[17];
+                        uploadItem.InvoiceDateDisplay = datarow[18];
+                        //uploadItem.PbckDecreeNumber = datarow[18];
                         uploadItem.CarriageMethod = datarow[19];
                         uploadItem.GrandTotalEx = datarow[20];
                         uploadItem.Uom = datarow[21];
-
-                        uploadItem.LOADING_PORT = datarow[22];
-                        uploadItem.LOADING_PORT_NAME = datarow[23];
-                        uploadItem.LOADING_PORT_ID = datarow[24];
-                        uploadItem.FINAL_PORT = datarow[25];
-                        uploadItem.FINAL_PORT_NAME = datarow[26];
-                        uploadItem.FINAL_PORT_ID = datarow[27];
-                        uploadItem.DEST_COUNTRY_CODE = datarow[28];
+                        uploadItem.DEST_COUNTRY_CODE = datarow[22];
+                        uploadItem.SUBMISSION_DATE = DateTime.Parse(datarow[23]);
+                        //uploadItem.LOADING_PORT = datarow[22];
+                        //uploadItem.LOADING_PORT_NAME = datarow[23];
+                        //uploadItem.LOADING_PORT_ID = datarow[24];
+                        //uploadItem.FINAL_PORT = datarow[25];
+                        //uploadItem.FINAL_PORT_NAME = datarow[26];
+                        //uploadItem.FINAL_PORT_ID = datarow[27];
+                        
                      
 
                         model.Ck5FileDocumentItems.Add(uploadItem);
 
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        //throw new Exception("uploaded file not valid",ex);
+                        //AddMessageInfo("Error : uploaded file not valid - " + ex.Message, Enums.MessageInfoType.Error);
+                        //return PartialView("_CK5UploadFileDocumentsList", model);
                         continue;
-
                     }
 
                 }
             }
 
             var input = Mapper.Map<List<CK5UploadFileDocumentsInput>>(model.Ck5FileDocumentItems);
-
+            
             List<CK5FileUploadDocumentsOutput> outputResult;
             outputResult = _ck5Bll.CK5UploadFileDocumentsProcess(input);
 

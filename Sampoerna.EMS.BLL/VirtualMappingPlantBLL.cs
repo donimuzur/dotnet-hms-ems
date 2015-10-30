@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
-using Sampoerna.EMS.Core.Exceptions;
-using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -66,28 +63,40 @@ namespace Sampoerna.EMS.BLL
             return success;
         }
 
-        public void Delete(int id, string userId)
+        public bool Delete(int id, string userId)
         {
+            var newStatus = false; 
             var data = _repository.GetByID(id);
-            data.IS_DELETED = true;
-            _repository.Update(data);
-
-
 
             var changes = new CHANGES_HISTORY
             {
                 FORM_TYPE_ID = Core.Enums.MenuList.VirtualMappingPlant,
                 FORM_ID = data.VIRTUAL_PLANT_MAP_ID.ToString(),
-                FIELD_NAME = "IS_DELETED",
+                FIELD_NAME = "IS_ACTIVE",
                 MODIFIED_BY = userId,
                 MODIFIED_DATE = DateTime.Now,
                 OLD_VALUE = data.IS_DELETED.HasValue ? data.IS_DELETED.Value.ToString() : "NULL",
-                NEW_VALUE = true.ToString()
+                NEW_VALUE = data.IS_DELETED.HasValue && data.IS_DELETED.Value ? "FALSE" : "TRUE"
             };
+
+            if (data.IS_DELETED.HasValue && data.IS_DELETED.Value)
+            {
+                //Activate
+                data.IS_DELETED = false;
+            }
+            else
+            {
+                //DeActivate
+                data.IS_DELETED = true;
+                newStatus = true;
+            }
+            _repository.Update(data);
 
             _changesHistoryBll.AddHistory(changes);
 
             _uow.SaveChanges();
+
+            return newStatus;
         }
 
         private void SetChanges(VIRTUAL_PLANT_MAP origin, VIRTUAL_PLANT_MAP data, string userId)

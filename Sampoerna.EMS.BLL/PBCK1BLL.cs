@@ -2530,5 +2530,32 @@ namespace Sampoerna.EMS.BLL
 
             return data;
         }
+
+        public List<Pbck1MonitoringMutasiDto> GetMonitoringMutasiByParam(Pbck1GetMonitoringMutasiByParamInput input)
+        {
+            Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
+           
+            if (!string.IsNullOrEmpty(input.pbck1Number))
+            {
+                queryFilter = queryFilter.And(c => c.NUMBER == input.pbck1Number);
+            }
+
+            Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
+            {
+                if (!string.IsNullOrEmpty(input.SortOrderColumn))
+                {
+                    orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK1>(input.SortOrderColumn));
+                }
+
+                var dbData = _repository.Get(queryFilter, orderBy,"CK5");
+                if (dbData == null)
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                }
+                var mapResult = Mapper.Map<List<Pbck1MonitoringMutasiDto>>(dbData.ToList());
+                return mapResult;
+            }
+        }
+        
     }
 }

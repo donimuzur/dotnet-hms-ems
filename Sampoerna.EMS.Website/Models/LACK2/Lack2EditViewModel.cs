@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public Enums.DocumentStatus Status { get; set; }
         public string StatusName { get; set; }
-        public Enums.DocumentStatusGov? GovStatus { get; set; }
+        public Enums.DocumentStatusGovType2? GovStatus { get; set; }
         public string GovStatusName { get; set; }
 
         public string CreatedBy { get; set; }
@@ -61,7 +61,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string PoaList { get; set; }
         public string PoaListHidden { get; set; }
 
-        public Enums.DocumentStatusGov DocGovStatusList { get; set; }
+        public Enums.DocumentStatusGovType2 DocGovStatusList { get; set; }
 
         public List<HttpPostedFileBase> DecreeFiles { get; set; }
         public Enums.ActionType GovApprovalActionType { get; set; }

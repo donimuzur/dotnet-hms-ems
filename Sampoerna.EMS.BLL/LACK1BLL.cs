@@ -688,8 +688,13 @@ namespace Sampoerna.EMS.BLL
                 return;
 
             var mailProcess = ProsesMailNotificationBody(lack1Data, input);
+            List<string> listTo = mailProcess.To.Distinct().ToList();
 
-            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+            if (mailProcess.IsCCExist)
+                //Send email with CC
+                _messageService.SendEmailToListWithCC(listTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+            else
+                _messageService.SendEmailToList(listTo, mailProcess.Subject, mailProcess.Body, true);
         }
 
         private MailNotification ProsesMailNotificationBody(Lack1DetailsDto lack1Data, Lack1WorkflowDocumentInput input)

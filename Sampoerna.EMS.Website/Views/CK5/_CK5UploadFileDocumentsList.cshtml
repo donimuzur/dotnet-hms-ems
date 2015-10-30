@@ -20,19 +20,15 @@
             <th>Request Type</th>
             <th>SOURCE PLANT</th>
             <th>DESTINATION PLANT</th>
-            <th>INVOICE NUMBER</th>
-            <th>INVOICE DATE</th>
-            <th>PBCK-1 NUMBER</th>
+            <th style="display:none">INVOICE NUMBER</th>
+            <th style="display:none">INVOICE DATE</th>
+            <th style="display:none">PBCK-1 NUMBER</th>
             <th>CARRIAGE METHOD</th>
             <th>GRAND TOTAL</th>
             <th>UOM</th>
-            <th>LOADING PORT</th>
-            <th>LOADING PORT NAME</th>
-            <th>LOADING PORT ID</th>
-            <th>FINAL PORT</th>
-            <th>FINAL PORT NAME</th>
-            <th>FINAL PORT ID</th>
+            
             <th>DEST COUNTRY NAME</th>
+            <th>Submission Date</th>
             <th>Message</th>
         </tr>
     </thead>
@@ -106,6 +102,7 @@
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].Hje)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].Tariff)
                 @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].ExciseValue)
+                @Html.HiddenFor(model => model.Ck5FileDocumentItems[i].SUBMISSION_DATE)
             
             
                 <tr>
@@ -126,22 +123,17 @@
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].RequestType)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].SourcePlantId)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].DestPlantId)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceNumber)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceDateDisplay)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].PbckDecreeNumber)</td>
+                    <td style="display:none">@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceNumber)</td>
+                    <td style="display:none">@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].InvoiceDateDisplay)</td>
+                    <td style="display:none">@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].PbckDecreeNumber)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].CarriageMethod)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].GrandTotalEx)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].Uom)</td>
                     
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT_NAME)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].LOADING_PORT_ID)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT_NAME)</td>
-                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].FINAL_PORT_ID)</td>
+                    
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].DEST_COUNTRY_NAME)</td>
                     
-
+                    <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].SUBMISSION_DATE)</td>
                     <td>@Html.DisplayFor(model => model.Ck5FileDocumentItems[i].MesssageUploadFileDocuments)</td>
                    
                 </tr>

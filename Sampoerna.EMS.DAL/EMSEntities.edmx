@@ -6605,7 +6605,7 @@
           <Property Name="SUBMISSION_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EX_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="EX_TYP_DESC" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
-          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGov" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGovType2" />
           <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />

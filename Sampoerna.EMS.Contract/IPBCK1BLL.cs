@@ -58,5 +58,8 @@ namespace Sampoerna.EMS.Contract
             DateTime? submissionDate, string destPlantNppbkcId, List<string> goodtypes);
 
         List<Pbck1Dto> GetByRef(int pbckId);
+
+        List<Pbck1MonitoringMutasiDto> GetMonitoringMutasiByParam(Pbck1GetMonitoringMutasiByParamInput input);
+
     }
 }
