@@ -3213,6 +3213,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Ck5Type = datarow[8];
                         uploadItem.KppBcCityName = datarow[9];
                         uploadItem.ExGoodType = datarow[10];
+                        uploadItem.EX_GOODS_TYPE = (Enums.ExGoodsType) int.Parse(uploadItem.ExGoodType);
                         uploadItem.ExciseSettlement = datarow[11];
                         uploadItem.ExciseStatus = datarow[12];
                         uploadItem.RequestType = datarow[13];
@@ -3220,18 +3221,19 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.DestPlantId = datarow[15];
                         uploadItem.InvoiceNumber = datarow[16];
                         uploadItem.InvoiceDateDisplay = datarow[17];
-                        uploadItem.PbckDecreeNumber = datarow[18];
-                        uploadItem.CarriageMethod = datarow[19];
-                        uploadItem.GrandTotalEx = datarow[20];
-                        uploadItem.Uom = datarow[21];
-
-                        uploadItem.LOADING_PORT = datarow[22];
-                        uploadItem.LOADING_PORT_NAME = datarow[23];
-                        uploadItem.LOADING_PORT_ID = datarow[24];
-                        uploadItem.FINAL_PORT = datarow[25];
-                        uploadItem.FINAL_PORT_NAME = datarow[26];
-                        uploadItem.FINAL_PORT_ID = datarow[27];
-                        uploadItem.DEST_COUNTRY_CODE = datarow[28];
+                        //uploadItem.PbckDecreeNumber = datarow[18];
+                        uploadItem.CarriageMethod = datarow[18];
+                        uploadItem.GrandTotalEx = datarow[19];
+                        uploadItem.Uom = datarow[20];
+                        uploadItem.DEST_COUNTRY_CODE = datarow[21];
+                        uploadItem.SUBMISSION_DATE = DateTime.Parse(datarow[22]);
+                        //uploadItem.LOADING_PORT = datarow[22];
+                        //uploadItem.LOADING_PORT_NAME = datarow[23];
+                        //uploadItem.LOADING_PORT_ID = datarow[24];
+                        //uploadItem.FINAL_PORT = datarow[25];
+                        //uploadItem.FINAL_PORT_NAME = datarow[26];
+                        //uploadItem.FINAL_PORT_ID = datarow[27];
+                        
                      
 
                         model.Ck5FileDocumentItems.Add(uploadItem);

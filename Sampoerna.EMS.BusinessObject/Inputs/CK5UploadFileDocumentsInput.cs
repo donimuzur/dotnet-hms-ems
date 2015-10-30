@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string CarriageMethod { get; set; }
         public string GrandTotalEx { get; set; }
         public string PackageUomName { get; set; }
+        public DateTime? SUBMISSION_DATE { get; set; }
 
         public Enums.ExGoodsType EX_GOODS_TYPE { get; set; }
 

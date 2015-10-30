@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Enums.RequestType REQUEST_TYPE_ID { get; set; }
 
         public DateTime? INVOICE_DATE { get; set; }
+        public DateTime? SUBMISSION_DATE { get; set; }
 
         public string SOURCE_PLANT_ID { get; set; }
         public string SOURCE_PLANT_NPWP { get; set; }
