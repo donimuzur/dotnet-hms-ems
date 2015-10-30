@@ -8,6 +8,7 @@
                 <th>PBCK-1 Number</th>
                 <th>Total PBCK-1 Quota</th>
                 <th>PBCK-1 Quota remaining</th>
+                <th>Total CK-5 Used</th>
                 <th>CK-5 Number</th>
                 <th>Total Ex Good Type</th>
                 @*<th>CK5-Type</th>*@
@@ -26,11 +27,14 @@
                          <td>
                              @Html.DisplayFor(model => item.Pbck1Number)
                          </td>
-                         <td>
-                             @Html.DisplayFor(model => item.TotalPbck1Quota)
+                         <td class ="number">
+                             @String.Format("{0:n}", @item.TotalPbck1Quota)
                          </td>
-                         <td>
-                             @Html.DisplayFor(model => item.QuotaRemaining)
+                         <td class="number">
+                             @String.Format("{0:n}", @item.QuotaRemaining)
+                         </td>
+                         <td class="number">
+                             @String.Format("{0:n}", @item.Received)
                          </td>
                          <td>
                              @if (item.Ck5List.Any())
