@@ -107,7 +107,7 @@
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBox("Received", new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Total CK-5 Used
+                                            @Html.CheckBox("Received", new { @id = "checkboxDefault4", @class = "checkbox checkexport", @datacolumn = "4" })Total CK-5 Used
                                         </label>
                                     </div>
                                     <div class="checkbox">
@@ -117,14 +117,14 @@
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault6", @class = "checkbox checkexport", @datacolumn = "6" })Total Ex Good Type
+                                            @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault6", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })Total Ex Good Type
                                         </label>
                                     </div>
-                                    @*<div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.Ck5Type, new { @class = "checkbox checkexport", @datacolumn = "6" })CK-5 type
-                                                    </label>
-                                                </div>*@
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBox("UoM", new { @id = "checkboxDefault7", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })UoM
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +165,7 @@
             $('#checkboxDefault3').prop('checked', true);
             $('#checkboxDefault5').prop('checked', true);
             $('#checkboxDefault6').prop('checked', true);
-            
+            $('#checkboxDefault7').prop('checked', true);
 
         });
 
@@ -197,6 +197,7 @@
                 $('#checkboxDefault3').prop('checked', true);
                 $('#checkboxDefault5').prop('checked', true);
                 $('#checkboxDefault6').prop('checked', true);
+                $('#checkboxDefault7').prop('checked', true);
             });
 
             $('.checkexport').on('click', function (e) {
@@ -223,7 +224,7 @@
                     // Show a column
                     $('#monitoringMutasi').parents('div.dataTables_wrapper').first().show();
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 7; i++) {
+                    for (var i = 0; i < 8; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -237,7 +238,7 @@
 
                     });
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 7; i++) {
+                    for (var i = 0; i < 8; i++) {
                         table.column(i).visible(false);
 
                     }

@@ -2853,14 +2853,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
-            //if (model.ExportModel.Ck5Type)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Ck5Type",
-            //        HeaderText = "CK5-Type"
-            //    });
-            //}
+            if (model.UoM)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "UoM",
+                    HeaderText = "UoM",
+                    HtmlEncode = false
+                });
+            }
             
 
             if (dataToExport.Count == 0)
