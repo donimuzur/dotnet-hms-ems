@@ -63,6 +63,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.CK5Type Ck5Type { get; set; }
 
         public bool IsModified { get; set; }
+
+        public DateTime? GiDate { get; set; }
+        public DateTime? GrDate { get; set; }
     }
 
     public class CK5WorkflowDocumentData

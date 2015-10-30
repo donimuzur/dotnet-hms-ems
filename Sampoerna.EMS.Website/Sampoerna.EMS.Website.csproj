@@ -480,6 +480,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\LACK1\Lack1Items.cs">
       <AutoGen>True</AutoGen>
@@ -1242,6 +1243,8 @@
     <Content Include="Views\CK5\_CK5ManualPlantDestination.cshtml" />
     <Content Include="Views\PBCK1\_MutasiList.cshtml" />
     <Content Include="Views\CK5\_CK5OriginalPlantDestination.cshtml" />
+    <Content Include="Views\CK5\_CK5GoodIssue.cshtml" />
+    <Content Include="Views\CK5\_CK5GoodReceive.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1130,6 +1130,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.AllowGiCreated = _workflowBll.AllowStoGiCompleted(input);
                     model.AllowGrCreated = _workflowBll.AllowStoGrCreated(input);
                 }
+                else if (model.Ck5Type == Enums.CK5Type.Manual && model.Ck5ManualType == Enums.Ck5ManualType.Trial)
+                {
+                    input.Ck5ManualType = Enums.Ck5ManualType.Trial;
+                    model.AllowGoodIssue = _workflowBll.AllowGoodIssue(input);
+                    model.AllowGoodReceive = _workflowBll.AllowGoodReceive(input);
+                }
                 else
                 {
                     model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
@@ -1151,6 +1157,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "CK5GICreated";
                 else if (model.AllowGrCreated)
                     model.ActionType = "CK5GRCreated";
+                else if (model.AllowGoodIssue)
+                    model.ActionType = "CK5GoodIssue";
+                else if (model.AllowGoodReceive)
+                    model.ActionType = "CK5GoodReceive";
                 else if (model.AllowTfPostedPortToImporter)
                     model.ActionType = "CK5TfPostedPortToImporter";
                 else if (model.AllowAttachmentCompleted)
@@ -1655,6 +1665,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     case Enums.DocumentStatus.StoRecGICompleted:
                         input.ActionType = Enums.ActionType.StoRecGICompleted;
                         break;
+                    case Enums.DocumentStatus.WaitingForSealing:
+                        input.ActionType = Enums.ActionType.Sealed;
+                        break;
                     default:
                         AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
                         return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
@@ -1703,6 +1716,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     case Enums.DocumentStatus.StoRecGRCompleted:
                         input.ActionType = Enums.ActionType.StoRecGRCompleted;
                         break;
+                    case Enums.DocumentStatus.WaitingForUnSealing:
+                        input.ActionType = Enums.ActionType.UnSealed;
+                        break;
                     default:
                         AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
                         return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
@@ -1719,6 +1735,64 @@ namespace Sampoerna.EMS.Website.Controllers
                 _ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
+        public ActionResult CK5GoodIssue(CK5FormViewModel model)
+        {
+           
+            try
+            {
+               
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+
+                input.ActionType = Enums.ActionType.GoodIssue;
+
+                input.GiDate = model.GiDate;
+                input.SealingNumber = model.SealingNotifNumber;
+                input.SealingDate = model.SealingNotifDate;
+                
+                _ck5Bll.CK5Workflow(input);
+
+                AddMessageInfo("Success update Good Issue", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
+        public ActionResult CK5GoodReceive(CK5FormViewModel model)
+        {
+
+            try
+            {
+
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+
+                input.ActionType = Enums.ActionType.GoodReceive;
+
+                input.GrDate = model.GrDate;
+                input.UnSealingNumber = model.UnSealingNotifNumber;
+                input.UnSealingDate = model.UnsealingNotifDate;
+
+                _ck5Bll.CK5Workflow(input);
+
+                AddMessageInfo("Success update Good Receive", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {
@@ -1914,7 +1988,13 @@ namespace Sampoerna.EMS.Website.Controllers
             };
             
 
-            if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn) return true;
+            //if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn) return true;
+            if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn)
+            {
+                _ck5Bll.CK5Workflow(input);
+                return true;
+            }
+
             try
             {
                 //create xml file
