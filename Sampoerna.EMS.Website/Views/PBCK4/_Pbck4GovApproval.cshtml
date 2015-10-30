@@ -109,7 +109,7 @@
                 <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                     <div class="panel-body">
 
-                        <input type="button" class="btn btn-blue" id="btnUploadInfo" value="Upload" />
+                        @*<input type="button" class="btn btn-blue" id="btnUploadInfo" value="Upload" />*@
 
                         <div class="table-container">
                             <table id="pbck4TableItem" class="table table-bordered table-striped js-options-table">
@@ -153,7 +153,7 @@
                                     @Html.HiddenFor(model => model.UploadItemModels[i].TotalHje)
                                     @Html.HiddenFor(model => model.UploadItemModels[i].TotalStamps)
                                     @Html.HiddenFor(model => model.UploadItemModels[i].NoPengawas)
-                                    @Html.HiddenFor(model => model.UploadItemModels[i].ApprovedQty)
+                                    
                                     @Html.HiddenFor(model => model.UploadItemModels[i].Remark)
                                     @Html.HiddenFor(model => model.UploadItemModels[i].CK1_ID)
                                     @Html.HiddenFor(model => model.UploadItemModels[i].PBCK4_ITEM_ID)
@@ -175,7 +175,19 @@
                                         <td>@Html.DisplayFor(model => model.UploadItemModels[i].TotalHje)</td>
                                         <td>@Html.DisplayFor(model => model.UploadItemModels[i].TotalStamps)</td>
                                         <td>@Html.DisplayFor(model => model.UploadItemModels[i].NoPengawas)</td>
-                                        <td>@Html.DisplayFor(model => model.UploadItemModels[i].ApprovedQty)</td>
+                                        <td>
+                                            @if (Model.AllowGovApproveAndReject)
+                                            {
+                                                @Html.TextBoxFor(model => model.UploadItemModels[i].ApprovedQty, new { @class = "form-control", @style="width : 100px" })
+                                            }
+                                            else
+                                            {
+                                                @Html.HiddenFor(model => model.UploadItemModels[i].ApprovedQty)
+                                                
+                                                @Html.DisplayFor(model => model.UploadItemModels[i].ApprovedQty)
+                                            }
+                                            
+                                        </td>
                                         <td>@Html.DisplayFor(model => model.UploadItemModels[i].Remark)</td>
 
                                     </tr>
@@ -302,23 +314,21 @@
                 </div>
             </div>
         </div>
-    </div>
-
-
-    <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="heading7">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
-                        Workflow History
-                        <i class="fa fa-caret-down"></i>
-                    </a>
-                </h4>
-            </div>
-            <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
-                <div class="panel-body">
-                    <div class="table-container">
-                        @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+        <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                            Workflow History
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                        </div>
                     </div>
                 </div>
             </div>
@@ -329,7 +339,6 @@
             <span class="red">*</span> ) This Field Required
         </div>
     </div>
-
 </div>
 
 

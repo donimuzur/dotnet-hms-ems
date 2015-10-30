@@ -162,7 +162,11 @@
                                             </div>
 
                                             <div class="toggle-component">
-
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                    </label>
+                                                </div>
                                                 <div class="checkbox">
                                                     <label>
                                                         @Html.CheckBoxFor(model => model.ExportModel.Ck5TypeDescription, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1", @Name = "Ck5Type1" })CK5 Type
@@ -360,7 +364,11 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.LoadingPortName, new { @class = "checkbox checkexport", @datacolumn = "39" })Loading Port Name
                                                     </label>
                                                 </div>
-
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Status, new { @class = "checkbox checkexport", @datacolumn = "40" })Status
+                                                    </label>
+                                                </div>
 
 
 
@@ -374,7 +382,7 @@
                             </div>
                             
 
-
+                            
                         </div>
                     </div>
                 </div>
@@ -399,13 +407,18 @@
 
         //$("#SearchView_Ck5Type option[value='7']").remove();
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            setupDataTables();
+            setupDataTables(true);
+            //$('#MenuCK5SummaryReports').addClass('active');
+
+            $('#MenuCk5OpenDocument').removeClass('open');
+           
+            $('#MenuCk5Report').addClass('open');
             $('#MenuCK5SummaryReports').addClass('active');
+            
 
-
-            $("#SearchView_Ck5Type").change(function () {
+            $("#SearchView_Ck5Type").change(function() {
                 if ($("#SearchView_Ck5Type").length) {
                     //var ck5Type = $('option:selected', $(this)).text(); //$(this).find("option:selected").val();
 
@@ -419,7 +432,7 @@
         });
 
 
-        function setupDataTables() {
+        function setupDataTables(blFirst) {
 
             // DataTable
             var table = null;
@@ -438,7 +451,29 @@
                 });
 
 
-            $('.checkexport').on('click', function (e) {
+            $('#selecctall').change(function () {
+                if ($(this).is(':checked')) {
+                    $('.checkexport').each(function () {
+                        this.checked = true;
+                    });
+                    for (var i = 0; i < 41; i++) {
+                        table.column(i).visible(true);
+                    }
+                    $('#ck5Table').parents('div.dataTables_wrapper').first().show();
+
+
+                } else {
+                    $('.checkexport').each(function () {
+                        this.checked = false;
+                    });
+                    for (var i = 0; i < 41; i++) {
+                        table.column(i).visible(false);
+                    }
+                    $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
+                }
+            });
+            
+            $('.checkexport').on('click', function(e) {
                 // e.preventDefault();
 
                 // Get the column API object
@@ -446,15 +481,41 @@
 
                 // Toggle the visibility
                 column.visible(!column.visible());
+                
+                $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
+
+                for (var i = 0; i < 41; i++) {
+                    if (table.column(i).visible()) {
+                        $('#ck5Table').parents('div.dataTables_wrapper').first().show();
+                        return;
+                    }
+                }
+                
             });
 
-            for (var i = 11; i < 40; i++) {
-                table.column(i).visible(false);
+            if (blFirst) {
+                for (var i = 11; i < 41; i++) {
+                    table.column(i).visible(false);
+                }
+            } else {
+                $('.checkexport').each(function () {
+
+                    // Get the column API object
+                    var column = table.column($(this).attr('datacolumn'));
+
+                    // Toggle the visibility
+                    column.visible(false);
+                    if ($(this).is(':checked')) {
+                        // Toggle the visibility
+                        column.visible(true);
+                    }
+
+                });
             }
         }
 
         function ReloadDataTables() {
-            setupDataTables();
+            setupDataTables(false);
         }
 
         function OnReset() {
@@ -462,8 +523,8 @@
             $(".selectreset").val($(".selectreset option:first").val());
         }
 
-        $("#btnExport").click(function () {
-           // $('#Ck5Modal').modal('show');
+        $("#btnExport").click(function() {
+            // $('#Ck5Modal').modal('show');
             GetSearchSummaryReports();
             $('#ExportSummaryReportsForms').submit();
         });
@@ -482,7 +543,7 @@
         }
 
 
-        $("#btnConfirm").click(function () {
+        $("#btnConfirm").click(function() {
             GetSearchSummaryReports();
             $('#ExportSummaryReportsForms').submit();
 

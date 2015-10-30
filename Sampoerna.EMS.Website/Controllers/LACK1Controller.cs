@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Validation;
 using System.Globalization;
 using System.Linq;
@@ -8,11 +9,14 @@ using System.Web.Mvc;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using AutoMapper;
+using CrystalDecisions.CrystalReports.Engine;
+using CrystalDecisions.Shared;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.ReportingData;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.LACK1;
@@ -23,6 +27,7 @@ using Sampoerna.EMS.Website.Models.ChangesHistory;
 using System.IO;
 using Sampoerna.EMS.Utils;
 using SpreadsheetLight;
+using System.Configuration;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -510,47 +515,163 @@ namespace Sampoerna.EMS.Website.Controllers
         [EncryptedParameter]
         public ActionResult PrintPreview(int? id)
         {
+            //Get Report Source
             if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
+                HttpNotFound();
 
+            // ReSharper disable once PossibleInvalidOperationException
             var lack1Data = _lack1Bll.GetPrintOutData(id.Value);
-
             if (lack1Data == null)
-            {
-                return HttpNotFound();
-            }
+                HttpNotFound();
 
-            var model = Mapper.Map<Lack1PrintOutModel>(lack1Data);
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
-            model.PrintOutTitle = "Preview LACK-1";
-            return View("PrintDocument", model);
+            Stream stream = GetReport(lack1Data, "Preview LACK-1");
+
+            return File(stream, "application/pdf");
         }
 
         [EncryptedParameter]
         public ActionResult PrintOut(int? id)
         {
+            //Get Report Source
             if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
+                HttpNotFound();
 
+            // ReSharper disable once PossibleInvalidOperationException
             var lack1Data = _lack1Bll.GetPrintOutData(id.Value);
-
             if (lack1Data == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(lack1Data, "LACK-1");
+
+            return File(stream, "application/pdf");
+        }
+
+        private Stream GetReport(Lack1PrintOutDto data, string printTitle)
+        {
+            var dataSet = SetDataSetReport(data, printTitle);
+
+            var rpt = new ReportClass
             {
-                return HttpNotFound();
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "LACK1\\Lack1PrintOut.rpt"
+            };
+            rpt.Load();
+            rpt.SetDataSource(dataSet);
+            Stream stream = rpt.ExportToStream(ExportFormatType.PortableDocFormat);
+            rpt.Close();
+            return stream;
+        }
+
+        private DataSet SetDataSetReport(Lack1PrintOutDto data, string printTitle)
+        {
+            var dsReport = new dsLack1();
+
+            //master info
+            var dMasterRow = dsReport.Lack1.NewLack1Row();
+            // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+            dMasterRow.Lack1Id = data.Lack1Id.ToString();
+            dMasterRow.Lack1Number = data.Lack1Number;
+            dMasterRow.CompanyCode = data.Bukrs;
+            dMasterRow.CompanyName = data.Butxt;
+            dMasterRow.PlantAddress = data.Lack1Plant.Count > 0 ? string.Join(Environment.NewLine, data.Lack1Plant.Select(d => d.PLANT_ADDRESS).ToList()) : "-";
+            if (data.Lack1Pbck1Mapping.Count > 0)
+            {
+                dMasterRow.NoTglPbck1 = string.Join(Environment.NewLine,
+                    data.Lack1Pbck1Mapping.Select(d => (d.PBCK1_NUMBER + " - " + d.DisplayDecreeDate)).ToList());
+            }
+            else
+            {
+                dMasterRow.NoTglPbck1 = "-";
             }
 
-            var model = Mapper.Map<Lack1PrintOutModel>(lack1Data);
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
-            model.PrintOutTitle = "LACK-1";
-            return View("PrintDocument", model);
+            dMasterRow.ExcisableGoodsTypeId = data.ExGoodsType;
+            dMasterRow.ExcisableGoodsTypeDesc = data.ExGoodsTypeDesc;
+            dMasterRow.SupplierCompanyName = data.SupplierCompanyName;
+            dMasterRow.SupplierCompanyAddress = data.SupplierPlantAddress;
+            dMasterRow.Lack1Period = data.PeriodNameInd + " " + data.PeriodYears;
+            dMasterRow.NppbkcCity = data.NppbkcCity;
+            dMasterRow.NppbkcId = data.NppbkcId;
+            dMasterRow.SubmissionDate = data.SubmissionDateDisplayString;
+            dMasterRow.CreatorName = data.ExcisableExecutiveCreator;
+            dMasterRow.PrintTitle = printTitle;
+            if (data.HeaderFooter != null)
+            {
+                if (!string.IsNullOrEmpty(data.HeaderFooter.HEADER_IMAGE_PATH))
+                    dMasterRow.Header = GetHeader(data.HeaderFooter.HEADER_IMAGE_PATH);
+                dMasterRow.Footer = !string.IsNullOrEmpty(data.HeaderFooter.FOOTER_CONTENT) ? data.HeaderFooter.FOOTER_CONTENT.Replace("<br />", Environment.NewLine) : string.Empty;    
+            }
+
+            dsReport.Lack1.AddLack1Row(dMasterRow);
+            
+            //for total
+            var prodList = Mapper.Map<List<Lack1ProductionDetailItemModel>>(data.Lack1ProductionDetail);
+            var summaryProductionList = ProcessSummaryProductionDetails(prodList);
+            var totalSummaryProductionList = string.Join(Environment.NewLine,
+                summaryProductionList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
+            //for each Excisable Goods Type
+            var summaryProductionJenis = string.Join(Environment.NewLine,
+                prodList.Select(d => d.ProductAlias).ToList());
+            var summaryProductionAmount = string.Join(Environment.NewLine,
+                prodList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
+
+            //set detail item
+            if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
+
+            var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
+            var endingBalance = (data.BeginingBalance - data.Usage + data.TotalIncome);
+            var noted = !string.IsNullOrEmpty(data.Noted) ? data.Noted.Replace("<br />", Environment.NewLine) : string.Empty;
+            foreach (var item in data.Lack1IncomeDetail)
+            {
+                var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
+                detailRow.BeginningBalance = data.BeginingBalance.ToString("N2");
+                detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
+                detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty;
+                detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
+                detailRow.Usage = data.Usage.ToString("N2");
+                detailRow.ListJenisBKC = summaryProductionJenis;
+                detailRow.ListJumlahBKC = summaryProductionAmount;
+                detailRow.EndingBalance = endingBalance.ToString("N2");
+                detailRow.Noted = noted;
+                detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
+                detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
+
+                dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
+
+            }
+
+            return dsReport;
+        }
+
+        private byte[] GetHeader(string imagePath)
+        {
+            byte[] imgbyte = null;
+            try
+            {
+
+                FileStream fs;
+                BinaryReader br;
+
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
+                {
+                    fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    // initialise the binary reader from file streamobject 
+                    br = new BinaryReader(fs);
+                    // define the byte array of filelength 
+                    imgbyte = new byte[fs.Length + 1];
+                    // read the bytes from the binary reader 
+                    imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+
+
+                    br.Close();
+                    // close the binary reader 
+                    fs.Close();
+                    // close the file stream 
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return imgbyte;
+            // Return Datatable After Image Row Insertion
         }
 
         #endregion
@@ -1222,7 +1343,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void ExportSummaryReportsToExcel(Lack1SummaryReportViewModel model)
         {
-            var dataSummaryReport = SearchSummaryReports(model.SearchView);
+            var dataSummaryReport = SearchSummaryReports(model.ExportModel);
 
             //todo: to automapper
             var src = Mapper.Map<List<Lack1ExportSummaryDataModel>>(dataSummaryReport);
@@ -1507,11 +1628,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(selectListSource, "ValueField", "TextField");
         }
 
-        public void ExportDetailReport(Lack1SearchDetailReportViewModel model)
+        public void ExportDetailReport(Lack1DetailReportViewModel model)
         {
             string pathFile = "";
 
-            pathFile = CreateXlsDetailReport(model);
+            pathFile = CreateXlsDetailReport(model.ExportSearchView);
             
             var newFile = new FileInfo(pathFile);
 
@@ -1537,14 +1658,29 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument = CreateHeaderExcel(slDocument, out endColumnIndex);
             
             int iRow = 3; //starting row data
+
+            var needToMerge = new List<DetailReportNeedToMerge>();
             
             foreach (var item in dataDetailReport)
             {
                 int iColumn = 1;
+                
                 if (item.TrackingConsolidations.Count > 0)
                 {
+
+                    var iStartRow = iRow;
+                    var iEndRow = iStartRow;
+
+                    var lastMaterialCode = item.TrackingConsolidations[0].MaterialCode;
+                    var lastBatch = item.TrackingConsolidations[0].Batch;
+
                     int dataCount = item.TrackingConsolidations.Count - 1;
+
                     //first record
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
@@ -1570,7 +1706,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].MaterialCode);
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[0].UsageQty.HasValue ? "-" : ( (-1) * item.TrackingConsolidations[0].UsageQty.Value).ToString("N2"));
+                    slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[0].UsageQty.HasValue ? "-" : ( (-1) * item.TrackingConsolidations[0].UsageQty.Value).ToString("N3"));
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].OriginalUomId);
@@ -1585,7 +1721,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                     {
                         iRow++;
-                        iColumn = 2;
+                        iColumn = 3;
+
+                        var curMaterialCode = item.TrackingConsolidations[i].MaterialCode;
+                        var curBatch = item.TrackingConsolidations[i].Batch;
+
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5Number);
                         iColumn++;
 
@@ -1607,18 +1747,55 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].MaterialCode);
                         iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[i].UsageQty.HasValue ? "-" :((-1) * item.TrackingConsolidations[i].UsageQty.Value).ToString("N2"));
+                        slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[i].UsageQty.HasValue ? "-" :((-1) * item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"));
                         iColumn++;
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].OriginalUomId);
                         iColumn++;
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomId);
-                    }
 
+                        if (lastMaterialCode == curMaterialCode && lastBatch == curBatch)
+                        {
+                            iEndRow = iRow;
+                            if (i == item.TrackingConsolidations.Count - 1)
+                            {
+                                if (iStartRow != iEndRow)
+                                {
+                                    //need to merge
+                                    needToMerge.Add(new DetailReportNeedToMerge()
+                                    {
+                                        StartRowIndex = iStartRow,
+                                        EndRowIndex = iEndRow
+                                    });
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (iStartRow != iEndRow)
+                            {
+                                //need to merge
+                                needToMerge.Add(new DetailReportNeedToMerge()
+                                {
+                                    StartRowIndex = iStartRow,
+                                    EndRowIndex = iEndRow
+                                });
+                            }
+                            iStartRow = iRow;
+                            iEndRow = iStartRow;
+                        }
+                        lastMaterialCode = curMaterialCode;
+                        lastBatch = curBatch;
+                    }
+                    
                 }
                 else
                 {
+                    
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
                     iColumn++;
 
@@ -1634,6 +1811,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 iRow++;
             }
 
+            slDocument = DetailReportDoingMerge(slDocument, needToMerge);
+
             return CreateXlsFileDetailReports(slDocument, endColumnIndex,  iRow - 1);
 
         }
@@ -1643,6 +1822,10 @@ namespace Sampoerna.EMS.Website.Controllers
             int iColumn = 1;
 
             //first row
+            slDocument.SetCellValue(1, iColumn, "LACK-1 Level");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
             slDocument.SetCellValue(1, iColumn, "Begining Balance");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
             iColumn = iColumn + 1;
@@ -1661,7 +1844,7 @@ namespace Sampoerna.EMS.Website.Controllers
             endColumnIndex = iColumn;
 
             //second row
-            iColumn = 2;
+            iColumn = 3;
             slDocument.SetCellValue(2, iColumn, "CK-5 Number");
             iColumn++;
             
@@ -1731,6 +1914,36 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SaveAs(path);
 
             return path;
+        }
+
+        private SLDocument DetailReportDoingMerge(SLDocument slDocument, List<DetailReportNeedToMerge> items)
+        {
+            if (items.Count <= 0) return slDocument;
+
+            foreach (var item in items)
+            {
+                //need set to empty cell first before doing merge
+                for (int i = item.StartRowIndex + 1; i < item.EndRowIndex; i++)
+                {
+                    slDocument.SetCellValue(i, 9, string.Empty);
+                    slDocument.SetCellValue(i, 10, string.Empty);
+                }
+
+                //Material Code
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 9, item.EndRowIndex, 9);
+
+                //Usage Qty
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 10, item.EndRowIndex, 10);
+                
+            }
+
+            return slDocument;
+        }
+
+        private class DetailReportNeedToMerge
+        {
+            public int StartRowIndex { get; set; }
+            public int EndRowIndex { get; set; }
         }
 
         #endregion

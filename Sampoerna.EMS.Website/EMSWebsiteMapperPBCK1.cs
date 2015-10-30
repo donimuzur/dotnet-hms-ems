@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -37,7 +39,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Poa, opt => opt.ResolveUsing<StringToNullableIntegerResolver>().FromMember(src => src.Poa))
                 .ForMember(dest => dest.Creator, opt => opt.ResolveUsing<StringToNullableIntegerResolver>().FromMember(src => src.Creator))
                 ;
-            
+
             Mapper.CreateMap<Pbck1ProdConvModel, Pbck1ProdConverterDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ProdTypeCode, opt => opt.MapFrom(src => src.ProductCode))
                 .ForMember(dest => dest.ProdTypeName, opt => opt.MapFrom(src => src.ProdTypeName))
@@ -75,6 +77,39 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Pbck1ProdPlan,
                     opt => opt.MapFrom(src => Mapper.Map<List<Pbck1ProdPlanModel>>(src.Pbck1ProdPlan)))
                     ;
+            Mapper.CreateMap<Pbck1SummaryReportsItem, ExportSummaryDataModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.NppbkcCompanyName))
+                .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => ("'" + src.NppbkcId)))
+                .ForMember(dest => dest.Kppbc, opt => opt.MapFrom(src => src.NppbkcKppbcName))
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => ("'" + src.Pbck1Number)))
+                .ForMember(dest => dest.OriginalNppbkc, opt => opt.MapFrom(src => src.SupplierNppbkcId))
+                .ForMember(dest => dest.OriginalKppbc, opt => opt.MapFrom(src => src.SupplierKppbcName))
+                .ForMember(dest => dest.OriginalAddress, opt => opt.MapFrom(src => src.SupplierAddress))
+                .ForMember(dest => dest.ExcGoodsAmount, opt => opt.MapFrom(src => src.QtyApproved == null ? "0.00" : String.Format("{0:n}", src.QtyApproved.Value)))
+                .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.Pbck1Type.ToString()))
+                .ForMember(dest => dest.PlanProdFrom, opt => opt.MapFrom(src => src.PlanProdFrom == null ? "-" : src.PlanProdFrom.Value.ToString("dd MMMM yyyy")))
+                .ForMember(dest => dest.PlanProdTo, opt => opt.MapFrom(src => src.PlanProdTo == null ? "-" : src.PlanProdTo.Value.ToString("dd MMMM yyyy")))
+                .ForMember(dest => dest.PoaList, opt => opt.MapFrom(src => src.PoaList == null ? "" : src.PoaList.Count > 0 ? string.Join("<br />", src.PoaList.ToArray()) : ""))
+                .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.Pbck1ReferenceNumber))
+                .ForMember(dest => dest.LACKFrom, opt => opt.MapFrom(src => (src.Lack1ToMonthName + src.Lack1ToYear.Value)))
+                .ForMember(dest => dest.LatestSaldo, opt => opt.MapFrom(src => src.LatestSaldo == null ? "0.00" : String.Format("{0:n}", src.LatestSaldo.Value)))
+                .ForMember(dest => dest.PeriodFrom, opt => opt.MapFrom(src => src.PeriodFrom.ToString("dd MMMM yyyy")))
+                .ForMember(dest => dest.PeriodTo, opt => opt.MapFrom(src => src.PeriodTo == null ? "-" : src.PeriodTo.Value.ToString("dd MMMM yyyy")))
+                .ForMember(dest => dest.ReportedOn, opt => opt.MapFrom(src => src.ReportedOn == null ? "" : src.ReportedOn.Value.ToString("dd MMMM yyyy")))
+                .ForMember(dest => dest.RequestQty, opt => opt.MapFrom(src => src.RequestQty == null ? "" : String.Format("{0:n}", src.RequestQty.Value)))
+                .ForMember(dest => dest.StatusGov, opt => opt.MapFrom(src => src.StatusGovName))
+                .ForMember(dest => dest.QtyApproved, opt => opt.MapFrom(src => src.QtyApproved == null ? "" : String.Format("{0:n}", src.QtyApproved.Value)))
+                .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DecreeDate == null ? "" : src.DecreeDate.Value.ToString("dd MMMM yyyy")))
+                .ForMember(dest => dest.IsNppbkcImport, opt => opt.MapFrom(src => src.IsNppbkcImport ? "Yes" : "No"))
+                .ForMember(dest => dest.ApprovedByPoaId, opt => opt.MapFrom(src => String.IsNullOrEmpty(src.ApprovedByPoaId) ? "-" : src.ApprovedByPoaId))
+                .ForMember(dest => dest.ApprovedByManagerId, opt => opt.MapFrom(src => String.IsNullOrEmpty(src.ApprovedByManagerId) ? "-" : src.ApprovedByManagerId))
+                .ForMember(dest => dest.LatestSaldoUomName, opt => opt.MapFrom(src => String.IsNullOrEmpty(src.LatestSaldoUomName) ? "-" : src.LatestSaldoUomName))
+                .ForMember(dest => dest.RequestQtyUomName, opt => opt.MapFrom(src => String.IsNullOrEmpty(src.RequestQtyUomName) ? "-" : src.RequestQtyUomName))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => String.Join("<br />", src.NppbkcPlants.Select(c => c.ADDRESS).ToArray())))
+                .ForMember(dest => dest.DocNumberCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => String.Format("'{0}", c.DocumentNumber)).ToArray())))
+                .ForMember(dest => dest.StatusDocCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => c.Status).ToArray())))
+                .ForMember(dest => dest.GrandTotalExcisableCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => c.Qty).ToArray())))
+                ;
 
             #endregion
 
@@ -100,10 +135,34 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck1FilterMonitoringUsageViewModel, Pbck1GetMonitoringUsageByParamInput>()
                 .IgnoreAllNonExisting();
             Mapper.CreateMap<Pbck1MonitoringUsageDto, Pbck1MonitoringUsageItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Received, opt => opt.MapFrom(src => (src.Received + src.ReceivedAdditional)))
                 .ForMember(dest => dest.TotalPbck1Quota, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
-                .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.PreviousFinalBalance - src.Received)))
+                .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received - src.ReceivedAdditional)))
                 .ForMember(dest => dest.Pbck1PeriodDisplay, opt => opt.MapFrom(src => (src.PeriodFrom.ToString("dd MMM yyyy") + " - " + src.PeriodTo.Value.ToString("dd MMM yyyy"))))
                 ;
+
+            #region Monitoring Mutasi
+
+            Mapper.CreateMap<Pbck1MonitoringMutasiViewModel, Pbck1GetMonitoringMutasiByParamInput>();
+
+            Mapper.CreateMap<Pbck1MonitoringMutasiDto, Pbck1MonitoringMutasiItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TotalPbck1Quota,
+                    opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
+                .ForMember(dest => dest.QuotaRemaining,
+                    opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received)))
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number));
+
+            Mapper.CreateMap<Pbck1MonitoringMutasiItem, ExportMonitoringMutasiDataModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number))
+                .ForMember(dest => dest.TotalPbck1Quota, opt => opt.MapFrom(src => src.TotalPbck1Quota))
+                .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => src.QuotaRemaining))
+                .ForMember(dest => dest.DocNumberCk5,
+                    opt =>
+                        opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => String.Format("'{0}", p.DocumentNumber)).ToArray())))
+                .ForMember(dest => dest.GrandTotalExciseable,
+                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.Qty).ToArray())));
+
+            #endregion
 
         }
     }

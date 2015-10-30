@@ -367,6 +367,7 @@
     <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ListCK5Model.cs" />
+    <Compile Include="Models\PBCK1\Pbck1MonitoringMutasiViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SupInfo.cs" />
     <Compile Include="Models\PBCK1\PBCK1Item.cs" />
     <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
@@ -474,10 +475,24 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
     </Compile>
-    <Compile Include="Reports\HeaderFooter\HeaderFooterPreview.cs">
+    <Compile Include="Reports\HeaderFooter\HeaderFooterPreview1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\LACK1\Lack1Items.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Lack1Items.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\LACK1\Lack1PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Lack1PrintOut.rpt</DependentUpon>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -486,13 +501,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Lack2ItemsReport.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\LACK2\Preview.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Preview.rpt</DependentUpon>
       <SubType>Component</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -1219,6 +1235,16 @@
     <Content Include="Views\PBCK7AndPBCK3\_Pbck7InputManual.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4GovApprovalInfo.cshtml" />
     <Content Include="Views\PBCK4\_Pbck4GovApprovalCompleted.cshtml" />
+    <Content Include="Views\CK5\DetailsView.cshtml" />
+    <Content Include="Views\CK5\_CK5ManualPlantSource.cshtml" />
+    <Content Include="Views\CK5\_CK5OriginalPlantSource.cshtml" />
+    <Content Include="Views\PBCK1\MonitoringMutasi.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadAdd.cshtml" />
+    <Content Include="Views\CK5\_CK5ManualPlantDestination.cshtml" />
+    <Content Include="Views\PBCK1\_MutasiList.cshtml" />
+    <Content Include="Views\CK5\_CK5OriginalPlantDestination.cshtml" />
+    <Content Include="Views\CK5\_CK5GoodIssue.cshtml" />
+    <Content Include="Views\CK5\_CK5GoodReceive.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1329,7 +1355,7 @@
     <Content Include="Reports\LACK2\Preview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Preview.cs</LastGenOutput>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Reports\CK4C\Preview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -1341,10 +1367,26 @@
       <LastGenOutput>DaftarRincian.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Reports\LACK2\Lack2ItemsReport.rpt">
+    <Content Include="Reports\LACK1\Lack1Items.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Lack1Items.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\LACK1\Lack1PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Lack1PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\LACK2\Lack2ItemsReport.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Lack2ItemsReport.cs</LastGenOutput>
-    </EmbeddedResource>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\HeaderFooter\HeaderFooterPreview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>HeaderFooterPreview1.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>

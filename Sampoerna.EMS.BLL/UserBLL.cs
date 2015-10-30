@@ -51,6 +51,8 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(s => s.LAST_NAME.Contains(input.LastName));
             }
 
+          
+
             
           
             Func<IQueryable<USER>, IOrderedQueryable<USER>> orderBy = null;
@@ -108,5 +110,7 @@ namespace Sampoerna.EMS.BLL
 
             return data;
         }
+
+        
     }
 }

@@ -3,6 +3,7 @@
 <table id="lack1Table" border="0" class="table table-bordered">
     <thead>
         <tr>
+            <th rowspan="2">LACK-1 Level</th>
             <th rowspan="2">Begining Balance</th>
             <th colspan="5">Receiving</th>
             <th colspan="5">Usage</th>
@@ -26,7 +27,11 @@
         {
             if (item.TrackingConsolidations.Count > 0)
             {
+                var lastMaterialCode = item.TrackingConsolidations[0].MaterialCode;
+                var lastBatch = item.TrackingConsolidations[0].Batch;
+                
                 <tr>
+                    <td rowspan="@item.TrackingConsolidations.Count">@item.Lack1LevelName</td>
                     <td rowspan="@item.TrackingConsolidations.Count">@item.BeginingBalance.ToString("N2")</td>
                     <td>@item.TrackingConsolidations[0].Ck5Number</td>
                     <td>@item.TrackingConsolidations[0].Ck5RegistrationNumber</td>
@@ -34,14 +39,14 @@
                     <td>@item.TrackingConsolidations[0].Ck5GrDate</td>
                     <td>@item.TrackingConsolidations[0].Qty.ToString("N2")</td>
                     <td>@item.TrackingConsolidations[0].GiDate</td>
-                    <td>@item.TrackingConsolidations[0].MaterialCode</td>
+                    <td rowspan="@item.TrackingConsolidations[0].MaterialCodeUsageRecCount">@item.TrackingConsolidations[0].MaterialCode</td>
                     @if (item.TrackingConsolidations[0].UsageQty.HasValue)
                     {
-                        <td>@((-1 * item.TrackingConsolidations[0].UsageQty.Value).ToString("N2"))</td>
+                        <td rowspan="@item.TrackingConsolidations[0].MaterialCodeUsageRecCount">@((-1 * item.TrackingConsolidations[0].UsageQty.Value).ToString("N3"))</td>
                     }
                     else
                     {
-                        <td>-</td>
+                        <td rowspan="@item.TrackingConsolidations[0].MaterialCodeUsageRecCount">-</td>
                     }
                     <td>@item.TrackingConsolidations[0].OriginalUomId</td>
                     <td>@item.TrackingConsolidations[0].ConvertedUomId</td>
@@ -49,6 +54,8 @@
                 </tr>
                 for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                 {
+                    var curMaterialCode = item.TrackingConsolidations[i].MaterialCode;
+                    var curBatch = item.TrackingConsolidations[i].Batch;
                     <tr>
                         <td>@item.TrackingConsolidations[i].Ck5Number</td>
                         <td>@item.TrackingConsolidations[i].Ck5RegistrationNumber</td>
@@ -56,23 +63,28 @@
                         <td>@item.TrackingConsolidations[i].Ck5GrDate</td>
                         <td>@item.TrackingConsolidations[i].Qty.ToString("N2")</td>
                         <td>@item.TrackingConsolidations[i].GiDate</td>
-                        <td>@item.TrackingConsolidations[i].MaterialCode</td>
-                        @if (item.TrackingConsolidations[i].UsageQty.HasValue)
-                        {
-                            <td>@((-1 * item.TrackingConsolidations[i].UsageQty.Value).ToString("N2"))</td>
-                        }
-                        else
-                        {
-                            <td>-</td>
+                        @if (lastBatch != curBatch && lastMaterialCode != curMaterialCode) {
+                            <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount">@item.TrackingConsolidations[i].MaterialCode</td>
+                            if (item.TrackingConsolidations[i].UsageQty.HasValue)
+                            {
+                                <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount">@((-1 * item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"))</td>    
+                            }
+                            else
+                            {
+                               <td @item.TrackingConsolidations[i].MaterialCodeUsageRecCount>-</td>
+                            }
                         }
                         <td>@item.TrackingConsolidations[i].OriginalUomId</td>
                         <td>@item.TrackingConsolidations[i].ConvertedUomId</td>
                     </tr>
+                    lastMaterialCode = curMaterialCode;
+                    lastBatch = curBatch;
                 }
             }
             else
             {
                 <tr>
+                    <td>@item.Lack1LevelName</td>
                     <td>@item.BeginingBalance.ToString("N2")</td>
                     <td>-</td>
                     <td>-</td>

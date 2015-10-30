@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -11,6 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         }
         public int Lack1Id { get; set; }
         public string Lack1Number { get; set; }
+        public Enums.Lack1Level Lack1Level { get; set; }
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1TrackingConsolidationDetailReportDto> TrackingConsolidations { get; set; }
@@ -35,8 +37,18 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? UsageQty { get; set; }
         public string OriginalUomId { get; set; }
         public string ConvertedUomId { get; set; }
+        public string Batch { get; set; }
         #endregion 
+        public int MaterialCodeUsageRecCount { get; set; }
 
+    }
+
+    public class Lack1TrackingDetailReportDto
+    {
+        public string MaterialId { get; set; }
+        public decimal SumQty { get; set; }
+        public string Batch { get; set; }
+        public int RecordCount { get; set; }
     }
 
     public class Lack1Ck5MaterialDetailReportDto

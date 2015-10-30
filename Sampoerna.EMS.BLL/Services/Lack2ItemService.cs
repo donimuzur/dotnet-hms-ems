@@ -39,5 +39,10 @@ namespace Sampoerna.EMS.BLL.Services
                 _repository.Delete(item);
             }
         }
+
+        public List<LACK2_ITEM> GetLack2ItemByCk5Id(long ck5Id)
+        {
+            return _repository.Get(c => c.CK5_ID == ck5Id, null, "LACK2,LACK2.MONTH").ToList();
+        }
     }
 }

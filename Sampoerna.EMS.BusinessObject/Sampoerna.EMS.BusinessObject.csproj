@@ -136,6 +136,7 @@
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
+    <Compile Include="DTOs\Ck5SummaryReportDto.cs" />
     <Compile Include="DTOs\CK5XmlDto.cs" />
     <Compile Include="DTOs\CK5_FILE_UPLOADDto.cs" />
     <Compile Include="DTOs\CountryDto.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
     <Compile Include="DTOs\Lack1Dto.cs" />
     <Compile Include="DTOs\Pbck1Dto.cs" />
+    <Compile Include="DTOs\Pbck1MonitoringMutasiDto.cs" />
     <Compile Include="DTOs\Pbck1MonitoringUsageDto.cs" />
     <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
     <Compile Include="DTOs\Pbck1ProdPlanDto.cs" />
@@ -178,6 +180,7 @@
     <Compile Include="DTOs\PBCK4_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
     <Compile Include="DTOs\Pbck7PrintOutDto.cs" />
+    <Compile Include="DTOs\PBCK7_ITEMDto.cs" />
     <Compile Include="DTOs\POADto.cs" />
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
@@ -438,6 +441,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WORKFLOW_STATE_USERS.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ZAAP_SHIFT_RPT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAIDM_EX_BRAND.cs">

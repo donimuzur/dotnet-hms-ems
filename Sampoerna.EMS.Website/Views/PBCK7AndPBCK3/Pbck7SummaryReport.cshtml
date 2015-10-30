@@ -189,19 +189,17 @@
                     // DataTable
                     var table = null;
 
-                    $(document).ready(function () {
-                        setupDataTables();
-                        $('#selecctall').prop('checked', false);
-                        $('.checkexport').each(function () {
-                            this.checked = false;
-                        });
-                        $('#checkboxDefault1').prop('checked', true);
-                        $('#checkboxDefault2').prop('checked', true);
-                        $('#checkboxDefault3').prop('checked', true);
+                    $(document).ready(function() {
+                        setupDataTables(true);
+                        
+                        $('#MenuPbck7OpenDocument').removeClass('open');
+                        $('#MenuPbck7Report').addClass('open');
+                        $('#MenuPbck7SummaryReport').addClass('active');
+                     
                     });
 
-                   
-                    function setupDataTables() {
+
+                    function setupDataTables(blFirst) {
                         var table;
                         if ($.fn.dataTable.isDataTable('#pbck7-summary')) {
                             table = $('#pbck7-summary').DataTable();
@@ -218,100 +216,84 @@
                                 }
                             });
 
-                        // Setup - add a text input to each footer cell
-                        //$('#pbck7-summary .filters th').each(function () {
-                        //    var idx = $(this).index();
-                        //    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
 
-                        //});
-
-                        //// Apply the search
-                        //table.columns().eq(0).each(function (colIdx) {
-                        //    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                        //        table
-                        //            .column(colIdx)
-                        //            .search(this.value)
-                        //            .draw();
-                        //    });
-                        //});
-                        
-                        $('#btnFILTER').on('click', function (e) {
-                            $('#selecctall').prop('checked', false);
-                            $('.checkexport').each(function () {
-                                this.checked = false;
-                            });
-                            $('#checkboxDefault1').prop('checked', true);
-                            $('#checkboxDefault2').prop('checked', true);
-                            $('#checkboxDefault3').prop('checked', true);
-
-                        });
-
-
-                        $('.checkexport').on('click', function (e) {
-                            //e.preventDefault();
-                            var checked = document.querySelectorAll('input:checked');
-
-                            if (checked.length === 1) {
+                        $('#selecctall').change(function() {
+                            if ($(this).is(':checked')) {
+                                $('.checkexport').each(function () {
+                                    this.checked = true;
+                                });
+                                for (var i = 0; i < 10; i++) {
+                                    table.column(i).visible(true);
+                                }
+                                $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
+                                
+                            
+                            } else {
+                                $('.checkexport').each(function() {
+                                    this.checked = false;
+                                });
                                 for (var i = 0; i < 10; i++) {
                                     table.column(i).visible(false);
                                 }
-                                //table.column(0).visible(true);
-
-                                // Get the column API object
-                                var column = table.column($(this).attr('datacolumn'));
-
-                                // Toggle the visibility
-                                column.visible(!column.visible());
-                                $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
-                            } else {
-                                // Get the column API object
-                                var column = table.column($(this).attr('datacolumn'));
-
-                                // Toggle the visibility
-                                column.visible(!column.visible());
-                            }
-
-
-                        });
-
-                        for (var i = 3; i < 10; i++) {
-                            table.column(i).visible(false);
-                        }
-
-                        $('#selecctall').change(function () {
-                            if ($(this).is(':checked')) {
-                                $('.checkexport').prop('checked', this.checked);
-                                // Show a column
-
-                                $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
-                                var table = $('#pbck7-summary').DataTable();
-                                for (var i = 0; i < 4; i++) {
-                                    table.column(i).visible(true);
-                                }
-                            } else {
-                                $('.checkexport').each(function () {
-                                    this.checked = false;
-                                });
                                 $('#pbck7-summary').parents('div.dataTables_wrapper').first().hide();
                             }
                         });
+
+                        $('.checkexport').on('click', function(e) {
+                            var column = table.column($(this).attr('datacolumn'));
+
+                            column.visible(!column.visible());
+
+                            $('#pbck7-summary').parents('div.dataTables_wrapper').first().hide();
+
+                            for (var i = 0; i < 12; i++) {
+                                if (table.column(i).visible()) {
+                                    $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
+                                    return;
+                                }
+                            }
+
+                        });
+
+                        if (blFirst) {
+
+
+                            for (var i = 3; i < 10; i++) {
+                                table.column(i).visible(false);
+                            }
+
+                        } else {
+                            $('.checkexport').each(function() {
+
+                                // Get the column API object
+                                var column = table.column($(this).attr('datacolumn'));
+
+                                // Toggle the visibility
+                                column.visible(false);
+                                if ($(this).is(':checked')) {
+                                    // Toggle the visibility
+                                    column.visible(true);
+                                }
+
+                            });
+                        }                        
 
 
                     }
 
                     function ReloadDataTables() {
-                        $('.toggle-row').click(function () {
+                        $('.toggle-row').click(function() {
 
                             var filter = $(".filters");
-                            filter.slideToggle(100).promise().done(function () {
+                            filter.slideToggle(100).promise().done(function() {
 
                             });
                         });
-                        setupDataTables();
+                        setupDataTables(false);
                     }
-                    
 
-                    $("#btnExport").click(function () {
+
+                    $("#btnExport").click(function() {
                         $('#ExportModel_Pbck7No').val($('#SelectedNumber').find("option:selected").val());
                         $('#ExportModel_NppbkcId').val($('#SelectedNppbkc').find("option:selected").val());
                         $('#ExportModel_Plant').val($('#SelectedPlant').find("option:selected").val());

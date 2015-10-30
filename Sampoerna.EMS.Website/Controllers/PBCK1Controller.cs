@@ -11,6 +11,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -90,7 +91,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var pbck1Data = _pbck1Bll.GetOpenDocumentByParam(new Pbck1GetOpenDocumentByParamInput()).OrderByDescending(d => d.Pbck1Number);
                 return Mapper.Map<List<Pbck1Item>>(pbck1Data);
             }
-            
+
             //getbyparams
             var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
@@ -197,7 +198,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile, string goodType)
+        public PartialViewResult UploadFilePlan(HttpPostedFileBase prodPlanExcelFile, string goodType, DateTime? periodFrom, DateTime? periodTo)
         {
             var data = (new ExcelReader()).ReadExcel(prodPlanExcelFile);
             var model = new Pbck1ItemViewModel() { Detail = new Pbck1Item() };
@@ -214,7 +215,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Amount = datarow[2];
                         uploadItem.BkcRequired = datarow[3];
                         uploadItem.BkcRequiredUomId = datarow[4];
-                        
+
                         model.Detail.Pbck1ProdPlan.Add(uploadItem);
 
                     }
@@ -226,11 +227,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
 
-            var input = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan);
-            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input, goodType);
+            var input = new ValidatePbck1ProdPlanUploadParamInput()
+            {
+                ProdPlanData = Mapper.Map<List<Pbck1ProdPlanInput>>(model.Detail.Pbck1ProdPlan),
+                ProdPlanPeriodFrom = periodFrom,
+                ProdPlanPeriodTo = periodTo,
+                GoodType = goodType
+            };
 
-            model.Detail.Pbck1ProdPlan = Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult);
+            var outputResult = _pbck1Bll.ValidatePbck1ProdPlanUpload(input);
 
+            model.Detail.Pbck1ProdPlan = !outputResult.Success ? new List<Pbck1ProdPlanModel>() : Mapper.Map<List<Pbck1ProdPlanModel>>(outputResult.Data);
+            model.ProdPlanUploadValidateResult = new ProdPlanUploadResult()
+            {
+                IsSuccess = outputResult.Success,
+                ErrorMessage = outputResult.ErrorMessage
+            };
             return PartialView("_ProdPlanList", model);
         }
 
@@ -245,7 +257,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
             model.SupplierPlantList = GlobalFunctions.GetPlantAll();
 
-            var dataGoodType = _goodTypeBll.GetAll().Where(x => x.IS_DELETED != true && ( x.EXC_GOOD_TYP == "02" || x.EXC_GOOD_TYP == "04"));
+            var dataGoodType = _goodTypeBll.GetAll().Where(x => x.IS_DELETED != true && (x.EXC_GOOD_TYP == "02" || x.EXC_GOOD_TYP == "04"));
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(dataGoodType);
 
             model.GoodTypeList = new SelectList(selectItemSource, "ValueField", "TextField");
@@ -263,8 +275,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //model.YearList = CreateYearList();
             var year = DateTime.Now.Year;
-            
-            if(model.Detail != null && model.Detail.PeriodFrom.HasValue){
+
+            if (model.Detail != null && model.Detail.PeriodFrom.HasValue)
+            {
                 year = model.Detail.PeriodFrom.Value.Year;
             }
 
@@ -436,7 +449,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
-                
+
                 model = ModelInitial(model);
 
                 if (CurrentUser.UserRole == Enums.UserRole.Manager)
@@ -495,12 +508,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject)
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                    
+
                     if (isCurrManager)
                         model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
-                        
+
                 }
-                
+
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
 
                 if (model.Detail.Status == Enums.DocumentStatus.WaitingGovApproval)
@@ -508,17 +521,19 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "GovApproveDocument";
                 }
 
-                if(model.Detail.Status == Enums.DocumentStatus.Completed){
+                if (model.Detail.Status == Enums.DocumentStatus.Completed)
+                {
                     model.ActionType = "ChangeCompletedDocument";
                 }
 
                 if (((model.ActionType == "GovApproveDocument" || model.ActionType == "ChangeCompletedDocument") && model.AllowGovApproveAndReject))
-                { 
-                
-                }else if (!ValidateEditDocument(model, false))
                 {
-                    if(!isCurrManager)
-                    return RedirectToAction("Details", new { id });
+
+                }
+                else if (!ValidateEditDocument(model, false))
+                {
+                    if (!isCurrManager)
+                        return RedirectToAction("Details", new { id });
                 }
 
             }
@@ -544,8 +559,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (!isAllowEditDocument)
             {
-                if(message)
-                    AddMessageInfo("Operation not allowed.",Enums.MessageInfoType.Error);
+                if (message)
+                    AddMessageInfo("Operation not allowed.", Enums.MessageInfoType.Error);
 
                 return false;
             }
@@ -584,17 +599,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (errors.Count > 0)
                     {
-                        if(model.Detail.Pbck1Type == Enums.PBCK1Type.Additional && model.Detail.Pbck1Reference == null){
+                        if (model.Detail.Pbck1Type == Enums.PBCK1Type.Additional && model.Detail.Pbck1Reference == null)
+                        {
                             AddMessageInfo("Cannot save PBCK-1. There is no data for references number of PBCK-1", Enums.MessageInfoType.Error);
-                        }else{
+                        }
+                        else
+                        {
                             AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
                         }
                     }
-                    else {
+                    else
+                    {
                         AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
                     }
 
-                    
+
                     model = ModelInitial(model);
                     model = SetHistory(model);
                     return View(model);
@@ -799,7 +818,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
             if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {   
+            {
                 //can't create PBCK1 Document
                 AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -816,14 +835,16 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                if(model.Detail.Pbck1ProdConverter.Count == 0){
-                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);                    
+                if (model.Detail.Pbck1ProdConverter.Count == 0)
+                {
+                    AddMessageInfo("Cannot save PBCK-1. Please fill all the mandatory fields", Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
 
                 var validate = validationForm(model);
 
-                if( validate != ""){
+                if (validate != "")
+                {
                     AddMessageInfo(validate, Enums.MessageInfoType.Error);
                     return CreateInitial(model);
                 }
@@ -939,7 +960,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CompletedDocument", model);
         }
 
-        public string validationForm(Pbck1ItemViewModel model) { 
+        public string validationForm(Pbck1ItemViewModel model)
+        {
             var message = "";
 
             if (new DateTime(model.Detail.Lack1FormYear, model.Detail.Lack1FromMonthId, 1) > new DateTime(model.Detail.Lack1ToYear, model.Detail.Lack1ToMonthId, 1))
@@ -1251,13 +1273,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                if(!validDoc && model.Pbck1OldDecreeFilesID == null){
+                if (!validDoc && model.Pbck1OldDecreeFilesID == null)
+                {
                     AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
                     return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
                 }
 
-                foreach(var item in oldDoc){
-                    if(!model.Pbck1OldDecreeFilesID.Contains(item)){
+                foreach (var item in oldDoc)
+                {
+                    if ((model.Pbck1OldDecreeFilesID != null && !model.Pbck1OldDecreeFilesID.Contains(item)) || model.Pbck1OldDecreeFilesID == null)
+                    {
                         _pbck1DecreeDocBll.RemoveDoc(item);
                     }
                 }
@@ -1352,6 +1377,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     item.PoaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(item.NppbkcId).Select(c => c.PRINTED_NAME).ToList();
                 }
+                model.SearchView.pbck1NumberList = new SelectList(model.DetailsList.Select(c => c.Pbck1Number).AsEnumerable());
             }
             catch (Exception ex)
             {
@@ -1448,53 +1474,19 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.YearFrom = model.ExportModel.YearFrom;
             model.SearchView.YearTo = model.ExportModel.YearTo;
             model.SearchView.NppbkcId = model.ExportModel.NppbkcId;
+            model.SearchView.pbck1Number = model.ExportModel.pbck1NumberCode;
             var dataSummaryReport = SearchSummaryReports(model.SearchView);
 
-            //todo: to automapper
-            var src = (from d in dataSummaryReport
-                       select new ExportSummaryDataModel()
-                       {
-                           Company = d.NppbkcCompanyName,
-                           Nppbkc = "'" + d.NppbkcId,
-                           Kppbc = d.NppbkcKppbcName,
-                           Pbck1Number = "'" + d.Pbck1Number,
-                           Address = string.Join("<br />", d.NppbkcPlants.Select(c => c.ADDRESS).ToArray()),
-                           OriginalNppbkc = "'" + d.SupplierNppbkcId,
-                           OriginalKppbc = "'" + d.SupplierKppbcName,
-                           OriginalAddress = d.SupplierAddress,
-                           // ReSharper disable once PossibleInvalidOperationException
-                           ExcGoodsAmount = d.QtyApproved == null ? "0.00" : String.Format("{0:n}", d.QtyApproved.Value),
-                           Status = d.StatusName,
-                           Pbck1Type = d.Pbck1Type.ToString(),
-                           SupplierPortName = d.SupplierPortName,
-                           SupplierPlant = d.SupplierPlant,
-                           GoodTypeDesc = d.GoodTypeDesc,
-                           PlanProdFrom = d.PlanProdFrom == null  ? "-" : d.PlanProdFrom.Value.ToString("dd MMMM yyyy"),
-                           PlanProdTo = d.PlanProdTo == null ? "-" : d.PlanProdTo.Value.ToString("dd MMMM yyyy"),
-                           SupplierPhone = d.SupplierPhone,
-                           PoaList = d.PoaList == null ? "" : d.PoaList.Count > 0 ? string.Join("<br />", d.PoaList.ToArray()) : "",
-                           Reference = d.Pbck1ReferenceNumber,
-                           LACKFrom = d.Lack1FromMonthName + d.Lack1FormYear,
-                           LACKTo = d.Lack1ToMonthName + d.Lack1ToYear,
-                           LatestSaldo =d.LatestSaldo == null ? "0.00" : String.Format("{0:n}", d.LatestSaldo.Value),
-                           PeriodFrom = d.PeriodFrom.ToString("dd MMMM yyyy"),
-                           PeriodTo = d.PeriodTo == null ? "-" : d.PeriodTo.Value.ToString("dd MMMM yyyy"),
-                           ReportedOn = d.ReportedOn == null ? "" : d.ReportedOn.Value.ToString("dd MMMM yyyy"),
-                           RequestQty = d.RequestQty == null ? "" : d.RequestQty.Value.ToString("dd MMMM yyyy"),
-                           StatusGov = d.StatusGovName,
-                           QtyApproved = d.QtyApproved == null ? "" :  String.Format("{0:n}", d.QtyApproved.Value),
-                           DecreeDate = d.DecreeDate == null ? "" : d.DecreeDate.Value.ToString("dd MMMM yyyy"),
-                           SupplierCompany = d.SupplierCompany,
-                           IsNppbkcImport = d.IsNppbkcImport ? "Yes": "No",
-                           ApprovedByPoaId = String.IsNullOrEmpty(d.ApprovedByPoaId) ? "-" : d.ApprovedByPoaId,
-                           ApprovedByManagerId = String.IsNullOrEmpty(d.ApprovedByManagerId) ? "-" : d.ApprovedByManagerId,
-                           LatestSaldoUomName = String.IsNullOrEmpty(d.LatestSaldoUomName) ? "-" : d.LatestSaldoUomName,
-                           RequestQtyUomName = String.IsNullOrEmpty(d.RequestQtyUomName) ? "-" : d.RequestQtyUomName
-                       }).ToList();
+            var exportModel = Mapper.Map<List<ExportSummaryDataModel>>(dataSummaryReport);
+
+            foreach (var item in dataSummaryReport)
+            {
+                
+            }
 
             var grid = new System.Web.UI.WebControls.GridView
             {
-                DataSource = src.OrderBy(c => c.Nppbkc).ToList(),
+                DataSource = exportModel.OrderBy(c => c.Nppbkc).ToList(),
                 AutoGenerateColumns = false
             };
             if (model.ExportModel.Company)
@@ -1739,7 +1731,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     DataField = "DecreeDate",
                     HeaderText = "DecreeDate"
                 });
-            } 
+            }
             if (model.ExportModel.IsNppbkcImport)
             {
                 grid.Columns.Add(new BoundField()
@@ -1747,7 +1739,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     DataField = "IsNppbkcImport",
                     HeaderText = "IsNppbkcImport"
                 });
-            } 
+            }
             if (model.ExportModel.SupplierCompany)
             {
                 grid.Columns.Add(new BoundField()
@@ -1788,8 +1780,35 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "RequestQtyUomName"
                 });
             }
+            if (model.ExportModel.DocNumberCk5)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DocNumberCk5",
+                    HeaderText = "Doc Number CK-5",
+                    HtmlEncode = false
+                });
+            }
+            if (model.ExportModel.StatusDoc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "StatusDocCk5",
+                    HeaderText = "Status Doc CK-5",
+                    HtmlEncode = false
+                });
+            }
+            if (model.ExportModel.GrandTotalExciseable)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "GrandTotalExcisableCk5",
+                    HeaderText = "Grand Total Exciseable",
+                    HtmlEncode = false
+                });
+            }
 
-            if (src.Count == 0)
+            if (exportModel.Count == 0)
             {
                 grid.ShowHeaderWhenEmpty = true;
             }
@@ -1906,7 +1925,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public void ExportMonitoringUsageToExcel(Pbck1MonitoringUsageViewModel model)
         {
             var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
-            
+
             model.SearchView.CompanyCode = model.ExportModel.CompanyCode;
             model.SearchView.YearFrom = model.ExportModel.YearFrom;
             model.SearchView.YearTo = model.ExportModel.YearTo;
@@ -2014,9 +2033,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 grid.ShowHeaderWhenEmpty = true;
             }
-            
+
             grid.DataBind();
-            
+
 
             var fileName = "PBCK1MonitoringUsage" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
             Response.ClearContent();
@@ -2048,7 +2067,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll).ToList();
                 return Json(NppbkcIdList.Select(c => c.Text).ToList(), JsonRequestBehavior.AllowGet);
             }
-            else 
+            else
             {
                 var NppbkcIdList = _t001kBll.GetNPPBKCIDByCompany(companyId);
                 return Json(NppbkcIdList, JsonRequestBehavior.AllowGet);
@@ -2125,10 +2144,12 @@ namespace Sampoerna.EMS.Website.Controllers
             //var convertedUomId = reportDto.Detail.ConvertedUomId;
             var realisasiUomId = reportDto.Detail.RealisasiUomId;
             var bkcExcisableGoodsTypeDesc = reportDto.Detail.RealisasiBkcExcisableGoodsTypeDesc;
+            var sumPemasukan = 0m;
+            var sumPenggunaan = 0m;
             if (data != null && data.Count > 0)
             {
                 var summaryJenis = string.Join(Environment.NewLine, summaryData.Select(d => d.ProductAlias));
-                var summaryTotal = string.Join(Environment.NewLine, summaryData.Select(d => d.Total.ToString("N0")));
+                var summaryTotal = string.Join(Environment.NewLine, summaryData.Select(d => String.Format("{0:n}", d.Total)));
                 var dt = data.FirstOrDefault(c => !string.IsNullOrEmpty(c.Lack1UomId));
                 var uomId = string.Empty;
                 if (dt != null)
@@ -2138,6 +2159,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 var UomKG = "kg";
+                
                 var visibilityUomPemasukan = "l"; //code : l (liter), k (kg) regarding to converted uom id
                 var visibilityUomPenggunaan = "l"; //code : l (liter), k (kg) regarding to converted uom id
                 var visibilityUomBkc = "l"; //code : l (liter), k (kg), b (batang) //from Excisable Goods Type on Brand Registration by Prod_Code in Lack1 Production Data
@@ -2177,9 +2199,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     conversionBkc = 1;
                     visibilityUomBkc = "l";//Liter
                 }
-                
+                var month = "";
+                decimal? latestSaldo = null;
+                var latestUomId = string.Empty;
                 foreach (var item in data)
                 {
+                    if (month != item.Bulan) { 
+                        sumPemasukan += item.Pemasukan == null ? 0 : (conversion*item.Pemasukan.Value);
+                        sumPenggunaan += item.Penggunaan == null ? 0 : (conversion*item.Penggunaan.Value);
+                    }
+                    month = item.Bulan;
                     if (item.ProductionList.Count > 0)
                     {
                         foreach (var prod in item.ProductionList)
@@ -2203,10 +2232,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             detailRow.Jenis = prod.ProductAlias;
                             detailRow.Uom = uomId.ToLower() == "g" ? UomKG : uomId;
                             detailRow.UomBKC = prod.UomId;
-                            
+                            latestUomId = detailRow.Uom;
+                            detailRow.UomTotal = uomId.ToLower() == "g" ? UomKG : uomId;
+                            detailRow.UomSaldoAwal = latestUomId;
                             if (item.SaldoAwal.HasValue)
                             {
-                                saldoAwal = item.SaldoAwal.Value;
+                                saldoAwal = conversion * item.SaldoAwal.Value;
                                 saldoAwalDisplay = saldoAwal.ToString("N2");
                             }
                             if (item.Pemasukan.HasValue)
@@ -2227,7 +2258,8 @@ namespace Sampoerna.EMS.Website.Controllers
                             item.SaldoAkhir = saldoAwal + pemasukan - penggunaan;
                             saldoAkhir = item.SaldoAkhir.Value;
                             saldoAkhirDisplay = saldoAkhir.ToString("N2");
-                            
+                            latestSaldo = saldoAkhir;
+
                             detailRow.PemasukanDisplay = pemasukanDisplay;
                             detailRow.Pemasukan = pemasukan;
                             detailRow.SaldoAwalDisplay = saldoAwalDisplay;
@@ -2243,6 +2275,8 @@ namespace Sampoerna.EMS.Website.Controllers
                             detailRow.VisibilityUomPenggunaan = visibilityUomPenggunaan;
                             detailRow.SummaryJenis = summaryJenis;
                             detailRow.SummaryJumlah = summaryTotal;
+                            detailRow.SumAllPemasukan = String.Format("{0:n}",sumPemasukan);
+                            detailRow.SumAllPenggunaan = String.Format("{0:n}",sumPenggunaan);
                             ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
                         }
                     }
@@ -2253,25 +2287,29 @@ namespace Sampoerna.EMS.Website.Controllers
                         detailRow.Bulan = item.Bulan;
                         detailRow.No = item.BulanId.ToString(CultureInfo.InvariantCulture);
 
-                        detailRow.Jenis = "-";
-                        detailRow.Uom = uomId.ToLower() == "g" ? UomKG : uomId;
-                        detailRow.UomBKC = "-";
-                        
-                        detailRow.PemasukanDisplay = "-";
+                        detailRow.Jenis = "";
+                        detailRow.UomSaldoAwal = item.SaldoAwal.HasValue && latestSaldo.HasValue ? latestUomId : string.Empty;
+                        detailRow.UomBKC = "";
+                        detailRow.Uom = string.Empty;
+
+                        detailRow.PemasukanDisplay = "";
                         detailRow.Pemasukan = 0;
-                        detailRow.SaldoAwalDisplay = "-";
+                        detailRow.SaldoAwalDisplay = item.SaldoAwal.HasValue && latestSaldo.HasValue ? latestSaldo.Value.ToString("N2") : "";
                         detailRow.SaldoAwal = 0;
-                        detailRow.PenggunaanDisplay = "-";
+                        detailRow.PenggunaanDisplay = "";
                         detailRow.Penggunaan = 0;
-                        detailRow.JumlahDisplay = "-";
+                        detailRow.JumlahDisplay = "";
                         detailRow.Jumlah = 0;
                         detailRow.SaldoAkhir = 0;
-                        detailRow.SaldoAkhirDisplay = "-";
+                        detailRow.SaldoAkhirDisplay = "";
                         detailRow.VisibilityUomJumlahBkc = visibilityUomBkc;
                         detailRow.VisibilityUomPemasukan = visibilityUomPemasukan;
                         detailRow.VisibilityUomPenggunaan = visibilityUomPenggunaan;
                         detailRow.SummaryJenis = summaryJenis;
                         detailRow.SummaryJumlah = summaryTotal;
+                        detailRow.SumAllPemasukan = String.Format("{0:n}", sumPemasukan);
+                        detailRow.SumAllPenggunaan = String.Format("{0:n}", sumPenggunaan);
+                        detailRow.UomTotal = uomId.ToLower() == "g" ? UomKG : uomId;
                         ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
                     }
                 }
@@ -2300,6 +2338,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.VisibilityUomPenggunaan = "l";
                 detailRow.SummaryJenis = "";
                 detailRow.SummaryJumlah = "";
+                detailRow.SumAllPemasukan = String.Format("{0:n}", sumPemasukan);
+                detailRow.SumAllPenggunaan = String.Format("{0:n}", sumPenggunaan);
                 ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
             }
             return ds;
@@ -2416,7 +2456,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var firstDataBkc = prodPlan.FirstOrDefault(c => !string.IsNullOrEmpty(c.BkcRequiredUomId));
                 if (firstDataBkc != null)
                 {
-                    
+
                     if (firstDataBkc.BkcRequiredUomId.ToLower() == "l")
                     {
                         visibilityUomBkc = "l";
@@ -2425,24 +2465,25 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                     else if (firstDataBkc.BkcRequiredUomId.ToLower() == "g")
                     {
-                        conversiBkc = (1m/1000m);
+                        conversiBkc = (1m / 1000m);
                         visibilityUomBkc = "k";
                         uomBkc = "kg";
                         uomBkcId = "Kg";
                     }
-                    else if (firstDataBkc.BkcRequiredUomId.ToLower() == "kg") {
+                    else if (firstDataBkc.BkcRequiredUomId.ToLower() == "kg")
+                    {
                         uomBkc = "kg";
                         uomBkcId = "Kg";
                     }
 
-                    
+
                 }
 
                 var summaryJenis = summary.Select(c => c.ProdAlias).Distinct().ToList();
                 //var summaryJenisNewLine = string.Join(Environment.NewLine, summary.Select(d => d.ProdAlias).Distinct().ToList());
                 var summaryAmount = string.Join(Environment.NewLine,
                     summary.Select(d => d.TotalAmount.ToString("N2")).ToList());
-                
+
                 var summaryBkc = string.Join(Environment.NewLine,
                     summary.Select(d => d.TotalBkc.ToString("N2")).ToList());
 
@@ -2450,7 +2491,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 var SummaryJenisAmount = new Dictionary<string, decimal>();
                 var SummaryBkcRequired = new Dictionary<string, decimal>();
 
-                foreach (var prodAlias in summaryJenis) {
+                foreach (var prodAlias in summaryJenis)
+                {
                     SummaryJenisAmount.Add(prodAlias, prodPlan.Where(c => c.ProdAlias == prodAlias && c.Amount != null).Select(c => c.Amount.Value).Sum());
                     SummaryBkcRequired.Add(prodAlias, prodPlan.Where(c => c.ProdAlias == prodAlias && c.BkcRequired != null).Select(c => c.BkcRequired.Value).Sum());
                 }
@@ -2460,7 +2502,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //set total jumlah produksi
                 List<string> amountSummary = new List<string>();
-                foreach (var item in SummaryJenisAmount.Select(c => c.Value)) {
+                foreach (var item in SummaryJenisAmount.Select(c => c.Value))
+                {
                     amountSummary.Add(String.Format("{0:n}", item));
                 }
                 var totalAmountNewLine = String.Join(Environment.NewLine, amountSummary);
@@ -2517,7 +2560,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.SummaryUomAmount = summaryUomAmount;
                     detailRow.SummaryUomBkc = summaryUomBkc;
                     ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
-                    
+
                 }
             }
             else
@@ -2541,7 +2584,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return ds;
         }
-        
+
         private dsPbck1 AddDataHeaderFooter(dsPbck1 ds, HEADER_FOOTER_MAPDto headerFooter)
         {
             var dRow = ds.HeaderFooter.NewHeaderFooterRow();
@@ -2624,7 +2667,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetPBCK1Reference(DateTime periodFrom, DateTime periodTo, string nppbkcId, string supplierNppbkcId, string supplierPlantWerks, string supplierPlant, string goodType)
         {
-            var reference = _pbck1Bll.GetPBCK1Reference(new Pbck1ReferenceSearchInput() { NppbkcId = nppbkcId, PeriodFrom = periodFrom, PeriodTo = periodTo, SupllierNppbkcId = supplierNppbkcId, SupplierPlantWerks = supplierPlantWerks, SupplierPlant = supplierPlant,GoodTypeId = goodType });
+            var reference = _pbck1Bll.GetPBCK1Reference(new Pbck1ReferenceSearchInput() { NppbkcId = nppbkcId, PeriodFrom = periodFrom, PeriodTo = periodTo, SupllierNppbkcId = supplierNppbkcId, SupplierPlantWerks = supplierPlantWerks, SupplierPlant = supplierPlant, GoodTypeId = goodType });
             if (reference == null)
             {
                 return Json(false);
@@ -2641,7 +2684,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var nppbkc = _nppbkcbll.GetDetailsById(nppbkcid);
             if (nppbkc == null)
             {
-                return Json(new { kppbcid = (String) null, kppbcname = (String) null });
+                return Json(new { kppbcid = (String)null, kppbcname = (String)null });
             }
             else
             {
@@ -2678,6 +2721,163 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        #region Monitoring Mutasi
+
+        public ActionResult MonitoringMutasi()
+        {
+            
+            var model = InitMonitoringMutasi(new Pbck1MonitoringMutasiViewModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo
+            });
+          
+            return View(model);
+        }
+
+        private Pbck1MonitoringMutasiViewModel InitMonitoringMutasi(Pbck1MonitoringMutasiViewModel model)
+        {
+            var monitoringDtos = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput());
+            model.pbck1NumberList = new SelectList(monitoringDtos, "Pbck1Number", "Pbck1Number");
+            
+            var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
+
+            var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
+            model.DetailsList = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbData);
+
+            return model;
+
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterMutasiIndex(Pbck1MonitoringMutasiViewModel model)
+        {
+            var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
+         
+
+            var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
+            var result = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbData);
+            var viewModel = new Pbck1MonitoringMutasiViewModel ();
+            viewModel.DetailsList = result;
+            return PartialView("_MutasiList", viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult ExportMonitoringMutasi(Pbck1ExportMonitoringMutasiViewModel model)
+        {
+            try
+            {
+                ExportMonitoringMutasiToExcel(model);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("MonitoringMutasi");
+        }
+
+        public void ExportMonitoringMutasiToExcel(Pbck1ExportMonitoringMutasiViewModel model)
+        {
+           
+            var dbResult = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput
+            {
+                pbck1Number = model.FilterPbck1Number
+            });
+
+            //todo refactor mapper
+            var mutasiItem = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbResult);
+
+            var dataToExport = Mapper.Map<List<ExportMonitoringMutasiDataModel>>(mutasiItem);
+
+            var grid = new GridView
+            {
+                DataSource = dataToExport,
+                AutoGenerateColumns = false
+            };
+
+            if (model.Pbck1Number)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "PBCK-1 Number"
+                });
+            }
+            if (model.TotalPbck1Quota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "TotalPbck1Quota",
+                    HeaderText = "Total PBCK-1 Quota"
+                });
+            }
+            if (model.QuotaRemaining)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QuotaRemaining",
+                    HeaderText = "PBCK-1 Quota remaining"
+                });
+            }
+           
+            if (model.DocNumberCk5)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DocNumberCk5",
+                    HeaderText = "CK-5 Number",
+                    HtmlEncode = false
+                });
+            }
+            if (model.GrandTotalExciseable)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "GrandTotalExciseable",
+                    HeaderText = "Total Ex Good Type",
+                    HtmlEncode = false
+                });
+            }
+            //if (model.ExportModel.Ck5Type)
+            //{
+            //    grid.Columns.Add(new BoundField()
+            //    {
+            //        DataField = "Ck5Type",
+            //        HeaderText = "CK5-Type"
+            //    });
+            //}
+            
+
+            if (dataToExport.Count == 0)
+            {
+                grid.ShowHeaderWhenEmpty = true;
+            }
+
+            grid.DataBind();
+
+
+            var fileName = "PBCK1MonitoringMutasi" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+        }
+
+        #endregion
 
     }
 }

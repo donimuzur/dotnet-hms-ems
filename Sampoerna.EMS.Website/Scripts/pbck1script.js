@@ -268,7 +268,9 @@ function prodPlanGenerateClick(url) {
         formData.append("prodPlanExcelFile", file);
     }
     formData.append("goodType", $("#Detail_GoodType").val());
-
+    formData.append("periodFrom", $("#Detail_PlanProdFrom").val());
+    formData.append("periodTo", $("#Detail_PlanProdTo").val());
+    console.log(formData);
     $.ajax({
         url: url,
         type: 'POST',
@@ -443,6 +445,15 @@ function ValidateGovInput() {
                 result = false;
             }
         }
+        else {
+            if (approvedQty == 0) {
+                $('#modalBodyMessage').text('PBCK1 Quantity approved can not be zero');
+                $('#ModalPbck1ValidateGov').modal('show');
+
+                AddValidationClass(false, 'Detail_QtyApproved');
+                result = false;
+            }
+        }
     } else if ($('#Detail_StatusGov').val() != "" || $('#Detail_DecreeDate').val() != '') {
         if (approvedQty > requestQty) {
             $('#modalBodyMessage').text('PBCK1 Quota Exceeded');
@@ -465,6 +476,15 @@ function ValidateGovInput() {
         if ($('#Detail_StatusGov').val() == 'Rejected') {
             if ($('#Detail_Comment').val() == '') {
                 AddValidationClass(false, 'Detail_Comment');
+                result = false;
+            }
+        }
+        else {
+            if (approvedQty == 0) {
+                $('#modalBodyMessage').text('PBCK1 Quantity approved can not be zero');
+                $('#ModalPbck1ValidateGov').modal('show');
+
+                AddValidationClass(false, 'Detail_QtyApproved');
                 result = false;
             }
         }

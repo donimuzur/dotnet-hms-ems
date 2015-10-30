@@ -114,7 +114,7 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPbck3No, new {@id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "0"})Number
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPbck3No, new {@id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "0"})PBCK-3
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
@@ -124,48 +124,53 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectNppbkc, new {@id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2"})NPPBKC
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk5No, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })CK-5 No
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Plant
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectNppbkc, new {@id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3"})NPPBKC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectDate, new { @class = "checkbox checkexport", @datacolumn = "4" })Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Plant
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectDate, new { @class = "checkbox checkexport", @datacolumn = "5" })Date
                                                     </label>
                                                 </div>
                                                 
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectStatus, new { @class = "checkbox checkexport", @datacolumn = "5" })Status
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectStatus, new { @class = "checkbox checkexport", @datacolumn = "6" })Status
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3No, new { @class = "checkbox checkexport", @datacolumn = "6" })BACK-3 No
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3No, new { @class = "checkbox checkexport", @datacolumn = "7" })BACK-3 No
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3Date, new { @class = "checkbox checkexport", @datacolumn = "7" })BACK-3 Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3Date, new { @class = "checkbox checkexport", @datacolumn = "8" })BACK-3 Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2No, new { @class = "checkbox checkexport", @datacolumn = "8" })CK-2 No
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2No, new { @class = "checkbox checkexport", @datacolumn = "9" })CK-2 No
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Date, new { @class = "checkbox checkexport", @datacolumn = "9" })CK-2 Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Date, new { @class = "checkbox checkexport", @datacolumn = "10" })CK-2 Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Value, new { @class = "checkbox checkexport", @datacolumn = "10" })CK-2 Value
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Value, new { @class = "checkbox checkexport", @datacolumn = "11" })CK-2 Value
                                                     </label>
                                                 </div>
                                             </div>
@@ -195,27 +200,25 @@
                     // DataTable
                     var table = null;
 
-                    $(document).ready(function () {
-                        setupDataTables();
-                        $('#selecctall').prop('checked', false);
-                        $('.checkexport').each(function () {
-                            this.checked = false;
-                        });
-                        $('#checkboxDefault1').prop('checked', true);
-                        $('#checkboxDefault2').prop('checked', true);
-                        $('#checkboxDefault3').prop('checked', true);
-                        $('#checkboxDefault4').prop('checked', true);
+                    $(document).ready(function() {
+                        setupDataTables(true);
+
+                        $('#MenuPbck7OpenDocument').removeClass('open');
+                        $('#MenuPbck7Report').addClass('open');
+                        $('#MenuPbck3SummaryReport').addClass('active');
+
+
                     });
 
-                   
-                    function setupDataTables() {
-                        $('#btn-reset-filter').click(function () {
-                            $(".selectreset").val($(".selectreset option:first").val());
-                        });
+
+                    function setupDataTables(blFirst) {
+
+                        var table;
                         if ($.fn.dataTable.isDataTable('#pbck3-summary')) {
                             table = $('#pbck3-summary').DataTable();
                             table.destroy();
                         }
+
 
                         table = $('#pbck3-summary').DataTable(
                             {
@@ -226,101 +229,87 @@
                                 }
                             });
 
-                        // Setup - add a text input to each footer cell
-                        //$('#pbck3-summary .filters th').each(function () {
-                        //    var idx = $(this).index();
-                        //    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
 
-                        //});
-
-                        //// Apply the search
-                        //table.columns().eq(0).each(function (colIdx) {
-                        //    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                        //        table
-                        //            .column(colIdx)
-                        //            .search(this.value)
-                        //            .draw();
-                        //    });
-                        //});
-                        
-                        $('#btnFILTER').on('click', function (e) {
-                            $('#selecctall').prop('checked', false);
-                            $('.checkexport').each(function () {
-                                this.checked = false;
-                            });
-                            $('#checkboxDefault1').prop('checked', true);
-                            $('#checkboxDefault2').prop('checked', true);
-                            $('#checkboxDefault3').prop('checked', true);
-                            $('#checkboxDefault4').prop('checked', true);
-
-                        });
-
-
-                        $('.checkexport').on('click', function (e) {
-                            //e.preventDefault();
-                            var checked = document.querySelectorAll('input:checked');
-
-                            if (checked.length === 1) {
-                                for (var i = 0; i < 9; i++) {
-                                    table.column(i).visible(false);
-                                }
-                                //table.column(0).visible(true);
-
-                                // Get the column API object
-                                var column = table.column($(this).attr('datacolumn'));
-
-                                // Toggle the visibility
-                                column.visible(!column.visible());
-                                $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
-                            } else {
-                                // Get the column API object
-                                var column = table.column($(this).attr('datacolumn'));
-
-                                // Toggle the visibility
-                                column.visible(!column.visible());
-                            }
-
-
-                        });
-
-                        for (var i = 3; i < 9; i++) {
-                            table.column(i).visible(false);
-                        }
-
-                        $('#selecctall').change(function () {
+                        $('#selecctall').change(function() {
                             if ($(this).is(':checked')) {
                                 $('.checkexport').prop('checked', this.checked);
                                 // Show a column
 
                                 $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
-                                var table = $('#pbck3-summary').DataTable();
-                                for (var i = 0; i < 9; i++) {
+
+                                for (var i = 0; i < 12; i++) {
                                     table.column(i).visible(true);
                                 }
                             } else {
-                                $('.checkexport').each(function () {
+                                $('.checkexport').each(function() {
                                     this.checked = false;
                                 });
+
+                                for (var i = 0; i < 12; i++) {
+                                    table.column(i).visible(false);
+                                }
                                 $('#pbck3-summary').parents('div.dataTables_wrapper').first().hide();
                             }
                         });
 
 
+                        $('.checkexport').on('click', function(e) {
+
+                            var column = table.column($(this).attr('datacolumn'));
+                            
+                            column.visible(!column.visible());
+                         
+                            $('#pbck3-summary').parents('div.dataTables_wrapper').first().hide();
+
+                            for (var i = 0; i < 12; i++) {
+                                if (table.column(i).visible()) {
+                                    $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
+                                    return;
+                                }
+                            }
+
+
+
+                        });
+
+
+                        if (blFirst) {
+                            for (var i = 5; i < 12; i++) {
+                                table.column(i).visible(false);
+                            }
+                        } else {
+                            $('.checkexport').each(function() {
+
+                                // Get the column API object
+                                var column = table.column($(this).attr('datacolumn'));
+
+                                // Toggle the visibility
+                                column.visible(false);
+                                if ($(this).is(':checked')) {
+                                    // Toggle the visibility
+                                    column.visible(true);
+                                }
+
+                            });
+                        }
+
+
                     }
 
                     function ReloadDataTables() {
-                        $('.toggle-row').click(function () {
+                        $('.toggle-row').click(function() {
 
                             var filter = $(".filters");
-                            filter.slideToggle(100).promise().done(function () {
+                            filter.slideToggle(100).promise().done(function() {
 
                             });
                         });
-                        setupDataTables();
-                    }
-                    
 
-                    $("#btnExport").click(function () {
+                        setupDataTables(false);
+                    }
+
+
+                    $("#btnExport").click(function() {
                         $('#ExportModel_Pbck3No').val($('#SelectedNumber').find("option:selected").val());
                         $('#ExportModel_NppbkcId').val($('#SelectedNppbkc').find("option:selected").val());
                         $('#ExportModel_Plant').val($('#SelectedPlant').find("option:selected").val());

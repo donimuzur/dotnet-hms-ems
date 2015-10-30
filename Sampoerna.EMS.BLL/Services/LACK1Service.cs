@@ -145,8 +145,8 @@ namespace Sampoerna.EMS.BLL.Services
 
             Expression<Func<LACK1, bool>> queryFilter =
                 c => c.BUKRS == input.CompanyCode && c.LACK1_LEVEL == input.Lack1Level
-                     && c.NPPBKC_ID == input.NppbkcId && (int)c.STATUS >= (int)Core.Enums.DocumentStatus.Approved
-                     && c.EX_GOODTYP == input.ExcisableGoodsType
+                     && c.NPPBKC_ID == input.NppbkcId && c.STATUS == Enums.DocumentStatus.Completed
+                     && c.EX_GOODTYP == input.ExcisableGoodsType && c.LACK1_ID != input.ExcludeLack1Id
                      && c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId;
 
             if (input.Lack1Level == Core.Enums.Lack1Level.Plant)
@@ -391,11 +391,17 @@ namespace Sampoerna.EMS.BLL.Services
                 var dtFrom = new DateTime(input.PeriodYearFrom.Value, input.PeriodMonthFrom.Value, 1);
                 queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) >= dtFrom);
             }
-            if (input.PeriodMonthTo.HasValue && input.PeriodYearTo.HasValue)
+            //if (input.PeriodMonthTo.HasValue && input.PeriodYearTo.HasValue)
+            //{
+            //    var dtTo = new DateTime(input.PeriodYearTo.Value, input.PeriodMonthTo.Value, 1);
+            //    queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) <= dtTo);
+            //}
+
+            if (input.Lack1Level.HasValue)
             {
-                var dtTo = new DateTime(input.PeriodYearTo.Value, input.PeriodMonthTo.Value, 1);
-                queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) <= dtTo);
+                queryFilter = queryFilter.And(c => c.LACK1_LEVEL == input.Lack1Level.Value);
             }
+
             return _repository.Get(queryFilter, null, incTables).ToList();
         }
 

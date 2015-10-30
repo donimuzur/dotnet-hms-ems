@@ -9,6 +9,7 @@ using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
 using iTextSharp.text.pdf.qrcode;
 using Microsoft.Ajax.Utilities;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -57,11 +58,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
-                ProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
-
-                Details = Mapper.Map<List<ProductionDetail>>(_productionBll.GetAllByParam(new ProductionGetByParamInput()))
+                ProductionDate = DateTime.Today.ToString("dd MMM yyyy")
             });
-
 
             return View("Index", data);
         }
@@ -70,6 +68,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
             model.PlantWerkList = GlobalFunctions.GetPlantAll();
+
+            var input = Mapper.Map<ProductionGetByParamInput>(model);
+            input.ProoductionDate = null;
+            input.UserId = CurrentUser.USER_ID;
+
+            var dbData = _productionBll.GetAllByParam(input);
+
+            model.Details = Mapper.Map<List<ProductionDetail>>(dbData);
 
             return model;
         }
@@ -82,6 +88,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 input.ProoductionDate = Convert.ToDateTime(input.ProoductionDate).ToString();
             }
+            input.UserId = CurrentUser.USER_ID;
 
             var dbData = _productionBll.GetAllByParam(input);
             var result = Mapper.Map<List<ProductionDetail>>(dbData);
@@ -284,6 +291,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX || model.FaCode != model.FaCodeX
                         || Convert.ToDateTime(model.ProductionDate) != Convert.ToDateTime(model.ProductionDateX))
                     {
+                        MoveOldChangeLogHistory(dbPrductionNew);
                         _productionBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX, Convert.ToDateTime(model.ProductionDateX));
                     }
                 }
@@ -524,6 +532,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        private void MoveOldChangeLogHistory(ProductionDto item)
+        {
+            DateTime productionDateX = Convert.ToDateTime(item.ProductionDateX);
+            DateTime productionDate = Convert.ToDateTime(item.ProductionDate);
 
+            var listHistory = _changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                  "Daily_" + item.CompanyCodeX + "_" + item.PlantWerksX + "_" + item.FaCodeX + "_" + productionDateX.ToString("ddMMMyyyy"));
+
+            var oldFormId = "Daily_" + item.CompanyCode + "_" + item.PlantWerks + "_" + item.FaCode + "_" + productionDate.ToString("ddMMMyyyy");
+
+            foreach(var data in listHistory)
+            {
+                _changeHistoryBll.MoveHistoryToNewData(data, oldFormId);
+            }
+        }
     }
 }

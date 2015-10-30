@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs, string nppbkc, bool isCheckedPbck1Import);
 
-        List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs, string goodType);
+        ValidatePbck1ProdPlanUploadOutput ValidatePbck1ProdPlanUpload(ValidatePbck1ProdPlanUploadParamInput input);
 
         void Pbck1Workflow(Pbck1WorkflowDocumentInput input);
 
@@ -58,5 +58,8 @@ namespace Sampoerna.EMS.Contract
             DateTime? submissionDate, string destPlantNppbkcId, List<string> goodtypes);
 
         List<Pbck1Dto> GetByRef(int pbckId);
+
+        List<Pbck1MonitoringMutasiDto> GetMonitoringMutasiByParam(Pbck1GetMonitoringMutasiByParamInput input);
+
     }
 }

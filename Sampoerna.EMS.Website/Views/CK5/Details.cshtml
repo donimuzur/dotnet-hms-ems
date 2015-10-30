@@ -11,7 +11,7 @@
                 <h3>@Model.Ck5Type.ToString() &nbsp; #@Model.SubmissionNumber</h3>
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
-                   
+
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
 
@@ -26,7 +26,9 @@
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
-                        else if (Model.AllowGiCreated || Model.AllowGrCreated || Model.AllowTfPostedPortToImporter)
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated 
+                            || Model.AllowTfPostedPortToImporter 
+                            || Model.AllowGoodIssue || Model.AllowGoodReceive)
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnGiCreated" />
                         }
@@ -35,14 +37,14 @@
                         {
                             <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                         }
-                         if (Model.AllowCancelSAP)
+                        if (Model.AllowCancelSAP)
                         {
                             <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelSAP" />
                         }
-                        
-                          if (Model.AllowAttachmentCompleted)
+
+                        if (Model.AllowAttachmentCompleted)
                         {
-                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveAttachment" />
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveAttachment" />
                         }
                     }
 
@@ -69,6 +71,7 @@
 
                         @Html.HiddenFor(model => model.IsCk5Export)
                         @Html.HiddenFor(model => model.IsCk5PortToImporter)
+                        @Html.HiddenFor(model => model.IsCk5ImporterToPlant)
 
                         @Html.HiddenFor(model => model.CountryCode)
                         @Html.HiddenFor(model => model.CountryName)
@@ -80,8 +83,6 @@
                         @Html.HiddenFor(model => model.FinalPortId)
                         @Html.HiddenFor(model => model.FinalPortName)
 
-                        @Html.HiddenFor(model => model.Ck5ManualType)
-                        @Html.HiddenFor(model => model.IsReducePbck1Ck5Trial)
 
                         @if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
                         {
@@ -97,19 +98,21 @@
                             {
                                 @Html.Partial("_CK5GovApproval")
                             }
-                            
+
                         }
-                        else if (Model.AllowGiCreated || Model.AllowGrCreated || Model.AllowTfPostedPortToImporter)
+                        else if (Model.AllowGiCreated || Model.AllowGrCreated
+                                || Model.AllowTfPostedPortToImporter
+                                || Model.AllowGoodIssue || Model.AllowGoodReceive)
                         {
                             @Html.HiddenFor(model => model.KppBcCity)
                             @Html.HiddenFor(model => model.GoodTypeName)
                             @Html.HiddenFor(model => model.SourcePlantId)
                             @Html.HiddenFor(model => model.DestPlantId)
-                            
-                            
-                             @Html.Partial("_CK5SealingInput")
+
+
+                            @Html.Partial("_CK5SealingInput")
                         }
-                       
+
                         else
                         {
                             @Html.Partial("_CK5InformationDetails")
@@ -257,7 +260,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                   <span id="modalBodyMessage">Missing attach files</span> 
+                    <span id="modalBodyMessage">Missing attach files</span>
                 </p>
 
             </div>
@@ -326,9 +329,9 @@
                     location.href = '@Url.Action("CK5Export", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
                     location.href = '@Url.Action("CK5Import", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()') {
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
                     location.href = '@Url.Action("CK5Manual", "CK5")';
-                } else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
                     location.href = '@Url.Action("CK5MarketReturn", "CK5")';
 
             });
@@ -375,10 +378,23 @@
                         $('#GovApproveForm').submit();
                     }
                 }
+                else if ('@Model.AllowGoodIssue' == "True") {
+
+                    if (ValidateGoodIssue()) {
+                        $('#GovApproveForm').submit();
+                    }
+                }
+                else if ('@Model.AllowGoodReceive' == "True") {
+
+                    if (ValidateGoodReceive()) {
+                        $('#GovApproveForm').submit();
+                    }
+                }
 
             });
 
-            if ('@Model.AllowGiCreated' == "True" || '@Model.AllowGrCreated' == "True") {
+            if ('@Model.AllowGiCreated' == "True" || '@Model.AllowGrCreated' == "True"
+                || '@Model.AllowGoodIssue' == "True" || '@Model.AllowGoodReceive' == "True") {
                 $('#collapseFour').removeClass('collapse');
                 $('#collapseFour').addClass('in');
                 $("#collapseFour").css({ height: "auto" });
@@ -392,7 +408,6 @@
                 $('#collapseOne').removeClass('in');
                 $("#collapseOne").css({ height: "0" });
             }
-
         });
 
         function openGovStatusBlock() {
@@ -518,18 +533,6 @@
             $('#GovApproveForm').submit();
 
 
-        });
-        
-
-        $('#Ck5ManualType').change(function() {
-
-            var ck5ManualType = $("#Ck5ManualType").find("option:selected").val();
-
-            $('#ck5TrialPbck1Reduce').hide();
-
-            if (ck5ManualType == '@Enums.Ck5ManualType.Trial.ToString()') {
-                $('#ck5TrialPbck1Reduce').show();
-            }
         });
     </script>
 }

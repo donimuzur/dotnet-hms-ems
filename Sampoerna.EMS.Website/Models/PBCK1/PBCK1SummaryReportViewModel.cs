@@ -78,6 +78,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool IsNppbkcImport { get; set; }
         public bool IsExternalSupplier { get { return this.SupplierPlantWerks == null; } }
         public string SupplierCompany { get; set; }
+        public List<Sampoerna.EMS.Website.Models.CK5.CK5Item> CK5List { get; set; }
     }
 
     public class Pbck1ExportSummaryReportsViewModel
@@ -124,6 +125,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool ApprovedByManagerId { get; set; }
         public bool LatestSaldoUomName { get; set; }
         public bool RequestQtyUomName { get; set; }
+        public bool DocNumberCk5 { get; set; }
+        public bool StatusDoc { get; set; }
+        public bool GrandTotalExciseable { get; set; }
+
+        public string pbck1NumberCode { get; set; }
     }
 
     public class Pbck1FilterSummaryReportViewModel
@@ -140,6 +146,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string NppbkcId { get; set; }
         public SelectList NppbkcIdList { get; set; }
+
+        public string pbck1Number { get; set; }
+        public SelectList pbck1NumberList { get; set; }
     }
 
     public class ExportSummaryDataModel
@@ -179,6 +188,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string ApprovedByManagerId { get; set; }
         public string LatestSaldoUomName { get; set; }
         public string RequestQtyUomName { get; set; }
+        public string DocNumberCk5 { get; set; }
+        public string StatusDocCk5 { get; set; }
+        public string GrandTotalExcisableCk5 { get; set; }
     }
 
 }

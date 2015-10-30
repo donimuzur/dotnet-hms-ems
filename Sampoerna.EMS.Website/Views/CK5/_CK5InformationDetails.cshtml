@@ -317,7 +317,7 @@
                                         <div class="row">
                                             <label class="col-md-4">Port to Importer Ref</label>
                                             <div class="col-md-8">
-                                                @Html.DropDownListFor(model => model.Ck5RefId, Model.Ck5RefList, "Select", new { @class = "form-control" })
+                                                @Html.DropDownListFor(model => model.Ck5RefId, Model.Ck5RefList, "Select", new { @class = "form-control", @disabled="disabled" })
 
                                             </div>
                                         </div>
@@ -575,7 +575,56 @@
                     <div class="panel-body">
 
                         <div class="table-container" id="ck5DetailMaterialTable">
-                            @Html.Partial("_CK5UploadList", Model.UploadItemModels)
+                          
+                            <table id="Ck5UploadTable" class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                       
+                                        <th>Material Number</th>
+                                        <th>Qty</th>
+                                        <th>UOM</th>
+                                        <th>Convertion</th>
+                                        <th>Converted Qty</th>
+                                        <th>Converted UOM</th>
+                                        <th>HJE</th>
+                                        <th>Tariff</th>
+                                        <th>Excise Value</th>
+                                        <th>USD Value</th>
+                                        <th>Note</th>
+                                        <th>Message</th>
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   
+
+                                        @if (Model != null)
+                                        {
+                                            foreach (var row in Model.UploadItemModels)
+                                            {
+                                                <tr>
+                                                    <td>@row.Brand</td>
+                                                    <td>@row.Qty</td>
+                                                    <td>@row.Uom</td>
+                                                    <td>@row.Convertion</td>
+                                                    <td>@row.ConvertedQty</td>
+                                                    <td>@row.ConvertedUom</td>
+                                                    <td>@row.Hje</td>
+                                                    <td>@row.Tariff</td>
+                                                    <td>@row.ExciseValue</td>
+                                                    <td>@row.UsdValue</td>
+                                                    <td>@row.Note</td>
+                                                    <td>@row.Message</td>
+                                                   
+                                                    
+
+                                                </tr>
+                                               }
+                                        }
+                                    
+                                </tbody>
+                            </table>
+
                         </div>
 
                     </div>
@@ -599,8 +648,8 @@
                         <div class="form-excise" role="form">
 
 
-                            @if (!Model.IsCk5Manual)
-                            {
+                            @*@if (!Model.IsCk5Manual)
+                            {*@
 
                                 <div class="row">
 
@@ -666,7 +715,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            }
+                            @*}*@
 
                             <div class="row">
                                 <div class="col-md-6">

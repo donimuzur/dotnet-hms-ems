@@ -61,5 +61,11 @@ namespace Sampoerna.EMS.BLL
                 _repository.Delete(dbData);
 
         }
+
+        public void MoveHistoryToNewData(CHANGES_HISTORY history, string formId)
+        {
+            history.FORM_ID = formId;
+            _repository.Update(history);
+        }
     }
 }

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.Entity.Core.Common.CommandTrees;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Text;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
@@ -130,7 +128,7 @@ namespace Sampoerna.EMS.BLL
                     Lack1Number = string.Empty
                 };
             }
-            
+
             //check if exists
             var isExists = IsExistLack1Data(input);
             if (!isExists.Success) return new Lack1CreateOutput()
@@ -244,7 +242,7 @@ namespace Sampoerna.EMS.BLL
             //{
             //    isNeedToRegenerate = IsNeedToRegenerate(generateInput, dbData);
             //}
-            
+
             if (isNeedToRegenerate)
             {
                 //do regenerate data
@@ -318,8 +316,9 @@ namespace Sampoerna.EMS.BLL
                 else
                 {
                     var plantFromMaster = _t001WServices.GetById(input.Detail.LevelPlantId);
-                    dbData.LACK1_PLANT = new List<LACK1_PLANT>() {Mapper.Map<LACK1_PLANT>(plantFromMaster)};
+                    dbData.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
                 }
+                dbData.NOTED = generatedData.Data.Noted;
             }
             else
             {
@@ -327,14 +326,14 @@ namespace Sampoerna.EMS.BLL
 
                 isModified = SetChangesHistory(origin, input.Detail, input.UserId);
             }
-            
+
             dbData.SUBMISSION_DATE = input.Detail.SubmissionDate;
             dbData.LACK1_LEVEL = input.Detail.Lack1Level;
             dbData.WASTE_QTY = input.Detail.WasteQty;
             dbData.WASTE_UOM = input.Detail.WasteUom;
             dbData.RETURN_QTY = input.Detail.ReturnQty;
             dbData.RETURN_UOM = input.Detail.ReturnUom;
-            dbData.NOTED = input.Detail.Noted;
+            
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
 
@@ -371,7 +370,7 @@ namespace Sampoerna.EMS.BLL
             return rc;
 
         }
-        
+
         public Lack1DetailsDto GetDetailsById(int id)
         {
             var dbData = _lack1Service.GetDetailsById(id);
@@ -406,10 +405,6 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
                     isNeedSendNotif = false;
-                    break;
-                case Enums.ActionType.GovPartialApprove:
-                    GovPartialApproveDocument(input);
-                    //isNeedSendNotif = false;
                     break;
             }
 
@@ -482,7 +477,7 @@ namespace Sampoerna.EMS.BLL
                 //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
                 //dbData.APPROVED_BY_POA = input.UserId;
                 //dbData.APPROVED_DATE_POA = DateTime.Now;
-                
+
                 if (input.UserRole == Enums.UserRole.POA)
                 {
                     if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
@@ -567,7 +562,7 @@ namespace Sampoerna.EMS.BLL
 
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType2.Approved);
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
 
@@ -575,47 +570,15 @@ namespace Sampoerna.EMS.BLL
                 dbData.STATUS = Enums.DocumentStatus.Completed;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
-                
+                dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
+
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }
 
             AddWorkflowHistory(input);
 
         }
-
-        private void GovPartialApproveDocument(Lack1WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
-            {
-                var dbData = _lack1Service.GetById(input.DocumentId.Value);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
-                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
-                    input.AdditionalDocumentData.DecreeDate);
-
-                input.DocumentNumber = dbData.LACK1_NUMBER;
-
-                dbData.LACK1_DOCUMENT = null;
-                dbData.STATUS = Enums.DocumentStatus.Completed;
-                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-                
-                input.DocumentNumber = dbData.LACK1_NUMBER;
-            }
-
-            AddWorkflowHistory(input);
-        }
-
+        
         private void GovRejectedDocument(Lack1WorkflowDocumentInput input)
         {
             if (input.DocumentId != null)
@@ -630,12 +593,12 @@ namespace Sampoerna.EMS.BLL
 
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType2.Rejected);
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
 
                 dbData.STATUS = Enums.DocumentStatus.Rejected;
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
+                dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Rejected;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
 
                 //set to null
@@ -672,7 +635,7 @@ namespace Sampoerna.EMS.BLL
 
             _changesHistoryBll.AddHistory(changes);
         }
-        
+
         private void WorkflowStatusAddChanges(Lack1WorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
         {
             //set changes log
@@ -689,7 +652,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void WorkflowStatusGovAddChanges(Lack1WorkflowDocumentInput input, Enums.DocumentStatusGov? oldStatus, Enums.DocumentStatusGov newStatus)
+        private void WorkflowStatusGovAddChanges(Lack1WorkflowDocumentInput input, Enums.DocumentStatusGovType2? oldStatus, Enums.DocumentStatusGovType2 newStatus)
         {
             //set changes log
             var changes = new CHANGES_HISTORY
@@ -725,8 +688,13 @@ namespace Sampoerna.EMS.BLL
                 return;
 
             var mailProcess = ProsesMailNotificationBody(lack1Data, input);
+            List<string> listTo = mailProcess.To.Distinct().ToList();
 
-            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+            if (mailProcess.IsCCExist)
+                //Send email with CC
+                _messageService.SendEmailToListWithCC(listTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+            else
+                _messageService.SendEmailToList(listTo, mailProcess.Subject, mailProcess.Body, true);
         }
 
         private MailNotification ProsesMailNotificationBody(Lack1DetailsDto lack1Data, Lack1WorkflowDocumentInput input)
@@ -975,7 +943,7 @@ namespace Sampoerna.EMS.BLL
 
             return selected.Count == 0 ? new List<Lack1Dto>() : selected;
         }
-        
+
         public Lack1GeneratedOutput GenerateLack1DataByParam(Lack1GenerateDataParamInput input)
         {
             return GenerateLack1Data(input);
@@ -1459,13 +1427,24 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.PeriodYear = input.PeriodYear;
-            rc.Noted = input.Noted;
+
+            //format for noted
+            var wasteNoted = GeneratedNoteFormat("Waste Amount", input.WasteAmount, input.WasteAmountUom);
+            var returnNoted = GeneratedNoteFormat("Return Amount", input.ReturnAmount, input.ReturnAmountUom);
+            rc.Noted = string.Join(Environment.NewLine, new List<string>() { wasteNoted, returnNoted }).Replace(Environment.NewLine, "<br />");
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage;
 
             oReturn.Data = rc;
 
             return oReturn;
+        }
+
+        private string GeneratedNoteFormat(string prefix, decimal? nominal, string uomId)
+        {
+            if (nominal.HasValue)
+                return prefix + " : " + nominal.Value.ToString("N2") + " " + uomId;
+            return "";
         }
 
         /// <summary>
@@ -1547,7 +1526,8 @@ namespace Sampoerna.EMS.BLL
                 ExcisableGoodsType = input.ExcisableGoodsType,
                 SupplierPlantId = input.SupplierPlantId,
                 ReceivedPlantId = input.ReceivedPlantId,
-                PeriodTo = dtTo
+                PeriodTo = dtTo,
+                ExcludeLack1Id = input.Lack1Id
             });
 
             rc.BeginingBalance = 0;
@@ -1706,6 +1686,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     Lack1Id = data.LACK1_ID,
                     Lack1Number = data.LACK1_NUMBER,
+                    Lack1Level = data.LACK1_LEVEL,
                     BeginingBalance = data.BEGINING_BALANCE,
                     EndingBalance = data.BEGINING_BALANCE + data.TOTAL_INCOME - data.USAGE,
                     TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>()
@@ -1748,7 +1729,7 @@ namespace Sampoerna.EMS.BLL
 
                     var receiving =
                         data.LACK1_TRACKING.Where(
-                                c =>receivingMvtType.Contains(c.INVENTORY_MOVEMENT.MVT))
+                                c => receivingMvtType.Contains(c.INVENTORY_MOVEMENT.MVT))
                             .ToList();
 
                     var mvtTypeForUsage = new List<string>
@@ -1764,18 +1745,39 @@ namespace Sampoerna.EMS.BLL
                     };
 
                     var usage =
-                        data.LACK1_TRACKING.Where(c => mvtTypeForUsage.Contains(c.INVENTORY_MOVEMENT.MVT)).ToList();
+                        data.LACK1_TRACKING.Where(c => mvtTypeForUsage.Contains(c.INVENTORY_MOVEMENT.MVT)).Select(d => d.INVENTORY_MOVEMENT).ToList();
+
+                    //GROUP AND SUM QTY BY BATCH AND MATERIAL_ID
+                    var groupedUsage = usage.GroupBy(p => new
+                    {
+                        p.MATERIAL_ID,
+                        p.BATCH
+                    }).Select(g => new Lack1TrackingDetailReportDto()
+                    {
+                        MaterialId = g.Key.MATERIAL_ID,
+                        Batch = g.Key.BATCH,
+                        SumQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
+                    }).ToList();
 
                     var usageReceiving = (from rec in receiving
-                                          join a in usage on new { rec.INVENTORY_MOVEMENT.BATCH, rec.INVENTORY_MOVEMENT.MATERIAL_ID } equals
-                                              new { a.INVENTORY_MOVEMENT.BATCH, a.INVENTORY_MOVEMENT.MATERIAL_ID }
+                                          join a in groupedUsage on new { rec.INVENTORY_MOVEMENT.BATCH, rec.INVENTORY_MOVEMENT.MATERIAL_ID } equals
+                                              new { BATCH = a.Batch, MATERIAL_ID = a.MaterialId }
                                           select new Lack1TrackingConsolidationDetailReportDto()
                                           {
                                               PurchaseDoc = rec.INVENTORY_MOVEMENT.PURCH_DOC,
-                                              MaterialCode = a.INVENTORY_MOVEMENT.MATERIAL_ID,
-                                              UsageQty = a.INVENTORY_MOVEMENT.QTY.HasValue ? a.INVENTORY_MOVEMENT.QTY.Value : 0
+                                              MaterialCode = a.MaterialId,
+                                              UsageQty = a.SumQty,
+                                              Batch = rec.INVENTORY_MOVEMENT.BATCH
                                           }).ToList();
 
+                    //get count of record group by Batch and Material Code on Usage Receiving
+                    for (int index = 0; index < usageReceiving.Count; index++)
+                    {
+                        var recordCount =
+                            usageReceiving.Count(d => d.Batch == usageReceiving[index].Batch &&
+                                                      d.MaterialCode == usageReceiving[index].MaterialCode);
+                        usageReceiving[index].MaterialCodeUsageRecCount = recordCount;
+                    }
 
                     var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
                     foreach (var d in ck5MaterialList)
@@ -1798,7 +1800,9 @@ namespace Sampoerna.EMS.BLL
                                 UsageQty = null,
                                 OriginalUomId = d.UomId,
                                 ConvertedUomId = d.ConvertedUomId,
-                                MaterialCode = d.MaterialId
+                                MaterialCode = d.MaterialId,
+                                Batch = string.Empty,
+                                MaterialCodeUsageRecCount = 1 //set default to 1
                             });
                         }
                         else
@@ -1816,7 +1820,9 @@ namespace Sampoerna.EMS.BLL
                                 UsageQty = rec.UsageQty,
                                 OriginalUomId = d.UomId,
                                 ConvertedUomId = d.ConvertedUomId,
-                                MaterialCode = d.MaterialId
+                                MaterialCode = d.MaterialId,
+                                Batch = rec.Batch,
+                                MaterialCodeUsageRecCount = rec.MaterialCodeUsageRecCount
                             });
                         }
                     }
@@ -1837,13 +1843,16 @@ namespace Sampoerna.EMS.BLL
                         UsageQty = null,
                         OriginalUomId = d.UomId,
                         ConvertedUomId = d.ConvertedUomId,
-                        MaterialCode = d.MaterialId
+                        MaterialCode = d.MaterialId,
+                        Batch = string.Empty,
+                        MaterialCodeUsageRecCount = 1 //set default
                     }).ToList();
                     item.TrackingConsolidations.AddRange(usageConsolidationData);
                 }
+                item.TrackingConsolidations = item.TrackingConsolidations.OrderBy(o => o.MaterialCode).ThenBy(o => o.Batch).ToList();
                 rc.Add(item);
             }
-            return rc;
+            return rc.OrderBy(o => o.Lack1Id).ToList();
         }
 
         #endregion

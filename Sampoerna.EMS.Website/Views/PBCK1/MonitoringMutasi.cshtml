@@ -1,0 +1,255 @@
+﻿@using DocumentFormat.OpenXml.Office.CustomUI
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1MonitoringMutasiViewModel
+
+@{
+    ViewBag.Title = "Monitoring Mutasi";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div id="upload" class="tab-pane active" role="tabpanel">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div id="headingOne" role="tab" class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a class="collapsed" aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="">
+                                        Monitoring Mutasi
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        @using (Ajax.BeginForm("FilterMutasiIndex", "Pbck1",
+                                            new AjaxOptions
+                                            {
+                                                HttpMethod = "POST",
+                                                InsertionMode = InsertionMode.Replace,
+                                                UpdateTargetId = "contenttable",
+                                                OnComplete = "ReloadDataTables"
+
+                                            }))
+                                        {
+                                            <div role="form" class="form-excise">
+                                                <div class="row">
+                                                    <div class="col-md-7">
+                                                        <label class="col-md-3">PBCK-1 Number</label>
+                                                        <div class="col-md-6">
+                                                            @Html.DropDownListFor(model => model.pbck1Number, Model.pbck1NumberList, "All", new { @class = "form-control selectreset" })
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <input id="btnFILTER" type="submit" class="btn btn-blue full" value="FILTER">
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+@using (Html.BeginForm("ExportMonitoringMutasi", "Pbck1", FormMethod.Post, new { @id = "ExportMonitoringMutasi" }))
+{
+    <div class="white-wrapper toggle-wrapper">
+        <div class="form-excise" role="form">
+            <div class="row">
+
+                <div class="last-form">
+                    <div class="col-md-12">
+                        <div>
+                            @Html.Hidden("FilterPbck1Number")
+                            <div class="row toggle">
+                                <div class="toggle-title">
+                                    Toggle column <i class="fa fa-chevron-down"></i>
+                                </div>
+
+                                <div class="toggle-component">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBox("Pbck1Number", new { id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", datacolumn = "1" })Pbck-1 Number
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBox("TotalPbck1Quota", new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Total PBCK-1 Quota
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBox("QuotaRemaining", new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })PBCK-1 Quota remaining
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBox("DocNumberCk5", new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })CK-5 number
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault5", @class = "checkbox checkexport", @datacolumn = "5" })Total Ex Good Type
+                                        </label>
+                                    </div>
+                                    @*<div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Ck5Type, new { @class = "checkbox checkexport", @datacolumn = "6" })CK-5 type
+                                                    </label>
+                                                </div>*@
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+            </div>
+        </div>
+
+    </div>
+    <div id="contenttable" class="table-container">
+        @Html.Partial("_MutasiList")
+    </div>
+</div>
+
+
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            setupDataTables();
+            $('#MenuPBCK1MonitoringMutasi').addClass('active');
+
+            $('#selecctall').prop('checked', false);
+            $('.checkexport').each(function () {
+                this.checked = false;
+            });
+           
+            $('#checkboxDefault1').prop('checked', true);
+            $('#checkboxDefault2').prop('checked', true);
+            $('#checkboxDefault3').prop('checked', true);
+            $('#checkboxDefault4').prop('checked', true);
+            $('#checkboxDefault5').prop('checked', true);
+            
+
+        });
+
+        function setupDataTables() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#monitoringMutasi')) {
+                table = $('#monitoringMutasi').DataTable();
+                table.destroy();
+            }
+
+            table = $('#monitoringMutasi').DataTable(
+                {
+                    "order": [[0, 'asc'], [3, 'asc']],
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+            $('#btnFILTER').on('click', function (e) {
+                $('#selecctall').prop('checked', false);
+                $('.checkexport').each(function () {
+                    this.checked = false;
+                });
+                $('#checkboxDefault1').prop('checked', true);
+                $('#checkboxDefault2').prop('checked', true);
+                $('#checkboxDefault3').prop('checked', true);
+                $('#checkboxDefault4').prop('checked', true);
+                $('#checkboxDefault5').prop('checked', true);
+            });
+
+            $('.checkexport').on('click', function (e) {
+                //e.preventDefault();
+                
+                table.column(0).visible(true);
+
+                // Get the column API object
+                var column = table.column($(this).attr('datacolumn'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+                $('#monitoringMutasi').parents('div.dataTables_wrapper').first().show();
+            });
+            //for (var i = 1; i < 4; i++) {
+            //    table.column(i).visible(false);
+
+            //}
+
+          
+            $('#selecctall').change(function () {
+                if ($(this).is(':checked')) {
+                    $('.checkexport').prop('checked', this.checked);
+                    // Show a column
+                    $('#monitoringMutasi').parents('div.dataTables_wrapper').first().show();
+                    var table = $('#monitoringMutasi').DataTable();
+                    for (var i = 0; i < 6; i++) {
+                        table.column(i).visible(true);
+
+                    }
+                    table.column(0).visible(true);
+                   // Show a column
+                    $('#monitoringMutasi').parents('div.dataTables_wrapper').first().show();
+
+                } else {
+                    $('.checkexport').each(function () {
+                        this.checked = false;
+
+                    });
+                    var table = $('#monitoringMutasi').DataTable();
+                    for (var i = 0; i < 6; i++) {
+                        table.column(i).visible(false);
+
+                    }
+                    $('#monitoringMutasi').parents('div.dataTables_wrapper').first().hide();
+                }
+            });
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+        $("#btnExport").click(function () {
+            $('#FilterPbck1Number').val($('#pbck1Number').find("option:selected").val());
+            $('#ExportMonitoringMutasi').submit();
+        });
+
+    </script>
+}
+

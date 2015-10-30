@@ -133,6 +133,17 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
+            //check if exists
+            var isExists = IsExistLack2Data(input);
+            if (!isExists.Success) return new Lack2CreateOutput()
+            {
+                Success = isExists.Success,
+                ErrorCode = isExists.ErrorCode,
+                ErrorMessage = isExists.ErrorMessage,
+                Id = null,
+                Lack2Number = string.Empty
+            };
+
             var rc = new Lack2CreateOutput()
             {
                 Success = false,
@@ -382,10 +393,6 @@ namespace Sampoerna.EMS.BLL
                     GovRejectedDocument(input);
                     isNeedSendNotif = false;
                     break;
-                case Enums.ActionType.GovPartialApprove:
-                    GovPartialApproveDocument(input);
-                    //isNeedSendNotif = false;
-                    break;
             }
 
             //todo sent mail
@@ -552,7 +559,7 @@ namespace Sampoerna.EMS.BLL
 
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType2.Approved);
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
 
@@ -560,7 +567,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.STATUS = Enums.DocumentStatus.Completed;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
+                dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
 
                 //dbData.APPROVED_BY_POA = input.UserId;
                 //dbData.APPROVED_DATE_POA = DateTime.Now;
@@ -573,41 +580,6 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(input);
 
-        }
-
-        private void GovPartialApproveDocument(Lack2WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
-            {
-                var dbData = _lack2Service.GetById(input.DocumentId.Value);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
-                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
-                    input.AdditionalDocumentData.DecreeDate);
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-
-                dbData.LACK2_DOCUMENT = null;
-                dbData.STATUS = Enums.DocumentStatus.Completed;
-                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-
-                //dbData.APPROVED_BY = input.UserId;
-                //dbData.APPROVED_DATE = DateTime.Now;
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-            }
-
-            AddWorkflowHistory(input);
         }
 
         private void GovRejectedDocument(Lack2WorkflowDocumentInput input)
@@ -624,12 +596,12 @@ namespace Sampoerna.EMS.BLL
 
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType2.Rejected);
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
                 
                 dbData.STATUS = Enums.DocumentStatus.Rejected;
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
+                dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Rejected;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
                 
                 //set to null
@@ -663,7 +635,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void WorkflowStatusGovAddChanges(Lack2WorkflowDocumentInput input, Enums.DocumentStatusGov? oldStatus, Enums.DocumentStatusGov newStatus)
+        private void WorkflowStatusGovAddChanges(Lack2WorkflowDocumentInput input, Enums.DocumentStatusGovType2? oldStatus, Enums.DocumentStatusGovType2 newStatus)
         {
             //set changes log
             var changes = new CHANGES_HISTORY
@@ -720,7 +692,14 @@ namespace Sampoerna.EMS.BLL
 
             var mailProcess = ProsesMailNotificationBody(lack2Data, input);
 
-            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+            List<string> listTo = mailProcess.To.Distinct().ToList();
+
+            if (mailProcess.IsCCExist)
+                //Send email with CC
+                _messageService.SendEmailToListWithCC(listTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+            else
+                _messageService.SendEmailToList(listTo, mailProcess.Subject, mailProcess.Body, true);
+
         }
 
         private string GetManagerEmail(string poaId)
@@ -944,6 +923,46 @@ namespace Sampoerna.EMS.BLL
 
         private Lack2GeneratedOutput GenerateLack2Data(Lack2GenerateDataParamInput input)
         {
+            var validationResult = ValidateOnGenerateLack2Data(ref input);
+            if (!validationResult.Success) return validationResult;
+
+            var rc = new Lack2GeneratedOutput
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty,
+                Data = new Lack2GeneratedDto()
+            };
+            
+            //get ck5 data
+            var ck5Selected = _ck5Service.GetForLack2ByParam(new Ck5GetForLack2ByParamInput()
+            {
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                SourcePlantId = input.SourcePlantId,
+                ExGroupTypeId = input.ExGroupTypeId,
+                CompanyCode = input.CompanyCode,
+                NppbkcId = input.NppbkcId
+            });
+
+            if (ck5Selected.Count == 0)
+            {
+                return new Lack2GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingCk5DataSelected.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingCk5DataSelected),
+                    Data = null
+                };
+            }
+
+            rc.Data.Ck5Items = Mapper.Map<List<Lack2GeneratedItemDto>>(ck5Selected);
+
+            return rc;
+        }
+
+        private Lack2GeneratedOutput ValidateOnGenerateLack2Data(ref Lack2GenerateDataParamInput input)
+        {
             var rc = new Lack2GeneratedOutput()
             {
                 Success = true,
@@ -969,6 +988,14 @@ namespace Sampoerna.EMS.BLL
             if (checkExcisableGroupType.EX_GROUP_TYPE_ID.HasValue)
                 input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
             
+            #endregion
+
+            return rc;
+
+        }
+
+        private Lack2GeneratedOutput IsExistLack2Data(Lack2GenerateDataParamInput input)
+        {
             //check if already exists with same selection criteria
             var lackCheck = _lack2Service.GetBySelectionCriteria(new Lack2GetBySelectionCriteriaParamInput()
             {
@@ -1009,37 +1036,15 @@ namespace Sampoerna.EMS.BLL
                     };
                 }
             }
-            
-            #endregion
 
-            //get ck5 data
-            rc.Data = new Lack2GeneratedDto();
-            var ck5Selected = _ck5Service.GetForLack2ByParam(new Ck5GetForLack2ByParamInput()
+            return new Lack2GeneratedOutput()
             {
-                PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear,
-                SourcePlantId = input.SourcePlantId,
-                ExGroupTypeId = input.ExGroupTypeId,
-                CompanyCode = input.CompanyCode,
-                NppbkcId = input.NppbkcId
-            });
-
-            if (ck5Selected.Count == 0)
-            {
-                return new Lack2GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.MissingCk5DataSelected.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingCk5DataSelected),
-                    Data = null
-                };
-            }
-
-            rc.Data.Ck5Items = Mapper.Map<List<Lack2GeneratedItemDto>>(ck5Selected);
-
-            return rc;
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty
+            };
         }
-        
+
         private bool SetChangesHistory(Lack2Dto origin, Lack2Dto data, string userId)
         {
             var rc = false;

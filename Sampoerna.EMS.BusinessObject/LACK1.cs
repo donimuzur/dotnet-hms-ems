@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> RETURN_QTY { get; set; }
         public string RETURN_UOM { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGovType2> GOV_STATUS { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public string NPPBKC_ID { get; set; }
         public decimal BEGINING_BALANCE { get; set; }

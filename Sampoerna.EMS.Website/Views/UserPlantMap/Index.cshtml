@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.UserPlantMap.UserPlantMapIndexViewModel
+﻿@using iTextSharp.text.pdf.qrcode
+@model Sampoerna.EMS.Website.Models.UserPlantMap.UserPlantMapIndexViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -27,6 +28,7 @@
                             <th class="toggle-row"> Filter </th>
                             <th>User ID</th>
                             <th>Plant</th>
+                            <th>Active</th>
                         </tr>
                     </thead>
                     <thead class="filters">
@@ -34,37 +36,41 @@
                             <th>Action</th>
                             <th></th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @{
-                            var firstUserName = Model.UserPlantMaps.Count > 0 ?  Model.UserPlantMaps[0].UserId : null;
+                            var firstUserName = Model.UserPlantMaps.Count > 0 ? Model.UserPlantMaps[0].UserId : null;
+
                         }
-                        @foreach (var item in Model.UserPlantMaps.OrderBy(x => x.UserId).GroupBy(x=>x.UserId))
+
+
+                        @for (int i = 0; i < Model.UserPlantList.Count(); i++)
                         {
-
-
                             <tr>
-                                
+
                                 <td class="action">
-                                    <a href="@Url.Action("Detail", "UserPlantMap", new {id = item.Key })" data-toggle=" tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "UserPlantMap", new {id = item.Key })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Detail", "UserPlantMap", new { id = Model.UserPlantList[i].UserId })" data-toggle=" tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "UserPlantMap", new { id = Model.UserPlantList[i].UserId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
                                 </td>
                                 <td>
-                                    @item.Key
+                                    @Html.DisplayFor(model => model.UserPlantList[i].UserId)
+
                                 </td>
                                 <td>
-                                    @{
-                                        var plantListByUser = Model.UserPlantMaps.Where(x => x.UserId == item.Key);
-                                    }
-                                    @foreach (var plant in plantListByUser)
+
+                                    @foreach (var plant in Model.UserPlantMaps.Where(x => x.UserId == Model.UserPlantList[i].UserId))
                                     {
-                                        <p>@(plant.PlantId + "-" +plant.PlantName)</p>
+                                        <p>@(plant.PlantId + "-" + plant.PlantName)</p>
                                     }
                                 </td>
-                                  
+                                <td>
+                                    @Html.DisplayFor(model => model.UserPlantMaps[i].IsActive)
+
+                                </td>
+
                             </tr>
-                              
                         }
 
                     </tbody>
@@ -74,38 +80,38 @@
         </div>
     </div>
 </div>
-    @section scripts
+@section scripts
 {
-        <script src="~/Scripts/js/custom.js"></script>
-        <script type="text/javascript" language="javascript" class="init">
-            $('#MenuPlantMap').addClass('active');
-            $(document).ready(function() {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuUserPlantMap').addClass('active');
+        $(document).ready(function () {
 
-                // Setup - add a text input to each footer cell
-                $('#UserPlantMap .filters th').each(function() {
-                    var idx = $(this).index();
-                    if (idx != 0) {
-                        var title = $('#UserPlantMap thead th').eq($(this).index()).text();
-                        $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+            // Setup - add a text input to each footer cell
+            $('#UserPlantMap .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    var title = $('#UserPlantMap thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
 
-                    }
-                });
-
-                // DataTable
-                var table = $('#UserPlantMap').DataTable();
-
-
-                // Apply the search
-
-                table.columns().eq(0).each(function(colIdx) {
-                    $('input', $('.filters th')[colIdx]).on('keyup change', function() {
-                        table
-                            .column(colIdx)
-                            .search(this.value)
-                            .draw();
-                    });
-                });
-
+                }
             });
-        </script>
-    }
+
+            // DataTable
+            var table = $('#UserPlantMap').DataTable();
+
+
+            // Apply the search
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+        });
+    </script>
+}

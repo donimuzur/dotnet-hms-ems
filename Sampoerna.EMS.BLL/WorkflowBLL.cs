@@ -198,7 +198,8 @@ namespace Sampoerna.EMS.BLL
                 return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.GICreated ||
-                   input.DocumentStatus == Enums.DocumentStatus.GICompleted;
+                   input.DocumentStatus == Enums.DocumentStatus.GICompleted ||
+                    input.DocumentStatus == Enums.DocumentStatus.WaitingForSealing;
         }
 
         public bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input)
@@ -207,7 +208,8 @@ namespace Sampoerna.EMS.BLL
                 return false;
             
             return input.DocumentStatus == Enums.DocumentStatus.GRCreated ||
-                    input.DocumentStatus == Enums.DocumentStatus.GRCompleted;
+                    input.DocumentStatus == Enums.DocumentStatus.GRCompleted ||
+                    input.DocumentStatus == Enums.DocumentStatus.WaitingForUnSealing;
         }
 
         public bool AllowTfPostedPortToImporter(WorkflowAllowApproveAndRejectInput input)
@@ -256,6 +258,28 @@ namespace Sampoerna.EMS.BLL
                 return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.StoRecGRCompleted;
+        }
+
+        public bool AllowGoodIssue(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            if (input.Ck5ManualType != Enums.Ck5ManualType.Trial)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodIssue;
+        }
+
+        public bool AllowGoodReceive(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            if (input.Ck5ManualType != Enums.Ck5ManualType.Trial)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodReceive;
         }
     }
 }
