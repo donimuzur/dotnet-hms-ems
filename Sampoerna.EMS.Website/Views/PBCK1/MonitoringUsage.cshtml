@@ -236,32 +236,45 @@
                 });
             });
 
+            //$('.checkexport').on('click', function (e) {
+            //    //e.preventDefault();
+            //    var checked = document.querySelectorAll('input:checked');
+
+            //    if (checked.length === 1) {
+            //        for (var i = 1; i < 12; i++) {
+            //            table.column(i).visible(false);
+            //        }
+            //        table.column(0).visible(true);
+
+            //        // Get the column API object
+            //        var column = table.column($(this).attr('datacolumn'));
+
+            //        // Toggle the visibility
+            //        column.visible(!column.visible());
+            //        $('#pbckTable').parents('div.dataTables_wrapper').first().show();
+            //    } else {
+            //        // Get the column API object
+            //        var column = table.column($(this).attr('datacolumn'));
+
+            //        // Toggle the visibility
+            //        column.visible(!column.visible());
+            //    }
+
+
+            //});
+            
             $('.checkexport').on('click', function (e) {
                 //e.preventDefault();
-                var checked = document.querySelectorAll('input:checked');
+                table.column(0).visible(true);
 
-                if (checked.length === 1) {
-                    for (var i = 1; i < 12; i++) {
-                        table.column(i).visible(false);
-                    }
-                    table.column(0).visible(true);
+                // Get the column API object
+                var column = table.column($(this).attr('datacolumn'));
 
-                    // Get the column API object
-                    var column = table.column($(this).attr('datacolumn'));
-
-                    // Toggle the visibility
-                    column.visible(!column.visible());
-                    $('#pbckTable').parents('div.dataTables_wrapper').first().show();
-                } else {
-                    // Get the column API object
-                    var column = table.column($(this).attr('datacolumn'));
-
-                    // Toggle the visibility
-                    column.visible(!column.visible());
-                }
-
-
+                // Toggle the visibility
+                column.visible(!column.visible());
+                $('#pbckTable').parents('div.dataTables_wrapper').first().show();
             });
+
 
             $('#selecctall').change(function () {
                 if ($(this).is(':checked')) {
@@ -277,6 +290,11 @@
                     $('.checkexport').each(function () {
                         this.checked = false;
                     });
+                    var table = $('#pbck1Table').DataTable();
+                    for (var i = 0; i < 12; i++) {
+                        table.column(i).visible(false);
+
+                    }
                     $('#pbckTable').parents('div.dataTables_wrapper').first().hide();
                 }
             });
