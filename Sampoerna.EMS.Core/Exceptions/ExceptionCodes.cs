@@ -114,7 +114,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             Pbck4ItemBack1MoreThanQtyValue,
 
             [Description("Parameter is not valid or not available")]
-            Pbck1ProdPlanUploadInvalidParameter
+            Pbck1ProdPlanUploadInvalidParameter,
+            
+            [Description("Invalid workflow action type.")]
+            InvalidWorkflowActionType
         }
 
         /// <summary>

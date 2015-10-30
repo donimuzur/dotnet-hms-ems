@@ -368,6 +368,9 @@ namespace Sampoerna.EMS.Core
 
             [Description("STO Cancelled")]
             STOCancelled = 320,
+
+            [Description("Back to Gov Approval")]
+            BackToGovApprovalAfterCompleted
         }
 
         /// <summary>
