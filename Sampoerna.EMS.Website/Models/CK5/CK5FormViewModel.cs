@@ -298,5 +298,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowSealing { get; set; }
 
         public bool AllowUnSealing { get; set; }
+
+        public bool AllowGoodIssue { get; set; }
+
+        public bool AllowGoodReceive { get; set; }
     }
 }

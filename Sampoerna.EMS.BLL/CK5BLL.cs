@@ -1249,6 +1249,12 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.TFPosted:
                     TfPostedPortToImporterDocument(input);
                     break;
+                case Enums.ActionType.GoodIssue:
+                    GoodIssueDocument(input);
+                    break;
+                case Enums.ActionType.GoodReceive:
+                    GoodReceiveDocument(input);
+                    break;
             }
 
             //todo sent mail
@@ -1700,10 +1706,15 @@ namespace Sampoerna.EMS.BLL
             string newValue = dbData.CK5_TYPE == Enums.CK5Type.PortToImporter ? 
                 EnumHelper.GetDescription(Enums.DocumentStatus.TFPosting) : 
                 EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
-            
-            if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
-                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
 
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
+            {
+                if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial)
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
+                else
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GoodIssue);
+            }
+            
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
@@ -1714,9 +1725,21 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                dbData.STATUS_ID = dbData.CK5_TYPE == Enums.CK5Type.Manual
-                ? Enums.DocumentStatus.WaitingForSealing
-                : Enums.DocumentStatus.CreateSTO;
+                if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
+                {
+                    if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial)
+                        dbData.STATUS_ID = Enums.DocumentStatus.GoodIssue;
+                    else 
+                        dbData.STATUS_ID = Enums.DocumentStatus.WaitingForSealing;
+                }
+                else
+                {
+                    dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
+                }
+
+                //dbData.STATUS_ID = dbData.CK5_TYPE == Enums.CK5Type.Manual
+                //? Enums.DocumentStatus.WaitingForSealing
+                //: Enums.DocumentStatus.CreateSTO;
             }
             
 
@@ -1892,6 +1915,99 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(input);
         }
+
+        private void GoodIssueDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.GoodIssue)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            string oldValue = dbData.SEALING_NOTIF_NUMBER;
+            string newValue = input.SealingNumber;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "SEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
+            dbData.SEALING_NOTIF_NUMBER = input.SealingNumber;
+
+            oldValue = dbData.SEALING_NOTIF_DATE.HasValue ? dbData.SEALING_NOTIF_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+            newValue = input.SealingDate.HasValue ? input.SealingDate.Value.ToString("dd MMM yyyy") : string.Empty;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "SEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
+            dbData.SEALING_NOTIF_DATE = input.SealingDate;
+
+            oldValue = dbData.GI_DATE.HasValue ? dbData.GI_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+            newValue = input.GiDate.HasValue ? input.GiDate.Value.ToString("dd MMM yyyy") : string.Empty;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "GI_DATE", input.UserId, dbData.CK5_ID.ToString());
+            dbData.GI_DATE = input.GiDate;
+
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+           
+            if (input.GiDate.HasValue
+                && !string.IsNullOrEmpty(input.SealingNumber)
+                && input.SealingDate.HasValue)
+            {
+                //change status
+                dbData.STATUS_ID = Enums.DocumentStatus.GoodReceive;
+
+                //add to workflow
+                AddWorkflowHistory(input);
+            }
+
+        }
+
+        private void GoodReceiveDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.GoodReceive)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            string oldValue = dbData.UNSEALING_NOTIF_NUMBER;
+            string newValue = input.UnSealingNumber;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
+            dbData.UNSEALING_NOTIF_NUMBER = input.UnSealingNumber;
+
+            oldValue = dbData.UNSEALING_NOTIF_DATE.HasValue ? dbData.UNSEALING_NOTIF_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+            newValue = input.UnSealingDate.HasValue ? input.UnSealingDate.Value.ToString("dd MMM yyyy") : string.Empty;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
+            dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
+
+            oldValue = dbData.GR_DATE.HasValue ? dbData.GR_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+            newValue = input.GrDate.HasValue ? input.GrDate.Value.ToString("dd MMM yyyy") : string.Empty;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "GR_DATE", input.UserId, dbData.CK5_ID.ToString());
+            dbData.GR_DATE = input.GrDate;
+
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            if (input.GrDate.HasValue
+                && !string.IsNullOrEmpty(input.UnSealingNumber)
+                && input.UnSealingDate.HasValue)
+            {
+                //change status
+                dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+                //add to workflow
+                AddWorkflowHistory(input);
+            }
+
+        }
+
 
         private void GiCreatedDocument(CK5WorkflowDocumentInput input)
         {

@@ -638,7 +638,7 @@
                             else if (Model.AllowGrCreated || Model.AllowTfPostedPortToImporter)
                             {
                               
-                                  <div class="row">
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.SealingNotifNumber, new {@class = "col-md-4"})
@@ -663,6 +663,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                
                                 <div class="row">
 
                                     <div class="col-md-6">
@@ -690,9 +691,17 @@
                                     </div>
                                 </div>
                             }
+                            else if (Model.AllowGoodIssue)
+                            {
+                                @Html.Partial("_CK5GoodIssue");
+                            }
+                            else if (Model.AllowGoodReceive)
+                            {
+                                @Html.Partial("_CK5GoodReceive");
+                            }
                             else
                             {
-                                 <div class="row">
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="row">
                                             @Html.LabelFor(model => model.SealingNotifNumber, new {@class = "col-md-4"})
