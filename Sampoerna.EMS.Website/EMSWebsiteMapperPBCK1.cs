@@ -158,7 +158,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => src.QuotaRemaining))
                 .ForMember(dest => dest.DocNumberCk5,
                     opt =>
-                        opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.DocumentNumber).ToArray())))
+                        opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => String.Format("'{0}", p.DocumentNumber)).ToArray())))
                 .ForMember(dest => dest.GrandTotalExciseable,
                     opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.Qty).ToArray())));
 
