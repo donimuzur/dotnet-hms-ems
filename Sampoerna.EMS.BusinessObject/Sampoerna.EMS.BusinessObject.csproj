@@ -136,6 +136,7 @@
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
+    <Compile Include="DTOs\Ck5SummaryReportDto.cs" />
     <Compile Include="DTOs\CK5XmlDto.cs" />
     <Compile Include="DTOs\CK5_FILE_UPLOADDto.cs" />
     <Compile Include="DTOs\CountryDto.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
     <Compile Include="DTOs\Lack1Dto.cs" />
     <Compile Include="DTOs\Pbck1Dto.cs" />
+    <Compile Include="DTOs\Pbck1MonitoringMutasiDto.cs" />
     <Compile Include="DTOs\Pbck1MonitoringUsageDto.cs" />
     <Compile Include="DTOs\Pbck1ProdConverterDto.cs" />
     <Compile Include="DTOs\Pbck1ProdPlanDto.cs" />

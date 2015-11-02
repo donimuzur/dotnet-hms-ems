@@ -19,7 +19,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PBCK3_NUMBER { get; set; }
         public System.DateTime PBCK3_DATE { get; set; }
         public Nullable<int> PBCK7_ID { get; set; }
-        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGov> GOV_STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGovType3> GOV_STATUS { get; set; }
         public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatus> STATUS { get; set; }
         public string APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }

@@ -185,35 +185,16 @@ namespace Sampoerna.EMS.Website.Controllers
            
             if (dbVirtual != null)
             {
-                if (dbVirtual.IS_DELETED == true)
-                {
-                    var modeldetail = new VirtualMappingPlantDetailsViewModel();
-                    modeldetail.MainMenu = _mainMenu;
-                    modeldetail.CurrentMenu = PageInfo;
-                    modeldetail.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
+                model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
 
-                    if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
-                        modeldetail.CompanyName = dbVirtual.T001.BUTXT;
+                if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
+                    model.CompanyId = dbVirtual.COMPANY_ID;
 
-                    modeldetail.ImportPlanName = dbVirtual.T001W1.WERKS;
-                    modeldetail.ExportPlanName = dbVirtual.T001W.WERKS;
-                    return View("Details",modeldetail);
-                }
-                else {
-                    model.VirtualMapId = dbVirtual.VIRTUAL_PLANT_MAP_ID;
-
-                    if (!string.IsNullOrEmpty(dbVirtual.COMPANY_ID))
-                        model.CompanyId = dbVirtual.COMPANY_ID;
-
-                    model.ImportPlantId = dbVirtual.T001W1.WERKS;
-                    model.ExportPlantId = dbVirtual.T001W.WERKS;
-                    model.IsDeleted = dbVirtual.IS_DELETED;
-                    model.IsAllowDelete = !model.IsDeleted.HasValue || !model.IsDeleted.Value;
-                    return View(model);
-                }
-                
-                
-
+                model.ImportPlantId = dbVirtual.T001W1.WERKS;
+                model.ExportPlantId = dbVirtual.T001W.WERKS;
+                model.IsDeleted = dbVirtual.IS_DELETED;
+                model.IsAllowDelete = !model.IsDeleted.HasValue || !model.IsDeleted.Value;
+                return View(model);
                 
             }
             else
@@ -269,8 +250,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(int id)
         {
-            _virtualMappingPlanBll.Delete(id, CurrentUser.USER_ID);
-            TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;
+           var newStatus = _virtualMappingPlanBll.Delete(id, CurrentUser.USER_ID);
+            if (newStatus)
+            {
+                TempData[Constans.SubmitType.Delete] = "DEACTIVATE Successfully";
+            }
+            else
+            {
+                TempData[Constans.SubmitType.Delete] = "ACTIVATE Successfully";
+            }
+            
             return RedirectToAction("Index");
         }
 

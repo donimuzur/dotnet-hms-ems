@@ -139,8 +139,8 @@ function ValidateManual() {
 }
 
 
-function UpdateRow() {
-    if (ValidateManual()) {
+function UpdateRow(data) {
+    //if (ValidateManual()) {
 
         var row = $('#uploadMaterialRow').val();
 
@@ -158,6 +158,11 @@ function UpdateRow() {
             exciseUOM = "G";
             exciseQty = convertedQty * 1000;
         } 
+        
+        var dataerror = "";
+        if (data.error != null) {
+            dataerror = data.error;
+        }
 
         $('#Ck5UploadTable tr').each(function() {
 
@@ -174,6 +179,7 @@ function UpdateRow() {
                 $(this).find('td').eq(10).text(total.toFixed(3));
                 $(this).find('td').eq(11).text($('#uploadUsdValue').val());
                 $(this).find('td').eq(12).text($('#uploadNote').val());
+                $(this).find('td').eq(13).text(dataerror);
                 $(this).find('td').eq(15).text($('#uploadMaterialDesc').val());
                 
                 
@@ -185,13 +191,16 @@ function UpdateRow() {
             }
         });
         $('#Ck5UploadModal').modal('hide');
-        
-        $('#CK5UploadSave').enable();
-    }
+        if (data.success) {
+            $('#CK5UploadSave').prop('disabled', false);
+        } else {
+            $('#CK5UploadSave').prop('disabled', true);
+        }
+    //}
 }
-function AddRow(url) {
+function AddRow(url,data) {
 
-    if (ValidateManual()) {
+    //if (ValidateManual()) {
         
         $('#Ck5UploadModal').modal('hide');
 
@@ -213,7 +222,10 @@ function AddRow(url) {
             '<a href="#" onclick=" RemoveRow($(this)); "data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i></a>' +
             '<a href="#" onclick=" EditRow($(this),\''+url+'\'); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>' +
             '</td>';
-
+        var dataerror = "";
+        if (data.error != null) {
+            dataerror = data.error;
+        }
         $("#Ck5UploadTable tbody").append(
             "<tr>" +
                  classAction +
@@ -229,7 +241,7 @@ function AddRow(url) {
                 "<td>" + total.toFixed(3) + "</td>" +
                 "<td>" + $('#uploadUsdValue').val() + "</td>" +
                 "<td>" + $('#uploadNote').val() + "</td>" +
-                "<td></td>" +
+                "<td>" + dataerror + "</td>" +
                 "<td style='display: none'></td>" +
                 "<td style='display: none'>" + $('#uploadMaterialDesc').val() + "</td>" +
                 "<td style='display: none'>" + exciseQty + "</td>" +
@@ -238,8 +250,13 @@ function AddRow(url) {
                 "<td style='display: none'>" + $('#uploadMaterialPlant').val() + "</td>" +
                 "</tr>");
         
-        $('#CK5UploadSave').enable();
-    }
+        if (data.success) {
+            $('#CK5UploadSave').prop('disabled', false);
+        } else {
+            $('#CK5UploadSave').prop('disabled', true);
+        }
+        
+    //}
     
   
 }

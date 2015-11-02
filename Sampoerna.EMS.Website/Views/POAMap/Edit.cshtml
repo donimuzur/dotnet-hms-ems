@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.POAMap.PoaMapDetailViewModel
+﻿@using iTextSharp.text.pdf.qrcode
+@model Sampoerna.EMS.Website.Models.POAMap.PoaMapDetailViewModel
 
 
 @{
@@ -54,7 +55,7 @@
                                             <div class="row">
                                                 <label class="col-md-2">Plant<span class="red">*</span></label>
                                                 <div class="col-md-4">
-                                                    @Html.DropDownListFor(model => model.PoaMap.WERKS, Model.Plants, new { @class = "form-control" })
+                                                    @Html.DropDownListFor(model => model.PoaMap.WERKS, Model.Plants, new { @class = "form-control", @id = "PoaMap_WERKS" })
 
   
                                                 </div>
@@ -109,25 +110,33 @@
     <script type="text/javascript" language="javascript">
     $(document).ready(function () {
         $('#MenuPoaMap').addClass('active');
+      
 
         $('#btnCancel').click(function (e) {
             location.href = '@Url.Action("Index", "PoaMap")';
-            });
+        });
         $('#PoaMap_NPPBKC_ID').change();
-
+        
+       
+        
     });
         $('#PoaMap_NPPBKC_ID').change(function () {
             var nppbkcid = $(this).find("option:selected").val();
             $('#PoaMap_WERKS').html("");
+
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetPlantOfNppbck", "POAMap")',
                 data: { nppbkcid: nppbkcid },
                 success: function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        $('#PoaMap_WERKS').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+                       $('#PoaMap_WERKS').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
                     }
+                    var plantList = '@Model.PoaMap.WERKS';
+                    $('#PoaMap_WERKS').val(plantList);
+                   
                 }
+                
             });
         });
         var confirmDeleteData = function () {

@@ -1,5 +1,12 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
-
+<div class="row">
+    <div class="col-md-6">
+        @if (Model.ProdPlanUploadValidateResult != null && !Model.ProdPlanUploadValidateResult.IsSuccess)
+        {
+            <span class="red">@Model.ProdPlanUploadValidateResult.ErrorMessage</span>
+        }
+    </div>
+</div>
 <table id="prod-plan-table" class="table table-bordered table-striped js-options-table">
     <thead>
         <tr>

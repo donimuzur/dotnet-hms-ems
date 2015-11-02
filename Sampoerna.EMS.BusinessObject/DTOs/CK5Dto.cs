@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -88,6 +89,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<CK5_FILE_UPLOADDto> Ck5FileUploadDtos { get; set; }
 
+        public List<CK5MaterialDto> Ck5MaterialDtos { get; set; }
+
         public string SOURCE_PLANT_COMPANY_CODE { get; set; }
         public string DEST_PLANT_COMPANY_CODE { get; set; }
 
@@ -98,7 +101,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string APPROVED_BY_POA { get; set; }
         public string APPROVED_BY_MANAGER { get; set; }
 
-        public Sampoerna.EMS.Core.Enums.Ck5ManualType CK5_MANUAL_TYPE { get; set; }
+        public Sampoerna.EMS.Core.Enums.Ck5ManualType? CK5_MANUAL_TYPE { get; set; }
 
         public string RemainQuota;
        public long CK5_REF_ID { get; set; }
@@ -111,5 +114,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string NoDateWithFormat { get; set; }
 
         public bool IsModifiedHistory { get; set; }
+
+        public Enums.Ck5ManualFreeText? MANUAL_FREE_TEXT { get; set; }
     }
 }

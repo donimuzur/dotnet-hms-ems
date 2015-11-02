@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
                 .ForMember(dest => dest.Qty, opt => opt.ResolveUsing<CK5ListIndexQtyResolver>().FromMember(src => src))
+                .ForMember(dest => dest.QtyPackaging, opt => opt.ResolveUsing<CK5ListIndexQtyPackagingResolver>().FromMember(src => src))
                 .ForMember(dest => dest.POA, opt => opt.ResolveUsing<CK5ListIndexPOAResolver>().FromMember(src => src))
                 .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID + " - " + src.SOURCE_PLANT_NAME))
                 .ForMember(dest => dest.DestinationPlant, opt => opt.ResolveUsing<CK5ListIndexDestinationPlantResolver>().FromMember(src => src))
@@ -267,7 +268,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DestCompanyName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
                 .ForMember(dest => dest.LoadingPort, opt => opt.MapFrom(src => src.LOADING_PORT))
                 .ForMember(dest => dest.LoadingPortName, opt => opt.MapFrom(src => src.LOADING_PORT_NAME))
-                
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
                 ;
 
 
@@ -280,7 +281,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5FileDocumentItems, CK5UploadFileDocumentsInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.Uom))
-               // .ForMember(dest => dest.InvoiceDate, opt => opt.MapFrom(src => src.InvoiceDateDisplay))
+                .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
                 ;
 
             Mapper.CreateMap<CK5FileUploadDocumentsOutput, CK5FileDocumentItems>().IgnoreAllNonExisting()
@@ -355,6 +356,8 @@ namespace Sampoerna.EMS.Website
                 //.ForMember(dest => dest.KppbcCity, opt => opt.MapFrom(src => src.supp))
                 //.ForMember(dest => dest.KppbcNo, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_ID));
                 ;
+
+                Mapper.CreateMap<Ck5SummaryReportDto, CK5SummaryReportsItem>().IgnoreAllNonExisting();
         }
     }
 }

@@ -107,6 +107,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SupplierPlantId { get; set; }
         public string ReceivedPlantId { get; set; }
         public DateTime PeriodTo { get; set; }
+        public int ExcludeLack1Id { get; set; }
     }
 
     public class Lack1GetBySelectionCriteriaParamInput
@@ -164,6 +165,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int? PeriodYearFrom { get; set; }
         public int? PeriodMonthTo { get; set; }
         public int? PeriodYearTo { get; set; }
+        public Enums.Lack1Level? Lack1Level { get; set; }
     }
 
     public class Lack1GetPbck1RealizationListParamInput

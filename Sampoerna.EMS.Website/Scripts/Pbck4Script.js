@@ -21,6 +21,12 @@ function OnReadyFunction() {
         var columnLength = $('#pbck4TableItem').find("thead tr:first th").length;
         $('#pbck4TableItem tbody').html('');
        
+        if (!IsValidDataUpload()) {
+            $('#modalBodyMessage').text('PBCK-4 Item Not Valid');
+            $('#ModalPbck4Items').modal('show');
+            return;
+        }
+            
         var data = "";
         for (var i = 0; i < datarows.length; i++) {
             data += '<tr>';
@@ -191,8 +197,9 @@ function GenerateXlsPbck4Items(url) {
         contentType: false,
         processData: false,
         success: function (response) {
-            $('#ProdConvContent').html("");
-            $('#ProdConvContent').html(response);
+            //$('#ProdConvContent').html("");
+            //$('#ProdConvContent').html(response);
+            $("#Ck5UploadTable tbody").append(response);
             
             if (IsValidDataUpload())
                 $('#Pbck4UploadSave').enable();
@@ -227,35 +234,7 @@ function GenerateXlsPbck4Items(url) {
     function ValidateGovInput() {
         var result = true;
 
-        //if ($('#BACK1_NO').val() == '') {
-        //    AddValidationClass(false, 'BACK1_NO');
-        //    result = false;
-           
-        //}
-
-        //if ($('#BACK1_DATE').val() == '') {
-        //    AddValidationClass(false, 'BACK1_DATE');
-        //    result = false;
-        //}
-        
-        //if ($('#CK3_NO').val() == '') {
-        //    AddValidationClass(false, 'CK3_NO');
-        //    result = false;
-        //}
-        
-        //if ($('#CK3_DATE').val() == '') {
-        //    AddValidationClass(false, 'CK3_DATE');
-        //    result = false;
-        //}
-        
-    
-        //if ($.isNumeric($('#CK3_OFFICE_VALUE').val()) == false) {
-        //    AddValidationClass(false, 'CK3_OFFICE_VALUE');
-        //    result = false;
-        //}
-        
        
-
         if ($('#GovStatus').val() == '') {
             AddValidationClass(false, 'GovStatus');
             result = false;
@@ -273,13 +252,29 @@ function GenerateXlsPbck4Items(url) {
 
         }
 
+      
+
+        if ($('#CK3_OFFICE_VALUE').val() != '') {
+            if ($.isNumeric($('#CK3_OFFICE_VALUE').val()) == false) {
+                AddValidationClass(false, 'CK3_OFFICE_VALUE');
+                result = false;
+            }
+
+            var ck2Value = parseFloat($('#CK3_OFFICE_VALUE').val());
+            if (ck2Value <= 0) {
+                AddValidationClass(false, 'CK3_OFFICE_VALUE');
+                result = false;
+            }
+        }
+        
         if (result == false) {
             $('#collapseFour').removeClass('collapse');
             $('#collapseFour').addClass('in');
             $("#collapseFour").css({ height: "auto" });
 
         }
-        
+
+
         //if ($('#poa_sk0').length == 0) {
         //    AddValidationClass(false, 'poa-files');
 

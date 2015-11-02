@@ -724,10 +724,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
 
-            if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
-            {
-                model.ControllerAction = "GovApproveDocument";
-            }
+            model.ControllerAction = model.Status == Enums.DocumentStatus.WaitingGovApproval || model.Status == Enums.DocumentStatus.Completed ? "GovApproveDocument" : "Edit";
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
@@ -738,7 +735,8 @@ namespace Sampoerna.EMS.Website.Controllers
         private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
         {
             bool isAllow = CurrentUser.USER_ID == userId;
-            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected || status == Enums.DocumentStatus.WaitingGovApproval))
+            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected 
+                || status == Enums.DocumentStatus.WaitingGovApproval || status == Enums.DocumentStatus.Completed))
             {
                 isAllow = false;
             }
@@ -1104,8 +1102,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Lack1EditViewModel model)
         {
-
-            if (model.DecreeFiles == null)
+            
+            if (model.GovApprovalActionType != Enums.ActionType.BackToGovApprovalAfterCompleted && model.DecreeFiles == null)
             {
                 AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
                 return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
@@ -1138,6 +1136,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         else
                         {
+                            if (model.GovApprovalActionType == Enums.ActionType.BackToGovApprovalAfterCompleted)
+                                continue;
                             AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
                             return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
                         }
@@ -1157,8 +1157,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(err, Enums.MessageInfoType.Error);
                 return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
             }
-
-            AddMessageInfo("Document " + EnumHelper.GetDescription(model.GovStatus), Enums.MessageInfoType.Success);
+            if (model.GovApprovalActionType == Enums.ActionType.BackToGovApprovalAfterCompleted)
+            {
+                AddMessageInfo("Document Back to Waiting for Government Approval", Enums.MessageInfoType.Success);
+            }
+            else
+            {
+                AddMessageInfo("Document " + EnumHelper.GetDescription(model.GovStatus), Enums.MessageInfoType.Success);
+            }
+            
             return RedirectToAction(model.Lack1Level == Enums.Lack1Level.Plant ? "ListByPlant" : "Index");
         }
 
@@ -1671,20 +1678,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     var iStartRow = iRow;
                     var iEndRow = iStartRow;
 
-                    item.TrackingConsolidations =
-                        item.TrackingConsolidations.OrderBy(o => o.Ck5Number)
-                            .ThenBy(o => o.Ck5RegistrationNumber)
-                            .ThenBy(o => o.Ck5RegistrationDate)
-                            .ThenBy(o => o.Ck5GrDate)
-                            .ToList();
-
-                    var lastCk5Number = item.TrackingConsolidations[0].Ck5Number;
-                    var lastCk5RegDate = item.TrackingConsolidations[0].Ck5RegistrationDate;
-                    var lastCk5RegNumber = item.TrackingConsolidations[0].Ck5RegistrationNumber;
-                    var lastCk5GrDate = item.TrackingConsolidations[0].Ck5GrDate;
+                    var lastMaterialCode = item.TrackingConsolidations[0].MaterialCode;
+                    var lastBatch = item.TrackingConsolidations[0].Batch;
 
                     int dataCount = item.TrackingConsolidations.Count - 1;
+
                     //first record
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
@@ -1710,7 +1713,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].MaterialCode);
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[0].UsageQty.HasValue ? "-" : ( (-1) * item.TrackingConsolidations[0].UsageQty.Value).ToString("N2"));
+                    slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[0].UsageQty.HasValue ? "-" : ( (-1) * item.TrackingConsolidations[0].UsageQty.Value).ToString("N3"));
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].OriginalUomId);
@@ -1725,12 +1728,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                     {
                         iRow++;
-                        iColumn = 2;
+                        iColumn = 3;
 
-                        var curCk5Number = item.TrackingConsolidations[i].Ck5Number;
-                        var curCk5RegDate = item.TrackingConsolidations[i].Ck5RegistrationDate;
-                        var curCk5RegNumber = item.TrackingConsolidations[i].Ck5RegistrationNumber;
-                        var curCk5GrDate = item.TrackingConsolidations[i].Ck5GrDate;
+                        var curMaterialCode = item.TrackingConsolidations[i].MaterialCode;
+                        var curBatch = item.TrackingConsolidations[i].Batch;
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5Number);
                         iColumn++;
@@ -1753,7 +1754,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].MaterialCode);
                         iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[i].UsageQty.HasValue ? "-" :((-1) * item.TrackingConsolidations[i].UsageQty.Value).ToString("N2"));
+                        slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[i].UsageQty.HasValue ? "-" :((-1) * item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"));
                         iColumn++;
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].OriginalUomId);
@@ -1761,8 +1762,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomId);
 
-                        if (lastCk5GrDate == curCk5GrDate && lastCk5Number == curCk5Number &&
-                            lastCk5RegDate == curCk5RegDate && lastCk5RegNumber == curCk5RegNumber)
+                        if (lastMaterialCode == curMaterialCode && lastBatch == curBatch)
                         {
                             iEndRow = iRow;
                             if (i == item.TrackingConsolidations.Count - 1)
@@ -1792,15 +1792,17 @@ namespace Sampoerna.EMS.Website.Controllers
                             iStartRow = iRow;
                             iEndRow = iStartRow;
                         }
-                        lastCk5GrDate = curCk5GrDate;
-                        lastCk5Number = curCk5Number;
-                        lastCk5RegDate = curCk5RegDate;
-                        lastCk5RegNumber = curCk5RegNumber;
+                        lastMaterialCode = curMaterialCode;
+                        lastBatch = curBatch;
                     }
                     
                 }
                 else
                 {
+                    
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
                     iColumn++;
 
@@ -1827,6 +1829,10 @@ namespace Sampoerna.EMS.Website.Controllers
             int iColumn = 1;
 
             //first row
+            slDocument.SetCellValue(1, iColumn, "LACK-1 Level");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
             slDocument.SetCellValue(1, iColumn, "Begining Balance");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
             iColumn = iColumn + 1;
@@ -1845,7 +1851,7 @@ namespace Sampoerna.EMS.Website.Controllers
             endColumnIndex = iColumn;
 
             //second row
-            iColumn = 2;
+            iColumn = 3;
             slDocument.SetCellValue(2, iColumn, "CK-5 Number");
             iColumn++;
             
@@ -1926,23 +1932,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 //need set to empty cell first before doing merge
                 for (int i = item.StartRowIndex + 1; i < item.EndRowIndex; i++)
                 {
-                    slDocument.SetCellValue(i, 2, string.Empty);
-                    slDocument.SetCellValue(i, 3, string.Empty);
-                    slDocument.SetCellValue(i, 4, string.Empty);
-                    slDocument.SetCellValue(i, 5, string.Empty);
+                    slDocument.SetCellValue(i, 9, string.Empty);
+                    slDocument.SetCellValue(i, 10, string.Empty);
                 }
 
-                //Ck-5 Number
-                slDocument.MergeWorksheetCells(item.StartRowIndex, 2, item.EndRowIndex, 2);
+                //Material Code
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 9, item.EndRowIndex, 9);
 
-                //Ck-5 Registration Number
-                slDocument.MergeWorksheetCells(item.StartRowIndex, 3, item.EndRowIndex, 3);
-
-                //Ck-5 Registration Date
-                slDocument.MergeWorksheetCells(item.StartRowIndex, 4, item.EndRowIndex, 4);
-
-                //Ck-5 GR Date
-                slDocument.MergeWorksheetCells(item.StartRowIndex, 5, item.EndRowIndex, 5);
+                //Usage Qty
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 10, item.EndRowIndex, 10);
+                
             }
 
             return slDocument;

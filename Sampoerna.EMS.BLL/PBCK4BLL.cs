@@ -47,7 +47,7 @@ namespace Sampoerna.EMS.BLL
        private IHeaderFooterBLL _headerFooterBll;
        private IWorkflowBLL _workflowBll;
 
-       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1";
+       private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1, PBCK4_ITEM.CK1.CK1_ITEM";
 
        public PBCK4BLL(IUnitOfWork uow, ILogger logger)
        {
@@ -193,9 +193,23 @@ namespace Sampoerna.EMS.BLL
            return output;
        }
 
+       private void ValidatePbck4ItemInForms(Pbck4SaveInput input)
+       {
+           if (input.Pbck4Items.Count == 0)
+               throw new BLLException(ExceptionCodes.BLLExceptions.MaterialOrItemErrorEmpty);
+
+           foreach (var pbck4ItemDto in input.Pbck4Items)
+           {
+               if (pbck4ItemDto.REQUESTED_QTY <= 0)
+                   throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ItemErrorRequestedQtyValue);
+           }
+       }
        public Pbck4Dto SavePbck4(Pbck4SaveInput input)
        {
            bool isModified = false;
+
+           //validate pbck4 item
+           ValidatePbck4ItemInForms(input);
 
            //workflowhistory
            var inputWorkflowHistory = new Pbck4WorkflowHistoryInput();
@@ -427,7 +441,7 @@ namespace Sampoerna.EMS.BLL
        private void SetChangeHistory(string oldValue, string newValue, string fieldName, string userId, string ck5Id)
        {
            var changes = new CHANGES_HISTORY();
-           changes.FORM_TYPE_ID = Enums.MenuList.CK5;
+           changes.FORM_TYPE_ID = Enums.MenuList.PBCK4;
            changes.FORM_ID = ck5Id;
            changes.FIELD_NAME = fieldName;
            changes.MODIFIED_BY = userId;
@@ -595,7 +609,7 @@ namespace Sampoerna.EMS.BLL
                input.TotalHje = (ConvertHelper.GetDecimal(input.Hje)*ConvertHelper.GetDecimal(input.ReqQty)).ToString("f2");
 
                input.TotalStamps =
-                   (ConvertHelper.GetDecimal(input.Hje)*ConvertHelper.GetDecimal(input.ReqQty)*
+                   (ConvertHelper.GetDecimal(input.Tariff)*ConvertHelper.GetDecimal(input.ReqQty)*
                     ConvertHelper.GetDecimal(input.Content)).ToString("f2");
 
 
@@ -1262,6 +1276,39 @@ namespace Sampoerna.EMS.BLL
            dbData.APPROVED_QTY = approvedQty;
            _repositoryPbck4Items.Update(dbData);
        }
+
+       private void UpdatePbck4ItemGovApproval(Pbck4WorkflowDocumentInput input)
+       {
+           //string oldValue = "";
+           //string newValue = "";
+
+           foreach (var pbck4ItemDto in input.UploadItemDto)
+           {
+               var pbck4Item = _repositoryPbck4Items.GetByID(pbck4ItemDto.PBCK4_ITEM_ID);
+               if (pbck4Item != null)
+               {
+
+                   if (input.GovStatusInput == Enums.DocumentStatusGov.FullApproved)
+                       pbck4Item.APPROVED_QTY = pbck4Item.REQUESTED_QTY;
+                   else if (input.GovStatusInput == Enums.DocumentStatusGov.PartialApproved)
+                   {
+                       //back1 qty must be > 0
+                       if (!pbck4ItemDto.APPROVED_QTY.HasValue
+                           || pbck4ItemDto.APPROVED_QTY.Value <= 0)
+                           throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ItemErrorBack1QtyValue);
+
+                       if (pbck4ItemDto.APPROVED_QTY >= pbck4ItemDto.REQUESTED_QTY)
+                           throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ItemBack1MoreThanQtyValue);
+                       pbck4Item.APPROVED_QTY = pbck4ItemDto.APPROVED_QTY;
+                   }
+                   _repositoryPbck4Items.Update(pbck4Item);
+
+                   ////set change history
+                   //SetChangeHistoryPbck3(oldValue, newValue, "STATUS", input.UserId, dbData.PBCK3_ID.ToString());
+               }
+           }
+       }
+
        private void GovApproveDocument(Pbck4WorkflowDocumentInput input)
        {
            var dbData = _repository.GetByID(input.DocumentId);
@@ -1271,6 +1318,15 @@ namespace Sampoerna.EMS.BLL
 
            if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+           if (!string.IsNullOrEmpty(input.AdditionalDocumentData.Ck3OfficeValue))
+           {
+               if (ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue) <= 0)
+                   throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ErrorCk3OfficeValue);
+           }
+
+           //update pbck4-item
+           UpdatePbck4ItemGovApproval(input);
 
            //prepare for set changes history
            var origin = Mapper.Map<Pbck4Dto>(dbData);
@@ -1288,8 +1344,13 @@ namespace Sampoerna.EMS.BLL
            
            dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
            dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-           
-           dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
+           if (!string.IsNullOrEmpty(input.AdditionalDocumentData.Ck3OfficeValue))
+           {
+               dbData.CK3_OFFICE_VALUE =
+                   ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
+           }
+           else
+               dbData.CK3_OFFICE_VALUE = null;
 
            dbData.GOV_STATUS = input.GovStatusInput;
 
@@ -1302,15 +1363,29 @@ namespace Sampoerna.EMS.BLL
            //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
            InsertOrDeletePbck4Item(pbckDocument);
 
-           //update item updated
-           foreach (var pbck4ItemDto in input.UploadItemDto)
-           {
-               UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
-           }
+           ////update item updated
+           //foreach (var pbck4ItemDto in input.UploadItemDto)
+           //{
+           //    UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
+           //}
 
            input.DocumentNumber = dbData.PBCK4_NUMBER;
 
-           AddWorkflowHistory(input);
+           var latestAction = _workflowHistoryBll.GetByFormNumber(input.DocumentNumber);
+
+           if (latestAction.LastOrDefault().ACTION == input.ActionType && latestAction.LastOrDefault().UserId == input.UserId)
+           {
+               var latestWorkflow = latestAction.LastOrDefault();
+
+               latestWorkflow.ACTION_DATE = DateTime.Now;
+
+               _workflowHistoryBll.Save(latestWorkflow);
+           }
+           else
+           {
+               AddWorkflowHistory(input);
+           }
+               
 
            if (IsCompletedWorkflow(dbData))
            {
@@ -1552,7 +1627,6 @@ namespace Sampoerna.EMS.BLL
                pbck4Matrikck1.Hje = pbck4Item.HJE.HasValue ? pbck4Item.HJE.Value : 0;
                pbck4Matrikck1.JenisHt = pbck4Item.PRODUCT_ALIAS;
                pbck4Matrikck1.Content = ConvertHelper.ConvertToDecimalOrZero(pbck4Item.BRAND_CONTENT);
-               pbck4Matrikck1.Ck1RequestedQty = pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0;
 
                pbck4Matrikck1.BrandName = pbck4Item.BRAND_NAME;
                if (pbck4Item.CK1 == null)
@@ -1560,14 +1634,17 @@ namespace Sampoerna.EMS.BLL
                    pbck4Matrikck1.Ck1No = "";
                    pbck4Matrikck1.Ck1Date = "";
                    pbck4Matrikck1.Ck1OrderQty = 0;
-                   //pbck4Matrikck1.Ck1RequestedQty = 0;
+                   pbck4Matrikck1.Ck1RequestedQty = 0;
                }
                else
                {
                    pbck4Matrikck1.Ck1No = pbck4Item.CK1.CK1_NUMBER;
                    pbck4Matrikck1.Ck1Date = DateReportDisplayString(pbck4Item.CK1.CK1_DATE, false);
-                   pbck4Matrikck1.Ck1OrderQty = 0;//todo ask
-                   //pbck4Matrikck1.Ck1RequestedQty = 0;//todo ask
+                   pbck4Matrikck1.Ck1OrderQty = pbck4Item.CK1.CK1_ITEM
+                       .Where(x => x.MATERIAL_ID == pbck4Item.STICKER_CODE 
+                           && x.FA_CODE == pbck4Item.FA_CODE && x.WERKS == pbck4Item.PLANT_ID)
+                       .Sum(x => x.MENGE.Value);
+                   pbck4Matrikck1.Ck1RequestedQty = pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0;
                }
 
                pbck4Matrikck1.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value : 0;
@@ -1762,6 +1839,29 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
        }
 
+        public List<GetListBrandByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId)
+        {
+            var output = new List<GetListBrandByPlantOutput>();
+
+            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+            foreach (var zaidmExBrand in dbBrand)
+            {
+                var blockStock = GetBlockedStockQuota(plantId, zaidmExBrand.FA_CODE);
+                if (blockStock.BlockedStockRemainingCount > 0)
+                {
+                    var blockstockOutput = new GetListBrandByPlantOutput();
+                    blockstockOutput.PlantId = plantId;
+                    blockstockOutput.FaCode = zaidmExBrand.FA_CODE;
+                    blockstockOutput.RemainingBlockQuota = blockStock.BlockedStockRemainingCount;
+
+                    output.Add(blockstockOutput);
+                }
+            }
+
+            return output;
+            //return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
+        }
+
         public List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId)
         {
             var dbCk1 = _ck1Services.GetCk1ByNppbkc(nppbkcId);
@@ -1772,6 +1872,7 @@ namespace Sampoerna.EMS.BLL
         public GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode)
        {
            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+            
             return Mapper.Map<GetBrandItemsOutput>(dbBrand);
        }
 
@@ -1811,6 +1912,7 @@ namespace Sampoerna.EMS.BLL
             result.BlockedStock = blockStock.ToString();
             result.BlockedStockUsed = blockStockUsed.ToString();
             result.BlockedStockRemaining = (blockStock - blockStockUsed).ToString();
+            result.BlockedStockRemainingCount = blockStock - blockStockUsed;
 
             return result;
 

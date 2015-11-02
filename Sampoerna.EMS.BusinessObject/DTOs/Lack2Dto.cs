@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? SubmissionDate { get; set; }
         public string ExGoodTyp { get; set; }
         public string ExTypDesc { get; set; }
-        public Enums.DocumentStatusGov? GovStatus { get; set; }
+        public Enums.DocumentStatusGovType2? GovStatus { get; set; }
         public Enums.DocumentStatus Status { get; set; }
 
         public string StatusName { get; set; }

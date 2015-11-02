@@ -171,9 +171,7 @@
                 if (statusGov == 'Rejected') {
                     $('#divComment').show();
                     $('#GovApprovalActionType').val('@Enums.ActionType.GovReject');
-                } else if (statusGov == 'PartialApproved') {
-                    $('#GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
-                } else if (statusGov == 'FullApproved') {
+                } else if (statusGov == 'Approved') {
                     $('#GovApprovalActionType').val('@Enums.ActionType.GovApprove');
                 }
             }
@@ -185,7 +183,7 @@
             var status = $('#Status').val();
 
             if (status != '@Enums.DocumentStatus.Completed') {
-                return true;
+                result = true;
             }
 
             if (govStatus == '') {
@@ -453,6 +451,44 @@
                 $('#' + objName).removeClass('valid');
                 $('#' + objName).addClass('input-validation-error');
             }
+        }
+
+        function printPreview(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        }
+
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
         }
 
     </script>

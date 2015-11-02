@@ -41,6 +41,13 @@ namespace Sampoerna.EMS.XMLReader
                         item.CREATED_BY = Constans.PI;
                         item.COMPANY_ID = _xmlMapper.GetElementValue(xElement.Element("BUKRS"));
                         item.NPPBKC_ID = _xmlMapper.GetElementValue(xElement.Element("NPPBKC_ID"));
+
+                        var existingNppbkc = getNppbkc(item.NPPBKC_ID);
+                        if (existingNppbkc == null)
+                        {
+                            throw new Exception(String.Format("{0} not exist in EMS database",item.NPPBKC_ID));
+                        }
+
                         item.VENDOR_ID = _xmlMapper.GetElementValue(xElement.Element("LIFNR"));
                         item.ORDER_DATE = _xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("ORDER_DATE")));
                         var company = _xmlMapper.uow.GetGenericRepository<T001>().GetByID(item.COMPANY_ID);
@@ -67,17 +74,37 @@ namespace Sampoerna.EMS.XMLReader
                         foreach (var xElementItem in xmlItems)
                         {
                             var detail = new CK1_ITEM();
-                            //if (existingData != null)
-                            //{
-                            //    var existingCk1Item = GetCk1Item(existingData.CK1_ID)
-                            //}
+                            
                             
 
                             detail.FA_CODE = _xmlMapper.GetElementValue(xElementItem.Element("FA_CODE"));
                             detail.MATERIAL_ID = _xmlMapper.GetElementValue(xElementItem.Element("MATNR"));
                             detail.WERKS = _xmlMapper.GetElementValue(xElementItem.Element("WERKS"));
-                            detail.MENGE = Convert.ToDecimal(_xmlMapper.GetElementValue(xElementItem.Element("MENGE")));
                             detail.UOM = _xmlMapper.GetElementValue(xElementItem.Element("MEINS"));
+                            var existingBrand = getBrand(detail.MATERIAL_ID, detail.FA_CODE, detail.WERKS);
+                            if (existingBrand == null)
+                            {
+                                throw new Exception(String.Format("{0} - {1} in {2} not exist in EMS Brand registration master", detail.MATERIAL_ID, detail.FA_CODE,detail.WERKS));
+                            }
+
+                            var lembaran = Convert.ToDecimal(_xmlMapper.GetElementValue(xElementItem.Element("MENGE")));
+                            
+                            //////
+                            if (detail.UOM.ToUpper() == "PC")
+                            {
+                                detail.MENGE = lembaran;
+                            }
+                            else
+                            {
+                                var seriesValue = existingBrand.ZAIDM_EX_SERIES.SERIES_VALUE.HasValue
+                                ? existingBrand.ZAIDM_EX_SERIES.SERIES_VALUE.Value
+                                : 0;
+                                detail.MENGE = lembaran * seriesValue;
+                            }
+                            
+                            //detail.MENGE = lembaran;
+                            
+                            
                             item.CK1_ITEM.Add(detail);
                         }
                         
@@ -128,7 +155,21 @@ namespace Sampoerna.EMS.XMLReader
             return existingData;
         }
 
+        public ZAIDM_EX_NPPBKC getNppbkc(string nppbkcId)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_NPPBKC>()
+                .Get(x => x.NPPBKC_ID == nppbkcId).FirstOrDefault();
 
+            return existingData;
+        }
+
+        public ZAIDM_EX_BRAND getBrand(string stickerCode,string brand, string werks)
+        {
+            var existingBrand = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
+                .Get(x => x.FA_CODE == brand && x.WERKS == werks && x.STICKER_CODE == stickerCode,null,"ZAIDM_EX_SERIES").FirstOrDefault();
+
+            return existingBrand;
+        }
 
     }
 }

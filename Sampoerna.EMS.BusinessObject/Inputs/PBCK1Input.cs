@@ -41,6 +41,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
+
+        public string pbck1Number { get; set; }
     }
 
     public class Pbck1GetMonitoringUsageByParamInput
@@ -113,4 +115,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SupplierPlant { get; set; }
         public string GoodTypeId { get; set; }
     }
+
+    public class Pbck1GetMonitoringMutasiByParamInput
+    {
+        /// <summary>
+        /// optional if want to sorting from query
+        /// </summary>
+        public string SortOrderColumn { get; set; }
+
+        public string pbck1Number { get; set; }
+    }
+
 }

@@ -38,6 +38,8 @@ namespace Sampoerna.EMS.Contract
 
        List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input);
 
+       List<Ck5SummaryReportDto> GetSummaryReportsViewByParam(CK5GetSummaryReportByParamInput input);
+
        List<CK5Dto> GetCk5CompletedByCk5Type(Enums.CK5Type ck5Type);
 
        CK5ReportDto GetCk5ReportDataById(long id);
@@ -63,7 +65,7 @@ namespace Sampoerna.EMS.Contract
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1Item(string plantId,string plantNppbkcId, DateTime submissionDate, string destPlantNppbkcId, int? goodtypegroupid);
 
        List<int> GetAllYearsByGiDate();
-       List<CK5> GetAllCompletedPortToImporter();
+       
 
        Back1DataOutput GetBack1ByCk5Id(long ck5Id);
 
@@ -77,5 +79,9 @@ namespace Sampoerna.EMS.Contract
 
        GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ItemExternal(string plantId, string plantNppbkcId,
            DateTime submissionDate, string destPlantNppbkcId, int? goodtypegroupid);
+
+       List<CK5> GetAllCompletedPortToImporter(long currentCk5ref = 0);
+
+       CK5MaterialOutput ValidateMaterial(CK5MaterialInput input, Enums.ExGoodsType groupType);
    }
 }

@@ -134,6 +134,14 @@ namespace Sampoerna.EMS.Core
             Rejected = 20,
             [Description("Waiting for Government Approval")]
             WaitingGovApproval = 25,
+            [Description("Waiting for Sealing")]
+            WaitingForSealing = 26,
+            [Description("Waiting for UnSealing")]
+            WaitingForUnSealing = 27,
+            [Description("Good Issue")]
+            GoodIssue = 28,
+            [Description("Good Receive")]
+            GoodReceive = 29,
             [Description("Government Approved")]
             GovApproved = 30,
             [Description("Government Rejected")]
@@ -272,6 +280,14 @@ namespace Sampoerna.EMS.Core
             Approve = 15,
             [Description("Reject")]
             Reject = 20,
+            [Description("Sealed")]
+            Sealed= 21,
+            [Description("UnSealed")]
+            UnSealed = 22,
+            [Description("Good Issue")]
+            GoodIssue = 23,
+            [Description("Good Receive")]
+            GoodReceive = 24,
             [Description("Gov Approve")]
             GovApprove = 25,
             [Description("Gov Partial Approve")]
@@ -352,6 +368,9 @@ namespace Sampoerna.EMS.Core
 
             [Description("STO Cancelled")]
             STOCancelled = 320,
+
+            [Description("Back to Gov Approval")]
+            BackToGovApprovalAfterCompleted
         }
 
         /// <summary>
@@ -564,6 +583,32 @@ namespace Sampoerna.EMS.Core
             NonPlantExToPlant = 3,
             [Description("Market Return")]
             MarketReturn = 4
+        }
+
+        public enum Ck5ManualFreeText
+        {
+            [Description("Source Free Text")]
+            SourceFreeText = 1,
+            [Description("Dest Free Text")]
+            DestFreeText = 2
+        }
+
+        public enum DocumentStatusGovType2
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 3
+        }
+
+        public enum DocumentStatusGovType3
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 2,
+            [Description("Cancelled")]
+            Cancelled = 3
         }
     }
 }

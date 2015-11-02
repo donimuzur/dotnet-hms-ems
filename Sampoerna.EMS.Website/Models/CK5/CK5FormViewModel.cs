@@ -269,5 +269,38 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public bool AllowAttachmentCompleted { get; set; }
         public bool IsDomesticAlcohol { get; set; }
+
+        public bool IsFreeTextSource { get; set; }
+        public bool IsFreeTextDestination { get; set; }
+
+        //ORIGIN PLANT MANUAL
+        
+        public string SourcePlantNameManual { get; set; }
+        public string SourceNpwpManual { get; set; }
+        public string SourceNppbkcIdManual { get; set; }
+        public string SourceCompanyCodeManual { get; set; }
+        public string SourceCompanyNameManual { get; set; }
+        public string SourceAddressManual { get; set; }
+        public string SourceKppbcNameManual { get; set; }
+
+        //DESTINATION PLANT MANUAL
+
+        public string DestPlantNameManual { get; set; }
+        public string DestNpwpManual { get; set; }
+        public string DestNppbkcIdManual { get; set; }
+        public string DestCompanyCodeManual { get; set; }
+        public string DestCompanyNameManual { get; set; }
+        public string DestAddressManual { get; set; }
+        public string DestKppbcNameManual { get; set; }
+
+        public Enums.Ck5ManualFreeText? MANUAL_FREE_TEXT { get; set; }
+
+        public bool AllowSealing { get; set; }
+
+        public bool AllowUnSealing { get; set; }
+
+        public bool AllowGoodIssue { get; set; }
+
+        public bool AllowGoodReceive { get; set; }
     }
 }

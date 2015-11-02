@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public Enums.DocumentStatus Status { get; set; }
         public string StatusName { get; set; }
-        public Enums.DocumentStatusGov? GovStatus { get; set; }
+        public Enums.DocumentStatusGovType2? GovStatus { get; set; }
         public string GovStatusName { get; set; }
 
         public string CreatedBy { get; set; }

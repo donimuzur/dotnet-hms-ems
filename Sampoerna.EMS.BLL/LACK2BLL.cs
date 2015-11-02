@@ -393,10 +393,6 @@ namespace Sampoerna.EMS.BLL
                     GovRejectedDocument(input);
                     isNeedSendNotif = false;
                     break;
-                case Enums.ActionType.GovPartialApprove:
-                    GovPartialApproveDocument(input);
-                    //isNeedSendNotif = false;
-                    break;
             }
 
             //todo sent mail
@@ -563,7 +559,7 @@ namespace Sampoerna.EMS.BLL
 
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.FullApproved);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType2.Approved);
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
 
@@ -571,7 +567,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.STATUS = Enums.DocumentStatus.Completed;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.FullApproved;
+                dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
 
                 //dbData.APPROVED_BY_POA = input.UserId;
                 //dbData.APPROVED_DATE_POA = DateTime.Now;
@@ -584,41 +580,6 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(input);
 
-        }
-
-        private void GovPartialApproveDocument(Lack2WorkflowDocumentInput input)
-        {
-            if (input.DocumentId != null)
-            {
-                var dbData = _lack2Service.GetById(input.DocumentId.Value);
-
-                if (dbData == null)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-                if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-                //Add Changes
-                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
-                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
-                    input.AdditionalDocumentData.DecreeDate);
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-
-                dbData.LACK2_DOCUMENT = null;
-                dbData.STATUS = Enums.DocumentStatus.Completed;
-                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-
-                //dbData.APPROVED_BY = input.UserId;
-                //dbData.APPROVED_DATE = DateTime.Now;
-
-                input.DocumentNumber = dbData.LACK2_NUMBER;
-            }
-
-            AddWorkflowHistory(input);
         }
 
         private void GovRejectedDocument(Lack2WorkflowDocumentInput input)
@@ -635,12 +596,12 @@ namespace Sampoerna.EMS.BLL
 
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
-                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
+                WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType2.Rejected);
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
                 
                 dbData.STATUS = Enums.DocumentStatus.Rejected;
-                dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
+                dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Rejected;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
                 
                 //set to null
@@ -674,7 +635,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
         }
 
-        private void WorkflowStatusGovAddChanges(Lack2WorkflowDocumentInput input, Enums.DocumentStatusGov? oldStatus, Enums.DocumentStatusGov newStatus)
+        private void WorkflowStatusGovAddChanges(Lack2WorkflowDocumentInput input, Enums.DocumentStatusGovType2? oldStatus, Enums.DocumentStatusGovType2 newStatus)
         {
             //set changes log
             var changes = new CHANGES_HISTORY
@@ -731,7 +692,14 @@ namespace Sampoerna.EMS.BLL
 
             var mailProcess = ProsesMailNotificationBody(lack2Data, input);
 
-            _messageService.SendEmailToList(mailProcess.To, mailProcess.Subject, mailProcess.Body, true);
+            List<string> listTo = mailProcess.To.Distinct().ToList();
+
+            if (mailProcess.IsCCExist)
+                //Send email with CC
+                _messageService.SendEmailToListWithCC(listTo, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+            else
+                _messageService.SendEmailToList(listTo, mailProcess.Subject, mailProcess.Body, true);
+
         }
 
         private string GetManagerEmail(string poaId)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using AutoMapper;
 using AutoMapper.Internal;
 using Sampoerna.EMS.BusinessObject;
@@ -141,6 +142,27 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         }
     }
 
+    public class CK5ListIndexQtyPackagingResolver : ValueResolver<CK5Dto, string>
+    {
+        protected override string ResolveCore(CK5Dto value)
+        {
+            string resultValue = "";
+            string resultUOM = "Boxes";
+
+            if (value.GRAND_TOTAL_EX.HasValue)
+                resultValue = value.GRAND_TOTAL_EX.ToString();
+
+            
+            var firstOrDefault = value.Ck5MaterialDtos.FirstOrDefault();
+            if (firstOrDefault != null)
+                resultUOM = firstOrDefault.UOM;
+
+            
+
+            return resultValue + " " + resultUOM;
+        }
+    }
+
     public class CK5ListIndexQtyResolver : ValueResolver<CK5Dto, string>
     {
         protected override string ResolveCore(CK5Dto value)
@@ -149,10 +171,14 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             string resultUOM = "Boxes";
 
             if (value.GRAND_TOTAL_EX.HasValue)
-                resultValue = value.GRAND_TOTAL_EX.Value.ToString();
+                resultValue = value.GRAND_TOTAL_EX.ToString();
+
 
             if (!string.IsNullOrEmpty(value.PACKAGE_UOM_ID))
-                resultUOM = value.PackageUomName;
+            {
+                resultUOM = value.PACKAGE_UOM_ID;
+
+            }
 
             return resultValue + " " + resultUOM;
         }
@@ -227,6 +253,123 @@ namespace Sampoerna.EMS.AutoMapperExtensions
                 return value.APPROVED_BY_MANAGER;
 
             return "";
+        }
+    }
+
+    public class Ck5MaterialHjeSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            foreach (var ck5Material in dbCk5.CK5_MATERIAL)
+            {
+                string ck5Hje = ck5Material.HJE.HasValue ? ck5Material.HJE.Value.ToString("#,##0.#0") : "0";
+                resultValue += ck5Material.BRAND + "-" + ck5Hje + ";;";
+            }
+
+            if (resultValue.Length > 0)
+            {
+                resultValue = resultValue.Substring(0, resultValue.Length - 2);
+                resultValue = resultValue.Replace(";;", "\r\n");
+            }
+            return resultValue;
+        }
+    }
+
+    public class Ck5MaterialTariffSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            foreach (var ck5Material in dbCk5.CK5_MATERIAL)
+            {
+                string ck5Hje = ck5Material.TARIFF.HasValue ? ck5Material.TARIFF.Value.ToString("#,##0.#0") : "0";
+                resultValue += ck5Material.BRAND + "-" + ck5Hje + ";;";
+            }
+
+            if (resultValue.Length > 0)
+            {
+                resultValue = resultValue.Substring(0, resultValue.Length - 2);
+                resultValue = resultValue.Replace(";;", "\r\n");
+            }
+            return resultValue;
+        }
+    }
+
+    public class Ck5MaterialExciseValueSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            foreach (var ck5Material in dbCk5.CK5_MATERIAL)
+            {
+                string ck5Hje = ck5Material.EXCISE_VALUE.HasValue ? ck5Material.EXCISE_VALUE.Value.ToString("#,##0.#0") : "0";
+                resultValue += ck5Material.BRAND + "-" + ck5Hje + ";;";
+            }
+
+            if (resultValue.Length > 0)
+            {
+                resultValue = resultValue.Substring(0, resultValue.Length - 2);
+                resultValue = resultValue.Replace(";;", "\r\n");
+            }
+            return resultValue;
+        }
+    }
+
+    public class Ck5MaterialConvertionSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            var listGroup = dbCk5.CK5_MATERIAL.GroupBy(a => a.CONVERTED_UOM)
+              .Select(x => new CK5ReportMaterialGroupUomDto
+              {
+                  Uom = x.Key,
+                  SumUom = x.Sum(c => c.QTY.HasValue ? c.QTY.Value : 0)
+              }).ToList();
+
+
+            resultValue = string.Join(Environment.NewLine,
+                listGroup.Select(c => c.SumUom.ToString("#,##0.#0") + " " + c.Uom));
+
+
+            //foreach (var ck5Material in dbCk5.CK5_MATERIAL.GroupBy(a=> a.BRAND))
+            //{
+            //    string ck5Convertion = ck5Material.CONVERTION.HasValue ? ck5Material.CONVERTION.ToString() : "0";
+            //    resultValue += ck5Convertion + " " + ck5Material.CONVERTED_UOM + ";;";
+            //}
+
+            //if (resultValue.Length > 0)
+            //{
+            //    resultValue = resultValue.Substring(0, resultValue.Length - 2);
+            //    resultValue = resultValue.Replace(";;", "\r\n");
+            //}
+            return resultValue;
+        }
+    }
+
+    public class Ck5MaterialNumberBoxUomSummaryReportsResolver : ValueResolver<CK5, string>
+    {
+        protected override string ResolveCore(CK5 dbCk5)
+        {
+            string resultValue = "";
+
+            var listGroup = dbCk5.CK5_MATERIAL.GroupBy(a => a.UOM)
+              .Select(x => new CK5ReportMaterialGroupUomDto
+              {
+                  Uom = x.Key,
+                  SumUom = x.Sum(c => c.QTY.HasValue ? c.QTY.Value : 0)
+              }).ToList();
+
+
+            resultValue = string.Join(Environment.NewLine,
+                listGroup.Select(c => c.SumUom.ToString("#,##0.#0") + " " + c.Uom));
+       
+            return resultValue;
         }
     }
 }

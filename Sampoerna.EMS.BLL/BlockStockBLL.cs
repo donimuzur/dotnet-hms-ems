@@ -42,5 +42,13 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<BLOCK_STOCKDto> GetBlockStockByPlantAndQtyMoreThanZero(string plantId)
+        {
+            var dtData = _repository.Get(c => c.PLANT == plantId && c.BLOCKED > 0);
+
+            return Mapper.Map<List<BLOCK_STOCKDto>>(dtData);
+
+        }
+
     }
 }
