@@ -15,7 +15,7 @@
         <div class="col-sm-12">
             <div class="white-wrapper">
                 <div class="form-excise" role="form">
-                    <div class="row">
+                    <div class="">
                         @using (Ajax.BeginForm("SearchSummaryReports", "Lack1",
                             new AjaxOptions
                             {
@@ -30,7 +30,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Company Code</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.CompanyCode, Model.SearchView.CompanyCodeList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>
@@ -38,7 +38,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC ID</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>
@@ -48,7 +48,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Receiving Plant Id</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.ReceivingPlantId, Model.SearchView.ReceivingPlantIdList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>
@@ -57,7 +57,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Excisable Goods Type</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.ExcisableGoodsType, Model.SearchView.ExcisableGoodsTypeList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>
@@ -67,7 +67,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Supplier</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.SupplierPlantId, Model.SearchView.SupplierPlantIdList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>
@@ -75,7 +75,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">LACK-1 Period</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     @Html.DropDownListFor(model => model.SearchView.PeriodMonth, Model.SearchView.PeriodMonthList, "", new { @class = "form-control" })
@@ -92,7 +92,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Document Status</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.EnumDropDownListFor(model => model.SearchView.DocumentStatus, Model.SearchView.DocumentStatusList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>
@@ -100,7 +100,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Created Date</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             <div class="input-group date">
                                                 @Html.TextBoxFor(model => model.SearchView.CreatedDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
@@ -115,7 +115,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Created By</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.CreatedBy, Model.SearchView.CreatedByList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>
@@ -123,7 +123,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Approved Date</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             <div class="input-group date">
                                                 @Html.TextBoxFor(model => model.SearchView.ApprovedDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
@@ -138,7 +138,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Approved By</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.ApprovedBy, Model.SearchView.ApprovedByList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>
@@ -146,7 +146,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Creator</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>
@@ -156,7 +156,7 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Approver</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.Approver, Model.SearchView.ApproverList, "All", new { @class = "form-control selectreset" })
                                         </div>
                                     </div>

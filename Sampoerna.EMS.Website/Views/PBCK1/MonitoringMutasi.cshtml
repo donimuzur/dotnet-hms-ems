@@ -45,7 +45,7 @@
                                                     <div class="col-md-7">
                                                         <label class="col-md-3">PBCK-1 Number</label>
                                                         <div class="col-md-6">
-                                                            @Html.DropDownListFor(model => model.pbck1Number, Model.pbck1NumberList, "All", new { @class = "form-control selectreset" })
+                                                            @Html.DropDownListFor(model => model.pbck1Number, Model.pbck1NumberList, "All", new { @class = "form-control selectreset selectpicker" })
                                                         </div>
                                                     </div>
 
@@ -153,6 +153,10 @@
     <script type="text/javascript" language="javascript">
         $(document).ready(function () {
             setupDataTables();
+            $('#MenuPbck1OpenDocument').removeClass('open');
+
+            $('#MenuPbck1Report').addClass('open');
+
             $('#MenuPBCK1MonitoringMutasi').addClass('active');
 
             $('#selecctall').prop('checked', false);

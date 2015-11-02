@@ -56,7 +56,7 @@
                         @*<td class="action">
                                 <a href="@Url.Action("CK5Details", "PBCK1", new { id = item.Pbck1Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                             </td>*@
-                        <td>@row</td>
+                        <td align="center">@row</td>
                         <td>@Html.DisplayFor(model => item.NppbkcCompanyName)</td>
                         <td>@Html.DisplayFor(model => item.NppbkcId)</td>
                         <td style="padding: 20px">
@@ -93,7 +93,7 @@
                         <td>
                             @item.Pbck1Type
                         </td>
-                        <td>
+                        <td align="center">
                             @item.SupplierPortName
                         </td>
                         <td>
@@ -174,7 +174,7 @@
                         <td align="right" style="padding: 20px">
                             @String.Format("{0:n}", @item.RequestQty)
                         </td>
-                        <td>
+                        <td align="center">
                             @item.RequestQtyUomName
                         </td>
                         <td>
@@ -193,7 +193,7 @@
                                 @item.DecreeDate.Value.ToString("dd-MMMM-yyyy")
                             }
                         </td>
-                        <td>
+                        <td align="center">
                             @if (item.IsNppbkcImport)
                             {
                                 <span>Yes</span>
@@ -203,7 +203,7 @@
                                 <span>No</span>
                             }
                         </td>
-                        <td>
+                        <td align="center">
                             @if (item.IsExternalSupplier)
                             {
                                 <span>Yes</span>
@@ -261,12 +261,12 @@
                             }
                             
                         </td>
-                        <td>
+                        <td class="number">
                             @if (item.CK5List.Any())
                             {
                                 foreach (var ck5 in item.CK5List)
                                 {
-                                    @ck5.Qty <br />
+                                     @String.Format("{0:n}", @ck5.Qty) <br />
                                 }
                             }
                             else

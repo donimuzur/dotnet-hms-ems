@@ -67,7 +67,7 @@
                     switch (Model.MainMenu)
                     {
                         case Enums.MenuList.PBCK1:
-                            <div class="collapse-menu active open">
+                            <div id="MenuPbck1OpenDocument" class="collapse-menu active open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
                                     <span>Document List</span>
@@ -79,7 +79,7 @@
 
                                 </ul>
                             </div>
-                            <div class="collapse-menu">
+                            <div id="MenuPbck1Report" class="collapse-menu">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-signal"></i>
                                     <span>Report</span>
@@ -258,11 +258,11 @@
                                 </li>
                                 @*<li>
 
-                                    <a id="MenuGlobalSetting" href="@Url.Action("Index", "GlobalSettings")">
-                                        <i class="fa fa-angle-right"></i>
-                                        Global Settings
-                                    </a>
-                                </li>*@
+                                        <a id="MenuGlobalSetting" href="@Url.Action("Index", "GlobalSettings")">
+                                            <i class="fa fa-angle-right"></i>
+                                            Global Settings
+                                        </a>
+                                    </li>*@
                             </ul>
                         </div>
 
@@ -520,4 +520,3 @@
 
 </body>
 </html>
-
