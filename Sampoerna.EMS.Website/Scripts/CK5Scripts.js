@@ -99,7 +99,7 @@ function OnReadyFunction(ck5Type) {
         $('#collapse5').addClass('in');
 
       
-        if (ck5Type == 'Export' || (ck5Type == 'Manual' && $('#IsReducePbck1Ck5Trial').is(':checked')) || ck5Type == 'MarketReturn') {
+        if (ck5Type == 'Export' || (ck5Type == 'Manual' && $('#IsReducePbck1Ck5Trial').is(':checked') == false) || ck5Type == 'MarketReturn') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
@@ -107,7 +107,8 @@ function OnReadyFunction(ck5Type) {
             $('#ck5TableItem tbody').append(data);
             return;
         }
-
+      
+        
         //if pbck is not exist
         //====fixing bug no. 111 CK5====
         if (!isExistPbck1) {

@@ -665,8 +665,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         else
                         {
                             if (model.Ck5Type != Enums.CK5Type.Export &&
-                                //model.Ck5Type != Enums.CK5Type.PortToImporter &&
-                                model.Ck5Type != Enums.CK5Type.Manual)
+                               ( model.Ck5Type != Enums.CK5Type.Manual || model.IsReducePbck1Ck5Trial))
                             {
                                 //double check
                                 GetQuotaAndRemainOutput output;
@@ -872,9 +871,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
-                        //model.Ck5Type != Enums.CK5Type.DomesticAlcohol &&
-                        model.Ck5Type != Enums.CK5Type.Manual)
+                        (model.Ck5Type != Enums.CK5Type.Manual || model.IsReducePbck1Ck5Trial))
                     {
 
                         var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
@@ -968,8 +965,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             else
                             {
                                 if (model.Ck5Type != Enums.CK5Type.Export &&
-                                    //model.Ck5Type != Enums.CK5Type.PortToImporter && 
-                                    model.Ck5Type != Enums.CK5Type.Manual)
+                                    (model.Ck5Type != Enums.CK5Type.Manual || model.IsReducePbck1Ck5Trial))
                                 {
 
                                     // var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(model.Ck5Id);
@@ -1141,8 +1137,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
-                        model.Ck5Type != Enums.CK5Type.Manual)
+                       (model.Ck5Type != Enums.CK5Type.Manual || model.IsReducePbck1Ck5Trial))
                     {
                         var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
                         model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
@@ -1161,7 +1156,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.AllowGiCreated = _workflowBll.AllowStoGiCompleted(input);
                     model.AllowGrCreated = _workflowBll.AllowStoGrCreated(input);
                 }
-                else if (model.Ck5Type == Enums.CK5Type.Manual && model.Ck5ManualType == Enums.Ck5ManualType.Trial)
+                else if (model.Ck5Type == Enums.CK5Type.Manual 
+                    && model.Ck5ManualType == Enums.Ck5ManualType.Trial
+                    && model.IsReducePbck1Ck5Trial)
                 {
                     input.Ck5ManualType = Enums.Ck5ManualType.Trial;
                     model.AllowGoodIssue = _workflowBll.AllowGoodIssue(input);
@@ -1277,8 +1274,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
-                        model.Ck5Type != Enums.CK5Type.Manual)
+                        (model.Ck5Type != Enums.CK5Type.Manual && model.IsReducePbck1Ck5Trial))
                     {
 
                         //force to show 0 instead error message
@@ -2571,17 +2567,6 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.DetailsList = SearchDataSummaryReports(model.SearchView);
             return PartialView("_CK5ListSummaryReport", model);
-
-            //if (model.Ck5Type == Enums.CK5Type.Domestic)
-            //    return PartialView("_CK5ListSummaryReport", model);
-            //if (model.Ck5Type == Enums.CK5Type.Intercompany || model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
-            //    return PartialView("_CK5ListSummaryReportIntercompany", model);
-            //if (model.Ck5Type == Enums.CK5Type.PortToImporter || model.Ck5Type == Enums.CK5Type.ImporterToPlant)
-            //    return PartialView("_CK5ListSummaryReportImport", model);
-            //if (model.Ck5Type == Enums.CK5Type.Manual)
-            //    return PartialView("_CK5ListSummaryManual", model);
-
-            //return PartialView("_CK5ListSummaryReportExport", model);
         }
 
         public void ExportXlsSummaryReports(CK5SummaryReportsViewModel model)

@@ -295,7 +295,9 @@
         });
 
         function OnChangeDestinationPlant() {
-            $("#DestPlantId").change(function() {
+            $("#DestPlantId").change(function () {
+                $('#IsReducePbck1Ck5Trial').prop('checked', false);
+                
                 if ($("#DestPlantId").length) {
                     //alert($('#SubmissionDate').val());
 
@@ -351,7 +353,8 @@
         }
 
 
-        $('#SubmissionDate').change(function() {
+        $('#SubmissionDate').change(function () {
+            $('#IsReducePbck1Ck5Trial').prop('checked', false);
             var goodTypeGroupId = $("#GoodType").val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
             var destPlant = $("#DestPlantId").find("option:selected").val();
@@ -375,7 +378,8 @@
             }
         });
 
-        $("#GoodType").change(function() {
+        $("#GoodType").change(function () {
+            $('#IsReducePbck1Ck5Trial').prop('checked', false);
             var goodTypeGroupId = $("#GoodType").val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
             var destPlant = $("#DestPlantId").find("option:selected").val();
@@ -401,7 +405,8 @@
         });
 
         function OnChangeSourcePlant() {
-            $("#SourcePlantId").change(function() {
+            $("#SourcePlantId").change(function () {
+                $('#IsReducePbck1Ck5Trial').prop('checked', false);
                 if ($("#SourcePlantId").length) {
                     var sourcePlant = $(this).find("option:selected").val();
 

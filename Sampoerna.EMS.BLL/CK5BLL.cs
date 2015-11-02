@@ -340,10 +340,15 @@ namespace Sampoerna.EMS.BLL
 
         private void ValidateCk5(CK5SaveInput input)
         {
-            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
-                //input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
+            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export)
                 return;
+            
+            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
+            {
+                if (!input.Ck5Dto.REDUCE_TRIAL.HasValue || !input.Ck5Dto.REDUCE_TRIAL.Value)
+                    return;
+              
+            }
             //if domestic not check quota
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Domestic)
             {
@@ -1712,10 +1717,11 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
             {
-                if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial)
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
-                else
+                if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial
+                     && dbData.REDUCE_TRIAL.HasValue && dbData.REDUCE_TRIAL.Value)
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GoodIssue);
+                else
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
             }
             
             //set change history
@@ -3489,9 +3495,14 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var ck5 in lisCk5)
             {
-                if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.Manual)
+                if (ck5.CK5_TYPE == Enums.CK5Type.Manual)
+                {
+                    if (!ck5.REDUCE_TRIAL.HasValue || !ck5.REDUCE_TRIAL.Value)
+                        continue;
+                }
+                else if (ck5.CK5_TYPE == Enums.CK5Type.Export)
                     continue;
-                if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
+                else if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
                     continue;
 
                 if (ck5.GRAND_TOTAL_EX.HasValue)
