@@ -2818,14 +2818,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     DataField = "QuotaRemaining",
                     HeaderText = "PBCK-1 Quota remaining"
                 });
-            }
-            if (model.QuotaRemaining)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "QuotaRemaining",
-                    HeaderText = "PBCK-1 Quota remaining"
-                });
+            
+           
             } if (model.Received)
             {
                 grid.Columns.Add(new BoundField()
