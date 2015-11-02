@@ -1136,6 +1136,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.AllowGoodIssue = _workflowBll.AllowGoodIssue(input);
                     model.AllowGoodReceive = _workflowBll.AllowGoodReceive(input);
                 }
+                else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                {
+                    model.AllowGoodIssue = _workflowBll.AllowDomesticAlcoholGoodIssue(input);
+                    model.AllowGoodReceive = _workflowBll.AllowDomesticAlcoholGoodReceive(input);
+                    model.AllowPurchaseOrder = _workflowBll.AllowDomesticAlcoholPurchaseOrder(input);
+                    
+                }
                 else
                 {
                     model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
@@ -1688,6 +1695,51 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public ActionResult POCreated(CK5FormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
+                // return View("Details", model);
+                return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+            }
+
+            try
+            {
+                //CK5Workflow(model.Ck5Id, Enums.ActionType.Submit, string.Empty);
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+
+                switch (model.DocumentStatus)
+                {
+                    case Enums.DocumentStatus.PurchaseOrder:
+                        input.ActionType = Enums.ActionType.POCreated;
+                        break;
+                    
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
+
+                input.DocumentNumber = model.DnNumber;
+
+
+
+                _ck5Bll.CK5Workflow(input);
+
+                AddMessageInfo("Success update Purchase Order Number", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
         public ActionResult CK5GRCreated(CK5FormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -1989,7 +2041,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
 
             //if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn) return true;
-            if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn)
+            if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
             {
                 _ck5Bll.CK5Workflow(input);
                 return true;

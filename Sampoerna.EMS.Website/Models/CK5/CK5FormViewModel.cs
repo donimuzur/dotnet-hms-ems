@@ -302,5 +302,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowGoodIssue { get; set; }
 
         public bool AllowGoodReceive { get; set; }
+
+        public bool AllowPurchaseOrder { get; set; }
     }
 }
