@@ -416,6 +416,7 @@
           <Property Name="CREATED_USER" Type="nvarchar" MaxLength="50" />
           <Property Name="MAT_DOC" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="BATCH" Type="nvarchar" MaxLength="35" />
+          <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="LACK1">
           <Key>
@@ -1093,6 +1094,7 @@
           <Property Name="CREATED_DATE" Type="datetime" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_ACTIVE" Type="int" />
+          <Property Name="ACCT" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -5275,6 +5277,7 @@
           <NavigationProperty Name="PBCK32" Relationship="EMSModel.FK_PBCK3_REJECT" FromRole="USER" ToRole="PBCK3" />
           <NavigationProperty Name="PBCK33" Relationship="EMSModel.FK_PBCK3_USER" FromRole="USER" ToRole="PBCK3" />
           <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER" ToRole="USER_PLANT_MAP" />
+          <Property Name="ACCT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -6751,6 +6754,7 @@
           <Property Name="MAT_DOC" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LACK1_TRACKING" Relationship="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" FromRole="INVENTORY_MOVEMENT" ToRole="LACK1_TRACKING" />
+          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CK4C_ITEM">
           <Key>
@@ -8392,6 +8396,7 @@
           <EntitySetMapping Name="USER">
             <EntityTypeMapping TypeName="EMSModel.USER">
               <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="ACCT" ColumnName="ACCT" />
                 <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
@@ -8837,6 +8842,7 @@
           <EntitySetMapping Name="INVENTORY_MOVEMENT">
             <EntityTypeMapping TypeName="EMSModel.INVENTORY_MOVEMENT">
               <MappingFragment StoreEntitySet="INVENTORY_MOVEMENT">
+                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
                 <ScalarProperty Name="BATCH" ColumnName="BATCH" />
                 <ScalarProperty Name="MAT_DOC" ColumnName="MAT_DOC" />
                 <ScalarProperty Name="CREATED_USER" ColumnName="CREATED_USER" />
