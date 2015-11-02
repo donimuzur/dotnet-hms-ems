@@ -84,6 +84,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     public class Lack1GeneratedProductionDataDto
     {
+        public string FaCode { get; set; }
+        public string Ordr { get; set; }
         public string ProdCode { get; set; }
         public string ProductType { get; set; }
         public string ProductAlias { get; set; }

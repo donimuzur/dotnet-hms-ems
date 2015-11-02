@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.BLL
         private ILack1TrackingService _lack1TrackingService;
         private IZaidmExProdTypeService _prodTypeService;
         private IZaidmExNppbkcService _nppbkcService;
+        private IZaapShiftRptService _zaapShiftRptService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -85,6 +86,7 @@ namespace Sampoerna.EMS.BLL
             _lack1TrackingService = new Lack1TrackingService(_uow, _logger);
             _prodTypeService = new ZaidmExProdTypeService(_uow, _logger);
             _nppbkcService = new ZaidmExNppbkcService(_uow, _logger);
+            _zaapShiftRptService = new ZaapShiftRptService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -1436,21 +1438,11 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            var productionList = GetProductionDetailBySelectionCriteria(input);
+            //Set Production List
+            var prodDataOut = SetProductionList(rc, input, invMovementOutput);
+            if (!prodDataOut.Success) return prodDataOut;
 
-            if (productionList.Count == 0)
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.MissingProductionList.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
-                    Data = null
-                };
-
-            rc.ProductionList = GetGroupedProductionlist(productionList, (totalUsageIncludeCk5 + totalUsageExcludeCk5), totalUsageIncludeCk5);
-
-            //set summary
-            rc.SummaryProductionList = GetSummaryGroupedProductionList(rc.ProductionList);
+            rc = prodDataOut.Data;
 
             rc.PeriodMonthId = input.PeriodMonth;
 
@@ -1481,35 +1473,154 @@ namespace Sampoerna.EMS.BLL
             return "";
         }
 
-        /// <summary>
-        /// Set Production Detail from CK4C Item table 
-        /// for Generate LACK-1 data by Selection Criteria
-        /// </summary>
-        private List<Lack1GeneratedProductionDataDto> GetProductionDetailBySelectionCriteria(
-            Lack1GenerateDataParamInput input)
+        private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
         {
+            var totalUsageInCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+            var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+            var totalUsage = totalUsageInCk5 + totalUsageExcludeCk5;
 
+            //get Ck4CItem
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
             ck4CItemInput.IsHigherFromApproved = false;
             ck4CItemInput.IsCompletedOnly = true;
             var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
 
+            if (ck4CItemData.Count == 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingProductionList.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
+                    Data = null
+                };
+            }
+
+            //get zaap_shift_rpt
+            var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(new ZaapShiftRptGetForLack1ByParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+                Werks = input.SupplierPlantId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).ToList()
+            });
+
+            if (zaapShiftRpt.Count == 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingProductionList.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
+                    Data = null
+                };
+            }
+
             var prodTypeData = _prodTypeService.GetAll();
+            
+            //join data ck4cItem and ZaapShiftRpt
+            var joinedData = (from zaap in zaapShiftRpt
+                              join ck4CItem in ck4CItemData on new { zaap.WERKS, zaap.FA_CODE } equals
+                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE }
+                              join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
+                              select new
+                              {
+                                  zaap.FA_CODE,
+                                  zaap.WERKS,
+                                  zaap.COMPANY_CODE,
+                                  zaap.UOM,
+                                  zaap.PRODUCTION_DATE,
+                                  zaap.BATCH,
+                                  zaap.QTY,
+                                  zaap.ORDR,
+                                  ck4CItem.PROD_CODE,
+                                  prod.PRODUCT_ALIAS,
+                                  prod.PRODUCT_TYPE,
+                                  ck4CItem.UOM.UOM_DESC
+                              }).ToList();
 
-            //joined data
-            var dataCk4CItemJoined = (from ck4CItem in ck4CItemData
-                                      join prod in prodTypeData on ck4CItem.PROD_CODE equals prod.PROD_CODE
-                                      select new Lack1GeneratedProductionDataDto()
-                                      {
-                                          ProdCode = prod.PROD_CODE,
-                                          ProductType = prod.PRODUCT_TYPE,
-                                          ProductAlias = prod.PRODUCT_ALIAS,
-                                          Amount = ck4CItem.PROD_QTY,
-                                          UomId = ck4CItem.UOM_PROD_QTY,
-                                          UomDesc = ck4CItem.UOM != null ? ck4CItem.UOM.UOM_DESC : string.Empty
-                                      });
+            if (joinedData.Count == 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingProductionList.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
+                    Data = null
+                };
+            }
 
-            return dataCk4CItemJoined.ToList();
+            var totalProduction = joinedData.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
+            var productionList = new List<Lack1GeneratedProductionDataDto>();
+
+            //grouping
+            foreach (var item in joinedData)
+            {
+                var itemToInsert = new Lack1GeneratedProductionDataDto()
+                {
+                    FaCode = item.FA_CODE,
+                    Ordr = item.ORDR,
+                    ProdCode = item.PROD_CODE,
+                    ProductType = item.PRODUCT_TYPE,
+                    ProductAlias = item.PRODUCT_ALIAS,
+                    Amount = item.QTY.HasValue ? item.QTY.Value : 0,
+                    UomId = item.UOM,
+                    UomDesc = item.UOM_DESC
+                };
+
+                var rec = invMovementOutput.IncludeInCk5List.FirstOrDefault(c => c.ORDR == item.ORDR);
+                if (rec != null)
+                {
+                    //calculate proporsional
+                    itemToInsert.Amount =
+                        Math.Round(
+                            ((totalUsageInCk5/totalUsage)*(itemToInsert.Amount/totalProduction)*itemToInsert.Amount), 3);
+                }
+                else
+                {
+                    //100%
+                    itemToInsert.Amount =
+                        Math.Round(
+                            ((totalUsageInCk5 / totalUsage) * itemToInsert.Amount), 3);
+                }
+                productionList.Add(itemToInsert);
+            }
+
+            rc.ProductionList = productionList;
+
+            //calculate summary by UOM ID
+            rc.SummaryProductionList = GetSummaryGroupedProductionList(productionList);
+
+            return new Lack1GeneratedOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty,
+                Data = rc
+            };
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private List<Lack1GeneratedSummaryProductionDataDto> GetSummaryGroupedProductionList(List<Lack1GeneratedProductionDataDto> list)
+        {
+            if (list.Count <= 0) return new List<Lack1GeneratedSummaryProductionDataDto>();
+            var groupedData = list.GroupBy(p => new
+            {
+                p.UomId,
+                p.UomDesc
+            }).Select(g => new Lack1GeneratedSummaryProductionDataDto()
+            {
+                UomId = g.Key.UomId,
+                UomDesc = g.Key.UomDesc,
+                Amount = g.Sum(p => p.Amount)
+            });
+
+            return groupedData.ToList();
         }
 
         /// <summary>
@@ -1609,73 +1720,6 @@ namespace Sampoerna.EMS.BLL
                 rc.Pbck1List = new List<Lack1GeneratedPbck1DataDto>();
             }
             return rc;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="totalUsage"></param>
-        /// <param name="totalUsageInCk5"></param>
-        /// <returns></returns>
-        private List<Lack1GeneratedProductionDataDto> GetGroupedProductionlist(List<Lack1GeneratedProductionDataDto> list, decimal totalUsage, decimal totalUsageInCk5)
-        {
-            if (list.Count <= 0) return new List<Lack1GeneratedProductionDataDto>();
-
-            var groupedData = list.GroupBy(p => new
-            {
-                p.ProdCode,
-                p.ProductType,
-                p.ProductAlias,
-                p.UomId,
-                p.UomDesc
-            }).Select(g => new Lack1GeneratedProductionDataDto()
-            {
-                ProdCode = g.Key.ProdCode,
-                ProductType = g.Key.ProductType,
-                ProductAlias = g.Key.ProductAlias,
-                UomId = g.Key.UomId,
-                UomDesc = g.Key.UomDesc,
-                Amount = g.Sum(p => p.Amount)
-            });
-
-            //proporsional process
-            var lack1GeneratedProductionDataDtos = groupedData as Lack1GeneratedProductionDataDto[] ?? groupedData.ToArray();
-            var dToReturn = lack1GeneratedProductionDataDtos.Select(g => new Lack1GeneratedProductionDataDto()
-            {
-                ProdCode = g.ProdCode,
-                ProductType = g.ProductType,
-                ProductAlias = g.ProductAlias,
-                UomId = g.UomId,
-                UomDesc = g.UomDesc,
-                //Amount = (g.Amount / totalAmount) * ((totalUsageInCk5 / totalUsage) * totalUsage)
-                //Amount = (g.Amount) //just for testing
-                Amount = Math.Round(((totalUsageInCk5 / totalUsage) * g.Amount), 2)
-            });
-
-            return dToReturn.ToList();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        private List<Lack1GeneratedSummaryProductionDataDto> GetSummaryGroupedProductionList(List<Lack1GeneratedProductionDataDto> list)
-        {
-            if (list.Count <= 0) return new List<Lack1GeneratedSummaryProductionDataDto>();
-            var groupedData = list.GroupBy(p => new
-            {
-                p.UomId,
-                p.UomDesc
-            }).Select(g => new Lack1GeneratedSummaryProductionDataDto()
-            {
-                UomId = g.Key.UomId,
-                UomDesc = g.Key.UomDesc,
-                Amount = g.Sum(p => p.Amount)
-            });
-
-            return groupedData.ToList();
         }
 
         #endregion
