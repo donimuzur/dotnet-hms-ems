@@ -201,7 +201,10 @@
     <script type="text/javascript" language="javascript">
         $(document).ready(function () {
             setupDataTables();
-            
+            $('#MenuPbck1OpenDocument').removeClass('open');
+
+            $('#MenuPbck1Report').addClass('open');
+
             $('#selecctall').prop('checked', false);
             $('.checkexport').each(function () {
                 this.checked = true;

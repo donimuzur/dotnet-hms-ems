@@ -100,6 +100,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProductType))
                 .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
                 .ForMember(dest => dest.UOM_ID, opt => opt.MapFrom(src => src.UomId))
+                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+                .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr))
                 ;
 
             Mapper.CreateMap<Lack1GeneratedPbck1DataDto, LACK1_PBCK1_MAPPING>().IgnoreAllNonExisting()

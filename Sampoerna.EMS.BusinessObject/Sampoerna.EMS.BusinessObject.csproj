@@ -258,6 +258,7 @@
     <Compile Include="Inputs\WasteUploadItemsInput.cs" />
     <Compile Include="Inputs\WorkflowHistoryInput.cs" />
     <Compile Include="Inputs\WorkflowInput.cs" />
+    <Compile Include="Inputs\ZaapShiftRptInputs.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
     <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
     <Compile Include="INVENTORY_MOVEMENT.cs">
