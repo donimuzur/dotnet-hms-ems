@@ -224,7 +224,10 @@ namespace Sampoerna.EMS.Core
             TFPartial = 315,
 
             [Description("TF Posting")]
-            TFPosting = 320
+            TFPosting = 320,
+
+            [Description("Waiting for Purchase Order")]
+            PurchaseOrder = 321
         }
 
 
@@ -281,7 +284,7 @@ namespace Sampoerna.EMS.Core
             [Description("Reject")]
             Reject = 20,
             [Description("Sealed")]
-            Sealed= 21,
+            Sealed = 21,
             [Description("UnSealed")]
             UnSealed = 22,
             [Description("Good Issue")]
@@ -368,6 +371,12 @@ namespace Sampoerna.EMS.Core
 
             [Description("STO Cancelled")]
             STOCancelled = 320,
+
+            [Description("Back to Gov Approval")]
+            BackToGovApprovalAfterCompleted,
+
+            [Description("Purchase Order Created")]
+            POCreated = 325
         }
 
         /// <summary>

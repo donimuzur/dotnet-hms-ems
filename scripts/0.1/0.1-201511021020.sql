@@ -1,0 +1,2 @@
+AlTER TABLE INVENTORY_MOVEMENT add 
+ORDR nvarchar(10) null

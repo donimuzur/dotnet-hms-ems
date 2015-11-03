@@ -724,10 +724,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
 
-            if (model.Status == Enums.DocumentStatus.WaitingGovApproval)
-            {
-                model.ControllerAction = "GovApproveDocument";
-            }
+            model.ControllerAction = model.Status == Enums.DocumentStatus.WaitingGovApproval || model.Status == Enums.DocumentStatus.Completed ? "GovApproveDocument" : "Edit";
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
@@ -738,7 +735,8 @@ namespace Sampoerna.EMS.Website.Controllers
         private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
         {
             bool isAllow = CurrentUser.USER_ID == userId;
-            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected || status == Enums.DocumentStatus.WaitingGovApproval))
+            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected 
+                || status == Enums.DocumentStatus.WaitingGovApproval || status == Enums.DocumentStatus.Completed))
             {
                 isAllow = false;
             }
@@ -1104,8 +1102,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Lack1EditViewModel model)
         {
-
-            if (model.DecreeFiles == null)
+            
+            if (model.GovApprovalActionType != Enums.ActionType.BackToGovApprovalAfterCompleted && model.DecreeFiles == null)
             {
                 AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
                 return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
@@ -1138,6 +1136,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         else
                         {
+                            if (model.GovApprovalActionType == Enums.ActionType.BackToGovApprovalAfterCompleted)
+                                continue;
                             AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
                             return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
                         }
@@ -1157,8 +1157,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(err, Enums.MessageInfoType.Error);
                 return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
             }
-
-            AddMessageInfo("Document " + EnumHelper.GetDescription(model.GovStatus), Enums.MessageInfoType.Success);
+            if (model.GovApprovalActionType == Enums.ActionType.BackToGovApprovalAfterCompleted)
+            {
+                AddMessageInfo("Document Back to Waiting for Government Approval", Enums.MessageInfoType.Success);
+            }
+            else
+            {
+                AddMessageInfo("Document " + EnumHelper.GetDescription(model.GovStatus), Enums.MessageInfoType.Success);
+            }
+            
             return RedirectToAction(model.Lack1Level == Enums.Lack1Level.Plant ? "ListByPlant" : "Index");
         }
 

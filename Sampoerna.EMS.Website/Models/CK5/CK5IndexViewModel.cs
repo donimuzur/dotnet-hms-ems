@@ -56,5 +56,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Status { get; set; }
 
         public Enums.CK5Type Ck5Type { get; set; }
+
+        public decimal GRAND_TOTAL_EX { get; set; }
+
+        public string PACKAGE_UOM_ID { get; set; }
     }
 }
