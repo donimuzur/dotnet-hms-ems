@@ -1245,6 +1245,7 @@
     <Content Include="Views\CK5\_CK5OriginalPlantDestination.cshtml" />
     <Content Include="Views\CK5\_CK5GoodIssue.cshtml" />
     <Content Include="Views\CK5\_CK5GoodReceive.cshtml" />
+    <Content Include="Views\CK5\CreateMarketReturn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

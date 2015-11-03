@@ -13,5 +13,6 @@ namespace Sampoerna.EMS.Contract.Services
 
         ZAIDM_EX_GOODTYP GetGoodTypeByProdCodeInBrandRegistration(string prodCode);
 
+        ZAIDM_EX_BRAND GetByPlantIdAndStickerCode(string plantId, string stickerCode);
     }
 }

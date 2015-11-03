@@ -490,7 +490,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5MRETURN;
             model.CurrentMenu = PageInfo;
 
-            return View("Create", model);
+            return View("CreateMarketReturn", model);
         }
 
         [HttpPost]
@@ -787,6 +787,53 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return PartialView("_CK5UploadList", model.UploadItemModels);
         }
+
+        [HttpPost]
+        public PartialViewResult UploadFileCk5MarketReturn(HttpPostedFileBase itemExcelFile, string plantId)
+        {
+            var data = (new ExcelReader()).ReadExcel(itemExcelFile);
+            var model = new CK5FormViewModel();
+            model.SourcePlantId = plantId;
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var uploadItem = new CK5UploadViewModel();
+
+                    try
+                    {
+                        uploadItem.Brand = datarow[0];
+                        uploadItem.Qty = datarow[1];
+                        uploadItem.Uom = datarow[2];
+                        uploadItem.Convertion = datarow[3];
+                        uploadItem.ConvertedUom = datarow[4];
+                        uploadItem.UsdValue = datarow[5];
+                        if (datarow.Count > 6)
+                            uploadItem.Note = datarow[6];
+                        //uploadItem.ExGoodsType = groupType;
+                        uploadItem.Plant = plantId;
+
+                        model.UploadItemModels.Add(uploadItem);
+
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+
+                    }
+
+                }
+            }
+
+            var input = Mapper.Map<List<CK5MaterialInput>>(model.UploadItemModels);
+
+            var outputResult = _ck5Bll.Ck5MarketReturnMaterialProcess(input);
+
+            model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(outputResult);
+
+            return PartialView("_CK5UploadList", model.UploadItemModels);
+        }
+
 
         private CK5FormViewModel InitEdit(CK5FormViewModel model)
         {

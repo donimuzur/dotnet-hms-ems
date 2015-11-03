@@ -83,5 +83,7 @@ namespace Sampoerna.EMS.Contract
        List<CK5> GetAllCompletedPortToImporter(long currentCk5ref = 0);
 
        CK5MaterialOutput ValidateMaterial(CK5MaterialInput input, Enums.ExGoodsType groupType);
+
+       List<CK5MaterialOutput> Ck5MarketReturnMaterialProcess(List<CK5MaterialInput> inputs);
    }
 }
