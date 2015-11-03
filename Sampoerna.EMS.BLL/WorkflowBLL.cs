@@ -271,6 +271,30 @@ namespace Sampoerna.EMS.BLL
             return input.DocumentStatus == Enums.DocumentStatus.GoodIssue;
         }
 
+        public bool AllowDomesticAlcoholPurchaseOrder(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.PurchaseOrder;
+        }
+
+        public bool AllowDomesticAlcoholGoodIssue(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodIssue;
+        }
+
+        public bool AllowDomesticAlcoholGoodReceive(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodReceive;
+        }
+
         public bool AllowGoodReceive(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)

@@ -43,19 +43,20 @@
                         @if (!Model.IsCk5PortToImporter)
                         {
                             @Html.HiddenFor(model => model.SourceNpwp)
+                            @Html.HiddenFor(model => model.SourceNppbkcId)
+                            @Html.HiddenFor(model => model.SourceCompanyCode)
+
+                            @Html.HiddenFor(model => model.SourceKppbcName)
+                            @Html.HiddenFor(model => model.SourcePlantName)
+
+                            @*@if (!Model.IsCk5PortToImporter)
+                                {*@
+                            @Html.HiddenFor(model => model.SourceCompanyName)
+                            @Html.HiddenFor(model => model.SourceAddress)
+                            @*}*@
                         }
 
-                        @Html.HiddenFor(model => model.SourceNppbkcId)
-                        @Html.HiddenFor(model => model.SourceCompanyCode)
-
-                        @Html.HiddenFor(model => model.SourceKppbcName)
-                        @Html.HiddenFor(model => model.SourcePlantName)
-
-                        @*@if (!Model.IsCk5PortToImporter)
-                            {*@
-                        @Html.HiddenFor(model => model.SourceCompanyName)
-                        @Html.HiddenFor(model => model.SourceAddress)
-                        @*}*@
+                        
 
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
