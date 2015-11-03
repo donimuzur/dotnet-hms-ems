@@ -1,6 +1,17 @@
-﻿
+﻿function ResetPbck1Link() {
+    $('#IsReducePbck1Ck5Trial').prop('checked', false);
+    $("input[name='PbckDecreeId']").val('');
+    $("input[name='PbckDecreeNumber']").val('');
+    $("input[name='PbckDecreeDate']").val('');
+    $("input[name='Pbck1QtyApproved']").val('0');
+    $("input[name='Ck5TotalExciseable']").val('0');
+    $("input[name='RemainQuota']").val('0');
+    $("input[name='PbckUom']").val('');
+}
 
 function OnReadyFunction(ck5Type) {
+    
+    $('#ck5TrialPbck1Reduce').hide();
     
     if (ck5Type == 'Completed' || ck5Type == 'Cancelled') {
         $('#MenuCK5Completed').addClass('active');
@@ -9,6 +20,7 @@ function OnReadyFunction(ck5Type) {
     } else if (ck5Type == 'Export') {
         $('#MenuCK5Export').addClass('active');
     } else if (ck5Type == 'Manual') {
+        $('#ck5TrialPbck1Reduce').show();
         $('#MenuCK5Manual').addClass('active');
     } else {
         $('#MenuCK5Domestic').addClass('active');
@@ -30,6 +42,7 @@ function OnReadyFunction(ck5Type) {
 
     var total = 0;
     $('#CK5UploadSave').click(function () {
+        
         var datarows = GetTableData($('#Ck5UploadTable'));
         var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
         $('#ck5TableItem tbody').html('');
@@ -63,7 +76,7 @@ function OnReadyFunction(ck5Type) {
                 data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
                 data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][15] + '">';
                 data += '<input name="UploadItemModels[' + i + '].CK5_MATERIAL_ID" type="hidden" value = "' + datarows[i][18] + '">';
-                //alert(datarows[i][18]);
+              
                 total += parseFloat(datarows[i][16]); //Qty
                 if (i == 0) {
                     $("#PackageUomName").val(datarows[i][17]);
@@ -83,6 +96,7 @@ function OnReadyFunction(ck5Type) {
         }
         
         //alert(total);
+        
         $('#GrandTotalEx').val(total.toFixed(2));
         
        
@@ -95,8 +109,9 @@ function OnReadyFunction(ck5Type) {
 
         $('#collapse5').addClass('in');
 
-       
-        if (ck5Type == 'Export' || ck5Type == 'Manual' || ck5Type == 'MarketReturn') {
+     
+
+        if (ck5Type == 'Export' || (ck5Type == 'Manual' && $('#IsReducePbck1Ck5Trial').is(':checked') == false) || ck5Type == 'MarketReturn' || ck5Type == 'PortToImporter') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
@@ -104,7 +119,8 @@ function OnReadyFunction(ck5Type) {
             $('#ck5TableItem tbody').append(data);
             return;
         }
-
+      
+        
         //if pbck is not exist
         //====fixing bug no. 111 CK5====
         if (!isExistPbck1) {
@@ -807,8 +823,9 @@ function ValidateCk5Form(ck5Type) {
 
     // && (ck5Type != 'Domestic')
     if (result) {
-
-        if (ck5Type == 'Export' ||  ck5Type == "Manual")
+       
+        if (ck5Type == 'Export' || ck5Type == "Manual" || ck5Type == 'PortToImporter'
+            || ck5Type == 'MarketReturn')
             return result;
         //alert('Source : ' + $('#SourceNppbkcId').val());
         //alert('Dest : ' + $('#DestNppbkcId').val());

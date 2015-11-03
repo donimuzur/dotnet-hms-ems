@@ -41,6 +41,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalProduction { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1GeneratedProductionDataDto> ProductionList { get; set; }
+        public List<Lack1GeneratedProductionSummaryByProdTypeDataDto> ProductionSummaryByProdTypeList { get; set; }
         public List<Lack1GeneratedSummaryProductionDataDto> SummaryProductionList { get; set; }
         public string Noted { get; set; }
         public string Lack1UomId { get; set; }
@@ -54,6 +55,16 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class Lack1GeneratedSummaryProductionDataDto
     {
         public decimal Amount { get; set; }
+        public string UomId { get; set; }
+        public string UomDesc { get; set; }
+    }
+
+    public class Lack1GeneratedProductionSummaryByProdTypeDataDto
+    {
+        public string ProdCode { get; set; }
+        public string ProductType { get; set; }
+        public string ProductAlias { get; set; }
+        public decimal TotalAmount { get; set; }
         public string UomId { get; set; }
         public string UomDesc { get; set; }
     }
@@ -84,6 +95,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     public class Lack1GeneratedProductionDataDto
     {
+        public string FaCode { get; set; }
+        public string Ordr { get; set; }
         public string ProdCode { get; set; }
         public string ProductType { get; set; }
         public string ProductAlias { get; set; }
