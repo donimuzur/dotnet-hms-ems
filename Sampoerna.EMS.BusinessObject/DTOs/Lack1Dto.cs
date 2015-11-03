@@ -61,6 +61,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             Lack1Pbck1Mapping = new List<Lack1Pbck1MappingDto>();
             Lack1Plant = new List<Lack1PlantDto>();
             Lack1ProductionDetail = new List<Lack1ProductionDetailDto>();
+            Lack1ProductionDetailSummaryByProdType = new List<Lack1ProductionSummaryByProdTypeDto>();
         }
         public int Lack1Id { get; set; }
         public string Lack1Number { get; set; }
@@ -111,6 +112,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1Pbck1MappingDto> Lack1Pbck1Mapping { get; set; }
         public List<Lack1PlantDto> Lack1Plant { get; set; }
         public List<Lack1ProductionDetailDto> Lack1ProductionDetail { get; set; }
+        public List<Lack1ProductionSummaryByProdTypeDto> Lack1ProductionDetailSummaryByProdType { get; set; }
         public string Noted { get; set; }
     }
 
