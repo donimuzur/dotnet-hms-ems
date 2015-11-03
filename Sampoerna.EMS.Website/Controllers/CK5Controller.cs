@@ -247,7 +247,7 @@ namespace Sampoerna.EMS.Website.Controllers
             SelectList data;
             T001WDto dataPlant = _plantBll.GetT001WById(plantId);
 
-            if (ck5Type == Enums.CK5Type.Domestic || ck5Type == Enums.CK5Type.Manual)
+            if (ck5Type == Enums.CK5Type.Domestic)
             {
 
                 data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode);

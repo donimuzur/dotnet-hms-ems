@@ -1205,6 +1205,8 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="SHIFT" Type="nvarchar" MaxLength="10" />
+          <Property Name="ORIGINAL_QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="ORIGINAL_UOM" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -1450,6 +1452,18 @@
             </Principal>
             <Dependent Role="BROLE_MAP">
               <PropertyRef Name="BROLE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CHANGES_HISTORY">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3180,6 +3194,10 @@
           <AssociationSet Name="FK_BROLE_MAP_USER_BROLE" Association="Self.FK_BROLE_MAP_USER_BROLE">
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_CK1_ITEM_CK1" Association="Self.FK_CK1_ITEM_CK1">
             <End Role="CK1" EntitySet="CK1" />
@@ -7861,6 +7879,8 @@
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ORIGINAL_QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="ORIGINAL_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
         </EntityType>
         <EnumType Name="Ck5ManualFreeText" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualFreeText" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGovType2" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType2" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -9293,6 +9313,8 @@
           <EntitySetMapping Name="ZAAP_SHIFT_RPT">
             <EntityTypeMapping TypeName="EMSModel.ZAAP_SHIFT_RPT">
               <MappingFragment StoreEntitySet="ZAAP_SHIFT_RPT">
+                <ScalarProperty Name="ORIGINAL_UOM" ColumnName="ORIGINAL_UOM" />
+                <ScalarProperty Name="ORIGINAL_QTY" ColumnName="ORIGINAL_QTY" />
                 <ScalarProperty Name="SHIFT" ColumnName="SHIFT" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
