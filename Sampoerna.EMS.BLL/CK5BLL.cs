@@ -342,8 +342,15 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn)
                 return;
+            
+            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
+            {
+                if (!input.Ck5Dto.REDUCE_TRIAL.HasValue || !input.Ck5Dto.REDUCE_TRIAL.Value)
+                    return;
+              
+            }
             //if domestic not check quota
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Domestic)
             {
@@ -556,6 +563,14 @@ namespace Sampoerna.EMS.BLL
                         {
                             messageList.Add(tempOutput.Message);
                         }
+                        //if (tempOutput.IsValid)
+                        //{
+                        //    continue;
+                        //}
+                        //else
+                        //{
+                        //    messageList.Add(tempOutput.Message);
+                        //}
                         
                         
                     }
@@ -1710,7 +1725,9 @@ namespace Sampoerna.EMS.BLL
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.TFPosting);
                     break;
                 case Enums.CK5Type.Manual:
-                    if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial)
+                    if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial
+                        && dbData.REDUCE_TRIAL.HasValue && dbData.REDUCE_TRIAL.Value)
+
                         newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GoodIssue);
                     else
                         newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
@@ -1722,7 +1739,7 @@ namespace Sampoerna.EMS.BLL
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
                     break;
             }
-            
+
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
@@ -1733,7 +1750,8 @@ namespace Sampoerna.EMS.BLL
                     dbData.STATUS_ID = Enums.DocumentStatus.TFPosting;
                     break;
                 case Enums.CK5Type.Manual:
-                    if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial)
+                    if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial
+                        && dbData.REDUCE_TRIAL.HasValue && dbData.REDUCE_TRIAL.Value)
                         dbData.STATUS_ID = Enums.DocumentStatus.GoodIssue;
                     else
                         dbData.STATUS_ID = Enums.DocumentStatus.WaitingForSealing;
@@ -3583,9 +3601,14 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var ck5 in lisCk5)
             {
-                if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.Manual)
+                if (ck5.CK5_TYPE == Enums.CK5Type.Manual)
+                {
+                    if (!ck5.REDUCE_TRIAL.HasValue || !ck5.REDUCE_TRIAL.Value)
+                        continue;
+                }
+                else if (ck5.CK5_TYPE == Enums.CK5Type.Export)
                     continue;
-                if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
+                else if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
                     continue;
 
                 if (ck5.GRAND_TOTAL_EX.HasValue)
