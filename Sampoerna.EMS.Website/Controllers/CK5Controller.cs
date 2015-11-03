@@ -371,7 +371,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
             }
 
-            //model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedList();
+            //if (!string.IsNullOrEmpty(model.SourcePlantId))
+            //{
+            //    var dataPlant = _plantBll.GetT001WById(model.SourcePlantId);
+            //    if (dataPlant != null)
+            //    {
+            //        if (model.Ck5Type == Enums.CK5Type.Domestic || model.Ck5Type == Enums.CK5Type.Manual)
+            //            model.DestPlantList = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode);
+            //    }
+            //}
+           
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
 
             model.PackageUomList = GlobalFunctions.GetUomList(_uomBll);

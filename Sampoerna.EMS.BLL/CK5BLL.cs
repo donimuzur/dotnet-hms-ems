@@ -340,8 +340,8 @@ namespace Sampoerna.EMS.BLL
 
         private void ValidateCk5(CK5SaveInput input)
         {
-            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export)
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+            if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
                 return;
             
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
@@ -1724,12 +1724,12 @@ namespace Sampoerna.EMS.BLL
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.TFPosting);
                     break;
                 case Enums.CK5Type.Manual:
-                     if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial
-                     && dbData.REDUCE_TRIAL.HasValue && dbData.REDUCE_TRIAL.Value)
+                    if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial
+                        && dbData.REDUCE_TRIAL.HasValue && dbData.REDUCE_TRIAL.Value)
 
                         newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GoodIssue);
-                else
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
+                    else
+                        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
                     break;
                 case Enums.CK5Type.DomesticAlcohol:
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.PurchaseOrder);
@@ -1738,7 +1738,7 @@ namespace Sampoerna.EMS.BLL
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
                     break;
             }
-            
+
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());

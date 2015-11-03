@@ -367,6 +367,9 @@
                    
                     $('#IsFreeTextSource').attr("disabled", true);
                     $('#IsFreeTextDestination').attr("disabled", true);
+                    if ('@Model.IsReducePbck1Ck5Trial' == 'True') {
+                        $('#IsReducePbck1Ck5Trial').prop('checked', true);
+                    }
 
                 } else if ('@Model.IsFreeTextSource' == 'True') {
                     $('#IsFreeTextDestination').attr("disabled", true);
@@ -379,8 +382,8 @@
         });
 
         function OnChangeDestinationPlant() {
-            $('#IsReducePbck1Ck5Trial').prop('checked', false);
-            $("#DestPlantId").change(function() {
+            $("#DestPlantId").change(function () {
+                ResetPbck1Link();
                 if ($("#DestPlantId").length) {
                     var destPlant = $(this).find("option:selected").val();
                     var isUseDest = false;
@@ -439,7 +442,7 @@
 
 
         $("#GoodType").change(function () {
-            $('#IsReducePbck1Ck5Trial').prop('checked', false);
+            ResetPbck1Link();
             var goodTypeGroupId = $("#GoodType").val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
             var destPlant = $("#DestPlantId").find("option:selected").val();
@@ -466,7 +469,7 @@
         });
 
         $('#SubmissionDate').change(function () {
-            $('#IsReducePbck1Ck5Trial').prop('checked', false);
+            ResetPbck1Link();
             var goodTypeGroupId = $("#GoodType").val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
             var destPlant = $("#DestPlantId").find("option:selected").val();
@@ -491,8 +494,8 @@
         });
 
         function OnChangeSourcePlant() {
-            $('#IsReducePbck1Ck5Trial').prop('checked', false);
-            $("#SourcePlantId").change(function() {
+            $("#SourcePlantId").change(function () {
+                ResetPbck1Link();
                 if ($("#SourcePlantId").length) {
                     var sourcePlant = $(this).find("option:selected").val();
 
