@@ -383,7 +383,9 @@ namespace Sampoerna.EMS.BLL
         public Lack1DetailsDto GetDetailsById(int id)
         {
             var dbData = _lack1Service.GetDetailsById(id);
-            return Mapper.Map<Lack1DetailsDto>(dbData);
+            var rc = Mapper.Map<Lack1DetailsDto>(dbData);
+            rc.Lack1ProductionDetailSummaryByProdType = GetProductionDetailSummaryByProdType(rc.Lack1ProductionDetail);
+            return rc;
         }
 
         public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
@@ -989,6 +991,8 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
+            dtToReturn.Lack1ProductionDetailSummaryByProdType =
+                GetProductionDetailSummaryByProdType(dtToReturn.Lack1ProductionDetail);
 
             if (dtToReturn.Lack1Pbck1Mapping.Count > 0)
             {
@@ -1536,8 +1540,7 @@ namespace Sampoerna.EMS.BLL
                                   zaap.ORDR,
                                   ck4CItem.PROD_CODE,
                                   prod.PRODUCT_ALIAS,
-                                  prod.PRODUCT_TYPE,
-                                  ck4CItem.UOM.UOM_DESC
+                                  prod.PRODUCT_TYPE
                               }).Distinct().ToList();
 
             if (joinedData.Count == 0)
@@ -1552,9 +1555,28 @@ namespace Sampoerna.EMS.BLL
             }
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
+            var uomData = _uomBll.GetAll();
+
+            var joinedWithUomData = (from j in joinedData
+                join u in uomData on j.UOM equals u.UOM_ID
+                select new
+                {
+                    j.FA_CODE,
+                    j.WERKS,
+                    j.COMPANY_CODE,
+                    j.UOM,
+                    j.PRODUCTION_DATE,
+                    j.BATCH,
+                    j.QTY,
+                    j.ORDR,
+                    j.PROD_CODE,
+                    j.PRODUCT_ALIAS,
+                    j.PRODUCT_TYPE,
+                    u.UOM_DESC
+                }).Distinct().ToList();
 
             //calculation proccess
-            foreach (var item in joinedData)
+            foreach (var item in joinedWithUomData)
             {
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
                 {
@@ -1567,7 +1589,7 @@ namespace Sampoerna.EMS.BLL
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC
                 };
-
+                
                 var rec = invMovementOutput.IncludeInCk5List.FirstOrDefault(c => c.ORDR == item.ORDR);
                 if (rec != null)
                 {
@@ -1743,6 +1765,30 @@ namespace Sampoerna.EMS.BLL
                 rc.Pbck1List = new List<Lack1GeneratedPbck1DataDto>();
             }
             return rc;
+        }
+
+        private List<Lack1ProductionSummaryByProdTypeDto> GetProductionDetailSummaryByProdType(
+            List<Lack1ProductionDetailDto> list)
+        {
+            if(list.Count == 0) return new List<Lack1ProductionSummaryByProdTypeDto>();
+            var groupedData = list.GroupBy(p => new
+            {
+                p.PROD_CODE,
+                p.PRODUCT_ALIAS,
+                p.PRODUCT_TYPE,
+                p.UOM_ID,
+                p.UOM_DESC
+            }).Select(g => new Lack1ProductionSummaryByProdTypeDto()
+            {
+                ProdCode = g.Key.PROD_CODE,
+                ProductAlias = g.Key.PRODUCT_ALIAS,
+                ProductType = g.Key.PRODUCT_TYPE,
+                UomId = g.Key.UOM_ID,
+                UomDesc = g.Key.UOM_DESC,
+                TotalAmount = g.Sum(p => p.AMOUNT)
+            });
+
+            return groupedData.ToList();
         }
 
         #endregion

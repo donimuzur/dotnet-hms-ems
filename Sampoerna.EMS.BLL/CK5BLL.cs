@@ -349,7 +349,8 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn)
                 return;
             
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)

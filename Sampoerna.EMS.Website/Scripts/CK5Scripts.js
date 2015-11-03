@@ -823,8 +823,9 @@ function ValidateCk5Form(ck5Type) {
 
     // && (ck5Type != 'Domestic')
     if (result) {
-
-        if (ck5Type == 'Export' ||  ck5Type == "Manual" || ck5Type == 'PortToImporter')
+       
+        if (ck5Type == 'Export' || ck5Type == "Manual" || ck5Type == 'PortToImporter'
+            || ck5Type == 'MarketReturn')
             return result;
         //alert('Source : ' + $('#SourceNppbkcId').val());
         //alert('Dest : ' + $('#DestNppbkcId').val());

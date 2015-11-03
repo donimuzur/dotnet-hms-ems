@@ -10,5 +10,18 @@
         public string PRODUCT_ALIAS { get; set; }
         public string UOM_ID { get; set; }
         public string UOM_DESC { get; set; }
+        public string FA_CODE { get; set; }
+        public string ORDR { get; set; }
     }
+
+    public class Lack1ProductionSummaryByProdTypeDto
+    {
+        public string ProdCode { get; set; }
+        public string ProductType { get; set; }
+        public string ProductAlias { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string UomId { get; set; }
+        public string UomDesc { get; set; }
+    }
+
 }
