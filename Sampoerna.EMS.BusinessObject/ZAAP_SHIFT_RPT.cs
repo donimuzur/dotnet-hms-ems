@@ -31,5 +31,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string CREATED_BY { get; set; }
         public string MODIFIED_BY { get; set; }
         public string SHIFT { get; set; }
+        public Nullable<decimal> ORIGINAL_QTY { get; set; }
+        public string ORIGINAL_UOM { get; set; }
     }
 }
