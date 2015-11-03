@@ -361,6 +361,9 @@ namespace Sampoerna.EMS.Website
                 ;
 
                 Mapper.CreateMap<Ck5SummaryReportDto, CK5SummaryReportsItem>().IgnoreAllNonExisting();
+
+                Mapper.CreateMap<GetBrandByPlantAndMaterialNumberOutput, CK5InputManualViewModel>().IgnoreAllNonExisting()
+                    ;
         }
     }
 }

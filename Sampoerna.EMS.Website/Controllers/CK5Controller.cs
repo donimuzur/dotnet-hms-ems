@@ -1468,6 +1468,19 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult ValidateManualCk5MarketReturn(CK5MaterialInput input)
+        {
+           
+            var output = _ck5Bll.ValidateCk5MarketReturnMaterial(input);
+            return Json(new
+            {
+                success = output.IsValid,
+                error = output.Message
+            });
+            
+        }
+
         #endregion
 
         #region export xls
@@ -3673,6 +3686,16 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetListMaterialMarketReturn(string plantId)
+        {
+            var result = _ck5Bll.GetListMaterialMarketReturn(plantId);
+            
+            //var model = Mapper.Map<List<CK5InputManualViewModel>>(dbMaterial);
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetMaterialHjeAndTariff(string plantId, string materialNumber)
         {
 
@@ -3681,6 +3704,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //model.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
             //model.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetMaterialHjeAndTariffMarketReturn(string plantId, string materialNumber)
+        {
+
+            var dbMaterial = _ck5Bll.GetBrandByPlantAndMaterialNumber(plantId, materialNumber);
+            var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
+
             return Json(model);
         }
 

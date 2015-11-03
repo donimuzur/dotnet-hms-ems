@@ -1134,3 +1134,57 @@ function MoveUploadToTableMarketReturn() {
     $('#ck5TableItem tbody').append(data);
    
 }
+
+
+function ajaxGetListMaterialMarketReturn(url, formData, materialid) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                //debugger;
+                var listMaterial = $('#uploadMaterialNumber');
+                listMaterial.empty();
+
+                var list = '<option value>Select</option>';
+
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (materialid == data[i].MaterialNumber) {
+                            list += "<option value='" + data[i].MaterialNumber + "' selected='true'>" + data[i].MaterialNumber + "</option>";
+                        } else {
+                            list += "<option value='" + data[i].MaterialNumber + "'>" + data[i].MaterialNumber + "</option>";
+                        }
+
+                    }
+
+                }
+
+                listMaterial.html(list);
+                
+            }
+        });
+    }
+}
+
+function ajaxGetMaterialHjeAndTariffMarketReturn(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+
+                if (data != null) {
+                    $("#uploadMaterialHje").val(data.Hje);
+                    $("#uploadMaterialTariff").val(data.Tariff);
+                    $("#uploadMaterialDesc").val(data.MaterialDesc);
+                    $("#uploadConvertedUom").val(data.Uom);
+                }
+
+
+            }
+        });
+    }
+}

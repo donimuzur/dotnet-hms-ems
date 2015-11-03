@@ -318,13 +318,13 @@
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
             $("#uploadMaterialPlant").val(sourcePlant);
-            var goodTypeGroupId = $("#GoodType").val();
-            ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+            
+            ajaxGetListMaterialMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: sourcePlant });
 
             $('#btnSaveMaterial').show();
             $('#btnUpdateMaterial').hide();
 
-            ClearInputForm();
+            ClearInputFormMarketReturn();
             ClearValidation();
             $("#lblTitleInputManual").text('New Input');
 
@@ -337,15 +337,7 @@
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
-            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
-                sourcePlant = $("#DestPlantId").find("option:selected").val();
-            } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
-                if ($('#IsFreeTextSource').is(':checked')) {
-                    sourcePlant = $("#DestPlantId").find("option:selected").val();
-                }
-            }
-
-            var goodTypeGroupId = $("#GoodType").val();
+         
             var convertedUom = $('#uploadConvertedUom').val();
 
 
@@ -358,9 +350,9 @@
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
 
-            materialInput.ExGoodsType = goodTypeGroupId;
-            ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function(data) {
-                AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', data);
+           
+            ajaxValidateMaterial('@Url.Action("ValidateManualCk5MarketReturn", "CK5")', { input: materialInput }, function(data) {
+                AddRowManualMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', data);
 
             });
 
@@ -374,11 +366,13 @@
                 if (materialNumber == '') {
                     $("#uploadMaterialHje").val('0');
                     $("#uploadMaterialTariff").val('0');
+                    $('#uploadMaterialDesc').val('');
+                    $('#uploadConvertedUom').val('');
 
                 } else {
-                    var sourcePlant = $("#uploadMaterialPlant").val(); // $("#SourcePlantId").find("option:selected").val();
+                    var sourcePlant = $("#uploadMaterialPlant").val(); 
 
-                    ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    ajaxGetMaterialHjeAndTariffMarketReturn('@Url.Action("GetMaterialHjeAndTariffMarketReturn", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                 }
             }
         });
@@ -388,20 +382,10 @@
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
-            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
-                sourcePlant = $("#DestPlantId").find("option:selected").val();
-            } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
-                if ($('#IsFreeTextSource').is(':checked')) {
-                    sourcePlant = $("#DestPlantId").find("option:selected").val();
-                }
-            }
-            var goodTypeGroupId = $("#GoodType").val();
+        
             var convertedUom = $('#uploadConvertedUom').val();
 
-            //materialInput.materialNumber = materialNumber;
-            //materialInput.plantId = sourcePlant;
-            //materialInput.goodTypeGroup = goodTypeGroupId;
-            //materialInput.convertedUom = convertedUom;
+         
             materialInput.Plant = sourcePlant;
             materialInput.Brand = materialNumber;
             materialInput.Qty = $('#uploadMaterialQty').val();
@@ -411,12 +395,10 @@
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
 
-            materialInput.ExGoodsType = goodTypeGroupId;
-            ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function(data) {
-                UpdateRow(data);
-                //if (data.success) {
-                //    UpdateRow(data);
-                //}
+            
+            ajaxValidateMaterial('@Url.Action("ValidateManualCk5MarketReturn", "CK5")', { input: materialInput }, function(data) {
+                UpdateRowManualMarketRetun(data);
+              
             });
 
         });

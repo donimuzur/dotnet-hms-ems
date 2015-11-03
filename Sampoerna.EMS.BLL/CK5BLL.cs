@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
@@ -573,6 +574,15 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
+        public CK5MaterialOutput ValidateCk5MarketReturnMaterial(CK5MaterialInput input)
+        {
+            var messageList = new List<string>();
+            var inputs = new List<CK5MaterialInput>();
+            inputs.Add(input);
+            return ValidateCk5MarketReturnMaterial(inputs).FirstOrDefault();
+        }
+
+
 
         private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType)
         {
@@ -890,7 +900,7 @@ namespace Sampoerna.EMS.BLL
                     input.ConvertedUom = "G";
                
             }
-
+            input.ExciseQty = input.ConvertedQty;
             input.ExciseValue = input.ConvertedQty * input.Tariff;
 
             return input;
@@ -974,15 +984,13 @@ namespace Sampoerna.EMS.BLL
             {
                 var resultValue = GetAdditionalValueCk5MarketReturnMaterial(output);
 
-                //output.ExciseQty = resultValue.ExciseQty;
-                //output.ExciseUom = resultValue.ExciseUom;
                 output.ConvertedQty = resultValue.ConvertedQty;
                 output.Hje = resultValue.Hje;
                 output.Tariff = resultValue.Tariff;
                 output.ExciseValue = resultValue.ExciseValue;
                 output.ConvertedUom = resultValue.ConvertedUom;
                 output.ExciseUom = resultValue.ConvertedUom;
-
+                output.ExciseQty = resultValue.ExciseQty;
             }
 
             return outputList;
@@ -3853,6 +3861,13 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<GetListMaterialMarketReturnOutput> GetListMaterialMarketReturn(string plantId)
+        {
+            var listBrand = _brandRegistration.GetBrandByPlantAndListProdCode(plantId, _allowedCk5MarketReturnProdCode);
+
+            return Mapper.Map<List<GetListMaterialMarketReturnOutput>>(listBrand);
+        }
+
         private void ValidateCk5MaterialConvertedUom(CK5SaveInput input)
         {
             foreach (var ck5MaterialDto in input.Ck5Material)
@@ -3877,6 +3892,34 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.ConvertedSAPNotExist);
             }
 
+        }
+
+        public GetBrandByPlantAndMaterialNumberOutput GetBrandByPlantAndMaterialNumber(string plantId, string materialNumber)
+        {
+            var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(plantId, materialNumber);
+
+            var result = new GetBrandByPlantAndMaterialNumberOutput();
+            if (dbBrand == null)
+            {
+                result.Hje = 0;
+                result.Tariff = 0;
+                result.Uom = "";
+                result.MaterialDesc = "";
+            }
+            else
+            {
+                result.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
+                result.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
+                if (_listCk5MarketReturnProdCodeBatang.Contains(dbBrand.PROD_CODE))
+                    result.Uom = "Btg";
+                else if (_listCk5MarketReturnProdCodeGram.Contains(dbBrand.PROD_CODE))
+                    result.Uom = "G";
+                else 
+                    result.Uom = "";
+                result.MaterialDesc = dbBrand.BRAND_CE;
+            }
+
+            return result;
         }
     }
 }
