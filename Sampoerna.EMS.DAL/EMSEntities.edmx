@@ -508,6 +508,8 @@
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" />
+          <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="LACK1_TRACKING">
           <Key>
@@ -1448,18 +1450,6 @@
             </Principal>
             <Dependent Role="BROLE_MAP">
               <PropertyRef Name="BROLE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="CHANGES_HISTORY">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3190,10 +3180,6 @@
           <AssociationSet Name="FK_BROLE_MAP_USER_BROLE" Association="Self.FK_BROLE_MAP_USER_BROLE">
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_CK1_ITEM_CK1" Association="Self.FK_CK1_ITEM_CK1">
             <End Role="CK1" EntitySet="CK1" />
@@ -7016,6 +7002,8 @@
           <Property Name="UOM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_LACK1" FromRole="LACK1_PRODUCTION_DETAIL" ToRole="LACK1" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_UOM" FromRole="LACK1_PRODUCTION_DETAIL" ToRole="UOM" />
+          <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_LACK1_PLANT_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="0..1" />
@@ -8985,6 +8973,8 @@
           <EntitySetMapping Name="LACK1_PRODUCTION_DETAIL">
             <EntityTypeMapping TypeName="EMSModel.LACK1_PRODUCTION_DETAIL">
               <MappingFragment StoreEntitySet="LACK1_PRODUCTION_DETAIL">
+                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
                 <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
                 <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
