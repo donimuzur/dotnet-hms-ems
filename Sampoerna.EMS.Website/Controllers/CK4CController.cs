@@ -373,6 +373,15 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(years, "ValueField", "TextField");
         }
 
+        private SelectList Ck4cDashboardYear()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
+
         private List<Ck4cItemData> SetOtherCk4cItemData(List<Ck4cItemData> ck4cItemData)
         {
             List<Ck4cItemData> listData;
@@ -1728,6 +1737,62 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SaveAs(path);
 
             return path;
+        }
+
+        #endregion
+
+        #region Dashboard
+        public ActionResult Dashboard()
+        {
+            var data = InitDashboardModel(new Ck4cDashboardModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                MonthList = GlobalFunctions.GetMonthList(_monthBll),
+                YearList = Ck4cDashboardYear(),
+                PoaList = GlobalFunctions.GetPoaAll(_poabll),
+                UserList = GlobalFunctions.GetCreatorList()
+            });
+
+            return View("Dashboard", data);
+        }
+
+        private Ck4cDashboardModel InitDashboardModel(
+            Ck4cDashboardModel model)
+        {
+            var listCk4c = GetAllDocument(model);
+
+            model.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
+            model.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
+            model.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            model.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
+            model.CompletedTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
+
+            return model;
+        }
+
+        private List<Ck4CDto> GetAllDocument(Ck4cDashboardModel filter = null)
+        {
+            if (filter == null)
+            {
+                //Get All
+                var ck4cData = _ck4CBll.GetAllByParam(new Ck4CDashboardParamInput());
+                return ck4cData;
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Ck4CDashboardParamInput>(filter);
+
+            var dbData = _ck4CBll.GetAllByParam(input);
+            return dbData;
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterDashboardPage(Ck4cDashboardModel model)
+        {
+            var data = InitDashboardModel(model);
+
+            return PartialView("_ChartStatus", data);
         }
 
         #endregion

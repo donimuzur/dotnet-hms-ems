@@ -80,6 +80,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
                 .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyCode));
 
+            Mapper.CreateMap<Ck4cDashboardModel, Ck4CDashboardParamInput>().IgnoreAllNonExisting();
+
             #endregion
 
             #region Create Document List
