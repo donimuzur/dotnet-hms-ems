@@ -108,6 +108,7 @@
     <Compile Include="Services\T001Service.cs" />
     <Compile Include="Services\T001WService.cs" />
     <Compile Include="Services\UserPlantMapService.cs" />
+    <Compile Include="Services\ZaapShiftRptService.cs" />
     <Compile Include="Services\ZaidmExNppbkcService.cs" />
     <Compile Include="Services\ZaidmExProdTypeService.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
