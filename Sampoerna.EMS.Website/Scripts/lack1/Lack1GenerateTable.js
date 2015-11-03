@@ -24,8 +24,8 @@ function generateTable(data) {
         '<td>' +
            ThausandSeperator(data.IncomeList[0].Amount, 2) + '</td>' +
         '<td rowspan="' + rowCount + '">' + (data.TotalUsage < 0 ? '-' : '') + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
-        '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
-        '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
+        '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
+        '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
         '<td rowspan="' + rowCount + '">' + (data.Noted ? data.Noted : '') + '</td></tr>';
         /*loop record*/
@@ -47,8 +47,8 @@ function generateTable(data) {
         '<td></td>' +
         '<td></td>' +
         '<td></td>' +
-        '<td>' + generateJenisHasilProduksi(data.ProductionList) + '</td>' +
-        '<td>' + generateJumlahHasilProduksi(data.ProductionList) + '</td>' +
+        '<td>' + generateJenisHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
+        '<td>' + generateJumlahHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td>' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
         '<td>' + (data.Noted ? data.Noted : '') + '</td></tr>';
         $('#IncomeListCount').val(0);
@@ -90,9 +90,9 @@ function generateJumlahHasilProduksi(data) {
     if (data) {
         for (var i = 0; i < data.length; i++) {
             if (i == data.length) {
-                rc = rc + (data[i].Amount < 0 ? '-' : '') + ThausandSeperator(data[i].Amount, 2);
+                rc = rc + (data[i].TotalAmount < 0 ? '-' : '') + ThausandSeperator(data[i].TotalAmount, 3);
             } else {
-                rc = rc + (data[i].Amount < 0 ? '-' : '') + ThausandSeperator(data[i].Amount, 2) + " " + data[i].UomDesc + "<br/>";
+                rc = rc + (data[i].TotalAmount < 0 ? '-' : '') + ThausandSeperator(data[i].TotalAmount, 3) + " " + data[i].UomDesc + "<br/>";
             }
         }
     } else {
@@ -106,7 +106,7 @@ function generateSummaryJumlahProduksi(data) {
     if (data) {
         var tb = '<table border="0">';
         for (var i = 0; i < data.length; i++) {
-            var item = '<tr><td>' + (data[i].Amount < 0 ? '-' : '') + ThausandSeperator(data[i].Amount, 2) + '</td><td>' + data[i].UomDesc + '</td></tr>';
+            var item = '<tr><td>' + (data[i].Amount < 0 ? '-' : '') + ThausandSeperator(data[i].Amount, 3) + '</td><td>' + data[i].UomDesc + '</td></tr>';
             tb = tb + item;
         }
         tb = tb + '</table>';
