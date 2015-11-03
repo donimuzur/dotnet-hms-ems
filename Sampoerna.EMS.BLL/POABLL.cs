@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<POA> _repository;
         private IGenericRepository<POA_MAP> _poaMapRepository;
+        private IGenericRepository<BROLE_MAP> _broleMapRepository;
         private string includeTables = "POA_MAP, USER, USER1, POA_SK";
         private IChangesHistoryBLL _changesHistoryBll;
         public POABLL(IUnitOfWork uow, ILogger logger)
@@ -24,6 +25,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<POA>();
             _poaMapRepository = _uow.GetGenericRepository<POA_MAP>();
+            _broleMapRepository = _uow.GetGenericRepository<BROLE_MAP>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
@@ -99,8 +101,8 @@ namespace Sampoerna.EMS.BLL
         public Core.Enums.UserRole GetUserRole(string userId)
         {
             var poa = GetAll();
-
-            if (poa.Any(zaidmExPoa => zaidmExPoa.MANAGER_ID.ToLowerInvariant() == userId.ToLowerInvariant()))
+            var manager = _broleMapRepository.Get(x => x.USER_BROLE.BROLE_DESC.Contains("MANAGER")).Select(x=> x.MSACCT.ToUpper()).ToList();
+            if (manager.Contains(userId.ToUpper()))
                 return Core.Enums.UserRole.Manager;
 
             if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS.ToLowerInvariant() == userId.ToLowerInvariant()))
