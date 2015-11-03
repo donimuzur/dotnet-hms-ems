@@ -135,7 +135,11 @@ namespace Sampoerna.EMS.XMLReader
                             zaapShftRptItem.SHIFT = _xmlMapper.GetElementValue(xElement.Element("Shift"));
                             zaapShftRptItem.COMPANY_CODE = item.COMPANY_CODE;
                             zaapShftRptItem.FA_CODE = item.FA_CODE;
-                            //zaapShftRptItem.
+                            zaapShftRptItem.QTY = item.QTY;
+                            zaapShftRptItem.ORIGINAL_QTY = qty;
+                            zaapShftRptItem.ORIGINAL_UOM = bun;
+                            zaapShftRptItem.PRODUCTION_DATE = item.PRODUCTION_DATE;
+                            zaapShftRptItem.WERKS = item.WERKS;
 
                             var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
                             if (existingZaap != null)
@@ -149,7 +153,7 @@ namespace Sampoerna.EMS.XMLReader
                                 zaapShftRptItem.MODIFIED_DATE = DateTime.Now;
                             }
                             
-                                
+                            _xmlMapper.InsertOrUpdate(zaapShftRptItem);    
                             items.Add(item);
                             
                         }
