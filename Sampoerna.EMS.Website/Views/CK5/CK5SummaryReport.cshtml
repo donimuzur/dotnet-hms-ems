@@ -475,7 +475,8 @@
             
             $('.checkexport').on('click', function(e) {
                 // e.preventDefault();
-
+                table.column(0).visible(true);
+                
                 // Get the column API object
                 var column = table.column($(this).attr('datacolumn'));
 
