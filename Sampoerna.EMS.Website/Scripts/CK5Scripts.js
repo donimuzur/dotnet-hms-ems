@@ -96,7 +96,7 @@ function OnReadyFunction(ck5Type) {
         $('#collapse5').addClass('in');
 
        
-        if (ck5Type == 'Export' || ck5Type == 'Manual' || ck5Type == 'MarketReturn') {
+        if (ck5Type == 'Export' || ck5Type == 'Manual' || ck5Type == 'MarketReturn'|| ck5Type == 'PortToImporter') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
@@ -808,7 +808,7 @@ function ValidateCk5Form(ck5Type) {
     // && (ck5Type != 'Domestic')
     if (result) {
 
-        if (ck5Type == 'Export' ||  ck5Type == "Manual")
+        if (ck5Type == 'Export' ||  ck5Type == "Manual" || ck5Type == 'PortToImporter')
             return result;
         //alert('Source : ' + $('#SourceNppbkcId').val());
         //alert('Dest : ' + $('#DestNppbkcId').val());
