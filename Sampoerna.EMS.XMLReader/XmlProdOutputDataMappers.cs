@@ -144,13 +144,14 @@ namespace Sampoerna.EMS.XMLReader
                             var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
                             if (existingZaap != null)
                             {
-                                zaapShftRptItem.CREATED_BY = "PI";
-                                zaapShftRptItem.CREATED_DATE = DateTime.Now;
+                                zaapShftRptItem.MODIFIED_BY = "PI";
+                                zaapShftRptItem.MODIFIED_DATE = DateTime.Now;
+                                
                             }
                             else
                             {
-                                zaapShftRptItem.MODIFIED_BY = "PI";
-                                zaapShftRptItem.MODIFIED_DATE = DateTime.Now;
+                                zaapShftRptItem.CREATED_BY = "PI";
+                                zaapShftRptItem.CREATED_DATE = DateTime.Now;
                             }
                             
                             _xmlMapper.InsertOrUpdate(zaapShftRptItem);    

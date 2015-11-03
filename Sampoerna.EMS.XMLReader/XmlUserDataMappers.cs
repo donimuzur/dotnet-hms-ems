@@ -23,15 +23,15 @@ namespace Sampoerna.EMS.XMLReader
             _xmlFile = xmlFile;
         }
 
-
-        public List<BROLE_MAP> Items
+        
+        public List<USER> Items
         {
          get
             {
                 var xmlItems = _xmlMapper.GetElements("row");
-                var items = new List<BROLE_MAP>();
+                var items = new List<USER>();
                 var firstBrole = string.Empty;
-               
+                
                 foreach (var xElement in xmlItems)
                 {
                     try
@@ -61,13 +61,21 @@ namespace Sampoerna.EMS.XMLReader
                         user.LAST_NAME = _xmlMapper.GetElementValue(xElement.Element("VORNA_EN")).Trim();
                         user.EMAIL = _xmlMapper.GetElementValue(xElement.Element("WKEMAIL")).Trim();
                         user.ACCT = _xmlMapper.GetElementValue(xElement.Element("ACCT")).Trim();
-                        
+                        var status = int.Parse(_xmlMapper.GetElementValue(xElement.Element("ACCTSTA")).Trim());
+                        if (status == 10)
+                        {
+                            user.IS_ACTIVE = 1;
+                        }
+                        else
+                        {
+                            user.IS_ACTIVE = 0;
+                        }
                        
                         var ExistUser = GetUser(user.USER_ID);
                         if (ExistUser == null)
                         {
                             user.CREATED_DATE = DateTime.Now;
-                           
+                            
                             
                         }
                         else
@@ -78,7 +86,7 @@ namespace Sampoerna.EMS.XMLReader
 
 
 
-
+                        //UserItems.Add(user);
                         _xmlMapper.InsertOrUpdate(user);
 
                         if (!role.BROLE_DESC.Contains("POA_MANAGER") && role.BROLE_DESC.Contains("_POA"))
@@ -92,7 +100,7 @@ namespace Sampoerna.EMS.XMLReader
                             roleMap.BROLE_MAP_ID = existRoleMap.BROLE_MAP_ID;
                         }
                        _xmlMapper.InsertOrUpdate(roleMap);
-                        items.Add(roleMap);
+                        items.Add(user);
 
 
 
@@ -114,7 +122,9 @@ namespace Sampoerna.EMS.XMLReader
 
         public string InsertToDatabase()
         {
-            return _xmlMapper.NoInsert(Items);
+
+            return _xmlMapper.InsertToDatabase<USER>(Items);
+
 
         }
 
@@ -169,6 +179,7 @@ namespace Sampoerna.EMS.XMLReader
                 poa.POA_ADDRESS = "";
                 poa.POA_PHONE = "";
                 poa.ID_CARD = "";
+                poa.TITLE = "";
 
                 poa.CREATED_BY = "PI";
                 poa.CREATED_DATE = DateTime.Now;
