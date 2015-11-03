@@ -251,10 +251,11 @@ namespace Sampoerna.EMS.BLL
                 _repository.Get(c => c.ACTION == input.ActionType && c.FORM_NUMBER == input.FormNumber, null,
                     includeTables).FirstOrDefault();
 
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            if (dbData != null)
+                _repository.Delete(dbData);
+            
 
-            _repository.Delete(dbData);
+            
 
         }
 

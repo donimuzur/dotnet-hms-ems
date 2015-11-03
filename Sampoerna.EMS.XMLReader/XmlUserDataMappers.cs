@@ -181,6 +181,7 @@ namespace Sampoerna.EMS.XMLReader
                 poa.MODIFIED_DATE = DateTime.Now;
             }
 
+
             _xmlMapper.InsertOrUpdate(poa);
         }
 
@@ -191,10 +192,11 @@ namespace Sampoerna.EMS.XMLReader
                 var manager = _xmlMapper.uow.GetGenericRepository<USER>()
                     .Get(x => x.ACCT == acctSpv).FirstOrDefault();
 
-                if (manager != null)
-                {
-                    
-                }
+                return manager;
+            }
+            else
+            {
+                return null;
             }
         }
 

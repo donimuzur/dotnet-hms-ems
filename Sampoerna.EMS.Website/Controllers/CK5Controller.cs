@@ -519,7 +519,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 goodtypeenum = (int)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroupId);
             }
 
-            if (ck5Type == Enums.CK5Type.DomesticAlcohol || ck5Type == Enums.CK5Type.PortToImporter)
+            if (ck5Type == Enums.CK5Type.DomesticAlcohol 
+                //|| ck5Type == Enums.CK5Type.PortToImporter
+                )
             {
                 if (ck5Type == Enums.CK5Type.DomesticAlcohol)
                     goodtypeenum = (int) Enums.ExGoodsType.EtilAlcohol;
@@ -632,7 +634,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         else
                         {
                             if (model.Ck5Type != Enums.CK5Type.Export &&
-                                //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                                model.Ck5Type != Enums.CK5Type.PortToImporter &&
                                 model.Ck5Type != Enums.CK5Type.Manual)
                             {
                                 //double check
@@ -641,8 +643,9 @@ namespace Sampoerna.EMS.Website.Controllers
                                 if (!model.SubmissionDate.HasValue)
                                     model.SubmissionDate = DateTime.Now;
 
-                                if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol ||
-                                    model.Ck5Type == Enums.CK5Type.PortToImporter)
+                                if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol 
+                                    //|| model.Ck5Type == Enums.CK5Type.PortToImporter
+                                    )
                                 {
                                     output = _ck5Bll.GetQuotaRemainAndDatePbck1ItemExternal(model.SourcePlantName,
                                     model.SourceNppbkcId,
@@ -841,7 +844,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
                         //model.Ck5Type != Enums.CK5Type.DomesticAlcohol &&
                         model.Ck5Type != Enums.CK5Type.Manual)
                     {
@@ -863,8 +866,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         model.PbckUom = output.PbckUom;
                     }
-                    else if (model.Ck5Type == Enums.CK5Type.PortToImporter &&
-                             model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                    else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                     {
                         
                     }
@@ -937,7 +939,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             else
                             {
                                 if (model.Ck5Type != Enums.CK5Type.Export &&
-                                    //model.Ck5Type != Enums.CK5Type.PortToImporter && 
+                                    model.Ck5Type != Enums.CK5Type.PortToImporter && 
                                     model.Ck5Type != Enums.CK5Type.Manual)
                                 {
 
@@ -1110,7 +1112,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
                         model.Ck5Type != Enums.CK5Type.Manual)
                     {
                         var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
@@ -1253,7 +1255,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
                         model.Ck5Type != Enums.CK5Type.Manual)
                     {
 
@@ -2070,6 +2072,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //rollaback the update
                 _ck5Bll.GovApproveDocumentRollback(input);
                 AddMessageInfo("Failed Create CK5 XMl message : " + ex.Message, Enums.MessageInfoType.Error);
+                
                 return false;
             }
           

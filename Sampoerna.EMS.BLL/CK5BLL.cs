@@ -341,7 +341,7 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
-                //input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
                 return;
             //if domestic not check quota
@@ -2785,8 +2785,9 @@ namespace Sampoerna.EMS.BLL
                     {
                         sourcePlant = _plantBll.GetT001WByIdImport(ck5UploadFileDocuments.SourcePlantId);
                     }
-                    else if (output.CK5_TYPE == Enums.CK5Type.DomesticAlcohol ||
-                             output.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                    else if (output.CK5_TYPE == Enums.CK5Type.DomesticAlcohol 
+                        //|| output.CK5_TYPE == Enums.CK5Type.PortToImporter
+                        )
                     {
 
                     }
