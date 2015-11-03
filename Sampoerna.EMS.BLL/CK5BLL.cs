@@ -1711,9 +1711,9 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.CK5Type.Manual:
                     if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial)
-                        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
-                    else
                         newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GoodIssue);
+                    else
+                        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
                     break;
                 case Enums.CK5Type.DomesticAlcohol:
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.PurchaseOrder);
