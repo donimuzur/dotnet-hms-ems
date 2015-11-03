@@ -499,7 +499,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.REGION_DGCE, opt => opt.MapFrom(src => src.RegionOfficeOfDGCE))
                 .ForMember(dest => dest.REGION, opt => opt.MapFrom(src => src.Region))
                 .ForMember(dest => dest.TEXT_TO, opt => opt.MapFrom(src => src.TextTo))
-                .ForMember(dest => dest.CITY_ALIAS, opt => opt.MapFrom(src => src.CityAlias));
+                .ForMember(dest => dest.CITY_ALIAS, opt => opt.MapFrom(src => src.CityAlias))
+                .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.FlagForLack1));
                 
 
 
