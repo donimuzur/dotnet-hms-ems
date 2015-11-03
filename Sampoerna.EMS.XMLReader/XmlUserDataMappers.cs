@@ -60,6 +60,7 @@ namespace Sampoerna.EMS.XMLReader
                         user.FIRST_NAME = _xmlMapper.GetElementValue(xElement.Element("NACHN_EN")).Trim();
                         user.LAST_NAME = _xmlMapper.GetElementValue(xElement.Element("VORNA_EN")).Trim();
                         user.EMAIL = _xmlMapper.GetElementValue(xElement.Element("WKEMAIL")).Trim();
+                        user.ACCT = _xmlMapper.GetElementValue(xElement.Element("ACCT")).Trim();
                         
                        
                         var ExistUser = GetUser(user.USER_ID);
@@ -141,6 +142,14 @@ namespace Sampoerna.EMS.XMLReader
             return existingData;
         }
 
+        public bool IsUserPoa(USER userData)
+        {
+            var isPoa = _xmlMapper.uow.GetGenericRepository<POA>()
+                .GetByID(userData.USER_ID) != null;
+
+            return isPoa;
+        }
+
         public void InsertPOA(USER userdata)
         {
             
@@ -172,7 +181,23 @@ namespace Sampoerna.EMS.XMLReader
                 poa.MODIFIED_DATE = DateTime.Now;
             }
 
+
             _xmlMapper.InsertOrUpdate(poa);
+        }
+
+        public USER GetManagerUser(USER userdata,string acctSpv)
+        {
+            if (IsUserPoa(userdata))
+            {
+                var manager = _xmlMapper.uow.GetGenericRepository<USER>()
+                    .Get(x => x.ACCT == acctSpv).FirstOrDefault();
+
+                return manager;
+            }
+            else
+            {
+                return null;
+            }
         }
 
     }

@@ -247,7 +247,7 @@ namespace Sampoerna.EMS.Website.Controllers
             SelectList data;
             T001WDto dataPlant = _plantBll.GetT001WById(plantId);
 
-            if (ck5Type == Enums.CK5Type.Domestic || ck5Type == Enums.CK5Type.Manual)
+            if (ck5Type == Enums.CK5Type.Domestic)
             {
                 
                 data = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode);
@@ -519,7 +519,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 goodtypeenum = (int)Enum.Parse(typeof(Enums.ExGoodsType), goodTypeGroupId);
             }
 
-            if (ck5Type == Enums.CK5Type.DomesticAlcohol || ck5Type == Enums.CK5Type.PortToImporter)
+            if (ck5Type == Enums.CK5Type.DomesticAlcohol 
+                //|| ck5Type == Enums.CK5Type.PortToImporter
+                )
             {
                 if (ck5Type == Enums.CK5Type.DomesticAlcohol)
                     goodtypeenum = (int) Enums.ExGoodsType.EtilAlcohol;
@@ -632,7 +634,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         else
                         {
                             if (model.Ck5Type != Enums.CK5Type.Export &&
-                                //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                                model.Ck5Type != Enums.CK5Type.PortToImporter &&
                                 model.Ck5Type != Enums.CK5Type.Manual)
                             {
                                 //double check
@@ -641,8 +643,9 @@ namespace Sampoerna.EMS.Website.Controllers
                                 if (!model.SubmissionDate.HasValue)
                                     model.SubmissionDate = DateTime.Now;
 
-                                if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol ||
-                                    model.Ck5Type == Enums.CK5Type.PortToImporter)
+                                if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol 
+                                    //|| model.Ck5Type == Enums.CK5Type.PortToImporter
+                                    )
                                 {
                                     output = _ck5Bll.GetQuotaRemainAndDatePbck1ItemExternal(model.SourcePlantName,
                                     model.SourceNppbkcId,
@@ -841,7 +844,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
                         //model.Ck5Type != Enums.CK5Type.DomesticAlcohol &&
                         model.Ck5Type != Enums.CK5Type.Manual)
                     {
@@ -863,8 +866,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         model.PbckUom = output.PbckUom;
                     }
-                    else if (model.Ck5Type == Enums.CK5Type.PortToImporter &&
-                             model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                    else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                     {
                         
                     }
@@ -937,7 +939,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             else
                             {
                                 if (model.Ck5Type != Enums.CK5Type.Export &&
-                                    //model.Ck5Type != Enums.CK5Type.PortToImporter && 
+                                    model.Ck5Type != Enums.CK5Type.PortToImporter && 
                                     model.Ck5Type != Enums.CK5Type.Manual)
                                 {
 
@@ -1110,7 +1112,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
                         model.Ck5Type != Enums.CK5Type.Manual)
                     {
                         var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
@@ -1135,6 +1137,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     input.Ck5ManualType = Enums.Ck5ManualType.Trial;
                     model.AllowGoodIssue = _workflowBll.AllowGoodIssue(input);
                     model.AllowGoodReceive = _workflowBll.AllowGoodReceive(input);
+                }
+                else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                {
+                    model.AllowGoodIssue = _workflowBll.AllowDomesticAlcoholGoodIssue(input);
+                    model.AllowGoodReceive = _workflowBll.AllowDomesticAlcoholGoodReceive(input);
+                    model.AllowPurchaseOrder = _workflowBll.AllowDomesticAlcoholPurchaseOrder(input);
+                    
                 }
                 else
                 {
@@ -1246,7 +1255,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
-                        //model.Ck5Type != Enums.CK5Type.PortToImporter &&
+                        model.Ck5Type != Enums.CK5Type.PortToImporter &&
                         model.Ck5Type != Enums.CK5Type.Manual)
                     {
 
@@ -1688,6 +1697,51 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public ActionResult POCreated(CK5FormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
+                // return View("Details", model);
+                return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+            }
+
+            try
+            {
+                //CK5Workflow(model.Ck5Id, Enums.ActionType.Submit, string.Empty);
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+
+                switch (model.DocumentStatus)
+                {
+                    case Enums.DocumentStatus.PurchaseOrder:
+                        input.ActionType = Enums.ActionType.POCreated;
+                        break;
+                    
+                    default:
+                        AddMessageInfo("DocumentStatus Not Allowed", Enums.MessageInfoType.Error);
+                        return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
+
+                input.DocumentNumber = model.DnNumber;
+
+
+
+                _ck5Bll.CK5Workflow(input);
+
+                AddMessageInfo("Success update Purchase Order Number", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
         public ActionResult CK5GRCreated(CK5FormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -1989,7 +2043,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
 
             //if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn) return true;
-            if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn)
+            if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
             {
                 _ck5Bll.CK5Workflow(input);
                 return true;
@@ -2018,6 +2072,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //rollaback the update
                 _ck5Bll.GovApproveDocumentRollback(input);
                 AddMessageInfo("Failed Create CK5 XMl message : " + ex.Message, Enums.MessageInfoType.Error);
+                
                 return false;
             }
           
