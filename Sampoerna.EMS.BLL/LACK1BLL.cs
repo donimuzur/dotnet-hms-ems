@@ -1412,7 +1412,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             var totalUsageIncludeCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-            var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+            //var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
 
             rc.TotalUsage = totalUsageIncludeCk5;
 
@@ -1503,7 +1503,7 @@ namespace Sampoerna.EMS.BLL
                 Werks = input.SupplierPlantId,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
-                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).ToList()
+                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList()
             });
 
             if (zaapShiftRpt.Count == 0)
@@ -1538,7 +1538,7 @@ namespace Sampoerna.EMS.BLL
                                   prod.PRODUCT_ALIAS,
                                   prod.PRODUCT_TYPE,
                                   ck4CItem.UOM.UOM_DESC
-                              }).ToList();
+                              }).Distinct().ToList();
 
             if (joinedData.Count == 0)
             {
@@ -1551,10 +1551,9 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            var totalProduction = joinedData.Sum(d => d.QTY.HasValue ? d.QTY.Value : 0);
             var productionList = new List<Lack1GeneratedProductionDataDto>();
 
-            //grouping
+            //calculation proccess
             foreach (var item in joinedData)
             {
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
@@ -1575,19 +1574,14 @@ namespace Sampoerna.EMS.BLL
                     //calculate proporsional
                     itemToInsert.Amount =
                         Math.Round(
-                            ((totalUsageInCk5/totalUsage)*(itemToInsert.Amount/totalProduction)*itemToInsert.Amount), 3);
+                            ((totalUsageInCk5/totalUsage) * itemToInsert.Amount), 3);
                 }
-                else
-                {
-                    //100%
-                    itemToInsert.Amount =
-                        Math.Round(
-                            ((totalUsageInCk5 / totalUsage) * itemToInsert.Amount), 3);
-                }
+                
                 productionList.Add(itemToInsert);
             }
 
             rc.ProductionList = productionList;
+            rc.ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList);
 
             //calculate summary by UOM ID
             rc.SummaryProductionList = GetSummaryGroupedProductionList(productionList);
@@ -1600,7 +1594,36 @@ namespace Sampoerna.EMS.BLL
                 Data = rc
             };
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private List<Lack1GeneratedProductionSummaryByProdTypeDataDto> GetProductionGroupedByProdTypeList(
+            List<Lack1GeneratedProductionDataDto> list)
+        {
+            if (list.Count <= 0) return new List<Lack1GeneratedProductionSummaryByProdTypeDataDto>();
+            var groupedData = list.GroupBy(p => new
+            {
+                p.ProdCode, 
+                p.ProductAlias,
+                p.ProductType,
+                p.UomId,
+                p.UomDesc
+            }).Select(g => new Lack1GeneratedProductionSummaryByProdTypeDataDto()
+            {
+                ProdCode = g.Key.ProdCode,
+                ProductAlias = g.Key.ProductAlias,
+                ProductType = g.Key.ProductType,
+                UomId = g.Key.UomId,
+                UomDesc = g.Key.UomDesc,
+                TotalAmount = g.Sum(p => p.Amount)
+            });
+
+            return groupedData.ToList();
+        }
+
         /// <summary>
         /// 
         /// </summary>
