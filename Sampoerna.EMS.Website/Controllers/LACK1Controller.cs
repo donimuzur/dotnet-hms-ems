@@ -362,7 +362,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         private List<Lack1SummaryProductionItemModel> ProcessSummaryProductionDetails(
-            List<Lack1ProductionDetailItemModel> input)
+            List<Lack1ProductionDetailItemSummaryByProdTypeModel> input)
         {
             if (input.Count > 0)
             {
@@ -374,7 +374,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     UomId = g.Key.UomId,
                     UomDesc = g.Key.UomDesc,
-                    Amount = g.Sum(p => p.Amount)
+                    Amount = g.Sum(p => p.TotalAmount)
                 });
 
                 return groupedData.ToList();
@@ -603,7 +603,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dsReport.Lack1.AddLack1Row(dMasterRow);
             
             //for total
-            var prodList = Mapper.Map<List<Lack1ProductionDetailItemModel>>(data.Lack1ProductionDetail);
+            var prodList = Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(data.Lack1ProductionDetailSummaryByProdType);
             var summaryProductionList = ProcessSummaryProductionDetails(prodList);
             var totalSummaryProductionList = string.Join(Environment.NewLine,
                 summaryProductionList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
@@ -611,7 +611,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var summaryProductionJenis = string.Join(Environment.NewLine,
                 prodList.Select(d => d.ProductAlias).ToList());
             var summaryProductionAmount = string.Join(Environment.NewLine,
-                prodList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
+                prodList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
 
             //set detail item
             if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
@@ -896,7 +896,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             model.Lack1Type = lack1Type;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionSummaryByProdTypeList);
 
             SetEditActiveMenu(model, lack1Type);
 
@@ -974,7 +974,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             model.Lack1Type = lack1Type;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionList);
+            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionSummaryByProdTypeList);
 
             SetActiveMenu(model, lack1Type);
 
