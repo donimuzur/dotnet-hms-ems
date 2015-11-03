@@ -160,7 +160,9 @@ namespace Sampoerna.EMS.Website
                     opt =>
                         opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => String.Format("'{0}", p.DocumentNumber)).ToArray())))
                 .ForMember(dest => dest.GrandTotalExciseable,
-                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.Qty).ToArray())));
+                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.GRAND_TOTAL_EX).ToArray())))
+                .ForMember(dest => dest.UoM,
+                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.PACKAGE_UOM_ID).ToArray())));
 
             #endregion
 

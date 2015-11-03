@@ -341,6 +341,7 @@ namespace Sampoerna.EMS.BLL
         private void ValidateCk5(CK5SaveInput input)
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export)
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
                 return;
             
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
@@ -569,6 +570,7 @@ namespace Sampoerna.EMS.BLL
                         //{
                         //    messageList.Add(tempOutput.Message);
                         //}
+                        
                         
                     }
                 }
@@ -1223,7 +1225,7 @@ namespace Sampoerna.EMS.BLL
                     else
                     {
                         GovApproveDocument(input);
-                        if (input.Ck5Type != Enums.CK5Type.Export && input.Ck5Type != Enums.CK5Type.PortToImporter)
+                        if (input.Ck5Type != Enums.CK5Type.Export && input.Ck5Type != Enums.CK5Type.PortToImporter && input.Ck5Type != Enums.CK5Type.DomesticAlcohol)
                             isNeedSendNotif = true;
                     } 
                         
@@ -1236,6 +1238,9 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.Cancel:
                     CancelledDocument(input);
+                    break;
+                case Enums.ActionType.POCreated:
+                    PoCreatedDocument(input);
                     break;
                 case Enums.ActionType.GICreated:
                 case Enums.ActionType.GICompleted:
@@ -1711,41 +1716,51 @@ namespace Sampoerna.EMS.BLL
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
 
-            string newValue = dbData.CK5_TYPE == Enums.CK5Type.PortToImporter ? 
-                EnumHelper.GetDescription(Enums.DocumentStatus.TFPosting) : 
-                EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
+            string newValue = "";
 
-            if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
+            switch (dbData.CK5_TYPE)
             {
-                if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial
+                case Enums.CK5Type.PortToImporter:
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.TFPosting);
+                    break;
+                case Enums.CK5Type.Manual:
+                     if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial
                      && dbData.REDUCE_TRIAL.HasValue && dbData.REDUCE_TRIAL.Value)
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GoodIssue);
+
+                        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GoodIssue);
                 else
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForSealing);
+                    break;
+                case Enums.CK5Type.DomesticAlcohol:
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.PurchaseOrder);
+                    break;
+                default:
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
+                    break;
             }
             
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
-            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            switch (dbData.CK5_TYPE)
             {
-                dbData.STATUS_ID = Enums.DocumentStatus.TFPosting;
-            }
-            else
-            {
-                if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
-                {
+                case Enums.CK5Type.PortToImporter:
+                    dbData.STATUS_ID = Enums.DocumentStatus.TFPosting;
+                    break;
+                case Enums.CK5Type.Manual:
                     if (dbData.CK5_MANUAL_TYPE == Enums.Ck5ManualType.Trial
                         && dbData.REDUCE_TRIAL.HasValue && dbData.REDUCE_TRIAL.Value)
                         dbData.STATUS_ID = Enums.DocumentStatus.GoodIssue;
-                    else 
+                    else
                         dbData.STATUS_ID = Enums.DocumentStatus.WaitingForSealing;
-                }
-                else
-                {
+                    break;
+                case Enums.CK5Type.DomesticAlcohol:
+                    dbData.STATUS_ID = Enums.DocumentStatus.PurchaseOrder;
+                    break;
+                default:
                     dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
-                }
+                    break;
             }
             
 
@@ -2014,6 +2029,34 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        private void PoCreatedDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.PurchaseOrder)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            string oldValue = dbData.DN_NUMBER;
+            string newValue = input.DnNumber;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "DN_NUMBER(PO)", input.UserId, dbData.CK5_ID.ToString());
+            dbData.DN_NUMBER = input.DnNumber;
+
+
+
+            dbData.STATUS_ID = Enums.DocumentStatus.GoodIssue;
+
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            AddWorkflowHistory(input);
+
+            
+            
+        }
 
         private void GiCreatedDocument(CK5WorkflowDocumentInput input)
         {
@@ -2759,8 +2802,9 @@ namespace Sampoerna.EMS.BLL
                     {
                         sourcePlant = _plantBll.GetT001WByIdImport(ck5UploadFileDocuments.SourcePlantId);
                     }
-                    else if (output.CK5_TYPE == Enums.CK5Type.DomesticAlcohol ||
-                             output.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                    else if (output.CK5_TYPE == Enums.CK5Type.DomesticAlcohol 
+                        //|| output.CK5_TYPE == Enums.CK5Type.PortToImporter
+                        )
                     {
 
                     }
@@ -2952,6 +2996,8 @@ namespace Sampoerna.EMS.BLL
 
             var outputList = ValidateCk5UploadFileDocuments(inputs);
 
+            
+
             for (int i = 0; i < outputList.Count; i++)
             {
                 outputList[i].Message += outputListCk5Material[i].Message;
@@ -2996,8 +3042,67 @@ namespace Sampoerna.EMS.BLL
 
             }
 
+            ValidateQuotaFromUpload(outputList);
+
             return outputList;
         }
+
+        private void ValidateQuotaFromUpload(List<CK5FileUploadDocumentsOutput> outputs)
+        {
+            Dictionary<string, decimal> quotaRemaining = new Dictionary<string, decimal>();
+            //List<int> pbck1List = outputs.Where(x=> x.PBCK1_DECREE_ID.HasValue).Select(x => x.PBCK1_DECREE_ID.Value).Distinct().ToList();
+            //foreach (int pbck1Id in pbck1List)
+            //{
+                
+            //    pbck1QuotaRemaining.Add(pbck1Id, quotaOutput);
+            //}
+            foreach (CK5FileUploadDocumentsOutput output in outputs)
+            {
+                if (output.PBCK1_DECREE_ID.HasValue)
+                {
+                    var stringFilter = String.Format("{0},{1},{2},{3},{4}",
+                        output.SOURCE_PLANT_ID,
+                        output.SOURCE_PLANT_NPPBKC_ID,
+                        output.DEST_PLANT_NPPBKC_ID,
+                        output.SUBMISSION_DATE.Value.ToString("yyyymmdd"),
+                        (int)output.EX_GOODS_TYPE);
+
+                    if (!quotaRemaining.ContainsKey(stringFilter))
+                    {
+                        var quotaRemainObj = GetQuotaRemainAndDatePbck1Item(output.SOURCE_PLANT_ID,
+                            output.SOURCE_PLANT_NPPBKC_ID, output.SUBMISSION_DATE.Value,
+                            output.DEST_PLANT_NPPBKC_ID, (int) output.EX_GOODS_TYPE);
+
+                        quotaRemaining.Add(stringFilter, quotaRemainObj.RemainQuota);
+                    }
+
+                    if (quotaRemaining[stringFilter] - output.ConvertedQty < 0)
+                    {
+                        output.IsValid = false;
+                        output.Message = output.Message + "," + String.Format("pbck-1 quota remaining : {0} , Requested Qty : {1}", quotaRemaining[stringFilter], output.ConvertedQty);
+                    }
+                    quotaRemaining[stringFilter] = quotaRemaining[stringFilter] - output.ConvertedQty;
+
+                    
+                }
+
+
+            }
+        }
+
+        //private GetQuotaAndRemainOutput GetPbck1QuotaByPbck1Id(long pbck1id)
+        //{
+        //    GetQuotaAndRemainOutput output = new GetQuotaAndRemainOutput();
+        //    var pbck1 = _pbck1Bll.GetById(pbck1id);
+        //    if (pbck1.DecreeDate != null) output.Pbck1DecreeDate = pbck1.DecreeDate.Value.ToString("YYYY-MM-DD");
+
+        //    output.Pbck1Id = (int)pbck1id;
+        //    output.Pbck1Number = pbck1.Pbck1Number;
+        //    output.PbckUom = pbck1.RequestQtyUomId;
+        //    output.QtyApprovedPbck1 = (pbck1.QtyApproved != null) ? pbck1.QtyApproved.Value : 0;
+
+            
+        //}
 
         private CK5 ProcessInsertCk5(CK5SaveInput input)
         {

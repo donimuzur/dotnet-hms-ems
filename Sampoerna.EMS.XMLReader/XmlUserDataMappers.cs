@@ -43,7 +43,8 @@ namespace Sampoerna.EMS.XMLReader
                         var role = new USER_BROLE();
                         role.BROLE = _xmlMapper.GetElementValue(xElement.Element("BROLE")).Trim();
                         role.BROLE_DESC = _xmlMapper.GetElementValue(xElement.Element("BROLE_DESC")).TrimEnd();
-                        var ExistBrole = GetBrole(role.BROLE);
+
+                        
                        
                         _xmlMapper.InsertOrUpdate(role);
                         
@@ -59,6 +60,7 @@ namespace Sampoerna.EMS.XMLReader
                         user.FIRST_NAME = _xmlMapper.GetElementValue(xElement.Element("NACHN_EN")).Trim();
                         user.LAST_NAME = _xmlMapper.GetElementValue(xElement.Element("VORNA_EN")).Trim();
                         user.EMAIL = _xmlMapper.GetElementValue(xElement.Element("WKEMAIL")).Trim();
+                        user.ACCT = _xmlMapper.GetElementValue(xElement.Element("ACCT")).Trim();
                         
                        
                         var ExistUser = GetUser(user.USER_ID);
@@ -73,12 +75,21 @@ namespace Sampoerna.EMS.XMLReader
                             user.MODIFIED_DATE = DateTime.Now;
                             user.CREATED_DATE = ExistUser.CREATED_DATE;
                         }
+
+
+
+
                         _xmlMapper.InsertOrUpdate(user);
 
-                        var ExistRoleMap = GetBroleMap(roleMap.BROLE, roleMap.MSACCT);
-                        if (ExistRoleMap != null)
+                        if (!role.BROLE_DESC.Contains("POA_MANAGER") && role.BROLE_DESC.Contains("_POA"))
                         {
-                            roleMap.BROLE_MAP_ID = ExistRoleMap.BROLE_MAP_ID;
+                            InsertPOA(user);
+                        }
+
+                        var existRoleMap = GetBroleMap(roleMap.BROLE, roleMap.MSACCT);
+                        if (existRoleMap != null)
+                        {
+                            roleMap.BROLE_MAP_ID = existRoleMap.BROLE_MAP_ID;
                         }
                        _xmlMapper.InsertOrUpdate(roleMap);
                         items.Add(roleMap);
@@ -131,7 +142,63 @@ namespace Sampoerna.EMS.XMLReader
             return existingData;
         }
 
+        public bool IsUserPoa(USER userData)
+        {
+            var isPoa = _xmlMapper.uow.GetGenericRepository<POA>()
+                .GetByID(userData.USER_ID) != null;
 
+            return isPoa;
+        }
+
+        public void InsertPOA(USER userdata)
+        {
+            
+            var existingPOA = _xmlMapper.uow.GetGenericRepository<POA>()
+                .GetByID(userdata.USER_ID);
+
+            POA poa = existingPOA;
+            if (poa == null)
+            {
+                poa = new POA();
+                poa.IS_ACTIVE = true;
+                poa.POA_ID = userdata.USER_ID;
+                poa.LOGIN_AS = userdata.USER_ID;
+                poa.PRINTED_NAME = userdata.FIRST_NAME + " " + userdata.LAST_NAME;
+                poa.POA_EMAIL = userdata.EMAIL;
+                poa.CREATED_BY = "PI";
+                poa.POA_ADDRESS = "";
+                poa.POA_PHONE = "";
+                poa.ID_CARD = "";
+
+                poa.CREATED_BY = "PI";
+                poa.CREATED_DATE = DateTime.Now;
+            }
+            else
+            {
+                poa.PRINTED_NAME = userdata.FIRST_NAME + " " + userdata.LAST_NAME;
+                poa.POA_EMAIL = userdata.EMAIL;
+                poa.MODIFIED_BY = "PI";
+                poa.MODIFIED_DATE = DateTime.Now;
+            }
+
+
+            _xmlMapper.InsertOrUpdate(poa);
+        }
+
+        public USER GetManagerUser(USER userdata,string acctSpv)
+        {
+            if (IsUserPoa(userdata))
+            {
+                var manager = _xmlMapper.uow.GetGenericRepository<USER>()
+                    .Get(x => x.ACCT == acctSpv).FirstOrDefault();
+
+                return manager;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
     }
 }

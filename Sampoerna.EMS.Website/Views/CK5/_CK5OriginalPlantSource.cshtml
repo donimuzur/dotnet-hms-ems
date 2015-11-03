@@ -5,10 +5,14 @@
         <div class="row">
             <label class="col-md-4">Plant<span class="red">*</span></label>
             <div class="col-md-8">
-                @if (Model.IsCk5PortToImporter || Model.IsDomesticAlcohol)
+                @if (Model.IsDomesticAlcohol)
                 {
                     @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
 
+                }
+                else if (Model.IsCk5PortToImporter)
+                {
+                    @Html.TextBoxFor(model=> model.SourcePlantName, new { @class = "form-control" })
                 }
                 else if (Model.IsCk5ImporterToPlant)
                 {
@@ -47,7 +51,15 @@
         <div class="row">
             <label class="col-md-4">NPPBKC ID</label>
             <div class="col-md-8">
-                @Html.TextBoxFor(model => model.SourceNppbkcId, new { @disabled = "disabled", @class = "form-control" })
+                @if (Model.IsCk5PortToImporter)
+                {
+                    @Html.TextBoxFor(model => model.SourceNppbkcId, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.SourceNppbkcId, new { @disabled = "disabled", @class = "form-control" })
+                }
+                
             </div>
         </div>
     </div>
@@ -55,7 +67,14 @@
         <div class="row">
             <label class="col-md-4">Company Name</label>
             <div class="col-md-8">
-                @Html.TextBoxFor(model => model.SourceCompanyName, new { @disabled = "disabled", @class = "form-control" })
+                @if (Model.IsCk5PortToImporter)
+                {
+                    @Html.TextBoxFor(model => model.SourceCompanyName, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.SourceCompanyName, new {@disabled = "disabled", @class = "form-control"})
+                }
             </div>
         </div>
     </div>
@@ -65,7 +84,14 @@
         <div class="row">
             <label class="col-md-4">Address</label>
             <div class="col-md-8">
-                @Html.TextAreaFor(model => model.SourceAddress, new { @rows = "5", @disabled = "disabled", @class = "form-control" })
+                @if (Model.IsCk5PortToImporter)
+                {
+                    @Html.TextAreaFor(model => model.SourceAddress, new { @rows = "5", @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextAreaFor(model => model.SourceAddress, new {@rows = "5", @disabled = "disabled", @class = "form-control"})
+                }
             </div>
         </div>
     </div>
@@ -73,8 +99,15 @@
         <div class="row">
             <label class="col-md-4">KPPBC Name, Office ID</label>
             <div class="col-md-8">
-                @Html.TextBoxFor(model => model.SourceKppbcName, new { @disabled = "disabled", @class = "form-control" })
-                @*<input id="SourceKppbcName" type="text" class="form-control" value="" disabled>*@
+                @if (Model.IsCk5PortToImporter)
+                {
+                    @Html.TextBoxFor(model => model.SourceKppbcName, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.SourceKppbcName, new {@disabled = "disabled", @class = "form-control"})
+                    @*<input id="SourceKppbcName" type="text" class="form-control" value="" disabled>*@
+                }
             </div>
         </div>
     </div>
