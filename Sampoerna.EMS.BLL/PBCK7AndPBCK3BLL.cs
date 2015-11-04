@@ -228,11 +228,11 @@ namespace Sampoerna.EMS.BLL
             }
             if (IsComplete)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.GovRejected);
             }
             else
             {
-                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.GovRejected);
             }
 
 
@@ -325,11 +325,13 @@ namespace Sampoerna.EMS.BLL
 
             if (IsComplete)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled);
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled
+                    || c.STATUS == Enums.DocumentStatus.GovRejected);
             }
             else
             {
-                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.Cancelled);
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.Cancelled
+                    && c.STATUS != Enums.DocumentStatus.GovRejected);
             }
             //Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = null;
             //if (!string.IsNullOrEmpty(input.ShortOrderColum))
@@ -1719,10 +1721,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             ////Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.Rejected;
+            dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
@@ -2378,10 +2380,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             ////Add Changes
-            WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.Rejected);
+            WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChangesPbck3(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType3.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.Rejected;
+            dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.GOV_STATUS = Enums.DocumentStatusGovType3.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
