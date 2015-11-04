@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Ck4CDto> GetOpenDocumentByParam(Ck4cGetOpenDocumentByParamInput input);
 
-        List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input);
+        List<Ck4CDto> GetAllByParam(Ck4CDashboardParamInput input);
 
         List<Ck4CDto> GetOpenDocument();
 
