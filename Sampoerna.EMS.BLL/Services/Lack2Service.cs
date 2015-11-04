@@ -268,5 +268,36 @@ namespace Sampoerna.EMS.BLL.Services
             return rc;
         }
 
+        public List<LACK2> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
+        {
+            var queryFilter = PredicateHelper.True<LACK2>();
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa || c.CREATED_BY == input.Poa);
+            }
+
+            if (input.PeriodFromMonth.HasValue && input.PeriodFromYear.HasValue)
+            {
+                var dtFrom = new DateTime(input.PeriodFromYear.Value, input.PeriodFromMonth.Value, 1);
+                queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR, c.PERIOD_MONTH, 1) >= dtFrom);
+            }
+
+            if (input.PeriodToMonth.HasValue && input.PeriodToYear.HasValue)
+            {
+                var dtTo = new DateTime(input.PeriodToYear.Value, input.PeriodToMonth.Value, 1);
+                queryFilter =
+                    queryFilter.And(c => new DateTime(input.PeriodToYear.Value, input.PeriodToMonth.Value, 1) <= dtTo);
+            }
+
+            return _repository.Get(queryFilter).ToList();
+
+        }
+
     }
 }

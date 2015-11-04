@@ -18,5 +18,6 @@ namespace Sampoerna.EMS.Contract
         void Lack2Workflow(Lack2WorkflowDocumentInput input);
         List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
         List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
+        Lack2GetDashboardDataOutput GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input);
     }
 }

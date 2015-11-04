@@ -2044,7 +2044,16 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-        
+
+        #region ----------------- Dashboard Page -------------
+
+        public ActionResult DashboardPage()
+        {
+            return View();
+        }
+
+        #endregion
+
     }
 
 }

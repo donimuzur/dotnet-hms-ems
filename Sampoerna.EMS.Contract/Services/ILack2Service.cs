@@ -15,6 +15,7 @@ namespace Sampoerna.EMS.Contract.Services
         LACK2 GetBySelectionCriteria(Lack2GetBySelectionCriteriaParamInput input);
         List<LACK2> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
         List<LACK2> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
+        List<LACK2> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input);
 
     }
 }

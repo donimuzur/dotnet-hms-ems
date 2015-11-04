@@ -342,6 +342,7 @@
     <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2BaseItemModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DashboardViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2DetailReportsViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2DetailViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2EditViewModel.cs" />
