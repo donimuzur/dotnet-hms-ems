@@ -64,7 +64,7 @@
                     @Html.AntiForgeryToken()
                     <ul role="tablist" class="nav nav-tabs">
                         <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
-                        @if (Model.Pbck3Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Pbck3Status != Enums.DocumentStatus.Cancelled)
+                        @if (Model.Pbck3Status >= Enums.DocumentStatus.WaitingGovApproval && (Model.Pbck3Status != Enums.DocumentStatus.Cancelled && Model.Pbck3Status != Enums.DocumentStatus.GovRejected))
                         {
                             <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck3" href="#printoutpbck3">Print Out</a></li>
                         }
@@ -80,7 +80,7 @@
                         {
                             @Html.Partial("_HomeEditPbck3Pbck7")
                         }
-                        @if (Model.Pbck3Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Pbck3Status != Enums.DocumentStatus.Cancelled)
+                        @if (Model.Pbck3Status >= Enums.DocumentStatus.WaitingGovApproval && (Model.Pbck3Status != Enums.DocumentStatus.Cancelled && Model.Pbck3Status != Enums.DocumentStatus.GovRejected))
                         {
                             @Html.Partial("_PrintOutPbck3")
                         }
@@ -202,15 +202,19 @@
 
         $('#Pbck3GovStatus').on('change', function(e) {
             var valueSelected = this.value;
+            var isDisabled = false;
 
             $('#divComment').hide();
 
-
             if (valueSelected == 'Rejected' || valueSelected == 'Cancelled') {
                 $('#divComment').show();
-
+                isDisabled = true;
             }
 
+            $('#Ck2Number').prop('disabled', isDisabled);
+            $('#Ck2Date').prop('disabled', isDisabled);
+            $('#Ck2Value').prop('disabled', isDisabled);
+            $('#btnAddCk2Doc').prop('disabled', isDisabled);
         });
 
         $("#btnSaveGovStatus").click(function() {

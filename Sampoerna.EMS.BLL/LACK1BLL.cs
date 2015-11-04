@@ -1402,7 +1402,7 @@ namespace Sampoerna.EMS.BLL
                 PlantIdList = plantIdList,
                 StoReceiverNumberList = stoReceiverNumberList
             };
-
+            
             var invMovementOutput = _inventoryMovementService.GetForLack1UsageMovementByParam(invMovementInput);
 
             if (invMovementOutput.IncludeInCk5List.Count <= 0)
@@ -1415,7 +1415,7 @@ namespace Sampoerna.EMS.BLL
                     Data = null
                 };
             }
-
+            
             var totalUsageIncludeCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
             //var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
 
@@ -1425,6 +1425,22 @@ namespace Sampoerna.EMS.BLL
             rc.InvMovementReceivingList = Mapper.Map<List<Lack1GeneratedTrackingDto>>(invMovementOutput.ReceivingList);
             rc.InvMovementAllList =
                 Mapper.Map<List<Lack1GeneratedTrackingDto>>(invMovementOutput.AllUsageList);
+
+            #region ------------- Get Previous Period ---------------
+            if (input.PeriodMonth == 12)
+            {
+                invMovementInput.PeriodMonth = 11;
+                invMovementInput.PeriodYear = invMovementInput.PeriodYear - 1;
+            }
+            else
+            {
+                invMovementInput.PeriodMonth = invMovementInput.PeriodMonth - 1;
+            }
+
+            var invMovementOutputPrevPeriod =
+                _inventoryMovementService.GetForLack1UsageMovementByParam(invMovementInput);
+
+            #endregion
 
             //set begining balance
             rc = SetBeginingBalanceBySelectionCritera(rc, input);
@@ -1444,7 +1460,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             //Set Production List
-            var prodDataOut = SetProductionList(rc, input, invMovementOutput);
+            var prodDataOut = SetProductionList(rc, input, invMovementOutput, invMovementOutputPrevPeriod);
             if (!prodDataOut.Success) return prodDataOut;
 
             rc = prodDataOut.Data;
@@ -1478,7 +1494,8 @@ namespace Sampoerna.EMS.BLL
             return "";
         }
 
-        private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
+        private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input,
+            InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput, InvMovementGetForLack1UsageMovementByParamOutput invMovementOutputBeforeCurrentPeriod)
         {
             var totalUsageInCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
             var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
@@ -1597,7 +1614,27 @@ namespace Sampoerna.EMS.BLL
                     //calculate proporsional
                     itemToInsert.Amount =
                         Math.Round(
-                            ((totalUsageInCk5/totalUsage) * itemToInsert.Amount), 3);
+                            ((totalUsageInCk5/totalUsage)*itemToInsert.Amount), 3);
+                }
+                else
+                {
+                    if (invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.Count > 0)
+                    {
+                        var chk =
+                            invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.FirstOrDefault(
+                                c => c.ORDR == item.ORDR);
+                        if (chk != null)
+                        {
+                            //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
+                            var totalUsageInCk5PrevPeriod = (-1) * invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                            var totalUsageExcludeCk5PrevPeriod = (-1) * invMovementOutputBeforeCurrentPeriod.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                            var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
+
+                            itemToInsert.Amount =
+                        Math.Round(
+                            ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
+                        }
+                    }
                 }
                 
                 productionList.Add(itemToInsert);

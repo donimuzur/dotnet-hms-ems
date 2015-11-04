@@ -1,0 +1,35 @@
+﻿@model Sampoerna.EMS.Website.Models.Dashboard.DashboardDetilModel
+
+<div class="row" id="DashboardDetil">
+    <div class="col-sm-8">
+        <div class="white-wrapper">
+            <h3>Chart</h3>
+            <div class="row">
+                <div class="col-sm-8">
+                    <canvas id="canvas" height="250" width="610"></canvas>
+                </div>
+                <div id="js-legend" class="chart-legend"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h4>Status</h4>
+        <div class="notif-wrapper radius-left">
+            <h1 id="completedId" style="display:none">@Html.DisplayFor(model => model.CompletedTotal)</h1>
+            <h1 id="draftId">@Html.DisplayFor(model => model.DraftTotal)</h1>
+            <h5>Draft</h5>
+        </div>
+        <div class="notif-wrapper radius-right">
+            <h1 id="waitPId">@Html.DisplayFor(model => model.WaitingForPoaTotal)</h1>
+            <h5>Waiting for Approval POA</h5>
+        </div>
+        <div class="notif-wrapper radius-left bottom">
+            <h1 id="waitMId">@Html.DisplayFor(model => model.WaitingForManagerTotal)</h1>
+            <h5>Waiting for Approval Manager</h5>
+        </div>
+        <div class="notif-wrapper radius-right bottom">
+            <h1 id="waitGId">@Html.DisplayFor(model => model.WaitingForGovTotal)</h1>
+            <h5>Waiting for Gov Approval</h5>
+        </div>
+    </div>
+</div>

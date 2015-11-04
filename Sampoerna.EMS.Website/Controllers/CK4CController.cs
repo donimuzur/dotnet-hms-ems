@@ -373,6 +373,15 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(years, "ValueField", "TextField");
         }
 
+        private SelectList Ck4cDashboardYear()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
+
         private List<Ck4cItemData> SetOtherCk4cItemData(List<Ck4cItemData> ck4cItemData)
         {
             List<Ck4cItemData> listData;
@@ -418,41 +427,49 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            var plant = _plantBll.GetT001WById(ck4cData.PlantId);
-            var nppbkcId = ck4cData.NppbkcId;
-
-            //workflow history
-            var workflowInput = new GetByFormNumberInput();
-            workflowInput.FormNumber = ck4cData.Number;
-            workflowInput.DocumentStatus = ck4cData.Status;
-            workflowInput.NPPBKC_Id = nppbkcId;
-
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
-
-            var changesHistory =
-                Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
-                    id.Value.ToString()));
-
-            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
-
-            var model = new Ck4CIndexDocumentListViewModel()
+            try
             {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-                Details = Mapper.Map<DataDocumentList>(ck4cData),
-                WorkflowHistory = workflowHistory,
-                ChangesHistoryList = changesHistory,
-                PrintHistoryList = printHistory
-            };
+                var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+                var nppbkcId = ck4cData.NppbkcId;
 
-            model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+                //workflow history
+                var workflowInput = new GetByFormNumberInput();
+                workflowInput.FormNumber = ck4cData.Number;
+                workflowInput.DocumentStatus = ck4cData.Status;
+                workflowInput.NPPBKC_Id = nppbkcId;
 
-            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
+                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
-            model.AllowEditCompleted = _ck4CBll.AllowEditCompletedDocument(ck4cData, CurrentUser.USER_ID);
+                var changesHistory =
+                    Mapper.Map<List<ChangesHistoryItemModel>>(
+                        _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                        id.Value.ToString()));
 
-            return View(model);
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
+
+                var model = new Ck4CIndexDocumentListViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    Details = Mapper.Map<DataDocumentList>(ck4cData),
+                    WorkflowHistory = workflowHistory,
+                    ChangesHistoryList = changesHistory,
+                    PrintHistoryList = printHistory
+                };
+
+                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
+
+                model.AllowEditCompleted = _ck4CBll.AllowEditCompletedDocument(ck4cData, CurrentUser.USER_ID);
+
+                return View(model);
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("DocumentList");
+            }
         }
 
         public ActionResult Details(int? id)
@@ -469,64 +486,72 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            var plant = _plantBll.GetT001WById(ck4cData.PlantId);
-            var nppbkcId = ck4cData.NppbkcId;
-
-            //workflow history
-            var workflowInput = new GetByFormNumberInput();
-            workflowInput.FormNumber = ck4cData.Number;
-            workflowInput.DocumentStatus = ck4cData.Status;
-            workflowInput.NPPBKC_Id = nppbkcId;
-
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
-
-            var changesHistory =
-                Mapper.Map<List<ChangesHistoryItemModel>>(
-                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
-                    id.Value.ToString()));
-
-            var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
-
-            var model = new Ck4CIndexDocumentListViewModel()
+            try
             {
-                MainMenu = _mainMenu,
-                CurrentMenu = PageInfo,
-                Details = Mapper.Map<DataDocumentList>(ck4cData),
-                WorkflowHistory = workflowHistory,
-                ChangesHistoryList = changesHistory,
-                PrintHistoryList = printHistory
-            };
+                var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+                var nppbkcId = ck4cData.NppbkcId;
 
-            model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+                //workflow history
+                var workflowInput = new GetByFormNumberInput();
+                workflowInput.FormNumber = ck4cData.Number;
+                workflowInput.DocumentStatus = ck4cData.Status;
+                workflowInput.NPPBKC_Id = nppbkcId;
 
-            //validate approve and reject
-            var input = new WorkflowAllowApproveAndRejectInput
-            {
-                DocumentStatus = model.Details.Status,
-                FormView = Enums.FormViewType.Detail,
-                UserRole = CurrentUser.UserRole,
-                CreatedUser = ck4cData.CreatedBy,
-                CurrentUser = CurrentUser.USER_ID,
-                CurrentUserGroup = CurrentUser.USER_GROUP_ID,
-                DocumentNumber = model.Details.Number,
-                NppbkcId = nppbkcId,
-                ManagerApprove = model.Details.ApprovedByManager
-            };
+                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
-            ////workflow
-            var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
-            model.AllowApproveAndReject = allowApproveAndReject;
+                var changesHistory =
+                    Mapper.Map<List<ChangesHistoryItemModel>>(
+                        _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                        id.Value.ToString()));
 
-            if (!allowApproveAndReject)
-            {
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
+
+                var model = new Ck4CIndexDocumentListViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    Details = Mapper.Map<DataDocumentList>(ck4cData),
+                    WorkflowHistory = workflowHistory,
+                    ChangesHistoryList = changesHistory,
+                    PrintHistoryList = printHistory
+                };
+
+                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+
+                //validate approve and reject
+                var input = new WorkflowAllowApproveAndRejectInput
+                {
+                    DocumentStatus = model.Details.Status,
+                    FormView = Enums.FormViewType.Detail,
+                    UserRole = CurrentUser.UserRole,
+                    CreatedUser = ck4cData.CreatedBy,
+                    CurrentUser = CurrentUser.USER_ID,
+                    CurrentUserGroup = CurrentUser.USER_GROUP_ID,
+                    DocumentNumber = model.Details.Number,
+                    NppbkcId = nppbkcId,
+                    ManagerApprove = model.Details.ApprovedByManager
+                };
+
+                ////workflow
+                var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
+                model.AllowApproveAndReject = allowApproveAndReject;
+
+                if (!allowApproveAndReject)
+                {
+                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                }
+
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
+
+                model.AllowEditCompleted = _ck4CBll.AllowEditCompletedDocument(ck4cData, CurrentUser.USER_ID);
+
+                return View(model);
             }
-
-            model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
-
-            model.AllowEditCompleted = _ck4CBll.AllowEditCompletedDocument(ck4cData, CurrentUser.USER_ID);
-
-            return View(model);
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("DocumentList");
+            }
         }
 
         #endregion
@@ -1728,6 +1753,62 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SaveAs(path);
 
             return path;
+        }
+
+        #endregion
+
+        #region Dashboard
+        public ActionResult Dashboard()
+        {
+            var data = InitDashboardModel(new Ck4cDashboardModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                MonthList = GlobalFunctions.GetMonthList(_monthBll),
+                YearList = Ck4cDashboardYear(),
+                PoaList = GlobalFunctions.GetPoaAll(_poabll),
+                UserList = GlobalFunctions.GetCreatorList()
+            });
+
+            return View("Dashboard", data);
+        }
+
+        private Ck4cDashboardModel InitDashboardModel(
+            Ck4cDashboardModel model)
+        {
+            var listCk4c = GetAllDocument(model);
+
+            model.Detil.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
+            model.Detil.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
+            model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            model.Detil.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
+            model.Detil.CompletedTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
+
+            return model;
+        }
+
+        private List<Ck4CDto> GetAllDocument(Ck4cDashboardModel filter = null)
+        {
+            if (filter == null)
+            {
+                //Get All
+                var ck4cData = _ck4CBll.GetAllByParam(new Ck4CDashboardParamInput());
+                return ck4cData;
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Ck4CDashboardParamInput>(filter);
+
+            var dbData = _ck4CBll.GetAllByParam(input);
+            return dbData;
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterDashboardPage(Ck4cDashboardModel model)
+        {
+            var data = InitDashboardModel(model);
+
+            return PartialView("_ChartStatus", data.Detil);
         }
 
         #endregion
