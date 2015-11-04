@@ -1247,6 +1247,7 @@
     <Content Include="Views\CK5\_CK5GoodReceive.cshtml" />
     <Content Include="Views\CK4C\Dashboard.cshtml" />
     <Content Include="Views\Shared\_ChartStatus.cshtml" />
+    <Content Include="Views\LACK2\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

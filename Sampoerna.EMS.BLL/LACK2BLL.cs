@@ -1297,25 +1297,10 @@ namespace Sampoerna.EMS.BLL
 
         #region -------------- Dashboard ------------
 
-        public Lack2GetDashboardDataOutput GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
+        public List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
         {
-            var rc = new Lack2GetDashboardDataOutput();
-
-            var list = _lack2Service.GetDashboardDataByParam(input);
-
-            if(list.Count == 0) return new Lack2GetDashboardDataOutput();
-
-            //grouped data
-            var groupedData = list.GroupBy(p => new
-            {
-                p.STATUS
-            }).Select(g => new Lack2DashboardDto()
-            {
-                DocumentStatus = g.Key.STATUS,
-                TotalDocument = g.Count()
-            }).ToList();
-            rc.DataList = groupedData;
-            return rc;
+            var data = _lack2Service.GetDashboardDataByParam(input);
+            return Mapper.Map<List<Lack2Dto>>(data);
         }
 
         #endregion

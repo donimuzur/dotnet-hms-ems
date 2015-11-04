@@ -2,10 +2,8 @@
 {
     public class Lack2GetDashboardDataByParamInput
     {
-        public int? PeriodFromMonth { get; set; }
-        public int? PeriodFromYear { get; set; }
-        public int? PeriodToMonth { get; set; }
-        public int? PeriodToYear { get; set; }
+        public int? PeriodMonth { get; set; }
+        public int? PeriodYear { get; set; }
         public string Creator { get; set; }
         public string Poa { get; set; }
     }

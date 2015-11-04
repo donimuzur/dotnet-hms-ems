@@ -282,17 +282,14 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa || c.CREATED_BY == input.Poa);
             }
 
-            if (input.PeriodFromMonth.HasValue && input.PeriodFromYear.HasValue)
+            if (input.PeriodMonth.HasValue)
             {
-                var dtFrom = new DateTime(input.PeriodFromYear.Value, input.PeriodFromMonth.Value, 1);
-                queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR, c.PERIOD_MONTH, 1) >= dtFrom);
+                queryFilter = queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth.Value);
             }
 
-            if (input.PeriodToMonth.HasValue && input.PeriodToYear.HasValue)
+            if (input.PeriodYear.HasValue)
             {
-                var dtTo = new DateTime(input.PeriodToYear.Value, input.PeriodToMonth.Value, 1);
-                queryFilter =
-                    queryFilter.And(c => new DateTime(input.PeriodToYear.Value, input.PeriodToMonth.Value, 1) <= dtTo);
+                queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
             }
 
             return _repository.Get(queryFilter).ToList();
