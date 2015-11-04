@@ -68,4 +68,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public bool isForExport { get; set; }
     }
+
+    public class Ck4CDashboardParamInput
+    {
+        public int Month { get; set; }
+
+        public int Year { get; set; }
+
+        public string Creator { get; set; }
+
+        public string Poa { get; set; }
+    }
 }
