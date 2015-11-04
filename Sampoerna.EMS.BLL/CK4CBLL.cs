@@ -73,11 +73,30 @@ namespace Sampoerna.EMS.BLL
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
         }
 
-        public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
+        public List<Ck4CDto> GetAllByParam(Ck4CDashboardParamInput input)
         {
-            var queryFilter = ProcessQueryFilter(input);
+            Expression<Func<CK4C, bool>> queryFilter = PredicateHelper.True<CK4C>();
 
-            return Mapper.Map<List<Ck4CDto>>(GetCk4cData(queryFilter, input.ShortOrderColumn));
+            if (input.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.REPORTED_MONTH == input.Month);
+            }
+            if (input.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.REPORTED_YEAR == input.Year);
+            }
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                var nppbkc = _poaMapBll.GetNppbkcByPoaId(input.Poa);
+
+                queryFilter = queryFilter.And(c => nppbkc.Contains(c.NPPBKC_ID));
+            }
+
+            return Mapper.Map<List<Ck4CDto>>(GetCk4cData(queryFilter, null));
         }
 
         public List<Ck4CDto> GetOpenDocument()

@@ -293,12 +293,9 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
-    <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
-    <Compile Include="Models\CK4C\Ck4CCreateWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cDashboardModel.cs" />
     <Compile Include="Models\CK4C\Ck4cDecreeDocModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
-    <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
-    <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CSummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5ExternalSupplierModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
@@ -314,6 +311,7 @@
     <Compile Include="Models\CK5\CK5SummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
+    <Compile Include="Models\Dashboard\DashboardDetilModel.cs" />
     <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupDetailsViewModel.cs" />
@@ -670,6 +668,7 @@
     <Content Include="Content\css\main.min.css.map" />
     <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
+    <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
     <Content Include="Scripts\ck4cscript.js" />
     <Content Include="Scripts\ck4c\doccompleted.js" />
@@ -1246,6 +1245,8 @@
     <Content Include="Views\CK5\_CK5OriginalPlantDestination.cshtml" />
     <Content Include="Views\CK5\_CK5GoodIssue.cshtml" />
     <Content Include="Views\CK5\_CK5GoodReceive.cshtml" />
+    <Content Include="Views\CK4C\Dashboard.cshtml" />
+    <Content Include="Views\Shared\_ChartStatus.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
