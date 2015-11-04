@@ -119,47 +119,46 @@
             var compInt = parseInt(comp);
 
             var options = {
-                tooltipTemplate : "<%=label%>: <%= Math.round(circumference / 6.283 * 100) %>%"
+                tooltipTemplate: "<%=label%>: <%= Math.round(circumference / 6.283 * 100) %>%"
             }
 
             var pieData = [
-				{
-				    value: draftInt,
-				    color: "#00A3E0",
-				    label: "Draft"
-				},
-				{
-				    value: waitPInt,
-				    color: "#F49D00",
-				    label: "Waiting for Approval POA"
-				},
-				{
-				    value: waitMInt,
-				    color: "#B80718",
-				    label: "Waiting for Approval Manager"
-				},
-				{
-				    value: waitGInt,
-				    color: "#003DA5",
-				    label: "Waiting for Gov Approval"
-				},
-				{
-				    value: compInt,
-				    color: "#538928",
-				    label: "Completed"
-				}
+                {
+                    value: draftInt,
+                    color: "#00A3E0",
+                    label: "Draft"
+                },
+                {
+                    value: waitPInt,
+                    color: "#F49D00",
+                    label: "Waiting for Approval POA"
+                },
+                {
+                    value: waitMInt,
+                    color: "#B80718",
+                    label: "Waiting for Approval Manager"
+                },
+                {
+                    value: waitGInt,
+                    color: "#003DA5",
+                    label: "Waiting for Gov Approval"
+                },
+                {
+                    value: compInt,
+                    color: "#538928",
+                    label: "Completed"
+                }
 
             ];
 
-            if (draftInt == 0 && waitPInt == 0 && waitMInt == 0 && waitGInt == 0 && compInt == 0)
-            {
+            if (draftInt == 0 && waitPInt == 0 && waitMInt == 0 && waitGInt == 0 && compInt == 0) {
                 pieData =
                 [
-				    {
-				        value: 1,
-				        color: "#707173",
-				        label: "No Result"
-				    }
+                    {
+                        value: 1,
+                        color: "#707173",
+                        label: "No Result"
+                    }
                 ];
 
                 options = {
@@ -171,5 +170,5 @@
 
             document.getElementById('js-legend').innerHTML = myPieChart.generateLegend();
         }
-</script>
+    </script>
 }

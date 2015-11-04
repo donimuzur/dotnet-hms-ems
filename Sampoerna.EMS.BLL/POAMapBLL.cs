@@ -98,7 +98,7 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var item in data)
             {
-                var comp = item.T001W.T001K.BUKRS;
+                var comp = item.T001W.T001K == null ? string.Empty : item.T001W.T001K.BUKRS;
 
                 if (company != comp)
                 {
