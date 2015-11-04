@@ -539,7 +539,6 @@
         $("#btnSubmitConfirm").click(function() {
                         @*window.location = "@Url.Action("SubmitDocument", "CK5", new { id = @Model.Ck5Id })";*@
             if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
-                console.log('masuk');
                 $('#Command').val('Submit');
                 $('#EditCk5Forms').submit();
             }
@@ -679,6 +678,68 @@
             });
         });
 
+        function EditRow(o, url) {
+            //debugger;
+            var nRow = o.parents('tr');
+            var plant = nRow.find("td").eq(19).html();
+            var materialnumber = nRow.find("td").eq(2).html();
+
+            //if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+            //    plant = $("#DestPlantId").find("option:selected").val();
+            //}
+
+
+            var goodTypeGroupId = $("#GoodType").val();
+            ajaxGetListMaterial(url, { plantId: plant, goodTypeGroup: goodTypeGroupId }, materialnumber);
+
+            $('#btnSaveMaterial').hide();
+            $('#btnUpdateMaterial').show();
+
+            //set value
+            //if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+            //    plant = $("#DestPlantId").find("option:selected").val();
+            //}
+
+            // $("#uploadMaterialPlant").val(nRow.find("td").eq(19).html());
+            $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
+
+            $('#uploadMaterialNumber').find('option:not(:first)').remove();
+            //===Fixing Bug CK5 no. 110====
+            $('#uploadMaterialNumber').append('<option>' + nRow.find("td").eq(2).html() + '</option>');
+            //=============================
+
+            $('#uploadMaterialNumber').val(materialnumber);
+            $('#uploadMaterialQty').val(nRow.find("td").eq(3).html());
+
+            $('#uploadMaterialUom').val(nRow.find("td").eq(4).html());
+            $('#uploadMaterialConvertion').val(nRow.find("td").eq(5).html());
+
+            $('#uploadConvertedUom').val(nRow.find("td").eq(7).html());
+
+            $('#uploadMaterialHje').val(nRow.find("td").eq(8).html());
+            $('#uploadMaterialTariff').val(nRow.find("td").eq(9).html());
+
+            $('#uploadUsdValue').val(nRow.find("td").eq(11).html());
+
+            $('#uploadNote').val(nRow.find("td").eq(12).html());
+
+            $('#uploadMaterialDesc').val(nRow.find("td").eq(15).html());
+
+            //===Fixing Bug CK5 no. 110====
+            $('#uploadMaterialPlant').val(nRow.find("td").eq(19).html());
+            //=============================
+
+            $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
+
+            ClearValidation();
+
+            $("#lblTitleInputManual").text('Edit Input');
+
+            $('#Ck5UploadModal').modal('show');
+
+
+        }
+        
         $("#Ck5RefId").change(function() {
             var refId = $("#Ck5RefId").val();
 
