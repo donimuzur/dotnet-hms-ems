@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using Sampoerna.EMS.BLL.Services;
@@ -1678,15 +1679,14 @@ namespace Sampoerna.EMS.BLL
         private Lack1GeneratedDto SetIncomeListBySelectionCriteria(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input)
         {
             var ck5Input = Mapper.Map<Ck5GetForLack1ByParamInput>(input);
-            ck5Input.IsExcludeSameNppbkcId = true;
+            var nppbckData = _nppbkcService.GetById(input.NppbkcId);
+            ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
             var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
             rc.IncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
-
             if (ck5Data.Count > 0)
             {
                 rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
             }
-
             return rc;
         }
 

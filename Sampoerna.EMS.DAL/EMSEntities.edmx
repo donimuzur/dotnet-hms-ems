@@ -1333,6 +1333,7 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="FLAG_FOR_LACK1" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -1452,18 +1453,6 @@
             </Principal>
             <Dependent Role="BROLE_MAP">
               <PropertyRef Name="BROLE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="CHANGES_HISTORY">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3194,10 +3183,6 @@
           <AssociationSet Name="FK_BROLE_MAP_USER_BROLE" Association="Self.FK_BROLE_MAP_USER_BROLE">
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_CK1_ITEM_CK1" Association="Self.FK_CK1_ITEM_CK1">
             <End Role="CK1" EntitySet="CK1" />
@@ -6037,6 +6022,7 @@
           <NavigationProperty Name="T0011" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
+          <Property Name="FLAG_FOR_LACK1" Type="Boolean" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_NPPBKC_LFA1">
           <End Type="EMSModel.LFA1" Role="LFA1" Multiplicity="0..1" />
@@ -8589,6 +8575,7 @@
           <EntitySetMapping Name="ZAIDM_EX_NPPBKC">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_NPPBKC">
               <MappingFragment StoreEntitySet="ZAIDM_EX_NPPBKC">
+                <ScalarProperty Name="FLAG_FOR_LACK1" ColumnName="FLAG_FOR_LACK1" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
