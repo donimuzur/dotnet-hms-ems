@@ -28,6 +28,7 @@ using System.IO;
 using Sampoerna.EMS.Utils;
 using SpreadsheetLight;
 using System.Configuration;
+using Sampoerna.EMS.Website.Models.Dashboard;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -1951,6 +1952,79 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             public int StartRowIndex { get; set; }
             public int EndRowIndex { get; set; }
+        }
+
+        #endregion
+
+        #region ----------------- Dashboard Page -------------
+
+        public ActionResult Dashboard()
+        {
+            var model = new Lack1DashboardViewModel
+            {
+                SearchViewModel = new Lack1DashboardSearchViewModel()
+            };
+            model = InitSelectListDashboardViewModel(model);
+            model = InitDashboardViewModel(model);
+            return View("Dashboard", model);
+        }
+
+        private Lack1DashboardViewModel InitSelectListDashboardViewModel(Lack1DashboardViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.SearchViewModel.UserList = GlobalFunctions.GetCreatorList();
+            model.SearchViewModel.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchViewModel.YearList = GetDashboardYear();
+            model.SearchViewModel.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            return model;
+        }
+
+        private Lack1DashboardViewModel InitDashboardViewModel(Lack1DashboardViewModel model)
+        {
+            var data = GetDashboardData(model.SearchViewModel);
+            if (data.Count == 0) return model;
+
+            model.Detail = new DashboardDetilModel
+            {
+                DraftTotal = data.Count(x => x.Status == Enums.DocumentStatus.Draft),
+                WaitingForPoaTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval),
+                WaitingForManagerTotal =
+                    data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                WaitingForGovTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingGovApproval),
+                CompletedTotal = data.Count(x => x.Status == Enums.DocumentStatus.Completed)
+            };
+
+            return model;
+        }
+
+        private List<Lack1Dto> GetDashboardData(Lack1DashboardSearchViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                //get All Data
+                var data = _lack1Bll.GetDashboardDataByParam(new Lack1GetDashboardDataByParamInput());
+                return data;
+            }
+
+            var input = Mapper.Map<Lack1GetDashboardDataByParamInput>(filter);
+            return _lack1Bll.GetDashboardDataByParam(input);
+        }
+
+        private SelectList GetDashboardYear()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterDashboardPage(Lack1DashboardViewModel model)
+        {
+            var data = InitDashboardViewModel(model);
+            return PartialView("_ChartStatus", data.Detail);
         }
 
         #endregion
