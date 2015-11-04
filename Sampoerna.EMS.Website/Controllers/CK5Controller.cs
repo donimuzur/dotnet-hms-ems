@@ -490,7 +490,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5MRETURN;
             model.CurrentMenu = PageInfo;
 
-            return View("Create", model);
+            return View("CreateMarketReturn", model);
         }
 
         [HttpPost]
@@ -789,11 +789,100 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_CK5UploadList", model.UploadItemModels);
         }
 
+        [HttpPost]
+        public PartialViewResult UploadFileCk5MarketReturn(HttpPostedFileBase itemExcelFile, string plantId)
+        {
+            var data = (new ExcelReader()).ReadExcel(itemExcelFile);
+            var model = new CK5FormViewModel();
+            model.SourcePlantId = plantId;
+            if (data != null)
+            {
+                foreach (var datarow in data.DataRows)
+                {
+                    var uploadItem = new CK5UploadViewModel();
+
+                    try
+                    {
+                        uploadItem.Brand = datarow[0];
+                        uploadItem.Qty = datarow[1];
+                        uploadItem.Uom = datarow[2];
+                        uploadItem.Convertion = datarow[3];
+                        uploadItem.ConvertedUom = datarow[4];
+                        uploadItem.UsdValue = datarow[5];
+                        if (datarow.Count > 6)
+                            uploadItem.Note = datarow[6];
+                        //uploadItem.ExGoodsType = groupType;
+                        uploadItem.Plant = plantId;
+
+                        model.UploadItemModels.Add(uploadItem);
+
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+
+                    }
+
+                }
+            }
+
+            var input = Mapper.Map<List<CK5MaterialInput>>(model.UploadItemModels);
+
+            var outputResult = _ck5Bll.Ck5MarketReturnMaterialProcess(input);
+
+            model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(outputResult);
+
+            return PartialView("_CK5UploadList", model.UploadItemModels);
+        }
+
+
         private CK5FormViewModel InitEdit(CK5FormViewModel model)
         {
 
             model = InitCK5List(model);
             return model;
+        }
+
+        public ActionResult EditMarketReturn(long id)
+        {
+            var model = new CK5FormViewModel();
+
+            try
+            {
+                var ck5Details = _ck5Bll.GetDetailsCK5(id);
+
+                Mapper.Map(ck5Details.Ck5Dto, model);
+
+                //validate
+                //only allow edit/submit when current_user = createdby and document = draft
+                var input = new WorkflowAllowEditAndSubmitInput();
+                input.DocumentStatus = model.DocumentStatus;
+
+                input.CreatedUser = ck5Details.Ck5Dto.CREATED_BY;
+                input.CurrentUser = CurrentUser.USER_ID;
+                if (!_workflowBll.AllowEditDocument(input))
+                    return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
+
+                model = InitEdit(model);
+
+                model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
+                foreach (var ck5UploadViewModel in model.UploadItemModels)
+                {
+                    ck5UploadViewModel.ExciseQty = ConvertHelper.ConvertToDecimalOrZero(ck5UploadViewModel.ConvertedQty);
+                    ck5UploadViewModel.ExciseUom = ck5UploadViewModel.ConvertedUom;
+                }
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
+                model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
+
+                model.IsMarketReturn = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = InitEdit(model);
+            }
+            return View("EditMarketReturn", model);
         }
 
         public ActionResult Edit(long id, long refId = 0)
@@ -816,6 +905,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!_workflowBll.AllowEditDocument(input))
                     return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
 
+                if (model.Ck5Type == Enums.CK5Type.MarketReturn)
+                    return RedirectToAction("EditMarketReturn", "CK5", new {@id = model.Ck5Id});
+                
                 model = InitEdit(model);
 
                 model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
@@ -1420,6 +1512,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+
+        [HttpPost]
+        public JsonResult ValidateManualCk5MarketReturn(CK5MaterialInput input)
+        {
+           
+            var output = _ck5Bll.ValidateCk5MarketReturnMaterial(input);
+            return Json(new
+            {
+                success = output.IsValid,
+                error = output.Message
+            });
+            
+        }
 
         #endregion
 
@@ -3626,6 +3731,16 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetListMaterialMarketReturn(string plantId)
+        {
+            var result = _ck5Bll.GetListMaterialMarketReturn(plantId);
+            
+            //var model = Mapper.Map<List<CK5InputManualViewModel>>(dbMaterial);
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetMaterialHjeAndTariff(string plantId, string materialNumber)
         {
 
@@ -3634,6 +3749,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //model.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
             //model.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetMaterialHjeAndTariffMarketReturn(string plantId, string materialNumber)
+        {
+
+            var dbMaterial = _ck5Bll.GetBrandByPlantAndMaterialNumber(plantId, materialNumber);
+            var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
+
             return Json(model);
         }
 

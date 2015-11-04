@@ -1244,6 +1244,8 @@
     <Content Include="Views\CK5\_CK5OriginalPlantDestination.cshtml" />
     <Content Include="Views\CK5\_CK5GoodIssue.cshtml" />
     <Content Include="Views\CK5\_CK5GoodReceive.cshtml" />
+    <Content Include="Views\CK5\CreateMarketReturn.cshtml" />
+    <Content Include="Views\CK5\EditMarketReturn.cshtml" />
     <Content Include="Views\CK4C\Dashboard.cshtml" />
     <Content Include="Views\Shared\_ChartStatus.cshtml" />
   </ItemGroup>
