@@ -1762,11 +1762,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var listCk4c = GetAllDocument(model);
 
-            model.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
-            model.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
-            model.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
-            model.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
-            model.CompletedTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
+            model.Detil.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
+            model.Detil.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
+            model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            model.Detil.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
+            model.Detil.CompletedTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
 
             return model;
         }
@@ -1792,7 +1792,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = InitDashboardModel(model);
 
-            return PartialView("_ChartStatus", data);
+            return PartialView("_ChartStatus", data.Detil);
         }
 
         #endregion

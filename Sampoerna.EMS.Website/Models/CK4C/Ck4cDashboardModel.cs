@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Website.Models.Dashboard;
 
 namespace Sampoerna.EMS.Website.Models.CK4C
 {
     public class Ck4cDashboardModel : BaseModel
     {
+        public Ck4cDashboardModel()
+        {
+            Detil = new DashboardDetilModel();
+        }
         public SelectList MonthList { get; set; }
         public SelectList YearList { get; set; }
         public SelectList PoaList { get; set; }
@@ -18,10 +23,6 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string Creator { get; set; }
         public string Poa { get; set; }
 
-        public int DraftTotal { get; set; }
-        public int WaitingForPoaTotal { get; set; }
-        public int WaitingForManagerTotal { get; set; }
-        public int WaitingForGovTotal { get; set; }
-        public int CompletedTotal { get; set; }
+        public DashboardDetilModel Detil { get; set; }
     }
 }

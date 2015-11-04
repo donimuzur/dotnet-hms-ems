@@ -311,6 +311,7 @@
     <Compile Include="Models\CK5\CK5SummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
+    <Compile Include="Models\Dashboard\DashboardDetilModel.cs" />
     <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupDetailsViewModel.cs" />
@@ -1244,7 +1245,7 @@
     <Content Include="Views\CK5\_CK5GoodIssue.cshtml" />
     <Content Include="Views\CK5\_CK5GoodReceive.cshtml" />
     <Content Include="Views\CK4C\Dashboard.cshtml" />
-    <Content Include="Views\CK4C\_ChartStatus.cshtml" />
+    <Content Include="Views\Shared\_ChartStatus.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
