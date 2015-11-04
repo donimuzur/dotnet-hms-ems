@@ -2221,8 +2221,7 @@ namespace Sampoerna.EMS.BLL
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             //for manual
-            if (dbData.CK5_TYPE == Enums.CK5Type.Manual
-                && dbData.CK5_MANUAL_TYPE != Enums.Ck5ManualType.Trial)
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
             {
                 //change status
                 dbData.STATUS_ID = Enums.DocumentStatus.WaitingForUnSealing;
@@ -2277,8 +2276,7 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
 
-            if (dbData.CK5_TYPE == Enums.CK5Type.Manual &&
-                dbData.CK5_MANUAL_TYPE != Enums.Ck5ManualType.Trial)
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual )
             {
                 if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
                        && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)

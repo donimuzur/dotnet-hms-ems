@@ -15,6 +15,7 @@ function OnReadyFunction(ck5Type) {
     
     if (ck5Type == 'Completed' || ck5Type == 'Cancelled') {
         $('#MenuCK5Completed').addClass('active');
+        
     } else if (ck5Type == 'PortToImporter' || ck5Type == 'ImporterToPlant') {
         $('#MenuCK5Import').addClass('active');
     } else if (ck5Type == 'Export') {
@@ -22,7 +23,10 @@ function OnReadyFunction(ck5Type) {
     } else if (ck5Type == 'Manual') {
         $('#ck5TrialPbck1Reduce').show();
         $('#MenuCK5Manual').addClass('active');
-    } else {
+    } else if (ck5Type == 'MarketReturn') {
+        $('#liCK5MarketReturnOpenDocument').addClass('active');
+    }
+    else {
         $('#MenuCK5Domestic').addClass('active');
     }
 
