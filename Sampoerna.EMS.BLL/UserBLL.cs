@@ -91,7 +91,7 @@ namespace Sampoerna.EMS.BLL
 
         public Login GetLogin(string userName)
         {
-            return Mapper.Map<Login>(_repository.GetByID(userName));
+            return Mapper.Map<Login>(_repository.Get(x=> x.USER_ID == userName && (!x.IS_ACTIVE.HasValue || x.IS_ACTIVE != 0)).FirstOrDefault());
         } 
 
 

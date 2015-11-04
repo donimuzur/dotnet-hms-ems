@@ -1205,6 +1205,8 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="SHIFT" Type="nvarchar" MaxLength="10" />
+          <Property Name="ORIGINAL_QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="ORIGINAL_UOM" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -1331,6 +1333,7 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="FLAG_FOR_LACK1" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_PCODE">
           <Key>
@@ -6019,6 +6022,7 @@
           <NavigationProperty Name="T0011" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_T0011" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
+          <Property Name="FLAG_FOR_LACK1" Type="Boolean" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_NPPBKC_LFA1">
           <End Type="EMSModel.LFA1" Role="LFA1" Multiplicity="0..1" />
@@ -7861,6 +7865,8 @@
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ORIGINAL_QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="ORIGINAL_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
         </EntityType>
         <EnumType Name="Ck5ManualFreeText" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualFreeText" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGovType2" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType2" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -8569,6 +8575,7 @@
           <EntitySetMapping Name="ZAIDM_EX_NPPBKC">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_NPPBKC">
               <MappingFragment StoreEntitySet="ZAIDM_EX_NPPBKC">
+                <ScalarProperty Name="FLAG_FOR_LACK1" ColumnName="FLAG_FOR_LACK1" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
@@ -9293,6 +9300,8 @@
           <EntitySetMapping Name="ZAAP_SHIFT_RPT">
             <EntityTypeMapping TypeName="EMSModel.ZAAP_SHIFT_RPT">
               <MappingFragment StoreEntitySet="ZAAP_SHIFT_RPT">
+                <ScalarProperty Name="ORIGINAL_UOM" ColumnName="ORIGINAL_UOM" />
+                <ScalarProperty Name="ORIGINAL_QTY" ColumnName="ORIGINAL_QTY" />
                 <ScalarProperty Name="SHIFT" ColumnName="SHIFT" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />

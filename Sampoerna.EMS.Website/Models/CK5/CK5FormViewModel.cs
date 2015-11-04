@@ -269,7 +269,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public bool AllowAttachmentCompleted { get; set; }
         public bool IsDomesticAlcohol { get; set; }
-
+        public bool IsReducePbck1Ck5Trial { get; set; }
         public bool IsFreeTextSource { get; set; }
         public bool IsFreeTextDestination { get; set; }
 
@@ -302,5 +302,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowGoodIssue { get; set; }
 
         public bool AllowGoodReceive { get; set; }
+
+        public bool AllowPurchaseOrder { get; set; }
     }
 }

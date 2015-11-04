@@ -36,7 +36,7 @@ namespace Sampoerna.EMS.XMLReader
                     try
                     {
                         var item = new PRODUCTION();
-
+                        var zaapShftRptItem = new ZAAP_SHIFT_RPT();
                         item.WERKS = _xmlMapper.GetElementValue(xElement.Element("Plnt")); ;
                         item.FA_CODE = _xmlMapper.GetElementValue(xElement.Element("Material"));
                         item.BRAND_DESC = _xmlMapper.GetElementValue(xElement.Element("MaterialDescription"));
@@ -124,13 +124,37 @@ namespace Sampoerna.EMS.XMLReader
                             }
                             item.BRAND_DESC = existingBrand.BRAND_CE;
 
+                            zaapShftRptItem.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
                             
+                            zaapShftRptItem.BATCH = item.BATCH;
+                            zaapShftRptItem.BUNDLE = item.BUNDLE;
+                            zaapShftRptItem.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
+                            zaapShftRptItem.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
+                            
+                            zaapShftRptItem.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
+                            zaapShftRptItem.SHIFT = _xmlMapper.GetElementValue(xElement.Element("Shift"));
+                            zaapShftRptItem.COMPANY_CODE = item.COMPANY_CODE;
+                            zaapShftRptItem.FA_CODE = item.FA_CODE;
+                            zaapShftRptItem.QTY = item.QTY;
+                            zaapShftRptItem.ORIGINAL_QTY = qty;
+                            zaapShftRptItem.ORIGINAL_UOM = bun;
+                            zaapShftRptItem.PRODUCTION_DATE = item.PRODUCTION_DATE;
+                            zaapShftRptItem.WERKS = item.WERKS;
 
-                            
-
-                            
-                            
+                            var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
+                            if (existingZaap != null)
+                            {
+                                zaapShftRptItem.MODIFIED_BY = "PI";
+                                zaapShftRptItem.MODIFIED_DATE = DateTime.Now;
                                 
+                            }
+                            else
+                            {
+                                zaapShftRptItem.CREATED_BY = "PI";
+                                zaapShftRptItem.CREATED_DATE = DateTime.Now;
+                            }
+                            
+                            _xmlMapper.InsertOrUpdate(zaapShftRptItem);    
                             items.Add(item);
                             
                         }
@@ -240,6 +264,14 @@ namespace Sampoerna.EMS.XMLReader
             var arrDigit = Array.FindAll<char>(arr, (c => (char.IsDigit(c))));
             var str =  new string(arrDigit);
             return Convert.ToInt32(str);
+        }
+
+        private ZAAP_SHIFT_RPT GetExistingZaapShiftRpt(string matdoc)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<ZAAP_SHIFT_RPT>()
+                .GetByID(matdoc);
+
+            return existingData;
         }
 
         private void RecalculateWithDatabase(List<PRODUCTION> itemList)

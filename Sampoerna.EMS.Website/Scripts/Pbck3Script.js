@@ -7,7 +7,6 @@ function ValidatePbck3Form() {
         AddValidationClass(false, 'PBCK3_DATE');
         result = false;
     }
-
  
     if ($('#EXEC_DATE_FROM').val() == '') {
         AddValidationClass(false, 'EXEC_DATE_FROM');
@@ -19,13 +18,11 @@ function ValidatePbck3Form() {
         result = false;
     }
 
-
     if (!result) {
         $('#collapseSix').removeClass('collapse');
         $('#collapseSix').addClass('in');
         $("#collapseSix").css({ height: "auto" });
     }
-
 
     return result;
 }

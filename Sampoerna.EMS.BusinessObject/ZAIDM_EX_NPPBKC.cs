@@ -38,6 +38,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
+        public Nullable<bool> FLAG_FOR_LACK1 { get; set; }
     
         public virtual LFA1 LFA1 { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }

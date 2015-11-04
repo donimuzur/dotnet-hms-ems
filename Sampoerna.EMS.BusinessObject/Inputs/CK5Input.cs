@@ -56,9 +56,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string SealingNumber { get; set; }
         public DateTime? SealingDate { get; set; }
+        public DateTime? GIDate { get; set; }
 
         public string UnSealingNumber { get; set; }
         public DateTime? UnSealingDate { get; set; }
+        public DateTime? GRDate { get; set; }
 
         public Enums.CK5Type Ck5Type { get; set; }
 
@@ -66,6 +68,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public DateTime? GiDate { get; set; }
         public DateTime? GrDate { get; set; }
+        public string DnNumber { get; set; }
     }
 
     public class CK5WorkflowDocumentData

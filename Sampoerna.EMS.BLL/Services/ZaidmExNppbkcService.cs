@@ -12,6 +12,7 @@ namespace Sampoerna.EMS.BLL.Services
     public class ZaidmExNppbkcService : IZaidmExNppbkcService
     {
         private IGenericRepository<POA_MAP> _poaMapRepository;
+        private IGenericRepository<ZAIDM_EX_NPPBKC> _nppbkcRepository;
         
         private ILogger _logger;
         private IUnitOfWork _uow;
@@ -21,6 +22,7 @@ namespace Sampoerna.EMS.BLL.Services
             _logger = logger;
             _uow = uow;
             _poaMapRepository = _uow.GetGenericRepository<POA_MAP>();
+            _nppbkcRepository = _uow.GetGenericRepository<ZAIDM_EX_NPPBKC>();
         }
 
         public List<ZAIDM_EX_NPPBKC> GetNppbkcsByPoa(string poaId)
@@ -43,6 +45,11 @@ namespace Sampoerna.EMS.BLL.Services
             var dbData = _poaMapRepository.Get(queryFilter, null, "ZAIDM_EX_NPPBKC");
             var poaList = dbData.ToList().Select(d => d.ZAIDM_EX_NPPBKC);
             return poaList.ToList();
+        }
+
+        public ZAIDM_EX_NPPBKC GetById(string nppbkcId)
+        {
+            return _nppbkcRepository.GetByID(nppbkcId);
         }
     }
 }

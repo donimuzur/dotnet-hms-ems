@@ -109,6 +109,7 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.RemainQuota, opt => opt.MapFrom(src => src.RemainQuota))
               .ForMember(dest => dest.CK5_MANUAL_TYPE, opt => opt.MapFrom(src => src.Ck5ManualType))
               .ForMember(dest => dest.CK5_REF_ID, opt => opt.MapFrom(src => src.Ck5RefId))
+              .ForMember(dest => dest.REDUCE_TRIAL, opt => opt.MapFrom(src => src.IsReducePbck1Ck5Trial))
               ;
 
             Mapper.CreateMap<CK5Dto, CK5FormViewModel>().IgnoreAllNonExisting()
@@ -190,7 +191,9 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.Ck5ManualTypeString, opt => opt.MapFrom(src => Utils.EnumHelper.GetDescription(src.CK5_MANUAL_TYPE)))
             .ForMember(dest => dest.Ck5FileUploadModelList, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.Ck5FileUploadDtos)))
             .ForMember(dest => dest.Ck5RefId, opt => opt.MapFrom(src => src.CK5_REF_ID))
-            .ForMember(dest => dest.IsCompleted, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.Completed ? true:false));
+            .ForMember(dest => dest.IsCompleted, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.Completed ? true:false))
+            .ForMember(dest => dest.IsReducePbck1Ck5Trial, opt => opt.MapFrom(src => src.REDUCE_TRIAL.HasValue ? src.REDUCE_TRIAL : false))
+            ;
 
             Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5FileUploadViewModel>().IgnoreAllNonExisting();
 

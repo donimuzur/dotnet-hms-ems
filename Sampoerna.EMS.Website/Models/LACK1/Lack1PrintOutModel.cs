@@ -59,6 +59,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public List<Lack1Pbck1MappingItemModel> Lack1Pbck1Mapping { get; set; }
         public List<Lack1PlantItemModel> Lack1Plant { get; set; }
         public List<Lack1ProductionDetailItemModel> ProductionList { get; set; }
+        public List<Lack1ProductionDetailItemSummaryByProdTypeModel> ProductionSummaryByProdTypeList { get; set; }
         public List<Lack1SummaryProductionItemModel> SummaryProductionList { get; set; }//todo: set manually from controller to create summary of ProductionList
         public string Noted { get; set; }
 
