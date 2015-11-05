@@ -681,6 +681,7 @@
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
+    <Content Include="Scripts\Dashboard.js" />
     <Content Include="Scripts\DataTables-1.10.7\Contributing.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\Readme.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\Readme.md" />
