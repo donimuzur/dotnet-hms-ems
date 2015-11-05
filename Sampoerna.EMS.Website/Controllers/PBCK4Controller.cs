@@ -841,6 +841,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (model.Pbck4FileUploadModelList.Count == 0)
                 {
                     AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Details", "PBCK4", new {id = model.Pbck4Id});
+                }
+                
+                bool resultDoc = false;
+                foreach (var pbck4FileUploadViewModel in model.Pbck4FileUploadModelList)
+                {
+                    if (!pbck4FileUploadViewModel.IsDeleted)
+                    {
+                        resultDoc = true;
+                        break;
+                    }
+                }
+                if (!resultDoc)
+                {
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
                     return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
                 }
 
@@ -873,17 +888,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         }
                     }
-                    else
-                    {
-                        AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
-                        return RedirectToAction("Details", "PBCK4", new {id = model.Pbck4Id});
-                    }
+                    //else
+                    //{
+                    //    AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
+                    //    return RedirectToAction("Details", "PBCK4", new {id = model.Pbck4Id});
+                    //}
 
-                    if (model.Pbck4FileUploadModelList2.Count == 0)
-                    {
-                        AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
-                        return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
-                    }
+                    //if (model.Pbck4FileUploadModelList2.Count == 0)
+                    //{
+                    //    AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
+                    //    return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                    //}
 
                 }
                 PBCK4GovWorkflow(model);
