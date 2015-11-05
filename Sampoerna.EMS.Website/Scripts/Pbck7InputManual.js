@@ -90,6 +90,7 @@ function ajaxGetBrandItems(url, formData) {
                     $("#uploadSeriesValue").val(data.SeriesValue);
                     $("#uploadHje").val(data.Hje);
                     $("#uploadTariff").val(data.Tariff);
+                    $("#uploadBlockedStocked").val(data.BlockedStockRemaining);
                 }
 
 
@@ -123,6 +124,14 @@ function ValidateManualPbck7() {
         }
     }
 
+    if (result) {
+
+        if (parseFloat($('#uploadPbck7Qty').val()) > parseFloat($('#uploadBlockedStocked').val())) {
+            AddValidationClass(false, 'uploadPbck7Qty');
+            result = false;
+        }
+    }
+    
     AddValidationClass(true, 'uploadFiscalYear');
     if ($.isNumeric($('#uploadFiscalYear').val()) == false) {
         AddValidationClass(false, 'uploadFiscalYear');
@@ -164,7 +173,7 @@ function ClearInputForm() {
     $("#uploadTariff").val('');
     $("#uploadFiscalYear").val('');
     $("#uploadExciseValue").val('');
-   
+    $("#uploadBlockedStocked").val('0');
 
 
 }
@@ -209,7 +218,7 @@ function AddRowPbck7() {
                  "<td>" + $('#uploadFiscalYear').val() + "</td>" +
                   "<td>" + totalExcise.toFixed(2) + "</td>" +
                 "<td></td>" +
-              
+               "<td style='display: none'>" + $('#uploadBlockedStocked').val() + "</td>" +
 
                 "</tr>");
 
@@ -248,6 +257,7 @@ function UpdateRowPbck7() {
              
                 $(this).find('td').eq(12).text(totalExcise.toFixed(2));
                 $(this).find('td').eq(13).text('');
+                $(this).find('td').eq(14).text($('#uploadBlockedStocked').val());
 
             }
         });
@@ -315,4 +325,29 @@ function UpdateRowPbck7Detail() {
 
     $('#Pbck7UploadSave').enable();
 
+}
+
+function ajaxGetBrandItemsForEdit(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+
+                if (data != null) {
+                    $("#uploadProductTypeAlias").val(data.ProductAlias);
+                    $("#uploadBrand").val(data.BrandName);
+                    $("#uploadContent").val(data.BrandContent);
+                    $("#uploadSeriesValue").val(data.SeriesValue);
+                    $("#uploadHje").val(data.Hje);
+                    $("#uploadTariff").val(data.Tariff);
+                    $("#uploadBlockedStocked").val(data.BlockedStockRemaining);
+                    
+                }
+
+
+            }
+        });
+    }
 }
