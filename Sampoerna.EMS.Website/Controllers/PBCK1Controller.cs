@@ -57,9 +57,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUnitOfMeasurementBLL _uomBll;
         private ILFA1BLL _lfa1Bll;
         private IT001KBLL _t001kBll;
+        private IPOABLL _poabll;
 
         public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -81,6 +82,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _t001kBll = t001kBll;
             _pbck1DecreeDocBll = pbck1DecreeDocBll;
             _ck5Bll = ck5Bll;
+            _poabll = poabll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -382,6 +384,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
             Response.End();
 
+        }
+
+        private SelectList Pbck1DashboardYear()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
         }
 
 
@@ -2889,5 +2900,60 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+        #region Dashboard
+        public ActionResult Dashboard()
+        {
+            var data = InitDashboardModel(new Pbck1DashboardModel
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                YearList = Pbck1DashboardYear(),
+                PoaList = GlobalFunctions.GetPoaAll(_poabll),
+                UserList = GlobalFunctions.GetCreatorList()
+            });
+
+            return View("Dashboard", data);
+        }
+
+        private Pbck1DashboardModel InitDashboardModel(
+            Pbck1DashboardModel model)
+        {
+            var listCk4c = GetAllDocument(model);
+
+            model.Detil.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
+            model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            model.Detil.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
+            model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            model.Detil.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
+            model.Detil.CompletedTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
+
+            return model;
+        }
+
+        private List<Pbck1Dto> GetAllDocument(Pbck1DashboardModel filter = null)
+        {
+            if (filter == null)
+            {
+                //Get All
+                var ck4cData = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
+                return ck4cData;
+            }
+
+            //getbyparams
+            var input = Mapper.Map<Pbck1GetByParamInput>(filter);
+
+            var dbData = _pbck1Bll.GetAllByParam(input);
+            return dbData;
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterDashboardPage(Pbck1DashboardModel model)
+        {
+            var data = InitDashboardModel(model);
+
+            return PartialView("_ChartStatus", data.Detil);
+        }
+
+        #endregion
     }
 }

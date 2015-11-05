@@ -228,7 +228,19 @@
                 } else {
 
                     var plant = $("#uploadPlant").val();
-                    ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK7AndPBCK3")', { plantId: plant, faCode: faCode });
+                    var uploadMode = $("#uploadMode").val();
+                    if (uploadMode == '1') //new input
+                    {
+                        ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK7AndPBCK3")', { plantId: plant, faCode: faCode });
+                    } else {
+                        //edit mode
+                        var pbckId = '@Model.Id';
+                        var plantOri = $("#uploadPlantOri").val();
+                        var faCodeOri = $("#uploadFaCodeOri").val();
+
+                        ajaxGetBrandItemsForEdit('@Url.Action("GetBrandItemsForEdit", "PBCK7AndPBCK3")', { pbck7Id: pbckId, plantId: plant, faCode: faCode, plantIdOri: plantOri, faCodeOri: faCodeOri });
+                    }
+                    
                 }
             }
         });
@@ -279,9 +291,14 @@
             $('#uploadFiscalYear').val(nRow.find("td").eq(11).html());
             $('#uploadExciseValue').val(nRow.find("td").eq(12).html());
 
+            $('#uploadBlockedStocked').val(nRow.find("td").eq(14).html());
 
             $("#lblTitleInputManual").text('Edit Input');
 
+            $("#uploadMode").val('2');
+            $("#uploadPlantOri").val(sourcePlant);
+            $("#uploadFaCodeOri").val(nRow.find("td").eq(2).html());
+            
             $('#Pbck7UploadModal').modal('show');
 
 
