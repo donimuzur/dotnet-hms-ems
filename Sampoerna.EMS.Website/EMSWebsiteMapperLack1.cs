@@ -7,7 +7,6 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Models.LACK1;
-using Sampoerna.EMS.Website.Models.LACK2;
 
 namespace Sampoerna.EMS.Website
 {
@@ -259,12 +258,6 @@ namespace Sampoerna.EMS.Website
                     => Mapper.Map<List<Lack1TrackingConsolidationDetailReportItemModel>>(src.TrackingConsolidations)))
                 ;
             
-            #endregion
-
-            #region ---------------- Dashboard ----------------
-
-            Mapper.CreateMap<Lack2DashboardSearchViewModel, Lack2GetDashboardDataByParamInput>().IgnoreAllNonExisting();
-
             #endregion
 
         }
