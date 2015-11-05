@@ -81,6 +81,7 @@
           <Property Name="MSACCT" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="START_DATE" Type="datetime" />
           <Property Name="END_DATE" Type="datetime" />
+          <Property Name="ROLEID" Type="int" />
         </EntityType>
         <EntityType Name="CHANGES_HISTORY">
           <Key>
@@ -1454,6 +1455,18 @@
             </Principal>
             <Dependent Role="BROLE_MAP">
               <PropertyRef Name="BROLE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="CHANGES_HISTORY">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3184,6 +3197,10 @@
           <AssociationSet Name="FK_BROLE_MAP_USER_BROLE" Association="Self.FK_BROLE_MAP_USER_BROLE">
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
           <AssociationSet Name="FK_CK1_ITEM_CK1" Association="Self.FK_CK1_ITEM_CK1">
             <End Role="CK1" EntitySet="CK1" />
@@ -5191,6 +5208,7 @@
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_BROLE_MAP_USER" FromRole="BROLE_MAP" ToRole="USER" />
           <NavigationProperty Name="USER_BROLE" Relationship="EMSModel.FK_BROLE_MAP_USER_BROLE" FromRole="BROLE_MAP" ToRole="USER_BROLE" />
+          <Property Name="ROLEID" Type="EMSModel.UserRole" />
         </EntityType>
         <EntityType Name="PAGE_MAP">
           <Key>
@@ -8372,6 +8390,7 @@
           <EntitySetMapping Name="BROLE_MAP">
             <EntityTypeMapping TypeName="EMSModel.BROLE_MAP">
               <MappingFragment StoreEntitySet="BROLE_MAP">
+                <ScalarProperty Name="ROLEID" ColumnName="ROLEID" />
                 <ScalarProperty Name="END_DATE" ColumnName="END_DATE" />
                 <ScalarProperty Name="START_DATE" ColumnName="START_DATE" />
                 <ScalarProperty Name="MSACCT" ColumnName="MSACCT" />
