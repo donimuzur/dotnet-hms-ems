@@ -93,6 +93,14 @@
         });
 
         function setupDataTables() {
+            $('#divDraft,#divWaitA,#divWaitG').click(function (e) {
+                location.href = '@Url.Action("Index", "PBCK1")';
+            });
+
+            $('#divComp').click(function (e) {
+                location.href = '@Url.Action("CompletedDocument", "PBCK1")';
+            });
+
             var draft = $('#draftId').text();
             var waitP = $('#waitPId').text();
             var waitM = $('#waitMId').text();

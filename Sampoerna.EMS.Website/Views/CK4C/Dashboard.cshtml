@@ -88,14 +88,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
             setupDataTables();
-
-            $('#divDraft,#divWaitA,#divWaitG').click(function (e) {
-                location.href = '@Url.Action("DocumentList", "CK4C")';
-            });
-
-            $('#divComp').click(function (e) {
-                location.href = '@Url.Action("CompletedDocument", "CK4C")';
-            });
         });
 
         $('#btn-reset-filter').click(function () {
@@ -104,6 +96,14 @@
         });
 
         function setupDataTables() {
+            $('#divDraft,#divWaitA,#divWaitG').click(function (e) {
+                location.href = '@Url.Action("DocumentList", "CK4C")';
+            });
+
+            $('#divComp').click(function (e) {
+                location.href = '@Url.Action("CompletedDocument", "CK4C")';
+            });
+
             var draft = $('#draftId').text();
             var waitP = $('#waitPId').text();
             var waitM = $('#waitMId').text();
