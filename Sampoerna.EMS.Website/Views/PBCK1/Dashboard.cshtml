@@ -57,7 +57,7 @@
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                                    <input type="submit" class="btn btn-blue full" value="FILTER" id="btn-filter" />
                                                 </div>
                                                 <div class="col-md-6">
                                                     <button class="btn btn-blue full" id="btn-reset-filter" type="button">RESET</button>
@@ -80,18 +80,6 @@
 
 @section scripts
 {
-    <style>
-        .chart-legend li {
-            list-style: none;
-        }
-
-            .chart-legend li span {
-                display: inline-block;
-                width: 12px;
-                height: 12px;
-                margin-right: 5px;
-            }
-    </style>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/Chart.js"></script>
     <script type="text/javascript">
@@ -99,11 +87,12 @@
             setupDataTables();
         });
 
-        function setupDataTables() {
-            $('#btn-reset-filter').click(function () {
-                $(".selectreset").val($(".selectreset option:first").val());
-            });
+        $('#btn-reset-filter').click(function () {
+            $(".selectreset").val($(".selectreset option:first").val());
+            $("#btn-filter").click();
+        });
 
+        function setupDataTables() {
             var draft = $('#draftId').text();
             var waitP = $('#waitPId').text();
             var waitM = $('#waitMId').text();
