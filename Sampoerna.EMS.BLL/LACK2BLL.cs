@@ -1295,5 +1295,15 @@ namespace Sampoerna.EMS.BLL
 
         #endregion
 
+        #region -------------- Dashboard ------------
+
+        public List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
+        {
+            var data = _lack2Service.GetDashboardDataByParam(input);
+            return Mapper.Map<List<Lack2Dto>>(data);
+        }
+
+        #endregion
+
     }
 }

@@ -458,6 +458,7 @@
           <Property Name="SUPPLIER_COMPANY_CODE" Type="varchar" MaxLength="4" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="IS_TIS_TO_TIS" Type="bit" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -6452,6 +6453,7 @@
           <NavigationProperty Name="LACK1_PRODUCTION_DETAIL" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_LACK1" FromRole="LACK1" ToRole="LACK1_PRODUCTION_DETAIL" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_TIS_TO_TIS" Type="Boolean" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -8715,6 +8717,7 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="IS_TIS_TO_TIS" ColumnName="IS_TIS_TO_TIS" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="SUPPLIER_COMPANY_CODE" ColumnName="SUPPLIER_COMPANY_CODE" />

@@ -6,8 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
@@ -30,6 +28,7 @@ using Sampoerna.EMS.Website.Utility;
 using Sampoerna.EMS.XMLReader;
 using SpreadsheetLight;
 using Path = System.IO.Path;
+using Sampoerna.EMS.Website.Models.Dashboard;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -49,8 +48,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private ILFA1BLL _lfa1Bll;
         private IPrintHistoryBLL _printHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IMonthBLL _monthBll;
         public PBCK7AndPBCK3Controller(IPageBLL pageBll, IPBCK7And3BLL pbck7AndPbck3Bll, IBACK1BLL back1Bll,
-            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IChangesHistoryBLL changesHistoryBll, IPrintHistoryBLL printHistoryBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll)
+            IPOABLL poaBll, IZaidmExNPPBKCBLL nppbkcBll, IChangesHistoryBLL changesHistoryBll, IPrintHistoryBLL printHistoryBll, ILFA1BLL lfa1Bll, IHeaderFooterBLL headerFooterBll, IWorkflowBLL workflowBll, IWorkflowHistoryBLL workflowHistoryBll, IDocumentSequenceNumberBLL documentSequenceNumberBll, IBrandRegistrationBLL brandRegistrationBll, IPlantBLL plantBll, IMonthBLL monthBll)
             : base(pageBll, Enums.MenuList.PBCK7)
         {
             _pbck7Pbck3Bll = pbck7AndPbck3Bll;
@@ -67,6 +67,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _lfa1Bll = lfa1Bll;
             _printHistoryBll = printHistoryBll;
             _changesHistoryBll = changesHistoryBll;
+            _monthBll = monthBll;
         }
 
 
@@ -2780,6 +2781,113 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return imgbyte;
             // Return Datatable After Image Row Insertion
+        }
+
+        #endregion
+
+        #region ----------------- Dashboard Page -------------
+
+        public ActionResult Dashboard()
+        {
+            var model = new Pbck7Pbck3DashboardViewModel
+            {
+                SearchViewModel = new Pbck7Pbck3DashboardSearchViewModel()
+            };
+            model = InitSelectListDashboardViewModel(model);
+            model.SearchViewModel.Pbck7Type = Enums.Pbck7Type.Pbck7List;
+            model = InitDashboardViewModel(model);
+            return View("Dashboard", model);
+        }
+
+        private Pbck7Pbck3DashboardViewModel InitSelectListDashboardViewModel(Pbck7Pbck3DashboardViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.SearchViewModel.UserList = GlobalFunctions.GetCreatorList();
+            model.SearchViewModel.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchViewModel.YearList = GetDashboardYear();
+            model.SearchViewModel.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
+            return model;
+        }
+
+        private Pbck7Pbck3DashboardViewModel InitDashboardViewModel(Pbck7Pbck3DashboardViewModel model)
+        {
+            if (model.SearchViewModel.Pbck7Type == Enums.Pbck7Type.Pbck7List)
+            {
+                var data = GetDashboardPbck7Data(model.SearchViewModel);
+                if (data.Count == 0) return model;
+
+                model.Detail = new DashboardDetilModel
+                {
+                    DraftTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.Draft),
+                    WaitingForAppTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApproval || x.Pbck7Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                    WaitingForPoaTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApproval),
+                    WaitingForManagerTotal =
+                        data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                    WaitingForGovTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingGovApproval),
+                    CompletedTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.Completed)
+                };
+            }
+            else
+            {
+                var data = GetDashboardPbck3Data(model.SearchViewModel);
+                if (data.Count == 0) return model;
+
+                model.Detail = new DashboardDetilModel
+                {
+                    DraftTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.Draft),
+                    WaitingForAppTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApproval || x.Pbck3Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                    WaitingForPoaTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApproval),
+                    WaitingForManagerTotal =
+                        data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                    WaitingForGovTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval),
+                    CompletedTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.Completed)
+                };
+            }
+            
+            return model;
+        }
+
+        private List<Pbck7AndPbck3Dto> GetDashboardPbck7Data(Pbck7Pbck3DashboardSearchViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                //get All Data
+                var data = _pbck7Pbck3Bll.GetDashboardPbck7ByParam(new GetDashboardPbck7ByParamInput());
+                return data;
+            }
+
+            var input = Mapper.Map<GetDashboardPbck7ByParamInput>(filter);
+            return _pbck7Pbck3Bll.GetDashboardPbck7ByParam(input);
+        }
+
+        private List<Pbck3Dto> GetDashboardPbck3Data(Pbck7Pbck3DashboardSearchViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                //get All Data
+                var data = _pbck7Pbck3Bll.GetDashboardPbck3ByParam(new GetDashboardPbck3ByParamInput());
+                return data;
+            }
+
+            var input = Mapper.Map<GetDashboardPbck3ByParamInput>(filter);
+            return _pbck7Pbck3Bll.GetDashboardPbck3ByParam(input);
+        }
+
+        private SelectList GetDashboardYear()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterDashboardPage(Pbck7Pbck3DashboardViewModel model)
+        {
+            var data = InitDashboardViewModel(model);
+            return PartialView("_ChartStatus", data.Detail);
         }
 
         #endregion

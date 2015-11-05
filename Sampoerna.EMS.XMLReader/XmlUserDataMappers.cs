@@ -89,7 +89,7 @@ namespace Sampoerna.EMS.XMLReader
                         //UserItems.Add(user);
                         _xmlMapper.InsertOrUpdate(user);
 
-                        if (!role.BROLE_DESC.Contains("POA_MANAGER") && role.BROLE_DESC.Contains("_POA"))
+                        if (!role.BROLE_DESC.Contains("POA_MANAGER") && role.BROLE_DESC.Contains("POA"))
                         {
                             InsertPOA(user);
                         }
