@@ -10,6 +10,9 @@
                 <p></p>
                 <input id="uploadMaterialRow" type="hidden" value="">
                 <input id="uploadPbck7ItemId" type="hidden" value="">
+                <input id="uploadMode" type="hidden" value="">
+                <input id="uploadPlantOri" type="hidden" value="">
+                <input id="uploadFaCodeOri" type="hidden" value="">
                 <div class="row">
                     <div class="col-md-4">
                         <label>Plant</label>
@@ -97,6 +100,11 @@
                     <div class="col-md-4">
                         <label>Excise Value</label>
                         @Html.TextBoxFor(model => model.ActionType, new { @class = "form-control", @id = "uploadExciseValue", @disabled = "disabled" })
+
+                    </div>
+                    <div class="col-md-4">
+                        <label>Blocked Stock</label>
+                        @Html.TextBoxFor(model => model.ActionType, new { @class = "form-control", @id = "uploadBlockedStocked", @disabled = "disabled" })
 
                     </div>
                 </div>

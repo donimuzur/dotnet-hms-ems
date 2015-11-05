@@ -15,6 +15,7 @@ function OnReadyFunction(ck5Type) {
     
     if (ck5Type == 'Completed' || ck5Type == 'Cancelled') {
         $('#MenuCK5Completed').addClass('active');
+        
     } else if (ck5Type == 'PortToImporter' || ck5Type == 'ImporterToPlant') {
         $('#MenuCK5Import').addClass('active');
     } else if (ck5Type == 'Export') {
@@ -22,7 +23,10 @@ function OnReadyFunction(ck5Type) {
     } else if (ck5Type == 'Manual') {
         $('#ck5TrialPbck1Reduce').show();
         $('#MenuCK5Manual').addClass('active');
-    } else {
+    } else if (ck5Type == 'MarketReturn') {
+        $('#liCK5MarketReturnOpenDocument').addClass('active');
+    }
+    else {
         $('#MenuCK5Domestic').addClass('active');
     }
 
@@ -962,6 +966,21 @@ function ValidateGoodReceive() {
     return result;
 }
 
+function ValidatePOReceive() {
+    var result = true;
+    
+    if ($('#DnNumber').val() == '') {
+        AddValidationClass(false, 'DnNumber');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#DnNumber').focus();
+    }
+    
+    return result;
+}
+
 function ajaxGetListMaterial(url, formData,materialid) {
     if (formData.plantId) {
         $.ajax({
@@ -1035,4 +1054,156 @@ function ajaxValidateMaterial(url, formData,callback) {
             }
         });
     //}
+}
+
+
+function GenerateXlsCk5MarketReturnMaterial(url) {
+    var fileName = $('[name="itemExcelFile"]').val().trim();
+    var pos = fileName.lastIndexOf('.');
+    var extension = (pos <= 0) ? '' : fileName.substring(pos);
+    if (extension != '.xlsx') {
+        alert('Please browse a correct excel file to upload');
+        return false;
+    }
+
+    var formData = new FormData();
+    var totalFiles = document.getElementById("itemExcelFile").files.length;
+    for (var i = 0; i < totalFiles; i++) {
+        var file = document.getElementById("itemExcelFile").files[i];
+        formData.append("itemExcelFile", file);
+        formData.append("plantId", $('#SourcePlantId').val());
+    }
+
+  
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formData,
+        dataType: 'html',
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            $('#ProdConvContent').html("");
+            $('#ProdConvContent').html(response);
+            if (IsValidDataUpload())
+                $('#CK5UploadSave').enable();
+        }
+      
+    });
+}
+
+function MoveUploadToTableMarketReturn() {
+    var datarows = GetTableData($('#Ck5UploadTable'));
+    var columnLength = $('#ck5TableItem').find("thead tr:first th").length;
+    $('#ck5TableItem tbody').html('');
+    total = 0;
+    
+
+    var data = "";
+    for (var i = 0; i < datarows.length; i++) {
+        data += '<tr>';
+        if (columnLength > 0) {
+
+            if (datarows[i][13].length > 0) {
+                $('#modalBodyMessage').text('Item Material Not Valid');
+                $('#ModalCk5Material').modal('show');
+                return;
+            }
+            data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+            data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][15] + '">';
+            data += '<input name="UploadItemModels[' + i + '].CK5_MATERIAL_ID" type="hidden" value = "' + datarows[i][18] + '">';
+
+            total += parseFloat(datarows[i][16]); //Qty
+            if (i == 0) {
+                $("#PackageUomName").val(datarows[i][17]);
+            }
+        }
+        data += '</tr>';
+      
+    }
+
+    //alert(total);
+
+    $('#GrandTotalEx').val(total.toFixed(2));
+
+
+
+    $('#upload-tab').removeClass('active');
+    $('#home-tab').addClass('active');
+
+    $('#information').addClass('active');
+    $('#upload').removeClass('active');
+
+    $('#collapse5').addClass('in');
+
+
+
+   
+    $('#ck5TableItem tbody').append(data);
+   
+}
+
+
+function ajaxGetListMaterialMarketReturn(url, formData, materialid) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                //debugger;
+                var listMaterial = $('#uploadMaterialNumber');
+                listMaterial.empty();
+
+                var list = '<option value>Select</option>';
+
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (materialid == data[i].MaterialNumber) {
+                            list += "<option value='" + data[i].MaterialNumber + "' selected='true'>" + data[i].MaterialNumber + "</option>";
+                        } else {
+                            list += "<option value='" + data[i].MaterialNumber + "'>" + data[i].MaterialNumber + "</option>";
+                        }
+
+                    }
+
+                }
+
+                listMaterial.html(list);
+                
+            }
+        });
+    }
+}
+
+function ajaxGetMaterialHjeAndTariffMarketReturn(url, formData) {
+    if (formData.plantId) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+
+                if (data != null) {
+                    $("#uploadMaterialHje").val(data.Hje);
+                    $("#uploadMaterialTariff").val(data.Tariff);
+                    $("#uploadMaterialDesc").val(data.MaterialDesc);
+                    $("#uploadConvertedUom").val(data.Uom);
+                }
+
+
+            }
+        });
+    }
 }

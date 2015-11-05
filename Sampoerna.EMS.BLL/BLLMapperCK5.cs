@@ -166,6 +166,12 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.LoadingPortName, opt => opt.MapFrom(src => src.LOADING_PORT_NAME))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
                 ;
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, GetListMaterialMarketReturnOutput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.FA_CODE))
+                ;
+
+          
         }
     }
 }

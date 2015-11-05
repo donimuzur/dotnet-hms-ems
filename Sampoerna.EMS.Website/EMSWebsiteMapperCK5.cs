@@ -193,6 +193,7 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.Ck5RefId, opt => opt.MapFrom(src => src.CK5_REF_ID))
             .ForMember(dest => dest.IsCompleted, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.Completed ? true:false))
             .ForMember(dest => dest.IsReducePbck1Ck5Trial, opt => opt.MapFrom(src => src.REDUCE_TRIAL.HasValue ? src.REDUCE_TRIAL : false))
+            .ForMember(dest => dest.IsCk5Manual, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Manual))
             ;
 
             Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5FileUploadViewModel>().IgnoreAllNonExisting();
@@ -361,6 +362,9 @@ namespace Sampoerna.EMS.Website
                 ;
 
                 Mapper.CreateMap<Ck5SummaryReportDto, CK5SummaryReportsItem>().IgnoreAllNonExisting();
+
+                Mapper.CreateMap<GetBrandByPlantAndMaterialNumberOutput, CK5InputManualViewModel>().IgnoreAllNonExisting()
+                    ;
         }
     }
 }

@@ -153,4 +153,20 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<CK2_DOCUMENTDto> Ck2FileUploadList { get; set; }
 
     }
+
+    public class GetDashboardPbck7ByParamInput
+    {
+        public int? ExecFromMonth { get; set; }
+        public int? ExecFromYear { get; set; }
+        public int? ExecToMonth { get; set; }
+        public int? ExecToYear { get; set; }
+        public string Creator { get; set; }
+        public string Poa { get; set; }
+    }
+
+    public class GetDashboardPbck3ByParamInput : GetDashboardPbck7ByParamInput
+    {
+        
+    }
+
 }

@@ -260,6 +260,12 @@ namespace Sampoerna.EMS.Website
             
             #endregion
 
+            #region ------------ Dashboard ---------
+
+            Mapper.CreateMap<Lack1DashboardSearchViewModel, Lack1GetDashboardDataByParamInput>().IgnoreAllNonExisting();
+
+            #endregion
+
         }
     }
 }

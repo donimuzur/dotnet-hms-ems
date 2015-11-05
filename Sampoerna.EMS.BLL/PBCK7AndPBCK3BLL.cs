@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using AutoMapper;
-using AutoMapper.Internal;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -59,6 +58,7 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowBLL _workflowBll;
         private IHeaderFooterBLL _headerFooterBll;
         private IMonthBLL _monthBll;
+        private IBlockStockBLL _blockStockBll;
 
         public PBCK7AndPBCK3BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -94,6 +94,7 @@ namespace Sampoerna.EMS.BLL
             _lfaBll = new LFA1BLL(_uow, _logger);
             _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow, _logger);
+            _blockStockBll = new BlockStockBLL(_uow, _logger);
         }
 
         public List<Pbck7AndPbck3Dto> GetAllPbck7()
@@ -228,11 +229,11 @@ namespace Sampoerna.EMS.BLL
             }
             if (IsComplete)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.GovRejected);
             }
             else
             {
-                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.GovRejected);
             }
 
 
@@ -325,11 +326,13 @@ namespace Sampoerna.EMS.BLL
 
             if (IsComplete)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled);
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled
+                    || c.STATUS == Enums.DocumentStatus.GovRejected);
             }
             else
             {
-                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.Cancelled);
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.Cancelled
+                    && c.STATUS != Enums.DocumentStatus.GovRejected);
             }
             //Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = null;
             //if (!string.IsNullOrEmpty(input.ShortOrderColum))
@@ -1719,10 +1722,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             ////Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
+            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.Rejected;
+            dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
@@ -2378,10 +2381,10 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             ////Add Changes
-            WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.Rejected);
+            WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChangesPbck3(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType3.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.Rejected;
+            dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.GOV_STATUS = Enums.DocumentStatusGovType3.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
@@ -2669,6 +2672,59 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<GetListFaCodeByPlantOutput>>(dbBrand);
         }
 
+        public List<GetListFaCodeByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId)
+        {
+            var output = new List<GetListFaCodeByPlantOutput>();
+
+            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+            foreach (var zaidmExBrand in dbBrand)
+            {
+                var blockStock = GetBlockedStockQuota(plantId, zaidmExBrand.FA_CODE);
+                if (blockStock.BlockedStockRemainingCount > 0)
+                {
+                    var blockstockOutput = new GetListFaCodeByPlantOutput();
+                    blockstockOutput.PlantId = plantId;
+                    blockstockOutput.FaCode = zaidmExBrand.FA_CODE;
+                    //blockstockOutput.RemainingBlockQuota = blockStock.BlockedStockRemainingCount;
+
+                    output.Add(blockstockOutput);
+                }
+            }
+
+            return output;
+           
+        }
+
+        public BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode)
+        {
+            var dbBlock = _blockStockBll.GetBlockStockByPlantAndMaterialId(plant, faCode);
+            decimal blockStock = dbBlock.Count == 0
+                ? 0
+                : dbBlock.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
+
+            //get from pbck7
+
+            var dbPbck7 = _repositoryPbck7.Get(c => c.PLANT_ID == plant &&
+                        (c.STATUS != Enums.DocumentStatus.Cancelled 
+                        && c.STATUS != Enums.DocumentStatus.Completed)
+                        && c.STATUS != Enums.DocumentStatus.GovRejected, null, "PBCK7_ITEM");
+
+            decimal blockStockUsed =
+                dbPbck7.Sum(
+                    pbck7 =>
+                        pbck7.PBCK7_ITEM.Where(pbck7Item => pbck7Item.FA_CODE == faCode)
+                            .Sum(pbck7Item => pbck7Item.PBCK7_QTY.HasValue ? pbck7Item.PBCK7_QTY.Value : 0));
+
+            var result = new BlockedStockQuotaOutput();
+            result.BlockedStock = blockStock.ToString();
+            result.BlockedStockUsed = blockStockUsed.ToString();
+            result.BlockedStockRemaining = (blockStock - blockStockUsed).ToString();
+            result.BlockedStockRemainingCount = blockStock - blockStockUsed;
+
+            return result;
+
+        }
+
         public GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId , string faCode)
         {
             var result = new GetBrandItemsByPlantAndFaCodeOutput();
@@ -2705,6 +2761,28 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        public decimal GetCurrentReqQtyByPbck7IdAndFaCode(int pbck7Id, string faCode)
+        {
+            decimal result = 0;
+            var dbPbck = _repositoryPbck7.Get(c => c.PBCK7_ID == pbck7Id, null, "PBCK7_ITEM").FirstOrDefault();
+
+            if (dbPbck != null)
+            {
+                foreach (var pbck7Item in dbPbck.PBCK7_ITEM)
+                {
+                    if (pbck7Item.FA_CODE == faCode)
+                    {
+                        result = pbck7Item.PBCK7_QTY.HasValue ? pbck7Item.PBCK7_QTY.Value : 0;
+                        return result;
+                    }
+                }
+            }
+
+            return result;
+
+        }
+
 
         #region ------------- Get Print Out Data -------------
 
@@ -2882,6 +2960,60 @@ namespace Sampoerna.EMS.BLL
                                              DateReportString(data.ExecDateTo.Value);
             }
             return data;
+        }
+
+        #endregion
+
+        #region -----------Dashboard---------
+
+        public List<Pbck7AndPbck3Dto> GetDashboardPbck7ByParam(GetDashboardPbck7ByParamInput input)
+        {
+            var queryFilter = PredicateHelper.True<PBCK7>();
+            if (input.ExecFromMonth.HasValue && input.ExecFromYear.HasValue)
+            {
+                var dtFrom = new DateTime(input.ExecFromYear.Value, input.ExecFromMonth.Value, 1);
+                queryFilter = queryFilter.And(c => c.EXEC_DATE_FROM >= dtFrom);
+            }
+            if (input.ExecToMonth.HasValue && input.ExecToYear.HasValue)
+            {
+                var dtTo = new DateTime(input.ExecToYear.Value, input.ExecToMonth.Value, 1);
+                queryFilter = queryFilter.And(c => c.EXEC_DATE_TO >= dtTo);
+            }
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY == input.Poa);
+            }
+            var data = _repositoryPbck7.Get(queryFilter).ToList();
+            return Mapper.Map<List<Pbck7AndPbck3Dto>>(data);
+        }
+
+        public List<Pbck3Dto> GetDashboardPbck3ByParam(GetDashboardPbck3ByParamInput input)
+        {
+            var queryFilter = PredicateHelper.True<PBCK3>();
+            if (input.ExecFromMonth.HasValue && input.ExecFromYear.HasValue)
+            {
+                var dtFrom = new DateTime(input.ExecFromYear.Value, input.ExecFromMonth.Value, 1);
+                queryFilter = queryFilter.And(c => c.EXEC_DATE_FROM >= dtFrom);
+            }
+            if (input.ExecToMonth.HasValue && input.ExecToYear.HasValue)
+            {
+                var dtTo = new DateTime(input.ExecToYear.Value, input.ExecToMonth.Value, 1);
+                queryFilter = queryFilter.And(c => c.EXEC_DATE_TO >= dtTo);
+            }
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY == input.Poa);
+            }
+            var data = _repositoryPbck3.Get(queryFilter).ToList();
+            return Mapper.Map<List<Pbck3Dto>>(data);
         }
 
         #endregion
