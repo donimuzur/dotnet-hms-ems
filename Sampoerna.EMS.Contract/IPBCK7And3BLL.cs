@@ -79,5 +79,11 @@ namespace Sampoerna.EMS.Contract
         List<Pbck3Dto> GetDashboardPbck3ByParam(GetDashboardPbck3ByParamInput input);
         List<Pbck7AndPbck3Dto> GetDashboardPbck7ByParam(GetDashboardPbck7ByParamInput input);
 
+        BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode);
+
+        List<GetListFaCodeByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId);
+
+        decimal GetCurrentReqQtyByPbck7IdAndFaCode(int pbck7Id, string faCode);
+
     }
 }

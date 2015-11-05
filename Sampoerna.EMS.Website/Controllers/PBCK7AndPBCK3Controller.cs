@@ -436,6 +436,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Back3Dto = existingData.Back3Dto;
                 model.Ck2Dto = existingData.Ck2Dto;
 
+                //get blocked stock
+                foreach (var uploadItemModel in model.UploadItems)
+                {
+
+                    var blockStockOutput = _pbck7Pbck3Bll.GetBlockedStockQuota(model.PlantId, uploadItemModel.FaCode);
+                  
+                    uploadItemModel.BlockedStockRemaining = blockStockOutput.BlockedStockRemaining;
+
+
+                    //add remaining with current reqQty
+                    uploadItemModel.BlockedStockRemaining =
+                        (ConvertHelper.ConvertToDecimalOrZero(uploadItemModel.BlockedStockRemaining) +
+                         ConvertHelper.ConvertToDecimalOrZero(uploadItemModel.Pbck7Qty)).ToString();
+
+                }
+
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
                 model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
                 model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
@@ -2473,7 +2489,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetListFaCode(string plantId)
         {
 
-            var brandOutput = _pbck7Pbck3Bll.GetListFaCodeByPlant(plantId);
+            //var brandOutput = _pbck7Pbck3Bll.GetListFaCodeByPlant(plantId);
+            var brandOutput = _pbck7Pbck3Bll.GetListFaCodeHaveBlockStockByPlant(plantId);
            
             return Json(brandOutput);
         }
@@ -2483,7 +2500,37 @@ namespace Sampoerna.EMS.Website.Controllers
         {
 
             var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode);
-            
+
+            //getblockedstock
+            var blockedStockOutput = _pbck7Pbck3Bll.GetBlockedStockQuota(plantId, faCode);
+
+          
+            brandOutput.BlockedStockRemaining = blockedStockOutput.BlockedStockRemaining;
+
+            return Json(brandOutput);
+        }
+
+        [HttpPost]
+        public JsonResult GetBrandItemsForEdit(int pbck7Id, string plantId, string faCode, string plantIdOri, string faCodeOri)
+        {
+
+            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode);
+
+            //getblockedstock
+            var blockedStockOutput = _pbck7Pbck3Bll.GetBlockedStockQuota(plantId, faCode);
+
+          
+            brandOutput.BlockedStockRemaining = blockedStockOutput.BlockedStockRemaining;
+
+            if (plantId == plantIdOri && faCode == faCodeOri)
+            {
+                var reqQty = _pbck7Pbck3Bll.GetCurrentReqQtyByPbck7IdAndFaCode(pbck7Id, faCode);
+                brandOutput.BlockedStockRemaining =
+                    (ConvertHelper.ConvertToDecimalOrZero(brandOutput.BlockedStockRemaining) + reqQty).ToString();
+            }
+
+         
+
             return Json(brandOutput);
         }
 
@@ -2773,6 +2820,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail = new DashboardDetilModel
                 {
                     DraftTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.Draft),
+                    WaitingForAppTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApproval || x.Pbck7Status == Enums.DocumentStatus.WaitingForApprovalManager),
                     WaitingForPoaTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApproval),
                     WaitingForManagerTotal =
                         data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApprovalManager),
@@ -2788,6 +2836,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail = new DashboardDetilModel
                 {
                     DraftTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.Draft),
+                    WaitingForAppTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApproval || x.Pbck3Status == Enums.DocumentStatus.WaitingForApprovalManager),
                     WaitingForPoaTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApproval),
                     WaitingForManagerTotal =
                         data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApprovalManager),
