@@ -199,7 +199,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             //only use by domestic
 
-            Enums.CK5Type ck5Type = Enums.CK5Type.Domestic;
+            Enums.CK5Type ck5Type = Enums.CK5Type.DomesticAlcohol;
 
             if (model.Ck5Type == Enums.CK5Type.Domestic)
                 ck5Type = Enums.CK5Type.DomesticAlcohol;
@@ -1204,6 +1204,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     input.NppbkcId = model.DestNppbkcId;
                     model.IsCk5PortToImporter = true;
                 }
+                else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                {
+                    input.NppbkcId = model.DestNppbkcId;
+                    model.IsDomesticAlcohol = true;
+                }
                 else if (model.Ck5Type == Enums.CK5Type.Manual &&
                          model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                 {
@@ -1308,6 +1313,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "CK5TfPostedPortToImporter";
                 else if (model.AllowAttachmentCompleted)
                     model.ActionType = "CK5CompletedAttachment";
+                else if (model.AllowPurchaseOrder)
+                {
+                    model.ActionType = "POCreated";
+                }
 
 
             }
@@ -1875,7 +1884,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
 
-                input.DocumentNumber = model.DnNumber;
+                input.DnNumber = model.DnNumber;
 
 
 

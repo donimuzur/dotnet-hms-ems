@@ -28,7 +28,8 @@
                         }
                         else if (Model.AllowGiCreated || Model.AllowGrCreated
                             || Model.AllowTfPostedPortToImporter
-                            || Model.AllowGoodIssue || Model.AllowGoodReceive)
+                            || Model.AllowGoodIssue || Model.AllowGoodReceive
+                            || Model.AllowPurchaseOrder)
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnGiCreated" />
                         }
@@ -112,7 +113,16 @@
 
                             @Html.Partial("_CK5SealingInput")
                         }
+                        else if (Model.AllowPurchaseOrder)
+                        {
+                            @Html.HiddenFor(model => model.KppBcCity)
+                            @Html.HiddenFor(model => model.GoodTypeName)
+                            @Html.HiddenFor(model => model.SourcePlantId)
+                            @Html.HiddenFor(model => model.DestPlantId)
 
+
+                            @Html.Partial("_CK5POReceive")
+                        }
                         else
                         {
                             @Html.Partial("_CK5InformationDetails")
@@ -394,6 +404,11 @@
                 else if ('@Model.AllowGoodReceive' == "True") {
 
                     if (ValidateGoodReceive()) {
+                        $('#GovApproveForm').submit();
+                    }
+                }
+                else if ('@Model.AllowPurchaseOrder' == "True") {
+                    if (ValidatePOReceive()) {
                         $('#GovApproveForm').submit();
                     }
                 }

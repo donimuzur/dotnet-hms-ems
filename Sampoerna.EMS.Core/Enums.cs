@@ -395,7 +395,11 @@ namespace Sampoerna.EMS.Core
             User = 1,
             POA = 2,
             Manager = 3,
-            System = 10
+            Viewer = 4,
+            System = 10,
+            Administrator = 15,
+            SuperAdmin = 16
+            
         }
 
         public enum FormViewType

@@ -181,7 +181,7 @@ namespace Sampoerna.EMS.BLL
             {
                 var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
 
-                if (input.Ck5Type == Enums.CK5Type.PortToImporter)
+                if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
                     queryFilter =
                         queryFilter.And(
@@ -1648,7 +1648,7 @@ namespace Sampoerna.EMS.BLL
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
-            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter || dbData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol)
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
             else if (dbData.CK5_TYPE == Enums.CK5Type.Manual && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
