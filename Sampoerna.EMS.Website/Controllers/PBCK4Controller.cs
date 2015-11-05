@@ -1841,6 +1841,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Detail.WaitingForManagerTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detail.WaitingForGovTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
             model.Detail.CompletedTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
+            model.Detail.WaitingForAppTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            
 
             return model;
 
