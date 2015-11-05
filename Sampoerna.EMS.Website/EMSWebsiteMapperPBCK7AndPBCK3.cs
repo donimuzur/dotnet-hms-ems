@@ -216,6 +216,14 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.PBCK7_QTY, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.Pbck7Qty)))
               .ForMember(dest => dest.BACK1_QTY, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.Back1Qty)))
               ;
+
+            #region ------------ Dashboard ----------------
+
+            Mapper.CreateMap<Pbck7Pbck3DashboardSearchViewModel, GetDashboardPbck7ByParamInput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Pbck7Pbck3DashboardSearchViewModel, GetDashboardPbck3ByParamInput>().IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }

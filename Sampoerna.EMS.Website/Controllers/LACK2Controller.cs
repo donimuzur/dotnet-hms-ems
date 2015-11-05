@@ -2078,6 +2078,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.Detail = new DashboardDetilModel
             {
+                WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 DraftTotal = data.Count(x => x.Status == Enums.DocumentStatus.Draft),
                 WaitingForPoaTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval),
                 WaitingForManagerTotal =

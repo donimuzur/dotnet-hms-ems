@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.Contract
         List<Lack1DetailReportDto> GetDetailReportByParam(Lack1GetDetailReportByParamInput input);
 
         List<Lack1DetailsDto> GetPbck1RealizationList(Lack1GetPbck1RealizationListParamInput input);
+        List<Lack1Dto> GetDashboardDataByParam(Lack1GetDashboardDataByParamInput input);
 
     }
 }
