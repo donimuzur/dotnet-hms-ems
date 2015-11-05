@@ -109,7 +109,7 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 var poa = GetAll();
-                var manager = _broleMapRepository.Get(x => x.MSACCT.ToUpper() == userId.ToUpper()).Select(x => x.MSACCT.ToUpper()).ToList();
+                var manager = _broleMapRepository.Get(x => x.USER_BROLE.BROLE_DESC.Contains("POA_MANAGER")).Select(x => x.MSACCT.ToUpper()).ToList();
                 if (manager.Contains(userId.ToUpper()))
                     return Core.Enums.UserRole.Manager;
 
