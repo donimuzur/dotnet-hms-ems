@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using AutoMapper;
-using AutoMapper.Internal;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -2884,6 +2883,60 @@ namespace Sampoerna.EMS.BLL
                                              DateReportString(data.ExecDateTo.Value);
             }
             return data;
+        }
+
+        #endregion
+
+        #region -----------Dashboard---------
+
+        public List<Pbck7AndPbck3Dto> GetDashboardPbck7ByParam(GetDashboardPbck7ByParamInput input)
+        {
+            var queryFilter = PredicateHelper.True<PBCK7>();
+            if (input.ExecFromMonth.HasValue && input.ExecFromYear.HasValue)
+            {
+                var dtFrom = new DateTime(input.ExecFromYear.Value, input.ExecFromMonth.Value, 1);
+                queryFilter = queryFilter.And(c => c.EXEC_DATE_FROM >= dtFrom);
+            }
+            if (input.ExecToMonth.HasValue && input.ExecToYear.HasValue)
+            {
+                var dtTo = new DateTime(input.ExecToYear.Value, input.ExecToMonth.Value, 1);
+                queryFilter = queryFilter.And(c => c.EXEC_DATE_TO >= dtTo);
+            }
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY == input.Poa);
+            }
+            var data = _repositoryPbck7.Get(queryFilter).ToList();
+            return Mapper.Map<List<Pbck7AndPbck3Dto>>(data);
+        }
+
+        public List<Pbck3Dto> GetDashboardPbck3ByParam(GetDashboardPbck3ByParamInput input)
+        {
+            var queryFilter = PredicateHelper.True<PBCK3>();
+            if (input.ExecFromMonth.HasValue && input.ExecFromYear.HasValue)
+            {
+                var dtFrom = new DateTime(input.ExecFromYear.Value, input.ExecFromMonth.Value, 1);
+                queryFilter = queryFilter.And(c => c.EXEC_DATE_FROM >= dtFrom);
+            }
+            if (input.ExecToMonth.HasValue && input.ExecToYear.HasValue)
+            {
+                var dtTo = new DateTime(input.ExecToYear.Value, input.ExecToMonth.Value, 1);
+                queryFilter = queryFilter.And(c => c.EXEC_DATE_TO >= dtTo);
+            }
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY == input.Poa);
+            }
+            var data = _repositoryPbck3.Get(queryFilter).ToList();
+            return Mapper.Map<List<Pbck3Dto>>(data);
         }
 
         #endregion
