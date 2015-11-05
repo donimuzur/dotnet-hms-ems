@@ -24,50 +24,50 @@
                                         UpdateTargetId = "contenttable",
                                         OnComplete = "setupDataTables",
                                     }, new { @class = "form-excise", role = "form" }))
-                                { 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Date</label>
-                                            <div class="col-md-9">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        @Html.DropDownListFor(model => model.Month, Model.MonthList, "All", new { @class = " form-control selectreset" })
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        @Html.DropDownListFor(model => model.Year, Model.YearList, "All", new { @class = "form-control selectreset" })
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Date</label>
+                                                <div class="col-md-9">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            @Html.DropDownListFor(model => model.Month, Model.MonthList, "All", new { @class = " form-control selectreset" })
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            @Html.DropDownListFor(model => model.Year, Model.YearList, "All", new { @class = "form-control selectreset" })
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">Creator</label>
-                                            <div class="col-md-9">
-                                                @Html.DropDownListFor(model => model.Creator, Model.UserList, "All", new { @class = "form-control selectreset" })
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Creator</label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.Creator, Model.UserList, "All", new { @class = "form-control selectreset" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">POA</label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.Poa, Model.PoaList, "All", new { @class = "form-control selectreset" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="submit" class="btn btn-blue full" value="FILTER" id="btn-filter" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <button class="btn btn-blue full" id="btn-reset-filter" type="button">RESET</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-3">POA</label>
-                                            <div class="col-md-9">
-                                                @Html.DropDownListFor(model => model.Poa, Model.PoaList, "All", new { @class = "form-control selectreset" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <input type="submit" class="btn btn-blue full" value="FILTER" />
-                                            </div>
-                                            <div class="col-md-6">
-                                                <button class="btn btn-blue full" id="btn-reset-filter" type="button">RESET</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 }
                             </div>
                         </div>
@@ -86,13 +86,14 @@
     <style>
         .chart-legend li {
             list-style: none;
-        } 
-        .chart-legend li span {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            margin-right: 5px;
         }
+
+            .chart-legend li span {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                margin-right: 5px;
+            }
     </style>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/Chart.js"></script>
@@ -101,9 +102,19 @@
             setupDataTables();
         });
 
+        $('#btn-reset-filter').click(function () {
+            $(".selectreset").val($(".selectreset option:first").val());
+            $("#btn-filter").click();
+        });
+
         function setupDataTables() {
-            $('#btn-reset-filter').click(function () {
-                $(".selectreset").val($(".selectreset option:first").val());
+
+            $('#divDraft,#divWaitA,#divWaitG').click(function (e) {
+                location.href = '@Url.Action("Index", "PBCK4")';
+            });
+
+            $('#divComp').click(function (e) {
+                location.href = '@Url.Action("Pbck4Completed", "PBCK4")';
             });
 
             var draft = $('#draftId').text();
