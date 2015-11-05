@@ -16,23 +16,23 @@
         <h4>Status</h4>
         <div id="divDraft" class="notif-wrapper radius-left" data-toggle="tooltip" data-placement="top" title="@Html.DisplayFor(model => model.DraftTotal)">
             <h1 id="draftId" style="display:none">@Html.DisplayFor(model => model.DraftTotal)</h1>
-            <h1>@Html.DisplayFor(model => model.DraftTotal)</h1>
+            <h1 class="changeNumber1">@Html.DisplayFor(model => model.DraftTotal)</h1>
             <h5>Draft</h5>
         </div>
         <div id="divWaitA" class="notif-wrapper radius-right" data-toggle="tooltip" data-placement="top" title="@Html.DisplayFor(model => model.WaitingForAppTotal)">
             <h1 id="waitPId" style="display:none">@Html.DisplayFor(model => model.WaitingForPoaTotal)</h1>
             <h1 id="waitMId" style="display:none">@Html.DisplayFor(model => model.WaitingForManagerTotal)</h1>
-            <h1>@Html.DisplayFor(model => model.WaitingForAppTotal)</h1>
+            <h1 class="changeNumber2">@Html.DisplayFor(model => model.WaitingForAppTotal)</h1>
             <h5>Waiting for Approval</h5>
         </div>
         <div id="divWaitG" class="notif-wrapper radius-left bottom" data-toggle="tooltip" data-placement="bottom" title="@Html.DisplayFor(model => model.WaitingForGovTotal)">
             <h1 id="waitGId" style="display:none">@Html.DisplayFor(model => model.WaitingForGovTotal)</h1>
-            <h1>@Html.DisplayFor(model => model.WaitingForGovTotal)</h1>
+            <h1 class="changeNumber3">@Html.DisplayFor(model => model.WaitingForGovTotal)</h1>
             <h5>Waiting for Gov Approval</h5>
         </div>
         <div id="divComp" class="notif-wrapper radius-right bottom" data-toggle="tooltip" data-placement="bottom" title="@Html.DisplayFor(model => model.CompletedTotal)">
             <h1 id="completedId" style="display:none">@Html.DisplayFor(model => model.CompletedTotal)</h1>
-            <h1>@Html.DisplayFor(model => model.CompletedTotal)</h1>
+            <h1 class="changeNumber4">@Html.DisplayFor(model => model.CompletedTotal)</h1>
             <h5>Completed</h5>
         </div>
     </div>
