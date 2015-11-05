@@ -112,6 +112,7 @@
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="ORDER_DATE" Type="datetime" />
           <Property Name="IS_PAID_OFF" Type="bit" />
+          <Property Name="CK1_SAP_NUMBER" Type="varchar" MaxLength="35" />
         </EntityType>
         <EntityType Name="CK1_ITEM">
           <Key>
@@ -7489,6 +7490,7 @@
           <NavigationProperty Name="CK1_ITEM" Relationship="EMSModel.FK_CK1_ITEM_CK1" FromRole="CK1" ToRole="CK1_ITEM" />
           <NavigationProperty Name="PBCK4_ITEM" Relationship="EMSModel.FK_PBCK4_ITEM_CK1" FromRole="CK1" ToRole="PBCK4_ITEM" />
           <Property Name="IS_PAID_OFF" Type="Boolean" />
+          <Property Name="CK1_SAP_NUMBER" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_CK1_ITEM_CK1">
           <End Type="EMSModel.CK1" Role="CK1" Multiplicity="0..1" />
@@ -9174,6 +9176,7 @@
           <EntitySetMapping Name="CK1">
             <EntityTypeMapping TypeName="EMSModel.CK1">
               <MappingFragment StoreEntitySet="CK1">
+                <ScalarProperty Name="CK1_SAP_NUMBER" ColumnName="CK1_SAP_NUMBER" />
                 <ScalarProperty Name="IS_PAID_OFF" ColumnName="IS_PAID_OFF" />
                 <ScalarProperty Name="ORDER_DATE" ColumnName="ORDER_DATE" />
                 <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
