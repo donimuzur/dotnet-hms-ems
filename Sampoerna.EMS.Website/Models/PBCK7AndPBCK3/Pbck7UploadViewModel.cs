@@ -30,5 +30,7 @@
         public string Message { get; set; }
 
         public string PlantId { get; set; }
+
+        public string BlockedStockRemaining { get; set; }
     }
 }

@@ -9,4 +9,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
         public Enums.ActionType WorkflowActionType { get; set; }
     }
+
+    public class Lack1GetDashboardDataByParamInput
+    {
+        public int? PeriodMonth { get; set; }
+        public int? PeriodYear { get; set; }
+        public string Creator { get; set; }
+        public string Poa { get; set; }
+    }
 }

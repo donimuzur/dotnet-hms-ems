@@ -38,5 +38,7 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<LACK1> GetPbck1RealizationList(Lack1GetPbck1RealizationListParamInput input);
 
+        List<LACK1> GetDashboardDataByParam(Lack1GetDashboardDataByParamInput input);
+
     }
 }

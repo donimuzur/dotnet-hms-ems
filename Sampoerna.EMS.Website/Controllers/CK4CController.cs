@@ -1779,6 +1779,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var listCk4c = GetAllDocument(model);
 
             model.Detil.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
+            model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
             model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();

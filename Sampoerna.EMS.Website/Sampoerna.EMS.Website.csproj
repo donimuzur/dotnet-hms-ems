@@ -325,6 +325,7 @@
     <Compile Include="Models\LACK1\Lack1BaseItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
     <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DashboardViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1EditViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
@@ -362,6 +363,7 @@
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
     <Compile Include="Models\Material\MaterialListViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
+    <Compile Include="Models\PBCK1\Pbck1DashboardModel.cs" />
     <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ListCK5Model.cs" />
@@ -383,6 +385,7 @@
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3ViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3DashboardViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
@@ -1249,6 +1252,9 @@
     <Content Include="Views\CK4C\Dashboard.cshtml" />
     <Content Include="Views\Shared\_ChartStatus.cshtml" />
     <Content Include="Views\CK5\_CK5POReceive.cshtml" />
+    <Content Include="Views\PBCK1\Dashboard.cshtml" />
+    <Content Include="Views\LACK1\Dashboard.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
