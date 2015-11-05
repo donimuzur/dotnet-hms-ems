@@ -438,7 +438,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 //get blocked stock
                 foreach (var uploadItemModel in model.UploadItems)
                 {
-                    var blockStockOutput = _pbck7Pbck3Bll.GetBlockedStockQuota(uploadItemModel.PlantId, uploadItemModel.FaCode);
+
+                    var blockStockOutput = _pbck7Pbck3Bll.GetBlockedStockQuota(model.PlantId, uploadItemModel.FaCode);
                   
                     uploadItemModel.BlockedStockRemaining = blockStockOutput.BlockedStockRemaining;
 

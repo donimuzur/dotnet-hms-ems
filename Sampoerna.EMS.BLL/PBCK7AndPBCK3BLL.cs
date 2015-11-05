@@ -2706,7 +2706,9 @@ namespace Sampoerna.EMS.BLL
             //get from pbck7
 
             var dbPbck7 = _repositoryPbck7.Get(c => c.PLANT_ID == plant &&
-                        (c.STATUS != Enums.DocumentStatus.Cancelled && c.STATUS != Enums.DocumentStatus.Completed), null, "PBCK7_ITEM");
+                        (c.STATUS != Enums.DocumentStatus.Cancelled 
+                        && c.STATUS != Enums.DocumentStatus.Completed)
+                        && c.STATUS != Enums.DocumentStatus.GovRejected, null, "PBCK7_ITEM");
 
             decimal blockStockUsed =
                 dbPbck7.Sum(
