@@ -966,6 +966,21 @@ function ValidateGoodReceive() {
     return result;
 }
 
+function ValidatePOReceive() {
+    var result = true;
+    
+    if ($('#DnNumber').val() == '') {
+        AddValidationClass(false, 'DnNumber');
+        result = false;
+        $('#collapseFour').removeClass('collapse');
+        $('#collapseFour').addClass('in');
+        $("#collapseFour").css({ height: "auto" });
+        $('#DnNumber').focus();
+    }
+    
+    return result;
+}
+
 function ajaxGetListMaterial(url, formData,materialid) {
     if (formData.plantId) {
         $.ajax({

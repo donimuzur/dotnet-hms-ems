@@ -1248,6 +1248,7 @@
     <Content Include="Views\CK5\EditMarketReturn.cshtml" />
     <Content Include="Views\CK4C\Dashboard.cshtml" />
     <Content Include="Views\Shared\_ChartStatus.cshtml" />
+    <Content Include="Views\CK5\_CK5POReceive.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
