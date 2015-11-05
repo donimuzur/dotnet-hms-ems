@@ -119,11 +119,18 @@ aspnet_client
 UpdateApp.config
 /_backup
 aspnet_client
-/Sampoerna.EMS.Website/Web.config
 /Sampoerna.EMS.Website/Web.*.config
+/Sampoerna.EMS.Website/Web.config
+/scripts/BatchSqlDBUpdates.exe.config
 /Release
 **/log*.txt
-/FieldiqApp/Web.config
-/FieldiqApp/Web.*.config
-/FieldiqApp/Files/Data
 
+
+/Sampoerna.EMS.BLL/*.orig
+/Sampoerna.EMS.BLL/*.orig
+/packages/*.deleteme
+/scripts/BatchSqlDBUpdates.exe.config
+/Sampoerna.EMS.Website/Web.config
+/Sampoerna.EMS.Scheduler/App.config
+/Sampoerna.EMS.DAL/App.config
+/Sampoerna.EMS.DAL/App.Config
