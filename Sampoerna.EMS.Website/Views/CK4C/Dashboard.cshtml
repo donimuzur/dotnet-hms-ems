@@ -23,7 +23,7 @@
                                         InsertionMode = InsertionMode.Replace,
                                         UpdateTargetId = "contenttable",
                                         OnComplete = "setupDataTables",
-                                    }, new { @class = "form-excise", role = "form" }))
+                                    }, new { @class = "form-excise", role = "form"}))
                                 { 
                                 <div class="row">
                                     <div class="col-md-6">
@@ -60,7 +60,7 @@
                                     <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                                <input type="submit" class="btn btn-blue full" value="FILTER" id="btn-filter" />
                                             </div>
                                             <div class="col-md-6">
                                                 <button class="btn btn-blue full" id="btn-reset-filter" type="button">RESET</button>
@@ -83,29 +83,27 @@
 
 @section scripts
 {
-    <style>
-        .chart-legend li {
-            list-style: none;
-        } 
-        .chart-legend li span {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            margin-right: 5px;
-        }
-    </style>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/Chart.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             setupDataTables();
+
+            $('#divDraft,#divWaitA,#divWaitG').click(function (e) {
+                location.href = '@Url.Action("DocumentList", "CK4C")';
+            });
+
+            $('#divComp').click(function (e) {
+                location.href = '@Url.Action("CompletedDocument", "CK4C")';
+            });
+        });
+
+        $('#btn-reset-filter').click(function () {
+            $(".selectreset").val($(".selectreset option:first").val());
+            $("#btn-filter").click();
         });
 
         function setupDataTables() {
-            $('#btn-reset-filter').click(function () {
-                $(".selectreset").val($(".selectreset option:first").val());
-            });
-
             var draft = $('#draftId').text();
             var waitP = $('#waitPId').text();
             var waitM = $('#waitMId').text();
