@@ -42,10 +42,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPrintHistoryBLL _printHistoryBll;
+        private IMonthBLL _monthBll;
+      
+       
 
         public PBCK4Controller(IPageBLL pageBLL, IPOABLL poabll, IZaidmExNPPBKCBLL nppbkcBll,
             IPBCK4BLL pbck4Bll, IPlantBLL plantBll, IWorkflowBLL workflowBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IPrintHistoryBLL printHistoryBll)
+            IWorkflowHistoryBLL workflowHistoryBll, IPrintHistoryBLL printHistoryBll, IMonthBLL monthBll)
             : base(pageBLL, Enums.MenuList.PBCK4)
         {
             _poaBll = poabll;
@@ -56,6 +59,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _changesHistoryBll = changesHistoryBll;
             _workflowHistoryBll = workflowHistoryBll;
             _printHistoryBll = printHistoryBll;
+            _monthBll = monthBll;
+           
+
         }
 
         //
@@ -1824,6 +1830,68 @@ namespace Sampoerna.EMS.Website.Controllers
             return ck1Date;
         }
 
+        #endregion
+
+        #region DashBoard
+
+        public ActionResult Dashboard()
+        {
+            var model = InitDashboardModel(new Pbck4DashBoardViewModel
+            {
+                MainMenu = Enums.MenuList.PBCK4,
+                CurrentMenu = PageInfo,
+                MonthList = GlobalFunctions.GetMonthList(_monthBll),
+                YearList = pbck4cDashboardYear(),
+                PoaList = GlobalFunctions.GetPoaAll(_poaBll),
+                UserList = GlobalFunctions.GetCreatorList()
+            });
+            return View("Dashboard", model);
+        }
+
+        private Pbck4DashBoardViewModel InitDashboardModel(Pbck4DashBoardViewModel model)
+        {
+            var listPbck4 = GetAllDocument(model);
+            model.Detail.DraftTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
+            model.Detail.WaitingForPoaTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
+            model.Detail.WaitingForManagerTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            model.Detail.WaitingForGovTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
+            model.Detail.CompletedTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
+            model.Detail.WaitingForAppTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            
+
+            return model;
+
+        }
+
+        private List<Pbck4Dto> GetAllDocument(Pbck4DashBoardViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                var pbck4 = _pbck4Bll.GetAllByParam(new Pbck4DasboardParamInput());
+                return pbck4;
+            }
+
+            var input = Mapper.Map<Pbck4DasboardParamInput>(filter);
+            var dbData = _pbck4Bll.GetAllByParam(input);
+            return dbData;
+        }
+
+        private SelectList pbck4cDashboardYear()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
+
+         [HttpPost]
+        public PartialViewResult FilterDashboardPage(Pbck4DashBoardViewModel model)
+        {
+            var data = InitDashboardModel(model);
+
+            return PartialView("_ChartStatus", data.Detail);
+        }
         #endregion
 
     }
