@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="row">
+        <div class="row" id="rowCk3No">
             <label class="col-md-4">CK-3 No</label>
             <div class="col-md-8">
                 @Html.TextBoxFor(model => model.CK3_NO, new { @class = "form-control", @maxlength = "35" })
@@ -55,12 +55,12 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="row">
+        <div class="row" id="rowCk3Date">
             <label class="col-md-4">CK-3 Date</label>
             <div class="col-md-8">
                 <div class="input-group date">
                     @Html.TextBoxFor(model => model.CK3_DATE, new { @class = "form-control" })
-                    <span class="input-group-addon">
+                    <span class="input-group-addon" id="ck3DateInput">
                         <i class="fa fa-calendar"></i>
                     </span>
                 </div>
@@ -76,7 +76,7 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="row">
+        <div class="row" id="rowCk3Value">
             <label class="col-md-4">CK-3 Office Value</label>
             <div class="col-md-8">
                 @Html.TextBoxFor(model => model.CK3_OFFICE_VALUE, new { @class = "form-control", @maxlength = "50" })

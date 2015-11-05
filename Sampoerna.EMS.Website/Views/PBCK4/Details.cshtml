@@ -48,9 +48,9 @@
                         <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
                         <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
                         @*@if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
-                        {
-                            <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
-                        }*@
+                            {
+                                <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
+                            }*@
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
 
                     </ul>
@@ -66,7 +66,7 @@
                             || Model.DocumentStatus == Enums.DocumentStatus.Completed)
                         {
                             @Html.HiddenFor(model => model.Pbck4Id)
-                            
+
                             @Html.Partial("_Pbck4GovApproval")
                         }
                         else
@@ -76,13 +76,7 @@
 
                         @Html.Partial("_Pbck4Printout")
 
-                        @*@if (Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
-                        {
-                            @Html.HiddenFor(model => model.Pbck4Id)
 
-                            @Html.Partial("_Pbck4UploadCreate")
-                        }*@
-                        
                         @Html.Partial("_Pbck4ChangeLog")
 
                     </div>
@@ -183,12 +177,12 @@
                     <div class="col-md-4">
                         <label>FA Code</label>
                         @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadFaCode", @disabled = "disabled" })
-                        
+
                     </div>
                     <div class="col-md-4">
                         <label>CK-1 No</label>
                         @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadCk1No", @disabled = "disabled" })
-                        
+
                     </div>
 
                 </div>
@@ -251,7 +245,7 @@
                     <div class="col-md-4">
                         <label>Colour</label>
                         <textarea class="form-control" id="uploadColour" cols="20" rows="3" disabled></textarea>
-                      
+
                     </div>
                 </div>
 
@@ -260,7 +254,7 @@
 
                     <div class="col-md-4">
                         <label>Requested Qty</label>
-                        @Html.TextBoxFor(model => model.RequestedQty, new { @class = "form-control", @id = "uploadReqQty",  @disabled = "disabled" })
+                        @Html.TextBoxFor(model => model.RequestedQty, new { @class = "form-control", @id = "uploadReqQty", @disabled = "disabled" })
 
                     </div>
 
@@ -308,7 +302,7 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/Pbck4Script.js"></script>
     @if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
-        || Model.DocumentStatus == Enums.DocumentStatus.Completed)
+         || Model.DocumentStatus == Enums.DocumentStatus.Completed)
     {
 
         <script src="~/Scripts/UploadExcel.js"></script>
@@ -321,12 +315,29 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
+            if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()'
+                || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()'
+                || '@Model.DocumentStatus' == '@Enums.DocumentStatus.GovRejected.ToString()') {
+                $('#liPbck4OpenDocument').removeClass('active');
+                $('#liPbck4Completed').addClass('active');
+            } else {
+                $('#liPbck4OpenDocument').addClass('active');
+                $('#liPbck4Completed').removeClass('active');
+            }
+
+
             $('#btnBack').click(function (e) {
-                location.href = '@Url.Action("Index", "PBCK4")';
+                if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()'
+                    || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()'
+                || '@Model.DocumentStatus' == '@Enums.DocumentStatus.GovRejected.ToString()') {
+                    location.href = '@Url.Action("Pbck4Completed", "PBCK4")';
+                }
+                else
+                    location.href = '@Url.Action("Index", "PBCK4")';
             });
 
             $('#btn-changelog-export-xls').click(function () {
-                location.href = '@Url.Action("ExportXls", "PBCK4", new { pbckId = Model.Pbck4Id })';
+                location.href = '@Url.Action("ExportXls", "PBCK4", new {pbckId = Model.Pbck4Id})';
             });
 
             openGovStatusBlock();
@@ -373,30 +384,42 @@
                 $('#home').addClass('active');
                 $('#home-tab').addClass('active');
                 $('#collapseFour').addClass("in");
-                
+
                 $('#collapseOne').removeClass("in");
                 $('#collapseOne').addClass("collapsed");
-              
+
             }
         }
-        
+
         $("#btnSaveGovStatus").click(function () {
             if (ValidateGovInput()) {
                 $('#GovApproveForm').submit();
             }
         });
-        
+
         $('#divComment').hide();
-        
+
         $('#GovStatus').on('change', function (e) {
             var valueSelected = this.value;
 
             $('#divComment').hide();
 
-            //if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
+            $('#rowCk3No').show();
+            $('#rowCk3Date').show();
+            $('#rowCk3Value').show();
+            $('#rowCk3Doc').show();
+
             if (valueSelected == 'Rejected') {
                 $('#divComment').show();
+                $('#rowCk3No').hide();
+                $('#rowCk3Date').hide();
+                $('#rowCk3Value').hide();
+                $('#rowCk3Doc').hide();
 
+                //$('#CK3_NO').prop('disabled', true);
+                //$('#CK3_DATE').prop('disabled', true);
+                //$('#ck3DateInput').hide();
+                //$('#CK3_OFFICE_VALUE').prop('disabled', true);
             }
 
         });
@@ -416,7 +439,7 @@
                 }
             });
         }
-        
+
         function ResetPrintHistoryDataTable() {
             // DataTable
             var table = null;
@@ -436,11 +459,11 @@
 
 
         }
-        
+
         function EditRow(o) {
 
             var nRow = o.parents('tr');
-         
+
 
             $('#btnSaveMaterial').hide();
             $('#btnUpdateMaterial').show();
@@ -450,7 +473,7 @@
 
             ClearInputForm();
             ClearValidation();
-            
+
             $("#uploadPlant").val($('#PlantId').val());
             $('#uploadFaCode').val(nRow.find("td").eq(2).html());
             $('#uploadStickerCode').val(nRow.find("td").eq(3).html());
@@ -474,17 +497,17 @@
             $('#uploadPbck4ItemId').val(nRow.find("td").eq(22).html());
 
             $("#lblTitleInputManual").text('Edit Input');
-            
+
             $('#Pbck4UploadModal').modal('show');
 
 
         }
-        
+
         $("#btnUpdateMaterial").click(function () {
 
             UpdateRowPbck4Detail();
         });
-        
+
         $('#Pbck4UploadSave').click(function () {
             var datarows = GetTableData($('#Ck5UploadTable'));
             var columnLength = $('#pbck4TableItem').find("thead tr:first th").length;
@@ -514,7 +537,7 @@
                     data += '<td> <input name="UploadItemModels[' + i + '].Remark" type="hidden" value = "' + datarows[i][18] + '">' + datarows[i][18] + '</td>';
                     //data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][19] + '">' + datarows[i][19] + '</td>';
                     data += '<input name="UploadItemModels[' + i + '].CK1_ID" type="hidden" value = "' + datarows[i][20] + '">';
-                    
+
                     data += '<input name="UploadItemModels[' + i + '].PBCK4_ITEM_ID" type="hidden" value = "' + datarows[i][22] + '">';
                     data += '<input name="UploadItemModels[' + i + '].IsUpdated" type="hidden" value = "' + datarows[i][23] + '">';
 
@@ -523,7 +546,6 @@
                 data += '</tr>';
 
             }
-
 
 
             $('#upload-tab').removeClass('active');
@@ -539,7 +561,7 @@
             $("#collapseThree").css({ height: "auto" });
 
         });
-        
+
         $('#btnUploadInfo').click(function () {
 
             $('#home-tab').removeClass('active');
@@ -550,5 +572,4 @@
 
         });
     </script>
-
 }

@@ -131,11 +131,11 @@ namespace Sampoerna.EMS.BLL
 
             if (input.IsCompletedDocument)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled);
+               queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled || c.STATUS == Enums.DocumentStatus.GovRejected);
             }
             else
             {
-                queryFilter = queryFilter.And(c => !(c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled));
+               queryFilter = queryFilter.And(c => !(c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled || c.STATUS == Enums.DocumentStatus.GovRejected));
             }
 
             Func<IQueryable<PBCK4>, IOrderedQueryable<PBCK4>> orderByFilter = n => n.OrderByDescending(z => z.CREATED_DATE);
@@ -1331,7 +1331,6 @@ namespace Sampoerna.EMS.BLL
             //prepare for set changes history
             var origin = Mapper.Map<Pbck4Dto>(dbData);
 
-
             //add to change log
             SetChangesHistory(origin, input, input.UserId);
 
@@ -1431,100 +1430,6 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        //private void GovPartialApproveDocument(Pbck4WorkflowDocumentInput input)
-        //{
-        //    var dbData = _repository.GetByID(input.DocumentId);
-
-        //    if (dbData == null)
-        //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-        //    if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-        //        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-        //    //prepare for set changes history
-        //    var origin = Mapper.Map<Pbck4Dto>(dbData);
-
-
-        //    //add to change log
-        //    SetChangesHistory(origin, input, input.UserId);
-
-        //    //Add Changes
-        //    if (dbData.GOV_STATUS != Enums.DocumentStatusGov.PartialApproved)
-        //        WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
-
-        //    dbData.BACK1_NO = input.AdditionalDocumentData.Back1No;
-        //    dbData.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
-
-        //    dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
-        //    dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-
-        //    dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
-
-        //    dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-
-        //    dbData.MODIFIED_DATE = DateTime.Now;
-        //    dbData.MODIFIED_BY = input.UserId;
-
-        //    var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
-        //    pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
-
-        //    dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
-
-        //    //update item updated
-        //    foreach (var pbck4ItemDto in input.UploadItemDto)
-        //    {
-        //        UpdatePbck4ItemApprovedQtyById(pbck4ItemDto.PBCK4_ITEM_ID, pbck4ItemDto.APPROVED_QTY);
-        //    }
-
-        //    if (IsCompletedWorkflow(dbData))
-        //    {
-        //        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-
-        //        dbData.STATUS = Enums.DocumentStatus.Completed;
-
-        //        AddWorkflowHistory(input);
-        //    }
-
-
-        //    input.DocumentNumber = dbData.PBCK4_NUMBER;
-
-        //    //var dbData = _repository.GetByID(input.DocumentId);
-
-        //    //if (dbData == null)
-        //    //    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-        //    //if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-        //    //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-        //    ////Add Changes
-        //    //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
-        //    //WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.PartialApproved);
-
-        //    //dbData.STATUS = Enums.DocumentStatus.Completed;
-
-        //    //dbData.BACK1_NO = input.AdditionalDocumentData.Back1No;
-        //    //dbData.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
-
-        //    //dbData.CK3_NO = input.AdditionalDocumentData.Ck3No;
-        //    //dbData.CK3_DATE = input.AdditionalDocumentData.Ck3Date;
-
-        //    //dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.AdditionalDocumentData.Ck3OfficeValue);
-
-        //    //dbData.GOV_STATUS = Enums.DocumentStatusGov.PartialApproved;
-
-        //    //dbData.MODIFIED_DATE = DateTime.Now;
-        //    //dbData.MODIFIED_BY = input.UserId;
-
-        //    //var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
-        //    //pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
-
-        //    //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
-
-        //    //input.DocumentNumber = dbData.PBCK4_NUMBER;
-
-        //    //AddWorkflowHistory(input);
-        //}
-
         private void GovRejectedDocument(Pbck4WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -1535,11 +1440,24 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
+           //prepare for set changes history
+           var origin = Mapper.Map<Pbck4Dto>(dbData);
+
+           //add to change log
+           SetChangesHistory(origin, input, input.UserId);
+
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
+           WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.Rejected;
+           dbData.BACK1_NO = input.AdditionalDocumentData.Back1No;
+           dbData.BACK1_DATE = input.AdditionalDocumentData.Back1Date;
+
+           var pbckDocument = input.AdditionalDocumentData.Back1FileUploadList.ToList();
+         
+           InsertOrDeletePbck4Item(pbckDocument);
+
+           dbData.STATUS = Enums.DocumentStatus.GovRejected;
             dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;

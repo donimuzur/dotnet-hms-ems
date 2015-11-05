@@ -1,4 +1,5 @@
 ﻿
+@using Sampoerna.EMS.Core
 @using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
 
@@ -203,117 +204,118 @@
             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                 <div class="panel-body">
                     <div class="form-excise" role="form">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">Status Gov</label>
-                                    <div class="col-md-8">
-                                       @Html.TextBoxFor(model => model.GovStatusDesc, new { @disabled = "disabled", @class = "form-control" })
+                       
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Status Gov</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.GovStatusDesc, new {@disabled = "disabled", @class = "form-control"})
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
                                   
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="row">
 
-                        <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-1 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.BACK1_NO, new {@disabled = "disabled", @class = "form-control"})
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">CK-3 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.CK3_NO, new {@disabled = "disabled", @class = "form-control"})
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">BACK-1 No</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.BACK1_NO, new { @disabled = "disabled", @class = "form-control" })
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-1 Date</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.BACK1_DATE, "{0:dd MMM yyyy}", new {@disabled = "disabled", @class = "form-control"})
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">CK-3 Date</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.CK3_DATE, "{0:dd MMM yyyy}", new {@disabled = "disabled", @class = "form-control"})
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">CK-3 No</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.CK3_NO, new { @disabled = "disabled", @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">BACK-1 Date</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.BACK1_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">CK-3 Date</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.CK3_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">BACK-1 Doc</label>
-                                    <div class="col-md-8">
-                                        @*<input type="text" class="form-control" disabled>*@
-                                        @if (Model.Pbck4FileUploadModelList != null)
-                                        {
-                                            foreach (var file in Model.Pbck4FileUploadModelList)
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-1 Doc</label>
+                                        <div class="col-md-8">
+                                            @*<input type="text" class="form-control" disabled>*@
+                                            @if (Model.Pbck4FileUploadModelList != null)
                                             {
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <i class="fa fa-file"></i>
-                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                    </div>
+                                                foreach (var file in Model.Pbck4FileUploadModelList)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <i class="fa fa-file"></i>
+                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                        </div>
 
-                                                </div>
+                                                    </div>
+                                                }
                                             }
-                                        }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">CK-3 Doc</label>
-                                    <div class="col-md-8">
-                                        @*<input type="text" class="form-control" disabled>*@
-                                        @if (Model.Pbck4FileUploadModelList2 != null)
-                                        {
-                                            foreach (var file in Model.Pbck4FileUploadModelList2)
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">CK-3 Doc</label>
+                                        <div class="col-md-8">
+                                            @*<input type="text" class="form-control" disabled>*@
+                                            @if (Model.Pbck4FileUploadModelList2 != null)
                                             {
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <i class="fa fa-file"></i>
-                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                    </div>
+                                                foreach (var file in Model.Pbck4FileUploadModelList2)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <i class="fa fa-file"></i>
+                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                        </div>
 
-                                                </div>
+                                                    </div>
+                                                }
                                             }
-                                        }
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">CK-3 Office Value</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.CK3_OFFICE_VALUE, new { @disabled = "disabled", @class = "form-control" })
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">CK-3 Office Value</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.CK3_OFFICE_VALUE, new {@disabled = "disabled", @class = "form-control"})
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                       
                     </div>
                 </div>
             </div>
