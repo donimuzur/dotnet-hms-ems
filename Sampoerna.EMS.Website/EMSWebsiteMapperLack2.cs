@@ -60,6 +60,12 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DecreeDate))
                 ;
 
+            #region ---------------- Dashboard ----------------
+
+            Mapper.CreateMap<Lack2DashboardSearchViewModel, Lack2GetDashboardDataByParamInput>().IgnoreAllNonExisting();
+
+            #endregion
+
         }
     }
 }

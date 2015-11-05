@@ -268,5 +268,33 @@ namespace Sampoerna.EMS.BLL.Services
             return rc;
         }
 
+        public List<LACK2> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
+        {
+            var queryFilter = PredicateHelper.True<LACK2>();
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa || c.CREATED_BY == input.Poa);
+            }
+
+            if (input.PeriodMonth.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth.Value);
+            }
+
+            if (input.PeriodYear.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
+            }
+
+            return _repository.Get(queryFilter).ToList();
+
+        }
+
     }
 }

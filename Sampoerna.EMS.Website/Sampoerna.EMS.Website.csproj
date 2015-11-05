@@ -341,6 +341,7 @@
     <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2BaseItemModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DashboardViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2DetailReportsViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2DetailViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2EditViewModel.cs" />
@@ -1252,6 +1253,7 @@
     <Content Include="Views\CK4C\Dashboard.cshtml" />
     <Content Include="Views\Shared\_ChartStatus.cshtml" />
     <Content Include="Views\CK5\_CK5POReceive.cshtml" />
+    <Content Include="Views\LACK2\Dashboard.cshtml" />
     <Content Include="Views\PBCK1\Dashboard.cshtml" />
     <Content Include="Views\LACK1\Dashboard.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Dashboard.cshtml" />
