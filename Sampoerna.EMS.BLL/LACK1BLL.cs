@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using Sampoerna.EMS.BLL.Services;
@@ -2037,6 +2036,16 @@ namespace Sampoerna.EMS.BLL
                 rc.Add(item);
             }
             return rc.OrderBy(o => o.Lack1Id).ToList();
+        }
+
+        #endregion
+
+        #region ------------- Dashboard -----------
+
+        public List<Lack1Dto> GetDashboardDataByParam(Lack1GetDashboardDataByParamInput input)
+        {
+            var data = _lack1Service.GetDashboardDataByParam(input);
+            return Mapper.Map<List<Lack1Dto>>(data);
         }
 
         #endregion

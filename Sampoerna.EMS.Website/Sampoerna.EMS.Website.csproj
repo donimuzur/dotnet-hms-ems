@@ -325,6 +325,7 @@
     <Compile Include="Models\LACK1\Lack1BaseItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
     <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DashboardViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1EditViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
@@ -1251,6 +1252,7 @@
     <Content Include="Views\CK4C\Dashboard.cshtml" />
     <Content Include="Views\Shared\_ChartStatus.cshtml" />
     <Content Include="Views\PBCK1\Dashboard.cshtml" />
+    <Content Include="Views\LACK1\Dashboard.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
