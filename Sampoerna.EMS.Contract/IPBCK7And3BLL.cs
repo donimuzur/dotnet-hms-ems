@@ -76,6 +76,9 @@ namespace Sampoerna.EMS.Contract
 
         Pbck73PrintOutDto GetPbck3PrintOutData(int pbck3Id);
 
+        List<Pbck3Dto> GetDashboardPbck3ByParam(GetDashboardPbck3ByParamInput input);
+        List<Pbck7AndPbck3Dto> GetDashboardPbck7ByParam(GetDashboardPbck7ByParamInput input);
+
         BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode);
 
         List<GetListFaCodeByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId);
