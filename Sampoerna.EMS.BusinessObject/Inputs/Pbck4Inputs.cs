@@ -104,4 +104,19 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     }
 
+    public class Pbck4DasboardParamInput
+    {
+        public int? Month { get; set; }
+
+        public int? Year { get; set; }
+
+        public string Creator { get; set; }
+
+        public string Poa { get; set; }
+        public string ShortOrderColumn { get; set; }
+
+        public Enums.UserRole UserRole { get; set; }
+        public string UserId { get; set; }
+    }
+
 }

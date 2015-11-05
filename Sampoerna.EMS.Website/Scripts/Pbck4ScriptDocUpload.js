@@ -58,7 +58,9 @@ $('#file-sk-container').on('click', '.add-files', (function () {
     //                           '<input type="file" id="Pbck4FileUploadFileList_' + file_sk + '_" name="Pbck4FileUploadFileList[' + file_sk + ']" class="file-inputs" data-filename-placement="inside" style="left: -169px; top: 14px;"></a>' +
     //                       '</div><div class="col-sm-3"></div></div>');
     $('#file-sk-container').append(' <div class="row"><div class="col-sm-9"> ' +
-                               '<input type="file" id="Pbck4FileUploadFileList_' + file_sk + '_" name="Pbck4FileUploadFileList_[' + file_sk + ']" class="form-control">' +
+         '<a class="file-input-wrapper btn btn-grey  file-inputs">' +
+                            ' <span>Browse</span>' +
+                               '<input type="file" id="Pbck4FileUploadFileList_' + file_sk + '_" name="Pbck4FileUploadFileList_[' + file_sk + ']" class="file-inputs" data-filename-placement="inside"></a>' +
                            '</div><div class="col-sm-3"><button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + file_sk + ')">Remove</button>' +
                            '</div></div>');
 
@@ -77,7 +79,7 @@ function removeUploadButton(index) {
                             '<a class="file-input-wrapper btn btn-grey  file-inputs">' +
                             ' <span>Browse</span>' +
                                '<input type="file" id="Pbck4FileUploadFileList_' + file_sk + '_" name="Pbck4FileUploadFileList[' + file_sk + ']" class="file-inputs" data-filename-placement="inside" style="left: -169px; top: 14px;"></a>' +
-                           '</div><div class="col-sm-3"></div></div>');
+                           '</div><div class="col-sm-3"><button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + file_sk + ')">Remove</button></div></div>');
 
     }
 
@@ -124,7 +126,7 @@ $('#upload-file-sk2').click(function () {
             '<i>' + poa_sk2[j] + '</i>' +
             '</div>' +
             '<div class="col-sm-2">' +
-            '<button class="btn btn-danger full" type="button" onclick="removeUploadButton(' + j + ')"><i class="fa fa-times"></i></button>' +
+            '<button class="btn btn-danger full" type="button" onclick="removeUploadButton2(' + j + ')"><i class="fa fa-times"></i></button>' +
             '</div>' +
             '</div>';
 
@@ -145,8 +147,10 @@ $('#file-sk-container2').on('click', '.add-files', (function () {
     //                           '<input type="file" id="Pbck4FileUploadFileList2_' + file_sk2 + '_" name="Pbck4FileUploadFileList2[' + file_sk2 + ']" class="file-inputs" data-filename-placement="inside" style="left: -169px; top: 14px;"></a>' +
     //                       '</div><div class="col-sm-3"></div></div>');
     $('#file-sk-container2').append(' <div class="row"><div class="col-sm-9"> ' +
-                             '<input type="file" id="Pbck4FileUploadFileList2_' + file_sk + '_" name="Pbck4FileUploadFileList2_[' + file_sk2 + ']" class="form-control">' +
-                         '</div><div class="col-sm-3"><button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + file_sk2 + ')">Remove</button>' +
+         '<a class="file-input-wrapper btn btn-grey  file-inputs">' +
+                            ' <span>Browse</span>' +
+                             '<input type="file" id="Pbck4FileUploadFileList2_' + file_sk2 + '_" name="Pbck4FileUploadFileList2_[' + file_sk2 + ']" class="file-inputs" data-filename-placement="inside"></a>' +
+                         '</div><div class="col-sm-3"><button type="button" class="btn btn-danger full" onclick="removeUploadButton2(' + file_sk2 + ')">Remove</button>' +
                          '</div></div>');
 
 
@@ -165,7 +169,7 @@ function removeUploadButton2(index) {
                             '<a class="file-input-wrapper btn btn-grey  file-inputs">' +
                             ' <span>Browse</span>' +
                                '<input type="file" id="Pbck4FileUploadFileList2_' + file_sk2 + '_" name="Pbck4FileUploadFileList2[' + file_sk2 + ']" class="file-inputs" data-filename-placement="inside" style="left: -169px; top: 14px;"></a>' +
-                           '</div><div class="col-sm-3"></div></div>');
+                           '</div><div class="col-sm-3"><button type="button" class="btn btn-danger full" onclick="removeUploadButton2(' + file_sk2 + ')">Remove</button></div></div>');
 
     }
 
