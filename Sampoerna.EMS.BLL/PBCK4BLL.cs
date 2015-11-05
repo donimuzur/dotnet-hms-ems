@@ -1309,6 +1309,7 @@ namespace Sampoerna.EMS.BLL
            }
        }
 
+    
        private void GovApproveDocument(Pbck4WorkflowDocumentInput input)
        {
            var dbData = _repository.GetByID(input.DocumentId);
@@ -1360,6 +1361,7 @@ namespace Sampoerna.EMS.BLL
            pbckDocument.AddRange(input.AdditionalDocumentData.Ck3FileUploadList);
 
            //dbData.PBCK4_DOCUMENT = Mapper.Map<List<PBCK4_DOCUMENT>>(pbckDocument);
+          
            InsertOrDeletePbck4Item(pbckDocument);
 
            ////update item updated
