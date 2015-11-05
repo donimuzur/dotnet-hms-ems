@@ -5208,7 +5208,7 @@
           <Property Name="END_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_BROLE_MAP_USER" FromRole="BROLE_MAP" ToRole="USER" />
           <NavigationProperty Name="USER_BROLE" Relationship="EMSModel.FK_BROLE_MAP_USER_BROLE" FromRole="BROLE_MAP" ToRole="USER_BROLE" />
-          <Property Name="ROLEID" Type="Int32" />
+          <Property Name="ROLEID" Type="EMSModel.UserRole" />
         </EntityType>
         <EntityType Name="PAGE_MAP">
           <Key>
