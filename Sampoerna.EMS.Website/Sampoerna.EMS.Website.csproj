@@ -1251,6 +1251,7 @@
     <Content Include="Views\CK5\EditMarketReturn.cshtml" />
     <Content Include="Views\CK4C\Dashboard.cshtml" />
     <Content Include="Views\Shared\_ChartStatus.cshtml" />
+    <Content Include="Views\CK5\_CK5POReceive.cshtml" />
     <Content Include="Views\PBCK1\Dashboard.cshtml" />
     <Content Include="Views\LACK1\Dashboard.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Dashboard.cshtml" />
