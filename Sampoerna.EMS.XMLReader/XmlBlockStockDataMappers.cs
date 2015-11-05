@@ -49,6 +49,11 @@ namespace Sampoerna.EMS.XMLReader
 
                         item.BLOCKED = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Blocked")));
                         item.BUN = _xmlMapper.GetElementValue(xElement.Element("BUn"));
+                        if (item.BUN == "TH")
+                        {
+                            item.BUN = "Btg";
+                            item.BLOCKED = item.BLOCKED*1000;
+                        }
                         items.Add(item);
                     }
                     catch (Exception ex)
