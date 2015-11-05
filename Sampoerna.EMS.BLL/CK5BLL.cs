@@ -3459,13 +3459,25 @@ namespace Sampoerna.EMS.BLL
                 if (isConvertionExist)
                 {
                     //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                    var umren = matUom.Single(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).UMREN;
-                    if (umren != null)
-                        ck5MaterialDto.CONVERTED_QTY = ck5MaterialDto.CONVERTED_QTY * umren.Value;
+                    var dbMaterialConv = matUom.FirstOrDefault(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM);
+                    if (dbMaterialConv != null)
+                    {
+                        var umren = dbMaterialConv.UMREN;
+                        if (umren != null)
+                            ck5MaterialDto.CONVERTED_QTY = ck5MaterialDto.CONVERTED_QTY*umren.Value;
+                        else
+                        {
+
+                            throw new Exception(
+                                String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
+                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
+                        }
+                    }
                     else
                     {
-                        
-                        throw new Exception(String.Format("Conversion value for {0} in {1} to {2} is not found in material master",ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID,ck5MaterialDto.CONVERTED_UOM_ID));
+                        throw new Exception(
+                                String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
+                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
                     }
                     ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
                 }
