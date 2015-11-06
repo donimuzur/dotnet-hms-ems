@@ -81,5 +81,54 @@ namespace Sampoerna.EMS.BLL.Services
             return rc;
         }
 
+        public List<INVENTORY_MOVEMENT> GetUsageByParam(InvMovementGetUsageByParamInput input)
+        {
+            var usageMvtType = new List<string>()
+            {
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage202),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage901),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage902),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ01),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ02)
+            };
+
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
+                && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
+
+            if (input.PlantIdList.Count > 0)
+            {
+                queryFilter = queryFilter.And(c => input.PlantIdList.Contains(c.PLANT_ID));
+            }
+
+            queryFilter = queryFilter.And(c => usageMvtType.Contains(c.MVT));
+
+            return _repository.Get(queryFilter).ToList();
+
+        }
+
+        public List<INVENTORY_MOVEMENT> GetReceivingByParam(InvMovementGetReceivingByParamInput input)
+        {
+            var receivingMvtType = new List<string>()
+            {
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving102)
+            };
+
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
+                && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
+
+            if (input.PlantIdList.Count > 0)
+            {
+                queryFilter = queryFilter.And(c => input.PlantIdList.Contains(c.PLANT_ID));
+            }
+
+            queryFilter = queryFilter.And(c => receivingMvtType.Contains(c.MVT));
+
+            return _repository.Get(queryFilter).ToList();
+        }
+
     }
 }

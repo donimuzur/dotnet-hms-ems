@@ -1489,6 +1489,7 @@ namespace Sampoerna.EMS.BLL
                             {
                                 case Enums.CK5Type.PortToImporter:
                                 case Enums.CK5Type.DomesticAlcohol:
+                                case Enums.CK5Type.MarketReturn:
                                     poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     break;
                                 case Enums.CK5Type.Manual:
@@ -1575,6 +1576,7 @@ namespace Sampoerna.EMS.BLL
                             rc.To.Add(poaDto.POA_EMAIL);
                         }
                     }
+                    //else if(ck5Dto.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || ck5Dto.ck)
                     
 
                     break;
@@ -1648,7 +1650,7 @@ namespace Sampoerna.EMS.BLL
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
-            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter || dbData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol)
+            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter || dbData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dbData.CK5_TYPE == Enums.CK5Type.MarketReturn)
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
             else if (dbData.CK5_TYPE == Enums.CK5Type.Manual && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
