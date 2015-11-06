@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string NPPBKC_ID { get; set; }
         public Nullable<System.DateTime> ORDER_DATE { get; set; }
         public Nullable<bool> IS_PAID_OFF { get; set; }
+        public string CK1_SAP_NUMBER { get; set; }
     
         public virtual ICollection<CK1_ITEM> CK1_ITEM { get; set; }
         public virtual ICollection<PBCK4_ITEM> PBCK4_ITEM { get; set; }

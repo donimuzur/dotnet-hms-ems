@@ -60,6 +60,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string SUPPLIER_COMPANY_CODE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public Nullable<bool> IS_TIS_TO_TIS { get; set; }
     
         public virtual MONTH MONTH { get; set; }
         public virtual UOM UOM { get; set; }

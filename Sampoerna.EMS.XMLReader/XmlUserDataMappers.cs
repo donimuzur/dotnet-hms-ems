@@ -11,6 +11,8 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
+
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlUserDataMapper : IXmlDataReader 
@@ -89,9 +91,30 @@ namespace Sampoerna.EMS.XMLReader
                         //UserItems.Add(user);
                         _xmlMapper.InsertOrUpdate(user);
 
-                        if (!role.BROLE_DESC.Contains("POA_MANAGER") && role.BROLE_DESC.Contains("POA"))
+                        if (!role.BROLE_DESC.ToUpper().Contains("POA_MANAGER") && role.BROLE_DESC.ToUpper().Contains("POA"))
                         {
                             InsertPOA(user);
+                            roleMap.ROLEID = Enums.UserRole.POA;
+                        }
+                        else if (role.BROLE_DESC.ToUpper().Contains("POA_MANAGER"))
+                        {
+                            roleMap.ROLEID = Enums.UserRole.Manager;
+                        }
+                        else if (role.BROLE_DESC.ToUpper().Contains("VIEWER"))
+                        {
+                            roleMap.ROLEID = Enums.UserRole.Viewer;
+                        }
+                        else if(role.BROLE_DESC.ToUpper().Contains("CREATOR"))
+                        {
+                            roleMap.ROLEID = Enums.UserRole.User;
+                        }
+                        else if (role.BROLE_DESC.ToUpper().Contains("SUPER_ADMINISTRATOR"))
+                        {
+                            roleMap.ROLEID = Enums.UserRole.SuperAdmin;
+                        }
+                        else if (role.BROLE_DESC.ToUpper().Contains("ADMINISTRATOR"))
+                        {
+                            roleMap.ROLEID = Enums.UserRole.Administrator;
                         }
 
                         var existRoleMap = GetBroleMap(roleMap.BROLE, roleMap.MSACCT);
