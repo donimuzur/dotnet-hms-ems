@@ -22,7 +22,7 @@
                     <div class="panel-body">
                         <div class="form-excise" role="form">
                             <div class="row">
-                                @if (Model.IsCk5Manual)
+                                @if (Model.IsCk5Manual || Model.IsMarketReturn)
                                 {
                                     <div class="col-md-6">
                                         <div class="row">
@@ -157,7 +157,7 @@
                             else
                             {
                                 <div class="row">
-                                    @if (Model.IsCk5Manual)
+                                    @if (Model.IsCk5Manual )
                                     {
 
                                         <div class="col-md-6">
