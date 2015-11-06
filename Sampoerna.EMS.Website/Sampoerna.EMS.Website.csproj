@@ -377,6 +377,7 @@
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4DashBoardViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FileUploadViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
@@ -680,6 +681,7 @@
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
+    <Content Include="Scripts\Dashboard.js" />
     <Content Include="Scripts\DataTables-1.10.7\Contributing.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\Readme.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\Readme.md" />
@@ -1256,6 +1258,7 @@
     <Content Include="Views\LACK2\Dashboard.cshtml" />
     <Content Include="Views\PBCK1\Dashboard.cshtml" />
     <Content Include="Views\LACK1\Dashboard.cshtml" />
+    <Content Include="Views\PBCK4\Dashboard.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>

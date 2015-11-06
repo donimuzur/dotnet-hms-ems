@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string MSACCT { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.UserRole> ROLEID { get; set; }
     
         public virtual USER USER { get; set; }
         public virtual USER_BROLE USER_BROLE { get; set; }

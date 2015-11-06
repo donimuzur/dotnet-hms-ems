@@ -34,8 +34,27 @@ namespace Sampoerna.EMS.XMLReader
                     try
                     {
                         var item = new CK1();
-                        item.CK1_NUMBER = _xmlMapper.GetElementValue(xElement.Element("EBELN"));
+                        var ck1SapNumber = _xmlMapper.GetElementValue(xElement.Element("EBELN"));
+                        var ck1Number = _xmlMapper.GetElementValue(xElement.Element("ZZCK1_CE_OFFICE"));
 
+                        if (ck1Number == null)
+                        {
+                            throw new Exception(String.Format("ck1 number cannot be null, field (ZZCK1_CE_OFFICE)"));
+                        }
+                        else
+                        {
+                            item.CK1_NUMBER = ck1Number;    
+                        }
+
+                        if (ck1SapNumber == null)
+                        {
+                            throw new Exception(String.Format("ck1 SAP number cannot be null, field (EBELN)"));
+                        }
+                        else
+                        {
+                            item.CK1_SAP_NUMBER = ck1SapNumber;
+                        }
+                        
                         item.CK1_DATE = Convert.ToDateTime(_xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("AEDAT"))));
                         item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("WERKS"));
                         item.CREATED_BY = Constans.PI;

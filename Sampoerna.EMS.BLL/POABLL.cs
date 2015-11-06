@@ -100,15 +100,25 @@ namespace Sampoerna.EMS.BLL
 
         public Core.Enums.UserRole GetUserRole(string userId)
         {
-            var poa = GetAll();
-            var manager = _broleMapRepository.Get(x => x.USER_BROLE.BROLE_DESC.Contains("MANAGER")).Select(x => x.MSACCT.ToUpper()).ToList();
-            if (manager.Contains(userId.ToUpper()))
-                return Core.Enums.UserRole.Manager;
+            var role = _broleMapRepository.Get(x => x.MSACCT.ToUpper() == userId).Select(x => x.ROLEID).FirstOrDefault();
 
-            if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS == userId))
-                return Core.Enums.UserRole.POA;
+            if (role.HasValue)
+            {
+                return role.Value;
+            }
+            else
+            {
+                var poa = GetAll();
+                var manager = _broleMapRepository.Get(x => x.USER_BROLE.BROLE_DESC.Contains("POA_MANAGER")).Select(x => x.MSACCT.ToUpper()).ToList();
+                if (manager.Contains(userId.ToUpper()))
+                    return Core.Enums.UserRole.Manager;
 
-            return Core.Enums.UserRole.User;
+                if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS == userId))
+                    return Core.Enums.UserRole.POA;
+
+
+                return Core.Enums.UserRole.User;
+            }
         }
 
         public string GetManagerIdByPoaId(string poaId)
