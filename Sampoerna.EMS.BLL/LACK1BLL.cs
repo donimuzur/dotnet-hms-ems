@@ -1362,85 +1362,6 @@ namespace Sampoerna.EMS.BLL
                     Data = null
                 };
 
-            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).ToList();
-
-            //Get Data from Inventory_Movement
-            var mvtTypeForUsage = new List<string>
-            {
-                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
-                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
-                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage201),
-                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage202),
-                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage901),
-                EnumHelper.GetDescription(Enums.MovementTypeCode.Usage902),
-                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageZ01),
-                EnumHelper.GetDescription(Enums.MovementTypeCode.UsageZ02)
-            };
-
-            var plantIdList = new List<string>();
-            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
-            {
-                //get plant list by nppbkcid
-                var plantList = _t001WServices.GetByNppbkcId(input.NppbkcId);
-                if (plantList.Count > 0)
-                {
-                    plantIdList = plantList.Select(c => c.WERKS).ToList();
-                }
-            }
-            else
-            {
-                plantIdList = new List<string>() { input.ReceivedPlantId };
-            }
-
-            var invMovementInput = new InvMovementGetForLack1UsageMovementByParamInput()
-            {
-                NppbkcId = input.NppbkcId,
-                PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear,
-                MvtCodeList = mvtTypeForUsage,
-                PlantIdList = plantIdList,
-                StoReceiverNumberList = stoReceiverNumberList
-            };
-            
-            var invMovementOutput = _inventoryMovementService.GetForLack1UsageMovementByParam(invMovementInput);
-
-            if (invMovementOutput.IncludeInCk5List.Count <= 0)
-            {
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
-                    Data = null
-                };
-            }
-            
-            var totalUsageIncludeCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-            //var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-
-            rc.TotalUsage = totalUsageIncludeCk5;
-
-            rc.InvMovementReceivingCk5List = Mapper.Map<List<Lack1GeneratedTrackingDto>>(invMovementOutput.IncludeInCk5List);
-            rc.InvMovementReceivingList = Mapper.Map<List<Lack1GeneratedTrackingDto>>(invMovementOutput.ReceivingList);
-            rc.InvMovementAllList =
-                Mapper.Map<List<Lack1GeneratedTrackingDto>>(invMovementOutput.AllUsageList);
-
-            #region ------------- Get Previous Period ---------------
-            if (input.PeriodMonth == 12)
-            {
-                invMovementInput.PeriodMonth = 11;
-                invMovementInput.PeriodYear = invMovementInput.PeriodYear - 1;
-            }
-            else
-            {
-                invMovementInput.PeriodMonth = invMovementInput.PeriodMonth - 1;
-            }
-
-            var invMovementOutputPrevPeriod =
-                _inventoryMovementService.GetForLack1UsageMovementByParam(invMovementInput);
-
-            #endregion
-
             //set begining balance
             rc = SetBeginingBalanceBySelectionCritera(rc, input);
 
@@ -1458,8 +1379,30 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
+            var plantIdList = new List<string>();
+            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                //get plant list by nppbkcid
+                var plantList = _t001WServices.GetByNppbkcId(input.NppbkcId);
+                if (plantList.Count > 0)
+                {
+                    plantIdList = plantList.Select(c => c.WERKS).ToList();
+                }
+            }
+            else
+            {
+                plantIdList = new List<string>() { input.ReceivedPlantId };
+            }
+
+            //set InventoryMovement
+            InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput;
+            var outGenerateLack1InventoryMovement = SetGenerateLack1InventoryMovement(rc, input, plantIdList, out invMovementOutput);
+            if (!outGenerateLack1InventoryMovement.Success) return outGenerateLack1InventoryMovement;
+
+            rc = outGenerateLack1InventoryMovement.Data;
+
             //Set Production List
-            var prodDataOut = SetProductionList(rc, input, invMovementOutput, invMovementOutputPrevPeriod);
+            var prodDataOut = SetProductionList(rc, input, plantIdList, invMovementOutput);
             if (!prodDataOut.Success) return prodDataOut;
 
             rc = prodDataOut.Data;
@@ -1493,8 +1436,8 @@ namespace Sampoerna.EMS.BLL
             return "";
         }
 
-        private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input,
-            InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput, InvMovementGetForLack1UsageMovementByParamOutput invMovementOutputBeforeCurrentPeriod)
+        private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, List<string> plantIdList, 
+            InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
         {
             var totalUsageInCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
             var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
@@ -1592,6 +1535,12 @@ namespace Sampoerna.EMS.BLL
                     u.UOM_DESC
                 }).Distinct().ToList();
 
+            //get previous receiving
+            var prevReceiving = _inventoryMovementService.GetReceivingByParam(new InvMovementGetReceivingByParamInput()
+            {
+                PlantIdList = plantIdList
+            });
+
             //calculation proccess
             foreach (var item in joinedWithUomData)
             {
@@ -1615,26 +1564,26 @@ namespace Sampoerna.EMS.BLL
                         Math.Round(
                             ((totalUsageInCk5/totalUsage)*itemToInsert.Amount), 3);
                 }
-                else
-                {
-                    if (invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.Count > 0)
-                    {
-                        var chk =
-                            invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.FirstOrDefault(
-                                c => c.ORDR == item.ORDR);
-                        if (chk != null)
-                        {
-                            //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                            var totalUsageInCk5PrevPeriod = (-1) * invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                            var totalUsageExcludeCk5PrevPeriod = (-1) * invMovementOutputBeforeCurrentPeriod.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                            var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
+                //else
+                //{
+                //    if (invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.Count > 0)
+                //    {
+                //        var chk =
+                //            invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.FirstOrDefault(
+                //                c => c.ORDR == item.ORDR);
+                //        if (chk != null)
+                //        {
+                //            //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
+                //            var totalUsageInCk5PrevPeriod = (-1) * invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                //            var totalUsageExcludeCk5PrevPeriod = (-1) * invMovementOutputBeforeCurrentPeriod.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                //            var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
 
-                            itemToInsert.Amount =
-                        Math.Round(
-                            ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
-                        }
-                    }
-                }
+                //            itemToInsert.Amount =
+                //        Math.Round(
+                //            ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
+                //        }
+                //    }
+                //}
                 
                 productionList.Add(itemToInsert);
             }
@@ -1825,6 +1774,84 @@ namespace Sampoerna.EMS.BLL
             });
 
             return groupedData.ToList();
+        }
+
+        private Lack1GeneratedOutput SetGenerateLack1InventoryMovement(Lack1GeneratedDto rc,
+            Lack1GenerateDataParamInput input, List<string> plantIdList, out InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
+        {
+            invMovementOutput = new InvMovementGetForLack1UsageMovementByParamOutput();
+            var oRet = new Lack1GeneratedOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty,
+                Data = rc
+            };
+
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).ToList();
+
+            var usageParamInput = new InvMovementGetUsageByParamInput()
+            {
+                NppbkcId = input.NppbkcId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                PlantIdList = plantIdList
+            };
+
+            var receivingParamInput = new InvMovementGetReceivingByParamInput()
+            {
+                NppbkcId = input.NppbkcId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                PlantIdList = plantIdList
+            };
+            
+            var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
+            var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
+
+            //there is records on receiving Data
+            var receivingList = (from rec in receiving
+                                 join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                 where stoReceiverNumberList.Contains(rec.PURCH_DOC) && plantIdList.Contains(rec.PLANT_ID)
+                                 select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
+            var usageReceivingList = (from rec in receiving
+                                      join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                      where stoReceiverNumberList.Contains(rec.PURCH_DOC) && plantIdList.Contains(rec.PLANT_ID)
+                                      select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
+            //get exclude in receiving data
+            var movementExclueInCk5List = (movementUsageAll.Where(
+                all => !usageReceivingList.Select(d => d.INVENTORY_MOVEMENT_ID)
+                    .ToList()
+                    .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
+            if (usageReceivingList.Count <= 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
+                    Data = null
+                };
+            }
+
+            invMovementOutput.IncludeInCk5List = usageReceivingList;
+            invMovementOutput.ReceivingList = receivingList;
+            invMovementOutput.AllUsageList = movementUsageAll;
+            invMovementOutput.ExcludeFromCk5List = movementExclueInCk5List;
+
+            var totalUsageIncludeCk5 = (-1) * usageReceivingList.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+
+            rc.TotalUsage = totalUsageIncludeCk5;
+
+            rc.InvMovementReceivingCk5List = Mapper.Map<List<Lack1GeneratedTrackingDto>>(usageReceivingList);
+            rc.InvMovementReceivingList = Mapper.Map<List<Lack1GeneratedTrackingDto>>(receivingList);
+            rc.InvMovementAllList =
+                Mapper.Map<List<Lack1GeneratedTrackingDto>>(movementUsageAll);
+            
+            return oRet;
         }
 
         #endregion
