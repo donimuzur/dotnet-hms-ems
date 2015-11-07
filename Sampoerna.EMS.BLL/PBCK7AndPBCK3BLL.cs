@@ -2928,10 +2928,11 @@ namespace Sampoerna.EMS.BLL
         private Pbck73PrintOutDto SetCompanyData(Pbck73PrintOutDto data, string plantId)
         {
             var t001KData = _t001Kbll.GetByBwkey(plantId);
+            var t001WData = _plantBll.GetId(plantId);
             if (t001KData == null) return data;
             data.CompanyCode = t001KData.BUKRS;
             data.CompanyName = t001KData.BUTXT;
-            data.CompanyAddress = t001KData.SPRAS;
+            data.CompanyAddress = t001WData.ADDRESS;
             return data;
         }
 
