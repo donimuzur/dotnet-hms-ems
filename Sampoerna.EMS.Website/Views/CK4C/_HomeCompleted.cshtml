@@ -197,7 +197,7 @@
                                         <label class="col-md-4">Status Gov<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.Details.GovApprovalActionType)
-                                            @Html.EnumDropDownListFor(model => model.Details.StatusGoverment, Model.StatusGovList, "Select", new { @class = "form-control" })
+                                            @Html.EnumDropDownListFor(model => model.Details.StatusGoverment, Model.StatusGovList, "Select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
                                     </div>
                                 </div>
@@ -206,7 +206,7 @@
                                         <label class="col-md-4">Decree Date<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Details.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Details.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
