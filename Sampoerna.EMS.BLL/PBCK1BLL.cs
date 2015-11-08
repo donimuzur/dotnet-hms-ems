@@ -1889,6 +1889,13 @@ namespace Sampoerna.EMS.BLL
                                 .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
                     }
 
+                    var tipeMadya = kppbcDetail.KPPBC_TYPE;
+                    if (kppbcDetail.KPPBC_TYPE.ToLower().Contains("madya"))
+                    {
+                        tipeMadya = "Tipe " + tipeMadya;
+                    }
+
+                    rc.Detail.TipeMadya = tipeMadya;
                 }
                 else
                 {

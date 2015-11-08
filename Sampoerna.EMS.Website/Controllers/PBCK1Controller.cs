@@ -2396,6 +2396,7 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.DocumentText = printTitle;
             detailRow.PoaAddress = d.PoaAddress;
             detailRow.SupplierPlantId = d.SupplierPlantId;
+            detailRow.TipeMadya = d.TipeMadya;
             ds.Pbck1.AddPbck1Row(detailRow);
             return ds;
         }
