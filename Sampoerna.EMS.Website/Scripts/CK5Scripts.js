@@ -612,6 +612,18 @@ function ValidateGovMarketReturn() {
         }
     }
 
+    if ($('#RegistrationNumber').val() == '') {
+        AddValidationClass(false, 'RegistrationNumber');
+        result = false;
+        $('#collapseOne').removeClass('collapse');
+        $('#collapseOne').addClass('in');
+        $("#collapseOne").css({ height: "auto" });
+        $('#RegistrationNumber').focus();
+        
+        $('#modalBodyMessage').text('Registration Number Can Not be Empty');
+        $('#ModalCk5ValidateGov').modal('show');
+    }
+    
     if (result) {
         if ($('#RegistrationNumber').val() != '') {
 
