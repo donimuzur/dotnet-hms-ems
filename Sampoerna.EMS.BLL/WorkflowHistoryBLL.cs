@@ -104,6 +104,24 @@ namespace Sampoerna.EMS.BLL
                     input.IsRejected = true;
                     input.RejectedBy = rejected.ACTION_BY;
                 }
+                else
+                {
+                    if (input.FormType == Enums.FormType.PBCK3)
+                    {
+                        //get from pbck7 or ck5 market return form number
+                        //find from source FormNumberSource
+                        var dbDataSource =
+                            _repository.Get(c => c.FORM_NUMBER == input.FormNumberSource, null, includeTables).OrderBy(c => c.ACTION_DATE).ToList();
+                        var rejectedSource = dbDataSource.FirstOrDefault(c => c.ACTION == Enums.ActionType.Reject ||c.ACTION == Enums.ActionType.Approve 
+                                                                              && c.ROLE == Enums.UserRole.POA);
+                        if (rejectedSource != null)
+                        {
+                            //was rejected
+                            input.IsRejected = true;
+                            input.RejectedBy = rejectedSource.ACTION_BY;
+                        }
+                    }
+                }
 
                  result.Add(CreateWaitingApprovalRecord(input));
             }
@@ -351,5 +369,8 @@ namespace Sampoerna.EMS.BLL
                 _repository.Update(dbData);
             }
         }
+
+        
+
     }
 }

@@ -151,6 +151,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     Mapper.Map<List<DataListIndexPbck7>>(_pbck7Pbck3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser, true))
             });
 
+            data.IsShowNewButton = false;
+
             return View("Index", data);
         }
         #endregion
@@ -2160,6 +2162,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentNumber = model.Pbck3Number;
                 input.NppbkcId = nppbkcId;
                 input.ManagerApprove = model.APPROVED_BY_MANAGER;
+                input.FormType = Enums.FormType.PBCK3;
+
+                if (model.FromPbck7)
+                    input.DocumentNumberSource = model.Pbck7Number;
+                else
+                    input.DocumentNumberSource = model.Ck5FormViewModel.SubmissionNumber;
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
