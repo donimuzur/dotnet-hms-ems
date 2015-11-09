@@ -1,20 +1,29 @@
-﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
+﻿@using iTextSharp.text.pdf.qrcode
+@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
 
 <div class="row">
     <div class="col-md-6">
         <div class="row">
-            <label class="col-md-4">Plant<span class="red">*</span></label>
+            @if (Model.IsMarketReturn)
+            {
+                 <label class="col-md-4">Plant</label>
+            }
+            else
+            {
+                 <label class="col-md-4">Plant<span class="red">*</span></label>
+            }
+           
             <div class="col-md-8">
                 @if (Model.IsDomesticAlcohol)
                 {
                     @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
 
                 }
-                else if (Model.IsCk5PortToImporter)
+                else if (Model.IsCk5PortToImporter )
                 {
                     @Html.TextBoxFor(model=> model.SourcePlantName, new { @class = "form-control" })
                 }
-                else if (Model.IsCk5ImporterToPlant)
+                else if (Model.IsCk5ImporterToPlant || Model.IsMarketReturn)
                 {
                     @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control", style = "display : none" })
                     var sourcePlantText = Model.SourcePlantId + " - " + Model.SourcePlantName;
@@ -23,7 +32,7 @@
                 }
                 else
                 {
-                    @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.SourcePlantId, Model.SourcePlantList, "Select", new {@class = "form-control"})
                 }
 
             </div>
@@ -84,7 +93,7 @@
         <div class="row">
             <label class="col-md-4">Address</label>
             <div class="col-md-8">
-                @if (Model.IsCk5PortToImporter)
+                @if (Model.IsCk5PortToImporter || Model.IsMarketReturn)
                 {
                     @Html.TextAreaFor(model => model.SourceAddress, new { @rows = "5", @class = "form-control" })
                 }

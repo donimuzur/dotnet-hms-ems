@@ -819,6 +819,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
+                    output.MaterialDesc = dbMaterial.MATERIAL_DESC;
                     if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
                         messageList.Add("Material is not Excisable goods");
                     else
@@ -1104,6 +1105,9 @@ namespace Sampoerna.EMS.BLL
 
             changesData.Add("SUBMISSION_DATE", origin.SUBMISSION_DATE == data.SUBMISSION_DATE);
 
+            if (origin.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                changesData.Add("SOURCE_PLANT_ADDRESS", origin.SOURCE_PLANT_ADDRESS == (data.SOURCE_PLANT_ADDRESS));
+
             foreach (var listChange in changesData)
             {
                 if (listChange.Value) continue;
@@ -1183,6 +1187,10 @@ namespace Sampoerna.EMS.BLL
                         changes.OLD_VALUE = origin.SUBMISSION_DATE != null ? origin.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         changes.NEW_VALUE = data.SUBMISSION_DATE != null ? data.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         break;
+                    case "SOURCE_PLANT_ADDRESS":
+                        changes.OLD_VALUE = origin.SOURCE_PLANT_ADDRESS;
+                        changes.NEW_VALUE = data.SOURCE_PLANT_ADDRESS;
+                        break;
                 }
                 _changesHistoryBll.AddHistory(changes);
                 isModified = true;
@@ -1221,11 +1229,11 @@ namespace Sampoerna.EMS.BLL
             {
                 input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
             }
-            else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
-                dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-            {
-                input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
-            }
+            //else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
+            //    dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+            //{
+            //    input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+            //}
             else
             {
                 input.NPPBKC_Id = dtData.SOURCE_PLANT_NPPBKC_ID;    
@@ -1495,15 +1503,16 @@ namespace Sampoerna.EMS.BLL
                             {
                                 case Enums.CK5Type.PortToImporter:
                                 case Enums.CK5Type.DomesticAlcohol:
-                                case Enums.CK5Type.MarketReturn:
                                     poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     break;
                                 case Enums.CK5Type.Manual:
+                                case Enums.CK5Type.MarketReturn:
                                     if (ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                                         poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     else
                                         poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
                                     break;
+                                
                                 default:
                                     poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
                                     break;
@@ -2691,8 +2700,8 @@ namespace Sampoerna.EMS.BLL
             {
                 if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
                 {
-                    result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
-                    result.ReportDetails.SourceOfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                    result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
+                    result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
                 }
             }
             
@@ -2730,8 +2739,13 @@ namespace Sampoerna.EMS.BLL
             //if (dtData.REGISTRATION_DATE.HasValue)
             //    result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value, false);
 
-            result.ReportDetails.RegistrationNumber = "";
-            result.ReportDetails.RegistrationDate = "";
+            result.ReportDetails.RegistrationNumber = dtData.REGISTRATION_NUMBER;
+            if (dtData.REGISTRATION_DATE.HasValue)
+                result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value,false);
+            else
+            {
+                result.ReportDetails.RegistrationDate = "";
+            }
 
             if (dtData.PBCK1 != null)
             {
@@ -2805,7 +2819,7 @@ namespace Sampoerna.EMS.BLL
 
                 result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID;
                 if (dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
-                    result.ReportDetails.DestOfficeCode = "00" + dtData.DEST_PLANT_NPPBKC_ID.Substring(0,4);
+                    result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
 
                 var dbNppbkcDest = _nppbkcBll.GetById(dtData.DEST_PLANT_NPPBKC_ID);
                 if (dbNppbkcDest != null)
@@ -2948,7 +2962,7 @@ namespace Sampoerna.EMS.BLL
                         sourcePlant = _plantBll.GetT001WByIdImport(ck5UploadFileDocuments.SourcePlantId);
                     }
                     else if (output.CK5_TYPE == Enums.CK5Type.DomesticAlcohol 
-                        //|| output.CK5_TYPE == Enums.CK5Type.PortToImporter
+                        || output.CK5_TYPE == Enums.CK5Type.PortToImporter
                         )
                     {
 
@@ -2979,29 +2993,42 @@ namespace Sampoerna.EMS.BLL
                     {
                         destPlant = _plantBll.GetT001WByIdImport(ck5UploadFileDocuments.DestPlantId);
                     }
-                    else if (output.CK5_TYPE == Enums.CK5Type.Export)
-                    {
-                        
-                    }
                     else
                     {
                         destPlant = _plantBll.GetT001WById(ck5UploadFileDocuments.DestPlantId);    
                     }
-                    
 
-                    if (destPlant == null)
-                        messageList.Add("Destination Plant Not Exist");
+
+                    if (output.CK5_TYPE == Enums.CK5Type.Export)
+                    {
+                        output.DEST_COUNTRY_CODE = ck5UploadFileDocuments.DEST_COUNTRY_CODE;
+                        output.DEST_COUNTRY_NAME = ck5UploadFileDocuments.DEST_COUNTRY_NAME;
+                        output.DEST_PLANT_COMPANY_NAME = ck5UploadFileDocuments.DEST_PLANT_COMPANY_NAME;
+                        output.DEST_PLANT_ADDRESS = ck5UploadFileDocuments.DEST_PLANT_ADDRESS;
+                        output.LOADING_PORT = ck5UploadFileDocuments.LOADING_PORT;
+                        output.LOADING_PORT_ID = ck5UploadFileDocuments.LOADING_PORT_ID;
+                        output.LOADING_PORT_NAME = ck5UploadFileDocuments.LOADING_PORT_NAME;
+                        output.FINAL_PORT = ck5UploadFileDocuments.LOADING_PORT;
+                        output.FINAL_PORT_ID = ck5UploadFileDocuments.LOADING_PORT_ID;
+                        output.FINAL_PORT_NAME = ck5UploadFileDocuments.LOADING_PORT_NAME;
+                    }
                     else
                     {
-                        output.DEST_PLANT_ID = destPlant.WERKS;
-                        output.DEST_PLANT_NPWP = destPlant.Npwp;
-                        output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
-                        output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
-                        output.DEST_PLANT_COMPANY_NAME = destPlant.CompanyName;
-                        output.DEST_PLANT_ADDRESS = destPlant.CompanyAddress;
-                        output.DEST_PLANT_KPPBC_NAME_OFFICE = destPlant.KppbcCity + "-" + destPlant.KppbcNo;
-                        output.DEST_PLANT_NAME = destPlant.NAME1;
+                        if (destPlant == null)
+                            messageList.Add("Destination Plant Not Exist");
+                        else
+                        {
+                            output.DEST_PLANT_ID = destPlant.WERKS;
+                            output.DEST_PLANT_NPWP = destPlant.Npwp;
+                            output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
+                            output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
+                            output.DEST_PLANT_COMPANY_NAME = destPlant.CompanyName;
+                            output.DEST_PLANT_ADDRESS = destPlant.CompanyAddress;
+                            output.DEST_PLANT_KPPBC_NAME_OFFICE = destPlant.KppbcCity + "-" + destPlant.KppbcNo;
+                            output.DEST_PLANT_NAME = destPlant.NAME1;
+                        }
                     }
+                    
                 }
                 
 
@@ -3129,6 +3156,7 @@ namespace Sampoerna.EMS.BLL
                 inputCk5Material.ConvertedUom = ck5UploadFileDocumentsInput.ConvertedUom;
                 inputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
                 inputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
+                //inputCk5Material.
                 
                 inputCk5Material.ExGoodsType = ck5UploadFileDocumentsInput.EX_GOODS_TYPE;
                 lisCk5Material.Add(inputCk5Material);
@@ -3177,6 +3205,7 @@ namespace Sampoerna.EMS.BLL
                 outputCk5Material.ConvertedUom = ck5UploadFileDocumentsInput.ConvertedUom;
                 outputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
                 outputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
+                
 
                 var resultValue = GetAdditionalValueCk5Material(outputCk5Material);
 
@@ -3184,6 +3213,7 @@ namespace Sampoerna.EMS.BLL
                 ck5UploadFileDocumentsInput.Hje = resultValue.Hje;
                 ck5UploadFileDocumentsInput.Tariff = resultValue.Tariff;
                 ck5UploadFileDocumentsInput.ExciseValue = resultValue.ExciseValue;
+                
 
             }
 

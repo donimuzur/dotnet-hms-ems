@@ -1849,9 +1849,13 @@ namespace Sampoerna.EMS.BLL
             workflowInput.DocumentStatus = output.Pbck3CompositeDto.STATUS.HasValue ? output.Pbck3CompositeDto.STATUS.Value : Enums.DocumentStatus.Draft;
             
             workflowInput.FormType = Enums.FormType.PBCK3;
+            if (result.FromPbck7)
+                workflowInput.FormNumberSource = result.Pbck7Composite.Pbck7Number;
+            else
+                workflowInput.FormNumberSource = result.Ck5Composite.Ck5Dto.SUBMISSION_NUMBER;
 
             output.WorkflowHistoryPbck3 = _workflowHistoryBll.GetByFormNumber(workflowInput);
-
+            
             if (output.Pbck3CompositeDto.FromPbck7)
             {
                 workflowInput.FormId = output.Pbck3CompositeDto.PBCK7_ID.HasValue ? output.Pbck3CompositeDto.PBCK7_ID.Value : 0;
@@ -2470,6 +2474,21 @@ namespace Sampoerna.EMS.BLL
             var rc = new MailNotification();
 
             var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck3CompositeDto.PBCK3_ID, FormType = Enums.FormType.PBCK3 });
+
+            var inputWorkflow = new GetByFormTypeAndFormIdInput();
+            if (pbck3CompositeDto.FromPbck7)
+            {
+                inputWorkflow.FormType = Enums.FormType.PBCK7;
+                inputWorkflow.FormId = pbck3CompositeDto.Pbck7Composite.Pbck7Id;
+            }
+            else
+            {
+                inputWorkflow.FormType = Enums.FormType.CK5MarketReturn;
+                inputWorkflow.FormId = pbck3CompositeDto.Ck5Composite.Ck5Dto.CK5_ID;
+            }
+
+            var rejectedSource = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputWorkflow);
+
             string nppbkcId = "";
             string plantId = "";
             if (pbck3CompositeDto.FromPbck7)
@@ -2554,10 +2573,19 @@ namespace Sampoerna.EMS.BLL
                         }
                         else
                         {
-                            foreach (var poaDto in poaList)
+                            
+                            if (rejectedSource != null)
                             {
-                                rc.To.Add(poaDto.POA_EMAIL);
+                                rc.To.Add(_poaBll.GetById(rejectedSource.ACTION_BY).POA_EMAIL);
                             }
+                            else
+                            {
+                                foreach (var poaDto in poaList)
+                                {
+                                    rc.To.Add(poaDto.POA_EMAIL);
+                                } 
+                            }
+                           
                         }
 
                         rc.CC.Add(_userBll.GetUserById(pbck3CompositeDto.CREATED_BY).EMAIL);
