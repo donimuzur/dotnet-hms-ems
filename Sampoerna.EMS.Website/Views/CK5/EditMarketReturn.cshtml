@@ -319,6 +319,12 @@
 
                 if ($("#DestPlantId").length) {
 
+                    var isUseDest = false;
+                    if ($('#IsFreeTextSource').is(':checked')) {
+                        isUseDest = true;
+                        RemoveTable();
+                    }
+                    
                     var destPlant = $(this).find("option:selected").val();
 
                     if (destPlant == '') {
@@ -329,6 +335,11 @@
                         $("*[name='DestAddress']").val('');
                         $("input[name='DestKppbcName']").val('');
                         $("input[name='DestPlantName']").val('');
+                        
+                        if (isUseDest) {
+                            $("input[name='KppBcCity']").val('');
+                            $("input[name='CeOfficeCode']").val('');
+                        }
 
                     } else {
                         var submissionDate = $('#SubmissionDate').val();
@@ -406,7 +417,10 @@
 
         $("#btnAddRow").click(function () {
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-
+            if ($('#IsFreeTextSource').is(':checked')) {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
+            
             $("#uploadMaterialPlant").val(sourcePlant);
 
             ajaxGetListMaterialMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: sourcePlant });
@@ -426,7 +440,9 @@
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-
+            if ($('#IsFreeTextSource').is(':checked')) {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
 
             var convertedUom = $('#uploadConvertedUom').val();
 
@@ -461,7 +477,10 @@
 
                 } else {
                     var sourcePlant = $("#uploadMaterialPlant").val();
-
+                    if ($('#IsFreeTextSource').is(':checked')) {
+                        sourcePlant = $("#DestPlantId").find("option:selected").val();
+                    }
+                    
                     ajaxGetMaterialHjeAndTariffMarketReturn('@Url.Action("GetMaterialHjeAndTariffMarketReturn", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                 }
             }
@@ -471,7 +490,9 @@
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
-
+            if ($('#IsFreeTextSource').is(':checked')) {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
 
             var convertedUom = $('#uploadConvertedUom').val();
 
@@ -542,6 +563,26 @@
 
             $('#Ck5UploadModal').modal('show');
 
+        }
+        
+        $("#IsFreeTextSource").on('change', function () {
+          
+            ajaxGetManualView('@Url.Action("GetManualViewSource", "CK5")', { isFreeTextSource: $(this).is(':checked') });
+        });
+
+        function ajaxGetManualView(url, formData) {
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    $("#divSourcePlant").html(data);
+                    OnChangeSourcePlant();
+
+
+                }
+            });
 
         }
         

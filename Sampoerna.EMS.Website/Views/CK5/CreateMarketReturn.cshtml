@@ -196,7 +196,7 @@
             $('#liCK5MarketReturnOpenDocument').addClass('active');
             $('#collapseTwo').addClass('in');
             $('#collapseThree').addClass('in');
-            
+
             $('#btnBack').click(function(e) {
                 location.href = '@Url.Action("CK5MarketReturn", "CK5")';
             });
@@ -235,14 +235,13 @@
                 GenerateXlsCk5MarketReturnMaterial('@Url.Action("UploadFileCk5MarketReturn", "CK5")');
             });
 
-            $('#CK5UploadSave').click(function () {
+            $('#CK5UploadSave').click(function() {
                 MoveUploadToTableMarketReturn();
             });
-            
+
             OnChangeDestinationPlant();
             OnChangeSourcePlant();
-            
-          
+
 
         });
 
@@ -250,6 +249,13 @@
             $("#DestPlantId").change(function() {
 
                 if ($("#DestPlantId").length) {
+
+                    var isUseDest = false;
+                    if ($('#IsFreeTextSource').is(':checked')) {
+                        isUseDest = true;
+                        RemoveTable();
+                    }
+
 
                     var destPlant = $(this).find("option:selected").val();
 
@@ -261,6 +267,12 @@
                         $("*[name='DestAddress']").val('');
                         $("input[name='DestKppbcName']").val('');
                         $("input[name='DestPlantName']").val('');
+                        
+                        if (isUseDest) {
+                            $("input[name='KppBcCity']").val('');
+                            $("input[name='CeOfficeCode']").val('');
+                        }
+                        
 
                     } else {
                         var submissionDate = $('#SubmissionDate').val();
@@ -317,8 +329,13 @@
         $("#btnAddRow").click(function() {
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
+
+            if ($('#IsFreeTextSource').is(':checked')) {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
+
             $("#uploadMaterialPlant").val(sourcePlant);
-            
+
             ajaxGetListMaterialMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: sourcePlant });
 
             $('#btnSaveMaterial').show();
@@ -336,10 +353,11 @@
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+            if ($('#IsFreeTextSource').is(':checked')) {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
 
-         
             var convertedUom = $('#uploadConvertedUom').val();
-
 
             materialInput.Plant = sourcePlant;
             materialInput.Brand = materialNumber;
@@ -350,7 +368,6 @@
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
 
-           
             ajaxValidateMaterial('@Url.Action("ValidateManualCk5MarketReturn", "CK5")', { input: materialInput }, function(data) {
                 AddRowManualMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', data);
 
@@ -362,7 +379,6 @@
             if ($("#uploadMaterialNumber").length) {
                 var materialNumber = $(this).find("option:selected").val();
 
-
                 if (materialNumber == '') {
                     $("#uploadMaterialHje").val('0');
                     $("#uploadMaterialTariff").val('0');
@@ -370,8 +386,10 @@
                     $('#uploadConvertedUom').val('');
 
                 } else {
-                    var sourcePlant = $("#uploadMaterialPlant").val(); 
-
+                    var sourcePlant = $("#uploadMaterialPlant").val();
+                    if ($('#IsFreeTextSource').is(':checked')) {
+                        sourcePlant = $("#DestPlantId").find("option:selected").val();
+                    }
                     ajaxGetMaterialHjeAndTariffMarketReturn('@Url.Action("GetMaterialHjeAndTariffMarketReturn", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                 }
             }
@@ -381,11 +399,12 @@
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+            if ($('#IsFreeTextSource').is(':checked')) {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            }
 
-        
             var convertedUom = $('#uploadConvertedUom').val();
 
-         
             materialInput.Plant = sourcePlant;
             materialInput.Brand = materialNumber;
             materialInput.Qty = $('#uploadMaterialQty').val();
@@ -395,13 +414,27 @@
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
 
-            
             ajaxValidateMaterial('@Url.Action("ValidateManualCk5MarketReturn", "CK5")', { input: materialInput }, function(data) {
                 UpdateRowManualMarketRetun(data);
-              
             });
 
         });
+
+        $("#IsFreeTextSource").on('change', function() {
+            ajaxGetManualView('@Url.Action("GetManualViewSource", "CK5")', { isFreeTextSource: $(this).is(':checked') });
+        });
+
+        function ajaxGetManualView(url, formData) {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function(data) {
+                    $("#divSourcePlant").html(data);
+                    OnChangeSourcePlant();
+                }
+            });
+        }
 
     </script>
 }
