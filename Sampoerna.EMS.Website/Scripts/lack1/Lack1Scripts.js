@@ -11,6 +11,7 @@
     param.ExcisableGoodsType = $('#ExGoodsTypeId').find("option:selected").val();
     param.ExcisableGoodsTypeDesc = $('#ExGoodsType').find("option:selected").text();
     param.SupplierPlantId = $('#SupplierPlantId').find("option:selected").val();
+    param.IsTisToTisReport = $('#IsTisToTisReport').checked;
     
     if ($('#WasteQty').val() != '') {
         param.WasteAmount = parseFloat($('#WasteQty').val());

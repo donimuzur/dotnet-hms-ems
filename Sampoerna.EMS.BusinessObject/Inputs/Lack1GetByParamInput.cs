@@ -96,6 +96,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public bool IsCreateNew { get; set; }
 
         public int Lack1Id { get; set; }
+
+        /// <summary>
+        /// Set to TRUE if the report for TIS to TIS LACK-1 report
+        /// </summary>
+        public bool IsTisToTis { get; set; }
     }
 
     public class Lack1GetLatestLack1ByParamInput
@@ -120,6 +125,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
         public Enums.Lack1Level Lack1Level { get; set; }
+
+        /// <summary>
+        /// set to TRUE for TIS to TIS LACK-1 Report
+        /// </summary>
+        public bool IsTisToTis { get; set; }
     }
 
     public class Lack1CreateParamInput : Lack1GenerateDataParamInput

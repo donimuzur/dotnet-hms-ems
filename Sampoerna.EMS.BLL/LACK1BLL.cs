@@ -1284,7 +1284,8 @@ namespace Sampoerna.EMS.BLL
                 SupplierPlantId = input.SupplierPlantId,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
-                Lack1Level = input.Lack1Level
+                Lack1Level = input.Lack1Level,
+                IsTisToTis = input.IsTisToTis
             });
 
             if (input.IsCreateNew)
@@ -1460,15 +1461,17 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            //get zaap_shift_rpt
-            var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(new ZaapShiftRptGetForLack1ByParamInput()
+            var zaapShiftReportInput = new ZaapShiftRptGetForLack1ByParamInput()
             {
                 CompanyCode = input.CompanyCode,
-                Werks = input.SupplierPlantId,
+                Werks = plantIdList,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList()
-            });
+            };
+
+            //get zaap_shift_rpt
+            var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
 
             if (zaapShiftRpt.Count == 0)
             {
