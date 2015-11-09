@@ -2699,8 +2699,8 @@ namespace Sampoerna.EMS.BLL
             {
                 if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
                 {
-                    result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
-                    result.ReportDetails.SourceOfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                    result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
+                    result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
                 }
             }
             
@@ -2813,7 +2813,7 @@ namespace Sampoerna.EMS.BLL
 
                 result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID;
                 if (dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
-                    result.ReportDetails.DestOfficeCode = "00" + dtData.DEST_PLANT_NPPBKC_ID.Substring(0,4);
+                    result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
 
                 var dbNppbkcDest = _nppbkcBll.GetById(dtData.DEST_PLANT_NPPBKC_ID);
                 if (dbNppbkcDest != null)
