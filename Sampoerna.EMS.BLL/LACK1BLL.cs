@@ -1790,43 +1790,15 @@ namespace Sampoerna.EMS.BLL
 
             var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).ToList();
 
-            var usageParamInput = new InvMovementGetUsageByParamInput()
+            var getInventoryMovementByParamOutput = GetInventoryMovementByParam(new InvMovementGetUsageByParamInput()
             {
                 NppbkcId = input.NppbkcId,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 PlantIdList = plantIdList
-            };
+            },stoReceiverNumberList);
 
-            var receivingParamInput = new InvMovementGetReceivingByParamInput()
-            {
-                NppbkcId = input.NppbkcId,
-                PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear,
-                PlantIdList = plantIdList
-            };
-            
-            var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
-            var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
-
-            //there is records on receiving Data
-            var receivingList = (from rec in receiving
-                                 join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                 where stoReceiverNumberList.Contains(rec.PURCH_DOC) && plantIdList.Contains(rec.PLANT_ID)
-                                 select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
-
-            var usageReceivingList = (from rec in receiving
-                                      join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                      where stoReceiverNumberList.Contains(rec.PURCH_DOC) && plantIdList.Contains(rec.PLANT_ID)
-                                      select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
-
-            //get exclude in receiving data
-            var movementExclueInCk5List = (movementUsageAll.Where(
-                all => !usageReceivingList.Select(d => d.INVENTORY_MOVEMENT_ID)
-                    .ToList()
-                    .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
-
-            if (usageReceivingList.Count <= 0)
+            if (getInventoryMovementByParamOutput.IncludeInCk5List.Count <= 0)
             {
                 return new Lack1GeneratedOutput()
                 {
@@ -1837,21 +1809,69 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            invMovementOutput.IncludeInCk5List = usageReceivingList;
-            invMovementOutput.ReceivingList = receivingList;
-            invMovementOutput.AllUsageList = movementUsageAll;
-            invMovementOutput.ExcludeFromCk5List = movementExclueInCk5List;
-
-            var totalUsageIncludeCk5 = (-1) * usageReceivingList.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+            var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
 
             rc.TotalUsage = totalUsageIncludeCk5;
 
-            rc.InvMovementReceivingCk5List = Mapper.Map<List<Lack1GeneratedTrackingDto>>(usageReceivingList);
-            rc.InvMovementReceivingList = Mapper.Map<List<Lack1GeneratedTrackingDto>>(receivingList);
+            rc.InvMovementReceivingCk5List = Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.IncludeInCk5List);
+            rc.InvMovementReceivingList = Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.ReceivingList);
             rc.InvMovementAllList =
-                Mapper.Map<List<Lack1GeneratedTrackingDto>>(movementUsageAll);
-            
+                Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList);
+
+            invMovementOutput = getInventoryMovementByParamOutput;
+
             return oRet;
+        }
+
+        private InvMovementGetForLack1UsageMovementByParamOutput GetInventoryMovementByParam(
+            InvMovementGetUsageByParamInput input, List<string> stoReceiverNumberList)
+        {
+            
+            var usageParamInput = new InvMovementGetUsageByParamInput()
+            {
+                NppbkcId = input.NppbkcId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                PlantIdList = input.PlantIdList
+            };
+
+            var receivingParamInput = new InvMovementGetReceivingByParamInput()
+            {
+                NppbkcId = input.NppbkcId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                PlantIdList = input.PlantIdList
+            };
+
+            var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
+            var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
+
+            //there is records on receiving Data
+            var receivingList = (from rec in receiving
+                                 join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                 where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
+                                 select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
+            var usageReceivingList = (from rec in receiving
+                                      join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                      where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
+                                      select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
+            //get exclude in receiving data
+            var movementExclueInCk5List = (movementUsageAll.Where(
+                all => !usageReceivingList.Select(d => d.INVENTORY_MOVEMENT_ID)
+                    .ToList()
+                    .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
+            var rc = new InvMovementGetForLack1UsageMovementByParamOutput
+            {
+                IncludeInCk5List = usageReceivingList,
+                ReceivingList = receivingList,
+                AllUsageList = movementUsageAll,
+                ExcludeFromCk5List = movementExclueInCk5List
+            };
+
+            return rc;
         }
 
         #endregion
