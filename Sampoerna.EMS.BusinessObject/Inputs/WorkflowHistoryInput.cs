@@ -23,5 +23,9 @@
         public long FormId { get; set; }
 
         public Sampoerna.EMS.Core.Enums.FormType FormType { get; set; }
+
+        public string FormNumberSource { get; set; }
     }
+
+    
 }

@@ -2162,6 +2162,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentNumber = model.Pbck3Number;
                 input.NppbkcId = nppbkcId;
                 input.ManagerApprove = model.APPROVED_BY_MANAGER;
+                input.FormType = Enums.FormType.PBCK3;
+
+                if (model.FromPbck7)
+                    input.DocumentNumberSource = model.Pbck7Number;
+                else
+                    input.DocumentNumberSource = model.Ck5FormViewModel.SubmissionNumber;
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;

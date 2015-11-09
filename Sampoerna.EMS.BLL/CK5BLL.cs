@@ -1104,6 +1104,9 @@ namespace Sampoerna.EMS.BLL
 
             changesData.Add("SUBMISSION_DATE", origin.SUBMISSION_DATE == data.SUBMISSION_DATE);
 
+            if (origin.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                changesData.Add("SOURCE_PLANT_ADDRESS", origin.SOURCE_PLANT_ADDRESS == (data.SOURCE_PLANT_ADDRESS));
+
             foreach (var listChange in changesData)
             {
                 if (listChange.Value) continue;
@@ -1183,6 +1186,10 @@ namespace Sampoerna.EMS.BLL
                         changes.OLD_VALUE = origin.SUBMISSION_DATE != null ? origin.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         changes.NEW_VALUE = data.SUBMISSION_DATE != null ? data.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         break;
+                    case "SOURCE_PLANT_ADDRESS":
+                        changes.OLD_VALUE = origin.SOURCE_PLANT_ADDRESS;
+                        changes.NEW_VALUE = data.SOURCE_PLANT_ADDRESS;
+                        break;
                 }
                 _changesHistoryBll.AddHistory(changes);
                 isModified = true;
@@ -1221,11 +1228,11 @@ namespace Sampoerna.EMS.BLL
             {
                 input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
             }
-            else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
-                dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-            {
-                input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
-            }
+            //else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
+            //    dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+            //{
+            //    input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+            //}
             else
             {
                 input.NPPBKC_Id = dtData.SOURCE_PLANT_NPPBKC_ID;    
@@ -1495,15 +1502,16 @@ namespace Sampoerna.EMS.BLL
                             {
                                 case Enums.CK5Type.PortToImporter:
                                 case Enums.CK5Type.DomesticAlcohol:
-                                case Enums.CK5Type.MarketReturn:
                                     poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     break;
                                 case Enums.CK5Type.Manual:
+                                case Enums.CK5Type.MarketReturn:
                                     if (ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                                         poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     else
                                         poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
                                     break;
+                                
                                 default:
                                     poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
                                     break;
