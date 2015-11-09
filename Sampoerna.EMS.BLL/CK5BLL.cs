@@ -819,6 +819,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
+                    output.MaterialDesc = dbMaterial.MATERIAL_DESC;
                     if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
                         messageList.Add("Material is not Excisable goods");
                     else
@@ -2730,8 +2731,13 @@ namespace Sampoerna.EMS.BLL
             //if (dtData.REGISTRATION_DATE.HasValue)
             //    result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value, false);
 
-            result.ReportDetails.RegistrationNumber = "";
-            result.ReportDetails.RegistrationDate = "";
+            result.ReportDetails.RegistrationNumber = dtData.REGISTRATION_NUMBER;
+            if (dtData.REGISTRATION_DATE != null)
+                result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value,false);
+            else
+            {
+                result.ReportDetails.RegistrationDate = "";
+            }
 
             if (dtData.PBCK1 != null)
             {
@@ -2948,7 +2954,7 @@ namespace Sampoerna.EMS.BLL
                         sourcePlant = _plantBll.GetT001WByIdImport(ck5UploadFileDocuments.SourcePlantId);
                     }
                     else if (output.CK5_TYPE == Enums.CK5Type.DomesticAlcohol 
-                        //|| output.CK5_TYPE == Enums.CK5Type.PortToImporter
+                        || output.CK5_TYPE == Enums.CK5Type.PortToImporter
                         )
                     {
 
@@ -2979,29 +2985,42 @@ namespace Sampoerna.EMS.BLL
                     {
                         destPlant = _plantBll.GetT001WByIdImport(ck5UploadFileDocuments.DestPlantId);
                     }
-                    else if (output.CK5_TYPE == Enums.CK5Type.Export)
-                    {
-                        
-                    }
                     else
                     {
                         destPlant = _plantBll.GetT001WById(ck5UploadFileDocuments.DestPlantId);    
                     }
-                    
 
-                    if (destPlant == null)
-                        messageList.Add("Destination Plant Not Exist");
+
+                    if (output.CK5_TYPE == Enums.CK5Type.Export)
+                    {
+                        output.DEST_COUNTRY_CODE = ck5UploadFileDocuments.DEST_COUNTRY_CODE;
+                        output.DEST_COUNTRY_NAME = ck5UploadFileDocuments.DEST_COUNTRY_NAME;
+                        output.DEST_PLANT_COMPANY_NAME = ck5UploadFileDocuments.DEST_PLANT_COMPANY_NAME;
+                        output.DEST_PLANT_ADDRESS = ck5UploadFileDocuments.DEST_PLANT_ADDRESS;
+                        output.LOADING_PORT = ck5UploadFileDocuments.LOADING_PORT;
+                        output.LOADING_PORT_ID = ck5UploadFileDocuments.LOADING_PORT_ID;
+                        output.LOADING_PORT_NAME = ck5UploadFileDocuments.LOADING_PORT_NAME;
+                        output.FINAL_PORT = ck5UploadFileDocuments.LOADING_PORT;
+                        output.FINAL_PORT_ID = ck5UploadFileDocuments.LOADING_PORT_ID;
+                        output.FINAL_PORT_NAME = ck5UploadFileDocuments.LOADING_PORT_NAME;
+                    }
                     else
                     {
-                        output.DEST_PLANT_ID = destPlant.WERKS;
-                        output.DEST_PLANT_NPWP = destPlant.Npwp;
-                        output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
-                        output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
-                        output.DEST_PLANT_COMPANY_NAME = destPlant.CompanyName;
-                        output.DEST_PLANT_ADDRESS = destPlant.CompanyAddress;
-                        output.DEST_PLANT_KPPBC_NAME_OFFICE = destPlant.KppbcCity + "-" + destPlant.KppbcNo;
-                        output.DEST_PLANT_NAME = destPlant.NAME1;
+                        if (destPlant == null)
+                            messageList.Add("Destination Plant Not Exist");
+                        else
+                        {
+                            output.DEST_PLANT_ID = destPlant.WERKS;
+                            output.DEST_PLANT_NPWP = destPlant.Npwp;
+                            output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
+                            output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
+                            output.DEST_PLANT_COMPANY_NAME = destPlant.CompanyName;
+                            output.DEST_PLANT_ADDRESS = destPlant.CompanyAddress;
+                            output.DEST_PLANT_KPPBC_NAME_OFFICE = destPlant.KppbcCity + "-" + destPlant.KppbcNo;
+                            output.DEST_PLANT_NAME = destPlant.NAME1;
+                        }
                     }
+                    
                 }
                 
 
@@ -3129,6 +3148,7 @@ namespace Sampoerna.EMS.BLL
                 inputCk5Material.ConvertedUom = ck5UploadFileDocumentsInput.ConvertedUom;
                 inputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
                 inputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
+                //inputCk5Material.
                 
                 inputCk5Material.ExGoodsType = ck5UploadFileDocumentsInput.EX_GOODS_TYPE;
                 lisCk5Material.Add(inputCk5Material);
@@ -3177,6 +3197,7 @@ namespace Sampoerna.EMS.BLL
                 outputCk5Material.ConvertedUom = ck5UploadFileDocumentsInput.ConvertedUom;
                 outputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
                 outputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
+                
 
                 var resultValue = GetAdditionalValueCk5Material(outputCk5Material);
 
@@ -3184,6 +3205,7 @@ namespace Sampoerna.EMS.BLL
                 ck5UploadFileDocumentsInput.Hje = resultValue.Hje;
                 ck5UploadFileDocumentsInput.Tariff = resultValue.Tariff;
                 ck5UploadFileDocumentsInput.ExciseValue = resultValue.ExciseValue;
+                
 
             }
 
