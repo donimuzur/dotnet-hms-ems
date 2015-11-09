@@ -699,7 +699,7 @@ namespace Sampoerna.EMS.BLL
                 if (isConvertionExist)
                 {
                     //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                    var umren = matUom.Where(x => x.MEINH == input.ConvertedUom).Single().UMREN;
+                    var umren = matUom.Where(x => x.MEINH == input.ConvertedUom).FirstOrDefault().UMREN;
                     if (umren == null)
                     {
                         output.Message = "convertion to SAP in material master is null";
@@ -3907,7 +3907,7 @@ namespace Sampoerna.EMS.BLL
                 if (isConvertionExist)
                 {
                     //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                    var umren = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).Single().UMREN;
+                    var umren = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).FirstOrDefault().UMREN;
                     if (umren == null)
                         throw new BLLException(ExceptionCodes.BLLExceptions.ConvertedSAPNull);
 
