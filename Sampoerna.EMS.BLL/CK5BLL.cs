@@ -2732,7 +2732,7 @@ namespace Sampoerna.EMS.BLL
             //    result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value, false);
 
             result.ReportDetails.RegistrationNumber = dtData.REGISTRATION_NUMBER;
-            if (dtData.REGISTRATION_DATE != null)
+            if (dtData.REGISTRATION_DATE.HasValue)
                 result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value,false);
             else
             {
