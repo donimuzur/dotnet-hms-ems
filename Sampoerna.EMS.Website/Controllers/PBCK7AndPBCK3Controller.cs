@@ -151,6 +151,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     Mapper.Map<List<DataListIndexPbck7>>(_pbck7Pbck3Bll.GetPbck7ByParam(new Pbck7AndPbck3Input(), CurrentUser, true))
             });
 
+            data.IsShowNewButton = false;
+
             return View("Index", data);
         }
         #endregion
