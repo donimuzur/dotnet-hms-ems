@@ -487,6 +487,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SubmissionDate = DateTime.Now;
             model = InitCK5List(model);
 
+            model.IsMarketReturn = true;
+
             model.MainMenu = Enums.MenuList.CK5MRETURN;
             model.CurrentMenu = PageInfo;
 
@@ -875,6 +877,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
+
+                if (ck5Details.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                {
+                    model.IsFreeTextSource = true;
+                    model.SourcePlantNameManual = model.SourcePlantName;
+                    model.SourceNpwpManual = model.SourceNpwp;
+                    model.SourceNppbkcIdManual = model.SourceNppbkcId;
+                    model.SourceCompanyCodeManual = model.SourceCompanyCode;
+                    model.SourceCompanyNameManual = model.SourceCompanyName;
+                    model.SourceAddressManual = model.SourceAddress;
+                    model.SourceKppbcNameManual = model.SourceKppbcName;
+                }
+
                 model.IsMarketReturn = true;
             }
             catch (Exception ex)
@@ -1214,6 +1229,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     input.NppbkcId = model.DestNppbkcId;
                 }
+                else if (model.Ck5Type == Enums.CK5Type.MarketReturn &&
+                      model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                {
+                    input.NppbkcId = model.DestNppbkcId;
+                }
 
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
                 {
@@ -1435,11 +1455,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private CK5Dto SaveCk5ToDatabase(CK5FormViewModel model)
         {
-            //process save
-            //if (model.Ck5Id >0)
-
+            
             //manual freetext
-            if (model.Ck5Type == Enums.CK5Type.Manual)
+            if (model.Ck5Type == Enums.CK5Type.Manual
+                || model.Ck5Type == Enums.CK5Type.MarketReturn)
             {
                 if (model.IsFreeTextSource)
                 {

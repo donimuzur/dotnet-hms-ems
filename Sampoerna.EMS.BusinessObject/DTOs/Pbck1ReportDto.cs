@@ -140,6 +140,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string RealisasiBkcUomId { get; set; }
         public string RealisasiUomId { get; set; }
         public string RealisasiUomDesc { get; set; }
+        public string TipeMadya { get; set; }
     }
 
     public class Pbck1ReportProdPlanDto

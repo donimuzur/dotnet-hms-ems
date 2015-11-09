@@ -190,7 +190,7 @@ namespace Sampoerna.EMS.BLL
                                  (c.STATUS_ID != Enums.DocumentStatus.Draft &&
                                   nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID))));
                 }
-                else if (input.Ck5Type == Enums.CK5Type.Manual)
+                else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
                     queryFilter =
                        queryFilter.And(
@@ -198,10 +198,11 @@ namespace Sampoerna.EMS.BLL
                                (c.CREATED_BY == input.UserId ||
                                 (
                                 (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                 (c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                 ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
                                              nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
                                   ) ||
                                             nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
+                                            )
                                             )
 
                                 )
@@ -1220,6 +1221,11 @@ namespace Sampoerna.EMS.BLL
             {
                 input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
             }
+            else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
+                dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+            {
+                input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+            }
             else
             {
                 input.NPPBKC_Id = dtData.SOURCE_PLANT_NPPBKC_ID;    
@@ -1654,6 +1660,8 @@ namespace Sampoerna.EMS.BLL
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
             else if (dbData.CK5_TYPE == Enums.CK5Type.Manual && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+            else if (dbData.CK5_TYPE == Enums.CK5Type.MarketReturn && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
 
             var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
             {
@@ -1813,7 +1821,11 @@ namespace Sampoerna.EMS.BLL
                 //insert to pbck3
                 var inputPbck3 = new InsertPbck3FromCk5MarketReturnInput();
                 inputPbck3.Ck5Id = dbData.CK5_ID;
+                
                 inputPbck3.NppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
+                if (dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                    inputPbck3.NppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+
                 inputPbck3.UserId = input.UserId;
                 var pbck3Number = _pbck3Services.InsertPbck3FromCk5MarketReturn(inputPbck3);
 

@@ -81,10 +81,10 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="row">
-                                                <label class="col-md-4">Creator</label>
+                                                <label class="col-md-4">Type</label>
                                                 <div class="col-md-8">
                                                     <div class="col-md-12">
-                                                        @Html.EnumDropDownListFor(model => model.SearchViewModel.Pbck7Type, Model.SearchViewModel.Pbck7TypeList, "", new { @class = "form-control selectreset" })
+                                                        @Html.EnumDropDownListFor(model => model.SearchViewModel.Pbck7Type, Model.SearchViewModel.Pbck7TypeList, "", new { @class = "form-control" })
                                                     </div>
                                                 </div>
                                             </div>
@@ -93,7 +93,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="col-md-6">
-                                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                                        <input type="submit" class="btn btn-blue full" value="FILTER" id="btn-filter" />
                                                     </div>
                                                     <div class="col-md-6">
                                                         <button class="btn btn-blue full" id="btn-reset-filter" type="button">RESET</button>
@@ -116,28 +116,44 @@
 </div>
 @section scripts
 {
-    <style>
-        .chart-legend li {
-            list-style: none;
-        }
-
-            .chart-legend li span {
-                display: inline-block;
-                width: 12px;
-                height: 12px;
-                margin-right: 5px;
-            }
-    </style>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/Chart.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script src="~/Scripts/Dashboard.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             setupDataTables();
+
+            $('.changeNumber1').text(ChangeNumber($('.changeNumber1').text()));
+            $('.changeNumber2').text(ChangeNumber($('.changeNumber2').text()));
+            $('.changeNumber3').text(ChangeNumber($('.changeNumber3').text()));
+            $('.changeNumber4').text(ChangeNumber($('.changeNumber4').text()));
+        });
+
+        $('#btn-reset-filter').click(function () {
+            $(".selectreset").val($(".selectreset option:first").val());
+            $("#btn-filter").click();
         });
 
         function setupDataTables() {
-            $('#btn-reset-filter').click(function () {
-                $(".selectreset").val($(".selectreset option:first").val());
+            $('#divDraft,#divWaitA,#divWaitG').click(function (e) {
+                if ($('#SearchViewModel_Pbck7Type').val() == 'Pbck7List')
+                {
+                    location.href = '@Url.Action("Index", "PBCK7AndPBCK3")';
+                }
+                else {
+                    location.href = '@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")';
+                }
+                
+            });
+
+            $('#divComp').click(function (e) {
+                if ($('#SearchViewModel_Pbck7Type').val() == 'Pbck7List') {
+                    location.href = '@Url.Action("Pbck7Completed", "PBCK7AndPBCK3")';
+                }
+                else {
+                    location.href = '@Url.Action("Pbck3Completed", "PBCK7AndPBCK3")';
+                }
             });
 
             var draft = $('#draftId').text();
