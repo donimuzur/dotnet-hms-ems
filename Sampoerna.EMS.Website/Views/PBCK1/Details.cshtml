@@ -158,8 +158,14 @@
     <script src="~/Scripts/pbck1script.js"></script>
     <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
-        $('#MenuPBCK1OpenListDocument').addClass('active');
+        
         $(document).ready(function () {
+            if ($('#btn-back-completed-doc').length) {
+                $('#MenuPBCK1CompletedListDocument').addClass('active');
+            }
+            else {
+                $('#MenuPBCK1OpenListDocument').addClass('active');
+            }
             
             $('#btn-back-open-doc').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
@@ -170,8 +176,6 @@
             $('#btn-changelog-export-xls').click(function () {
                 location.href = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
             });
-
-            $('#MenuPBCK1OpenListDocument').addClass('active');
 
             $('#btn-changelog-export-xls').click(function () {
                 alert('export on progress');
