@@ -83,23 +83,18 @@
 
 @section scripts
 {
-    <style>
-        .chart-legend li {
-            list-style: none;
-        }
-
-            .chart-legend li span {
-                display: inline-block;
-                width: 12px;
-                height: 12px;
-                margin-right: 5px;
-            }
-    </style>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/Chart.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script src="~/Scripts/Dashboard.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             setupDataTables();
+
+            $('.changeNumber1').text(ChangeNumber($('.changeNumber1').text()));
+            $('.changeNumber2').text(ChangeNumber($('.changeNumber2').text()));
+            $('.changeNumber3').text(ChangeNumber($('.changeNumber3').text()));
+            $('.changeNumber4').text(ChangeNumber($('.changeNumber4').text()));
         });
 
         $('#btn-reset-filter').click(function () {

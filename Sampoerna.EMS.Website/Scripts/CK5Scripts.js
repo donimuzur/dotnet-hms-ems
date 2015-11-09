@@ -309,6 +309,12 @@ function ajaxGetDestPlantDetails(url, formData) {
                         $("input[name='CeOfficeCode']").val(data.KppbcNo);
                     }
                 }
+                else if (formData.ck5Type != null && (formData.ck5Type == "MarketReturn")) {
+                    if ($('#IsFreeTextSource').is(':checked')) {
+                        $("input[name='KppBcCity']").val(data.KppbcCity);
+                        $("input[name='CeOfficeCode']").val(data.KppbcNo);
+                    }
+                }
             }
         });
     }
@@ -803,6 +809,31 @@ function ValidateCk5Form(ck5Type) {
         }
     }
 
+    if (ck5Type == 'MarketReturn') {
+       
+        if ($('#IsFreeTextSource').is(':checked')) {
+            if ($('#SourcePlantId').val() == '') {
+                AddValidationClass(false, 'SourcePlantId');
+                result = false;
+
+                $('#collapseTwo').removeClass('collapse');
+                $('#collapseTwo').addClass('in');
+                $("#collapseTwo").css({ height: "auto" });
+            }
+
+            if ($('#SourcePlantNameManual').val() == '') {
+                AddValidationClass(false, 'SourcePlantNameManual');
+                result = false;
+
+                $('#collapseTwo').removeClass('collapse');
+                $('#collapseTwo').addClass('in');
+                $("#collapseTwo").css({ height: "auto" });
+            }
+        }
+
+     
+    }
+    
     if (result) {
         var rowCount = $('#ck5TableItem tr').length;
 
@@ -821,19 +852,13 @@ function ValidateCk5Form(ck5Type) {
         }
 
     }
-    //alert('type : ' + ck5Type);
-    //alert('Source Plant : ' + $('#SourceNppbkcId').val());
-    //alert('Dest Plant : ' + $('#DestNppbkcId').val());
-
-    // && (ck5Type != 'Domestic')
+  
     if (result) {
        
         if (ck5Type == 'Export' || ck5Type == "Manual" || ck5Type == 'PortToImporter'
             || ck5Type == 'MarketReturn')
             return result;
-        //alert('Source : ' + $('#SourceNppbkcId').val());
-        //alert('Dest : ' + $('#DestNppbkcId').val());
-        //alert($('#SourceNppbkcId').val() == $('#DestNppbkcId').val());
+      
         if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
             return result;
         
