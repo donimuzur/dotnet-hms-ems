@@ -302,19 +302,25 @@ function ajaxGetDestPlantDetails(url, formData) {
                 if (formData.ck5Type != null && (formData.ck5Type == "PortToImporter" || formData.ck5Type == "DomesticAlcohol")) {
                     $("input[name='KppBcCity']").val(data.KppbcCity);
                     $("input[name='CeOfficeCode']").val(data.KppbcNo);
+                  
                 }
                 else if (formData.ck5Type != null && (formData.ck5Type == "Manual")) {
                     if ($('#IsFreeTextSource').is(':checked')) {
                         $("input[name='KppBcCity']").val(data.KppbcCity);
                         $("input[name='CeOfficeCode']").val(data.KppbcNo);
+                        
+                        //enable upload
+                        $('#btnUploadInfo').enable();
+                        $('#CK5UploadSubmitBtn').enable();
                     }
                 }
-                else if (formData.ck5Type != null && (formData.ck5Type == "MarketReturn")) {
-                    if ($('#IsFreeTextSource').is(':checked')) {
-                        $("input[name='KppBcCity']").val(data.KppbcCity);
-                        $("input[name='CeOfficeCode']").val(data.KppbcNo);
-                    }
-                }
+                //else if (formData.ck5Type != null && (formData.ck5Type == "MarketReturn")) {
+                //    if ($('#IsFreeTextSource').is(':checked')) {
+                //        $("input[name='KppBcCity']").val(data.KppbcCity);
+                //        $("input[name='CeOfficeCode']").val(data.KppbcNo);
+                      
+                //    }
+                //}
             }
         });
     }
