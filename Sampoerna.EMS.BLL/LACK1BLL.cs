@@ -1846,10 +1846,30 @@ namespace Sampoerna.EMS.BLL
                 PlantIdList = input.PlantIdList
             };
 
+            var prevReceivingParamInput = new InvMovementGetReceivingByParamInput()
+            {
+                NppbkcId = input.NppbkcId,
+                PlantIdList = input.PlantIdList
+            };
+
+            if (input.PeriodMonth == 1)
+            {
+                prevReceivingParamInput.PeriodMonth = 12;
+                prevReceivingParamInput.PeriodYear = input.PeriodYear - 1;
+            }
+            else
+            {
+                prevReceivingParamInput.PeriodMonth = input.PeriodMonth - 1;
+                prevReceivingParamInput.PeriodYear = input.PeriodYear;
+            }
+
             var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
+            //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
+            var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
 
             //there is records on receiving Data
+            //normal case
             var receivingList = (from rec in receiving
                                  join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
                                  where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
@@ -1860,16 +1880,33 @@ namespace Sampoerna.EMS.BLL
                                       where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
+            //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
+            var prevReceivingList = (from rec in prevReceiving
+                                 join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                 where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
+                                 select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
+            var usagePrevReceivingList = (from rec in prevReceiving
+                                          join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                          where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
+                                          select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
+
+            var allReceivingList = receivingList;
+            allReceivingList.AddRange(prevReceivingList);
+
+            var allUsageReceivingList = usageReceivingList;
+            allUsageReceivingList.AddRange(usagePrevReceivingList);
+
             //get exclude in receiving data
             var movementExclueInCk5List = (movementUsageAll.Where(
-                all => !usageReceivingList.Select(d => d.INVENTORY_MOVEMENT_ID)
+                all => !allUsageReceivingList.Select(d => d.INVENTORY_MOVEMENT_ID)
                     .ToList()
                     .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
             {
-                IncludeInCk5List = usageReceivingList,
-                ReceivingList = receivingList,
+                IncludeInCk5List = allUsageReceivingList,
+                ReceivingList = allReceivingList,
                 AllUsageList = movementUsageAll,
                 ExcludeFromCk5List = movementExclueInCk5List
             };
