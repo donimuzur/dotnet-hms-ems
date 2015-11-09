@@ -110,6 +110,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CONVERTED_QTY, opt => opt.MapFrom(src => Convert.ToDecimal(src.ConvertedQty)))
                 .ForMember(dest => dest.EXCISE_VALUE, opt => opt.MapFrom(src => src.ExciseValue))
                 .ForMember(dest => dest.BRAND, opt => opt.MapFrom(src => src.MatNumber))
+                .ForMember(dest => dest.USD_VALUE, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.UsdValue))
                 ;
 
             Mapper.CreateMap<CK5, CK5XmlDto>().IgnoreAllNonExisting()
