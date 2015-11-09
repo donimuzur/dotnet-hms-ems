@@ -287,7 +287,21 @@ namespace Sampoerna.EMS.BLL
             {
                 var nppbkc = _nppbkcbll.GetNppbkcsByPOA(user.USER_ID).Select(d => d.NPPBKC_ID).ToList();
 
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == user.USER_ID || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.PBCK7.NPPBKC))));
+                queryFilter =
+                    queryFilter.And(
+                        c =>
+                            (c.CREATED_BY == user.USER_ID ||
+                             (c.STATUS != Enums.DocumentStatus.Draft &&
+                              (nppbkc.Contains(c.PBCK7.NPPBKC) 
+                              || 
+                              (c.CK5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                              nppbkc.Contains(c.CK5.DEST_PLANT_NPPBKC_ID))
+                              ||
+                              nppbkc.Contains(c.CK5.SOURCE_PLANT_NPPBKC_ID)
+                              )
+                              )
+                              )
+                              );
 
 
             }
@@ -2467,6 +2481,11 @@ namespace Sampoerna.EMS.BLL
             {
                 nppbkcId = pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_NPPBKC_ID;
                 plantId = pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_ID;
+                if (pbck3CompositeDto.Ck5Composite.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                {
+                    nppbkcId = pbck3CompositeDto.Ck5Composite.Ck5Dto.DEST_PLANT_NPPBKC_ID;
+                    plantId = pbck3CompositeDto.Ck5Composite.Ck5Dto.DEST_PLANT_ID;
+                }
             }
 
             var poaList = _poaBll.GetPoaByNppbkcId(nppbkcId);
@@ -2928,10 +2947,11 @@ namespace Sampoerna.EMS.BLL
         private Pbck73PrintOutDto SetCompanyData(Pbck73PrintOutDto data, string plantId)
         {
             var t001KData = _t001Kbll.GetByBwkey(plantId);
+            var t001WData = _plantBll.GetId(plantId);
             if (t001KData == null) return data;
             data.CompanyCode = t001KData.BUKRS;
             data.CompanyName = t001KData.BUTXT;
-            data.CompanyAddress = t001KData.SPRAS;
+            data.CompanyAddress = t001WData.ADDRESS;
             return data;
         }
 

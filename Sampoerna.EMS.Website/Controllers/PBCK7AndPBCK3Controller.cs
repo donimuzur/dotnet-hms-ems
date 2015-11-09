@@ -2144,6 +2144,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.Ck5FormViewModel.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.ListWorkflowHistorys);
 
                     nppbkcId = model.Ck5FormViewModel.SourceNppbkcId;
+                    if (model.Ck5FormViewModel.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                        nppbkcId = model.Ck5FormViewModel.DestNppbkcId;
+                    
                 }
 
                 //validate approve and reject
