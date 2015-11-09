@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
         public string NppbkcId { get; set; }
+        public bool IsTisToTis { get; set; }
     }
 
     public class InvMovementGetReceivingByParamInput : InvMovementGetUsageByParamInput

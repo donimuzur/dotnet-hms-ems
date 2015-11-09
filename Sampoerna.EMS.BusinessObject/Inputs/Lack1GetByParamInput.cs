@@ -80,6 +80,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ReceivedPlantId { get; set; }
         public DateTime SubmissionDate { get; set; }
         public string SupplierPlantId { get; set; }
+
+        /// <summary>
+        /// Get from LACK-1 Form selection criteria
+        /// todo: add logic to parse Supplier Plant ID and Supplier Plant NPPBKC Id from LACK-1 Form selection criteria, please provide it :)
+        /// </summary>
+        public string SupplierPlantNppbkcId { get; set; }
         public string ExcisableGoodsType { get; set; }
         public string ExcisableGoodsTypeDesc { get; set; }
         public decimal? WasteAmount { get; set; }

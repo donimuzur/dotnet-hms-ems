@@ -17,12 +17,14 @@ namespace Sampoerna.EMS.BLL.Services
         private IGenericRepository<INVENTORY_MOVEMENT> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
+        private IGenericRepository<ZAAP_SHIFT_RPT> _zaapShiftRptRepository;
 
         public InventoryMovementService(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<INVENTORY_MOVEMENT>();
+            _zaapShiftRptRepository = _uow.GetGenericRepository<ZAAP_SHIFT_RPT>();
         }
 
         public List<INVENTORY_MOVEMENT> GetUsageByParam(InvMovementGetUsageByParamInput input)
@@ -48,6 +50,10 @@ namespace Sampoerna.EMS.BLL.Services
             }
 
             queryFilter = queryFilter.And(c => usageMvtType.Contains(c.MVT));
+
+            var allOrderInZaapShiftRpt = _zaapShiftRptRepository.Get().Select(d => d.ORDR).Distinct().ToList();
+
+            queryFilter = input.IsTisToTis ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR)) : queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));
 
             return _repository.Get(queryFilter).ToList();
 

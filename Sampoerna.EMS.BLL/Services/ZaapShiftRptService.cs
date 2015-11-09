@@ -50,5 +50,10 @@ namespace Sampoerna.EMS.BLL.Services
             return dbData.ToList();
 
         }
+
+        public List<ZAAP_SHIFT_RPT> GetAll()
+        {
+            return _repository.Get().ToList();
+        }
     }
 }
