@@ -125,7 +125,14 @@
                         }
                         else
                         {
-                            @Html.Partial("_CK5InformationDetails")
+                            if (Model.IsMarketReturn)
+                            {
+                                 @Html.Partial("_CK5InformationDetailsMarketReturn")
+                            }
+                            else
+                            {
+                                @Html.Partial("_CK5InformationDetails")
+                            }
                         }
 
 

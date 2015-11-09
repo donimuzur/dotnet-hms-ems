@@ -878,17 +878,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
 
 
-                if (ck5Details.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-                {
-                    model.IsFreeTextSource = true;
-                    model.SourcePlantNameManual = model.SourcePlantName;
-                    model.SourceNpwpManual = model.SourceNpwp;
-                    model.SourceNppbkcIdManual = model.SourceNppbkcId;
-                    model.SourceCompanyCodeManual = model.SourceCompanyCode;
-                    model.SourceCompanyNameManual = model.SourceCompanyName;
-                    model.SourceAddressManual = model.SourceAddress;
-                    model.SourceKppbcNameManual = model.SourceKppbcName;
-                }
+                //if (ck5Details.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                //{
+                //    model.IsFreeTextSource = true;
+                //    model.SourcePlantNameManual = model.SourcePlantName;
+                //    model.SourceNpwpManual = model.SourceNpwp;
+                //    model.SourceNppbkcIdManual = model.SourceNppbkcId;
+                //    model.SourceCompanyCodeManual = model.SourceCompanyCode;
+                //    model.SourceCompanyNameManual = model.SourceCompanyName;
+                //    model.SourceAddressManual = model.SourceAddress;
+                //    model.SourceKppbcNameManual = model.SourceKppbcName;
+                //}
 
                 model.IsMarketReturn = true;
             }
@@ -1229,12 +1229,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     input.NppbkcId = model.DestNppbkcId;
                 }
-                else if (model.Ck5Type == Enums.CK5Type.MarketReturn &&
-                      model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-                {
-                    input.NppbkcId = model.DestNppbkcId;
-                }
-
+              
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
                 {
                     model.IsCk5ImporterToPlant = true;
@@ -1457,8 +1452,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             
             //manual freetext
-            if (model.Ck5Type == Enums.CK5Type.Manual
-                || model.Ck5Type == Enums.CK5Type.MarketReturn)
+            if (model.Ck5Type == Enums.CK5Type.Manual)
             {
                 if (model.IsFreeTextSource)
                 {
@@ -1482,6 +1476,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.DestKppbcName = model.DestKppbcNameManual;
                     model.MANUAL_FREE_TEXT = Enums.Ck5ManualFreeText.DestFreeText;
                 }
+            }
+            else if (model.Ck5Type == Enums.CK5Type.MarketReturn)
+            {
+                model.SourcePlantId = model.DestPlantId;
+                model.SourcePlantName = model.DestPlantName;
+                model.SourceNpwp = model.DestNpwp;
+                model.SourceNppbkcId = model.DestNppbkcId;
+                model.SourceCompanyCode = model.DestCompanyCode;
+                model.SourceCompanyName = model.DestCompanyName;
+                model.SourceKppbcName = model.DestKppbcName;
             }
 
             var dataToSave = Mapper.Map<CK5Dto>(model);

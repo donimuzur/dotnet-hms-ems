@@ -104,6 +104,16 @@ namespace Sampoerna.EMS.BLL
                         return false;
                 }
 
+                if (input.FormType == Enums.FormType.PBCK3)
+                {
+                    var rejectedSourcePoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumberSource);
+                    if (rejectedSourcePoa != "")
+                    {
+                        if (input.CurrentUser != rejectedSourcePoa)
+                            return false;
+                    }
+                }
+
                 return IsOneNppbkc(input.NppbkcId, input.CurrentUser);
             }
             

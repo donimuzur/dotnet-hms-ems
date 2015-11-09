@@ -13,7 +13,7 @@
 
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
-                    
+
                 </div>
             </div>
         </div>
@@ -38,28 +38,35 @@
                         @Html.HiddenFor(model => model.IsCk5PortToImporter)
                         @Html.HiddenFor(model => model.IsCk5ImporterToPlant)
 
-                        @Html.Partial("_CK5InformationDetails")
+                        @if (Model.IsMarketReturn)
+                        {
+                            @Html.Partial("_CK5InformationDetailsMarketReturn")
+                        }
+                        else
+                        {
+                            @Html.Partial("_CK5InformationDetails")
+                        }
                         @Html.Partial("_CK5Printout")
                         @Html.Partial("_CK5ChangeLog")
 
 
 
                     </div>
-                  
+
                 </div>
             </div>
         </div>
     </div>
 
-   
+
 }
 
 
 @section scripts {
     <script src="~/Scripts/CK5Scripts.js"></script>
-  
+
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
 
 
             if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
@@ -73,11 +80,11 @@
             }
 
 
-            $('#btn-changelog-export-xls').click(function() {
+            $('#btn-changelog-export-xls').click(function () {
                 location.href = '@Url.Action("ExportXls", "CK5", new {ck5Id = Model.Ck5Id})';
             });
 
-            $('#btnBack').click(function(e) {
+            $('#btnBack').click(function (e) {
 
                 if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
                     if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
@@ -118,7 +125,7 @@
                 type: 'POST',
                 url: addHistoryUrl,
                 data: { id: id },
-                success: function(response) {
+                success: function (response) {
                     $('#PrintOutHistoryTable').html("");
                     $('#PrintOutHistoryTable').html(response);
                     ResetPrintHistoryDataTable();
