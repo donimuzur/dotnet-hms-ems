@@ -380,7 +380,12 @@
                 btnProdPlanUploadClick();
             });
 
-            $('#MenuPBCK1OpenListDocument').addClass('active');
+            if ($('#btn-back-completed-doc').length) {
+                $('#MenuPBCK1CompletedListDocument').addClass('active');
+            }
+            else {
+                $('#MenuPBCK1OpenListDocument').addClass('active');
+            }
 
             $("#Detail_Pbck1Type").change(function() {
                 pbck1TypeOnchange();
