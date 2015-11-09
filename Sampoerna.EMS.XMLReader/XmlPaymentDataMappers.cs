@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.XMLReader
         public CK1 GetCk1(string ck1Number)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<CK1>()
-                .Get(x => x.CK1_NUMBER == ck1Number).FirstOrDefault();
+                .Get(x => x.CK1_SAP_NUMBER == ck1Number).FirstOrDefault();
             return existingData;
         }
 
