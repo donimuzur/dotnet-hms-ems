@@ -31,7 +31,16 @@ namespace Sampoerna.EMS.BLL
         }
 
         public VIRTUAL_PLANT_MAP GetByCompany(string companyid) {
-            return _repository.Get(x => x.COMPANY_ID == companyid).SingleOrDefault();
+            try
+            {
+                return _repository.Get(x => x.COMPANY_ID == companyid && x.IS_DELETED != true).SingleOrDefault();
+            }
+            catch (Exception)
+            {
+                
+                throw new Exception("More than one virtual plant mapping found");
+            }
+            
         }
 
         public VIRTUAL_PLANT_MAP GetByIdIncludeChild(int id)

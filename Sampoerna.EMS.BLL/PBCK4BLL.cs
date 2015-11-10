@@ -1520,7 +1520,7 @@ namespace Sampoerna.EMS.BLL
             result.ReportDetails.PoaName = dtData.POA_PRINTED_NAME;// dtData.POA != null ? dtData.POA.PRINTED_NAME : string.Empty;
             result.ReportDetails.PoaTitle = dtData.POA != null ? dtData.POA.TITLE : string.Empty;
             result.ReportDetails.CompanyName = dtData.COMPANY_NAME;
-            result.ReportDetails.CompanyAddress = plantData != null ? plantData.CompanyAddress : string.Empty;
+            result.ReportDetails.CompanyAddress = plantData != null ? plantData.ADDRESS : string.Empty;
             result.ReportDetails.NppbkcId = dtData.NPPBKC_ID;
 
             string nppbkcDate = "";
@@ -1804,7 +1804,8 @@ namespace Sampoerna.EMS.BLL
 
         public decimal GetBlockedStockByPlantAndFaCode(string plant, string faCode)
         {
-            var dbBlock = _blockStockBll.GetBlockStockByPlantAndMaterialId(plant, faCode);
+            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+            var dbBlock = _blockStockBll.GetBlockStockByPlantAndMaterialId(plant, dbBrand.STICKER_CODE);
             return dbBlock.Count == 0
                 ? 0
                 : dbBlock.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
@@ -1812,7 +1813,8 @@ namespace Sampoerna.EMS.BLL
 
         public BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode)
         {
-            var dbBlock = _blockStockBll.GetBlockStockByPlantAndMaterialId(plant, faCode);
+            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+            var dbBlock = _blockStockBll.GetBlockStockByPlantAndMaterialId(plant, dbBrand.STICKER_CODE);
             decimal blockStock = dbBlock.Count == 0
                 ? 0
                 : dbBlock.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
