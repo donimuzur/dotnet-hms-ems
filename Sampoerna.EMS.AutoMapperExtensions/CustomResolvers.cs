@@ -150,7 +150,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             string resultUOM = "Boxes";
 
             if (value.GRAND_TOTAL_EX.HasValue)
-                resultValue = value.GRAND_TOTAL_EX.ToString();
+                resultValue = value.GRAND_TOTAL_EX.Value.ToString("#,##0.#0");
 
             
             var firstOrDefault = value.Ck5MaterialDtos.FirstOrDefault();
@@ -209,6 +209,18 @@ namespace Sampoerna.EMS.AutoMapperExtensions
                 return "0";
 
             return value.Value.ToString();
+
+        }
+
+    }
+    public class DecimalToStringMoneyResolver : ValueResolver<decimal?, string>
+    {
+        protected override string ResolveCore(decimal? value)
+        {
+            if (!value.HasValue)
+                return "0";
+
+            return value.Value.ToString("#,##0.#0");
 
         }
 

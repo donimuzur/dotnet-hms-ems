@@ -1045,24 +1045,24 @@ namespace Sampoerna.EMS.BLL
                         changes.NEW_VALUE = data.BRAND;
                         break;
                     case "QTY":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.QTY);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.QTY);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.QTY);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.QTY);
                         break;
                     case "UOM":
                         changes.OLD_VALUE = origin.UOM;
                         changes.NEW_VALUE = data.UOM;
                         break;
                     case "CONVERTION":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.CONVERTION);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.CONVERTION);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.CONVERTION);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.CONVERTION);
                         break;
                     case "CONVERTED_UOM":
                         changes.OLD_VALUE = origin.CONVERTED_UOM;
                         changes.NEW_VALUE = data.CONVERTED_UOM;
                         break;
                     case "USD_VALUE":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.USD_VALUE);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.USD_VALUE);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.USD_VALUE);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.USD_VALUE);
                         break;
                     case "NOTE":
                         changes.OLD_VALUE = origin.NOTE;
@@ -1171,8 +1171,8 @@ namespace Sampoerna.EMS.BLL
                         break;
 
                     case "GRAND_TOTAL_EX":
-                        changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
-                        changes.NEW_VALUE = data.GRAND_TOTAL_EX.ToString();
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.GRAND_TOTAL_EX);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.GRAND_TOTAL_EX);
                         break;
 
                     case "PACKAGE_UOM_ID":

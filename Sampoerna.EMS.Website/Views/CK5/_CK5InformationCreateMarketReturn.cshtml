@@ -261,8 +261,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Grand Total Exciseable</label>
                                         <div class="col-md-4">
-
-                                            @Html.TextBoxFor(model => model.GrandTotalEx, new { @class = "form-control", @readonly = "readonly" })
+                                            @Html.HiddenFor(model=>model.GrandTotalEx)
+@Html.TextBoxFor(model => model.GrandTotalExDisplay, new { @class = "form-control", @readonly = "readonly" })
                                         </div>
                                         <div class="col-md-4">
                                             @Html.TextBoxFor(model => model.PackageUomName, new { @class = "form-control", @readonly = "readonly" })

@@ -188,7 +188,7 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script src="~/Scripts/CK5InputManual.js"></script>
-
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function () {
@@ -274,11 +274,11 @@
                         $("*[name='SourceAddress']").val('');
                         $("input[name='SourceKppbcName']").val('');
                         $("input[name='plantname']").val('');
-                        
+
                         //enable upload
                         $('#btnUploadInfo').enable(false);
                         $('#CK5UploadSubmitBtn').enable(false);
-                        
+
                         $("input[name='KppBcCity']").val('');
                         $("input[name='CeOfficeCode']").val('');
 
@@ -338,7 +338,7 @@
 
         $("#btnAddRow").click(function () {
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
-            
+
             $("#uploadMaterialPlant").val(sourcePlant);
 
             ajaxGetListMaterialMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: sourcePlant });
@@ -358,7 +358,7 @@
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
-           
+
             var convertedUom = $('#uploadConvertedUom').val();
 
             materialInput.Plant = sourcePlant;

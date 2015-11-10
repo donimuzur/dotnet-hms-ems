@@ -102,7 +102,7 @@ function OnReadyFunction(ck5Type) {
         //alert(total);
 
         $('#GrandTotalEx').val(total.toFixed(2));
-
+        $('#GrandTotalExDisplay').val(ThausandSeperator(total.toFixed(2), 2));
 
 
         $('#upload-tab').removeClass('active');
