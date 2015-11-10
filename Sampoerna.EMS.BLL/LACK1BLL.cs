@@ -177,14 +177,7 @@ namespace Sampoerna.EMS.BLL
             allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
             data.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
 
-            //generate new Document Number get from Sequence Number BLL
-            var generateNumberInput = new GenerateDocNumberInput()
-            {
-                Month = Convert.ToInt32(input.PeriodMonth),
-                Year = Convert.ToInt32(input.PeriodYear),
-                NppbkcId = input.NppbkcId
-            };
-            data.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+            
 
             data.LACK1_PLANT = null;
 
@@ -199,6 +192,16 @@ namespace Sampoerna.EMS.BLL
                 var plantFromMaster = _t001WServices.GetById(input.ReceivedPlantId);
                 data.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
             }
+
+            //generate new Document Number get from Sequence Number BLL
+            var generateNumberInput = new GenerateDocNumberInput()
+            {
+                Month = Convert.ToInt32(input.PeriodMonth),
+                Year = Convert.ToInt32(input.PeriodYear),
+                NppbkcId = input.NppbkcId
+            };
+
+            data.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
 
             _lack1Service.Insert(data);
 
