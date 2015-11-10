@@ -124,10 +124,9 @@
         $(document).ready(function () {
             setupDataTables();
 
-            $('.changeNumber1').text(ChangeNumber($('.changeNumber1').text()));
-            $('.changeNumber2').text(ChangeNumber($('.changeNumber2').text()));
-            $('.changeNumber3').text(ChangeNumber($('.changeNumber3').text()));
-            $('.changeNumber4').text(ChangeNumber($('.changeNumber4').text()));
+            ChangeNumberStatus();
+
+            ChangeSeparatorTooltip();
         });
 
         $('#btn-reset-filter').click(function () {

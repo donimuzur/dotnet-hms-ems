@@ -45,5 +45,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string FINAL_PORT_ID { get; set; }
         public string DEST_COUNTRY_CODE { get; set; }
         public string DEST_COUNTRY_NAME { get; set; }
+        public string DEST_PLANT_COMPANY_NAME { get; set; }
+        public string DEST_PLANT_ADDRESS { get; set; }
     }
 }

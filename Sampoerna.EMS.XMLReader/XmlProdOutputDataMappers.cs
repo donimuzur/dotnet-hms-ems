@@ -136,10 +136,12 @@ namespace Sampoerna.EMS.XMLReader
                             zaapShftRptItem.COMPANY_CODE = item.COMPANY_CODE;
                             zaapShftRptItem.FA_CODE = item.FA_CODE;
                             zaapShftRptItem.QTY = item.QTY;
+                            zaapShftRptItem.UOM = item.UOM;
                             zaapShftRptItem.ORIGINAL_QTY = qty;
                             zaapShftRptItem.ORIGINAL_UOM = bun;
                             zaapShftRptItem.PRODUCTION_DATE = item.PRODUCTION_DATE;
                             zaapShftRptItem.WERKS = item.WERKS;
+                            
 
                             var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
                             if (existingZaap != null)

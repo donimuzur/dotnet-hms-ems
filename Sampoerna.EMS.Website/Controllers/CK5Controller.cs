@@ -3602,13 +3602,14 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.Uom = datarow[21];
                         uploadItem.DEST_COUNTRY_CODE = datarow[22];
                         uploadItem.SUBMISSION_DATE = DateTime.Parse(datarow[23]);
-                        //uploadItem.LOADING_PORT = datarow[22];
-                        //uploadItem.LOADING_PORT_NAME = datarow[23];
-                        //uploadItem.LOADING_PORT_ID = datarow[24];
-                        //uploadItem.FINAL_PORT = datarow[25];
-                        //uploadItem.FINAL_PORT_NAME = datarow[26];
-                        //uploadItem.FINAL_PORT_ID = datarow[27];
-
+                        uploadItem.LOADING_PORT = datarow[24];
+                        uploadItem.LOADING_PORT_NAME = datarow[25];
+                        uploadItem.LOADING_PORT_ID = datarow[26];
+                        uploadItem.FINAL_PORT = datarow[27];
+                        uploadItem.FINAL_PORT_NAME = datarow[28];
+                        uploadItem.FINAL_PORT_ID = datarow[29];
+                        uploadItem.DEST_PLANT_COMPANY_NAME = datarow[30];
+                        uploadItem.DEST_PLANT_ADDRESS = datarow[31];
 
 
                         model.Ck5FileDocumentItems.Add(uploadItem);
