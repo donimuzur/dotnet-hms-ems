@@ -47,15 +47,11 @@ namespace Sampoerna.EMS.BLL.Services
                 CREATED_BY = input.UserId,
                 CREATED_DATE = DateTime.Now,
                 CK5_ID = input.Ck5Id,
-
+                EXEC_DATE_FROM = DateTime.Now,
+                EXEC_DATE_TO = DateTime.Now
+                
             };
             
-            if (dbPbck3.CK5_ID != null)
-            {
-                dbPbck3.EXEC_DATE_FROM = DateTime.Now;
-                dbPbck3.EXEC_DATE_TO = DateTime.Now;
-            }
-
             _repository.InsertOrUpdate(dbPbck3);
 
             return dbPbck3.PBCK3_NUMBER;

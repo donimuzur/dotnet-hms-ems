@@ -2731,6 +2731,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.ExecutionDate = data.ExecDateDisplayString;
             dMasterRow.NppbkcDate = data.NppbkcStartDate;
             dMasterRow.ReportingDate = data.PrintedDate;
+            dMasterRow.ConditionPbck7Or3 = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
 
             dsReport.Master.AddMasterRow(dMasterRow);
 
