@@ -1792,6 +1792,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Ck4CDashboardParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             var dbData = _ck4CBll.GetAllByParam(input);
             return dbData;
