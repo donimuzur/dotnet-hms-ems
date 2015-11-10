@@ -1553,6 +1553,33 @@ namespace Sampoerna.EMS.BLL
                                          u.UOM_DESC
                                      }).Distinct().ToList();
 
+            //Get Prev Inventory Movement
+            var prevInventoryMovementByParamInput = new InvMovementGetUsageByParamInput()
+            {
+                PlantIdList = plantIdList,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                NppbkcId = input.NppbkcId,
+                IsTisToTis = input.IsTisToTis
+            };
+
+            if (input.PeriodMonth == 1)
+            {
+                //Year - 1, Month = 12
+                prevInventoryMovementByParamInput.PeriodMonth = 12;
+                prevInventoryMovementByParamInput.PeriodYear = prevInventoryMovementByParamInput.PeriodYear - 1;
+            }
+            else
+            {
+                //Same Year, Month - 1
+                prevInventoryMovementByParamInput.PeriodMonth = input.PeriodMonth - 1;
+            }
+
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).ToList();
+
+            var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
+                stoReceiverNumberList);
+
             //calculation proccess
             foreach (var item in joinedWithUomData)
             {
@@ -1576,26 +1603,26 @@ namespace Sampoerna.EMS.BLL
                         Math.Round(
                             ((totalUsageInCk5 / totalUsage) * itemToInsert.Amount), 3);
                 }
-                //else
-                //{
-                //    if (invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.Count > 0)
-                //    {
-                //        var chk =
-                //            invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.FirstOrDefault(
-                //                c => c.ORDR == item.ORDR);
-                //        if (chk != null)
-                //        {
-                //            //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                //            var totalUsageInCk5PrevPeriod = (-1) * invMovementOutputBeforeCurrentPeriod.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                //            var totalUsageExcludeCk5PrevPeriod = (-1) * invMovementOutputBeforeCurrentPeriod.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                //            var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
+                else
+                {
+                    if (prevInventoryMovementByParam.IncludeInCk5List.Count > 0)
+                    {
+                        var chk =
+                            prevInventoryMovementByParam.IncludeInCk5List.FirstOrDefault(
+                                c => c.ORDR == item.ORDR);
+                        if (chk != null)
+                        {
+                            //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
+                            var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                            var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                            var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
 
-                //            itemToInsert.Amount =
-                //        Math.Round(
-                //            ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
-                //        }
-                //    }
-                //}
+                            itemToInsert.Amount =
+                        Math.Round(
+                            ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
+                        }
+                    }
+                }
 
                 productionList.Add(itemToInsert);
             }
