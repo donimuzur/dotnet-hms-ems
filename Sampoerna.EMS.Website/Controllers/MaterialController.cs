@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PlantList = GlobalFunctions.GetVirtualPlantListMultiSelect();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
-            model.BaseUOM = GlobalFunctions.GetUomList(_unitOfMeasurementBll);
+            model.BaseUOM = GlobalFunctions.GetBaseUomList(_unitOfMeasurementBll);
             model.CurrencyList = GlobalFunctions.GetCurrencyList();
             model.ConversionUomList = GlobalFunctions.GetConversionUomList();
             return model;
