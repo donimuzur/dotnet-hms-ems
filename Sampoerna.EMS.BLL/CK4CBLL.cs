@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.BLL
         private IProductionBLL _productionBll;
         private IPOAMapBLL _poaMapBll;
         private IUserPlantMapBLL _userPlantBll;
+        private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -71,6 +72,7 @@ namespace Sampoerna.EMS.BLL
             _productionBll = new ProductionBLL(_logger, _uow);
             _poaMapBll = new POAMapBLL(_uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
+            _documentSequenceNumberBll = new DocumentSequenceNumberBLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CDashboardParamInput input)
@@ -137,6 +139,13 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
+                    var inputDoc = new GenerateDocNumberInput();
+                    inputDoc.Month = item.ReportedMonth;
+                    inputDoc.Year = item.ReportedYears;
+                    inputDoc.NppbkcId = item.NppbkcId;
+
+                    item.Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
+
                     model = Mapper.Map<CK4C>(item);
                     _repository.InsertOrUpdate(model);
                 }
