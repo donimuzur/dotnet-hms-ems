@@ -684,10 +684,6 @@
             var plant = nRow.find("td").eq(19).html();
             var materialnumber = nRow.find("td").eq(2).html();
 
-            //if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
-            //    plant = $("#DestPlantId").find("option:selected").val();
-            //}
-
 
             var goodTypeGroupId = $("#GoodType").val();
             ajaxGetListMaterial(url, { plantId: plant, goodTypeGroup: goodTypeGroupId }, materialnumber);
@@ -695,11 +691,7 @@
             $('#btnSaveMaterial').hide();
             $('#btnUpdateMaterial').show();
 
-            //set value
-            //if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
-            //    plant = $("#DestPlantId").find("option:selected").val();
-            //}
-
+        
             // $("#uploadMaterialPlant").val(nRow.find("td").eq(19).html());
             $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
 

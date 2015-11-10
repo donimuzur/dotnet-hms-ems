@@ -9,7 +9,7 @@ namespace Sampoerna.EMS.BLL.Services
 {
     public class Pbck3Services : IPbck3Services
     {
-         private IGenericRepository<PBCK3> _repository;
+        private IGenericRepository<PBCK3> _repository;
         private ILogger _logger;
         private IUnitOfWork _uow;
 
@@ -23,14 +23,14 @@ namespace Sampoerna.EMS.BLL.Services
             _logger = logger;
             _repository = _uow.GetGenericRepository<PBCK3>();
 
-            _documentSequenceNumberBll = new DocumentSequenceNumberBLL(_uow,_logger);
+            _documentSequenceNumberBll = new DocumentSequenceNumberBLL(_uow, _logger);
         }
 
 
         public string InsertPbck3FromCk5MarketReturn(InsertPbck3FromCk5MarketReturnInput input)
         {
             //generate pbck3number
-           
+
             var generateNumberInput = new GenerateDocNumberInput()
             {
                 Year = DateTime.Now.Year,
@@ -46,11 +46,14 @@ namespace Sampoerna.EMS.BLL.Services
                 STATUS = Enums.DocumentStatus.Draft,
                 CREATED_BY = input.UserId,
                 CREATED_DATE = DateTime.Now,
-                CK5_ID = input.Ck5Id
+                CK5_ID = input.Ck5Id,
+                EXEC_DATE_FROM = DateTime.Now,
+                EXEC_DATE_TO = DateTime.Now
+                
             };
-
+            
             _repository.InsertOrUpdate(dbPbck3);
-         
+
             return dbPbck3.PBCK3_NUMBER;
         }
 

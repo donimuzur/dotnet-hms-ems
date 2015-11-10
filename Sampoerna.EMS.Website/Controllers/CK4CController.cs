@@ -42,7 +42,6 @@ namespace Sampoerna.EMS.Website.Controllers
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IProductionBLL _productionBll;
-        private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWorkflowBLL _workflowBll;
         private IZaidmExProdTypeBLL _prodTypeBll;
@@ -54,7 +53,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public CK4CController(IPageBLL pageBll, IPOABLL poabll, ICK4CBLL ck4Cbll, IPlantBLL plantbll, IMonthBLL monthBll, IUnitOfMeasurementBLL uomBll,
             IBrandRegistrationBLL brandRegistrationBll, ICompanyBLL companyBll, IT001KBLL t001Kbll, IZaidmExNPPBKCBLL nppbkcbll, IProductionBLL productionBll,
-            IDocumentSequenceNumberBLL documentSequenceNumberBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IZaidmExProdTypeBLL prodTypeBll,
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IZaidmExProdTypeBLL prodTypeBll,
             IHeaderFooterBLL headerFooterBll, IPrintHistoryBLL printHistoryBll, IChangesHistoryBLL changesHistoryBll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
@@ -69,7 +68,6 @@ namespace Sampoerna.EMS.Website.Controllers
             _brandRegistrationBll = brandRegistrationBll;
             _nppbkcbll = nppbkcbll;
             _productionBll = productionBll;
-            _documentSequenceNumberBll = documentSequenceNumberBll;
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
             _prodTypeBll = prodTypeBll;
@@ -317,11 +315,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 item.CompanyName = company.BUTXT;
                 item.CreatedBy = CurrentUser.USER_ID;
                 item.CreatedDate = DateTime.Now;
-                var inputDoc = new GenerateDocNumberInput();
-                inputDoc.Month = item.ReportedMonth;
-                inputDoc.Year = item.ReportedYears;
-                inputDoc.NppbkcId = nppbkcId;
-                item.Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
                 item.Status = Enums.DocumentStatus.Draft;
 
                 if (item.Ck4cItem.Count == 0)
@@ -1799,6 +1792,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Ck4CDashboardParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             var dbData = _ck4CBll.GetAllByParam(input);
             return dbData;
