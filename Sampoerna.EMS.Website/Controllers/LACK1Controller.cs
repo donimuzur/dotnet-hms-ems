@@ -1224,7 +1224,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             grid.DataBind();
 
-            var fileName = "PBCK1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            var fileName = "LACK1ChangeLog" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
