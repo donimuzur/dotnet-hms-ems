@@ -1521,7 +1521,7 @@ namespace Sampoerna.EMS.BLL
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(new ZaapShiftRptGetForLack1ByParamInput()
             {
                 CompanyCode = input.CompanyCode,
-                Werks = input.SupplierPlantId,
+                Werks = input.ReceivedPlantId,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList()
