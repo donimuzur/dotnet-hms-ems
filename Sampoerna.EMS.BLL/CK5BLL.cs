@@ -3295,7 +3295,7 @@ namespace Sampoerna.EMS.BLL
             //    FormType = Enums.FormType.CK5
             //};
 
-            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
+            
             if (!input.Ck5Dto.SUBMISSION_DATE.HasValue) {
                 input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
             }
@@ -3355,8 +3355,9 @@ namespace Sampoerna.EMS.BLL
                 
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
-
+            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
             dbData.GRAND_TOTAL_EX = tempTotal;
+            dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
             _repository.Insert(dbData);
             
             inputWorkflowHistory.DocumentId = dbData.CK5_ID;
@@ -3792,7 +3793,7 @@ namespace Sampoerna.EMS.BLL
                     if (!ck5.REDUCE_TRIAL.HasValue || !ck5.REDUCE_TRIAL.Value)
                         continue;
                 }
-                else if (ck5.CK5_TYPE == Enums.CK5Type.Export)
+                else if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn)
                     continue;
                 else if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
                     continue;
