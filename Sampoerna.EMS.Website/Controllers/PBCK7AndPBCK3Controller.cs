@@ -2732,6 +2732,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.NppbkcDate = data.NppbkcStartDate;
             dMasterRow.ReportingDate = data.PrintedDate;
             dMasterRow.ConditionPbck7Or3 = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
+            
 
             dsReport.Master.AddMasterRow(dMasterRow);
 
@@ -2754,6 +2755,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.JmlCukai = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
                     detailRow.SumJmlCukai = totalExciseValue.ToString("N2");
                     detailRow.SumJmlKemasan = totalQty.ToString("N2");
+                    detailRow.SymbolStar = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
 
                     dsReport.Detail.AddDetailRow(detailRow);
                 }

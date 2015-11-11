@@ -867,6 +867,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnSumJmlKemasan;
             
+            private global::System.Data.DataColumn columnSymbolStar;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public DetailDataTable() {
@@ -982,6 +984,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SymbolStarColumn {
+                get {
+                    return this.columnSymbolStar;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1017,7 +1027,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DetailRow AddDetailRow(string Jenis, string Merek, string IsiKemasan, string JmlKemasan, string SeriPitaCukai, string Hje, string Tariff, string JmlCukai, string SumJmlCukai, string SumJmlKemasan) {
+            public DetailRow AddDetailRow(string Jenis, string Merek, string IsiKemasan, string JmlKemasan, string SeriPitaCukai, string Hje, string Tariff, string JmlCukai, string SumJmlCukai, string SumJmlKemasan, bool SymbolStar) {
                 DetailRow rowDetailRow = ((DetailRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Jenis,
@@ -1029,7 +1039,8 @@ namespace Sampoerna.EMS.ReportingData {
                         Tariff,
                         JmlCukai,
                         SumJmlCukai,
-                        SumJmlKemasan};
+                        SumJmlKemasan,
+                        SymbolStar};
                 rowDetailRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDetailRow);
                 return rowDetailRow;
@@ -1062,6 +1073,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnJmlCukai = base.Columns["JmlCukai"];
                 this.columnSumJmlCukai = base.Columns["SumJmlCukai"];
                 this.columnSumJmlKemasan = base.Columns["SumJmlKemasan"];
+                this.columnSymbolStar = base.Columns["SymbolStar"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1087,6 +1099,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnSumJmlCukai);
                 this.columnSumJmlKemasan = new global::System.Data.DataColumn("SumJmlKemasan", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSumJmlKemasan);
+                this.columnSymbolStar = new global::System.Data.DataColumn("SymbolStar", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSymbolStar);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1964,6 +1978,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool SymbolStar {
+                get {
+                    try {
+                        return ((bool)(this[this.tableDetail.SymbolStarColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SymbolStar\' in table \'Detail\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDetail.SymbolStarColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsJenisNull() {
                 return this.IsNull(this.tableDetail.JenisColumn);
             }
@@ -2080,6 +2110,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetSumJmlKemasanNull() {
                 this[this.tableDetail.SumJmlKemasanColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSymbolStarNull() {
+                return this.IsNull(this.tableDetail.SymbolStarColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSymbolStarNull() {
+                this[this.tableDetail.SymbolStarColumn] = global::System.Convert.DBNull;
             }
         }
         
