@@ -2081,8 +2081,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 DraftTotal = data.Count(x => x.Status == Enums.DocumentStatus.Draft),
                 WaitingForPoaTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval),
-                WaitingForManagerTotal =
-                    data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                WaitingForManagerTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 WaitingForGovTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingGovApproval),
                 CompletedTotal = data.Count(x => x.Status == Enums.DocumentStatus.Completed)
             };
@@ -2100,6 +2099,10 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<Lack2GetDashboardDataByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            
+
             return _lack2Bll.GetDashboardDataByParam(input);
         }
 
