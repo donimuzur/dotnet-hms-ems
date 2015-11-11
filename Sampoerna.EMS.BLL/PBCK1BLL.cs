@@ -154,6 +154,28 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => (c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year == input.Year.Value)
                     || (c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year == input.Year.Value));
             }
+
+            if (!string.IsNullOrEmpty(input.UserId))
+            {
+                if (input.UserRole == Enums.UserRole.POA)
+                {
+                    var nppbkc = _nppbkcbll.GetNppbkcMainPlantOnlyByPoa(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID)) || c.STATUS == Enums.DocumentStatus.Completed));
+                }
+                else if (input.UserRole == Enums.UserRole.Manager)
+                {
+                    var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
+                }
+                else
+                {
+                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId || c.STATUS == Enums.DocumentStatus.Completed);
+                }
+            }
+
             return queryFilter;
         }
 
