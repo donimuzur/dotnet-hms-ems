@@ -1045,24 +1045,24 @@ namespace Sampoerna.EMS.BLL
                         changes.NEW_VALUE = data.BRAND;
                         break;
                     case "QTY":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.QTY);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.QTY);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.QTY);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.QTY);
                         break;
                     case "UOM":
                         changes.OLD_VALUE = origin.UOM;
                         changes.NEW_VALUE = data.UOM;
                         break;
                     case "CONVERTION":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.CONVERTION);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.CONVERTION);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.CONVERTION);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.CONVERTION);
                         break;
                     case "CONVERTED_UOM":
                         changes.OLD_VALUE = origin.CONVERTED_UOM;
                         changes.NEW_VALUE = data.CONVERTED_UOM;
                         break;
                     case "USD_VALUE":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.USD_VALUE);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.USD_VALUE);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.USD_VALUE);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.USD_VALUE);
                         break;
                     case "NOTE":
                         changes.OLD_VALUE = origin.NOTE;
@@ -1171,8 +1171,8 @@ namespace Sampoerna.EMS.BLL
                         break;
 
                     case "GRAND_TOTAL_EX":
-                        changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
-                        changes.NEW_VALUE = data.GRAND_TOTAL_EX.ToString();
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.GRAND_TOTAL_EX);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.GRAND_TOTAL_EX);
                         break;
 
                     case "PACKAGE_UOM_ID":
@@ -3340,23 +3340,21 @@ namespace Sampoerna.EMS.BLL
                 {
                     ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
                 }
-
-                if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                if (input.Ck5Dto.CK5_TYPE != Enums.CK5Type.MarketReturn)
                 {
-                    dbData.PACKAGE_UOM_ID = "G";
-
+                    if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                        dbData.PACKAGE_UOM_ID = "G";
+                    else
+                        dbData.PACKAGE_UOM_ID = "L";
+                   
                 }
-                else
-                {
-                    dbData.PACKAGE_UOM_ID = "L";
-                }
-                if(ck5Material.CONVERTED_QTY.HasValue)
-                    tempTotal += ck5Material.CONVERTED_QTY.Value;
+                //if(ck5Material.CONVERTED_QTY.HasValue)
+                //    tempTotal += ck5Material.CONVERTED_QTY.Value;
                 
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
             input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
-            dbData.GRAND_TOTAL_EX = tempTotal;
+            //dbData.GRAND_TOTAL_EX = tempTotal;
             dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
             _repository.Insert(dbData);
             
