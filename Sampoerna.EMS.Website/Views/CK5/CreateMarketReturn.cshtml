@@ -112,7 +112,7 @@
                     </div>
                     <div class="col-md-6">
                         <label>Qty<span class="red">*</span></label>
-                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialQty" })
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control decimal", @id = "uploadMaterialQty" })
 
                     </div>
                 </div>
@@ -137,7 +137,7 @@
                     </div>
                     <div class="col-md-6">
                         <label>Convertion<span class="red">*</span></label>
-                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialConvertion" })
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control decimal", @id = "uploadMaterialConvertion" })
                     </div>
                 </div>
                 <div class="row">
@@ -149,7 +149,7 @@
 
                     <div class="col-md-6">
                         <label>USD Value</label>
-                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadUsdValue" })
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control decimal", @id = "uploadUsdValue" })
 
                     </div>
 
@@ -188,7 +188,7 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script src="~/Scripts/CK5InputManual.js"></script>
-
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function () {
@@ -274,11 +274,11 @@
                         $("*[name='SourceAddress']").val('');
                         $("input[name='SourceKppbcName']").val('');
                         $("input[name='plantname']").val('');
-                        
+
                         //enable upload
                         $('#btnUploadInfo').enable(false);
                         $('#CK5UploadSubmitBtn').enable(false);
-                        
+
                         $("input[name='KppBcCity']").val('');
                         $("input[name='CeOfficeCode']").val('');
 
@@ -338,7 +338,7 @@
 
         $("#btnAddRow").click(function () {
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
-            
+
             $("#uploadMaterialPlant").val(sourcePlant);
 
             ajaxGetListMaterialMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: sourcePlant });
@@ -358,7 +358,7 @@
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
-           
+
             var convertedUom = $('#uploadConvertedUom').val();
 
             materialInput.Plant = sourcePlant;
@@ -422,6 +422,56 @@
 
         });
 
+        function EditRow(o, url) {
+            //debugger;
+            var nRow = o.parents('tr');
+            var plant = nRow.find("td").eq(19).html();
+            var materialnumber = nRow.find("td").eq(2).html();
+
+            ajaxGetListMaterial('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: plant }, materialnumber);
+
+            $('#btnSaveMaterial').hide();
+            $('#btnUpdateMaterial').show();
+
+
+            // $("#uploadMaterialPlant").val(nRow.find("td").eq(19).html());
+            $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
+
+            $('#uploadMaterialNumber').find('option:not(:first)').remove();
+            //===Fixing Bug CK5 no. 110====
+            $('#uploadMaterialNumber').append('<option>' + nRow.find("td").eq(2).html() + '</option>');
+            //=============================
+
+            $('#uploadMaterialNumber').val(materialnumber);
+            $('#uploadMaterialQty').val(nRow.find("td").eq(3).html());
+
+            $('#uploadMaterialUom').val(nRow.find("td").eq(4).html());
+            $('#uploadMaterialConvertion').val(nRow.find("td").eq(5).html());
+
+            $('#uploadConvertedUom').val(nRow.find("td").eq(7).html());
+
+            $('#uploadMaterialHje').val(nRow.find("td").eq(8).html());
+            $('#uploadMaterialTariff').val(nRow.find("td").eq(9).html());
+
+            $('#uploadUsdValue').val(nRow.find("td").eq(11).html());
+
+            $('#uploadNote').val(nRow.find("td").eq(12).html());
+
+            $('#uploadMaterialDesc').val(nRow.find("td").eq(15).html());
+
+            //===Fixing Bug CK5 no. 110====
+            $('#uploadMaterialPlant').val(nRow.find("td").eq(19).html());
+            //=============================
+
+            $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
+
+            ClearValidation();
+
+            $("#lblTitleInputManual").text('Edit Input');
+
+            $('#Ck5UploadModal').modal('show');
+
+        }
         @*$("#IsFreeTextSource").on('change', function () {
             ajaxGetManualView('@Url.Action("GetManualViewSource", "CK5")', { isFreeTextSource: $(this).is(':checked') });
         });

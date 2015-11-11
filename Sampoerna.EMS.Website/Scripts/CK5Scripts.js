@@ -102,7 +102,7 @@ function OnReadyFunction(ck5Type) {
         //alert(total);
 
         $('#GrandTotalEx').val(total.toFixed(2));
-
+        $('#GrandTotalExDisplay').val(ThausandSeperator(total.toFixed(2), 2));
 
 
         $('#upload-tab').removeClass('active');
@@ -143,9 +143,10 @@ function OnReadyFunction(ck5Type) {
             }
         }
 
-        $('#ck5TableItem tbody').append(data);
+        if (ValidateRemainQuota(total))
+            $('#ck5TableItem tbody').append(data);
 
-        ValidateRemainQuota(total);
+        
 
     });
 
@@ -162,8 +163,8 @@ function ValidatePbck1Uom() {
 function ValidateRemainQuota(total) {
     // var total = parseFloat($('#GrandTotalEx').val());
 
-    var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val());
-    var totalCk5 = parseFloat($('#Ck5TotalExciseable').val());
+    var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(',',''));
+    var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(',', ''));
     var remainQuota = pbck1QtyApproved - totalCk5;
     if (total > remainQuota) {
         $('#collapseThree').removeClass('collapse');
@@ -175,7 +176,11 @@ function ValidateRemainQuota(total) {
 
         AddValidationClass(false, 'GrandTotalEx');
 
+
+        return false;
     }
+    
+    return true;
 }
 
 function IsValidDataUpload() {
@@ -700,6 +705,14 @@ function ValidateCk5Form(ck5Type) {
         isValidCk5Detail = false;
     }
 
+    if ($('#CarriageMethod').find("option:selected").val() == '') {
+        AddValidationClass(false, 'CarriageMethod');
+        result = false;
+        $('#collapse6').removeClass('collapse');
+        $('#collapse6').addClass('in');
+        $("#collapse6").css({ height: "auto" });
+    }
+    
     if (!isValidCk5Detail) {
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('in');
@@ -707,10 +720,7 @@ function ValidateCk5Form(ck5Type) {
 
     }
 
-        ///deleted for change
-        //if (ck5Type == 'PortToImporter') {
-        //    $('#SourcePlantId').val('');
-        //}
+      
     else if (ck5Type != 'MarketReturn')
         {
         if ($('#SourcePlantId').find("option:selected").val() == '') {
@@ -885,9 +895,9 @@ function ValidateCk5Form(ck5Type) {
         if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
             return result;
 
-        var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val());
-        var totalCk5 = parseFloat($('#Ck5TotalExciseable').val());
-        var total = parseFloat($('#GrandTotalEx').val());
+        var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(',', ''));
+        var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(',', ''));
+        var total = parseFloat($('#GrandTotalEx').val().replace(',', ''));
         var remainQuota = pbck1QtyApproved - totalCk5;
         if (total > remainQuota) {
             $('#collapseThree').removeClass('collapse');
@@ -1056,8 +1066,25 @@ function ajaxGetListMaterial(url, formData, materialid) {
 
                 listMaterial.html(list);
 
+                //var listComplete = $('.dropdown-menu ul');
+                //list = "";
+                //var index = 0;
+                //for (var i = 0; i < data.length; i++) {
+                //    index = i + 1;
+                //    //list += "<li data-original-index='" + index + ">";
+                //    //list += "<a tab-index=0' class='' style='' data-tokens='null' >";
+                //    //list += " <span class='text' >" + data[i].MaterialNumber + "</span>";
+                //    //list += "<span class='glyphicon glyphicon-ok check-mark'></span>";
+                //    //list += "</a>";
+                //    //list += "</li>";
+                //    listComplete.append(
+                //        $('<li>').attr("data-original-index='" + index + ">").append(
+                //            $('<a>').append(
+                //               '<span class="text">Select</span><span class="glyphicon glyphicon-ok check-mark"></span>'
+                //            )));
 
-
+                //}
+                ////listComplete.append(list);
             }
         });
     }
@@ -1119,7 +1146,7 @@ function GenerateXlsCk5MarketReturnMaterial(url) {
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("itemExcelFile").files[i];
         formData.append("itemExcelFile", file);
-        formData.append("plantId", $('#SourcePlantId').val());
+        formData.append("plantId", $('#DestPlantId').val());
     }
 
 
@@ -1182,7 +1209,7 @@ function MoveUploadToTableMarketReturn() {
     }
 
     //alert(total);
-
+    $('#GrandTotalExDisplay').val(ThausandSeperator(total.toFixed(2), 2));
     $('#GrandTotalEx').val(total.toFixed(2));
 
 
