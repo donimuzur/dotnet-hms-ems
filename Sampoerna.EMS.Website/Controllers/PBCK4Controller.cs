@@ -1872,6 +1872,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<Pbck4DasboardParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             var dbData = _pbck4Bll.GetAllByParam(input);
             return dbData;
         }
