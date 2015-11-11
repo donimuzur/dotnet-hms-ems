@@ -3295,7 +3295,7 @@ namespace Sampoerna.EMS.BLL
             //    FormType = Enums.FormType.CK5
             //};
 
-            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
+            
             if (!input.Ck5Dto.SUBMISSION_DATE.HasValue) {
                 input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
             }
@@ -3353,8 +3353,9 @@ namespace Sampoerna.EMS.BLL
                 
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
-
+            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
             //dbData.GRAND_TOTAL_EX = tempTotal;
+            dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
             _repository.Insert(dbData);
             
             inputWorkflowHistory.DocumentId = dbData.CK5_ID;

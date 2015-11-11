@@ -2137,6 +2137,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     };
 
                     _ck5Bll.CK5CompletedAttachment(input);
+                    AddMessageInfo("Success Save", Enums.MessageInfoType.Success);
                 }
             }
             catch (Exception ex)

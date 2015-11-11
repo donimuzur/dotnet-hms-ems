@@ -1517,11 +1517,26 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
+            var plantIdList = new List<string>();
+            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                //get plant list by nppbkcid
+                var plantList = _t001WServices.GetByNppbkcId(input.NppbkcId);
+                if (plantList.Count > 0)
+                {
+                    plantIdList = plantList.Select(c => c.WERKS).ToList();
+                }
+            }
+            else
+            {
+                plantIdList = new List<string>() { input.ReceivedPlantId };
+            }
+
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(new ZaapShiftRptGetForLack1ByParamInput()
             {
                 CompanyCode = input.CompanyCode,
-                Werks = input.SupplierPlantId,
+                Werks = plantIdList,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList()
