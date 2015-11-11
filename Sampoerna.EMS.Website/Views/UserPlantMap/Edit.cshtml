@@ -284,7 +284,8 @@
 
         function SetPlantList(data, index) {
             var isChecked = (data.IsChecked != null && data.IsChecked != undefined) == true ? 'Checked' : '';
-            var view = '<div class="' + data.NPPBCK_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' +
+            var view = '<div class="' + data.NPPBCK_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' + 
+                '<input id="Plants_' + index + '__NPPBKC_ID" name="Plants[' + index + '].NPPBKC_ID" type="hidden" value="' + data.NPPBKC_ID + '">' +
                 '<input id="plants_' + index + '__checkbox"  onchange="setChecked(' + index + ', $(this))" type="checkbox"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked" ' + isChecked + '>' +
                 data.WERKS + '-' + data.NAME1 + '</div>';
             return view;

@@ -210,6 +210,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.USER_PLANT_MAP_ID))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T001W.NAME1))
+                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.UserName,
                     opt => opt.MapFrom(src => src.USER.FIRST_NAME + " " + src.USER.LAST_NAME))
@@ -219,6 +220,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.USER_PLANT_MAP_ID, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
                 .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
                 .ForMember(dest => dest.IS_ACTIVE, opt => opt.ResolveUsing<StringToBooleanResolver>().FromMember(src => src.IsActive));
 
 

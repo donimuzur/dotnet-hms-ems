@@ -144,8 +144,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Plants != null)
                 {
-                    var savePlant = model.Plants.Select(c => c.WERKS).ToList();
-                    var currentPlant = currenPlant.Select(c => c.PLANT_ID).ToList();
+                    var savePlant = model.Plants.Select(c => new
+                    {
+                        c.NPPBKC_ID, 
+                        c.WERKS
+                    }).ToList();
+
+                    var currentPlant = currenPlant.Select(c => new
+                    {
+                        c.NPPBKC_ID, WERKS = c.PLANT_ID
+                    }).ToList();
 
                     //check if user delete all mapping then return error message
                     var intersectBoth = savePlant.Intersect(currentPlant);
@@ -155,7 +163,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         var listCmd = new List<bool>();
                         foreach (var plant1 in intersectBoth)
                         {
-                            listCmd.Add(model.Plants.Where(c => c.WERKS == plant1).Select(c => c.IsChecked).FirstOrDefault()); 
+                            listCmd.Add(model.Plants.Where(c => c.WERKS == plant1.WERKS && c.NPPBKC_ID == plant1.NPPBKC_ID).Select(c => c.IsChecked).FirstOrDefault()); 
                         }
                         if (listCmd.All(c => c != true))
                         {
@@ -175,7 +183,6 @@ namespace Sampoerna.EMS.Website.Controllers
                             var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId, plant);
                             if (existingPlantMap != null)
                             {
-
                                 _userPlantMapBll.Delete(existingPlantMap.USER_PLANT_MAP_ID);
                             }
                         }
