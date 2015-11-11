@@ -1116,6 +1116,7 @@
           <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="IS_ACTIVE" Type="bit" />
+          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="VIRTUAL_PLANT_MAP">
           <Key>
@@ -1459,7 +1460,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+        <Association Name="FK_CHANGES_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3199,7 +3200,7 @@
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
@@ -7841,6 +7842,7 @@
           <Property Name="IS_ACTIVE" Type="Boolean" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="USER_PLANT_MAP" ToRole="T001W" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER_PLANT_MAP" ToRole="USER" />
+          <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_USER_PLANT_MAP_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
@@ -9315,6 +9317,7 @@
           <EntitySetMapping Name="USER_PLANT_MAP">
             <EntityTypeMapping TypeName="EMSModel.USER_PLANT_MAP">
               <MappingFragment StoreEntitySet="USER_PLANT_MAP">
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
                 <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
                 <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
