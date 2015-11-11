@@ -218,8 +218,8 @@ function AddRowManualMarketReturn(url, data) {
   
     $('#Ck5UploadModal').modal('hide');
 
-    var convertedQty = parseFloat($('#uploadMaterialQty').val()) * parseFloat($('#uploadMaterialConvertion').val());
-    var total = parseFloat($('#uploadMaterialTariff').val()) * convertedQty;
+    var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(',', '')) * parseFloat($('#uploadMaterialConvertion').val().replace(',', ''));
+    var total = parseFloat($('#uploadMaterialTariff').val().replace(',', '')) * convertedQty;
     var rowCount = $('#Ck5UploadTable tr').length;
 
     var exciseQty = convertedQty;
@@ -241,11 +241,11 @@ function AddRowManualMarketReturn(url, data) {
             "<td>" + $('#uploadMaterialQty').val() + "</td>" +
             "<td>" + $('#uploadMaterialUom').val() + "</td>" +
             "<td>" + $('#uploadMaterialConvertion').val() + "</td>" +
-            "<td>" + convertedQty.toFixed(3) + "</td>" +
+            "<td>" + ThausandSeperator(convertedQty.toFixed(3),3) + "</td>" +
             "<td>" + $('#uploadConvertedUom').val() + "</td>" +
             "<td>" + $('#uploadMaterialHje').val() + "</td>" +
             "<td>" + $('#uploadMaterialTariff').val() + "</td>" +
-            "<td>" + total.toFixed(3) + "</td>" +
+            "<td>" + ThausandSeperator(total.toFixed(3),3) + "</td>" +
             "<td>" + $('#uploadUsdValue').val() + "</td>" +
             "<td>" + $('#uploadNote').val() + "</td>" +
             "<td>" + dataerror + "</td>" +
@@ -270,8 +270,8 @@ function UpdateRowManualMarketRetun(data) {
   
     var row = $('#uploadMaterialRow').val();
 
-    var convertedQty = parseFloat($('#uploadMaterialQty').val()) * parseFloat($('#uploadMaterialConvertion').val());
-    var total = parseFloat($('#uploadMaterialTariff').val()) * convertedQty;
+    var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(',', '')) * parseFloat($('#uploadMaterialConvertion').val().replace(',', ''));
+    var total = parseFloat($('#uploadMaterialTariff').val().replace(',', '')) * convertedQty;
     var exciseQty = convertedQty;
     var exciseUOM = $('#uploadConvertedUom').val();
 
@@ -294,11 +294,11 @@ function UpdateRowManualMarketRetun(data) {
             $(this).find('td').eq(3).text($('#uploadMaterialQty').val());
             $(this).find('td').eq(4).text($('#uploadMaterialUom').val());
             $(this).find('td').eq(5).text($('#uploadMaterialConvertion').val());
-            $(this).find('td').eq(6).text(convertedQty.toFixed(3));
+            $(this).find('td').eq(6).text(ThausandSeperator(convertedQty.toFixed(3),3));
             $(this).find('td').eq(7).text($('#uploadConvertedUom').val());
             $(this).find('td').eq(8).text($('#uploadMaterialHje').val());
             $(this).find('td').eq(9).text($('#uploadMaterialTariff').val());
-            $(this).find('td').eq(10).text(total.toFixed(3));
+            $(this).find('td').eq(10).text(ThausandSeperator(total.toFixed(3),3));
             $(this).find('td').eq(11).text($('#uploadUsdValue').val());
             $(this).find('td').eq(12).text($('#uploadNote').val());
             $(this).find('td').eq(13).text(dataerror);

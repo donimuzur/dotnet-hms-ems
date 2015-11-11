@@ -3340,23 +3340,21 @@ namespace Sampoerna.EMS.BLL
                 {
                     ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
                 }
-
-                if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                if (input.Ck5Dto.CK5_TYPE != Enums.CK5Type.MarketReturn)
                 {
-                    dbData.PACKAGE_UOM_ID = "G";
-
+                    if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                        dbData.PACKAGE_UOM_ID = "G";
+                    else
+                        dbData.PACKAGE_UOM_ID = "L";
+                   
                 }
-                else
-                {
-                    dbData.PACKAGE_UOM_ID = "L";
-                }
-                if(ck5Material.CONVERTED_QTY.HasValue)
-                    tempTotal += ck5Material.CONVERTED_QTY.Value;
+                //if(ck5Material.CONVERTED_QTY.HasValue)
+                //    tempTotal += ck5Material.CONVERTED_QTY.Value;
                 
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
 
-            dbData.GRAND_TOTAL_EX = tempTotal;
+            //dbData.GRAND_TOTAL_EX = tempTotal;
             _repository.Insert(dbData);
             
             inputWorkflowHistory.DocumentId = dbData.CK5_ID;

@@ -565,9 +565,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Pbck1Id = output.Pbck1Id;
                 model.Pbck1Number = output.Pbck1Number;
                 model.Pbck1DecreeDate = output.Pbck1DecreeDate;
-                model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-                model.Ck5TotalExciseable = output.QtyCk5.ToString();
-                model.RemainQuota = output.RemainQuota.ToString();
+                model.Pbck1QtyApproved = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.QtyApprovedPbck1);
+                model.Ck5TotalExciseable = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.QtyCk5);
+                model.RemainQuota = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.RemainQuota);
                 model.PbckUom = output.PbckUom;
             }
 
@@ -600,9 +600,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck1Id = output.Pbck1Id;
             model.Pbck1Number = output.Pbck1Number;
             model.Pbck1DecreeDate = output.Pbck1DecreeDate;
-            model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-            model.Ck5TotalExciseable = output.QtyCk5.ToString();
-            model.RemainQuota = output.RemainQuota.ToString();
+            model.Pbck1QtyApproved =ConvertHelper.ConvertDecimalToStringMoneyFormat(output.QtyApprovedPbck1);
+            model.Ck5TotalExciseable = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.QtyCk5);
+            model.RemainQuota = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.RemainQuota);
             model.PbckUom = output.PbckUom;
 
             return Json(model);
@@ -1124,8 +1124,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                 return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
 
                             }
-                            //update info quota
-                            //model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5 - model.GrandTotalEx).ToString();
+                            
                             AddMessageInfo("Success", Enums.MessageInfoType.Success);
                             return RedirectToAction("Edit", "CK5", new { @id = model.Ck5Id });
                         }
@@ -1427,7 +1426,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
                         model.Ck5Type != Enums.CK5Type.PortToImporter &&
-                        (model.Ck5Type != Enums.CK5Type.Manual && model.IsReducePbck1Ck5Trial))
+                        (model.Ck5Type != Enums.CK5Type.Manual || model.IsReducePbck1Ck5Trial))
                     {
 
                         //force to show 0 instead error message

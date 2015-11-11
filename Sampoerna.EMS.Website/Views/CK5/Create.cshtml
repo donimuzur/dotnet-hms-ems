@@ -454,6 +454,11 @@
             }
             $("#uploadMaterialPlant").val(sourcePlant);
             var goodTypeGroupId = $("#GoodType").val();
+            if (goodTypeGroupId == "") {
+                $('#modalBodyMessage').text('Please fill the excisable good types for this CK-5 document');
+                $('#ModalCk5Material').modal('show');
+                return;
+            }
             ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
 
             $('#btnSaveMaterial').show();
@@ -566,6 +571,12 @@
 
 
             var goodTypeGroupId = $("#GoodType").val();
+            var goodTypeGroupId = $("#GoodType").val();
+            if (goodTypeGroupId == "") {
+                $('#modalBodyMessage').text('Please fill the excisable good types for this CK-5 document');
+                $('#ModalCk5Material').modal('show');
+                return;
+            }
             ajaxGetListMaterial(url, { plantId: plant, goodTypeGroup: goodTypeGroupId }, materialnumber);
 
             $('#btnSaveMaterial').hide();
