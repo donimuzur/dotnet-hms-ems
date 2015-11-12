@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BusinessObject
     {
         public int WASTE_ROLE_ID { get; set; }
         public string USER_ID { get; set; }
-        public int GROUP_ROLE { get; set; }
+        public Sampoerna.EMS.Core.Enums.WasteGroup GROUP_ROLE { get; set; }
         public string WERKS { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
