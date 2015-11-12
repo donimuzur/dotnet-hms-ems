@@ -417,6 +417,16 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<CK1, CK1Dto>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<BLOCK_STOCK, BLOCK_STOCKDto>().IgnoreAllNonExisting();
+
+            #region Waste Role
+
+            Mapper.CreateMap<WASTE_ROLE, WasteRoleDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.USER == null ? string.Empty : src.USER.FIRST_NAME ))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.USER == null ? string.Empty : src.USER.LAST_NAME))
+                .ForMember(dest => dest.WasteGroupDescription, opt => opt.MapFrom(src => src.GROUP_ROLE))
+                ;
+
+            #endregion
         }
     }
 }

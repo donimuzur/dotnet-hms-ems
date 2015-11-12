@@ -194,6 +194,7 @@
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\UserPlantMapDto.cs" />
     <Compile Include="DTOs\WasteDto.cs" />
+    <Compile Include="DTOs\WasteRoleDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_GOODTYPCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
