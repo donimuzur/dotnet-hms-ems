@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -2733,6 +2734,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.ReportingDate = data.PrintedDate;
             dMasterRow.ConditionPbck7Or3 = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
             dMasterRow.CompanyNameAndAddress = data.CompanyName + "-" + data.CompanyAddress;
+            dMasterRow.AddressParagraft = Regex.Replace(data.CompanyAddress, "\r\n", " ");
             
 
             dsReport.Master.AddMasterRow(dMasterRow);
