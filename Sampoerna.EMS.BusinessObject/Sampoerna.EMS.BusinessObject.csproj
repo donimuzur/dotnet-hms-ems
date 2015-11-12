@@ -317,6 +317,7 @@
     <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\InventoryMovementOutputs.cs" />
     <Compile Include="Outputs\Lack2GetDashboardDataOutput.cs" />
+    <Compile Include="Outputs\MovedFileOutput.cs" />
     <Compile Include="Outputs\Pbck3Output.cs" />
     <Compile Include="Outputs\Lack2CreateOutput.cs" />
     <Compile Include="Outputs\Lack2GeneratedOutput.cs" />
