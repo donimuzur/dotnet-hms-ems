@@ -1260,6 +1260,8 @@
     <Content Include="Views\CK5\_CK5InformationDetailsMarketReturn.cshtml" />
     <Content Include="Views\PBCK4\Detail.cshtml" />
     <Content Include="Views\LACK2\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\DetailsPbck3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
