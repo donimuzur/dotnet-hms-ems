@@ -565,9 +565,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Pbck1Id = output.Pbck1Id;
                 model.Pbck1Number = output.Pbck1Number;
                 model.Pbck1DecreeDate = output.Pbck1DecreeDate;
-                model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-                model.Ck5TotalExciseable = output.QtyCk5.ToString();
-                model.RemainQuota = output.RemainQuota.ToString();
+                model.Pbck1QtyApproved = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.QtyApprovedPbck1);
+                model.Ck5TotalExciseable = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.QtyCk5);
+                model.RemainQuota = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.RemainQuota);
                 model.PbckUom = output.PbckUom;
             }
 
@@ -600,9 +600,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck1Id = output.Pbck1Id;
             model.Pbck1Number = output.Pbck1Number;
             model.Pbck1DecreeDate = output.Pbck1DecreeDate;
-            model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
-            model.Ck5TotalExciseable = output.QtyCk5.ToString();
-            model.RemainQuota = output.RemainQuota.ToString();
+            model.Pbck1QtyApproved =ConvertHelper.ConvertDecimalToStringMoneyFormat(output.QtyApprovedPbck1);
+            model.Ck5TotalExciseable = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.QtyCk5);
+            model.RemainQuota = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.RemainQuota);
             model.PbckUom = output.PbckUom;
 
             return Json(model);
@@ -926,6 +926,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 model = InitEdit(model);
 
                 model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(ck5Details.Ck5MaterialDto);
+                foreach (var ck5UploadViewModel in model.UploadItemModels)
+                {
+                    ck5UploadViewModel.ExciseQty = ConvertHelper.ConvertToDecimalOrZero(ck5UploadViewModel.ConvertedQty);
+                    ck5UploadViewModel.ExciseUom = ck5UploadViewModel.ConvertedUom;
+                    if (ck5UploadViewModel.ExciseUom == "KG")
+                    {
+                        ck5UploadViewModel.ExciseUom = "G";
+                        ck5UploadViewModel.ExciseQty = ck5UploadViewModel.ExciseQty*1000;
+                    }
+                }
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(ck5Details.ListChangesHistorys);
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(ck5Details.ListWorkflowHistorys);
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(ck5Details.ListPrintHistorys);
@@ -997,7 +1007,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
 
                         var output = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(id);
-                        model.Pbck1QtyApproved = output.QtyApprovedPbck1.ToString();
+                        model.Pbck1QtyApproved = ConvertHelper.ConvertDecimalToStringMoneyFormat(output.QtyApprovedPbck1);
                         //
                         //decimal currentCk5 = output.QtyCk5;//- model.GrandTotalEx;
                         if (output.QtyCk5 == 0)
@@ -1006,10 +1016,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         else
                         {
-                            model.Ck5TotalExciseable = (output.QtyCk5 - model.GrandTotalEx).ToString();
+                            model.Ck5TotalExciseable = ConvertHelper.ConvertDecimalToStringMoneyFormat((output.QtyCk5 - model.GrandTotalEx));
                         }
 
-                        model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
+                        model.RemainQuota = ConvertHelper.ConvertDecimalToStringMoneyFormat((output.QtyApprovedPbck1 - output.QtyCk5));
 
                         model.PbckUom = output.PbckUom;
                     }
@@ -1114,8 +1124,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                 return RedirectToAction("Details", "CK5", new { @id = model.Ck5Id });
 
                             }
-                            //update info quota
-                            //model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5 - model.GrandTotalEx).ToString();
+                            
                             AddMessageInfo("Success", Enums.MessageInfoType.Success);
                             return RedirectToAction("Edit", "CK5", new { @id = model.Ck5Id });
                         }
@@ -1268,10 +1277,13 @@ namespace Sampoerna.EMS.Website.Controllers
                        (model.Ck5Type != Enums.CK5Type.Manual || model.IsReducePbck1Ck5Trial))
                     {
                         var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
-                        model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
-                        //decimal currentCk5 = outputQuota.QtyCk5 - model.GrandTotalEx;
-                        model.Ck5TotalExciseable = (outputQuota.QtyCk5 - model.GrandTotalEx).ToString();
-                        model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
+                        model.Pbck1QtyApproved =
+                            ConvertHelper.ConvertDecimalToStringMoneyFormat(outputQuota.QtyApprovedPbck1);
+                        model.Ck5TotalExciseable =
+                            ConvertHelper.ConvertDecimalToStringMoneyFormat((outputQuota.QtyCk5 - model.GrandTotalEx));
+                        model.RemainQuota =
+                            ConvertHelper.ConvertDecimalToStringMoneyFormat((outputQuota.QtyApprovedPbck1 -
+                                                                             outputQuota.QtyCk5));
                     }
                 }
 
@@ -1414,7 +1426,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (model.Ck5Type != Enums.CK5Type.Export &&
                         model.Ck5Type != Enums.CK5Type.PortToImporter &&
-                        (model.Ck5Type != Enums.CK5Type.Manual && model.IsReducePbck1Ck5Trial))
+                        (model.Ck5Type != Enums.CK5Type.Manual || model.IsReducePbck1Ck5Trial))
                     {
 
                         //force to show 0 instead error message
@@ -1422,9 +1434,13 @@ namespace Sampoerna.EMS.Website.Controllers
                         {
                             var outputQuota = _ck5Bll.GetQuotaRemainAndDatePbck1ByCk5Id(ck5Details.Ck5Dto.CK5_ID);
 
-                            model.Pbck1QtyApproved = outputQuota.QtyApprovedPbck1.ToString();
-                            model.Ck5TotalExciseable = (outputQuota.QtyCk5 - model.GrandTotalEx).ToString();
-                            model.RemainQuota = (outputQuota.QtyApprovedPbck1 - outputQuota.QtyCk5).ToString();
+                            model.Pbck1QtyApproved =
+                                ConvertHelper.ConvertDecimalToStringMoneyFormat(outputQuota.QtyApprovedPbck1);
+                            model.Ck5TotalExciseable =
+                                ConvertHelper.ConvertDecimalToStringMoneyFormat((outputQuota.QtyCk5 - model.GrandTotalEx));
+                            model.RemainQuota =
+                                ConvertHelper.ConvertDecimalToStringMoneyFormat((outputQuota.QtyApprovedPbck1 -
+                                                                                 outputQuota.QtyCk5));
                         }
                         catch (Exception ex)
                         {
@@ -2121,6 +2137,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     };
 
                     _ck5Bll.CK5CompletedAttachment(input);
+                    AddMessageInfo("Success Save", Enums.MessageInfoType.Success);
                 }
             }
             catch (Exception ex)

@@ -102,6 +102,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public List<HttpPostedFileBase> DecreeFiles { get; set; }
         public Enums.ActionType GovApprovalActionType { get; set; }
         public string IsSaveSubmit { get; set; }
+        public bool IsDisplayOnly { get; set; }
 
         #endregion
 

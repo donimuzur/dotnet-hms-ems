@@ -269,8 +269,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Detail", new { id });
             }
 
-            if (CurrentUser.USER_ID == lack2Data.CreatedBy &&
-                (lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            if ((lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
                  lack2Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
             {
                 return RedirectToAction("Detail", new { id });
@@ -459,6 +458,25 @@ namespace Sampoerna.EMS.Website.Controllers
         #region --------------- Detail --------
 
         public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack2Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = InitDetailModel(lack1Data);
+
+            return View(model);
+        }
+
+        public ActionResult Details(int? id)
         {
             if (!id.HasValue)
             {
@@ -2081,8 +2099,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 DraftTotal = data.Count(x => x.Status == Enums.DocumentStatus.Draft),
                 WaitingForPoaTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval),
-                WaitingForManagerTotal =
-                    data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                WaitingForManagerTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 WaitingForGovTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingGovApproval),
                 CompletedTotal = data.Count(x => x.Status == Enums.DocumentStatus.Completed)
             };
@@ -2100,6 +2117,10 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<Lack2GetDashboardDataByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            
+
             return _lack2Bll.GetDashboardDataByParam(input);
         }
 

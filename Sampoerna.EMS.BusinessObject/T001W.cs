@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
             this.USER_PLANT_MAP = new HashSet<USER_PLANT_MAP>();
+            this.WASTE_ROLE = new HashSet<WASTE_ROLE>();
         }
     
         public string WERKS { get; set; }
@@ -47,5 +48,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
         public virtual T001K T001K { get; set; }
         public virtual ICollection<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
+        public virtual ICollection<WASTE_ROLE> WASTE_ROLE { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -535,6 +536,45 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             return View("Detail", model);
+        }
+
+        public ActionResult Details(int id)
+        {
+            var model = new Pbck7Pbck3CreateViewModel();
+
+            try
+            {
+                var existingData = _pbck7Pbck3Bll.GetDetailsPbck7ById(id);
+
+                model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData.Pbck7Dto);
+                model.Back1Dto = existingData.Back1Dto;
+                model.Pbck3Dto = existingData.Pbck3Dto;
+                model.Back3Dto = existingData.Back3Dto;
+                model.Ck2Dto = existingData.Ck2Dto;
+
+                model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                //model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
+
+
+                model = InitialModel(model);
+
+
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
+
+                var changesHistoryPbck = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK7, id.ToString());
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changesHistoryPbck);
+
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                return RedirectToAction("Index");
+            }
+
+
+            return View("Details", model);
         }
 
 
@@ -2196,6 +2236,80 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("DetailPbck3", model);
         }
 
+        public ActionResult DetailsPbck3(int id)
+        {
+            var model = new Pbck3ViewModel();
+
+            try
+            {
+                var existingData = _pbck7Pbck3Bll.GetPbck3DetailsById(id);
+
+                model = Mapper.Map<Pbck3ViewModel>(existingData.Pbck3CompositeDto);
+
+
+                //model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(existingData.ListChangesHistorys);
+
+                model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(existingData.Pbck3CompositeDto.PBCK3_NUMBER));
+                string nppbkcId = "";
+
+                if (model.FromPbck7)
+                {
+                    model.WorkflowHistoryPbck7 =
+                        Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
+                    nppbkcId = model.NppbkcId;
+                }
+                else
+                {
+                    model.Ck5FormViewModel =
+                      Mapper.Map<CK5FormViewModel>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto);
+
+                    model.Ck5FormViewModel.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.Ck5MaterialDto);
+
+                    model.Ck5FormViewModel.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.ListWorkflowHistorys);
+
+                    nppbkcId = model.Ck5FormViewModel.SourceNppbkcId;
+                    if (model.Ck5FormViewModel.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                        nppbkcId = model.Ck5FormViewModel.DestNppbkcId;
+
+                }
+
+                //validate approve and reject
+                var input = new WorkflowAllowApproveAndRejectInput();
+                input.DocumentStatus = model.Pbck3Status;
+                input.FormView = Enums.FormViewType.Detail;
+                input.UserRole = CurrentUser.UserRole;
+                input.CreatedUser = existingData.Pbck3CompositeDto.CREATED_BY;
+                input.CurrentUser = CurrentUser.USER_ID;
+                input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
+                input.DocumentNumber = model.Pbck3Number;
+                input.NppbkcId = nppbkcId;
+                input.ManagerApprove = model.APPROVED_BY_MANAGER;
+                input.FormType = Enums.FormType.PBCK3;
+
+                if (model.FromPbck7)
+                    input.DocumentNumberSource = model.Pbck7Number;
+                else
+                    input.DocumentNumberSource = model.Ck5FormViewModel.SubmissionNumber;
+
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                return RedirectToAction("ListPbck3Index");
+            }
+
+
+            return View("DetailsPbck3", model);
+        }
+
         public ActionResult ApproveDocumentPbck3(int id)
         {
             try
@@ -2732,6 +2846,9 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.NppbkcDate = data.NppbkcStartDate;
             dMasterRow.ReportingDate = data.PrintedDate;
             dMasterRow.ConditionPbck7Or3 = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
+            dMasterRow.CompanyNameAndAddress = data.CompanyName + "-" + data.CompanyAddress;
+            dMasterRow.AddressParagraft = Regex.Replace(data.CompanyAddress, "\r\n", " ");
+            
 
             dsReport.Master.AddMasterRow(dMasterRow);
 
@@ -2754,6 +2871,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.JmlCukai = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
                     detailRow.SumJmlCukai = totalExciseValue.ToString("N2");
                     detailRow.SumJmlKemasan = totalQty.ToString("N2");
+                    detailRow.SymbolStar = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
 
                     dsReport.Detail.AddDetailRow(detailRow);
                 }
@@ -2870,6 +2988,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<GetDashboardPbck7ByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             return _pbck7Pbck3Bll.GetDashboardPbck7ByParam(input);
         }
 
@@ -2883,6 +3003,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<GetDashboardPbck3ByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             return _pbck7Pbck3Bll.GetDashboardPbck3ByParam(input);
         }
 

@@ -1045,24 +1045,24 @@ namespace Sampoerna.EMS.BLL
                         changes.NEW_VALUE = data.BRAND;
                         break;
                     case "QTY":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.QTY);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.QTY);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.QTY);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.QTY);
                         break;
                     case "UOM":
                         changes.OLD_VALUE = origin.UOM;
                         changes.NEW_VALUE = data.UOM;
                         break;
                     case "CONVERTION":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.CONVERTION);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.CONVERTION);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.CONVERTION);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.CONVERTION);
                         break;
                     case "CONVERTED_UOM":
                         changes.OLD_VALUE = origin.CONVERTED_UOM;
                         changes.NEW_VALUE = data.CONVERTED_UOM;
                         break;
                     case "USD_VALUE":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.USD_VALUE);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.USD_VALUE);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.USD_VALUE);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.USD_VALUE);
                         break;
                     case "NOTE":
                         changes.OLD_VALUE = origin.NOTE;
@@ -1171,8 +1171,8 @@ namespace Sampoerna.EMS.BLL
                         break;
 
                     case "GRAND_TOTAL_EX":
-                        changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
-                        changes.NEW_VALUE = data.GRAND_TOTAL_EX.ToString();
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.GRAND_TOTAL_EX);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.GRAND_TOTAL_EX);
                         break;
 
                     case "PACKAGE_UOM_ID":
@@ -1267,14 +1267,14 @@ namespace Sampoerna.EMS.BLL
                 exGoodTypeList = _goodTypeGroupBLL.GetById((int)Enums.ExGoodsType.EtilAlcohol).EX_GROUP_TYPE_DETAILS.Select(x => x.GOODTYPE_ID).ToList();
             }
             var data = _pbck1Bll.GetExternalSupplierList(exGoodTypeList);
-            return Mapper.Map<List<CK5ExternalSupplierDto>>(data);
+            return data;
         }
 
         public CK5ExternalSupplierDto GetExternalSupplierItem(string plantId, Enums.CK5Type ck5Type)
         {
             var dataList = GetExternalSupplierList(ck5Type);
 
-            return dataList.SingleOrDefault(x => x.SUPPLIER_PLANT == plantId);
+            return dataList.FirstOrDefault(x => x.SUPPLIER_PLANT == plantId);
         }
 
         #region workflow
@@ -2747,16 +2747,30 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.RegistrationDate = "";
             }
 
+            if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            {
+                PBCK1 pbck1Data = Mapper.Map<PBCK1>(GetPbck1ImporterToPlantByRefId(dtData.CK5_ID));
+                dtData.PBCK1 = pbck1Data;
+            }
+
             if (dtData.PBCK1 != null)
             {
                 if (dtData.PBCK1.DECREE_DATE.HasValue)
                 {
-                    if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter || dtData.CK5_TYPE == Enums.CK5Type.ImporterToPlant)
+                    if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                        dtData.CK5_TYPE == Enums.CK5Type.ImporterToPlant)
+                    {
+                        result.ReportDetails.FacilityNumber = dtData.PBCK1.NUMBER;
                         result.ReportDetails.FacilityDate = DateReportDisplayString(dtData.PBCK1.DECREE_DATE.Value,
                             false);
+                    }
+                        
+                        
                     else
                         result.ReportDetails.FacilityDate = dtData.PBCK1.DECREE_DATE.Value.ToString("dd MMM yyyy");
                 }
+
+                
             }
             if (dtData.INVOICE_DATE.HasValue)
                 result.ReportDetails.InvoiceDate = DateReportDisplayString(dtData.INVOICE_DATE.Value, false);
@@ -3295,7 +3309,7 @@ namespace Sampoerna.EMS.BLL
             //    FormType = Enums.FormType.CK5
             //};
 
-            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
+            
             if (!input.Ck5Dto.SUBMISSION_DATE.HasValue) {
                 input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
             }
@@ -3340,23 +3354,22 @@ namespace Sampoerna.EMS.BLL
                 {
                     ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
                 }
-
-                if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                if (input.Ck5Dto.CK5_TYPE != Enums.CK5Type.MarketReturn)
                 {
-                    dbData.PACKAGE_UOM_ID = "G";
-
+                    if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                        dbData.PACKAGE_UOM_ID = "G";
+                    else
+                        dbData.PACKAGE_UOM_ID = "L";
+                   
                 }
-                else
-                {
-                    dbData.PACKAGE_UOM_ID = "L";
-                }
-                if(ck5Material.CONVERTED_QTY.HasValue)
-                    tempTotal += ck5Material.CONVERTED_QTY.Value;
+                //if(ck5Material.CONVERTED_QTY.HasValue)
+                //    tempTotal += ck5Material.CONVERTED_QTY.Value;
                 
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
-
-            dbData.GRAND_TOTAL_EX = tempTotal;
+            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
+            //dbData.GRAND_TOTAL_EX = tempTotal;
+            dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
             _repository.Insert(dbData);
             
             inputWorkflowHistory.DocumentId = dbData.CK5_ID;
@@ -3974,6 +3987,17 @@ namespace Sampoerna.EMS.BLL
             }
 
             return result;
+        }
+
+        public Pbck1Dto GetPbck1ImporterToPlantByRefId(long ck5PortToImporterId)
+        {
+            long pbck1Id = 0;
+            var ck5 = _repository.Get(x => x.CK5_REF_ID == ck5PortToImporterId && x.CK5_TYPE == Enums.CK5Type.ImporterToPlant,null).FirstOrDefault();
+            if (ck5 != null)
+                pbck1Id = ck5.PBCK1_DECREE_ID.HasValue ? ck5.PBCK1_DECREE_ID.Value : 0;
+            if (pbck1Id != 0)
+                return _pbck1Bll.GetById(pbck1Id);
+            return null;
         }
     }
 }

@@ -19,6 +19,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
+
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Pbck1GetOpenDocumentByParamInput : Pbck1GetByParamInput

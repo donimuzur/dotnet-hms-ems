@@ -1116,6 +1116,7 @@
           <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="IS_ACTIVE" Type="bit" />
+          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="VIRTUAL_PLANT_MAP">
           <Key>
@@ -1155,6 +1156,32 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="WASTE_ROLE">
+          <Key>
+            <PropertyRef Name="WASTE_ROLE_ID" />
+          </Key>
+          <Property Name="WASTE_ROLE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USER_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="GROUP_ROLE" Type="int" Nullable="false" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="WASTE_STOCK">
+          <Key>
+            <PropertyRef Name="WASTE_STOCK_ID" />
+          </Key>
+          <Property Name="WASTE_STOCK_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="MATERIAL_NUMBER" Type="nvarchar" MaxLength="18" Nullable="false" />
+          <Property Name="STOCK" Type="numeric" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="WORKFLOW_HISTORY">
           <Key>
@@ -1459,7 +1486,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+        <Association Name="FK_CHANGES_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
@@ -2831,6 +2858,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC">
+          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
+          <End Role="USER_PLANT_MAP" Type="Self.USER_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="USER_PLANT_MAP">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="VIRTUAL_PLANT_MAP" Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" />
@@ -2888,6 +2927,104 @@
             </Principal>
             <Dependent Role="VIRTUAL_PLANT_MAP">
               <PropertyRef Name="COMPANY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_ROLE_T001W">
+          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
+          <End Role="WASTE_ROLE" Type="Self.WASTE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="WASTE_ROLE">
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_ROLE_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="WASTE_ROLE" Type="Self.WASTE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_ROLE">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_ROLE_USER1">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="WASTE_ROLE" Type="Self.WASTE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_ROLE">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_ROLE_USER2">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="WASTE_ROLE" Type="Self.WASTE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_ROLE">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_STOCK_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="WASTE_STOCK" Type="Self.WASTE_STOCK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_STOCK">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_STOCK_USER1">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="WASTE_STOCK" Type="Self.WASTE_STOCK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_STOCK">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_STOCK_USER2">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="WASTE_STOCK" Type="Self.WASTE_STOCK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_STOCK">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_STOCK_ZAIDM_EX_MATERIAL">
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="1" />
+          <End Role="WASTE_STOCK" Type="Self.WASTE_STOCK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="WASTE_STOCK">
+              <PropertyRef Name="MATERIAL_NUMBER" />
+              <PropertyRef Name="WERKS" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3158,6 +3295,8 @@
           <EntitySet Name="USER_PLANT_MAP" EntityType="Self.USER_PLANT_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIRTUAL_PLANT_MAP" EntityType="Self.VIRTUAL_PLANT_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WASTE" EntityType="Self.WASTE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WASTE_ROLE" EntityType="Self.WASTE_ROLE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WASTE_STOCK" EntityType="Self.WASTE_STOCK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_HISTORY" EntityType="Self.WORKFLOW_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_STATE" EntityType="Self.WORKFLOW_STATE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WORKFLOW_STATE_USERS" EntityType="Self.WORKFLOW_STATE_USERS" Schema="dbo" store:Type="Tables" />
@@ -3199,7 +3338,7 @@
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
@@ -3655,6 +3794,10 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" Association="Self.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
+          </AssociationSet>
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" Association="Self.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
@@ -3674,6 +3817,38 @@
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_T001" Association="Self.FK_VIRTUAL_PLANT_MAP_T001">
             <End Role="T001" EntitySet="T001" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_ROLE_T001W" Association="Self.FK_WASTE_ROLE_T001W">
+            <End Role="T001W" EntitySet="T001W" />
+            <End Role="WASTE_ROLE" EntitySet="WASTE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_ROLE_USER" Association="Self.FK_WASTE_ROLE_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_ROLE" EntitySet="WASTE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_ROLE_USER1" Association="Self.FK_WASTE_ROLE_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_ROLE" EntitySet="WASTE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_ROLE_USER2" Association="Self.FK_WASTE_ROLE_USER2">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_ROLE" EntitySet="WASTE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_USER" Association="Self.FK_WASTE_STOCK_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_USER1" Association="Self.FK_WASTE_STOCK_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_USER2" Association="Self.FK_WASTE_STOCK_USER2">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_ZAIDM_EX_MATERIAL" Association="Self.FK_WASTE_STOCK_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
           </AssociationSet>
           <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="Self.FK_WORKFLOW_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -4424,6 +4599,44 @@
             <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
           </AssociationSet>
           <EntitySet Name="ZAAP_SHIFT_RPT" EntityType="EMSModel.ZAAP_SHIFT_RPT" />
+          <EntitySet Name="WASTE_ROLE" EntityType="EMSModel.WASTE_ROLE" />
+          <EntitySet Name="WASTE_STOCK" EntityType="EMSModel.WASTE_STOCK" />
+          <AssociationSet Name="FK_WASTE_ROLE_T001W" Association="EMSModel.FK_WASTE_ROLE_T001W">
+            <End Role="T001W" EntitySet="T001W" />
+            <End Role="WASTE_ROLE" EntitySet="WASTE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_ROLE_USER" Association="EMSModel.FK_WASTE_ROLE_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_ROLE" EntitySet="WASTE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_ROLE_USER1" Association="EMSModel.FK_WASTE_ROLE_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_ROLE" EntitySet="WASTE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_ROLE_USER2" Association="EMSModel.FK_WASTE_ROLE_USER2">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_ROLE" EntitySet="WASTE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_USER" Association="EMSModel.FK_WASTE_STOCK_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_USER1" Association="EMSModel.FK_WASTE_STOCK_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_USER2" Association="EMSModel.FK_WASTE_STOCK_USER2">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_WASTE_STOCK_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" Association="EMSModel.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5287,6 +5500,12 @@
           <NavigationProperty Name="PBCK33" Relationship="EMSModel.FK_PBCK3_USER" FromRole="USER" ToRole="PBCK3" />
           <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER" ToRole="USER_PLANT_MAP" />
           <Property Name="ACCT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="WASTE_ROLE" Relationship="EMSModel.FK_WASTE_ROLE_USER" FromRole="USER" ToRole="WASTE_ROLE" />
+          <NavigationProperty Name="WASTE_ROLE1" Relationship="EMSModel.FK_WASTE_ROLE_USER1" FromRole="USER" ToRole="WASTE_ROLE" />
+          <NavigationProperty Name="WASTE_ROLE2" Relationship="EMSModel.FK_WASTE_ROLE_USER2" FromRole="USER" ToRole="WASTE_ROLE" />
+          <NavigationProperty Name="WASTE_STOCK" Relationship="EMSModel.FK_WASTE_STOCK_USER" FromRole="USER" ToRole="WASTE_STOCK" />
+          <NavigationProperty Name="WASTE_STOCK1" Relationship="EMSModel.FK_WASTE_STOCK_USER1" FromRole="USER" ToRole="WASTE_STOCK" />
+          <NavigationProperty Name="WASTE_STOCK2" Relationship="EMSModel.FK_WASTE_STOCK_USER2" FromRole="USER" ToRole="WASTE_STOCK" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -5917,6 +6136,7 @@
           <NavigationProperty Name="T001K" Relationship="EMSModel.FK_T001K_T001W" FromRole="T001W" ToRole="T001K" />
           <Property Name="NPPBKC_IMPORT_ID" Type="String" Unicode="true" FixedLength="false" MaxLength="15" />
           <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="T001W" ToRole="USER_PLANT_MAP" />
+          <NavigationProperty Name="WASTE_ROLE" Relationship="EMSModel.FK_WASTE_ROLE_T001W" FromRole="T001W" ToRole="WASTE_ROLE" />
         </EntityType>
         <Association Name="FK_HEADER_FOOTER_HEADER_FOOTER">
           <End Type="EMSModel.T001" Role="T001" Multiplicity="1" />
@@ -6043,6 +6263,7 @@
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
           <Property Name="FLAG_FOR_LACK1" Type="Boolean" />
+          <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="USER_PLANT_MAP" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_NPPBKC_LFA1">
           <End Type="EMSModel.LFA1" Role="LFA1" Multiplicity="0..1" />
@@ -6158,6 +6379,7 @@
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
+          <NavigationProperty Name="WASTE_STOCK" Relationship="EMSModel.FK_WASTE_STOCK_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="WASTE_STOCK" />
         </EntityType>
         <Association Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
           <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="1" />
@@ -7841,6 +8063,8 @@
           <Property Name="IS_ACTIVE" Type="Boolean" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="USER_PLANT_MAP" ToRole="T001W" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER_PLANT_MAP" ToRole="USER" />
+          <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" FromRole="USER_PLANT_MAP" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
         <Association Name="FK_USER_PLANT_MAP_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
@@ -7893,6 +8117,151 @@
         <EnumType Name="Ck5ManualFreeText" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualFreeText" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGovType2" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType2" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGovType3" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType3" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="WasteGroup" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.WasteGroup" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EntityType Name="WASTE_ROLE">
+          <Key>
+            <PropertyRef Name="WASTE_ROLE_ID" />
+          </Key>
+          <Property Name="WASTE_ROLE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USER_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GROUP_ROLE" Type="EMSModel.WasteGroup" Nullable="false" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_WASTE_ROLE_T001W" FromRole="WASTE_ROLE" ToRole="T001W" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WASTE_ROLE_USER" FromRole="WASTE_ROLE" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_WASTE_ROLE_USER1" FromRole="WASTE_ROLE" ToRole="USER" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_WASTE_ROLE_USER2" FromRole="WASTE_ROLE" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="WASTE_STOCK">
+          <Key>
+            <PropertyRef Name="WASTE_STOCK_ID" />
+          </Key>
+          <Property Name="WASTE_STOCK_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="MATERIAL_NUMBER" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="STOCK" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_WASTE_STOCK_USER" FromRole="WASTE_STOCK" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_WASTE_STOCK_USER1" FromRole="WASTE_STOCK" ToRole="USER" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_WASTE_STOCK_USER2" FromRole="WASTE_STOCK" ToRole="USER" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_WASTE_STOCK_ZAIDM_EX_MATERIAL" FromRole="WASTE_STOCK" ToRole="ZAIDM_EX_MATERIAL" />
+        </EntityType>
+        <Association Name="FK_WASTE_ROLE_T001W">
+          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
+          <End Type="EMSModel.WASTE_ROLE" Role="WASTE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="WASTE_ROLE">
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_ROLE_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.WASTE_ROLE" Role="WASTE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_ROLE">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_ROLE_USER1">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.WASTE_ROLE" Role="WASTE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_ROLE">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_ROLE_USER2">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.WASTE_ROLE" Role="WASTE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_ROLE">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_STOCK_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.WASTE_STOCK" Role="WASTE_STOCK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_STOCK">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_STOCK_USER1">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.WASTE_STOCK" Role="WASTE_STOCK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_STOCK">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_STOCK_USER2">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.WASTE_STOCK" Role="WASTE_STOCK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="WASTE_STOCK">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WASTE_STOCK_ZAIDM_EX_MATERIAL">
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="1" />
+          <End Type="EMSModel.WASTE_STOCK" Role="WASTE_STOCK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="WASTE_STOCK">
+              <PropertyRef Name="MATERIAL_NUMBER" />
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC">
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
+          <End Type="EMSModel.USER_PLANT_MAP" Role="USER_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="USER_PLANT_MAP">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9315,6 +9684,7 @@
           <EntitySetMapping Name="USER_PLANT_MAP">
             <EntityTypeMapping TypeName="EMSModel.USER_PLANT_MAP">
               <MappingFragment StoreEntitySet="USER_PLANT_MAP">
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
                 <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
                 <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
                 <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
@@ -9344,6 +9714,34 @@
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
                 <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WASTE_ROLE">
+            <EntityTypeMapping TypeName="EMSModel.WASTE_ROLE">
+              <MappingFragment StoreEntitySet="WASTE_ROLE">
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="GROUP_ROLE" ColumnName="GROUP_ROLE" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="WASTE_ROLE_ID" ColumnName="WASTE_ROLE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WASTE_STOCK">
+            <EntityTypeMapping TypeName="EMSModel.WASTE_STOCK">
+              <MappingFragment StoreEntitySet="WASTE_STOCK">
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="STOCK" ColumnName="STOCK" />
+                <ScalarProperty Name="MATERIAL_NUMBER" ColumnName="MATERIAL_NUMBER" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="WASTE_STOCK_ID" ColumnName="WASTE_STOCK_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

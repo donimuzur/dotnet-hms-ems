@@ -426,6 +426,19 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY_POA == input.Poa);
             }
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft
+                       && input.NppbkcList.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && input.DocumentNumberList.Contains(c.LACK1_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
             return _repository.Get(queryFilter).ToList();
         }
 

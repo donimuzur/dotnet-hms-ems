@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
         public string CompanyAddress { get; set; }
+        public string CompanyAddressParagraf { get; set; }
         public string NppbkcId { get; set; }
         public string NppbkcTextTo { get; set; }
         public string NppbkcCity { get; set; }

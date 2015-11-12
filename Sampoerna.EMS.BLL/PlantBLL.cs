@@ -258,7 +258,14 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            return Mapper.Map<List<Plant>>(dbData);
+
+            var toReturn = Mapper.Map<List<Plant>>(dbData);
+            for (var i = 0; i < toReturn.Count; i++)
+            {
+                toReturn[i].IS_IMPORT_ID = toReturn[i].NPPBKC_IMPORT_ID == nppbkcId;
+            }
+
+            return toReturn;
         }
         
         public T001WDto GetT001WById(string id)

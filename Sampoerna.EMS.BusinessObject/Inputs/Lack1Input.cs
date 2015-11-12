@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.BusinessObject.DTOs;
+﻿using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
@@ -16,5 +17,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int? PeriodYear { get; set; }
         public string Creator { get; set; }
         public string Poa { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public List<string> NppbkcList { get; set; }
+        public List<string> DocumentNumberList { get; set; }
+
     }
 }
