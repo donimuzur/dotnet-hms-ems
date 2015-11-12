@@ -620,5 +620,18 @@ namespace Sampoerna.EMS.Core
             [Description("Cancelled")]
             Cancelled = 3
         }
+
+        public enum WasteGroup
+        {
+            [Description("Factory Logistic")]
+            FactoryLogistic = 1,
+            [Description("Disposal Team")]
+            DisposalTeam = 2,
+            [Description("Transportation")]
+            Transportation = 3,
+            [Description("Waste Approver")]
+            WasteApprover = 4
+        }
+
     }
 }

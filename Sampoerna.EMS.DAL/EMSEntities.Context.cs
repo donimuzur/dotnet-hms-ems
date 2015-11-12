@@ -113,5 +113,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PRODUCTION> PRODUCTION { get; set; }
         public virtual DbSet<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
         public virtual DbSet<ZAAP_SHIFT_RPT> ZAAP_SHIFT_RPT { get; set; }
+        public virtual DbSet<WASTE_ROLE> WASTE_ROLE { get; set; }
+        public virtual DbSet<WASTE_STOCK> WASTE_STOCK { get; set; }
     }
 }
