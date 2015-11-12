@@ -356,6 +356,46 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
+        public ActionResult Detail(int id)
+        {
+            var model = new Pbck4FormViewModel();
+
+            try
+            {
+                var pbck4Details = _pbck4Bll.GetDetailsPbck4(id);
+
+
+                Mapper.Map(pbck4Details.Pbck4Dto, model);
+
+
+                model.MainMenu = Enums.MenuList.PBCK4;
+                model.CurrentMenu = PageInfo;
+
+
+                // model = GetInitDetailsData(model);
+                model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(pbck4Details.Pbck4ItemsDto);
+
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(pbck4Details.ListChangesHistorys);
+                model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(pbck4Details.ListWorkflowHistorys);
+
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(pbck4Details.ListPrintHistorys);
+
+                model.Pbck4FileUploadModelList = Mapper.Map<List<Pbck4FileUploadViewModel>>(pbck4Details.Pbck4Dto.Pbck4DocumentDtos.Where(c => c.DOC_TYPE == 1));
+                model.Pbck4FileUploadModelList2 = Mapper.Map<List<Pbck4FileUploadViewModel>>(pbck4Details.Pbck4Dto.Pbck4DocumentDtos.Where(c => c.DOC_TYPE == 2));
+
+                model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                model.MainMenu = Enums.MenuList.PBCK4;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View(model);
+        }
+
         public void ExportXls(int pbckId)
         {
             // return File(CreateXlsFile(ck5Id), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

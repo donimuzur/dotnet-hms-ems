@@ -2889,6 +2889,7 @@ namespace Sampoerna.EMS.BLL
 
                     //set Items
                     rc.Items = Mapper.Map<List<Pbck73ItemPrintOutDto>>(dbData.PBCK7.PBCK7_ITEM);
+                    rc.DocumentType = dbData.PBCK7.DOCUMENT_TYPE;
                 }
             }
             else

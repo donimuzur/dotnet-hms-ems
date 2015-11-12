@@ -1264,6 +1264,7 @@
     <Content Include="Views\CK5\_CK5InformationCreateMarketReturn.cshtml" />
     <Content Include="Views\CK5\_CK5InformationEditMarketReturn.cshtml" />
     <Content Include="Views\CK5\_CK5InformationDetailsMarketReturn.cshtml" />
+    <Content Include="Views\PBCK4\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
