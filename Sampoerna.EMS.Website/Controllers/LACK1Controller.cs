@@ -2009,6 +2009,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<Lack1GetDashboardDataByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             return _lack1Bll.GetDashboardDataByParam(input);
         }
 
