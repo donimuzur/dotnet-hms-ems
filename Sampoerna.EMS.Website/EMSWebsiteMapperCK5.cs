@@ -170,6 +170,7 @@ namespace Sampoerna.EMS.Website
              .ForMember(dest => dest.CarriageMethod, opt => opt.MapFrom(src => src.CARRIAGE_METHOD_ID))
              .ForMember(dest => dest.CarriageMethodDesc, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.CARRIAGE_METHOD_ID)))
              .ForMember(dest => dest.GrandTotalEx, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
+             .ForMember(dest => dest.GrandTotalExDisplay, opt => opt.MapFrom(src => ConvertHelper.ConvertDecimalToStringMoneyFormat(src.GRAND_TOTAL_EX)))
             .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.PACKAGE_UOM_ID))
 
             .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
@@ -215,11 +216,11 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5MaterialDto, CK5UploadViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PLANT_ID))
-               .ForMember(dest => dest.Qty, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.QTY))
-               .ForMember(dest => dest.ConvertedQty, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.CONVERTED_QTY))
-               .ForMember(dest => dest.Convertion, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.CONVERTION))
-               .ForMember(dest => dest.ExciseValue, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.EXCISE_VALUE))
-               .ForMember(dest => dest.UsdValue, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.USD_VALUE))
+               .ForMember(dest => dest.Qty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver>().FromMember(src => src.QTY))
+               .ForMember(dest => dest.ConvertedQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver>().FromMember(src => src.CONVERTED_QTY))
+               .ForMember(dest => dest.Convertion, opt => opt.ResolveUsing<DecimalToStringMoneyResolver>().FromMember(src => src.CONVERTION))
+               .ForMember(dest => dest.ExciseValue, opt => opt.ResolveUsing<DecimalToStringMoneyResolver>().FromMember(src => src.EXCISE_VALUE))
+               .ForMember(dest => dest.UsdValue, opt => opt.ResolveUsing<DecimalToStringMoneyResolver>().FromMember(src => src.USD_VALUE))
                .ForMember(dest => dest.ConvertedUom, opt => opt.MapFrom(src => src.CONVERTED_UOM))
                .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC));
                //.ForMember(dest => dest.ExGoodsType, opt => opt.MapFrom(src => src.EX_GOOD_TYPE_GROUP));

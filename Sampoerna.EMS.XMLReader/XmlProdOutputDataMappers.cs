@@ -148,6 +148,8 @@ namespace Sampoerna.EMS.XMLReader
                             {
                                 zaapShftRptItem.MODIFIED_BY = "PI";
                                 zaapShftRptItem.MODIFIED_DATE = DateTime.Now;
+                                zaapShftRptItem.CREATED_DATE = existingZaap.CREATED_DATE;
+                                zaapShftRptItem.CREATED_BY = existingZaap.CREATED_BY;
                                 
                             }
                             else
