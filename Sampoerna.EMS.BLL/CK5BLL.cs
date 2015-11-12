@@ -1267,14 +1267,14 @@ namespace Sampoerna.EMS.BLL
                 exGoodTypeList = _goodTypeGroupBLL.GetById((int)Enums.ExGoodsType.EtilAlcohol).EX_GROUP_TYPE_DETAILS.Select(x => x.GOODTYPE_ID).ToList();
             }
             var data = _pbck1Bll.GetExternalSupplierList(exGoodTypeList);
-            return Mapper.Map<List<CK5ExternalSupplierDto>>(data);
+            return data;
         }
 
         public CK5ExternalSupplierDto GetExternalSupplierItem(string plantId, Enums.CK5Type ck5Type)
         {
             var dataList = GetExternalSupplierList(ck5Type);
 
-            return dataList.SingleOrDefault(x => x.SUPPLIER_PLANT == plantId);
+            return dataList.FirstOrDefault(x => x.SUPPLIER_PLANT == plantId);
         }
 
         #region workflow
@@ -2747,16 +2747,30 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.RegistrationDate = "";
             }
 
+            if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            {
+                PBCK1 pbck1Data = Mapper.Map<PBCK1>(GetPbck1ImporterToPlantByRefId(dtData.CK5_ID));
+                dtData.PBCK1 = pbck1Data;
+            }
+
             if (dtData.PBCK1 != null)
             {
                 if (dtData.PBCK1.DECREE_DATE.HasValue)
                 {
-                    if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter || dtData.CK5_TYPE == Enums.CK5Type.ImporterToPlant)
+                    if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                        dtData.CK5_TYPE == Enums.CK5Type.ImporterToPlant)
+                    {
+                        result.ReportDetails.FacilityNumber = dtData.PBCK1.NUMBER;
                         result.ReportDetails.FacilityDate = DateReportDisplayString(dtData.PBCK1.DECREE_DATE.Value,
                             false);
+                    }
+                        
+                        
                     else
                         result.ReportDetails.FacilityDate = dtData.PBCK1.DECREE_DATE.Value.ToString("dd MMM yyyy");
                 }
+
+                
             }
             if (dtData.INVOICE_DATE.HasValue)
                 result.ReportDetails.InvoiceDate = DateReportDisplayString(dtData.INVOICE_DATE.Value, false);
@@ -3973,6 +3987,17 @@ namespace Sampoerna.EMS.BLL
             }
 
             return result;
+        }
+
+        public Pbck1Dto GetPbck1ImporterToPlantByRefId(long ck5PortToImporterId)
+        {
+            long pbck1Id = 0;
+            var ck5 = _repository.Get(x => x.CK5_REF_ID == ck5PortToImporterId && x.CK5_TYPE == Enums.CK5Type.ImporterToPlant,null).FirstOrDefault();
+            if (ck5 != null)
+                pbck1Id = ck5.PBCK1_DECREE_ID.HasValue ? ck5.PBCK1_DECREE_ID.Value : 0;
+            if (pbck1Id != 0)
+                return _pbck1Bll.GetById(pbck1Id);
+            return null;
         }
     }
 }
