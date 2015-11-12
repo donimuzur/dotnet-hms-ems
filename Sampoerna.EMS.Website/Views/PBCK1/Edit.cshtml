@@ -623,7 +623,7 @@
                 console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
                 if ($("#Detail_IsExternalSupplier").is(':checked')) {
-                    $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" />');
+                    $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" maxlength="4"/>');
                     disableSupplierFormInput(false);
                     setSupplierPlantEmpty();
                 } else {

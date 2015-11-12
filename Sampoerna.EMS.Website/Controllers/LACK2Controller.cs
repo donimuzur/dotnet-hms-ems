@@ -269,8 +269,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Detail", new { id });
             }
 
-            if (CurrentUser.USER_ID == lack2Data.CreatedBy &&
-                (lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            if ((lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
                  lack2Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
             {
                 return RedirectToAction("Detail", new { id });
@@ -459,6 +458,25 @@ namespace Sampoerna.EMS.Website.Controllers
         #region --------------- Detail --------
 
         public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack2Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = InitDetailModel(lack1Data);
+
+            return View(model);
+        }
+
+        public ActionResult Details(int? id)
         {
             if (!id.HasValue)
             {

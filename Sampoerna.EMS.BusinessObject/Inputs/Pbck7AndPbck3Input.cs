@@ -162,6 +162,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int? ExecToYear { get; set; }
         public string Creator { get; set; }
         public string Poa { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+
     }
 
     public class GetDashboardPbck3ByParamInput : GetDashboardPbck7ByParamInput

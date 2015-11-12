@@ -32,7 +32,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<BACK1> _repositoryBack1;
         private IGenericRepository<BACK3> _repositoryBack3;
         private IGenericRepository<CK2> _repositoryCk2;
-        private IGenericRepository<PBCK7_ITEM> _repositoryPbck7Item; 
+        private IGenericRepository<PBCK7_ITEM> _repositoryPbck7Item;
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IUnitOfWork _uow;
         private IBACK1BLL _back1Bll;
@@ -76,9 +76,9 @@ namespace Sampoerna.EMS.BLL
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, logger);
             _repositoryPbck7Item = _uow.GetGenericRepository<PBCK7_ITEM>();
 
-            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow,_logger);
+            _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
             _brandRegistrationServices = new BrandRegistrationService(_uow, _logger);
-            _plantBll = new PlantBLL(_uow,_logger);
+            _plantBll = new PlantBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _poaBll = new POABLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
@@ -107,7 +107,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<Pbck3Dto>>(_repositoryPbck3.Get().ToList()); ;
         }
 
-       
+
         public List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
@@ -126,7 +126,7 @@ namespace Sampoerna.EMS.BLL
 
             if (input.From != null)
             {
-                
+
                 queryFilter = queryFilter.And(c => c.PBCK7_DATE.Year >= input.From);
             }
             if (input.To != null)
@@ -153,7 +153,7 @@ namespace Sampoerna.EMS.BLL
                 pbck7AndPbck3Dto.Back1Dto = GetBack1ByPbck7(pbck7AndPbck3Dto.Pbck7Id);
             }
             return mapResult;
-       
+
         }
 
         public List<Pbck3Dto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input)
@@ -204,7 +204,7 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input, Login user, bool IsComplete=false)
+        public List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input, Login user, bool IsComplete = false)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
 
@@ -258,7 +258,7 @@ namespace Sampoerna.EMS.BLL
                 var dt = Convert.ToDateTime(input.Pbck7Date);
                 queryFilter = queryFilter.And(c => c.PBCK7_DATE == dt);
             }
-           
+
 
             //Func<IQueryable<PBCK7>, IOrderedQueryable<PBCK7>> orderBy = null;
             //if (!string.IsNullOrEmpty(input.ShortOrderColum))
@@ -266,7 +266,7 @@ namespace Sampoerna.EMS.BLL
             //    orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK7>(input.ShortOrderColum));
             //}
             Func<IQueryable<PBCK7>, IOrderedQueryable<PBCK7>> orderBy = n => n.OrderByDescending(z => z.CREATED_DATE);
-        
+
 
 
             var dbData = _repositoryPbck7.Get(queryFilter, orderBy, includeTable);
@@ -279,7 +279,7 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
-        public List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input, Login user, bool IsComplete=false)
+        public List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input, Login user, bool IsComplete = false)
         {
             Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
 
@@ -292,8 +292,8 @@ namespace Sampoerna.EMS.BLL
                         c =>
                             (c.CREATED_BY == user.USER_ID ||
                              (c.STATUS != Enums.DocumentStatus.Draft &&
-                              (nppbkc.Contains(c.PBCK7.NPPBKC) 
-                              || 
+                              (nppbkc.Contains(c.PBCK7.NPPBKC)
+                              ||
                               (c.CK5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
                               nppbkc.Contains(c.CK5.DEST_PLANT_NPPBKC_ID))
                               ||
@@ -354,7 +354,7 @@ namespace Sampoerna.EMS.BLL
             //    orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK3>(input.ShortOrderColum));
             //}
             Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = n => n.OrderByDescending(z => z.CREATED_DATE);
-        
+
 
             var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7, CK5");
             if (dbData == null)
@@ -368,8 +368,8 @@ namespace Sampoerna.EMS.BLL
         public Pbck7AndPbck3Dto GetPbck7ById(int? id)
         {
             var result = _repositoryPbck7.Get(x => x.PBCK7_ID == id, null, includeTable).FirstOrDefault();
-            if(result == null)
-                return  new Pbck7AndPbck3Dto();
+            if (result == null)
+                return new Pbck7AndPbck3Dto();
             var pbck7 = Mapper.Map<Pbck7AndPbck3Dto>(result);
             pbck7.Back1Dto = Mapper.Map<Back1Dto>(result.BACK1.LastOrDefault());
             return pbck7;
@@ -426,10 +426,10 @@ namespace Sampoerna.EMS.BLL
         //    var uploadItemToAdd = Mapper.Map<PBCK7_ITEM>(item);
         //    _repositoryPbck7Item.InsertOrUpdate(uploadItemToAdd);
         //    _uow.SaveChanges();
-            
+
         //}
 
-       
+
 
         //public void InsertBack1(Back1Dto back1)
         //{
@@ -581,7 +581,7 @@ namespace Sampoerna.EMS.BLL
         //    }
         //    return Core.Enums.ActionType.Reject;
         //}
-        
+
         //private string GetActionByPbck7(Pbck7AndPbck3Dto pbck3pbkc7)
         //{
         //    if (pbck3pbkc7.Pbck7Status == Core.Enums.DocumentStatus.Draft)
@@ -809,7 +809,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll.AddHistory(changes);
 
         }
-        
+
         public Pbck7AndPbck3Dto SavePbck7(Pbck7Pbck3SaveInput input)
         {
             bool isModified = false;
@@ -848,14 +848,14 @@ namespace Sampoerna.EMS.BLL
 
                 dbData.MODIFIED_DATE = DateTime.Now;
                 dbData.MODIFIED_BY = input.UserId;
-                
+
                 //delete child first
                 foreach (var pbck7Item in dbData.PBCK7_ITEM.ToList())
                 {
                     _repositoryPbck7Item.Delete(pbck7Item);
                 }
 
-         
+
 
                 inputWorkflowHistory.ActionType = Enums.ActionType.Modified;
 
@@ -865,9 +865,9 @@ namespace Sampoerna.EMS.BLL
                 foreach (var pbck7Items in input.Pbck7Pbck3Items)
                 {
                     var pbck7Item = Mapper.Map<PBCK7_ITEM>(pbck7Items);
-                 
+
                     dbData.PBCK7_ITEM.Add(pbck7Item);
-                   
+
                 }
 
             }
@@ -907,7 +907,7 @@ namespace Sampoerna.EMS.BLL
                 {
 
                     var pbck7Item = Mapper.Map<PBCK7_ITEM>(pbck7Material);
-                    
+
                     dbData.PBCK7_ITEM.Add(pbck7Item);
                 }
 
@@ -1040,7 +1040,7 @@ namespace Sampoerna.EMS.BLL
                 if (!ConvertHelper.IsNumeric(pbck7ItemInput.FiscalYear))
                     messageList.Add("Fiscal Year not valid");
 
-            
+
                 if (messageList.Count > 0)
                 {
                     output.IsValid = false;
@@ -1083,7 +1083,7 @@ namespace Sampoerna.EMS.BLL
 
                 if (dbBrand.ZAIDM_EX_PRODTYP != null)
                     input.ProdTypeAlias = dbBrand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS;
-                
+
 
                 input.Content = ConvertHelper.ConvertToDecimalOrZero(dbBrand.BRAND_CONTENT).ToString();
 
@@ -1091,9 +1091,9 @@ namespace Sampoerna.EMS.BLL
                 input.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value.ToString() : "0";
 
                 input.ExciseValue = (ConvertHelper.GetDecimal(input.Content) * ConvertHelper.GetDecimal(input.Tariff) * ConvertHelper.GetDecimal(input.Pbck7Qty)).ToString("f2");
-                
+
             }
-        
+
             return input;
         }
 
@@ -1112,7 +1112,7 @@ namespace Sampoerna.EMS.BLL
                 output.Brand = resultValue.Brand;
                 output.SeriesValue = resultValue.SeriesValue;
                 output.ProdTypeAlias = resultValue.ProdTypeAlias;
-              
+
                 output.Content = resultValue.Content;
                 output.Hje = resultValue.Hje;
                 output.Tariff = resultValue.Tariff;
@@ -1141,7 +1141,7 @@ namespace Sampoerna.EMS.BLL
                     RejectDocument(input);
                     isNeedSendNotif = true;
                     break;
-              
+
                 case Enums.ActionType.GovApprove:
                 case Enums.ActionType.GovPartialApprove:
                     GovApproveDocument(input);
@@ -1150,8 +1150,8 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
                     break;
-               
-                  
+
+
 
             }
 
@@ -1163,7 +1163,7 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-       
+
 
         private void SendEmailWorkflow(Pbck7Pbck3WorkflowDocumentInput input)
         {
@@ -1224,12 +1224,12 @@ namespace Sampoerna.EMS.BLL
                 var dbBack1 = _back1Services.GetBack1ByPbck7Id(pbck7Dto.Pbck7Id);
 
                 string back1Date = ConvertHelper.ConvertDateToString(dbBack1.BACK1_DATE, "dd MMMM yyyy");
-                
-                bodyMail.Append("<tr><td>BACK-1 Number</td><td> : " + dbBack1.BACK1_NUMBER+ "</td></tr>");
+
+                bodyMail.Append("<tr><td>BACK-1 Number</td><td> : " + dbBack1.BACK1_NUMBER + "</td></tr>");
                 bodyMail.AppendLine();
                 bodyMail.Append("<tr><td>BACK-1 Date</td><td> : " + back1Date + "</td></tr>");
                 bodyMail.AppendLine();
-              
+
             }
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/PBCK7AndPBCK3/Edit/" + pbck7Dto.Pbck7Id + "'>link</a> to show detailed information</i></td></tr>");
             bodyMail.AppendLine();
@@ -1557,7 +1557,7 @@ namespace Sampoerna.EMS.BLL
 
             _changesHistoryBll.AddHistory(changes);
         }
-        
+
         private void WorkflowStatusAddChanges(Pbck7Pbck3WorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
         {
             //set changes log
@@ -1607,7 +1607,7 @@ namespace Sampoerna.EMS.BLL
 
         public void UpdateUploadedFileCompletedPbck7(List<BACK1_DOCUMENTDto> input)
         {
-            
+
             _back1Services.InsertOrDeleteBack1Documents(input);
             _uow.SaveChanges();
         }
@@ -1711,7 +1711,7 @@ namespace Sampoerna.EMS.BLL
                 inputPbck3.Pbck7ExecFrom = dbData.EXEC_DATE_FROM;
                 inputPbck3.Pbck7ExecTo = dbData.EXEC_DATE_TO;
 
-               var pbck3Number = _pbck3Services.InsertPbck3FromPbck7(inputPbck3);
+                var pbck3Number = _pbck3Services.InsertPbck3FromPbck7(inputPbck3);
 
                 var inputWorkflowHistoryPbck3 = new Pbck3WorkflowDocumentInput();
                 inputWorkflowHistoryPbck3.DocumentNumber = pbck3Number;
@@ -1767,7 +1767,7 @@ namespace Sampoerna.EMS.BLL
             {
                 result.FromPbck7 = true;
                 result.Pbck7Composite = Mapper.Map<Pbck3Pbck7DtoComposite>(data.PBCK7);
-               
+
             }
             else//from ck5 market return
             {
@@ -1792,7 +1792,7 @@ namespace Sampoerna.EMS.BLL
             dbBack1 = result.FromPbck7
                 ? _back1Services.GetBack1ByPbck7Id(result.Pbck7Composite.Pbck7Id)
                 : _back1Services.GetBack1ByCk5Id(result.Ck5Composite.Ck5Dto.CK5_ID);
-            
+
 
             if (dbBack1 != null)
             {
@@ -1847,7 +1847,7 @@ namespace Sampoerna.EMS.BLL
             workflowInput.FormId = output.Pbck3CompositeDto.PBCK3_ID;
             workflowInput.FormNumber = output.Pbck3CompositeDto.PBCK3_NUMBER;
             workflowInput.DocumentStatus = output.Pbck3CompositeDto.STATUS.HasValue ? output.Pbck3CompositeDto.STATUS.Value : Enums.DocumentStatus.Draft;
-            
+
             workflowInput.FormType = Enums.FormType.PBCK3;
             if (result.FromPbck7)
                 workflowInput.FormNumberSource = result.Pbck7Composite.Pbck7Number;
@@ -1855,7 +1855,7 @@ namespace Sampoerna.EMS.BLL
                 workflowInput.FormNumberSource = result.Ck5Composite.Ck5Dto.SUBMISSION_NUMBER;
 
             output.WorkflowHistoryPbck3 = _workflowHistoryBll.GetByFormNumber(workflowInput);
-            
+
             if (output.Pbck3CompositeDto.FromPbck7)
             {
                 workflowInput.FormId = output.Pbck3CompositeDto.PBCK7_ID.HasValue ? output.Pbck3CompositeDto.PBCK7_ID.Value : 0;
@@ -1866,7 +1866,7 @@ namespace Sampoerna.EMS.BLL
                 output.WorkflowHistoryPbck7 = _workflowHistoryBll.GetByFormNumber(workflowInput);
             }
 
-            
+
 
 
             return output;
@@ -1881,7 +1881,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("PBCK-3 DATE", origin.Pbck3Date == dataModified.Pbck3Date);
             changesData.Add("EXEC_DATE_FROM", origin.EXEC_DATE_FROM == dataModified.EXEC_DATE_FROM);
             changesData.Add("EXEC_DATE_TO", origin.EXEC_DATE_TO == dataModified.EXEC_DATE_TO);
-            
+
             foreach (var listChange in changesData)
             {
                 if (listChange.Value == false)
@@ -1897,14 +1897,14 @@ namespace Sampoerna.EMS.BLL
                     {
                         case "PBCK-3 DATE":
                             changes.OLD_VALUE = origin.Pbck3Date.HasValue ? origin.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty;
-                            changes.NEW_VALUE = dataModified.Pbck3Date.HasValue ? dataModified.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty; 
+                            changes.NEW_VALUE = dataModified.Pbck3Date.HasValue ? dataModified.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty;
                             break;
                         case "EXEC_DATE_FROM":
                             changes.OLD_VALUE = origin.EXEC_DATE_FROM.ToString("dd MMM yyyy");
                             changes.NEW_VALUE = dataModified.EXEC_DATE_FROM.ToString("dd MMM yyyy");
                             break;
                         case "EXEC_DATE_TO":
-                             changes.OLD_VALUE = origin.EXEC_DATE_TO.ToString("dd MMM yyyy");
+                            changes.OLD_VALUE = origin.EXEC_DATE_TO.ToString("dd MMM yyyy");
                             changes.NEW_VALUE = dataModified.EXEC_DATE_TO.ToString("dd MMM yyyy");
                             break;
                     }
@@ -1956,9 +1956,9 @@ namespace Sampoerna.EMS.BLL
 
                 dbData.MODIFIED_DATE = DateTime.Now;
                 dbData.MODIFIED_BY = input.UserId;
-                
+
                 inputWorkflowHistory.ActionType = Enums.ActionType.Modified;
-                
+
             }
             else
             {
@@ -1997,7 +1997,7 @@ namespace Sampoerna.EMS.BLL
             resultDto.IsModifiedHistory = isModified;
 
             return resultDto;
-         
+
         }
 
         public void PBCK3Workflow(Pbck3WorkflowDocumentInput input)
@@ -2029,7 +2029,7 @@ namespace Sampoerna.EMS.BLL
                     break;
             }
 
-         
+
             if (isNeedSendNotif)
                 SendEmailWorkflowPbck3(input);
 
@@ -2253,7 +2253,7 @@ namespace Sampoerna.EMS.BLL
             var modifiedBack3 = Mapper.Map<Back3Dto>(input.AdditionalDocumentData);
             //add to change log
             SetChangesHistoryBack3(Mapper.Map<Back3Dto>(originBack3), modifiedBack3, input.UserId, input.DocumentId.ToString());
-            
+
             //insert/update back3
             var inputBack3 = new SaveBack3ByPbck3IdInput();
             inputBack3.Back3Number = input.AdditionalDocumentData.Back3No;
@@ -2310,7 +2310,7 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            
+
 
         }
 
@@ -2320,7 +2320,7 @@ namespace Sampoerna.EMS.BLL
 
             changesData.Add("BACK3_NUMBER", origin.Back3Number == dataModified.Back3Number);
             changesData.Add("BACK3_DATE", origin.Back3Date == dataModified.Back3Date);
-            
+
 
             foreach (var listChange in changesData)
             {
@@ -2342,7 +2342,7 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.Back3Date.HasValue ? origin.Back3Date.Value.ToString("dd MMM yyyy") : string.Empty;
                             changes.NEW_VALUE = dataModified.Back3Date.HasValue ? dataModified.Back3Date.Value.ToString("dd MMM yyyy") : string.Empty;
                             break;
-                      
+
                     }
                     _changesHistoryBll.AddHistory(changes);
                 }
@@ -2379,7 +2379,7 @@ namespace Sampoerna.EMS.BLL
                             break;
                         case "CK2_VALUE":
                             changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.Ck2Value);
-                            changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(dataModified.Ck2Value); 
+                            changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(dataModified.Ck2Value);
                             break;
 
                     }
@@ -2573,7 +2573,7 @@ namespace Sampoerna.EMS.BLL
                         }
                         else
                         {
-                            
+
                             if (rejectedSource != null)
                             {
                                 rc.To.Add(_poaBll.GetById(rejectedSource.ACTION_BY).POA_EMAIL);
@@ -2583,9 +2583,9 @@ namespace Sampoerna.EMS.BLL
                                 foreach (var poaDto in poaList)
                                 {
                                     rc.To.Add(poaDto.POA_EMAIL);
-                                } 
+                                }
                             }
-                           
+
                         }
 
                         rc.CC.Add(_userBll.GetUserById(pbck3CompositeDto.CREATED_BY).EMAIL);
@@ -2739,7 +2739,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             return output;
-           
+
         }
 
         public BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode)
@@ -2752,7 +2752,7 @@ namespace Sampoerna.EMS.BLL
             //get from pbck7
 
             var dbPbck7 = _repositoryPbck7.Get(c => c.PLANT_ID == plant &&
-                        (c.STATUS != Enums.DocumentStatus.Cancelled 
+                        (c.STATUS != Enums.DocumentStatus.Cancelled
                         && c.STATUS != Enums.DocumentStatus.Completed)
                         && c.STATUS != Enums.DocumentStatus.GovRejected, null, "PBCK7_ITEM");
 
@@ -2772,7 +2772,7 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId , string faCode)
+        public GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId, string faCode)
         {
             var result = new GetBrandItemsByPlantAndFaCodeOutput();
             var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, faCode);
@@ -2802,7 +2802,7 @@ namespace Sampoerna.EMS.BLL
 
                 result.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value.ToString() : "0";
                 result.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value.ToString() : "0";
-                
+
 
             }
 
@@ -2878,7 +2878,7 @@ namespace Sampoerna.EMS.BLL
             var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
             rc = SetPoaData(rc, poaId);
 
-            
+
             if (dbData.PBCK7_ID.HasValue)
             {
                 //data come from PBCK7
@@ -3036,6 +3036,26 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY == input.Poa);
             }
+
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC))) || c.STATUS == Enums.DocumentStatus.Completed);
+
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poabll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK7_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+
             var data = _repositoryPbck7.Get(queryFilter).ToList();
             return Mapper.Map<List<Pbck7AndPbck3Dto>>(data);
         }
@@ -3061,6 +3081,26 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY == input.Poa);
             }
+
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.PBCK7.NPPBKC))) || c.STATUS == Enums.DocumentStatus.Completed);
+
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poabll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK3_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+
             var data = _repositoryPbck3.Get(queryFilter).ToList();
             return Mapper.Map<List<Pbck3Dto>>(data);
         }
