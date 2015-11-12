@@ -1,11 +1,11 @@
-﻿@model Sampoerna.EMS.Website.Models.WasteRole.WasteRoleIndexViewModel
+﻿@model Sampoerna.EMS.Website.Models.WasteStock.WasteStockIndexViewModel
 
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3 id="lblTitle">Waste Role List</h3>
+            <h3 id="lblTitle">Waste Stock List</h3>
             <div class="action-button new">
-                <a href="@Url.Action("Create", "WasteRole")">
+                <a href="@Url.Action("Create", "WasteStock")">
                     <button class="btn btn-blue">NEW</button>
                 </a>
 
@@ -19,17 +19,14 @@
     <div class="row">
         <div class="col-sm-12">
             <div id="contenttable" class="table-container">
-                <table id="wasteRoleTable" class="display" cellspacing="0" width="100%">
+                <table id="wasteStockTable" class="display" cellspacing="0" width="100%">
                     <thead>
                         <tr>
                             <th class="toggle-row"> Filter </th>
-                            <th>User Id</th>
-                            <th>User Name</th>
                             <th>Plant</th>
-                            <th>Group Role</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-
+                            <th>Material</th>
+                            <th>UOM</th>
+                            <th>Stock</th>
                         </tr>
                     </thead>
                     <thead class="filters">
@@ -39,28 +36,23 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th></th>
-                            <th></th>
-
                         </tr>
                     </thead>
                     <tbody>
 
-                        @foreach (var item in Model.ListWasteRoles)
+                        @foreach (var item in Model.ListWasteStocks)
                         {
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Detail", "WasteRole", new { id = item.WasteRoleId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Detail", "WasteStock", new { id = item.WasteStockId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
 
-                                    <a href="@Url.Action("Edit", "WasteRole", new { id = item.WasteRoleId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="@Url.Action("Edit", "WasteStock", new { id = item.WasteStockId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
 
                                 </td>
-                                <td>@Html.DisplayFor(model => item.UserId)</td>
-                                <td>@Html.DisplayFor(model => item.FirstName)</td>
                                 <td>@Html.DisplayFor(model => item.PlantDescription)</td>
-                                <td>@Html.DisplayFor(model => item.WasteGroupDescription)</td>
-                                <td>@Html.DisplayFor(model => item.EmailAddress)</td>
-                                <td>@Html.DisplayFor(model => item.Phone)</td>
+                                <td>@Html.DisplayFor(model => item.MaterialNumber)</td>
+                                <td>@Html.DisplayFor(model => item.UomDescription)</td>
+                                <td class="number">@string.Format("{0:N2}", item.Stock)</td>
 
                             </tr>
 
@@ -82,7 +74,7 @@
     <script type="text/javascript" language="javascript">
 
         $(document).ready(function () {
-             $('#MenuWasteRole').addClass('active');
+            $('#MenuWasteStock').addClass('active');
 
             setupDataTables();
         });
@@ -92,12 +84,12 @@
 
             // DataTable
             var table = null;
-            if ($.fn.dataTable.isDataTable('#wasteRoleTable')) {
-                table = $('#wasteRoleTable').DataTable();
+            if ($.fn.dataTable.isDataTable('#wasteStockTable')) {
+                table = $('#wasteStockTable').DataTable();
                 table.destroy();
             }
 
-            table = $('#wasteRoleTable').DataTable(
+            table = $('#wasteStockTable').DataTable(
                   {
                       "sDom": "Rlfrtip",
                       "language": {
@@ -107,7 +99,7 @@
                   });
 
 
-            $('#wasteRoleTable .filters th').each(function () {
+            $('#wasteStockTable .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');

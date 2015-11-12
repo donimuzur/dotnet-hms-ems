@@ -1,0 +1,283 @@
+﻿@model Sampoerna.EMS.Website.Models.WasteStock.WasteStockFormViewModel
+@using Sampoerna.EMS.Website.Helpers
+
+@using (Html.BeginForm("Create", "WasteStock", FormMethod.Post, new { @class = "form-excise", @id = "SaveWasteStockForms" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Waste Role</h3>
+                <div class="action-button">
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    @*<div class="scroll">*@
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Create Waste Stock
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Plant<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "form-control selectpicker" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Material<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.MaterialNumber)
+                                                        <select class="form-control" id="MaterialNumberForm">
+                                                            <option value="">Select</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">UOM</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.Uom)
+                                                        @Html.TextBoxFor(model => model.UomDescription, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Stock</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.Stock)
+                                                        @Html.TextBoxFor(model => model.Stock, new { @class = "form-control decimal" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+
+                                    </form>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    @*</div>*@
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <span class="red">*</span> ) This Field Required
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div id="ModalWasteStock" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Error</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <span id="modalBodyMessage">Error</span>
+                    </p>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts {
+
+
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuWasteRole').addClass('active');
+
+            $('#btnBack').click(function (e) {
+                location.href = '@Url.Action("Index", "WasteStock")';
+            });
+
+            $("#btnSave").click(function () {
+                if (ValidateWasteStockForm()) {
+                    $('#SaveWasteStockForms').submit();
+                }
+            });
+
+            OnChangePlant();
+        });
+
+
+        function ValidateWasteStockForm() {
+            var result = true;
+            var blModal = false;
+            
+            if ($('#PlantId').find("option:selected").val() == '') {
+                AddValidationClass(false, 'UserId');
+                result = false;
+                $('#modalBodyMessage').text('Please fill Plant Id');
+                $('#ModalWasteStock').modal('show');
+                blModal = true;
+            }
+
+            if ($('#MaterialNumberForm').find("option:selected").val() == '') {
+                AddValidationClass(false, 'MaterialNumberForm');
+                result = false;
+                if (!blModal) {
+                    $('#modalBodyMessage').text('Please fill Material');
+                    $('#ModalWasteRole').modal('show');
+                }
+            }
+            
+            if (!result) {
+                $('#collapseOne').removeClass('collapse');
+                $('#collapseOne').addClass('in');
+                $("#collapseOne").css({ height: "auto" });
+            }
+
+
+            return result;
+        }
+
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
+            }
+        }
+
+        function OnChangePlant() {
+            $("#PlantId").change(function () {
+                if ($("#PlantId").length) {
+                    var plantId = $(this).find("option:selected").val();
+
+
+                    if (plantId == '') {
+                        $("input[name='MaterialNumber']").val('');
+                        var listMaterial = $('#MaterialNumberForm');
+                        listMaterial.empty();
+
+                        var list = '<option value>Select</option>';
+                        listMaterial.html(list);
+
+                    } else {
+
+                        ajaxGetListMaterial('@Url.Action("GetListMaterialByPlant", "WasteStock")', { plantId: plantId });
+                    }
+                }
+            });
+        }
+
+        function ajaxGetListMaterial(url, formData) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var listMaterial = $('#MaterialNumberForm');
+                    listMaterial.empty();
+
+                    var list = '<option value>Select</option>';
+
+                    if (data != null) {
+                        for (var i = 0; i < data.length; i++) {
+                            list += "<option value='" + data[i].MaterialNumber + "'>" + data[i].MaterialNumber + "</option>";
+                        }
+
+                        OnChangeMaterial();
+                    }
+
+                    listMaterial.html(list);
+                    //if (selectedValue != '') {
+                    //    $('#uploadFaCode').val(selectedValue);
+
+                    //}
+
+
+                }
+            });
+
+        }
+
+        function OnChangeMaterial() {
+            $("#MaterialNumberForm").change(function () {
+                if ($("#MaterialNumberForm").length) {
+                    var materialNumberForm = $(this).find("option:selected").val();
+
+                    if (materialNumberForm == '') {
+                        $("input[name='Uom']").val('');
+                        $("input[name='UomDescription']").val('');
+                        $("input[name='MaterialNumber']").val('');
+
+                    } else {
+                        var plantId = $("#PlantId").find("option:selected").val();
+
+                        ajaxGetUom('@Url.Action("GetUomByMaterialAndPlant", "WasteStock")', { materialNumber: materialNumberForm, plantId: plantId });
+                    }
+                }
+            });
+        }
+
+        function ajaxGetUom(url, formData) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    $("input[name='Uom']").val(data.Uom);
+                    $("input[name='UomDescription']").val(data.Uom);
+                    $("input[name='MaterialNumber']").val(formData.materialNumber);
+                }
+            });
+
+        }
+    </script>
+}

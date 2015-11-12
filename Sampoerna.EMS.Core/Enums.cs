@@ -37,7 +37,8 @@ namespace Sampoerna.EMS.Core
             Vendor = 30,
             KPPBC = 31,
             UserPlantMap = 32,
-            WasteRole = 33
+            WasteRole = 33,
+            WasteStock = 34
         }
         public enum PBCK1Type
         {

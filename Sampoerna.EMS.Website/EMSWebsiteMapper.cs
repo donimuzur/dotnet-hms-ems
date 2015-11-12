@@ -33,6 +33,8 @@ using Sampoerna.EMS.Website.Models.Settings;
 using Sampoerna.EMS.Website.Models.WorkflowSetting;
 using Sampoerna.EMS.Website.Models.EmailTemplate;
 using Sampoerna.EMS.Website.Models.LACK2;
+using Sampoerna.EMS.Website.Models.WasteRole;
+using Sampoerna.EMS.Website.Models.WasteStock;
 
 namespace Sampoerna.EMS.Website
 {
@@ -907,7 +909,75 @@ namespace Sampoerna.EMS.Website
             #endregion
 
 
+            #region WasteRole
 
+            Mapper.CreateMap<USER, WasteRoleFormViewModel>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FIRST_NAME))
+              .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LAST_NAME))
+              .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.EMAIL))
+              .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PHONE));
+
+            Mapper.CreateMap<WasteRoleFormViewModel, WasteRoleDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.WASTE_ROLE_ID, opt => opt.MapFrom(src => src.WasteRoleId))
+                .ForMember(dest => dest.USER_ID, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.GROUP_ROLE, opt => opt.MapFrom(src => src.WasteGroup))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
+                .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+                ;
+
+            Mapper.CreateMap<WasteRoleDto, WasteRoleFormViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.WasteRoleId, opt => opt.MapFrom(src => src.WASTE_ROLE_ID))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.WasteGroup, opt => opt.MapFrom(src => src.GROUP_ROLE))
+                .ForMember(dest => dest.WasteGroupDescription, opt => opt.MapFrom(src => src.WasteGroupDescription))
+                .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.EmailAddress))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
+
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.WERKS + "-" + src.PlantDescription))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
+                ;
+
+
+
+            #endregion
+
+            #region Waste Stock
+
+            Mapper.CreateMap<WasteStockFormViewModel, WasteStockDto>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.WASTE_STOCK_ID, opt => opt.MapFrom(src => src.WasteStockId))
+              .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantId))
+              .ForMember(dest => dest.MATERIAL_NUMBER, opt => opt.MapFrom(src => src.MaterialNumber))
+              .ForMember(dest => dest.STOCK, opt => opt.MapFrom(src => src.Stock))
+              
+              .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+              .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+              .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
+              .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+              ;
+
+            Mapper.CreateMap<WasteStockDto, WasteStockFormViewModel>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.WasteStockId, opt => opt.MapFrom(src => src.WASTE_STOCK_ID))
+              .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+              .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.MATERIAL_NUMBER))
+              .ForMember(dest => dest.Stock, opt => opt.MapFrom(src => src.STOCK))
+
+                .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.WERKS + "-" + src.PlantDescription))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
+                ;
+
+            #endregion
         }
     }
 
