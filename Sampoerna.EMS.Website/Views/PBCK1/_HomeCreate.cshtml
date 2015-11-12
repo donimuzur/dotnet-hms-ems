@@ -168,7 +168,7 @@
                                             <div class="col-md-8">
                                                 @Html.HiddenFor(model => model.Detail.SupplierPlantWerks)
                                                 <div id="supp-plant">
-                                                    @Html.TextBoxFor(model => model.Detail.SupplierPlant, new { @class = "form-control txtplant" })
+                                                    @Html.TextBoxFor(model => model.Detail.SupplierPlant, new { @class = "form-control txtplant", maxlength = "4" })
                                                 </div>
                                             </div>
                                         </div>
