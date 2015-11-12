@@ -35,6 +35,7 @@
               <xs:element name="NppbkcDate" msprop:Generator_ColumnVarNameInTable="columnNppbkcDate" msprop:Generator_ColumnPropNameInRow="NppbkcDate" msprop:Generator_ColumnPropNameInTable="NppbkcDateColumn" msprop:Generator_UserColumnName="NppbkcDate" type="xs:string" minOccurs="0" />
               <xs:element name="ReportingDate" msprop:Generator_ColumnVarNameInTable="columnReportingDate" msprop:Generator_ColumnPropNameInRow="ReportingDate" msprop:Generator_ColumnPropNameInTable="ReportingDateColumn" msprop:Generator_UserColumnName="ReportingDate" type="xs:string" minOccurs="0" />
               <xs:element name="ConditionPbck7Or3" msprop:Generator_ColumnVarNameInTable="columnConditionPbck7Or3" msprop:Generator_ColumnPropNameInRow="ConditionPbck7Or3" msprop:Generator_ColumnPropNameInTable="ConditionPbck7Or3Column" msprop:Generator_UserColumnName="ConditionPbck7Or3" type="xs:boolean" minOccurs="0" />
+              <xs:element name="CompanyNameAndAddress" msprop:Generator_ColumnVarNameInTable="columnCompanyNameAndAddress" msprop:Generator_ColumnPropNameInRow="CompanyNameAndAddress" msprop:Generator_ColumnPropNameInTable="CompanyNameAndAddressColumn" msprop:Generator_UserColumnName="CompanyNameAndAddress" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -51,6 +52,7 @@
               <xs:element name="JmlCukai" msprop:Generator_ColumnVarNameInTable="columnJmlCukai" msprop:Generator_ColumnPropNameInRow="JmlCukai" msprop:Generator_ColumnPropNameInTable="JmlCukaiColumn" msprop:Generator_UserColumnName="JmlCukai" type="xs:string" minOccurs="0" />
               <xs:element name="SumJmlCukai" msprop:Generator_ColumnVarNameInTable="columnSumJmlCukai" msprop:Generator_ColumnPropNameInRow="SumJmlCukai" msprop:Generator_ColumnPropNameInTable="SumJmlCukaiColumn" msprop:Generator_UserColumnName="SumJmlCukai" type="xs:string" minOccurs="0" />
               <xs:element name="SumJmlKemasan" msprop:Generator_ColumnVarNameInTable="columnSumJmlKemasan" msprop:Generator_ColumnPropNameInRow="SumJmlKemasan" msprop:Generator_ColumnPropNameInTable="SumJmlKemasanColumn" msprop:Generator_UserColumnName="SumJmlKemasan" type="xs:string" minOccurs="0" />
+              <xs:element name="SymbolStar" msprop:Generator_ColumnVarNameInTable="columnSymbolStar" msprop:Generator_ColumnPropNameInRow="SymbolStar" msprop:Generator_ColumnPropNameInTable="SymbolStarColumn" msprop:Generator_UserColumnName="SymbolStar" type="xs:boolean" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

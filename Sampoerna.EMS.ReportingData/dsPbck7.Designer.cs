@@ -354,6 +354,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnConditionPbck7Or3;
             
+            private global::System.Data.DataColumn columnCompanyNameAndAddress;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public MasterDataTable() {
@@ -549,6 +551,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CompanyNameAndAddressColumn {
+                get {
+                    return this.columnCompanyNameAndAddress;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -604,7 +614,8 @@ namespace Sampoerna.EMS.ReportingData {
                         string ExecutionDate, 
                         string NppbkcDate, 
                         string ReportingDate, 
-                        bool ConditionPbck7Or3) {
+                        bool ConditionPbck7Or3, 
+                        string CompanyNameAndAddress) {
                 MasterRow rowMasterRow = ((MasterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         PoaName,
@@ -626,7 +637,8 @@ namespace Sampoerna.EMS.ReportingData {
                         ExecutionDate,
                         NppbkcDate,
                         ReportingDate,
-                        ConditionPbck7Or3};
+                        ConditionPbck7Or3,
+                        CompanyNameAndAddress};
                 rowMasterRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowMasterRow);
                 return rowMasterRow;
@@ -669,6 +681,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnNppbkcDate = base.Columns["NppbkcDate"];
                 this.columnReportingDate = base.Columns["ReportingDate"];
                 this.columnConditionPbck7Or3 = base.Columns["ConditionPbck7Or3"];
+                this.columnCompanyNameAndAddress = base.Columns["CompanyNameAndAddress"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -714,6 +727,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnReportingDate);
                 this.columnConditionPbck7Or3 = new global::System.Data.DataColumn("ConditionPbck7Or3", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnConditionPbck7Or3);
+                this.columnCompanyNameAndAddress = new global::System.Data.DataColumn("CompanyNameAndAddress", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCompanyNameAndAddress);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -867,6 +882,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnSumJmlKemasan;
             
+            private global::System.Data.DataColumn columnSymbolStar;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public DetailDataTable() {
@@ -982,6 +999,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn SymbolStarColumn {
+                get {
+                    return this.columnSymbolStar;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1017,7 +1042,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DetailRow AddDetailRow(string Jenis, string Merek, string IsiKemasan, string JmlKemasan, string SeriPitaCukai, string Hje, string Tariff, string JmlCukai, string SumJmlCukai, string SumJmlKemasan) {
+            public DetailRow AddDetailRow(string Jenis, string Merek, string IsiKemasan, string JmlKemasan, string SeriPitaCukai, string Hje, string Tariff, string JmlCukai, string SumJmlCukai, string SumJmlKemasan, bool SymbolStar) {
                 DetailRow rowDetailRow = ((DetailRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Jenis,
@@ -1029,7 +1054,8 @@ namespace Sampoerna.EMS.ReportingData {
                         Tariff,
                         JmlCukai,
                         SumJmlCukai,
-                        SumJmlKemasan};
+                        SumJmlKemasan,
+                        SymbolStar};
                 rowDetailRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDetailRow);
                 return rowDetailRow;
@@ -1062,6 +1088,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnJmlCukai = base.Columns["JmlCukai"];
                 this.columnSumJmlCukai = base.Columns["SumJmlCukai"];
                 this.columnSumJmlKemasan = base.Columns["SumJmlKemasan"];
+                this.columnSymbolStar = base.Columns["SymbolStar"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1087,6 +1114,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnSumJmlCukai);
                 this.columnSumJmlKemasan = new global::System.Data.DataColumn("SumJmlKemasan", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSumJmlKemasan);
+                this.columnSymbolStar = new global::System.Data.DataColumn("SymbolStar", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSymbolStar);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1549,6 +1578,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CompanyNameAndAddress {
+                get {
+                    try {
+                        return ((string)(this[this.tableMaster.CompanyNameAndAddressColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CompanyNameAndAddress\' in table \'Master\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableMaster.CompanyNameAndAddressColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsPoaNameNull() {
                 return this.IsNull(this.tableMaster.PoaNameColumn);
             }
@@ -1786,6 +1831,18 @@ namespace Sampoerna.EMS.ReportingData {
             public void SetConditionPbck7Or3Null() {
                 this[this.tableMaster.ConditionPbck7Or3Column] = global::System.Convert.DBNull;
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCompanyNameAndAddressNull() {
+                return this.IsNull(this.tableMaster.CompanyNameAndAddressColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCompanyNameAndAddressNull() {
+                this[this.tableMaster.CompanyNameAndAddressColumn] = global::System.Convert.DBNull;
+            }
         }
         
         /// <summary>
@@ -1964,6 +2021,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool SymbolStar {
+                get {
+                    try {
+                        return ((bool)(this[this.tableDetail.SymbolStarColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'SymbolStar\' in table \'Detail\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDetail.SymbolStarColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsJenisNull() {
                 return this.IsNull(this.tableDetail.JenisColumn);
             }
@@ -2080,6 +2153,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetSumJmlKemasanNull() {
                 this[this.tableDetail.SumJmlKemasanColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsSymbolStarNull() {
+                return this.IsNull(this.tableDetail.SymbolStarColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetSymbolStarNull() {
+                this[this.tableDetail.SymbolStarColumn] = global::System.Convert.DBNull;
             }
         }
         
