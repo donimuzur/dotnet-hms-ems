@@ -1274,6 +1274,8 @@
     <Content Include="Views\WasteRole\Detail.cshtml" />
     <Content Include="Views\WasteStock\Index.cshtml" />
     <Content Include="Views\WasteStock\Create.cshtml" />
+    <Content Include="Views\WasteStock\Edit.cshtml" />
+    <Content Include="Views\WasteStock\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -430,13 +430,14 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.USER == null ? string.Empty : src.USER.PHONE))
                 .ForMember(dest => dest.WasteGroupDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GROUP_ROLE)))
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.T001W == null ? string.Empty : src.T001W.NAME1))
+                
                 ;
 
             Mapper.CreateMap<WasteRoleDto, WASTE_ROLE>().IgnoreAllNonExisting();
 
             #endregion
 
-            #region Waste Role
+            #region Waste Stock
 
             Mapper.CreateMap<WASTE_STOCK, WasteStockDto>().IgnoreAllNonExisting()
               //.ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.USER == null ? string.Empty : src.USER.FIRST_NAME))
@@ -445,6 +446,7 @@ namespace Sampoerna.EMS.BLL
               //.ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.USER == null ? string.Empty : src.USER.PHONE))
               //.ForMember(dest => dest.WasteGroupDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GROUP_ROLE)))
               .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.T001W == null ? string.Empty : src.T001W.NAME1))
+              .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.ZAIDM_EX_MATERIAL == null ? string.Empty : src.ZAIDM_EX_MATERIAL.BASE_UOM_ID))
               ;
 
             Mapper.CreateMap<WasteStockDto, WASTE_STOCK>().IgnoreAllNonExisting();

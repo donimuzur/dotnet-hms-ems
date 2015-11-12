@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -7,6 +8,8 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models;
+using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WasteRole;
 using Sampoerna.EMS.Website.Models.WasteStock;
 
@@ -60,6 +63,69 @@ namespace Sampoerna.EMS.Website.Controllers
             model = SetListModel(model);
             return View("Create", model);
         }
+        private SelectList GetMaterialList(string plantId)
+        {
+            var listMaterial = _wasteStockBll.GetListMaterialByPlant(plantId);
+            IEnumerable<SelectItemModel> query;
+            query = from x in listMaterial
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.MaterialNumber,
+                        TextField = x.MaterialNumber
+                    };
+
+
+            return new SelectList(query, "ValueField", "TextField");
+
+           
+        }
+
+        public ActionResult Edit(int id)
+        {
+            var model = new WasteStockFormViewModel();
+
+            try
+            {
+                model = Mapper.Map<WasteStockFormViewModel>(_wasteStockBll.GetById(id, true));
+                model = SetListModel(model);
+                model.MaterialNumberList = GetMaterialList(model.PlantId);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = SetListModel(model);
+                model.MaterialNumberList = GetMaterialList(model.PlantId);
+            }
+
+            return View("Edit", model);
+        }
+
+        public ActionResult Detail(int id)
+        {
+            var model = new WasteStockFormViewModel();
+
+            try
+            {
+                model = Mapper.Map<WasteStockFormViewModel>(_wasteStockBll.GetById(id, true));
+
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+
+                model.ChangesHistoryList =
+                    Mapper.Map<List<ChangesHistoryItemModel>>(
+                        _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.WasteStock, id.ToString()));
+
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("Detail", model);
+        }
 
         [HttpPost]
         public JsonResult GetListMaterialByPlant(string plantId)
@@ -86,7 +152,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     SaveWasteStockToDatabase(model);
-                    AddMessageInfo("Success create Waste Role", Enums.MessageInfoType.Success);
+                    AddMessageInfo("Success create Waste Stock", Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
 
                 }
@@ -98,6 +164,29 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model = SetListModel(model);
             return View("Create", model);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult Edit(WasteStockFormViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    SaveWasteStockToDatabase(model);
+                    AddMessageInfo("Success update Waste Stock", Enums.MessageInfoType.Success);
+                    return RedirectToAction("Index");
+
+                }
+                catch (Exception ex)
+                {
+                    AddMessageInfo("Update Failed : " + ex.Message, Enums.MessageInfoType.Error);
+                }
+            }
+
+            model = SetListModel(model);
+            return View("Edit", model);
         }
 
         private WasteStockDto SaveWasteStockToDatabase(WasteStockFormViewModel model)

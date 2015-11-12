@@ -7,6 +7,10 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IWasteStockBLL
     {
+        WasteStockDto GetById(int id);
+
+        WasteStockDto GetById(int id, bool isIncludeTable);
+
         List<WasteStockDto> GetAllDataOrderByUserAndGroupRole();
 
         List<GetListMaterialByPlantOutput> GetListMaterialByPlant(string plantId);

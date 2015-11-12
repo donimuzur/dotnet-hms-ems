@@ -956,7 +956,7 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.WASTE_STOCK_ID, opt => opt.MapFrom(src => src.WasteStockId))
               .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantId))
               .ForMember(dest => dest.MATERIAL_NUMBER, opt => opt.MapFrom(src => src.MaterialNumber))
-              .ForMember(dest => dest.STOCK, opt => opt.MapFrom(src => src.Stock))
+              .ForMember(dest => dest.STOCK, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.StockDisplay.Replace(",",""))))
               
               .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
               .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
@@ -969,7 +969,9 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
               .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.MATERIAL_NUMBER))
               .ForMember(dest => dest.Stock, opt => opt.MapFrom(src => src.STOCK))
-
+               .ForMember(dest => dest.StockDisplay, opt => opt.MapFrom(src => ConvertHelper.ConvertDecimalToStringMoneyFormat(src.STOCK)))
+              .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.Uom))
+              .ForMember(dest => dest.UomDescription, opt => opt.MapFrom(src => src.Uom))
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.WERKS + "-" + src.PlantDescription))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))

@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.BLL
         private IChangesHistoryBLL _changesHistoryBll;
         private IMaterialBLL _materialBll;
 
-        private string _includeTables = "ZAIDM_EX_MATERIAL, USER";
+        private string _includeTables = "ZAIDM_EX_MATERIAL, USER, T001W";
 
         public WasteStockBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -33,6 +33,32 @@ namespace Sampoerna.EMS.BLL
 
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _materialBll = new MaterialBLL(_uow, _logger);
+        }
+
+        public WasteStockDto GetById(int id)
+        {
+            var dtData = _repository.GetByID(id);
+            if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return Mapper.Map<WasteStockDto>(dtData);
+
+        }
+
+        public WasteStockDto GetById(int id, bool isIncludeTable)
+        {
+            string include = "";
+            if (isIncludeTable)
+            {
+                include = _includeTables;
+                var dtData = _repository.Get(c => c.WASTE_STOCK_ID == id, null, include).FirstOrDefault();
+                if (dtData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                return Mapper.Map<WasteStockDto>(dtData);
+            }
+
+            return GetById(id);
         }
 
         public List<WasteStockDto> GetAllDataOrderByUserAndGroupRole()

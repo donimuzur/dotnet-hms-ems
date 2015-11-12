@@ -12,8 +12,10 @@ namespace Sampoerna.EMS.Website.Models.WasteStock
         public string PlantDescription { get; set; }
 
         public string MaterialNumber { get; set; }
+        public SelectList MaterialNumberList { get; set; }
         
         public decimal Stock { get; set; }
+        public string  StockDisplay { get; set; }
 
         public string Uom { get; set; }
         public string UomDescription { get; set; }

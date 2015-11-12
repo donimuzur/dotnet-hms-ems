@@ -15,5 +15,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? MODIFIED_DATE { get; set; }
 
         public string PlantDescription { get; set; }
+        public string Uom { get; set; }
     }
 }
