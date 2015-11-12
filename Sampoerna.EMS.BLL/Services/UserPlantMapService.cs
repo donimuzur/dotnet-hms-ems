@@ -56,6 +56,14 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(p => p.USER_ID == userid && p.PLANT_ID == plantid, null, _includeTables).FirstOrDefault();
         }
 
+        public USER_PLANT_MAP GetByUserPlantNppbkcId(UserPlantMapGetByUserPlantNppbkcIdParamInput input)
+        {
+            return
+                _repository.Get(
+                    c => c.PLANT_ID == input.PlantId && c.USER_ID == input.UserId && c.NPPBKC_ID == input.NppbkcId, null, _includeTables)
+                    .FirstOrDefault();
+        }
+
         public void Delete(int id)
         {
             _repository.Delete(id);
