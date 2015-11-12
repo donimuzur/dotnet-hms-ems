@@ -12,6 +12,7 @@ using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using DocumentFormat.OpenXml.Spreadsheet;
+using iTextSharp.text.pdf;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -501,12 +502,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            return RetDetails(lack1Data, true);
+
+        }
+
+        public ActionResult RetDetails(Lack1DetailsDto lack1Data, bool isDisplayOnly)
+        {
             var model = InitDetailModel(lack1Data);
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model = SetActiveMenu(model, model.Lack1Type);
-            return View(model);
-
+            model.IsDisplayOnly = isDisplayOnly;
+            return View("Details", model);
         }
 
         #endregion
@@ -693,17 +700,23 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+                lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return RetDetails(lack1Data, false);
+            }
+            
             if (CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 //redirect to details for approval/rejected
-                return RedirectToAction("Details", new { id });
+                return RetDetails(lack1Data, true);
             }
 
             if (CurrentUser.USER_ID == lack1Data.CreateBy &&
                 (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
                  lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
             {
-                return RedirectToAction("Details", new { id });
+                return RetDetails(lack1Data, false);
             }
 
             var model = InitEditModel(lack1Data);
