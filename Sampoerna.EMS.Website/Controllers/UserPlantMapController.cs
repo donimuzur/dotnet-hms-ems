@@ -1,15 +1,12 @@
 ﻿using System.Linq;
 using AutoMapper;
-using CrystalDecisions.CrystalReports.Engine;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
-using Sampoerna.EMS.Website.Models.KPPBC;
-using Sampoerna.EMS.Website.Models.POAMap;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -26,10 +23,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPlantBLL _plantBll;
         private IUnitOfWork _uow;
 
-        public UserPlantMapController(IPageBLL pageBLL, IUserPlantMapBLL userPlantMapBll, IPlantBLL plantBll, IChangesHistoryBLL changeHistorybll, IUnitOfWork uow) 
-            : base(pageBLL, Enums.MenuList.UserPlantMap) 
+        public UserPlantMapController(IPageBLL pageBLL, IUserPlantMapBLL userPlantMapBll, IPlantBLL plantBll, IChangesHistoryBLL changeHistorybll, IUnitOfWork uow)
+            : base(pageBLL, Enums.MenuList.UserPlantMap)
         {
-            
+
             _changeHistoryBll = changeHistorybll;
             _mainMenu = Enums.MenuList.Settings;
             _userPlantMapBll = userPlantMapBll;
@@ -47,12 +44,12 @@ namespace Sampoerna.EMS.Website.Controllers
             var userPlantDb = _userPlantMapBll.GetAllOrderByUserId();
             model.UserPlantList = Mapper.Map<List<UserPlantMapDetail>>(userIdPlant);
             model.UserPlantMaps = Mapper.Map<List<UserPlantMapDto>>(userPlantDb);
-           
-           
+
+
             return View("Index", model);
         }
 
-        
+
 
         private UserPlantMapDetailViewModel InitEdit(string id)
         {
@@ -60,14 +57,22 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new UserPlantMapDetailViewModel
             {
                 UserPlantMap = Mapper.Map<UserPlantMapDto>(currenPlant.FirstOrDefault()),
-                Plants = Mapper.Map<List<PlantDto>>(currenPlant.Select(x => x.T001W).ToList()),
-                
                 Users = GlobalFunctions.GetUsers(),
-                Nppbkcs =  GlobalFunctions.GetNppbkcMultiSelectList(),
+                Nppbkcs = GlobalFunctions.GetNppbkcMultiSelectList(),
                 CurrentMenu = PageInfo,
-                MainMenu = _mainMenu
+                MainMenu = _mainMenu,
+                Plants = new List<PlantDto>()
             };
-            model.SelectedNppbkc = model.Plants.GroupBy(x => x.NPPBKC_ID).Select(x => x.Key).ToList();
+
+            //process plant
+            foreach (USER_PLANT_MAP t in currenPlant)
+            {
+                var toInsert = Mapper.Map<PlantDto>(t.T001W);
+                toInsert.IS_IMPORT_ID = t.NPPBKC_ID != t.T001W.NPPBKC_ID;
+                model.Plants.Add(toInsert);
+            }
+            
+            model.SelectedNppbkc = model.Plants.GroupBy(x => (x.IS_IMPORT_ID ? x.NPPBKC_IMPORT_ID : x.NPPBKC_ID)).Select(x => x.Key).ToList();
             return model;
         }
 
@@ -86,7 +91,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new UserPlantMapDetailViewModel
             {
-                
+
                 Users = GlobalFunctions.GetUsers(),
                 Nppbkcs = GlobalFunctions.GetNppbkcMultiSelectList(),
                 CurrentMenu = PageInfo,
@@ -102,23 +107,29 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (model.Plants != null)
                 {
-                    foreach (var plant in model.Plants )
+                    foreach (var plant in model.Plants)
                     {
                         if (plant.IsChecked)
                         {
-
+                            model.UserPlantMap.NppbkcId = plant.IS_IMPORT_ID ? plant.NPPBKC_IMPORT_ID : plant.NPPBKC_ID;
                             model.UserPlantMap.PlantId = plant.WERKS;
-                            var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
-                                plant.WERKS);
+                            var existingPlantMap =
+                                _userPlantMapBll.GetByUserPlantNppbkcId(
+                                    new UserPlantMapGetByUserPlantNppbkcIdParamInput()
+                                    {
+                                        NppbkcId = model.UserPlantMap.NppbkcId,
+                                        PlantId = model.UserPlantMap.PlantId,
+                                        UserId = model.UserPlantMap.UserId
+                                    });
                             if (existingPlantMap == null)
                             {
                                 var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
                                 _userPlantMapBll.Save(data);
                             }
                         }
-                       
+
                     }
-                    
+
                 }
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                      );
@@ -133,7 +144,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View(model);
             }
         }
-       //
+        //
         // POST: /POAMap/Edit
         [HttpPost]
         public ActionResult Edit(UserPlantMapDetailViewModel model)
@@ -149,8 +160,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Plants != null)
                 {
-                    var savePlant = model.Plants.Select(c => c.WERKS).ToList();
-                    var currentPlant = currenPlant.Select(c => c.PLANT_ID).ToList();
+                    var savePlant = model.Plants.Select(c => new
+                    {
+                        NPPBKC_ID = c.IS_IMPORT_ID ? c.NPPBKC_IMPORT_ID : c.NPPBKC_ID,
+                        c.WERKS
+                    }).ToList();
+
+                    var currentPlant = currenPlant.Select(c => new
+                    {
+                        c.NPPBKC_ID,
+                        WERKS = c.PLANT_ID
+                    }).ToList();
 
                     //check if user delete all mapping then return error message
                     var intersectBoth = savePlant.Intersect(currentPlant);
@@ -160,7 +180,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         var listCmd = new List<bool>();
                         foreach (var plant1 in intersectBoth)
                         {
-                            listCmd.Add(model.Plants.Where(c => c.WERKS == plant1).Select(c => c.IsChecked).FirstOrDefault()); 
+                            listCmd.Add(model.Plants.Where(c => c.WERKS == plant1.WERKS && c.NPPBKC_ID == plant1.NPPBKC_ID).Select(c => c.IsChecked).FirstOrDefault());
                         }
                         if (listCmd.All(c => c != true))
                         {
@@ -177,10 +197,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         foreach (var plant in exceptPlant)
                         {
-                            var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId, plant);
+                            //var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId, plant);
+                            var existingPlantMap =
+                                _userPlantMapBll.GetByUserPlantNppbkcId(
+                                    new UserPlantMapGetByUserPlantNppbkcIdParamInput()
+                                    {
+                                        UserId = model.UserPlantMap.UserId,
+                                        NppbkcId = plant.NPPBKC_ID,
+                                        PlantId = plant.WERKS
+                                    });
+
                             if (existingPlantMap != null)
                             {
-
                                 _userPlantMapBll.Delete(existingPlantMap.USER_PLANT_MAP_ID);
                             }
                         }
@@ -189,7 +217,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     foreach (var plant in model.Plants)
                     {
-                        if (currenPlant.Any(x => x.PLANT_ID == plant.WERKS))
+                        USER_PLANT_MAP chkTo;
+                        if (plant.IS_IMPORT_ID)
+                        {
+                            chkTo =
+                                currenPlant.FirstOrDefault(
+                                    c => c.PLANT_ID == plant.WERKS && c.NPPBKC_ID == plant.NPPBKC_IMPORT_ID);
+                        }
+                        else
+                        {
+                            chkTo =
+                                currenPlant.FirstOrDefault(
+                                    c => c.PLANT_ID == plant.WERKS && c.NPPBKC_ID == plant.NPPBKC_ID);
+                        }
+
+                        if (chkTo != null)
                         {
 
                             if (!plant.IsChecked)
@@ -200,11 +242,20 @@ namespace Sampoerna.EMS.Website.Controllers
                                 //    AddMessageInfo("Please fill User Plant Map at least one record", Enums.MessageInfoType.Error);
                                 //    return RedirectToAction("Index");
                                 //}
-                                var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
-                                    plant.WERKS);
+                                //var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
+                                //    plant.WERKS);
+
+                                var existingPlantMap =
+                                    _userPlantMapBll.GetByUserPlantNppbkcId(
+                                        new UserPlantMapGetByUserPlantNppbkcIdParamInput()
+                                        {
+                                            UserId = model.UserPlantMap.UserId,
+                                            NppbkcId = plant.NPPBKC_ID,
+                                            PlantId = plant.WERKS
+                                        });
+
                                 if (existingPlantMap != null)
                                 {
-
                                     _userPlantMapBll.Delete(existingPlantMap.USER_PLANT_MAP_ID);
                                 }
                             }
@@ -213,10 +264,20 @@ namespace Sampoerna.EMS.Website.Controllers
                         {
                             if (plant.IsChecked)
                             {
-                                var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
-                                    plant.WERKS);
+                                //var existingPlantMap = _userPlantMapBll.GetByUserIdAndPlant(model.UserPlantMap.UserId,
+                                //    plant.WERKS);
+
+                                var existingPlantMap =
+                                    _userPlantMapBll.GetByUserPlantNppbkcId(
+                                        new UserPlantMapGetByUserPlantNppbkcIdParamInput()
+                                        {
+                                            UserId = model.UserPlantMap.UserId,
+                                            NppbkcId = plant.IS_IMPORT_ID ? plant.NPPBKC_IMPORT_ID : plant.NPPBKC_ID,
+                                            PlantId = plant.WERKS
+                                        });
 
                                 model.UserPlantMap.PlantId = plant.WERKS;
+                                model.UserPlantMap.NppbkcId = plant.IS_IMPORT_ID ? plant.NPPBKC_IMPORT_ID : plant.NPPBKC_ID;
                                 var data = Mapper.Map<USER_PLANT_MAP>(model.UserPlantMap);
                                 if (existingPlantMap != null)
                                 {
@@ -225,12 +286,10 @@ namespace Sampoerna.EMS.Website.Controllers
                                 _userPlantMapBll.Save(data);
                             }
                         }
-                        
-                        
                     }
 
                 }
-           
+
 
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                      );
@@ -265,7 +324,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 TempData[Constans.SubmitType.Update] = ex.Message;
             }
             return RedirectToAction("Index");
-            
+
         }
 
     }

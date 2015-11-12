@@ -14,5 +14,6 @@ namespace Sampoerna.EMS.Contract.Services
         void Delete(int id);
         List<T001W> GetAuthorizdePlant(UserPlantMapGetAuthorizedPlant input);
         List<ZAIDM_EX_NPPBKC> GetAuthorizedNppbkc(UserPlantMapGetAuthorizedNppbkc input);
+        USER_PLANT_MAP GetByUserPlantNppbkcId(UserPlantMapGetByUserPlantNppbkcIdParamInput input);
     }
 }
