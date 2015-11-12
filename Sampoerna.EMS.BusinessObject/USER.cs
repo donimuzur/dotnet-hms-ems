@@ -68,6 +68,12 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK32 = new HashSet<PBCK3>();
             this.PBCK33 = new HashSet<PBCK3>();
             this.USER_PLANT_MAP = new HashSet<USER_PLANT_MAP>();
+            this.WASTE_ROLE = new HashSet<WASTE_ROLE>();
+            this.WASTE_ROLE1 = new HashSet<WASTE_ROLE>();
+            this.WASTE_ROLE2 = new HashSet<WASTE_ROLE>();
+            this.WASTE_STOCK = new HashSet<WASTE_STOCK>();
+            this.WASTE_STOCK1 = new HashSet<WASTE_STOCK>();
+            this.WASTE_STOCK2 = new HashSet<WASTE_STOCK>();
         }
     
         public string USER_ID { get; set; }
@@ -133,5 +139,11 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK3> PBCK32 { get; set; }
         public virtual ICollection<PBCK3> PBCK33 { get; set; }
         public virtual ICollection<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
+        public virtual ICollection<WASTE_ROLE> WASTE_ROLE { get; set; }
+        public virtual ICollection<WASTE_ROLE> WASTE_ROLE1 { get; set; }
+        public virtual ICollection<WASTE_ROLE> WASTE_ROLE2 { get; set; }
+        public virtual ICollection<WASTE_STOCK> WASTE_STOCK { get; set; }
+        public virtual ICollection<WASTE_STOCK> WASTE_STOCK1 { get; set; }
+        public virtual ICollection<WASTE_STOCK> WASTE_STOCK2 { get; set; }
     }
 }
