@@ -2832,6 +2832,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC">
+          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
+          <End Role="USER_PLANT_MAP" Type="Self.USER_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="USER_PLANT_MAP">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="VIRTUAL_PLANT_MAP" Type="Self.VIRTUAL_PLANT_MAP" Multiplicity="*" />
@@ -3656,6 +3668,10 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
           </AssociationSet>
+          <AssociationSet Name="FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" Association="Self.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
+          </AssociationSet>
           <AssociationSet Name="FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER" Association="Self.FK_VIRTUAL_PLANT_MAP_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="VIRTUAL_PLANT_MAP" EntitySet="VIRTUAL_PLANT_MAP" />
@@ -4425,6 +4441,10 @@
             <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
           </AssociationSet>
           <EntitySet Name="ZAAP_SHIFT_RPT" EntityType="EMSModel.ZAAP_SHIFT_RPT" />
+          <AssociationSet Name="FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" Association="EMSModel.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="USER_PLANT_MAP" EntitySet="USER_PLANT_MAP" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -6044,6 +6064,7 @@
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_KPPBC" Relationship="EMSModel.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" FromRole="ZAIDM_EX_NPPBKC" ToRole="ZAIDM_EX_KPPBC" />
           <Property Name="FLAG_FOR_LACK1" Type="Boolean" />
+          <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" FromRole="ZAIDM_EX_NPPBKC" ToRole="USER_PLANT_MAP" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_NPPBKC_LFA1">
           <End Type="EMSModel.LFA1" Role="LFA1" Multiplicity="0..1" />
@@ -7843,6 +7864,7 @@
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="USER_PLANT_MAP" ToRole="T001W" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_USER_PLANT_MAP_USER" FromRole="USER_PLANT_MAP" ToRole="USER" />
           <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="EMSModel.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" FromRole="USER_PLANT_MAP" ToRole="ZAIDM_EX_NPPBKC" />
         </EntityType>
         <Association Name="FK_USER_PLANT_MAP_T001W">
           <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
@@ -7895,6 +7917,18 @@
         <EnumType Name="Ck5ManualFreeText" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualFreeText" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGovType2" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType2" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGovType3" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType3" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <Association Name="FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC">
+          <End Type="EMSModel.ZAIDM_EX_NPPBKC" Role="ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
+          <End Type="EMSModel.USER_PLANT_MAP" Role="USER_PLANT_MAP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="USER_PLANT_MAP">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
