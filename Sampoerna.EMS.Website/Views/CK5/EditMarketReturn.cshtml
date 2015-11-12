@@ -173,7 +173,7 @@
                     </div>
                     <div class="col-md-6">
                         <label>Qty<span class="red">*</span></label>
-                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialQty" })
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control decimal", @id = "uploadMaterialQty" })
 
                     </div>
                 </div>
@@ -198,7 +198,7 @@
                     </div>
                     <div class="col-md-6">
                         <label>Convertion<span class="red">*</span></label>
-                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialConvertion" })
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control decimal", @id = "uploadMaterialConvertion" })
                     </div>
                 </div>
                 <div class="row">
@@ -210,7 +210,7 @@
 
                     <div class="col-md-6">
                         <label>USD Value</label>
-                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadUsdValue" })
+                        @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control decimal", @id = "uploadUsdValue" })
 
                     </div>
 
@@ -240,6 +240,7 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script src="~/Scripts/CK5InputManual.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -344,11 +345,11 @@
                         $("*[name='SourceAddress']").val('');
                         $("input[name='SourceKppbcName']").val('');
                         $("input[name='plantname']").val('');
-                        
+
                         //enable upload
                         $('#btnUploadInfo').enable(false);
                         $('#CK5UploadSubmitBtn').enable(false);
-                        
+
 
                         $("input[name='KppBcCity']").val('');
                         $("input[name='CeOfficeCode']").val('');
@@ -430,7 +431,7 @@
 
         $("#btnAddRow").click(function () {
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
-          
+
 
             $("#uploadMaterialPlant").val(sourcePlant);
 
@@ -451,7 +452,7 @@
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
-          
+
             var convertedUom = $('#uploadConvertedUom').val();
 
             materialInput.Plant = sourcePlant;
@@ -484,7 +485,7 @@
 
                 } else {
                     var sourcePlant = $("#uploadMaterialPlant").val();
-                  
+
                     ajaxGetMaterialHjeAndTariffMarketReturn('@Url.Action("GetMaterialHjeAndTariffMarketReturn", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                 }
             }
@@ -494,9 +495,9 @@
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
-           
+
             var convertedUom = $('#uploadConvertedUom').val();
-            
+
             materialInput.Plant = sourcePlant;
             materialInput.Brand = materialNumber;
             materialInput.Qty = $('#uploadMaterialQty').val();
