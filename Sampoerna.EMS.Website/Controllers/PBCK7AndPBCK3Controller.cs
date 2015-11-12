@@ -2988,6 +2988,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<GetDashboardPbck7ByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             return _pbck7Pbck3Bll.GetDashboardPbck7ByParam(input);
         }
 
@@ -3001,6 +3003,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<GetDashboardPbck3ByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             return _pbck7Pbck3Bll.GetDashboardPbck3ByParam(input);
         }
 
