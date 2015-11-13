@@ -126,6 +126,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             List<CK5Dto> listCk5Dto;
             if (ck5Type == Enums.CK5Type.MarketReturn)
@@ -285,6 +286,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.Ck5Type = Enums.CK5Type.MarketReturn;
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             model.IsCompletedType = true;
             var listCk5Dto = _ck5Bll.GetCk5ByType(Enums.CK5Type.MarketReturn); //only get based on the type
 
@@ -849,6 +851,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new CK5FormViewModel();
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsView", new { id });
+            }
+
             try
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
@@ -903,6 +910,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(long id, long refId = 0)
         {
             var model = new CK5FormViewModel();
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsView", new { id });
+            }
 
             try
             {
@@ -1174,6 +1186,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Details(long id)
         {
             var model = new CK5FormViewModel();
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsView", new { id });
+            }
 
             try
             {
