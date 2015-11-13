@@ -204,9 +204,22 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label>Converted UOM<span class="red">*</span></label>
-                        @Html.DropDownListFor(model => model.PackageUomName, Model.PackageConvertedUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })
-
+                       
+                        @if (Model.IsCk5Waste)
+                        {
+                             <label>Converted UOM</label>
+                            
+                            @Html.TextBoxFor(model => model.ConvertedUomManual, new { @class = "form-control ", @disabled = "true" })
+                            @*@Html.TextBox("uploadConvertedUom", convertedUomStatic, new { @class = "form-control", @disabled = "true" })*@
+                            
+                        }
+                        else
+                        {
+                             <label>Converted UOM<span class="red">*</span></label>
+                            @Html.DropDownListFor(model => model.PackageUomName, Model.PackageConvertedUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })    
+                        }
+                        
+                        
                     </div>
 
                     <div class="col-md-6">
@@ -223,7 +236,14 @@
                         <label>Note</label>
                         <textarea class="form-control" id="uploadNote" cols="20" rows="5" maxlength="100"></textarea>
                     </div>
+                    @if (Model.IsCk5Waste)
+                    {
+                        <div class="col-md-6">
+                            <label class="col-md-4">Stock</label>
+                            @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadWasteStock", @disabled = "disabled" })
 
+                        </div>
+                    }
                 </div>
             </div>
             <div class="modal-footer">
@@ -253,9 +273,9 @@
     <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
         var editor;
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $('#btnBack').click(function (e) {
+            $('#btnBack').click(function(e) {
                 //alert('@Enums.CK5Type.Domestic.ToString()');
 
                 if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
@@ -270,6 +290,8 @@
                     location.href = '@Url.Action("CK5Manual", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
                     location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Waste.ToString()')
+                    location.href = '@Url.Action("CK5Waste", "CK5")';
 
             });
 
@@ -288,14 +310,14 @@
             $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
             $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
 
-            $("#btnSave").click(function () {
+            $("#btnSave").click(function() {
 
                 if (ValidateCk5Form('@Model.Ck5Type.ToString()')) {
                     $('#SaveCk5Forms').submit();
                 }
             });
 
-            $('#CK5UploadSubmitBtn').click(function () {
+            $('#CK5UploadSubmitBtn').click(function() {
                 GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")', '@Model.Ck5Type.ToString()');
             });
 
@@ -307,7 +329,7 @@
         });
 
         function OnChangeDestinationPlant() {
-            $("#DestPlantId").change(function () {
+            $("#DestPlantId").change(function() {
                 ResetPbck1Link();
 
                 if ($("#DestPlantId").length) {
@@ -365,7 +387,7 @@
         }
 
 
-        $('#SubmissionDate').change(function () {
+        $('#SubmissionDate').change(function() {
             ResetPbck1Link();
             var goodTypeGroupId = $("#GoodType").val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
@@ -390,7 +412,7 @@
             }
         });
 
-        $("#GoodType").change(function () {
+        $("#GoodType").change(function() {
             ResetPbck1Link();
             var goodTypeGroupId = $("#GoodType").val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
@@ -417,7 +439,7 @@
         });
 
         function OnChangeSourcePlant() {
-            $("#SourcePlantId").change(function () {
+            $("#SourcePlantId").change(function() {
                 ResetPbck1Link();
                 if ($("#SourcePlantId").length) {
                     var sourcePlant = $(this).find("option:selected").val();
@@ -425,7 +447,7 @@
                     //remove table
                     try {
                         RemoveTable();
-                    } catch (e) {
+                    } catch(e) {
 
                     }
                     if (sourcePlant == '') {
@@ -453,7 +475,7 @@
         }
 
 
-        $("#btnAddRow").click(function () {
+        $("#btnAddRow").click(function() {
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
             if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
@@ -470,7 +492,13 @@
                 $('#ModalCk5Material').modal('show');
                 return;
             }
-            ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                ajaxGetListMaterial('@Url.Action("GetListMaterialWaste", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+            } else {
+                ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+            }
+
 
             $('#btnSaveMaterial').show();
             $('#btnUpdateMaterial').hide();
@@ -481,7 +509,7 @@
 
             $('#Ck5UploadModal').modal('show');
         });
-        $("#btnSaveMaterial").click(function () {
+        $("#btnSaveMaterial").click(function() {
 
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
@@ -510,16 +538,26 @@
             materialInput.ConvertedUom = convertedUom;
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
-
             materialInput.ExGoodsType = goodTypeGroupId;
-            ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
-                AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', data);
 
-            });
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                materialInput.WasteStock = $('#uploadWasteStock').val();
+
+                ajaxValidateMaterial('@Url.Action("ValidateManualCk5Waste", "CK5")', { input: materialInput }, function(data) {
+                    AddRowWaste('@Url.Action("GetListMaterialWaste", "CK5")', data);
+
+                });
+            } else {
+                ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function(data) {
+                    AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', data);
+
+                });
+            }
+
 
         });
 
-        $("#uploadMaterialNumber").change(function () {
+        $("#uploadMaterialNumber").change(function() {
             if ($("#uploadMaterialNumber").length) {
                 var materialNumber = $(this).find("option:selected").val();
 
@@ -531,12 +569,17 @@
                 } else {
                     var sourcePlant = $("#uploadMaterialPlant").val(); // $("#SourcePlantId").find("option:selected").val();
 
-                    ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    if ('@Model.Ck5Type.ToString()' == "Waste") {
+                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffWaste", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    } else {
+                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    }
+
                 }
             }
         });
 
-        $("#btnUpdateMaterial").click(function () {
+        $("#btnUpdateMaterial").click(function() {
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
@@ -563,14 +606,22 @@
             materialInput.ConvertedUom = convertedUom;
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
-
             materialInput.ExGoodsType = goodTypeGroupId;
-            ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
-                UpdateRow(data);
-                //if (data.success) {
-                //    UpdateRow(data);
-                //}
-            });
+
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                materialInput.WasteStock = $('#uploadWasteStock').val();
+
+                ajaxValidateMaterial('@Url.Action("ValidateManualCk5Waste", "CK5")', { input: materialInput }, function(data) {
+                    UpdateRowWaste(data);
+
+                });
+            } else {
+                ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function(data) {
+                    UpdateRow(data);
+
+                });
+            }
+
 
         });
 
@@ -588,6 +639,8 @@
                 $('#ModalCk5Material').modal('show');
                 return;
             }
+
+
             ajaxGetListMaterial(url, { plantId: plant, goodTypeGroup: goodTypeGroupId }, materialnumber);
 
             $('#btnSaveMaterial').hide();
@@ -625,6 +678,8 @@
 
             $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
 
+            $('#uploadWasteStock').val(nRow.find("td").eq(20).html());
+
             ClearValidation();
 
             $("#lblTitleInputManual").text('Edit Input');
@@ -634,7 +689,7 @@
 
         }
 
-        $("#Ck5RefId").change(function () {
+        $("#Ck5RefId").change(function() {
             var refId = $("#Ck5RefId").val();
 
             if (refId != null) {
@@ -642,7 +697,7 @@
             }
         });
 
-        $("#IsFreeTextSource").on('change', function () {
+        $("#IsFreeTextSource").on('change', function() {
             var isFreeText = false;
             $('#IsFreeTextDestination').removeAttr("disabled");
             if ($(this).is(':checked')) {
@@ -658,14 +713,14 @@
                 type: 'GET',
                 url: url,
                 data: formData,
-                success: function (data) {
+                success: function(data) {
                     $("#divSourcePlant").html(data);
                     OnChangeSourcePlant();
                 }
             });
         }
 
-        $("#IsFreeTextDestination").on('change', function () {
+        $("#IsFreeTextDestination").on('change', function() {
             var isFreeText = false;
             $('#IsFreeTextSource').removeAttr("disabled");
             if ($(this).is(':checked')) {
@@ -680,7 +735,7 @@
                 type: 'GET',
                 url: url,
                 data: formData,
-                success: function (data) {
+                success: function(data) {
                     $("#divDestinationPlant").html(data);
                     OnChangeDestinationPlant();
                 }
@@ -688,7 +743,7 @@
 
         }
 
-        $("#Ck5ManualType").change(function () {
+        $("#Ck5ManualType").change(function() {
             if ($("#Ck5ManualType").length) {
                 var manualType = $(this).find("option:selected").val();
                 if (manualType == '@Enums.Ck5ManualType.Trial.ToString()') {
@@ -721,7 +776,7 @@
             }
         });
 
-        $("#IsReducePbck1Ck5Trial").on('change', function () {
+        $("#IsReducePbck1Ck5Trial").on('change', function() {
 
             if ($(this).is(':checked')) {
                 RemoveTable();
@@ -762,7 +817,7 @@
                     type: 'POST',
                     url: '@Url.Action("GetQuotaPbckItemManualTrial", "CK5")',
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
                         //alert(data.Pbck1Id);
                         if (data.Pbck1Id == null) {
                             $('#modalBodyMessage').text('Pbck1 Not Found');

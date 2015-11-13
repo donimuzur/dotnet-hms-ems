@@ -15,7 +15,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Note { get; set; }
 
         public Enums.ExGoodsType ExGoodsType { get; set; }
-       
+
+        public string WasteStock { get; set; }
     }
 
     public class Ck5MaterialGetForLackByParamInput

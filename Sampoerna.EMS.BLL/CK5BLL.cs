@@ -60,6 +60,7 @@ namespace Sampoerna.EMS.BLL
         private ILack1IncomeDetailService _lack1IncomeDetailService;
         private ILack2ItemService _lack2ItemService;
         private IBrandRegistrationService _brandRegistration;
+        private IWasteStockServices _wasteStockServices;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
@@ -108,6 +109,7 @@ namespace Sampoerna.EMS.BLL
             _lack1IncomeDetailService = new Lack1IncomeDetailService(_uow, _logger);
             _lack2ItemService = new Lack2ItemService(_uow, _logger);
             _brandRegistration = new BrandRegistrationService(_uow, _logger);
+            _wasteStockServices = new WasteStockServices(_uow, _logger);
         }
         
 
@@ -352,7 +354,8 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
                 return;
             
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
@@ -583,7 +586,76 @@ namespace Sampoerna.EMS.BLL
             return ValidateCk5MarketReturnMaterial(inputs).FirstOrDefault();
         }
 
+        private List<CK5MaterialOutput> ValidateCk5WasteMaterial(List<CK5MaterialInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<CK5MaterialOutput>();
 
+            foreach (var ck5MaterialInput in inputs)
+            {
+                messageList.Clear();
+
+                var output = Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
+
+
+                //validate
+                var dbBrand = _materialBll.GetByPlantIdAndStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                if (dbBrand == null)
+                    messageList.Add("Material Number Not Exist");
+               
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
+                    messageList.Add("Qty not valid");
+
+                if (!_uomBll.IsUomIdExist(ck5MaterialInput.Uom))
+                    messageList.Add("UOM not exist");
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
+                    messageList.Add("Convertion not valid");
+
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
+                    messageList.Add("UsdValue not valid");
+
+                if (ConvertHelper.IsNumeric(ck5MaterialInput.Qty)
+                    && ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
+                {
+                    var wasteStock = ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.WasteStock);
+                    var qty = ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Qty);
+                    var convertion = ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Convertion);
+
+                    if (wasteStock < (qty*convertion))
+                        messageList.Add("Waste Stock Quota Exceeded");
+                }
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                outputList.Add(output);
+            }
+
+
+            return outputList;
+        }
+
+        public CK5MaterialOutput ValidateCk5WasteMaterial(CK5MaterialInput input)
+        {
+            var messageList = new List<string>();
+            var inputs = new List<CK5MaterialInput>();
+            inputs.Add(input);
+            return ValidateCk5WasteMaterial(inputs).FirstOrDefault();
+        }
 
         private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType)
         {
@@ -3356,11 +3428,17 @@ namespace Sampoerna.EMS.BLL
                 }
                 if (input.Ck5Dto.CK5_TYPE != Enums.CK5Type.MarketReturn)
                 {
-                    if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
-                        dbData.PACKAGE_UOM_ID = "G";
+                    if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
+                    {
+                        ck5Item.CONVERTED_UOM = "G";
+                    }
                     else
-                        dbData.PACKAGE_UOM_ID = "L";
-                   
+                    {
+                        if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                            dbData.PACKAGE_UOM_ID = "G";
+                        else
+                            dbData.PACKAGE_UOM_ID = "L";
+                    }
                 }
                 //if(ck5Material.CONVERTED_QTY.HasValue)
                 //    tempTotal += ck5Material.CONVERTED_QTY.Value;
@@ -3805,7 +3883,8 @@ namespace Sampoerna.EMS.BLL
                     if (!ck5.REDUCE_TRIAL.HasValue || !ck5.REDUCE_TRIAL.Value)
                         continue;
                 }
-                else if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                else if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn
+                    || ck5.CK5_TYPE == Enums.CK5Type.Waste)
                     continue;
                 else if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
                     continue;
@@ -3935,6 +4014,14 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<GetListMaterialMarketReturnOutput>>(listBrand);
         }
 
+        public List<GetListMaterialMarketReturnOutput> GetListMaterialWaste(string plantId)
+        {
+            var listMaterial = _wasteStockServices.GetListByPlant(plantId);
+
+            return Mapper.Map<List<GetListMaterialMarketReturnOutput>>(listMaterial);
+        }
+
+
         private void ValidateCk5MaterialConvertedUom(CK5SaveInput input)
         {
             foreach (var ck5MaterialDto in input.Ck5Material)
@@ -3998,6 +4085,32 @@ namespace Sampoerna.EMS.BLL
             if (pbck1Id != 0)
                 return _pbck1Bll.GetById(pbck1Id);
             return null;
+        }
+
+        public WasteStockQuotaOutput GetWasteStockQuota(string plantId, string materialNumber)
+        {
+            var dbWaste = _wasteStockServices.GetByPlantAndMaterialNumber(plantId, materialNumber);
+            
+            //get from ck5 
+
+            var dbCk5 = _repository.Get(c => c.CK5_TYPE == Enums.CK5Type.Waste
+                                             && c.SOURCE_PLANT_ID == plantId &&
+                                             (c.STATUS_ID != Enums.DocumentStatus.Cancelled), null, "CK5_MATERIAL");
+
+            decimal wasteStockUsed =
+                dbCk5.Sum(
+                    c =>
+                        c.CK5_MATERIAL.Where(ck5Material => ck5Material.BRAND == materialNumber)
+                            .Sum(ck5Material => ck5Material.CONVERTED_QTY.HasValue ? ck5Material.CONVERTED_QTY.Value : 0));
+
+            var result = new WasteStockQuotaOutput();
+            result.WasteStock = ConvertHelper.ConvertDecimalToStringMoneyFormat(dbWaste.STOCK);
+            result.WasteStockUsed = ConvertHelper.ConvertDecimalToStringMoneyFormat(wasteStockUsed);
+            result.WasteStockRemaining = ConvertHelper.ConvertDecimalToStringMoneyFormat((dbWaste.STOCK - wasteStockUsed));
+            result.WasteStockRemainingCount = dbWaste.STOCK - wasteStockUsed;
+
+            return result;
+
         }
     }
 }

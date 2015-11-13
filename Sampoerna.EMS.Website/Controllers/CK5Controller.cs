@@ -277,6 +277,13 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
 
+        public ActionResult CK5Waste()
+        {
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Waste);
+            return View("CK5Waste", model);
+        }
+
+
         public ActionResult CK5MarketReturnCompleted()
         {
             var model = new CK5IndexViewModel();
@@ -495,6 +502,23 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CreateMarketReturn", model);
         }
 
+        public ActionResult CreateCk5Waste()
+        {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                //can't create CK5 Document
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("CK5Waste");
+            }
+            
+
+            var model = InitCreateCK5(Enums.CK5Type.Waste);
+            model.IsCk5Waste = true;
+            model.ConvertedUomManual = "Gram";
+            return View("Create", model);
+            
+        }
+
         [HttpPost]
         public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId, string sourceNppbkcId, string destPlantId, DateTime submissionDate, string goodTypeGroupId, Enums.CK5Type ck5Type)
         {
@@ -672,7 +696,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (model.UploadItemModels.Count > 0)
                     {
                         if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                            || model.Ck5Type == Enums.CK5Type.MarketReturn)
+                            || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.Waste)
                         {
 
                         }
@@ -1572,6 +1596,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 error = output.Message
             });
             
+        }
+
+        [HttpPost]
+        public JsonResult ValidateManualCk5Waste(CK5MaterialInput input)
+        {
+
+            var output = _ck5Bll.ValidateCk5WasteMaterial(input);
+            return Json(new
+            {
+                success = output.IsValid,
+                error = output.Message
+            });
+
         }
 
         #endregion
@@ -3781,6 +3818,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetListMaterialWaste(string plantId, string goodTypeGroup)
+        {
+            var result = _ck5Bll.GetListMaterialWaste(plantId);
+           
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetListMaterialMarketReturn(string plantId)
         {
             var result = _ck5Bll.GetListMaterialMarketReturn(plantId);
@@ -3797,10 +3842,23 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
             var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
 
-            //model.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
-            //model.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
+        
             return Json(model);
         }
+
+        [HttpPost]
+        public JsonResult GetMaterialHjeAndTariffWaste(string plantId, string materialNumber)
+        {
+
+            var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
+            var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
+
+            var wasteStock = _ck5Bll.GetWasteStockQuota(plantId, materialNumber);
+            model.StockRemaining = wasteStock.WasteStockRemaining;
+
+            return Json(model);
+        }
+
 
         [HttpPost]
         public JsonResult GetMaterialHjeAndTariffMarketReturn(string plantId, string materialNumber)

@@ -30,5 +30,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public Enums.ExGoodsType ExGoodsType { get; set; }
         public long? CK5_MATERIAL_ID { get; set; }
+
+        public string WasteStock { get; set; }
     }
 }
