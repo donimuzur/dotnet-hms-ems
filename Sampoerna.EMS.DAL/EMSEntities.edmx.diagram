@@ -251,6 +251,7 @@
         <AssociationConnector Association="EMSModel.FK_WASTE_STOCK_USER2" />
         <AssociationConnector Association="EMSModel.FK_WASTE_STOCK_ZAIDM_EX_MATERIAL" />
         <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_STOCK_T001W" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
