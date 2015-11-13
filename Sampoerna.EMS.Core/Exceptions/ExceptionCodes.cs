@@ -117,7 +117,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             Pbck1ProdPlanUploadInvalidParameter,
             
             [Description("Invalid workflow action type.")]
-            InvalidWorkflowActionType
+            InvalidWorkflowActionType,
+
+            [Description("User already have Plant.")]
+            UserHavePlantExist
         }
 
         /// <summary>
