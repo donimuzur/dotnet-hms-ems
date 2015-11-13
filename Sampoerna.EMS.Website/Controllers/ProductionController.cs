@@ -145,10 +145,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<ProductionDto>(model);
-             
+
                 data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
                 data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
-                
+
 
                 try
                 {
@@ -174,8 +174,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var errMsg = "";
 
-                foreach(var error in errorlist){
-                    errMsg = error.ErrorMessage +"\n";
+                foreach (var error in errorlist)
+                {
+                    errMsg = error.ErrorMessage + "\n";
                 }
                 AddMessageInfo(errMsg, Enums.MessageInfoType.Error
                            );
@@ -236,41 +237,41 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbProduction = _productionBll.GetById(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
                Convert.ToDateTime(model.ProductionDateX));
-
-            if (dbProduction == null)
-            {
-                ModelState.AddModelError("Production", "Data is not Found");
-                model = IniEdit(model);
-
-                return View("Edit", model);
-            }
-
-            if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX
-                || model.FaCode != model.FaCodeX || Convert.ToDateTime(model.ProductionDate) != Convert.ToDateTime(model.ProductionDateX))
-            {
-                var existingData = _productionBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
-                    Convert.ToDateTime(model.ProductionDate));
-                if (existingData != null)
-                {
-                    AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
-                    return RedirectToAction("Edit", "Production", new
-                    {
-                        companyCode = model.CompanyCode,
-                        plantWerk = model.PlantWerks,
-                        faCode = model.FaCode,
-                        productionDate = model.ProductionDate
-                    });
-                }
-            }
-
-            var dbPrductionNew = Mapper.Map<ProductionDto>(model);
-           
-            dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
-            dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
-            dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
-            
             try
             {
+                if (dbProduction == null)
+                {
+                    ModelState.AddModelError("Production", "Data is not Found");
+                    model = IniEdit(model);
+
+                    return View("Edit", model);
+                }
+
+                if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX
+                    || model.FaCode != model.FaCodeX || Convert.ToDateTime(model.ProductionDate) != Convert.ToDateTime(model.ProductionDateX))
+                {
+                    var existingData = _productionBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
+                        Convert.ToDateTime(model.ProductionDate));
+                    if (existingData != null)
+                    {
+                        AddMessageInfo("Data Already Exist", Enums.MessageInfoType.Warning);
+                        return RedirectToAction("Edit", "Production", new
+                        {
+                            companyCode = model.CompanyCode,
+                            plantWerk = model.PlantWerks,
+                            faCode = model.FaCode,
+                            productionDate = model.ProductionDate
+                        });
+                    }
+                }
+
+                var dbPrductionNew = Mapper.Map<ProductionDto>(model);
+
+                dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
+                dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
+                dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
+
+
                 if (!ModelState.IsValid)
                 {
                     var error = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
@@ -301,10 +302,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index");
 
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
-                    );
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
             }
 
             model = IniEdit(model);
@@ -469,7 +469,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                     var item = new ProductionUploadItems();
-                    
+
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
@@ -479,11 +479,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.Qty = dataRow[5];
                     item.Uom = dataRow[6];
                     item.ProductionDate = dataRow[7];
-                    
+
                     model.Add(item);
 
 
-                    
+
 
 
                 }
@@ -542,7 +542,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var oldFormId = "Daily_" + item.CompanyCode + "_" + item.PlantWerks + "_" + item.FaCode + "_" + productionDate.ToString("ddMMMyyyy");
 
-            foreach(var data in listHistory)
+            foreach (var data in listHistory)
             {
                 _changeHistoryBll.MoveHistoryToNewData(data, oldFormId);
             }

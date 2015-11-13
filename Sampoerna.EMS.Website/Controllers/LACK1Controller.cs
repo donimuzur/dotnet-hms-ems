@@ -601,7 +601,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.NppbkcCity = data.NppbkcCity;
             dMasterRow.NppbkcId = data.NppbkcId;
             dMasterRow.SubmissionDate = data.SubmissionDateDisplayString;
-            dMasterRow.CreatorName = data.ExcisableExecutiveCreator;
+            dMasterRow.CreatorName = data.ApprovedByPoa;
             dMasterRow.PrintTitle = printTitle;
             if (data.HeaderFooter != null)
             {

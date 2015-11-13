@@ -1475,6 +1475,11 @@ namespace Sampoerna.EMS.BLL
             rc.PeriodYear = input.PeriodYear;
 
             //format for noted
+            var uomWasteAmountDescription = _uomBll.GetById(input.WasteAmountUom);
+            input.WasteAmountUom = uomWasteAmountDescription.UOM_DESC;
+            var uomReturnDescription = _uomBll.GetById(input.ReturnAmountUom);
+            input.ReturnAmountUom = uomReturnDescription.UOM_DESC;
+
             var wasteNoted = GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, input.WasteAmountUom);
             var returnNoted = GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, input.ReturnAmountUom);
             rc.Noted = string.Join(Environment.NewLine, new List<string>() { wasteNoted, returnNoted }).Replace(Environment.NewLine, "<br />");
