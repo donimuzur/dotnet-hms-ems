@@ -9,7 +9,9 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -104,9 +106,46 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        private void ValidateWasteStock(WasteStockSaveInput input)
+        {
+            bool isNeedCheck = false;
+
+            if (input.WasteStockDto.WASTE_STOCK_ID == 0)
+            {
+                isNeedCheck = true;
+            }
+            else
+            {
+                var dbData = _repository.Get(c => c.WASTE_STOCK_ID == input.WasteStockDto.WASTE_STOCK_ID).FirstOrDefault();
+
+                if (dbData != null)
+                {
+                    if (dbData.WERKS != input.WasteStockDto.WERKS &&
+                        dbData.MATERIAL_NUMBER != input.WasteStockDto.MATERIAL_NUMBER)
+                    {
+                        //check is the data already exist in database
+                        isNeedCheck = true;
+                    }
+                }
+            }
+
+            if (isNeedCheck)
+            {
+                 var dbData =
+                    _repository.Get(
+                        c =>
+                            c.WERKS == input.WasteStockDto.WERKS &&
+                            c.MATERIAL_NUMBER == input.WasteStockDto.MATERIAL_NUMBER).FirstOrDefault();
+
+                if (dbData != null)
+                    throw new Exception(string.Format("Plant : {0}, and Material : {1} already exist.",
+                        input.WasteStockDto.WERKS, input.WasteStockDto.MATERIAL_NUMBER));
+            }
+        }
+
         public WasteStockDto SaveWasteStock(WasteStockSaveInput input)
         {
-            //ValidateWasteRole(input);
+            ValidateWasteStock(input);
 
             WASTE_STOCK dbData = null;
             if (input.WasteStockDto.WASTE_STOCK_ID > 0)
@@ -117,9 +156,9 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
                 //set changes history
-                //var origin = Mapper.Map<WasteRoleDto>(dbData);
+                var origin = Mapper.Map<WasteStockDto>(dbData);
 
-                //SetChangesHistory(origin, input.WasteRoleDto, input.UserId);
+                SetChangesHistory(origin, input.WasteStockDto, input.UserId);
 
                 Mapper.Map<WasteStockDto, WASTE_STOCK>(input.WasteStockDto, dbData);
 
@@ -135,8 +174,6 @@ namespace Sampoerna.EMS.BLL
                 Mapper.Map<WasteStockDto, WASTE_STOCK>(input.WasteStockDto, dbData);
                 _repository.Insert(dbData);
             }
-
-
 
             try
             {
@@ -160,6 +197,49 @@ namespace Sampoerna.EMS.BLL
 
             return Mapper.Map<WasteStockDto>(dbData);
 
+        }
+
+        private bool SetChangesHistory(WasteStockDto origin, WasteStockDto data, string userId)
+        {
+            bool isModified = false;
+
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("PLANT_ID", origin.WERKS == data.WERKS);
+            changesData.Add("MATERIAL_NUMBER", origin.MATERIAL_NUMBER == data.MATERIAL_NUMBER);
+            changesData.Add("STOCK", origin.STOCK == data.STOCK);
+
+            foreach (var listChange in changesData)
+            {
+                if (listChange.Value) continue;
+                var changes = new CHANGES_HISTORY();
+                changes.FORM_TYPE_ID = Enums.MenuList.WasteStock;
+                changes.FORM_ID = origin.WASTE_STOCK_ID.ToString();
+                changes.FIELD_NAME = listChange.Key;
+                changes.MODIFIED_BY = userId;
+                changes.MODIFIED_DATE = DateTime.Now;
+                switch (listChange.Key)
+                {
+                    case "PLANT_ID":
+                        changes.OLD_VALUE = origin.WERKS;
+                        changes.NEW_VALUE = data.WERKS;
+                        break;
+
+                    case "MATERIAL_NUMBER":
+                        changes.OLD_VALUE = origin.MATERIAL_NUMBER;
+                        changes.NEW_VALUE = data.MATERIAL_NUMBER;
+                        break;
+
+                    case "STOCK":
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.STOCK);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.STOCK);
+                        break;
+
+                }
+
+                _changesHistoryBll.AddHistory(changes);
+                isModified = true;
+            }
+            return isModified;
         }
     }
 }

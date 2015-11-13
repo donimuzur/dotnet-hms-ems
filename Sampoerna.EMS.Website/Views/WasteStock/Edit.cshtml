@@ -42,19 +42,22 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-4">Plant<span class="red">*</span></label>
+                                                    <label class="col-md-4">Plant</label>
                                                     <div class="col-md-8">
-                                                        @Html.DropDownListFor(model => model.PlantId, Model.PlantList, null, new { @class = "form-control selectpicker" })
+                                                        @Html.HiddenFor(model => model.PlantId)
+                                                        @Html.TextBoxFor(model => model.PlantDescription, new { @class = "form-control", @disabled = "disabled" })
+                                                        @*@Html.DropDownListFor(model => model.PlantId, Model.PlantList, null, new { @class = "form-control selectpicker" })*@
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-4">Material<span class="red">*</span></label>
+                                                    <label class="col-md-4">Material</label>
                                                     <div class="col-md-8">
                                                         @Html.HiddenFor(model => model.MaterialNumber)
-                                                        @Html.DropDownListFor(model => model.MaterialNumber, Model.MaterialNumberList, "Select", new { @id = "MaterialNumberForm", @class = "form-control" })
+                                                        @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control", @disabled = "disabled" })
+                                                        @*@Html.DropDownListFor(model => model.MaterialNumber, Model.MaterialNumberList, "Select", new { @id = "MaterialNumberForm", @class = "form-control" })*@
                                                         
                                                     </div>
                                                 </div>
@@ -73,7 +76,7 @@
 
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-4">Stock</label>
+                                                    <label class="col-md-4">Stock<span class="red">*</span></label>
                                                     <div class="col-md-8">
                                                         @Html.TextBoxFor(model => model.StockDisplay, new { @class = "form-control decimal" })
                                                     </div>
@@ -177,11 +180,11 @@
                 }
             }
 
-            if ($.isNumeric($('#StockDisplay').val()) == false) {
+            if ($.isNumeric($('#StockDisplay').val().replace(',', '')) == false) {
                 AddValidationClass(false, 'StockDisplay');
                 result = false;
             } else {
-                if (parseFloat($('#StockDisplay').val()) <= 0) {
+                if (parseFloat($('#StockDisplay').val().replace(',', '')) <= 0) {
                     AddValidationClass(false, 'StockDisplay');
                     result = false;
                 }
@@ -189,7 +192,7 @@
             
             if (!result) {
                 $('#collapseOne').removeClass('collapse');
-                $('#collapseOne').addClass('in');
+                $('#c   ollapseOne').addClass('in');
                 $("#collapseOne").css({ height: "auto" });
             }
 

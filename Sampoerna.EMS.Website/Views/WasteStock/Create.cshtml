@@ -50,9 +50,10 @@
                                                     <label class="col-md-4">Material<span class="red">*</span></label>
                                                     <div class="col-md-8">
                                                         @Html.HiddenFor(model => model.MaterialNumber)
-                                                        <select class="form-control" id="MaterialNumberForm">
+                                                        @Html.DropDownListFor(model => model.MaterialNumber, Model.MaterialNumberList, "Select", new { @id = "MaterialNumberForm", @class = "form-control" })
+                                                        @*<select class="form-control" id="MaterialNumberForm">
                                                             <option value="">Select</option>
-                                                        </select>
+                                                        </select>*@
                                                     </div>
                                                 </div>
                                             </div>
@@ -70,7 +71,7 @@
 
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-4">Stock</label>
+                                                    <label class="col-md-4">Stock<span class="red">*</span></label>
                                                     <div class="col-md-8">
                                                         @Html.TextBoxFor(model => model.StockDisplay, new { @class = "form-control decimal" })
                                                     </div>
@@ -149,6 +150,7 @@
             });
 
             OnChangePlant();
+            OnChangeMaterial();
         });
 
 
@@ -173,11 +175,11 @@
                 }
             }
             
-            if ($.isNumeric($('#StockDisplay').val()) == false) {
+            if ($.isNumeric($('#StockDisplay').val().replace(',','')) == false) {
                 AddValidationClass(false, 'StockDisplay');
                 result = false;
             } else {
-                if (parseFloat($('#StockDisplay').val()) <= 0) {
+                if (parseFloat($('#StockDisplay').val().replace(',', '')) <= 0) {
                     AddValidationClass(false, 'StockDisplay');
                     result = false;
                 }

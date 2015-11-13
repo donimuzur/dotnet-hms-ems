@@ -47,12 +47,14 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
+        
         private WasteStockFormViewModel SetListModel(WasteStockFormViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             
             model.PlantList = GlobalFunctions.GetPlantAll();
+            model.MaterialNumberList = GetMaterialList(model.PlantId);
 
             return model;
         }
@@ -63,6 +65,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model = SetListModel(model);
             return View("Create", model);
         }
+
         private SelectList GetMaterialList(string plantId)
         {
             var listMaterial = _wasteStockBll.GetListMaterialByPlant(plantId);
@@ -159,6 +162,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 catch (Exception ex)
                 {
                     AddMessageInfo("Save Failed : " + ex.Message, Enums.MessageInfoType.Error);
+                    model.MaterialNumberList = GetMaterialList(model.PlantId);
                 }
             }
 
