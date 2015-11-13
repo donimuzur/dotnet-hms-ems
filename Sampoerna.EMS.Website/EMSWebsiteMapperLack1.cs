@@ -143,6 +143,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
                 .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => (src.BeginingBalance - src.Usage + src.TotalIncome)))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
+                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Noted) ? src.Noted.Replace("<br />", Environment.NewLine) : ""))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
                 .ForMember(dest => dest.ProductionList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.Lack1ProductionDetail)))
