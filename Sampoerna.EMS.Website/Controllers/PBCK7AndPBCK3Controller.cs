@@ -165,6 +165,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.CreatorList = GlobalFunctions.GetCreatorList();
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return model;
 
         }
@@ -419,6 +420,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new Pbck7Pbck3CreateViewModel();
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
             try
             {
                 var existingData = _pbck7Pbck3Bll.GetDetailsPbck7ById(id);
@@ -474,6 +480,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Detail(int id)
         {
             var model = new Pbck7Pbck3CreateViewModel();
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
 
             try
             {
@@ -1998,6 +2009,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new Pbck3ViewModel();
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsPbck3", new { id });
+            }
+
             try
             {
                 var existingData = _pbck7Pbck3Bll.GetPbck3DetailsById(id);
@@ -2151,6 +2167,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult DetailPbck3(int id)
         {
             var model = new Pbck3ViewModel();
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsPbck3", new { id });
+            }
 
             try
             {
