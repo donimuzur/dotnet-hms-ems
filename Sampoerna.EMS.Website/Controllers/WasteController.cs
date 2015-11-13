@@ -164,6 +164,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
                 data.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
 
+                data.StampWasteQty = model.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(model.StampWasteQtyStr);
+
                 try
                 {
                     _wasteBll.Save(data, CurrentUser.USER_ID);
@@ -212,6 +214,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //Waste Stick
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
             model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
+            //stamp Waste
+            model.StampWasteQtyStr = model.StampWasteQty == null ? string.Empty : model.StampWasteQty.ToString();
 
             model = IniEdit(model);
 
@@ -270,6 +274,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //waste stick
             dbWasteNew.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
             dbWasteNew.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
+            //Stamp Waste
+            dbWasteNew.StampWasteQty = model.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(model.StampWasteQtyStr);
 
             try
             {
@@ -350,6 +356,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //Waste Stick
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
             model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
+            //stamp waste
+            model.StampWasteQtyStr = model.StampWasteQty == null ? string.Empty : model.StampWasteQty.ToString();
 
             model = InitDetail(model);
             return View(model);
@@ -458,9 +466,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.PackerRejectStickQty = dataRow[5];
                     item.DustWasteGramQty = dataRow[6];
                     item.FloorWasteGramQty = dataRow[7];
-                    item.DustWasteStickQty = dataRow[8];
-                    item.FloorWasteStickQty = dataRow[9];
-                    item.WasteProductionDate = dataRow[10]; 
+                    //item.DustWasteStickQty = dataRow[8];
+                    //item.FloorWasteStickQty = dataRow[9];
+                    item.StampWasteQty = dataRow[8];
+                    item.WasteProductionDate = dataRow[9]; 
                    
                     {
                         model.Add(item);

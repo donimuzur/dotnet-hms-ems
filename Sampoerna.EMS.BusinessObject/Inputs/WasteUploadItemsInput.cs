@@ -21,5 +21,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string FloorWasteGramQty { get; set; }
         public string DustWasteStickQty { get; set; }
         public string FloorWasteStickQty { get; set; }
+        public string StampWasteQty { get; set; }
     }
 }
