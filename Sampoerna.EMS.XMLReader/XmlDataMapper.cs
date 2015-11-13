@@ -81,11 +81,14 @@ namespace Sampoerna.EMS.XMLReader
             var errorCount = 0;
             var itemToInsert = 0;
             var fileName = string.Empty;
+            var needMoved = true;
             try
             {
                 var existingData = repo.Get();
                 foreach (var item in existingData)
                 {
+                    if (item is PRODUCTION || item is INVENTORY_MOVEMENT)
+                        needMoved = false;
                     if (item is LFA1)
                         continue;
 
@@ -149,7 +152,7 @@ namespace Sampoerna.EMS.XMLReader
                 fileName = MoveFile();
                 return new MovedFileOutput(fileName);
             }
-            fileName = MoveFile(true);
+            fileName = MoveFile(true,needMoved);
             return new MovedFileOutput(fileName, true);
 
             
@@ -186,7 +189,7 @@ namespace Sampoerna.EMS.XMLReader
             MoveFile();
         }
         
-        public string MoveFile(bool isError=false)
+        public string MoveFile(bool isError=false,bool isNeedMoving = true)
         {
             var filenameMoved = string.Empty;
             try
@@ -205,8 +208,8 @@ namespace Sampoerna.EMS.XMLReader
                 var destPath = Path.Combine(archievePath, sourcefileName);
                 if (File.Exists(destPath))
                     return null;
-
-                File.Move(sourcePath, destPath);
+                if(isNeedMoving)
+                    File.Move(sourcePath, destPath);
                 return sourcefileName;
             }
             catch (Exception ex)
