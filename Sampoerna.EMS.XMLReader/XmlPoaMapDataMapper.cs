@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 
 namespace Sampoerna.EMS.XMLReader
@@ -57,7 +58,7 @@ namespace Sampoerna.EMS.XMLReader
 
         }
 
-        public string InsertToDatabase()
+        public MovedFileOutput InsertToDatabase()
         {
             return _xmlMapper.InsertToDatabase<POA_MAP>(Items);
         }

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 
 namespace Sampoerna.EMS.XMLReader
@@ -16,12 +17,12 @@ namespace Sampoerna.EMS.XMLReader
         private IXmlDataReader reader = null;
         private readonly string inboundPath = ConfigurationManager.AppSettings["XmlInboundPath"];
         private string[] xmlfiles = null;
-        public List<string> filesMoved;
+        public List<MovedFileOutput> filesMoved;
         public Service()
         {
             
             xmlfiles = Directory.GetFiles(inboundPath).OrderBy(x => x).ToArray();
-            filesMoved = new List<string>();
+            filesMoved = new List<MovedFileOutput>();
         }
 
         private IXmlDataReader XmlReaderFactoryDaily(string xmlfile)
@@ -252,7 +253,7 @@ namespace Sampoerna.EMS.XMLReader
                         if (reader != null)
                         {
                             var fileIsMoved = reader.InsertToDatabase();
-                            if (!string.IsNullOrEmpty(fileIsMoved))
+                            if (!string.IsNullOrEmpty(fileIsMoved.FileName) && fileIsMoved.IsError)
                             {
                                 filesMoved.Add(fileIsMoved);
                             }

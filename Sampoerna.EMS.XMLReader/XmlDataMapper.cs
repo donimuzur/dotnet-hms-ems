@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Configuration;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
@@ -74,17 +75,20 @@ namespace Sampoerna.EMS.XMLReader
            
         }
 
-        public string InsertToDatabase<T>(List<T> items) where T : class
+        public MovedFileOutput InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
             var errorCount = 0;
             var itemToInsert = 0;
             var fileName = string.Empty;
+            var needMoved = true;
             try
             {
                 var existingData = repo.Get();
                 foreach (var item in existingData)
                 {
+                    if (item is PRODUCTION || item is INVENTORY_MOVEMENT)
+                        needMoved = false;
                     if (item is LFA1)
                         continue;
 
@@ -146,15 +150,12 @@ namespace Sampoerna.EMS.XMLReader
             if (errorCount == 0 && itemToInsert > 0 && Errors.Count == 0)
             {
                 fileName = MoveFile();
-                return fileName;
+                return new MovedFileOutput(fileName);
             }
-            else
-            {
-                fileName = MoveFile(true);
-                return fileName;
-            }
+            fileName = MoveFile(true,needMoved);
+            return new MovedFileOutput(fileName, true);
 
-            return null;
+            
 
         }
         public void InsertOrUpdate<T>(T entity) where T: class 
@@ -188,7 +189,7 @@ namespace Sampoerna.EMS.XMLReader
             MoveFile();
         }
         
-        public string MoveFile(bool isError=false)
+        public string MoveFile(bool isError=false,bool isNeedMoving = true)
         {
             var filenameMoved = string.Empty;
             try
@@ -207,8 +208,8 @@ namespace Sampoerna.EMS.XMLReader
                 var destPath = Path.Combine(archievePath, sourcefileName);
                 if (File.Exists(destPath))
                     return null;
-
-                File.Move(sourcePath, destPath);
+                if(isNeedMoving)
+                    File.Move(sourcePath, destPath);
                 return sourcefileName;
             }
             catch (Exception ex)
@@ -311,5 +312,17 @@ namespace Sampoerna.EMS.XMLReader
 
         }
 
+    }
+
+    public class FileStatus
+    {
+        public string FileName { get; set; }
+        public bool IsError { get; set; }
+
+        public FileStatus(string fileName, bool isError = false)
+        {
+            this.FileName = fileName;
+            this.IsError = isError;
+        }
     }
 }
