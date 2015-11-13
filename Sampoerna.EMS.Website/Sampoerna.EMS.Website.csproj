@@ -587,6 +587,7 @@
     <Content Include="Content\assets\images\sort_desc_disabled.png" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.min.css" />
     <Content Include="Content\css\lack1preview.css" />
     <Content Include="Content\css\main.min.css" />
@@ -1258,6 +1259,9 @@
     <Content Include="Views\CK5\_CK5InformationEditMarketReturn.cshtml" />
     <Content Include="Views\CK5\_CK5InformationDetailsMarketReturn.cshtml" />
     <Content Include="Views\PBCK4\Detail.cshtml" />
+    <Content Include="Views\LACK2\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\DetailsPbck3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1433,7 +1437,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

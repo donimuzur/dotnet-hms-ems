@@ -7,7 +7,7 @@
 @section styles{
     <link href="~/Content/chosen.min.css" rel="stylesheet" />
 }
-@using (Html.BeginForm("Edit", "UserPlantMap", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+@using (Html.BeginForm("Edit", "UserPlantMap", null, FormMethod.Post, new { @class = "form-excise", role = "form", @id="FormEdit" }))
 {
 
     <div class="container-wrap title-page">
@@ -15,7 +15,7 @@
             <div class="col-sm-12">
                 <h3>User Plant Map</h3>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
+                    <input type="button" class="btn btn-blue" value="Save" onclick="clickSubmit()" />
                     @{
                         var isActive = Model.UserPlantMap.IsActive == "Yes" ? true : false; 
                     }
@@ -61,7 +61,6 @@
                                                 <div class="col-md-6">
                                                     @Html.DropDownList("select-nppbck", Model.Nppbkcs, new { @id = "select-nppbkc-id", @class = "chosen form-control", multiple = "multiple" })
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -202,13 +201,13 @@
 
         $('.chosen').on('change', function(evt, params) {
             ViewPlant(params.selected);
-
+            
             if (params.deselected) {
                 $('.' + params.deselected).remove();
                 var arrlength = plantlist.length;
                 var tempArray = [];
                 for (var j = 0; j < arrlength; j++) {
-                    var m = plantlist[j].NPPBKC_ID;
+                    var m = plantlist[j].IS_IMPORT_ID ? plantlist[j].NPPBKC_IMPORT_ID : plantlist[j].NPPBKC_ID;
                     if (m != params.deselected) {
                         tempArray.push(plantlist[j]);
                     }
@@ -238,6 +237,9 @@
                         }
                     }
                 }
+                
+                //$('#NpbkcHiddeds').val($('#NpbkcHiddeds').val().replace(";" + params.deselected, ""));
+                
             }
 
         });
@@ -284,7 +286,10 @@
 
         function SetPlantList(data, index) {
             var isChecked = (data.IsChecked != null && data.IsChecked != undefined) == true ? 'Checked' : '';
-            var view = '<div class="' + data.NPPBCK_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' +
+            var view = '<div class="' + data.NPPBCK_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' + 
+                '<input id="Plants_' + index + '__NPPBKC_ID" name="Plants[' + index + '].NPPBKC_ID" type="hidden" value="' + data.NPPBKC_ID + '">' +
+                '<input id="Plants_' + index + '__NPPBKC_IMPORT_ID" name="Plants[' + index + '].NPPBKC_IMPORT_ID" type="hidden" value="' + data.NPPBKC_IMPORT_ID + '">' +
+                '<input id="Plants_' + index + '__IS_IMPORT_ID" name="Plants[' + index + '].IS_IMPORT_ID" type="hidden" value="' + data.IS_IMPORT_ID + '">' +
                 '<input id="plants_' + index + '__checkbox"  onchange="setChecked(' + index + ', $(this))" type="checkbox"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked" ' + isChecked + '>' +
                 data.WERKS + '-' + data.NAME1 + '</div>';
             return view;
@@ -303,5 +308,10 @@
         var confirmDeletePOA = function () {
             $('#btn-delete-poa').click();
         };
+        
+        function clickSubmit() {
+            $('#FormEdit').submit();
+        }
+        
     </script>
 }

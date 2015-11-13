@@ -154,7 +154,7 @@
                 var arrlength = plantlist.length;
                 var tempArray = [];
                 for (var j = 0; j < arrlength; j++) {
-                    var m =plantlist[j].NPPBKC_ID;
+                    var m = plantlist[j].IS_IMPORT_ID ? plantlist[j].NPPBKC_IMPORT_ID : plantlist[j].NPPBKC_ID;
                     if (m != params.deselected) {
                         tempArray.push(plantlist[j]);
                     }
@@ -182,9 +182,12 @@
         });
 
         function SetPlantList(data, index) {
-            
-            var view = '<div class="' + data.NPPBKC_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' +
-                '<input  onchange="setChecked(' + index + ', $(this))" type="checkbox"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked">' +
+            var isChecked = (data.IsChecked != null && data.IsChecked != undefined) == true ? 'Checked' : '';
+            var view = '<div class="' + data.NPPBCK_ID + '"><input id="Plants_' + index + '__WERKS" name="Plants[' + index + '].WERKS" type="hidden" value="' + data.WERKS + '">' +
+                '<input id="Plants_' + index + '__NPPBKC_ID" name="Plants[' + index + '].NPPBKC_ID" type="hidden" value="' + data.NPPBKC_ID + '">' +
+                '<input id="Plants_' + index + '__NPPBKC_IMPORT_ID" name="Plants[' + index + '].NPPBKC_IMPORT_ID" type="hidden" value="' + data.NPPBKC_IMPORT_ID + '">' +
+                '<input id="Plants_' + index + '__IS_IMPORT_ID" name="Plants[' + index + '].IS_IMPORT_ID" type="hidden" value="' + data.IS_IMPORT_ID + '">' +
+                '<input id="plants_' + index + '__checkbox"  onchange="setChecked(' + index + ', $(this))" type="checkbox"><input type="hidden" id="Plants_' + index + '__IsChecked" name="Plants[' + index + '].IsChecked" ' + isChecked + '>' +
                 data.WERKS + '-' + data.NAME1 + '</div>';
             return view;
         }

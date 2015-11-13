@@ -10,4 +10,12 @@
     {
         public string NppbkcId { get; set; }
     }
+
+    public class UserPlantMapGetByUserPlantNppbkcIdParamInput
+    {
+        public string NppbkcId { get; set; }
+        public string UserId { get; set; }
+        public string PlantId { get; set; }
+
+    }
 }

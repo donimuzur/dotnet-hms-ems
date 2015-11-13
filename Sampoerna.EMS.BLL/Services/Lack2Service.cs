@@ -292,8 +292,6 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
             }
 
-            //queryFilter = input.IsOpenDocList ? queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed) : queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
-
             if (input.UserRole == Enums.UserRole.POA)
             {
                 queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft
