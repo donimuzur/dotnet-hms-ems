@@ -59,6 +59,17 @@
                         {
                             @Html.HiddenFor(model => model.SourcePlantId)
                         }
+                        else if (Model.IsDomesticAlcohol)
+                        {
+                            @Html.HiddenFor(model => model.SourceNppbkcId)
+                            @Html.HiddenFor(model => model.SourceCompanyCode)
+                            @Html.HiddenFor(model => model.SourceKppbcName)
+                            @Html.HiddenFor(model => model.SourcePlantName)
+                            @*else
+                                {*@
+                            @Html.HiddenFor(model => model.SourceCompanyName)
+                            @Html.HiddenFor(model => model.SourceAddress)
+                        }
                         else
                         {
                             @Html.HiddenFor(model => model.SourceNpwp)

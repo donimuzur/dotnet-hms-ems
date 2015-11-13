@@ -461,6 +461,7 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_TIS_TO_TIS" Type="bit" />
+          <Property Name="DOCUMENT_NOTED" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -1156,6 +1157,7 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="STAMP_WASTE_QTY" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="WASTE_ROLE">
           <Key>
@@ -4539,7 +4541,6 @@
             <End Role="CK1" EntitySet="CK1" />
             <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
           </AssociationSet>
-          <EntitySet Name="WASTE" EntityType="EMSModel.WASTE" />
           <EntitySet Name="PBCK7_ITEM" EntityType="EMSModel.PBCK7_ITEM" />
           <AssociationSet Name="FK_PBCK7_ITEM_PBCK7" Association="EMSModel.FK_PBCK7_ITEM_PBCK7">
             <End Role="PBCK7" EntitySet="PBCK7" />
@@ -4657,6 +4658,7 @@
             <End Role="T001W" EntitySet="T001W" />
             <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
           </AssociationSet>
+          <EntitySet Name="WASTE" EntityType="EMSModel.WASTE" />
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -6716,6 +6718,7 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="IS_TIS_TO_TIS" Type="Boolean" />
+          <Property Name="DOCUMENT_NOTED" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -7759,31 +7762,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="WASTE">
-          <Key>
-            <PropertyRef Name="COMPANY_CODE" />
-            <PropertyRef Name="WERKS" />
-            <PropertyRef Name="FA_CODE" />
-            <PropertyRef Name="WASTE_PROD_DATE" />
-          </Key>
-          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="MARKER_REJECT_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="PACKER_REJECT_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="WASTE_PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="DUST_WASTE_GRAM_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="FLOOR_WASTE_GRAM_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="DUST_WASTE_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="FLOOR_WASTE_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="PBCK7_ITEM">
           <Key>
             <PropertyRef Name="PBCK7_ITEM_ID" />
@@ -8125,7 +8103,7 @@
           <Property Name="BUNDLE" Type="Int32" />
           <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="MATDOC" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MATDOC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
@@ -8296,6 +8274,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="WASTE">
+          <Key>
+            <PropertyRef Name="COMPANY_CODE" />
+            <PropertyRef Name="WERKS" />
+            <PropertyRef Name="FA_CODE" />
+            <PropertyRef Name="WASTE_PROD_DATE" />
+          </Key>
+          <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_DESC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="MARKER_REJECT_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PACKER_REJECT_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="WASTE_PROD_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DUST_WASTE_GRAM_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="FLOOR_WASTE_GRAM_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DUST_WASTE_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="FLOOR_WASTE_STICK_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="STAMP_WASTE_QTY" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9141,6 +9145,7 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="DOCUMENT_NOTED" ColumnName="DOCUMENT_NOTED" />
                 <ScalarProperty Name="IS_TIS_TO_TIS" ColumnName="IS_TIS_TO_TIS" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
@@ -9595,29 +9600,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="WASTE">
-            <EntityTypeMapping TypeName="EMSModel.WASTE">
-              <MappingFragment StoreEntitySet="WASTE">
-                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="FLOOR_WASTE_STICK_QTY" ColumnName="FLOOR_WASTE_STICK_QTY" />
-                <ScalarProperty Name="DUST_WASTE_STICK_QTY" ColumnName="DUST_WASTE_STICK_QTY" />
-                <ScalarProperty Name="FLOOR_WASTE_GRAM_QTY" ColumnName="FLOOR_WASTE_GRAM_QTY" />
-                <ScalarProperty Name="DUST_WASTE_GRAM_QTY" ColumnName="DUST_WASTE_GRAM_QTY" />
-                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
-                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
-                <ScalarProperty Name="WASTE_PROD_DATE" ColumnName="WASTE_PROD_DATE" />
-                <ScalarProperty Name="PACKER_REJECT_STICK_QTY" ColumnName="PACKER_REJECT_STICK_QTY" />
-                <ScalarProperty Name="MARKER_REJECT_STICK_QTY" ColumnName="MARKER_REJECT_STICK_QTY" />
-                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
-                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PBCK7_ITEM">
             <EntityTypeMapping TypeName="EMSModel.PBCK7_ITEM">
               <MappingFragment StoreEntitySet="PBCK7_ITEM">
@@ -9776,6 +9758,30 @@
                 <ScalarProperty Name="MATERIAL_NUMBER" ColumnName="MATERIAL_NUMBER" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
                 <ScalarProperty Name="WASTE_STOCK_ID" ColumnName="WASTE_STOCK_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WASTE">
+            <EntityTypeMapping TypeName="EMSModel.WASTE">
+              <MappingFragment StoreEntitySet="WASTE">
+                <ScalarProperty Name="STAMP_WASTE_QTY" ColumnName="STAMP_WASTE_QTY" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="FLOOR_WASTE_STICK_QTY" ColumnName="FLOOR_WASTE_STICK_QTY" />
+                <ScalarProperty Name="DUST_WASTE_STICK_QTY" ColumnName="DUST_WASTE_STICK_QTY" />
+                <ScalarProperty Name="FLOOR_WASTE_GRAM_QTY" ColumnName="FLOOR_WASTE_GRAM_QTY" />
+                <ScalarProperty Name="DUST_WASTE_GRAM_QTY" ColumnName="DUST_WASTE_GRAM_QTY" />
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="WASTE_PROD_DATE" ColumnName="WASTE_PROD_DATE" />
+                <ScalarProperty Name="PACKER_REJECT_STICK_QTY" ColumnName="PACKER_REJECT_STICK_QTY" />
+                <ScalarProperty Name="MARKER_REJECT_STICK_QTY" ColumnName="MARKER_REJECT_STICK_QTY" />
+                <ScalarProperty Name="BRAND_DESC" ColumnName="BRAND_DESC" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

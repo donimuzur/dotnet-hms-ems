@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
 {
     public  interface IXmlDataReader
     {
-        string InsertToDatabase();
+        MovedFileOutput InsertToDatabase();
 
         List<string> GetErrorList();
     }

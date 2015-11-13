@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
@@ -396,8 +397,8 @@ namespace Sampoerna.EMS.XMLReader
              
         }
 
-      
-        public string InsertToDatabase()
+
+        public MovedFileOutput InsertToDatabase()
         {
             
             return _xmlMapper.InsertToDatabase<CK5>(Items);
