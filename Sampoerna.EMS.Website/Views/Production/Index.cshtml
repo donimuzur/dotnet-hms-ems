@@ -7,8 +7,10 @@
         <div class="col-sm-12">
             <h3>Daily Production List</h3>
             <div class="action-button new">
-                <a href="@Url.Action("Create", "Production")"><button class="btn btn-blue">NEW</button></a>
-                <a href="@Url.Action("UploadManualProduction", "Production")"><button class="btn btn-blue">UPLOAD</button></a>
+                @if (Model.IsNotViewer){
+                    <a href="@Url.Action("Create", "Production")"><button class="btn btn-blue">NEW</button></a>
+                    <a href="@Url.Action("UploadManualProduction", "Production")"><button class="btn btn-blue">UPLOAD</button></a>
+                }
             </div>
         </div>
     </div>

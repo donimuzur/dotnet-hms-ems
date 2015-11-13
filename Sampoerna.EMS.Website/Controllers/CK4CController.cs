@@ -87,7 +87,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Ck4CDocument,
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager,
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
                 IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
 
@@ -261,6 +261,12 @@ namespace Sampoerna.EMS.Website.Controllers
         #region create Document List
         public ActionResult Ck4CCreateDocumentList()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("DocumentList");
+            }
+
             var model = new Ck4CIndexDocumentListViewModel
             {
                 MainMenu = _mainMenu,

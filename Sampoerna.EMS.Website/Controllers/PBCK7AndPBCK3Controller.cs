@@ -164,7 +164,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetPlantAll();
             model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.CreatorList = GlobalFunctions.GetCreatorList();
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return model;
 
@@ -306,9 +306,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
-                AddMessageInfo("Can't create PBCK-7 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create PBCK-7 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
 
