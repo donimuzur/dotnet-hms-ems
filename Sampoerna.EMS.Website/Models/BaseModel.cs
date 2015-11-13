@@ -28,6 +28,6 @@ namespace Sampoerna.EMS.Website.Models
         public List<string> MessageBody { get; set; }
 
         public bool IsShowNewButton { get; set; }
-
+        public bool IsNotViewer { get; set; }
     }
 }
