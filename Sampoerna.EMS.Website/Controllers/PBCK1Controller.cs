@@ -411,7 +411,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     DocumentType = Enums.Pbck1DocumentType.OpenDocument
 
                 },
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager,
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
             return View("Index", model);
         }
@@ -453,6 +454,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbck1Data == null)
             {
                 return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
             }
 
             var model = new Pbck1ItemViewModel();
@@ -966,7 +972,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 SearchInput = new Pbck1FilterViewModel()
                 {
                     DocumentType = Enums.Pbck1DocumentType.CompletedDocument
-                }
+                },
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
             return View("CompletedDocument", model);
         }

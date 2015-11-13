@@ -143,6 +143,8 @@
     <Compile Include="UserBLL.cs" />
     <Compile Include="VirtualMappingPlantBLL.cs" />
     <Compile Include="WasteBLL.cs" />
+    <Compile Include="WasteRoleBLL.cs" />
+    <Compile Include="WasteStockBLL.cs" />
     <Compile Include="WorkflowBLL.cs" />
     <Compile Include="WorkflowHistoryBLL.cs" />
     <Compile Include="WorkflowSettingBLL.cs" />
