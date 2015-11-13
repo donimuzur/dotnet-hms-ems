@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Configuration;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
@@ -74,7 +75,7 @@ namespace Sampoerna.EMS.XMLReader
            
         }
 
-        public string InsertToDatabase<T>(List<T> items) where T : class
+        public MovedFileOutput InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
             var errorCount = 0;
@@ -146,15 +147,12 @@ namespace Sampoerna.EMS.XMLReader
             if (errorCount == 0 && itemToInsert > 0 && Errors.Count == 0)
             {
                 fileName = MoveFile();
-                return fileName;
+                return new MovedFileOutput(fileName);
             }
-            else
-            {
-                fileName = MoveFile(true);
-                return fileName;
-            }
+            fileName = MoveFile(true);
+            return new MovedFileOutput(fileName, true);
 
-            return null;
+            
 
         }
         public void InsertOrUpdate<T>(T entity) where T: class 
@@ -311,5 +309,17 @@ namespace Sampoerna.EMS.XMLReader
 
         }
 
+    }
+
+    public class FileStatus
+    {
+        public string FileName { get; set; }
+        public bool IsError { get; set; }
+
+        public FileStatus(string fileName, bool isError = false)
+        {
+            this.FileName = fileName;
+            this.IsError = isError;
+        }
     }
 }
