@@ -92,6 +92,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.PBCK4;
             model.CurrentMenu = PageInfo;
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             //var listPbck4 = _ck5Bll.GetAll();
             //model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
@@ -275,6 +276,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Details(int id)
         {
             var model = new Pbck4FormViewModel();
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", "PBCK4", new { @id = model.Pbck4Id });
+            }
 
             try
             {
@@ -487,6 +493,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(int id)
         {
             var model = new Pbck4FormViewModel();
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", "PBCK4", new { @id = model.Pbck4Id });
+            }
 
             try
             {

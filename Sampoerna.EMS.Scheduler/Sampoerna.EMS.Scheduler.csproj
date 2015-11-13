@@ -119,6 +119,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">
+      <Project>{3C89FDD1-A506-4047-89E3-40708CF6B2C5}</Project>
+      <Name>Sampoerna.EMS.BusinessObject</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.Contract\Sampoerna.EMS.Contract.csproj">
       <Project>{7f4a15c1-8f58-49ea-ba04-0d7ea572954b}</Project>
       <Name>Sampoerna.EMS.Contract</Name>

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
@@ -161,7 +162,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public string InsertToDatabase()
+        public MovedFileOutput InsertToDatabase()
         {
             return _xmlMapper.InsertToDatabase<ZAIDM_EX_BRAND>(Items);
        
