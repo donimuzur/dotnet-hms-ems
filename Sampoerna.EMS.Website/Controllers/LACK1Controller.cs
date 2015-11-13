@@ -95,7 +95,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserRole = curUser.UserRole,
                     UserId = curUser.USER_ID
                 })),
-                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager,
+                IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("Index", data);
@@ -152,7 +153,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserRole = curUser.UserRole,
                     UserId = curUser.USER_ID
                 })),
-                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager,
+                IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("ListByPlant", data);
@@ -451,8 +453,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<Lack1CompletedDocumentData>>(_lack1Bll.GetCompletedDocumentByParam(new Lack1GetByParamInput()))
-
+                Details = Mapper.Map<List<Lack1CompletedDocumentData>>(_lack1Bll.GetCompletedDocumentByParam(new Lack1GetByParamInput())),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("ListCompletedDocument", data);
@@ -698,6 +700,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (lack1Data == null)
             {
                 return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                //redirect to details for approval/rejected
+                return RetDetails(lack1Data, true);
             }
 
             if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||

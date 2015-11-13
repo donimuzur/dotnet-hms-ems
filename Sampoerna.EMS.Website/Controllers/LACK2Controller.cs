@@ -98,6 +98,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.Details = dbData;
             model.FilterActionController = "FilterOpenDocument";
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return View("Index", model);
         }
@@ -156,6 +157,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MenuLack2CompletedDocument = "active";
             model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return View("Index", model);
         }
 
@@ -261,6 +263,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (lack2Data == null)
             {
                 return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
             }
 
             if (CurrentUser.UserRole == Enums.UserRole.Manager)
@@ -469,6 +476,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (lack1Data == null)
             {
                 return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
             }
 
             var model = InitDetailModel(lack1Data);
