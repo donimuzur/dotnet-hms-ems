@@ -911,6 +911,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new CK5FormViewModel();
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsView", new { id });
+            }
+
             try
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
@@ -1182,6 +1187,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new CK5FormViewModel();
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsView", new { id });
+            }
+
             try
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
@@ -1194,11 +1204,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
-                    if (CurrentUser.UserRole == Enums.UserRole.Viewer)
-                    {
-                        return RedirectToAction("DetailsView", new { id });
-                    }
-
                     model.MainMenu = Enums.MenuList.CK5MRETURN;
                     model.IsMarketReturn = true;
 
