@@ -461,6 +461,7 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_TIS_TO_TIS" Type="bit" />
+          <Property Name="DOCUMENT_NOTED" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -1486,7 +1487,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+        <Association Name="FK_CHANGES_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3350,7 +3351,7 @@
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
@@ -6716,6 +6717,7 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="IS_TIS_TO_TIS" Type="Boolean" />
+          <Property Name="DOCUMENT_NOTED" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -9141,6 +9143,7 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="DOCUMENT_NOTED" ColumnName="DOCUMENT_NOTED" />
                 <ScalarProperty Name="IS_TIS_TO_TIS" ColumnName="IS_TIS_TO_TIS" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
