@@ -163,6 +163,7 @@ namespace Sampoerna.EMS.BLL
             data.GOV_STATUS = null;
             data.STATUS = Enums.DocumentStatus.Draft;
             data.CREATED_DATE = DateTime.Now;
+            data.IS_TIS_TO_TIS = input.IsTisToTis;
 
             //set from input, exclude on mapper
             data.CREATED_BY = input.UserId;
@@ -328,6 +329,7 @@ namespace Sampoerna.EMS.BLL
                     dbData.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
                 }
                 dbData.NOTED = generatedData.Data.Noted;
+                dbData.DOCUMENT_NOTED = generatedData.Data.DocumentNoted;
             }
             else
             {
@@ -1361,20 +1363,7 @@ namespace Sampoerna.EMS.BLL
                 SupplierPlantId = input.SupplierPlantId,
                 BeginingBalance = 0 //set default
             };
-
-            //Set Income List by selection Criteria
-            //from CK5 data
-            rc = SetIncomeListBySelectionCriteria(rc, input);
-
-            if (rc.IncomeList.Count == 0)
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
-                    Data = null
-                };
-
+            
             //set begining balance
             rc = SetBeginingBalanceBySelectionCritera(rc, input);
 
@@ -1391,6 +1380,19 @@ namespace Sampoerna.EMS.BLL
                     Data = null
                 };
             }
+
+            //Set Income List by selection Criteria
+            //from CK5 data
+            rc = SetIncomeListBySelectionCriteria(rc, input);
+
+            if (rc.IncomeList.Count == 0)
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
+                    Data = null
+                };
 
             var plantIdList = new List<string>();
             if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
@@ -1772,6 +1774,10 @@ namespace Sampoerna.EMS.BLL
             var ck5Input = Mapper.Map<Ck5GetForLack1ByParamInput>(input);
             var nppbckData = _nppbkcService.GetById(input.NppbkcId);
             ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
+
+            //pbck-1 decree id list
+            ck5Input.Pbck1DecreeIdList = rc.Pbck1List.Select(d => d.Pbck1Id).ToList();
+
             var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
             rc.IncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
             if (ck5Data.Count > 0)
@@ -1901,7 +1907,8 @@ namespace Sampoerna.EMS.BLL
                 NppbkcId = input.NppbkcId,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
-                PlantIdList = plantIdList
+                PlantIdList = plantIdList, 
+                IsTisToTis = input.IsTisToTis
             }, stoReceiverNumberList);
 
             if (getInventoryMovementByParamOutput.IncludeInCk5List.Count <= 0)
@@ -1947,13 +1954,15 @@ namespace Sampoerna.EMS.BLL
                 NppbkcId = input.NppbkcId,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
-                PlantIdList = input.PlantIdList
+                PlantIdList = input.PlantIdList,
+                IsTisToTis = input.IsTisToTis
             };
 
             var prevReceivingParamInput = new InvMovementGetReceivingByParamInput()
             {
                 NppbkcId = input.NppbkcId,
-                PlantIdList = input.PlantIdList
+                PlantIdList = input.PlantIdList,
+                IsTisToTis = input.IsTisToTis
             };
 
             if (input.PeriodMonth == 1)
