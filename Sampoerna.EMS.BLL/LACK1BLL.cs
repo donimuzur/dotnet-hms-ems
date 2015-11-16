@@ -1431,10 +1431,22 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 //normal report, normal logic
-                var prodDataOut = SetProductionList(rc, input, plantIdList, invMovementOutput);
-                if (!prodDataOut.Success) return prodDataOut;
+                if (invMovementOutput.IncludeInCk5List.Count == 0)
+                {
+                    //no usage receiving
+                    var prodDataOut = SetProductionListWithoutUsageReceiving(rc, input, plantIdList);
+                    if (!prodDataOut.Success) return prodDataOut;
 
-                rc = prodDataOut.Data;
+                    rc = prodDataOut.Data;
+                }
+                else
+                {
+                    var prodDataOut = SetProductionList(rc, input, plantIdList, invMovementOutput);
+                    if (!prodDataOut.Success) return prodDataOut;
+
+                    rc = prodDataOut.Data;
+                }
+                
             }
             
             rc.PeriodMonthId = input.PeriodMonth;
@@ -1636,6 +1648,180 @@ namespace Sampoerna.EMS.BLL
                         Math.Round(
                             ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
                         }
+                    }
+                }
+
+                productionList.Add(itemToInsert);
+            }
+
+            rc.ProductionList = productionList;
+            rc.ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList);
+
+            //calculate summary by UOM ID
+            rc.SummaryProductionList = GetSummaryGroupedProductionList(productionList);
+
+            return new Lack1GeneratedOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty,
+                Data = rc
+            };
+        }
+
+        private Lack1GeneratedOutput SetProductionListWithoutUsageReceiving(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, List<string> plantIdList)
+        {
+            //get Ck4CItem
+            var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
+            ck4CItemInput.IsHigherFromApproved = false;
+            ck4CItemInput.IsCompletedOnly = true;
+            var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
+
+            if (ck4CItemData.Count == 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingProductionList.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
+                    Data = null
+                };
+            }
+
+            var zaapShiftReportInput = new ZaapShiftRptGetForLack1ByParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+                Werks = plantIdList,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList()
+            };
+
+            //get zaap_shift_rpt
+            var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
+
+            if (zaapShiftRpt.Count == 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingProductionList.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
+                    Data = null
+                };
+            }
+
+            var prodTypeData = _prodTypeService.GetAll();
+
+            //join data ck4cItem and ZaapShiftRpt
+            var joinedData = (from zaap in zaapShiftRpt
+                              join ck4CItem in ck4CItemData on new { zaap.WERKS, zaap.FA_CODE } equals
+                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE }
+                              join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
+                              select new
+                              {
+                                  zaap.FA_CODE,
+                                  zaap.WERKS,
+                                  zaap.COMPANY_CODE,
+                                  zaap.UOM,
+                                  zaap.PRODUCTION_DATE,
+                                  zaap.BATCH,
+                                  zaap.QTY,
+                                  zaap.ORDR,
+                                  ck4CItem.PROD_CODE,
+                                  prod.PRODUCT_ALIAS,
+                                  prod.PRODUCT_TYPE
+                              }).Distinct().ToList();
+
+            if (joinedData.Count == 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingProductionList.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingProductionList),
+                    Data = null
+                };
+            }
+
+            var productionList = new List<Lack1GeneratedProductionDataDto>();
+            var uomData = _uomBll.GetAll();
+
+            var joinedWithUomData = (from j in joinedData
+                                     join u in uomData on j.UOM equals u.UOM_ID
+                                     select new
+                                     {
+                                         j.FA_CODE,
+                                         j.WERKS,
+                                         j.COMPANY_CODE,
+                                         j.UOM,
+                                         j.PRODUCTION_DATE,
+                                         j.BATCH,
+                                         j.QTY,
+                                         j.ORDR,
+                                         j.PROD_CODE,
+                                         j.PRODUCT_ALIAS,
+                                         j.PRODUCT_TYPE,
+                                         u.UOM_DESC
+                                     }).Distinct().ToList();
+
+            //Get Prev Inventory Movement
+            var prevInventoryMovementByParamInput = new InvMovementGetUsageByParamInput()
+            {
+                PlantIdList = plantIdList,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                NppbkcId = input.NppbkcId,
+                IsTisToTis = input.IsTisToTis
+            };
+
+            if (input.PeriodMonth == 1)
+            {
+                //Year - 1, Month = 12
+                prevInventoryMovementByParamInput.PeriodMonth = 12;
+                prevInventoryMovementByParamInput.PeriodYear = prevInventoryMovementByParamInput.PeriodYear - 1;
+            }
+            else
+            {
+                //Same Year, Month - 1
+                prevInventoryMovementByParamInput.PeriodMonth = input.PeriodMonth - 1;
+            }
+
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+
+            var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
+                stoReceiverNumberList);
+
+            //calculation proccess
+            foreach (var item in joinedWithUomData)
+            {
+                var itemToInsert = new Lack1GeneratedProductionDataDto()
+                {
+                    FaCode = item.FA_CODE,
+                    Ordr = item.ORDR,
+                    ProdCode = item.PROD_CODE,
+                    ProductType = item.PRODUCT_TYPE,
+                    ProductAlias = item.PRODUCT_ALIAS,
+                    Amount = item.QTY.HasValue ? item.QTY.Value : 0,
+                    UomId = item.UOM,
+                    UomDesc = item.UOM_DESC
+                };
+
+                if (prevInventoryMovementByParam.IncludeInCk5List.Count > 0)
+                {
+                    var chk =
+                        prevInventoryMovementByParam.IncludeInCk5List.FirstOrDefault(
+                            c => c.ORDR == item.ORDR);
+                    if (chk != null)
+                    {
+                        //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
+                        var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                        var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                        var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
+
+                        itemToInsert.Amount =
+                    Math.Round(
+                        ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
                     }
                 }
 
@@ -1922,7 +2108,7 @@ namespace Sampoerna.EMS.BLL
                 IsTisToTis = input.IsTisToTis
             }, stoReceiverNumberList);
 
-            if (getInventoryMovementByParamOutput.IncludeInCk5List.Count <= 0)
+            if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
             {
                 return new Lack1GeneratedOutput()
                 {
@@ -1933,9 +2119,15 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-
-            rc.TotalUsage = totalUsageIncludeCk5;
+            if (getInventoryMovementByParamOutput.IncludeInCk5List.Count == 0)
+            {
+                rc.TotalUsage = 0;
+            }
+            else
+            {
+                var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                rc.TotalUsage = totalUsageIncludeCk5;
+            }
 
             rc.InvMovementReceivingCk5List = Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.IncludeInCk5List);
             rc.InvMovementReceivingList = Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.ReceivingList);

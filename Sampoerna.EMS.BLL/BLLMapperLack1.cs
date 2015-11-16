@@ -239,6 +239,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BEGINING_BALANCE))
                 .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TOTAL_INCOME))
                 .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
+                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.BEGINING_BALANCE + src.TOTAL_INCOME - src.USAGE - (src.RETURN_QTY.HasValue ? src.RETURN_QTY.Value : 0)))
                 .ForMember(dest => dest.Lack1UomId, opt => opt.MapFrom(src => src.LACK1_UOM_ID))
                 .ForMember(dest => dest.Lack1UomName, opt => opt.MapFrom(src => src.UOM11 != null ? src.UOM11.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE))
