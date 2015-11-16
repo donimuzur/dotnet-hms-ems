@@ -120,7 +120,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             InvalidWorkflowActionType,
 
             [Description("User already have Plant.")]
-            UserHavePlantExist
+            UserHavePlantExist,
+
+            [Description("Missing PBCK-1 Production Converter")]
+            Lack1MissingPbckProdConverter
         }
 
         /// <summary>

@@ -1590,7 +1590,7 @@ namespace Sampoerna.EMS.BLL
                 prevInventoryMovementByParamInput.PeriodMonth = input.PeriodMonth - 1;
             }
 
-            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).ToList();
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
                 stoReceiverNumberList);
@@ -1670,6 +1670,17 @@ namespace Sampoerna.EMS.BLL
                     PeriodMonth = input.PeriodMonth,
                     PeriodYear = input.PeriodYear
                 });
+
+            if (pbck1ProdConverter == null || pbck1ProdConverter.Count == 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = true,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
+                    Data = rc
+                };
+            }
 
             var uomData = _uomBll.GetAll();
             var joinedWithUomData = (from j in pbck1ProdConverter
