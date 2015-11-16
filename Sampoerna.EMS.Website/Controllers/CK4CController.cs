@@ -87,7 +87,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Ck4CDocument,
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                //first code when manager exists
+                //IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Viewer,
                 IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
 
@@ -261,7 +263,9 @@ namespace Sampoerna.EMS.Website.Controllers
         #region create Document List
         public ActionResult Ck4CCreateDocumentList()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("DocumentList");
@@ -542,10 +546,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
 
-                if (!allowApproveAndReject)
-                {
-                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
-                }
+                //first code when manager exists
+                //if (!allowApproveAndReject)
+                //{
+                //    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //}
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
 
@@ -586,7 +591,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Detail", new { id });
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || (CurrentUser.UserRole == Enums.UserRole.POA && ck4cData.Status == Enums.DocumentStatus.WaitingForApproval))
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Manager || (CurrentUser.UserRole == Enums.UserRole.POA && ck4cData.Status == Enums.DocumentStatus.WaitingForApproval))
+            if (CurrentUser.UserRole == Enums.UserRole.POA && ck4cData.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 //redirect to details for approval/rejected
                 return RedirectToAction("Details", new { id });
@@ -1558,11 +1565,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.ManagerApproved)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.ManagerApproved);
-                    iColumn = iColumn + 1;
-                }
+                //first code when manager exists
+                //if (modelExport.ManagerApproved)
+                //{
+                //    slDocument.SetCellValue(iRow, iColumn, data.ManagerApproved);
+                //    iColumn = iColumn + 1;
+                //}
 
                 if (modelExport.Status)
                 {
@@ -1727,11 +1735,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.ManagerApproved)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Manager Approved");
-                iColumn = iColumn + 1;
-            }
+            //first code when manager exists
+            //if (modelExport.ManagerApproved)
+            //{
+            //    slDocument.SetCellValue(iRow, iColumn, "Manager Approved");
+            //    iColumn = iColumn + 1;
+            //}
 
             if (modelExport.Status)
             {
@@ -1790,9 +1799,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var listCk4c = GetAllDocument(model);
 
             model.Detil.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
-            model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //first code when manager exists
+            //model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
-            model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //first code when manager exists
+            //model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
             model.Detil.CompletedTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
 
