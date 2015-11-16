@@ -87,7 +87,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Ck4CDocument,
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("DocumentList", data);
@@ -166,7 +167,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Ck4CType = Enums.CK4CType.CompletedDocument
+                Ck4CType = Enums.CK4CType.CompletedDocument,
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
             return View("CompletedDocument", data);
         }
@@ -259,6 +261,12 @@ namespace Sampoerna.EMS.Website.Controllers
         #region create Document List
         public ActionResult Ck4CCreateDocumentList()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("DocumentList");
+            }
+
             var model = new Ck4CIndexDocumentListViewModel
             {
                 MainMenu = _mainMenu,
@@ -479,6 +487,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
             try
             {
                 var plant = _plantBll.GetT001WById(ck4cData.PlantId);
@@ -567,6 +580,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = new Ck4CIndexDocumentListViewModel();
             model = InitialModel(model);
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
 
             if (CurrentUser.UserRole == Enums.UserRole.Manager || (CurrentUser.UserRole == Enums.UserRole.POA && ck4cData.Status == Enums.DocumentStatus.WaitingForApproval))
             {

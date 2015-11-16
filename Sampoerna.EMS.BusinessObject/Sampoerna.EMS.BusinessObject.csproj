@@ -194,6 +194,8 @@
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\UserPlantMapDto.cs" />
     <Compile Include="DTOs\WasteDto.cs" />
+    <Compile Include="DTOs\WasteRoleDto.cs" />
+    <Compile Include="DTOs\WasteStockDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_GOODTYPCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
@@ -257,6 +259,8 @@
     <Compile Include="Inputs\UserPlantMapInputs.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
     <Compile Include="Inputs\WasteGetByParamInput.cs" />
+    <Compile Include="Inputs\WasteRoleInputs.cs" />
+    <Compile Include="Inputs\WasteStockInput.cs" />
     <Compile Include="Inputs\WasteUploadItemsInput.cs" />
     <Compile Include="Inputs\WorkflowHistoryInput.cs" />
     <Compile Include="Inputs\WorkflowInput.cs" />
@@ -336,6 +340,7 @@
     <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />
     <Compile Include="Outputs\ProductionUploadItemsOutput.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
+    <Compile Include="Outputs\WasteStockOutput.cs" />
     <Compile Include="Outputs\WasteUploadItemsOutput.cs" />
     <Compile Include="Outputs\WorkflowHistoryOutput.cs" />
     <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />

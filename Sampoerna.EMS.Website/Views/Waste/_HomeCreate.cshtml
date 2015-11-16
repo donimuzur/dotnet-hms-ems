@@ -105,8 +105,16 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Stem Waste QTY (gram)</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.StampWasteQtyStr, new { @class = "decimal form-control" })
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="row">
+                            @*<div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">Dust Waste QTY (stick)</label>
@@ -123,7 +131,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                     </div>
                 </div>

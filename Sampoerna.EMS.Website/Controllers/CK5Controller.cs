@@ -125,7 +125,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = menulist;
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             List<CK5Dto> listCk5Dto;
             if (ck5Type == Enums.CK5Type.MarketReturn)
@@ -284,7 +285,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5MRETURN;
             model.CurrentMenu = PageInfo;
             model.Ck5Type = Enums.CK5Type.MarketReturn;
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             model.IsCompletedType = true;
             var listCk5Dto = _ck5Bll.GetCk5ByType(Enums.CK5Type.MarketReturn); //only get based on the type
 
@@ -393,10 +395,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateDomestic()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //can't create CK5 Document
-                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
 
@@ -406,10 +408,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateIntercompany()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //can't create CK5 Document
-                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
             var model = InitCreateCK5(Enums.CK5Type.Intercompany);
@@ -418,10 +420,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreatePortToImporter()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //can't create CK5 Document
-                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
             var model = InitCreateCK5(Enums.CK5Type.PortToImporter);
@@ -432,10 +434,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateExport()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //can't create CK5 Document
-                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
             var model = InitCreateCK5(Enums.CK5Type.Export);
@@ -445,10 +447,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateManual()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //can't create CK5 Document
-                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
             var model = InitCreateCK5(Enums.CK5Type.Manual);
@@ -458,10 +460,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateDomesticAlcohol()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //can't create CK5 Document
-                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
 
@@ -475,10 +477,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateCk5MarketReturn()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //can't create CK5 Document
-                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("CK5MarketReturn");
             }
             var model = new CK5FormViewModel();
@@ -849,6 +851,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new CK5FormViewModel();
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsView", new { id });
+            }
+
             try
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
@@ -904,6 +911,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new CK5FormViewModel();
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsView", new { id });
+            }
+
             try
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
@@ -952,10 +964,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         //var dbdata = _ck5Bll.GetById(idPortToImporter);
 
-                        if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                        if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
                         {
                             //can't create CK5 Document
-                            AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                            AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                             return RedirectToAction("Index");
                         }
 
@@ -1174,6 +1186,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Details(long id)
         {
             var model = new CK5FormViewModel();
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("DetailsView", new { id });
+            }
 
             try
             {
@@ -3699,10 +3716,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //var dbdata = _ck5Bll.GetById(idPortToImporter);
 
-                if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
                 {
                     //can't create CK5 Document
-                    AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                     return RedirectToAction("Index");
                 }
 

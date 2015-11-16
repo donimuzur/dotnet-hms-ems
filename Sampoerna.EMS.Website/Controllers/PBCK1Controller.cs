@@ -411,7 +411,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     DocumentType = Enums.Pbck1DocumentType.OpenDocument
 
                 },
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
             return View("Index", model);
         }
@@ -453,6 +454,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbck1Data == null)
             {
                 return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
             }
 
             var model = new Pbck1ItemViewModel();
@@ -828,10 +834,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //can't create PBCK1 Document
-                AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
             return CreateInitial(new Pbck1ItemViewModel()
@@ -966,7 +972,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 SearchInput = new Pbck1FilterViewModel()
                 {
                     DocumentType = Enums.Pbck1DocumentType.CompletedDocument
-                }
+                },
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
             return View("CompletedDocument", model);
         }
