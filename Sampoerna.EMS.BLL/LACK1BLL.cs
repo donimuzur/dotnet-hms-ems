@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Text;
@@ -283,7 +284,8 @@ namespace Sampoerna.EMS.BLL
                 destination.Status = input.Detail.Status;
                 destination.GovStatus = input.Detail.GovStatus;
                 destination.DecreeDate = input.Detail.DecreeDate;
-
+                destination.DocumentNoted = input.Detail.DocumentNoted;
+                destination.Noted = input.Detail.Noted;
                 isModified = SetChangesHistory(origin, destination, input.UserId);
 
                 //delete first
@@ -1121,6 +1123,7 @@ namespace Sampoerna.EMS.BLL
                 { "TOTAL_INCOME", origin.TotalIncome == data.TotalIncome },
                 { "USAGE", origin.Usage == data.Usage },
                 { "NOTED", origin.Noted == data.Noted },
+                { "DOCUMENT_NOTED", origin.DocumentNoted == data.DocumentNoted },
                 { "SUPPLIER_COMPANY_NAME", origin.SupplierCompanyName == data.SupplierCompanyName },
                 { "SUPPLIER_COMPANY_CODE", origin.SupplierCompanyCode == data.SupplierCompanyCode }
             };
@@ -1214,6 +1217,10 @@ namespace Sampoerna.EMS.BLL
                         case "NOTED":
                             changes.OLD_VALUE = origin.Noted;
                             changes.NEW_VALUE = data.Noted;
+                            break;
+                        case "DOCUMENT_NOTED":
+                            changes.OLD_VALUE = origin.DocumentNoted;
+                            changes.NEW_VALUE = data.DocumentNoted;
                             break;
                         case "SUPPLIER_COMPANY_NAME":
                             changes.OLD_VALUE = origin.SupplierCompanyName;
@@ -1400,6 +1407,8 @@ namespace Sampoerna.EMS.BLL
                 plantIdList = new List<string>() { input.ReceivedPlantId };
             }
 
+            //var invPlantListInput = new List<string> {input.SupplierPlantId};
+
             //set InventoryMovement
             InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput;
             var outGenerateLack1InventoryMovement = SetGenerateLack1InventoryMovement(rc, input, plantIdList, out invMovementOutput);
@@ -1439,9 +1448,10 @@ namespace Sampoerna.EMS.BLL
             //format for noted
             var wasteNoted = GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, input.WasteAmountUom);
             var returnNoted = GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, input.ReturnAmountUom);
-            rc.Noted = string.Join(Environment.NewLine, new List<string>() { wasteNoted, returnNoted }).Replace(Environment.NewLine, "<br />");
+            rc.DocumentNoted = string.Join(Environment.NewLine, new List<string>() { wasteNoted, returnNoted }).Replace(Environment.NewLine, "<br />");
+            rc.Noted = input.Noted;
 
-            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage;
+            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
 
             oReturn.Data = rc;
 
@@ -1884,7 +1894,7 @@ namespace Sampoerna.EMS.BLL
                 Data = rc
             };
 
-            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).ToList();
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var getInventoryMovementByParamOutput = GetInventoryMovementByParam(new InvMovementGetUsageByParamInput()
             {
