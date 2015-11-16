@@ -27,5 +27,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual USER USER1 { get; set; }
         public virtual USER USER2 { get; set; }
         public virtual ZAIDM_EX_MATERIAL ZAIDM_EX_MATERIAL { get; set; }
+        public virtual T001W T001W { get; set; }
     }
 }

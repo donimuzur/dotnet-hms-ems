@@ -39,8 +39,18 @@
                         @Html.HiddenFor(model => model.CeOfficeCode)
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
+                        
+                        @if (Model.IsDomesticAlcohol)
+                        {
+                            @Html.HiddenFor(model => model.SourceNppbkcId)
+                            @Html.HiddenFor(model => model.SourceCompanyCode)
+                            @Html.HiddenFor(model => model.SourceKppbcName)
+                            @Html.HiddenFor(model => model.SourcePlantName)
 
-                        @if (!Model.IsCk5PortToImporter)
+                            @Html.HiddenFor(model => model.SourceCompanyName)
+                            @Html.HiddenFor(model => model.SourceAddress)
+                        }
+                        else if (!Model.IsCk5PortToImporter)
                         {
                             @Html.HiddenFor(model => model.SourceNpwp)
                             @Html.HiddenFor(model => model.SourceNppbkcId)
@@ -55,17 +65,7 @@
                             @Html.HiddenFor(model => model.SourceAddress)
                             @*}*@
                         }
-                        else if (Model.IsDomesticAlcohol)
-                        {
-                            @Html.HiddenFor(model => model.SourceNppbkcId)
-                            @Html.HiddenFor(model => model.SourceCompanyCode)
-                            @Html.HiddenFor(model => model.SourceKppbcName)
-                            @Html.HiddenFor(model => model.SourcePlantName)
-                            @*else
-                                {*@
-                            @Html.HiddenFor(model => model.SourceCompanyName)
-                            @Html.HiddenFor(model => model.SourceAddress)
-                        }
+                        
 
 
 

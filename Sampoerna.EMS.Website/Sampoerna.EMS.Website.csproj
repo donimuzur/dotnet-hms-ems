@@ -232,6 +232,8 @@
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
     <Compile Include="Controllers\WasteController.cs" />
+    <Compile Include="Controllers\WasteRoleController.cs" />
+    <Compile Include="Controllers\WasteStockController.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
@@ -420,6 +422,10 @@
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
+    <Compile Include="Models\WasteRole\WasteRoleFormViewModel.cs" />
+    <Compile Include="Models\WasteRole\WasteRoleIndexViewModel.cs" />
+    <Compile Include="Models\WasteStock\WasteStockFormViewModel.cs" />
+    <Compile Include="Models\WasteStock\WasteStockIndexViewModel.cs" />
     <Compile Include="Models\Waste\WasteUploadViewModel.cs" />
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
@@ -587,6 +593,7 @@
     <Content Include="Content\assets\images\sort_desc_disabled.png" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.min.css" />
     <Content Include="Content\css\lack1preview.css" />
     <Content Include="Content\css\main.min.css" />
@@ -1259,6 +1266,17 @@
     <Content Include="Views\CK5\_CK5InformationEditMarketReturn.cshtml" />
     <Content Include="Views\CK5\_CK5InformationDetailsMarketReturn.cshtml" />
     <Content Include="Views\PBCK4\Detail.cshtml" />
+    <Content Include="Views\WasteRole\Index.cshtml" />
+    <Content Include="Views\WasteRole\Create.cshtml" />
+    <Content Include="Views\WasteRole\Edit.cshtml" />
+    <Content Include="Views\LACK2\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\DetailsPbck3.cshtml" />
+    <Content Include="Views\WasteRole\Detail.cshtml" />
+    <Content Include="Views\WasteStock\Index.cshtml" />
+    <Content Include="Views\WasteStock\Create.cshtml" />
+    <Content Include="Views\WasteStock\Edit.cshtml" />
+    <Content Include="Views\WasteStock\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1434,7 +1452,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

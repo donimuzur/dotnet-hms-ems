@@ -32,10 +32,12 @@
         {
             <tr>
                 <td class="action">
-                    <a href="@Url.Action("DetailPbck3", "PBCK7AndPBCK3", new { id = item.Pbck3Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                    @if (!Model.IsCompletedDoc)
-                    {
-                        <a href="@Url.Action("EditPbck3", "PBCK7AndPBCK3", new {id = item.Pbck3Id})" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    <a href="@Url.Action("DetailsPbck3", "PBCK7AndPBCK3", new { id = item.Pbck3Id })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    @if (Model.IsNotViewer){
+                        if (!Model.IsCompletedDoc)
+                        {
+                            <a href="@Url.Action("EditPbck3", "PBCK7AndPBCK3", new {id = item.Pbck3Id})" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                        }
                     }
                 </td>
                 <td>

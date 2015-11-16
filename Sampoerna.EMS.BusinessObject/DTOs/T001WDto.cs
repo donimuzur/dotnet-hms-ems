@@ -32,7 +32,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public string WERKS { get; set; }
         public string NPPBKC_ID { get; set; }
-
+        public string NPPBKC_IMPORT_ID { get; set; }
+        public bool IS_IMPORT_ID { get; set; }
         public string NAME1 { get; set; }
 
         public bool IsChecked { get; set; }

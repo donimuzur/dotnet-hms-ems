@@ -94,10 +94,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.MenuLack2OpenDocument = "active";
             model.MenuLack2CompletedDocument = "";
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.Details = dbData;
             model.FilterActionController = "FilterOpenDocument";
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return View("Index", model);
         }
@@ -154,8 +155,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = dbData;
             model.MenuLack2OpenDocument = "";
             model.MenuLack2CompletedDocument = "active";
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return View("Index", model);
         }
 
@@ -171,7 +173,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -181,7 +183,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager,
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer,
                 IsCreateNew = true
             };
 
@@ -263,14 +266,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
             if (CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 //redirect to details for approval/rejected
                 return RedirectToAction("Detail", new { id });
             }
 
-            if (CurrentUser.USER_ID == lack2Data.CreatedBy &&
-                (lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            if ((lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
                  lack2Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
             {
                 return RedirectToAction("Detail", new { id });
@@ -459,6 +466,30 @@ namespace Sampoerna.EMS.Website.Controllers
         #region --------------- Detail --------
 
         public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack2Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
+            var model = InitDetailModel(lack1Data);
+
+            return View(model);
+        }
+
+        public ActionResult Details(int? id)
         {
             if (!id.HasValue)
             {

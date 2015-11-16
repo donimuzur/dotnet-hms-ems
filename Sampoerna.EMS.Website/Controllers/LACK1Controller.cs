@@ -12,6 +12,7 @@ using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using DocumentFormat.OpenXml.Spreadsheet;
+using iTextSharp.text.pdf;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -94,7 +95,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserRole = curUser.UserRole,
                     UserId = curUser.USER_ID
                 })),
-                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("Index", data);
@@ -151,7 +153,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserRole = curUser.UserRole,
                     UserId = curUser.USER_ID
                 })),
-                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("ListByPlant", data);
@@ -258,7 +261,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction(lack1Level.Value == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
@@ -272,7 +275,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 Lack1Level = lack1Level.Value,
                 MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
                 MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : "",
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             };
 
             return CreateInitial(model);
@@ -450,8 +454,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<Lack1CompletedDocumentData>>(_lack1Bll.GetCompletedDocumentByParam(new Lack1GetByParamInput()))
-
+                Details = Mapper.Map<List<Lack1CompletedDocumentData>>(_lack1Bll.GetCompletedDocumentByParam(new Lack1GetByParamInput())),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("ListCompletedDocument", data);
@@ -501,12 +505,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            return RetDetails(lack1Data, true);
+
+        }
+
+        public ActionResult RetDetails(Lack1DetailsDto lack1Data, bool isDisplayOnly)
+        {
             var model = InitDetailModel(lack1Data);
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model = SetActiveMenu(model, model.Lack1Type);
-            return View(model);
-
+            model.IsDisplayOnly = isDisplayOnly;
+            return View("Details", model);
         }
 
         #endregion
@@ -592,7 +602,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.NppbkcCity = data.NppbkcCity;
             dMasterRow.NppbkcId = data.NppbkcId;
             dMasterRow.SubmissionDate = data.SubmissionDateDisplayString;
-            dMasterRow.CreatorName = data.ExcisableExecutiveCreator;
+            dMasterRow.CreatorName = data.ApprovedByPoa;
             dMasterRow.PrintTitle = printTitle;
             if (data.HeaderFooter != null)
             {
@@ -693,17 +703,29 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                //redirect to details for approval/rejected
+                return RetDetails(lack1Data, true);
+            }
+
+            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+                lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                return RetDetails(lack1Data, false);
+            }
+            
             if (CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 //redirect to details for approval/rejected
-                return RedirectToAction("Details", new { id });
+                return RetDetails(lack1Data, true);
             }
 
             if (CurrentUser.USER_ID == lack1Data.CreateBy &&
                 (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
                  lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
             {
-                return RedirectToAction("Details", new { id });
+                return RetDetails(lack1Data, false);
             }
 
             var model = InitEditModel(lack1Data);
@@ -2009,6 +2031,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var input = Mapper.Map<Lack1GetDashboardDataByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             return _lack1Bll.GetDashboardDataByParam(input);
         }
 

@@ -12,6 +12,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.XMLReader
 {
@@ -143,7 +144,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public string InsertToDatabase()
+        public MovedFileOutput InsertToDatabase()
         {
 
             return _xmlMapper.InsertToDatabase<USER>(Items);

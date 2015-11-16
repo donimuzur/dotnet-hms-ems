@@ -56,6 +56,14 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(p => p.USER_ID == userid && p.PLANT_ID == plantid, null, _includeTables).FirstOrDefault();
         }
 
+        public USER_PLANT_MAP GetByUserPlantNppbkcId(UserPlantMapGetByUserPlantNppbkcIdParamInput input)
+        {
+            return
+                _repository.Get(
+                    c => c.PLANT_ID == input.PlantId && c.USER_ID == input.UserId && c.NPPBKC_ID == input.NppbkcId, null, _includeTables)
+                    .FirstOrDefault();
+        }
+
         public void Delete(int id)
         {
             _repository.Delete(id);
@@ -64,17 +72,17 @@ namespace Sampoerna.EMS.BLL.Services
         public List<ZAIDM_EX_NPPBKC> GetAuthorizedNppbkc(UserPlantMapGetAuthorizedNppbkc input)
         {
             Expression<Func<USER_PLANT_MAP, bool>> queryFilter = c => c.USER_ID == input.UserId && c.T001W.T001K.BUKRS == input.CompanyCode;
-            var dataMap = _repository.Get(queryFilter, null, "T001W, T001W.ZAIDM_EX_NPPBKC, T001W.T001K").ToList();
+            var dataMap = _repository.Get(queryFilter, null, "T001W, ZAIDM_EX_NPPBKC, T001W.T001K").ToList();
             if (dataMap.Count == 0) return new List<ZAIDM_EX_NPPBKC>();
-            var nppbkcList = dataMap.Where(c => !c.T001W.ZAIDM_EX_NPPBKC.IS_DELETED.HasValue 
-                || !c.T001W.ZAIDM_EX_NPPBKC.IS_DELETED.Value).Select(d => d.T001W.ZAIDM_EX_NPPBKC).Distinct().ToList();
+            var nppbkcList = dataMap.Where(c => !c.ZAIDM_EX_NPPBKC.IS_DELETED.HasValue 
+                || !c.ZAIDM_EX_NPPBKC.IS_DELETED.Value).Select(d => d.ZAIDM_EX_NPPBKC).Distinct().ToList();
             return nppbkcList;
         }
 
         public List<T001W> GetAuthorizdePlant(UserPlantMapGetAuthorizedPlant input)
         {
             Expression<Func<USER_PLANT_MAP, bool>> queryFilter = c => c.USER_ID == input.UserId && c.T001W.T001K.BUKRS == input.CompanyCode
-                && c.T001W.NPPBKC_ID == input.NppbkcId;
+                && (c.T001W.NPPBKC_ID == input.NppbkcId || c.T001W.NPPBKC_IMPORT_ID == input.NppbkcId);
             var dataMap = _repository.Get(queryFilter, null, "T001W, T001W.T001K").ToList();
             if (dataMap.Count == 0) return new List<T001W>();
             var plantList = dataMap.Where(c => !c.T001W.IS_DELETED.HasValue || !c.T001W.IS_DELETED.Value).Select(d => d.T001W).Distinct().ToList();
