@@ -27,5 +27,7 @@ namespace Sampoerna.EMS.Contract
         void DeleteOldData(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate);
 
         List<WasteUploadItemsOuput> ValidationWasteUploadDocumentProcess(List<WasteUploadItemsInput> inputs);
+
+        List<WasteDto> CalculateWasteQuantity(List<WasteDto> wasteDtos);
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -26,9 +27,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUnitOfMeasurementBLL _uomBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IChangesHistoryBLL _changeHistoryBll;
-
+        private IWasteStockBLL _wasteStockBll;
+        
         public WasteController(IPageBLL pageBll, IWasteBLL wasteBll, ICompanyBLL companyBll, IPlantBLL plantBll,
-            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll)
+            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll, IWasteStockBLL wasteStockBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _wasteBll = wasteBll;
@@ -38,6 +40,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
             _changeHistoryBll = changesHistoryBll;
+            _wasteStockBll = wasteStockBll;
         }
 
 
@@ -53,10 +56,13 @@ namespace Sampoerna.EMS.Website.Controllers
             input.UserId = CurrentUser.USER_ID;
 
             var dbData = _wasteBll.GetAllByParam(input);
-
+            //var dbWasteQty = _wasteBll.CalculateWasteQuantity(dbData);
+            
             model.Details = Mapper.Map<List<WasteDetail>>(dbData);
 
             return model;
+
+
         }
 
         //
@@ -165,10 +171,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
 
                 data.StampWasteQty = model.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(model.StampWasteQtyStr);
-
+                
                 try
                 {
                     _wasteBll.Save(data, CurrentUser.USER_ID);
+
+                    //check waste stock is exist
+                    var wasteStockWerksExist = _wasteStockBll.GetExistWerks(data.PlantWerks);
+                    if (wasteStockWerksExist.WERKS != null)
+                    {
+                        //delete
+                        _wasteStockBll.DeleteWerksOld(wasteStockWerksExist.WASTE_STOCK_ID);
+                    }
+                    
+
+                    var input = Mapper.Map<WasteGetByParamInput>(data);
+                    var dbdata = _wasteBll.GetAllByParam(input);
+                    var dbQtyWaste = _wasteBll.CalculateWasteQuantity(dbdata);
+                    var listWasteStockDto = new List<WasteStockDto>();
+                    foreach (var item in dbQtyWaste)
+                    {
+                        var wasStockWsapoon = new WasteStockDto();
+                        wasStockWsapoon.WERKS = item.PlantWerks;
+                        wasStockWsapoon.MATERIAL_NUMBER = "W_SAPON";
+                        wasStockWsapoon.STOCK = Convert.ToDecimal(item.FloorWasteGramQty);
+
+                        listWasteStockDto.Add(wasStockWsapoon);
+
+                    }
+                    _wasteStockBll.SaveDataFromWaste(listWasteStockDto);
+
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
                     return RedirectToAction("Index");

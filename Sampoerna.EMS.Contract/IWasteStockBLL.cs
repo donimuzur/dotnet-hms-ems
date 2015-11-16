@@ -19,5 +19,11 @@ namespace Sampoerna.EMS.Contract
             string plantId);
 
         WasteStockDto SaveWasteStock(WasteStockSaveInput input);
+
+        void SaveDataFromWaste(List<WasteStockDto> input);
+
+        WasteStockDto GetExistWerks(string werks);
+
+        void DeleteWerksOld(int id);
     }
 }
