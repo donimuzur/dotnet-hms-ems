@@ -100,6 +100,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal BeginingBalance { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal Usage { get; set; }
+        public decimal EndingBalance { get; set; }
         public string Lack1UomId { get; set; }
         public string Lack1UomName { get; set; }
         public Enums.Lack1Level Lack1Level { get; set; }
