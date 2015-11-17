@@ -44,6 +44,13 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilterCk5 = queryFilterCk5.And(c => c.SOURCE_PLANT_NPPBKC_ID != c.DEST_PLANT_NPPBKC_ID);
             }
 
+            if (input.Pbck1DecreeIdList.Count > 0)
+            {
+                queryFilterCk5 =
+                    queryFilterCk5.And(
+                        c => c.PBCK1_DECREE_ID.HasValue && input.Pbck1DecreeIdList.Contains(c.PBCK1_DECREE_ID.Value));
+            }
+
             return _repository.Get(queryFilterCk5).ToList();
         }
 

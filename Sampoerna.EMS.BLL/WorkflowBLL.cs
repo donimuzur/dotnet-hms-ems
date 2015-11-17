@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
@@ -15,6 +16,7 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poabll;
         private IZaidmExPOAMapBLL _poaMapBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
+        private IWasteRoleServices _wasteRoleServices;
 
         public WorkflowBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -25,6 +27,7 @@ namespace Sampoerna.EMS.BLL
             _poabll = new POABLL(_uow, _logger);
             _poaMapBll = new ZaidmExPOAMapBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
+            _wasteRoleServices = new WasteRoleServices(_uow, _logger);
         }
 
         public bool AllowEditDocument(WorkflowAllowEditAndSubmitInput input)
@@ -314,6 +317,44 @@ namespace Sampoerna.EMS.BLL
                 return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.GoodReceive;
+        }
+
+        public bool AllowWasteGoodIssue(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodIssue;
+        }
+
+        public bool AllowWasteGoodReceive(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodReceive;
+        }
+
+        public bool AllowWasteDisposal(WorkflowAllowApproveAndRejectInput input)
+        {
+            //if (input.CreatedUser != input.CurrentUser)
+            //    return false;
+
+            if (!_wasteRoleServices.IsUserDisposalTeamByPlant(input.CurrentUser, input.DestPlant))
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.WasteDisposal;
+        }
+
+        public bool AllowWasteApproval(WorkflowAllowApproveAndRejectInput input)
+        {
+            //if (input.CreatedUser != input.CurrentUser)
+            //    return false;
+
+            if (!_wasteRoleServices.IsUserWasteApproverByPlant(input.CurrentUser, input.DestPlant))
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.WasteApproval;
         }
     }
 }

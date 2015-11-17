@@ -267,6 +267,8 @@ namespace Sampoerna.EMS.BLL.Services
                     queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.ReceivingPlantId));
             }
 
+            queryFilter = input.IsTisToTis ? queryFilter.And(c => c.IS_TIS_TO_TIS.HasValue && c.IS_TIS_TO_TIS.Value) : queryFilter.And(c => !c.IS_TIS_TO_TIS.HasValue || !c.IS_TIS_TO_TIS.Value);
+
             return _repository.Get(queryFilter).FirstOrDefault();
 
         }

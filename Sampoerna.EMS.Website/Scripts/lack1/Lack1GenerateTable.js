@@ -27,7 +27,7 @@ function generateTable(data) {
         '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-        '<td rowspan="' + rowCount + '">' + (data.Noted ? data.Noted : '') + '</td></tr>';
+        '<td rowspan="' + rowCount + '">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
         /*loop record*/
         for (var i = 1; i < data.IncomeList.length; i++) {
             rowIndex = rowIndex + 1;
@@ -50,7 +50,7 @@ function generateTable(data) {
         '<td>' + generateJenisHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td>' + generateJumlahHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td>' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-        '<td>' + (data.Noted ? data.Noted : '') + '</td></tr>';
+        '<td>' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
         $('#IncomeListCount').val(0);
     }
     }

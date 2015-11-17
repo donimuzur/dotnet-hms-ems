@@ -19,4 +19,17 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
     }
 
+    public class InvMovementGetUsageByParamInput
+    {
+        public List<string> PlantIdList { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+        public string NppbkcId { get; set; }
+        public bool IsTisToTis { get; set; }
+    }
+
+    public class InvMovementGetReceivingByParamInput : InvMovementGetUsageByParamInput
+    {
+    }
+
 }
