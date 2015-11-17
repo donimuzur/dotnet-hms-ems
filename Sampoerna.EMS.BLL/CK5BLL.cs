@@ -295,9 +295,10 @@ namespace Sampoerna.EMS.BLL
 
             if (input.Ck5Type == Enums.CK5Type.Waste)
             {
-                var listWaste = GetCk5Waste(input.UserId);
+                var listWaste = GetCk5Waste(input);
                 rc.AddRange(listWaste);
-                rc.DistinctBy(c => c.CK5_ID);
+               // rc = rc.DistinctBy(c => c.CK5_ID).ToList();
+                rc = rc.Distinct().ToList();
             }
             var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
 
@@ -306,23 +307,54 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private List<CK5> GetCk5Waste(string userId)
+        private List<CK5> GetCk5Waste(CK5GetByParamInput input)
         {
             var result = new List<CK5>();
             //get plant from user plant map by user id
-            var listPlant = _userPlantMapBll.GetPlantByUserId(userId);
+            var listPlant = _userPlantMapBll.GetPlantByUserId(input.UserId);
             if (listPlant.Count > 0)
             {
+                Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
+                Expression<Func<CK5, bool>> queryFilterDisposall = PredicateHelper.True<CK5>();
+                Expression<Func<CK5, bool>> queryFilterApproval = PredicateHelper.True<CK5>();
+
+                if (!string.IsNullOrEmpty(input.DocumentNumber))
+                {
+                    queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.DocumentNumber));
+                }
+
+                if (!string.IsNullOrEmpty(input.POA))
+                {
+                    queryFilter = queryFilter.And(c => c.APPROVED_BY_POA.Contains(input.POA));
+                }
+
+                if (!string.IsNullOrEmpty(input.Creator))
+                {
+                    queryFilter = queryFilter.And(c => c.CREATED_BY.Contains(input.Creator));
+                }
+
+                if (!string.IsNullOrEmpty(input.NPPBKCOrigin))
+                {
+                    queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NPPBKCOrigin));
+
+                }
+
+                if (!string.IsNullOrEmpty(input.NPPBKCDestination))
+                {
+                    queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NPPBKCDestination));
+
+                }
+
                 foreach (string plant in listPlant)
                 {
-                    if (_wasteRoleServices.IsUserDisposalTeamByPlant(userId, plant))
+                    if (_wasteRoleServices.IsUserDisposalTeamByPlant(input.UserId, plant))
                     {
-                        var dbListCk5 =
-                            _repository.Get(
-                                c =>
-                                    c.CK5_TYPE == Enums.CK5Type.Waste &&
+                        queryFilterDisposall = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.Waste &&
                                     c.STATUS_ID == Enums.DocumentStatus.WasteDisposal
-                                    && c.DEST_PLANT_ID == plant).ToList();
+                                    && c.DEST_PLANT_ID == plant);
+
+                        var dbListCk5 =
+                            _repository.Get(queryFilterDisposall).ToList();
                         result.AddRange(dbListCk5);
                         break;
                     }
@@ -330,14 +362,14 @@ namespace Sampoerna.EMS.BLL
 
                 foreach (var plant in listPlant)
                 {
-                    if (_wasteRoleServices.IsUserWasteApproverByPlant(userId, plant))
+                    if (_wasteRoleServices.IsUserWasteApproverByPlant(input.UserId, plant))
                     {
+                        queryFilterApproval = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.Waste &&
+                                  c.STATUS_ID == Enums.DocumentStatus.WasteApproval
+                                  && c.DEST_PLANT_ID == plant);
+
                         var dbListCk5 =
-                            _repository.Get(
-                                c =>
-                                    c.CK5_TYPE == Enums.CK5Type.Waste &&
-                                    c.STATUS_ID == Enums.DocumentStatus.WasteApproval
-                                    && c.DEST_PLANT_ID == plant).ToList();
+                            _repository.Get(queryFilterApproval).ToList();
                         result.AddRange(dbListCk5);
                         break;
                     }
