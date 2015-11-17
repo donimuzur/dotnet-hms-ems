@@ -118,6 +118,11 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public Enums.CK4CType Ck4CType { get; set; }
         public string CreatedBy { get; set; }
         public string CreatedDate { get; set; }
+        public decimal? StampWasteQty { get; set; }
+        public string StampWasteQtyStr
+        {
+            get; set;
+        }
 
 
         //SelectList

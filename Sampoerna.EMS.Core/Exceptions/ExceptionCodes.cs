@@ -122,6 +122,9 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("User already have Plant.")]
             UserHavePlantExist,
 
+            [Description("Server is busy, please try again later.")]
+            ServerIsBusy,
+            
             [Description("Missing PBCK-1 Production Converter")]
             Lack1MissingPbckProdConverter
         }

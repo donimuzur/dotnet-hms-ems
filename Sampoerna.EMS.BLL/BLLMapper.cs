@@ -372,8 +372,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
-                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(dest => dest.MODIFIED_BY));
-;
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(dest => dest.MODIFIED_BY))
+                .ForMember(dest => dest.StampWasteQty, opt => opt.MapFrom(dest=> dest.STAMP_WASTE_QTY));
+
 
             Mapper.CreateMap<WasteDto, WASTE>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.COMPANY_CODE, opt => opt.MapFrom(src => src.CompanyCode))
@@ -392,7 +393,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
-                .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy));
+                .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy))
+                .ForMember(dest => dest.STAMP_WASTE_QTY, opt => opt.MapFrom(dest => dest.StampWasteQty));
 
 
             Mapper.CreateMap<WasteUploadItems, WASTE>().IgnoreAllNonExisting()
@@ -412,7 +414,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
-                .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy));
+                .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
+                .ForMember(dest => dest.STAMP_WASTE_QTY, opt => opt.MapFrom(src =>src.StampWasteQty));
 
 
             #endregion

@@ -141,8 +141,16 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Stem Waste QTY (gram)</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.StampWasteQtyStr, new { @class = "decimal form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="row">
+                                                    @*<div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4">Dust Waste QTY (stick</label>
@@ -159,7 +167,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div>*@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -213,6 +221,8 @@
 
         $('#DustStickStr').val(ThausandSeperator($('#DustStickStr').val(), 2));
         $('#FloorStickStr').val(ThausandSeperator($('#FloorStickStr').val(), 2));
+
+        $('#StampWasteQtyStr').val(ThausandSeperator($('#StampWasteQtyStr').val(), 2));
 
         $(document).ready(function () {
             var cpy = $("#CompanyCode").find("option:selected").val();
