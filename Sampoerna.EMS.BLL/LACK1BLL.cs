@@ -1622,8 +1622,9 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = item.UOM_DESC
                 };
 
-                var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c => 
+                var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
                     c.Order == item.ORDR);
+
                 if (rec != null)
                 {
                     //calculate proporsional
@@ -2216,7 +2217,7 @@ namespace Sampoerna.EMS.BLL
                     .ToList()
                     .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageProportionalList = CalculateInvMovementUsageProportional(movementUsageAll);
+            var usageProportionalList = CalculateInvMovementUsageProportional(allUsageReceivingList, movementUsageAll);
 
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
             {
@@ -2231,12 +2232,14 @@ namespace Sampoerna.EMS.BLL
         }
 
         private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
-            IEnumerable<INVENTORY_MOVEMENT> usageAll)
+            IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll)
         {
-            var inventoryMovements = usageAll as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
-            if(usageAll == null || inventoryMovements.Length == 0) return new List<InvMovementUsageProportional>();
+            var inventoryMovements = usageReceivingAll as INVENTORY_MOVEMENT[] ?? usageReceivingAll.ToArray();
+            var inventoryMovementUsageAll = usageAll as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
 
-            var listTotalPerMaterialId = inventoryMovements.GroupBy(p => new
+            if (usageReceivingAll == null || inventoryMovements.Length == 0) return new List<InvMovementUsageProportional>();
+
+            var listTotalPerMaterialId = inventoryMovementUsageAll.GroupBy(p => new
             {
                 p.MATERIAL_ID
             }).Select(g => new
