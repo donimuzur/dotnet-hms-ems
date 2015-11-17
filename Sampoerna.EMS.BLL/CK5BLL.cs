@@ -311,8 +311,11 @@ namespace Sampoerna.EMS.BLL
         {
             var result = new List<CK5>();
             //get plant from user plant map by user id
-            var listPlant = _userPlantMapBll.GetPlantByUserId(input.UserId);
-            if (listPlant.Count > 0)
+            //get plant from waste role
+            var plantId = _wasteRoleServices.GetPlantIdByUserId(input.UserId);
+            //var listPlant = _userPlantMapBll.GetPlantByUserId(input.UserId);
+            //if (listPlant.Count > 0)
+            if (!string.IsNullOrEmpty(plantId))
             {
                 Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
                 Expression<Func<CK5, bool>> queryFilterDisposall = PredicateHelper.True<CK5>();
@@ -345,35 +348,34 @@ namespace Sampoerna.EMS.BLL
 
                 }
 
-                foreach (string plant in listPlant)
-                {
-                    if (_wasteRoleServices.IsUserDisposalTeamByPlant(input.UserId, plant))
-                    {
-                        queryFilterDisposall = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.Waste &&
-                                    c.STATUS_ID == Enums.DocumentStatus.WasteDisposal
-                                    && c.DEST_PLANT_ID == plant);
 
-                        var dbListCk5 =
-                            _repository.Get(queryFilterDisposall).ToList();
-                        result.AddRange(dbListCk5);
-                        break;
-                    }
+                if (_wasteRoleServices.IsUserDisposalTeamByPlant(input.UserId, plantId))
+                {
+                    queryFilterDisposall = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.Waste &&
+                                                                c.STATUS_ID == Enums.DocumentStatus.WasteDisposal
+                                                                && c.DEST_PLANT_ID == plantId);
+
+                    var dbListCk5 =
+                        _repository.Get(queryFilterDisposall).ToList();
+                    result.AddRange(dbListCk5);
+
                 }
 
-                foreach (var plant in listPlant)
-                {
-                    if (_wasteRoleServices.IsUserWasteApproverByPlant(input.UserId, plant))
-                    {
-                        queryFilterApproval = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.Waste &&
-                                  c.STATUS_ID == Enums.DocumentStatus.WasteApproval
-                                  && c.DEST_PLANT_ID == plant);
 
-                        var dbListCk5 =
-                            _repository.Get(queryFilterApproval).ToList();
-                        result.AddRange(dbListCk5);
-                        break;
-                    }
+                //foreach (var plant in listPlant)
+                //{
+                if (_wasteRoleServices.IsUserWasteApproverByPlant(input.UserId, plantId))
+                {
+                    queryFilterApproval = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.Waste &&
+                                                               c.STATUS_ID == Enums.DocumentStatus.WasteApproval
+                                                               && c.DEST_PLANT_ID == plantId);
+
+                    var dbListCk5 =
+                        _repository.Get(queryFilterApproval).ToList();
+                    result.AddRange(dbListCk5);
+
                 }
+                //}
 
             }
 

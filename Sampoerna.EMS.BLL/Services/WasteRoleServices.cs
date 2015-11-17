@@ -115,5 +115,18 @@ namespace Sampoerna.EMS.BLL.Services
 
             return result;
         }
+
+        public string GetPlantIdByUserId(string userId)
+        {
+            string plant = "";
+            var dbWasteRole = _repository.Get(c => c.USER_ID == userId).FirstOrDefault();
+
+            if (dbWasteRole != null)
+            {
+                plant = dbWasteRole.WERKS;
+            }
+
+            return plant;
+        }
     }
 }
