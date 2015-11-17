@@ -1622,8 +1622,10 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = item.UOM_DESC
                 };
 
-                var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c => 
-                    c.Order == item.ORDR);
+                var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
+                    c.Order == item.ORDR &&
+                    (c.ProductionDate.HasValue && c.ProductionDate.Value.Date == item.PRODUCTION_DATE));
+
                 if (rec != null)
                 {
                     //calculate proporsional
@@ -1637,7 +1639,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         var chk =
                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                                c => c.Order == item.ORDR);
+                                c => c.Order == item.ORDR && (c.ProductionDate.HasValue && c.ProductionDate.Value.Date == item.PRODUCTION_DATE));
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
@@ -2252,7 +2254,8 @@ namespace Sampoerna.EMS.BLL
                     MaterialId = x.MATERIAL_ID,
                     Qty = x.QTY.HasValue ? x.QTY.Value : 0,
                     TotalQtyPerMaterialId = y.TotalQty,
-                    Order = x.ORDR
+                    Order = x.ORDR,
+                    ProductionDate = x.POSTING_DATE
                 }).ToList();
 
             return rc;
