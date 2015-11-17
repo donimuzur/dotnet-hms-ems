@@ -1618,7 +1618,7 @@ namespace Sampoerna.EMS.BLL
                 };
 
                 var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c => 
-                    c.Order == item.ORDR && c.MaterialId == item.FA_CODE);
+                    c.Order == item.ORDR);
                 if (rec != null)
                 {
                     //calculate proporsional
@@ -1632,7 +1632,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         var chk =
                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                                c => c.Order == item.ORDR && c.MaterialId == item.FA_CODE);
+                                c => c.Order == item.ORDR);
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
