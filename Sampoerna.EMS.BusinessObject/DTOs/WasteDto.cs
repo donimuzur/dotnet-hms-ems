@@ -16,20 +16,55 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
         public decimal? MarkerRejectStickQty { get; set; }
+        public string MarkerStr
+        {
+            get;
+            set;
+        }
         public decimal? PackerRejectStickQty { get; set; }
+        public string PackerStr
+        {
+            get;
+            set;
+        }
         public DateTime WasteProductionDate { get; set; }
         public DateTime WasteProductionDateX { get; set; }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
         public decimal? DustWasteGramQty { get; set; }
+        public string DustGramStr
+        {
+            get;
+            set;
+        }
         public decimal? FloorWasteGramQty { get; set; }
+        public string FloorGramStr
+        {
+            get;
+            set;
+        }
         public decimal? DustWasteStickQty { get; set; }
+        public string DustStickStr
+        {
+            get;
+            set;
+        }
         public decimal? FloorWasteStickQty { get; set; }
+        public string FloorStickStr
+        {
+            get;
+            set;
+        }
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
         public decimal? StampWasteQty { get; set; }
+        public string StampWasteQtyStr
+        {
+            get;
+            set;
+        }
         public List<WasteUploadItems> UploadItems { get; set; }
     }
 

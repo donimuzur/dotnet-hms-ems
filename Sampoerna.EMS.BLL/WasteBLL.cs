@@ -127,6 +127,14 @@ namespace Sampoerna.EMS.BLL
 
             var dbWaste = Mapper.Map<WASTE>(wasteDto);
 
+            dbWaste.MARKER_REJECT_STICK_QTY = wasteDto.MarkerStr == null ? 0 : Convert.ToDecimal(wasteDto.MarkerStr);
+            dbWaste.PACKER_REJECT_STICK_QTY = wasteDto.PackerStr == null ? 0 : Convert.ToDecimal(wasteDto.PackerStr);
+            dbWaste.DUST_WASTE_GRAM_QTY = wasteDto.DustGramStr == null ? 0 : Convert.ToDecimal(wasteDto.DustGramStr);
+            dbWaste.FLOOR_WASTE_GRAM_QTY = wasteDto.FloorGramStr == null ? 0 : Convert.ToDecimal(wasteDto.FloorGramStr);
+            dbWaste.DUST_WASTE_STICK_QTY = wasteDto.DustStickStr == null ? 0 : Convert.ToDecimal(wasteDto.DustStickStr);
+            dbWaste.FLOOR_WASTE_STICK_QTY = wasteDto.FloorStickStr == null ? 0 : Convert.ToDecimal(wasteDto.FloorStickStr);
+            dbWaste.STAMP_WASTE_QTY = wasteDto.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(wasteDto.StampWasteQtyStr);
+
             var origin = _repository.GetByID(wasteDto.CompanyCodeX, wasteDto.PlantWerksX, wasteDto.FaCodeX,
                 wasteDto.WasteProductionDateX);
 
@@ -172,6 +180,22 @@ namespace Sampoerna.EMS.BLL
 
                 listWasteStockDto.Add(wasStockWsapoon);
 
+                var wasteStockGagang = new WasteStockDto();
+                wasteStockGagang.WERKS = item.PlantWerks;
+                wasteStockGagang.MATERIAL_NUMBER = Constans.WasteGagang;
+                wasteStockGagang.STOCK = Convert.ToDecimal(item.DustWasteGramQty);
+                wasteStockGagang.CREATED_BY = userId;
+
+                listWasteStockDto.Add(wasteStockGagang);
+
+                var wasteStockStem = new WasteStockDto();
+                wasteStockStem.WERKS = item.PlantWerks;
+                wasteStockStem.MATERIAL_NUMBER = Constans.WasteStem;
+                wasteStockStem.STOCK = Convert.ToDecimal(item.StampWasteQty);
+                wasteStockStem.CREATED_BY = userId;
+
+                listWasteStockDto.Add(wasteStockStem);
+
             }
 
             foreach (var wasteStockDto in listWasteStockDto)
@@ -189,6 +213,14 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _repository.GetByID(companyCode, plantWerk, faCode, wasteProductionDate);
             var item = Mapper.Map<WasteDto>(dbData);
+
+            item.MarkerStr = item.MarkerRejectStickQty == null ? string.Empty : item.MarkerRejectStickQty.ToString();
+            item.PackerStr = item.PackerRejectStickQty == null ? string.Empty : item.PackerRejectStickQty.ToString();
+            item.DustGramStr = item.DustWasteGramQty == null ? string.Empty : item.DustWasteGramQty.ToString();
+            item.FloorGramStr = item.FloorWasteGramQty == null ? string.Empty : item.FloorWasteGramQty.ToString();
+            item.DustStickStr = item.DustWasteStickQty == null ? string.Empty : item.DustWasteStickQty.ToString();
+            item.FloorStickStr = item.FloorWasteStickQty == null ? string.Empty : item.FloorWasteStickQty.ToString();
+            item.StampWasteQtyStr = item.StampWasteQty == null ? string.Empty : item.StampWasteQty.ToString();
 
             if (dbData == null)
             {

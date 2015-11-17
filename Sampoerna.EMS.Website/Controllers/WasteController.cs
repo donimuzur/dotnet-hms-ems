@@ -63,8 +63,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = Mapper.Map<List<WasteDetail>>(dbData);
 
             return model;
-
-
+            
         }
 
         //
@@ -167,25 +166,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<WasteDto>(model);
-
-
-                //waste reject
-                data.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
-                data.PackerRejectStickQty = model.PackerStr == null ? 0 : Convert.ToDecimal(model.PackerStr);
-                //waste gram
-                data.DustWasteGramQty = model.DustGramStr == null ? 0 : Convert.ToDecimal(model.DustGramStr);
-                data.FloorWasteGramQty = model.FloorGramStr == null ? 0 : Convert.ToDecimal(model.FloorGramStr);
-                //waste stick
-                data.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
-                data.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
-
-                data.StampWasteQty = model.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(model.StampWasteQtyStr);
+                
 
                 try
                 {
                     _wasteBll.Save(data, CurrentUser.USER_ID);
-
-                  
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
                     return RedirectToAction("Index");
@@ -233,18 +218,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
 
             model = Mapper.Map<WasteDetail>(dbWaste);
-            //Reject
-            model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
-            model.PackerStr = model.PackerRejectStickQty == null ? string.Empty : model.PackerRejectStickQty.ToString();
-            // Waste Gram
-            model.DustGramStr = model.DustWasteGramQty == null ? string.Empty : model.DustWasteGramQty.ToString();
-            model.FloorGramStr = model.FloorWasteGramQty == null ? string.Empty : model.FloorWasteGramQty.ToString();
-            //Waste Stick
-            model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
-            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
-            //stamp Waste
-            model.StampWasteQtyStr = model.StampWasteQty == null ? string.Empty : model.StampWasteQty.ToString();
-
+            
             model = IniEdit(model);
 
             model.CompanyCodeX = model.CompanyCode;
@@ -293,18 +267,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbWasteNew = Mapper.Map<WasteDto>(model);
 
-            //reject
-            dbWasteNew.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
-            dbWasteNew.PackerRejectStickQty = model.PackerStr == null ? 0 : Convert.ToDecimal(model.PackerStr);
-            //waste gram
-            dbWasteNew.DustWasteGramQty = model.DustGramStr == null ? 0 : Convert.ToDecimal(model.DustGramStr);
-            dbWasteNew.FloorWasteGramQty = model.FloorGramStr == null ? 0 : Convert.ToDecimal(model.FloorGramStr);
-            //waste stick
-            dbWasteNew.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
-            dbWasteNew.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
-            //Stamp Waste
-            dbWasteNew.StampWasteQty = model.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(model.StampWasteQtyStr);
-
             try
             {
                 if (!ModelState.IsValid)
@@ -345,9 +307,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-
-
-
         #endregion
 
         #region Detail
@@ -372,21 +331,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ChangesHistoryList =
                Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
                    "Waste_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + wasteProductionDate.ToString("ddMMMyyyy")));
-
-            //reject
-            model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
-            model.PackerStr = model.PackerRejectStickQty == null ? string.Empty : model.PackerRejectStickQty.ToString();
-
-            //Waste Gram
-            model.DustGramStr = model.DustWasteGramQty == null ? string.Empty : model.DustWasteGramQty.ToString();
-            model.FloorGramStr = model.FloorWasteGramQty == null ? string.Empty : model.FloorWasteGramQty.ToString();
-
-            //Waste Stick
-            model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
-            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
-            //stamp waste
-            model.StampWasteQtyStr = model.StampWasteQty == null ? string.Empty : model.StampWasteQty.ToString();
-
+            
             model = InitDetail(model);
             return View(model);
 
