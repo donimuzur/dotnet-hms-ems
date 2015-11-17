@@ -15,5 +15,14 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public List<INVENTORY_MOVEMENT> ExcludeFromCk5List { get; set; }
         public List<INVENTORY_MOVEMENT> ReceivingList { get; set; }
         public List<INVENTORY_MOVEMENT> AllUsageList { get; set; }
+        public List<InvMovementUsageProportional> UsageProportionalList { get; set; }
+    }
+
+    public class InvMovementUsageProportional
+    {
+        public string MaterialId { get; set; }
+        public string Order { get; set; }
+        public decimal Qty { get; set; }
+        public decimal TotalQtyPerMaterialId { get; set; }
     }
 }
