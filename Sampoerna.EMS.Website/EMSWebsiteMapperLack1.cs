@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
+using Org.BouncyCastle.Crypto.Agreement.Srp;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -60,7 +61,9 @@ namespace Sampoerna.EMS.Website
             #endregion
 
             Mapper.CreateMap<Lack1GenerateInputModel, Lack1GenerateDataParamInput>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => (Enums.Lack1Level)src.Lack1Level));
+                .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => (Enums.Lack1Level)src.Lack1Level))
+                .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IsTisToTisReport))
+                ;
             Mapper.CreateMap<Lack1GeneratedDto, Lack1GeneratedItemModel>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<Lack1CreateViewModel, Lack1CreateParamInput>().IgnoreAllNonExisting()
@@ -80,6 +83,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReturnAmountUom, opt => opt.MapFrom(src => src.ReturnUom))
                 .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => src.Lack1Level))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Noted))
+                .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IsTisToTisReport))
                 ;
 
             Mapper.CreateMap<Lack1DocumentDto, Lack1DocumentItemModel>().IgnoreAllNonExisting();
@@ -123,7 +127,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DisplaySupplierPlant, opt => opt.MapFrom(src => src.SupplierPlantId + '-' + src.SupplierPlant))
                 .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
-                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => (src.BeginingBalance - src.Usage + src.TotalIncome)))
+                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.EndingBalance))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
@@ -139,8 +143,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DisplaySupplierPlant, opt => opt.MapFrom(src => src.SupplierPlantId + '-' + src.SupplierPlant))
                 .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
-                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => (src.BeginingBalance - src.Usage + src.TotalIncome)))
+                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.EndingBalance))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
+                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Noted) ? src.Noted.Replace("<br />", Environment.NewLine) : ""))
+                .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DocumentNoted))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
                 .ForMember(dest => dest.ProductionList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.Lack1ProductionDetail)))
@@ -152,7 +158,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Lack1PrintOutDto, Lack1PrintOutModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
-                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => (src.BeginingBalance - src.Usage + src.TotalIncome)))
+                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.EndingBalance))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
