@@ -92,7 +92,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.PBCK4;
             model.CurrentMenu = PageInfo;
             model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             //var listPbck4 = _ck5Bll.GetAll();
             //model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
@@ -277,7 +279,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new Pbck4FormViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("Detail", "PBCK4", new { @id = model.Pbck4Id });
             }
@@ -325,7 +329,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject)
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                    //first code when manager exists
+                    //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
                 model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
@@ -494,7 +499,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new Pbck4FormViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("Detail", "PBCK4", new { @id = model.Pbck4Id });
             }
@@ -1904,10 +1911,12 @@ namespace Sampoerna.EMS.Website.Controllers
             var listPbck4 = GetAllDocument(model);
             model.Detail.DraftTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
             model.Detail.WaitingForPoaTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
-            model.Detail.WaitingForManagerTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //first code when manager exists
+            //model.Detail.WaitingForManagerTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detail.WaitingForGovTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
             model.Detail.CompletedTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
-            model.Detail.WaitingForAppTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //first code when manager exists
+            //model.Detail.WaitingForAppTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             
 
             return model;
