@@ -246,44 +246,53 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public void SaveDataFromWaste(List<WasteStockDto> input)
+        public void SaveDataFromWaste(List<WasteStockDto> input, string userId)
         {
             foreach (var item in input)
             {
                 var dbdata = Mapper.Map<WASTE_STOCK>(item);
-                _repository.InsertOrUpdate(dbdata);
+                if (dbdata.ZAIDM_EX_MATERIAL != null)
+                {
+                    dbdata.CREATED_BY = userId;
+                    dbdata.CREATED_DATE = DateTime.Now;
 
+                    _repository.InsertOrUpdate(dbdata);
+                }
+              
             }
-
             _uow.SaveChanges();
-
         }
 
-        public WasteStockDto GetExistWerks(string werks)
-        {
-            var dbdata = _uow.GetGenericRepository<WASTE_STOCK>().Get(p => p.WERKS == werks).FirstOrDefault();
-            if (dbdata == null)
-            {
-                return new WasteStockDto();
-            }
-            return Mapper.Map<WasteStockDto>(dbdata);
-        }
+        //public WasteStockDto GetExisWasteStockByWerksAndMaterial(string werks, string materialNumber)
+        //{
+        //    var dbdata = _uow.GetGenericRepository<WASTE_STOCK>().Get(p => p.WERKS == werks && p.MATERIAL_NUMBER == materialNumber).FirstOrDefault();
+           
+        //    return Mapper.Map<WasteStockDto>(dbdata);
+        //}
 
-        public void DeleteWerksOld(int id)
+        public void UpdateWasteStockFromWaste(WasteStockDto input)
         {
-            var dbData = _repository.GetByID(id);
+            var dbWasteStock =
+                _repository.Get(c => c.WERKS == input.WERKS && c.MATERIAL_NUMBER == input.MATERIAL_NUMBER)
+                    .FirstOrDefault();
 
-            if (dbData.WASTE_STOCK_ID == 0)
+            if (dbWasteStock == null)
             {
-                _logger.Error(new BLLException(ExceptionCodes.BLLExceptions.DataNotFound));
-                throw  new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                dbWasteStock = new WASTE_STOCK();
+                Mapper.Map<WasteStockDto, WASTE_STOCK>(input, dbWasteStock);
+
+                dbWasteStock.CREATED_BY = input.CREATED_BY;
+                dbWasteStock.CREATED_DATE = DateTime.Now;
             }
             else
             {
-                _repository.Delete(dbData);
-                _uow.SaveChanges();
+                //update
+                dbWasteStock.STOCK = input.STOCK;
+
+                dbWasteStock.MODIFIED_BY = input.CREATED_BY;
+                dbWasteStock.MODIFIED_DATE = DateTime.Now;
             }
-            
+            _repository.InsertOrUpdate(dbWasteStock);
         }
     }
 }

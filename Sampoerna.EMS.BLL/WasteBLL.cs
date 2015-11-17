@@ -13,6 +13,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -36,6 +37,9 @@ namespace Sampoerna.EMS.BLL
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
 
+        private IWasteStockBLL _wasteStockBll;
+        private IMaterialBLL _materialBll;
+
         public WasteBLL(ILogger logger, IUnitOfWork uow)
         {
             _logger = logger;
@@ -52,6 +56,8 @@ namespace Sampoerna.EMS.BLL
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
             _poaMapBll = new POAMapBLL(_uow, _logger);
+            _wasteStockBll = new WasteStockBLL(_uow, _logger);
+            _materialBll = new MaterialBLL(_uow, _logger);
         }
         public List<WasteDto> GetAllByParam(WasteGetByParamInput input)
         {
@@ -139,11 +145,46 @@ namespace Sampoerna.EMS.BLL
             }
 
             _repository.InsertOrUpdate(dbWaste);
+
+            //update waste stock table
+            UpdateWasteStockTable(dbWaste, userId);
+
+
             _uow.SaveChanges();
 
             return isNewData;
         }
 
+        private void UpdateWasteStockTable(WASTE dbWaste, string userId)
+        {
+          
+            var dbdata = GetAllByParam(new WasteGetByParamInput());
+            var dbQtyWaste = CalculateWasteQuantity(dbdata);
+            var listWasteStockDto = new List<WasteStockDto>();
+
+            foreach (var item in dbQtyWaste)
+            {
+                var wasStockWsapoon = new WasteStockDto();
+                wasStockWsapoon.WERKS = item.PlantWerks;
+                wasStockWsapoon.MATERIAL_NUMBER = Constans.WasteSapon;
+                wasStockWsapoon.STOCK = Convert.ToDecimal(item.FloorWasteGramQty);
+                wasStockWsapoon.CREATED_BY = userId;
+
+                listWasteStockDto.Add(wasStockWsapoon);
+
+            }
+
+            foreach (var wasteStockDto in listWasteStockDto)
+            {
+                //CHECK DI MATERIAL PLANT DAN STICKER CODE EXIST
+               var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(wasteStockDto.WERKS, wasteStockDto.MATERIAL_NUMBER);
+                if (dbMaterial != null)
+                {
+                    _wasteStockBll.UpdateWasteStockFromWaste(wasteStockDto);
+                }
+            }
+          
+        }
         public WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
         {
             var dbData = _repository.GetByID(companyCode, plantWerk, faCode, wasteProductionDate);
