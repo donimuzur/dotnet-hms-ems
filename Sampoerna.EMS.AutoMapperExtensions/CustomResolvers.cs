@@ -149,8 +149,12 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             string resultValue = "";
             string resultUOM = "Boxes";
 
-            if (value.GRAND_TOTAL_EX.HasValue)
-                resultValue = value.GRAND_TOTAL_EX.Value.ToString("#,##0.#0");
+            if (value.Ck5MaterialDtos.Count > 0)
+            {
+                resultValue = value.Ck5MaterialDtos.Sum(x => x.QTY).Value.ToString("#,##0.#0");
+            }
+                
+                
 
             
             var firstOrDefault = value.Ck5MaterialDtos.FirstOrDefault();
