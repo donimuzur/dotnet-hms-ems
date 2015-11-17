@@ -121,6 +121,16 @@ namespace Sampoerna.EMS.BLL
         public Lack1CreateOutput Create(Lack1CreateParamInput input)
         {
             input.IsCreateNew = true;
+            //check if exists
+            var isExists = IsExistLack1Data(input);
+            if (!isExists.Success) return new Lack1CreateOutput()
+            {
+                Success = isExists.Success,
+                ErrorCode = isExists.ErrorCode,
+                ErrorMessage = isExists.ErrorMessage,
+                Id = null,
+                Lack1Number = string.Empty
+            };
             var generatedData = GenerateLack1Data(input);
             if (!generatedData.Success)
             {
@@ -133,17 +143,6 @@ namespace Sampoerna.EMS.BLL
                     Lack1Number = string.Empty
                 };
             }
-
-            //check if exists
-            var isExists = IsExistLack1Data(input);
-            if (!isExists.Success) return new Lack1CreateOutput()
-            {
-                Success = isExists.Success,
-                ErrorCode = isExists.ErrorCode,
-                ErrorMessage = isExists.ErrorMessage,
-                Id = null,
-                Lack1Number = string.Empty
-            };
 
             var rc = new Lack1CreateOutput()
             {
@@ -1482,10 +1481,6 @@ namespace Sampoerna.EMS.BLL
         private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, List<string> plantIdList,
             InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
         {
-            var totalUsageInCk5 = (-1) * invMovementOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-            var totalUsageExcludeCk5 = (-1) * invMovementOutput.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-            var totalUsage = totalUsageInCk5 + totalUsageExcludeCk5;
-
             //get Ck4CItem
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
             ck4CItemInput.IsHigherFromApproved = false;
@@ -1606,7 +1601,7 @@ namespace Sampoerna.EMS.BLL
 
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
                 stoReceiverNumberList);
-
+            
             //calculation proccess
             foreach (var item in joinedWithUomData)
             {
@@ -1622,31 +1617,28 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = item.UOM_DESC
                 };
 
-                var rec = invMovementOutput.IncludeInCk5List.FirstOrDefault(c => c.ORDR == item.ORDR);
+                var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c => 
+                    c.Order == item.ORDR && c.MaterialId == item.FA_CODE);
                 if (rec != null)
                 {
                     //calculate proporsional
                     itemToInsert.Amount =
                         Math.Round(
-                            ((totalUsageInCk5 / totalUsage) * itemToInsert.Amount), 3);
+                            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
                 }
                 else
                 {
-                    if (prevInventoryMovementByParam.IncludeInCk5List.Count > 0)
+                    if (prevInventoryMovementByParam.UsageProportionalList.Count > 0)
                     {
                         var chk =
-                            prevInventoryMovementByParam.IncludeInCk5List.FirstOrDefault(
-                                c => c.ORDR == item.ORDR);
+                            prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
+                                c => c.Order == item.ORDR && c.MaterialId == item.FA_CODE);
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                            var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                            var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                            var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
-
                             itemToInsert.Amount =
                         Math.Round(
-                            ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
+                            ((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
                         }
                     }
                 }
@@ -2133,7 +2125,7 @@ namespace Sampoerna.EMS.BLL
             rc.InvMovementReceivingList = Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.ReceivingList);
             rc.InvMovementAllList =
                 Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList);
-
+            
             invMovementOutput = getInventoryMovementByParamOutput;
 
             return oRet;
@@ -2219,13 +2211,44 @@ namespace Sampoerna.EMS.BLL
                     .ToList()
                     .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
+            var usageProportionalList = CalculateInvMovementUsageProportional(movementUsageAll);
+
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
             {
                 IncludeInCk5List = allUsageReceivingList,
                 ReceivingList = allReceivingList,
                 AllUsageList = movementUsageAll,
-                ExcludeFromCk5List = movementExclueInCk5List
+                ExcludeFromCk5List = movementExclueInCk5List,
+                UsageProportionalList = usageProportionalList
             };
+
+            return rc;
+        }
+
+        private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
+            IEnumerable<INVENTORY_MOVEMENT> usageAll)
+        {
+            var inventoryMovements = usageAll as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
+            if(usageAll == null || inventoryMovements.Length == 0) return new List<InvMovementUsageProportional>();
+
+            var listTotalPerMaterialId = inventoryMovements.GroupBy(p => new
+            {
+                p.MATERIAL_ID
+            }).Select(g => new
+            {
+                MaterialId = g.Key.MATERIAL_ID,
+                TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
+            }).ToList();
+
+            var rc = (from x in inventoryMovements
+                join y in listTotalPerMaterialId on x.MATERIAL_ID equals y.MaterialId
+                select new InvMovementUsageProportional()
+                {
+                    MaterialId = x.MATERIAL_ID,
+                    Qty = x.QTY.HasValue ? x.QTY.Value : 0,
+                    TotalQtyPerMaterialId = y.TotalQty,
+                    Order = x.ORDR
+                }).ToList();
 
             return rc;
         }
