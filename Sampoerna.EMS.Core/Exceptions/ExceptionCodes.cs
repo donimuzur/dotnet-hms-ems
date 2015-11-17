@@ -120,7 +120,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             InvalidWorkflowActionType,
 
             [Description("User already have Plant.")]
-            UserHavePlantExist
+            UserHavePlantExist,
+
+            [Description("Server is busy, please try again later.")]
+            ServerIsBusy
         }
 
         /// <summary>

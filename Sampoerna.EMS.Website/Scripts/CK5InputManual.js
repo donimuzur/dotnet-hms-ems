@@ -159,7 +159,7 @@ function AddRow(url,data) {
         
         $('#Ck5UploadModal').modal('hide');
 
-        var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(',', '')) * parseFloat($('#uploadMaterialConvertion').val().replace(',', ''));
+        var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(/\,/g, '')) * parseFloat($('#uploadMaterialConvertion').val().replace(/\,/g, ''));
         var total = parseFloat($('#uploadMaterialTariff').val()) * convertedQty;
         var rowCount = $('#Ck5UploadTable tr').length;
         
@@ -221,8 +221,8 @@ function AddRowManualMarketReturn(url, data) {
   
     $('#Ck5UploadModal').modal('hide');
 
-    var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(',', '')) * parseFloat($('#uploadMaterialConvertion').val().replace(',', ''));
-    var total = parseFloat($('#uploadMaterialTariff').val().replace(',', '')) * convertedQty;
+    var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(/\,/g, '')) * parseFloat($('#uploadMaterialConvertion').val().replace(/\,/g, ''));
+    var total = parseFloat($('#uploadMaterialTariff').val().replace(/\,/g, '')) * convertedQty;
     var rowCount = $('#Ck5UploadTable tr').length;
 
     var exciseQty = convertedQty;
@@ -273,8 +273,8 @@ function UpdateRowManualMarketRetun(data) {
   
     var row = $('#uploadMaterialRow').val();
 
-    var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(',', '')) * parseFloat($('#uploadMaterialConvertion').val().replace(',', ''));
-    var total = parseFloat($('#uploadMaterialTariff').val().replace(',', '')) * convertedQty;
+    var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(/\,/g, '')) * parseFloat($('#uploadMaterialConvertion').val().replace(/\,/g, ''));
+    var total = parseFloat($('#uploadMaterialTariff').val().replace(/\,/g, '')) * convertedQty;
     var exciseQty = convertedQty;
     var exciseUOM = $('#uploadConvertedUom').val();
 
