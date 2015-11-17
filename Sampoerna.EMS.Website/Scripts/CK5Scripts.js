@@ -23,6 +23,8 @@ function OnReadyFunction(ck5Type) {
     } else if (ck5Type == 'Manual') {
         $('#ck5TrialPbck1Reduce').show();
         $('#MenuCK5Manual').addClass('active');
+    } else if (ck5Type == 'Waste') {
+        $('#MenuCK5Waste').addClass('active');
     } else if (ck5Type == 'MarketReturn') {
         $('#liCK5MarketReturnOpenDocument').addClass('active');
     }
@@ -77,10 +79,15 @@ function OnReadyFunction(ck5Type) {
                 data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
                 data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
-                data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                if (ck5Type == 'Waste') {
+                    data += '<td> <input name="UploadItemModels[' + i + '].WasteStock" type="hidden" value = "' + datarows[i][20] + '">' + datarows[i][20] + '</td>';
+                } else {
+                    data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                }
+                
                 data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][15] + '">';
                 data += '<input name="UploadItemModels[' + i + '].CK5_MATERIAL_ID" type="hidden" value = "' + datarows[i][18] + '">';
-
+                
                 total += parseFloat(datarows[i][16]); //Qty
                 if (i == 0) {
                     $("#PackageUomName").val(datarows[i][17]);
@@ -115,7 +122,7 @@ function OnReadyFunction(ck5Type) {
 
 
 
-        if (ck5Type == 'Export' || (ck5Type == 'Manual' && $('#IsReducePbck1Ck5Trial').is(':checked') == false) || ck5Type == 'MarketReturn' || ck5Type == 'PortToImporter') {
+        if (ck5Type == 'Export' || (ck5Type == 'Manual' && $('#IsReducePbck1Ck5Trial').is(':checked') == false) || ck5Type == 'MarketReturn' || ck5Type == 'PortToImporter' || ck5Type == 'Waste') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
@@ -163,8 +170,8 @@ function ValidatePbck1Uom() {
 function ValidateRemainQuota(total) {
     // var total = parseFloat($('#GrandTotalEx').val());
 
-    var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(',',''));
-    var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(',', ''));
+    var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(/\,/g,''));
+    var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(/\,/g, ''));
     var remainQuota = pbck1QtyApproved - totalCk5;
     if (total > remainQuota) {
         $('#collapseThree').removeClass('collapse');
@@ -889,15 +896,15 @@ function ValidateCk5Form(ck5Type) {
     if (result) {
 
         if (ck5Type == 'Export' || ck5Type == "Manual" || ck5Type == 'PortToImporter'
-            || ck5Type == 'MarketReturn')
+            || ck5Type == 'MarketReturn' || ck5Type == 'Waste')
             return result;
 
         if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
             return result;
 
-        var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(',', ''));
-        var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(',', ''));
-        var total = parseFloat($('#GrandTotalEx').val().replace(',', ''));
+        var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(/\,/g, ''));
+        var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(/\,/g, ''));
+        var total = parseFloat($('#GrandTotalEx').val().replace(/\,/g, ''));
         var remainQuota = pbck1QtyApproved - totalCk5;
         if (total > remainQuota) {
             $('#collapseThree').removeClass('collapse');
@@ -1103,6 +1110,8 @@ function ajaxGetMaterialHjeAndTariff(url, formData) {
                     $("#uploadMaterialHje").val(data.Hje);
                     $("#uploadMaterialTariff").val(data.Tariff);
                     $("#uploadMaterialDesc").val(data.MaterialDesc);
+                    
+                    $("#uploadWasteStock").val(data.StockRemaining);
                 }
 
 

@@ -454,26 +454,38 @@ namespace Sampoerna.EMS.BLL
                 #endregion
 
                 #region -----------DustWasteStickQty Validation-------------
-                if (decimal.TryParse(output.DustWasteStickQty, out tempDecimal) || output.DustWasteStickQty == "" || output.DustWasteStickQty == "-")
-                {
-                    output.DustWasteStickQty = output.DustWasteStickQty == "" || output.DustWasteStickQty == "-" ? "0" : output.DustWasteStickQty;
-                }
-                else
-                {
-                    output.DustWasteStickQty = output.DustWasteStickQty;
-                    messageList.Add("Dust Waste Stick Qty [" + output.DustWasteStickQty + "] not valid");
-                }
+                //if (decimal.TryParse(output.DustWasteStickQty, out tempDecimal) || output.DustWasteStickQty == "" || output.DustWasteStickQty == "-")
+                //{
+                //    output.DustWasteStickQty = output.DustWasteStickQty == "" || output.DustWasteStickQty == "-" ? "0" : output.DustWasteStickQty;
+                //}
+                //else
+                //{
+                //    output.DustWasteStickQty = output.DustWasteStickQty;
+                //    messageList.Add("Dust Waste Stick Qty [" + output.DustWasteStickQty + "] not valid");
+                //}
                 #endregion
 
                 #region -----------FloorWasteStickQty Validation-------------
-                if (decimal.TryParse(output.FloorWasteStickQty, out tempDecimal) || output.FloorWasteStickQty == "" || output.FloorWasteStickQty == "-")
+                //if (decimal.TryParse(output.FloorWasteStickQty, out tempDecimal) || output.FloorWasteStickQty == "" || output.FloorWasteStickQty == "-")
+                //{
+                //    output.FloorWasteStickQty = output.FloorWasteStickQty == "" || output.FloorWasteStickQty == "-" ? "0" : output.FloorWasteStickQty;
+                //}
+                //else
+                //{
+                //    output.FloorWasteStickQty = output.FloorWasteStickQty;
+                //    messageList.Add("Floor Waste stick Qty [" + output.FloorWasteStickQty + "] not valid");
+                //}
+                #endregion
+
+                #region -----------StampWasteGramQty Validation-------------
+                if (decimal.TryParse(output.StampWasteQty, out tempDecimal) || output.StampWasteQty == "" || output.StampWasteQty == "-")
                 {
-                    output.FloorWasteStickQty = output.FloorWasteStickQty == "" || output.FloorWasteStickQty == "-" ? "0" : output.FloorWasteStickQty;
+                    output.StampWasteQty = output.StampWasteQty == "" || output.StampWasteQty == "-" ? "0" : output.StampWasteQty;
                 }
                 else
                 {
-                    output.FloorWasteStickQty = output.FloorWasteStickQty;
-                    messageList.Add("Floor Waste stick Qty [" + output.FloorWasteStickQty + "] not valid");
+                    output.StampWasteQty = output.StampWasteQty;
+                    messageList.Add("Stem Waste Gram Qty [" + output.StampWasteQty + "] not valid");
                 }
                 #endregion
 
