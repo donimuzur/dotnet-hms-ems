@@ -76,7 +76,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
-                WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy")
+                WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("Index", data);
@@ -121,6 +122,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = new WasteDetail();
             model = InitCreate(model);
             model.WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy");
@@ -211,6 +218,17 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Production/Edit
         public ActionResult Edit(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Edit", "Production", new
+                {
+                    companyCode = companyCode,
+                    plantWerk = plantWerk,
+                    faCode = faCode,
+                    wasteProductionDate = wasteProductionDate
+                });
+            }
+
             var model = new WasteDetail();
             var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
 

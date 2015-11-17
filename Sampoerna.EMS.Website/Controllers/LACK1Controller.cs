@@ -95,7 +95,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserRole = curUser.UserRole,
                     UserId = curUser.USER_ID
                 })),
-                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager,
+                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
                 IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
             });
 
@@ -153,7 +153,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserRole = curUser.UserRole,
                     UserId = curUser.USER_ID
                 })),
-                IsShowNewButton = curUser.UserRole != Enums.UserRole.Manager,
+                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
                 IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
             });
 
@@ -261,7 +261,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction(lack1Level.Value == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
@@ -275,7 +275,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 Lack1Level = lack1Level.Value,
                 MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
                 MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : "",
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             };
 
             return CreateInitial(model);

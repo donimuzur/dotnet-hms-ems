@@ -163,8 +163,8 @@ function ValidatePbck1Uom() {
 function ValidateRemainQuota(total) {
     // var total = parseFloat($('#GrandTotalEx').val());
 
-    var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(',',''));
-    var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(',', ''));
+    var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(/\,/g,''));
+    var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(/\,/g, ''));
     var remainQuota = pbck1QtyApproved - totalCk5;
     if (total > remainQuota) {
         $('#collapseThree').removeClass('collapse');
@@ -895,9 +895,9 @@ function ValidateCk5Form(ck5Type) {
         if (ck5Type == 'Domestic' && ($('#SourceNppbkcId').val() == $('#DestNppbkcId').val()))
             return result;
 
-        var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(',', ''));
-        var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(',', ''));
-        var total = parseFloat($('#GrandTotalEx').val().replace(',', ''));
+        var pbck1QtyApproved = parseFloat($('#Pbck1QtyApproved').val().replace(/\,/g, ''));
+        var totalCk5 = parseFloat($('#Ck5TotalExciseable').val().replace(/\,/g, ''));
+        var total = parseFloat($('#GrandTotalEx').val().replace(/\,/g, ''));
         var remainQuota = pbck1QtyApproved - totalCk5;
         if (total > remainQuota) {
             $('#collapseThree').removeClass('collapse');

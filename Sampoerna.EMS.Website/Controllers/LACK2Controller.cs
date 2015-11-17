@@ -94,7 +94,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.MenuLack2OpenDocument = "active";
             model.MenuLack2CompletedDocument = "";
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.Details = dbData;
             model.FilterActionController = "FilterOpenDocument";
@@ -155,7 +155,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = dbData;
             model.MenuLack2OpenDocument = "";
             model.MenuLack2CompletedDocument = "active";
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return View("Index", model);
@@ -173,7 +173,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -183,7 +183,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager,
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer,
                 IsCreateNew = true
             };
 
