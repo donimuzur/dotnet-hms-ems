@@ -1623,8 +1623,7 @@ namespace Sampoerna.EMS.BLL
                 };
 
                 var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
-                    c.Order == item.ORDR &&
-                    (c.ProductionDate.HasValue && c.ProductionDate.Value.Date == item.PRODUCTION_DATE));
+                    c.Order == item.ORDR);
 
                 if (rec != null)
                 {
@@ -1639,7 +1638,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         var chk =
                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                                c => c.Order == item.ORDR && (c.ProductionDate.HasValue && c.ProductionDate.Value.Date == item.PRODUCTION_DATE));
+                                c => c.Order == item.ORDR);
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
@@ -2218,7 +2217,7 @@ namespace Sampoerna.EMS.BLL
                     .ToList()
                     .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageProportionalList = CalculateInvMovementUsageProportional(movementUsageAll);
+            var usageProportionalList = CalculateInvMovementUsageProportional(allUsageReceivingList, movementUsageAll);
 
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
             {
@@ -2233,12 +2232,14 @@ namespace Sampoerna.EMS.BLL
         }
 
         private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
-            IEnumerable<INVENTORY_MOVEMENT> usageAll)
+            IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll)
         {
-            var inventoryMovements = usageAll as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
-            if(usageAll == null || inventoryMovements.Length == 0) return new List<InvMovementUsageProportional>();
+            var inventoryMovements = usageReceivingAll as INVENTORY_MOVEMENT[] ?? usageReceivingAll.ToArray();
+            var inventoryMovementUsageAll = usageAll as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
 
-            var listTotalPerMaterialId = inventoryMovements.GroupBy(p => new
+            if (usageReceivingAll == null || inventoryMovements.Length == 0) return new List<InvMovementUsageProportional>();
+
+            var listTotalPerMaterialId = inventoryMovementUsageAll.GroupBy(p => new
             {
                 p.MATERIAL_ID
             }).Select(g => new
@@ -2254,8 +2255,7 @@ namespace Sampoerna.EMS.BLL
                     MaterialId = x.MATERIAL_ID,
                     Qty = x.QTY.HasValue ? x.QTY.Value : 0,
                     TotalQtyPerMaterialId = y.TotalQty,
-                    Order = x.ORDR,
-                    ProductionDate = x.POSTING_DATE
+                    Order = x.ORDR
                 }).ToList();
 
             return rc;
