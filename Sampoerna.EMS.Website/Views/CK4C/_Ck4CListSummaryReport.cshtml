@@ -28,7 +28,8 @@
             <th style="min-width: 120px">UoM Produced QTY</th>
             <th style="min-width: 120px">Remarks</th>
             <th style="min-width: 150px">POA Approved</th>
-            <th style="min-width: 150px">Manager Approved</th>
+            @*first code when manager exists
+            @*<th style="min-width: 150px">Manager Approved</th>*@
             <th style="min-width: 150px">Status</th>
         </tr>
     </thead>
@@ -155,7 +156,8 @@
                         </ol>
                     </td>
                     <td>@Html.DisplayFor(model => item.PoaApproved)</td>
-                    <td>@Html.DisplayFor(model => item.ManagerApproved)</td>
+                    @*first code when manager exists
+                    @*<td>@Html.DisplayFor(model => item.ManagerApproved)</td>*@
                     <td class="last">@Html.DisplayFor(model => item.Status)</td>
                 </tr>
                 row = row + 1;
