@@ -95,11 +95,14 @@ function UpdateRow(data) {
 
         var row = $('#uploadMaterialRow').val();
 
-        var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(',','')) * parseFloat($('#uploadMaterialConvertion').val().replace(',',''));
+     
+        var convertedQty = parseFloat($('#uploadMaterialQty').val().replace(/\,/g, '')) * parseFloat($('#uploadMaterialConvertion').val().replace(/\,/g, ''));
         var total = parseFloat($('#uploadMaterialTariff').val()) * convertedQty;
         var exciseQty = convertedQty;
         var exciseUOM = $('#uploadConvertedUom').val();
 
+  
+    
         var materialId = $('#uploadMaterialId').val();
         if ($.isNumeric(materialId) == false) {
             materialId = 0;

@@ -308,5 +308,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowPurchaseOrder { get; set; }
 
         public string ConvertedUomManual { get; set; }
+
+        public bool AllowWasteDisposal { get; set; }
+
+        public bool AllowWasteApproval { get; set; }
     }
 }

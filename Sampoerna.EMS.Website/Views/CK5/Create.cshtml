@@ -318,7 +318,12 @@
             });
 
             $('#CK5UploadSubmitBtn').click(function() {
-                GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")', '@Model.Ck5Type.ToString()');
+                if ('@Model.Ck5Type.ToString()' == "Waste") {
+                    GenerateXlsCk5Material('@Url.Action("UploadFileCk5Waste", "CK5")', '@Model.Ck5Type.ToString()');
+                } else {
+                    GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")', '@Model.Ck5Type.ToString()');
+                }
+                
             });
 
 

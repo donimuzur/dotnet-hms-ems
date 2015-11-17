@@ -524,7 +524,7 @@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].ExciseValue)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].UsdValue)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Note)</td>
-                                            if (Model.IsCk5Waste)
+                                            @if (Model.IsCk5Waste)
                                             {
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].WasteStock)</td>
                                             }

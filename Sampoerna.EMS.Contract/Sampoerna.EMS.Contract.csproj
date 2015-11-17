@@ -96,6 +96,7 @@
     <Compile Include="IVirtualMappingPlantBLL.cs" />
     <Compile Include="IWasteBLL.cs" />
     <Compile Include="IWasteRoleBLL.cs" />
+    <Compile Include="IWasteRoleServices.cs" />
     <Compile Include="IWasteStockBLL.cs" />
     <Compile Include="IWasteStockServices.cs" />
     <Compile Include="IWorkflowBLL.cs" />
