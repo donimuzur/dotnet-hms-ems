@@ -40,7 +40,8 @@
             <th>PBCK For Import</th>
             <th>External supplier port</th>
             <th>POA Approve</th>
-            <th>Manager Approve</th>
+            @*first code when manager exists
+            @*<th>Manager Approve</th>*@
             <th>Doc Number CK-5</th>
             <th>Status Doc</th>
             <th>Grand Total Exciseable</th>
@@ -223,7 +224,8 @@
                                 <span>@item.ApprovedByPoaId</span>
                             }
                         </td>
-                        <td>
+                        @*first code when manager exists
+                        @*<td>
                             @if (String.IsNullOrEmpty(item.ApprovedByManagerId))
                             {
                                 <span>-</span>
@@ -232,7 +234,7 @@
                             {
                                 <span>@item.ApprovedByManagerId</span>
                             }
-                        </td>
+                        </td>*@
                         <td>
                             @if (item.CK5List.Any())
                             {

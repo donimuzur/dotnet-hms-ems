@@ -45,20 +45,25 @@
                     </td>
                     <td class="number">@string.Format("{0:N2}", item.RequestQty)</td>
                     <td>
-                        @if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager && item.ApprovedByPoaId != null)
+                        @*@if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager && item.ApprovedByPoaId != null)
                         {
                             @item.ApprovedByPoaId
                         }
                         else if (item.Status == Enums.DocumentStatus.WaitingGovApproval)
                         {
                             @item.ApprovedByManagerId                            
+                        }*@
+                        @if (item.Status == Enums.DocumentStatus.WaitingGovApproval && item.ApprovedByPoaId != null)
+                        {
+                            @item.ApprovedByPoaId
                         }
                         else
                         {
                             @item.CreatedById
                         }
                     </td>
-                    @if (item.Status == Enums.DocumentStatus.WaitingForApproval || item.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    @*@if (item.Status == Enums.DocumentStatus.WaitingForApproval || item.Status == Enums.DocumentStatus.WaitingForApprovalManager)*@
+                    @if (item.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
                         <td class="last">Waiting For Approval</td>
                     }

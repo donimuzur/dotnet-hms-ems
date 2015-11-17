@@ -411,7 +411,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     DocumentType = Enums.Pbck1DocumentType.OpenDocument
 
                 },
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                //first code when manager exists
+                //IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Viewer,
                 IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
             return View("Index", model);
@@ -469,12 +471,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model = ModelInitial(model);
 
-                if (CurrentUser.UserRole == Enums.UserRole.Manager)
-                {
-                    //redirect to details for approval/rejected
-                    //return RedirectToAction("Details", new { id });
-                    isCurrManager = true;
-                }
+                //first code when manager exists
+                //if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                //{
+                //    //redirect to details for approval/rejected
+                //    //return RedirectToAction("Details", new { id });
+                //    isCurrManager = true;
+                //}
 
                 var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
@@ -795,8 +798,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                 DocumentNumber = model.Detail.Pbck1Number,
-                NppbkcId = model.Detail.NppbkcId,
-                ManagerApprove = model.Detail.ApprovedByManagerId
+                NppbkcId = model.Detail.NppbkcId
+                //first code when manager exists
+                //ManagerApprove = model.Detail.ApprovedByManagerId
             };
 
             ////workflow
@@ -834,7 +838,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //can't create PBCK1 Document
                 AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
@@ -2929,9 +2935,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var listCk4c = GetAllDocument(model);
 
             model.Detil.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
-            model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
-            model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //first code when manager exists
+            //model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
             model.Detil.CompletedTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
 

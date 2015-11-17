@@ -109,13 +109,15 @@
 
             var draft = $('#draftId').text();
             var waitP = $('#waitPId').text();
-            var waitM = $('#waitMId').text();
+            //first code when manager exists
+            //var waitM = $('#waitMId').text();
             var waitG = $('#waitGId').text();
             var comp = $('#completedId').text();
 
             var draftInt = parseInt(draft);
             var waitPInt = parseInt(waitP);
-            var waitMInt = parseInt(waitM);
+            //first code when manager exists
+            //var waitMInt = parseInt(waitM);
             var waitGInt = parseInt(waitG);
             var compInt = parseInt(comp);
 
@@ -134,11 +136,12 @@
                     color: "#F49D00",
                     label: "Waiting for Approval POA"
                 },
-                {
-                    value: waitMInt,
-                    color: "#B80718",
-                    label: "Waiting for Approval Manager"
-                },
+                //first code when manager exists
+                //{
+                //    value: waitMInt,
+                //    color: "#B80718",
+                //    label: "Waiting for Approval Manager"
+                //},
                 {
                     value: waitGInt,
                     color: "#003DA5",
@@ -152,7 +155,10 @@
 
             ];
 
-            if (draftInt == 0 && waitPInt == 0 && waitMInt == 0 && waitGInt == 0 && compInt == 0) {
+            //first code when manager exists
+            //if (draftInt == 0 && waitPInt == 0 && waitMInt == 0 && waitGInt == 0 && compInt == 0)
+            if (draftInt == 0 && waitPInt == 0 && waitGInt == 0 && compInt == 0)
+            {
                 pieData =
                 [
                     {

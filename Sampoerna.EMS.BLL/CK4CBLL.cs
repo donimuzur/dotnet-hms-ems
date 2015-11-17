@@ -621,12 +621,13 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
                 }
             }
-            else
-            {
-                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                dbData.APPROVED_BY_MANAGER = input.UserId;
-                dbData.APPROVED_DATE_MANAGER = DateTime.Now;
-            }
+            //first code when manager exists
+            //else
+            //{
+            //    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+            //    dbData.APPROVED_BY_MANAGER = input.UserId;
+            //    dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+            //}
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -647,8 +648,7 @@ namespace Sampoerna.EMS.BLL
             //    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
