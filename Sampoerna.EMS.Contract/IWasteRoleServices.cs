@@ -15,5 +15,7 @@ namespace Sampoerna.EMS.Contract
         List<string> GetListEmailTransportationAndFactoryLogisticTeamByPlant(string sourcePlant, string destPlant);
 
         List<string> GetUserDisposalTeamByPlant(string plantId);
+
+        string GetPlantIdByUserId(string userId);
     }
 }
