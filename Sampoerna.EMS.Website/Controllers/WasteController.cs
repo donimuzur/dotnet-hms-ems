@@ -399,7 +399,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //do save
                 foreach (var data in listWaste)
                 {
-                    _wasteBll.SaveUpload(data);
+                    _wasteBll.SaveUpload(data, CurrentUser.USER_ID);
                 }
 
                 AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);

@@ -155,7 +155,7 @@ namespace Sampoerna.EMS.BLL
             _repository.InsertOrUpdate(dbWaste);
 
             //update waste stock table
-            UpdateWasteStockTable(dbWaste, userId);
+            UpdateWasteStockTable(dbWaste, userId, isNewData);
 
 
             _uow.SaveChanges();
@@ -163,19 +163,31 @@ namespace Sampoerna.EMS.BLL
             return isNewData;
         }
 
-        private void UpdateWasteStockTable(WASTE dbWaste, string userId)
+        private void UpdateWasteStockTable(WASTE dbWaste, string userId, bool isNewData)
         {
-          
+
             var dbdata = GetAllByParam(new WasteGetByParamInput());
             var dbQtyWaste = CalculateWasteQuantity(dbdata);
             var listWasteStockDto = new List<WasteStockDto>();
 
             foreach (var item in dbQtyWaste)
             {
+                decimal? updateValueFloor = item.FloorWasteGramQty;
+                decimal? updateValueDust = item.DustWasteGramQty;
+                decimal? updateValueStamp = item.StampWasteQty;
+
+                if (isNewData && item.PlantWerks == dbWaste.WERKS)
+                {
+                    updateValueFloor = item.FloorWasteGramQty  + dbWaste.FLOOR_WASTE_GRAM_QTY;
+                    updateValueDust = item.DustWasteGramQty  + dbWaste.DUST_WASTE_GRAM_QTY;
+                    updateValueStamp = item.StampWasteQty  + dbWaste.STAMP_WASTE_QTY;
+  
+                }
+               
                 var wasStockWsapoon = new WasteStockDto();
                 wasStockWsapoon.WERKS = item.PlantWerks;
                 wasStockWsapoon.MATERIAL_NUMBER = Constans.WasteSapon;
-                wasStockWsapoon.STOCK = Convert.ToDecimal(item.FloorWasteGramQty);
+                wasStockWsapoon.STOCK = Convert.ToDecimal(updateValueFloor);
                 wasStockWsapoon.CREATED_BY = userId;
 
                 listWasteStockDto.Add(wasStockWsapoon);
@@ -183,7 +195,7 @@ namespace Sampoerna.EMS.BLL
                 var wasteStockGagang = new WasteStockDto();
                 wasteStockGagang.WERKS = item.PlantWerks;
                 wasteStockGagang.MATERIAL_NUMBER = Constans.WasteGagang;
-                wasteStockGagang.STOCK = Convert.ToDecimal(item.DustWasteGramQty);
+                wasteStockGagang.STOCK = Convert.ToDecimal(updateValueDust);
                 wasteStockGagang.CREATED_BY = userId;
 
                 listWasteStockDto.Add(wasteStockGagang);
@@ -191,7 +203,7 @@ namespace Sampoerna.EMS.BLL
                 var wasteStockStem = new WasteStockDto();
                 wasteStockStem.WERKS = item.PlantWerks;
                 wasteStockStem.MATERIAL_NUMBER = Constans.WasteStem;
-                wasteStockStem.STOCK = Convert.ToDecimal(item.StampWasteQty);
+                wasteStockStem.STOCK = Convert.ToDecimal(updateValueStamp);
                 wasteStockStem.CREATED_BY = userId;
 
                 listWasteStockDto.Add(wasteStockStem);
@@ -201,13 +213,13 @@ namespace Sampoerna.EMS.BLL
             foreach (var wasteStockDto in listWasteStockDto)
             {
                 //CHECK DI MATERIAL PLANT DAN STICKER CODE EXIST
-               var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(wasteStockDto.WERKS, wasteStockDto.MATERIAL_NUMBER);
+                var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(wasteStockDto.WERKS, wasteStockDto.MATERIAL_NUMBER);
                 if (dbMaterial != null)
                 {
                     _wasteStockBll.UpdateWasteStockFromWaste(wasteStockDto);
                 }
             }
-          
+
         }
         public WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
         {
@@ -247,6 +259,9 @@ namespace Sampoerna.EMS.BLL
                 {
 
                     PlantWerks = p.Key,
+                    CompanyCode = p.Select(x => x.CompanyCode).FirstOrDefault(),
+                    FaCode = p.Select(x => x.FaCode).FirstOrDefault(),
+                    WasteProductionDate = p.Select(x => x.WasteProductionDate).FirstOrDefault(),
                     FloorWasteGramQty = p.Sum(x => x.FloorWasteGramQty),
                     DustWasteGramQty = p.Sum(x => x.DustWasteGramQty),
                     StampWasteQty = p.Sum(x => x.StampWasteQty)
@@ -258,12 +273,21 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
-        public void SaveUpload(WasteUploadItems wasteUpload)
+        public void SaveUpload(WasteUploadItems wasteUpload, string userId)
         {
+            bool isNewData = true;
             var dbUpload = Mapper.Map<WASTE>(wasteUpload);
+
+            var dbResult = _repository.GetByID(dbUpload.COMPANY_CODE, dbUpload.WERKS, dbUpload.FA_CODE,
+                dbUpload.WASTE_PROD_DATE);
+
+            if (dbResult == null)
+            {
+                isNewData = false;
+            }
             _repository.InsertOrUpdate(dbUpload);
 
-
+            UpdateWasteStockTable(dbUpload, userId, isNewData);
             _uow.SaveChanges();
         }
 
