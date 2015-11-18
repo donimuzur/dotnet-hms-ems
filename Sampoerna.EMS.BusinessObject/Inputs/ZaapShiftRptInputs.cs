@@ -6,6 +6,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public ZaapShiftRptGetForLack1ByParamInput()
         {
+            Werks = new List<string>();
             FaCodeList = new List<string>();
         }
         public string CompanyCode { get; set; }
