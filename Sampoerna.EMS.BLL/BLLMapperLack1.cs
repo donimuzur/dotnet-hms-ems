@@ -396,6 +396,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Lack1UomName, opt => opt.MapFrom(src => src.UOM11 != null ? src.UOM11.UOM_DESC : string.Empty))
                 ;
 
+            Mapper.CreateMap<LACK1, Lack1DetailReportTempDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PeriodDate,
+                    opt => opt.MapFrom(src => new DateTime(src.PERIOD_YEAR.Value, src.PERIOD_MONTH.Value, 1)));
+
         }
 
     }
