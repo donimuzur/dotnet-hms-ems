@@ -213,6 +213,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult Filter(CK5IndexViewModel model)
         {
             model.DetailsList = GetCk5Items(model.Ck5Type, model.SearchView);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_CK5TablePartial", model);
         }
 
@@ -308,6 +309,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterMarketReturn(CK5IndexViewModel model)
         {
             model.DetailsList = GetCk5MarketReturnCompletedItems(model.SearchView);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_CK5TablePartial", model);
         }
 

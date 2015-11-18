@@ -95,6 +95,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = Mapper.Map<List<ProductionDetail>>(dbData);
             var viewModel = new ProductionViewModel();
             viewModel.Details = result;
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_ProductionTableIndex", viewModel);
         }
         #endregion

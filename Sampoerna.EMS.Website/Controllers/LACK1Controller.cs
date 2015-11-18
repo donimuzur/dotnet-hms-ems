@@ -130,6 +130,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = Mapper.Map<List<Lack1NppbkcData>>(dbData);
 
             var viewModel = new Lack1IndexViewModel { Details = result };
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return PartialView("_Lack1Table", viewModel);
         }
@@ -185,6 +186,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var resultPlant = Mapper.Map<List<Lack1PlantData>>(dbDataPlant);
 
             var viewModel = new Lack1IndexPlantViewModel { Details = resultPlant };
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return PartialView("_Lack1ListByPlantTable", viewModel);
 
@@ -482,6 +484,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var resultPlant = Mapper.Map<List<Lack1CompletedDocumentData>>(dbDataPlant);
 
             var viewModel = new Lack1IndexCompletedDocumentViewModel { Details = resultPlant };
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return PartialView("_Lack1CompletedDocumentTable", viewModel);
 
