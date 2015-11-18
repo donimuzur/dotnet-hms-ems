@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -26,9 +27,14 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUnitOfMeasurementBLL _uomBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IChangesHistoryBLL _changeHistoryBll;
+        private IWasteStockBLL _wasteStockBll;
+        private IMaterialBLL _materialBll;
+        private IUserPlantMapBLL _userPlantMapBll;
+        private IPOAMapBLL _poaMapBll;
 
         public WasteController(IPageBLL pageBll, IWasteBLL wasteBll, ICompanyBLL companyBll, IPlantBLL plantBll,
-            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll)
+            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll, 
+            IWasteStockBLL wasteStockBll, IMaterialBLL materialBll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _wasteBll = wasteBll;
@@ -38,6 +44,10 @@ namespace Sampoerna.EMS.Website.Controllers
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
             _changeHistoryBll = changesHistoryBll;
+            _wasteStockBll = wasteStockBll;
+            _materialBll = materialBll;
+            _userPlantMapBll = userPlantMapBll;
+            _poaMapBll = poaMapBll;
         }
 
 
@@ -53,10 +63,12 @@ namespace Sampoerna.EMS.Website.Controllers
             input.UserId = CurrentUser.USER_ID;
 
             var dbData = _wasteBll.GetAllByParam(input);
+            //var dbWasteQty = _wasteBll.CalculateWasteQuantity(dbData);
 
             model.Details = Mapper.Map<List<WasteDetail>>(dbData);
 
             return model;
+
         }
 
         //
@@ -131,7 +143,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+
+            var companyList = GlobalFunctions.GetCompanyList(_companyBll);
+            var userPlantMap = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaMap = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctCompany = companyList.Where(x => userPlantMap.Contains(x.Value) || poaMap.Contains(x.Value));
+            var getCompany = new SelectList(distinctCompany, "Value", "Text");
+
+            model.CompanyCodeList = getCompany;
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
 
@@ -159,19 +178,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<WasteDto>(model);
-               
 
-                //waste reject
-                data.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
-                data.PackerRejectStickQty = model.PackerStr == null ? 0 : Convert.ToDecimal(model.PackerStr);
-                //waste gram
-                data.DustWasteGramQty = model.DustGramStr == null ? 0 : Convert.ToDecimal(model.DustGramStr);
-                data.FloorWasteGramQty = model.FloorGramStr == null ? 0 : Convert.ToDecimal(model.FloorGramStr);
-                //waste stick
-                data.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
-                data.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
-
-                data.StampWasteQty = model.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(model.StampWasteQtyStr);
 
                 try
                 {
@@ -196,8 +203,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            var companyList = GlobalFunctions.GetCompanyList(_companyBll);
+            var userPlantMap = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaMap = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctCompany = companyList.Where(x => userPlantMap.Contains(x.Value) || poaMap.Contains(x.Value));
+            var getCompany = new SelectList(distinctCompany, "Value", "Text");
 
-            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.CompanyCodeList = getCompany;
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
 
@@ -223,17 +235,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
 
             model = Mapper.Map<WasteDetail>(dbWaste);
-            //Reject
-            model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
-            model.PackerStr = model.PackerRejectStickQty == null ? string.Empty : model.PackerRejectStickQty.ToString();
-            // Waste Gram
-            model.DustGramStr = model.DustWasteGramQty == null ? string.Empty : model.DustWasteGramQty.ToString();
-            model.FloorGramStr = model.FloorWasteGramQty == null ? string.Empty : model.FloorWasteGramQty.ToString();
-            //Waste Stick
-            model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
-            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
-            //stamp Waste
-            model.StampWasteQtyStr = model.StampWasteQty == null ? string.Empty : model.StampWasteQty.ToString();
 
             model = IniEdit(model);
 
@@ -282,18 +283,6 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var dbWasteNew = Mapper.Map<WasteDto>(model);
-            
-            //reject
-            dbWasteNew.MarkerRejectStickQty = model.MarkerStr == null ? 0 : Convert.ToDecimal(model.MarkerStr);
-            dbWasteNew.PackerRejectStickQty = model.PackerStr == null ? 0 : Convert.ToDecimal(model.PackerStr);
-            //waste gram
-            dbWasteNew.DustWasteGramQty = model.DustGramStr == null ? 0 : Convert.ToDecimal(model.DustGramStr);
-            dbWasteNew.FloorWasteGramQty = model.FloorGramStr == null ? 0 : Convert.ToDecimal(model.FloorGramStr);
-            //waste stick
-            dbWasteNew.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
-            dbWasteNew.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
-            //Stamp Waste
-            dbWasteNew.StampWasteQty = model.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(model.StampWasteQtyStr);
 
             try
             {
@@ -316,7 +305,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     _wasteBll.DeleteOldData(model.CompanyCodeX, model.PlantWerksX, model.FaCodeX,
                                                     Convert.ToDateTime(model.WasteProductionDateX));
                 }
-                
+
                 AddMessageInfo(message, Enums.MessageInfoType.Success);
 
 
@@ -334,9 +323,6 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Edit", model);
 
         }
-
-
-
 
         #endregion
 
@@ -362,20 +348,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ChangesHistoryList =
                Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
                    "Waste_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + wasteProductionDate.ToString("ddMMMyyyy")));
-
-            //reject
-            model.MarkerStr = model.MarkerRejectStickQty == null ? string.Empty : model.MarkerRejectStickQty.ToString();
-            model.PackerStr = model.PackerRejectStickQty == null ? string.Empty : model.PackerRejectStickQty.ToString();
-
-            //Waste Gram
-            model.DustGramStr = model.DustWasteGramQty == null ? string.Empty : model.DustWasteGramQty.ToString();
-            model.FloorGramStr = model.FloorWasteGramQty == null ? string.Empty : model.FloorWasteGramQty.ToString();
-
-            //Waste Stick
-            model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
-            model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
-            //stamp waste
-            model.StampWasteQtyStr = model.StampWasteQty == null ? string.Empty : model.StampWasteQty.ToString();
 
             model = InitDetail(model);
             return View(model);
@@ -422,7 +394,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (item.BrandDescription != brandCe.BRAND_CE)
                     {
-                        AddMessageInfo("Data Brand Description Is Not valid",Enums.MessageInfoType.Error);
+                        AddMessageInfo("Data Brand Description Is Not valid", Enums.MessageInfoType.Error);
                         return RedirectToAction("UploadManualWaste");
                     }
 
@@ -442,9 +414,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 //do save
-                foreach(var data in listWaste)
+                foreach (var data in listWaste)
                 {
-                    _wasteBll.SaveUpload(data);
+                    _wasteBll.SaveUpload(data, CurrentUser.USER_ID);
                 }
 
                 AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
@@ -474,7 +446,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     var item = new WasteUploadItems();
-                   
+
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
@@ -487,12 +459,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     //item.DustWasteStickQty = dataRow[8];
                     //item.FloorWasteStickQty = dataRow[9];
                     item.StampWasteQty = dataRow[8];
-                    item.WasteProductionDate = dataRow[9]; 
-                   
+                    item.WasteProductionDate = dataRow[9];
+
                     {
                         model.Add(item);
                     }
-                    
+
                 }
             }
 
@@ -512,8 +484,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult CompanyListPartialProduction(string companyId)
         {
             var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
+            var userPlantMap = _userPlantMapBll.GetPlantByUserId(CurrentUser.USER_ID);
+            var poaMap = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctPlant = listPlant.Where(x => userPlantMap.Contains(x.Value) || poaMap.Contains(x.Value));
+            var listPlantNew = new SelectList(distinctPlant, "Value", "Text");
 
-            var model = new WasteDetail() { PlantWerkList = listPlant };
+            var model = new WasteDetail() { PlantWerkList = listPlantNew };
 
             return Json(model);
         }

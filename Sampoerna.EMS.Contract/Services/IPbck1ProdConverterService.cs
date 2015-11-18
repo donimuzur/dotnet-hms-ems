@@ -4,9 +4,8 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 
 namespace Sampoerna.EMS.Contract.Services
 {
-    public interface IZaapShiftRptService
+    public interface IPbck1ProdConverterService
     {
-        List<ZAAP_SHIFT_RPT> GetForLack1ByParam(ZaapShiftRptGetForLack1ByParamInput input);
-        List<ZAAP_SHIFT_RPT> GetAll();
+        List<PBCK1_PROD_CONVERTER> GetProductionLack1TisToTis(Pbck1GetProductionLack1TisToTisParamInput input);
     }
 }

@@ -105,6 +105,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Is TIS to TIS Report </label>
+                                        <div class="col-md-8">
+                                            @Html.CheckBoxFor(model => model.IsTisToTisReport, new { @class = "checkbox checkexport" })
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -199,6 +207,16 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Note</label>
+                                        <div class="col-md-8">
+                                            @Html.TextAreaFor(model => model.Noted, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4 col-md-offset-4">
                                     <input type="button" id="btn-generate-data" class="btn btn-blue full" value="Generate" onclick="generateDataClick(@Convert.ToInt32(Model.Lack1Level),'@Url.Action("Generate", "LACK1")');" />
                                 </div>
@@ -221,7 +239,7 @@
                 <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                     <div class="panel-body">
                         <div class="table-container lack-table" id="generated-data-container">
-                            
+
                         </div>
                     </div>
                 </div>
