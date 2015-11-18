@@ -124,7 +124,7 @@
                                                         <label class="col-md-3">Region</label>
                                                         <div class="col-md-9">
                                                             @Html.TextBox("region_", Model.Detail.Region, new { @class = "form-control", disabled = "disabled" })
-                                                            @Html.HiddenFor(x=>x.Detail.Region)
+                                                            @Html.HiddenFor(x => x.Detail.Region)
                                                         </div>
                                                     </div>
                                                 </div>
@@ -144,8 +144,20 @@
                                                         <div class="col-md-9">
                                                             <div class="row">
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBox("start_date", Model.Detail.StartDate, "{0:dd MMMM yyyy}", new { @class = "form-control", disabled = "disabled"})
+                                                                    @Html.TextBox("start_date", Model.Detail.StartDate, "{0:dd MMMM yyyy}", new { @class = "form-control", disabled = "disabled" })
                                                                     @Html.HiddenFor(model => model.Detail.StartDate)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3 long">Flag For LACK-1</label>
+                                                        <div class="col-md-9">
+                                                            <div class="row">
+                                                                <div class="col-md-8">
+                                                                    @Html.CheckBoxFor(model => model.Detail.FlagForLack1)
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -159,7 +171,7 @@
                                                         <div class="col-md-9">
                                                             <div class="row">
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBox("end_date", Model.Detail.EndDate,"{0:dd MMMM yyyy}", new { @class = "form-control", disabled = "disabled" })
+                                                                    @Html.TextBox("end_date", Model.Detail.EndDate, "{0:dd MMMM yyyy}", new { @class = "form-control", disabled = "disabled" })
                                                                     @Html.HiddenFor(model => model.Detail.EndDate)
                                                                 </div>
                                                             </div>
