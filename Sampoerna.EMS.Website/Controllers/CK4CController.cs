@@ -156,7 +156,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterOpenDocument(Ck4CIndexDocumentListViewModel model)
         {
             model.Detail = GetOpenDocument(model);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return PartialView("_CK4CTableDocumentList", model);
         }
 
@@ -182,7 +184,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterCompletedDocument(Ck4CIndexDocumentListViewModel model)
         {
             model.Detail = GetCompletedDocument(model);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return PartialView("_CK4CTableCompletedDocument", model);
         }
 
