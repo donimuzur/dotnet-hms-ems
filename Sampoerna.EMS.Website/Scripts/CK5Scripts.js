@@ -1066,17 +1066,18 @@ function ajaxGetListMaterial(url, formData, materialid) {
 
                 listMaterial.html(list);
 
+                listMaterial.selectpicker('refresh');
                 //var listComplete = $('.dropdown-menu ul');
                 //list = "";
                 //var index = 0;
                 //for (var i = 0; i < data.length; i++) {
                 //    index = i + 1;
-                //    //list += "<li data-original-index='" + index + ">";
-                //    //list += "<a tab-index=0' class='' style='' data-tokens='null' >";
-                //    //list += " <span class='text' >" + data[i].MaterialNumber + "</span>";
-                //    //list += "<span class='glyphicon glyphicon-ok check-mark'></span>";
-                //    //list += "</a>";
-                //    //list += "</li>";
+                //    list += "<li data-original-index='" + index + ">";
+                //    list += "<a tab-index=0' class='' style='' data-tokens='null' >";
+                //    list += " <span class='text' >" + data[i].MaterialNumber + "</span>";
+                //    list += "<span class='glyphicon glyphicon-ok check-mark'></span>";
+                //    list += "</a>";
+                //    list += "</li>";
                 //    listComplete.append(
                 //        $('<li>').attr("data-original-index='" + index + ">").append(
                 //            $('<a>').append(
@@ -1256,7 +1257,7 @@ function ajaxGetListMaterialMarketReturn(url, formData, materialid) {
                 }
 
                 listMaterial.html(list);
-
+                listMaterial.selectpicker('refresh');
             }
         });
     }
