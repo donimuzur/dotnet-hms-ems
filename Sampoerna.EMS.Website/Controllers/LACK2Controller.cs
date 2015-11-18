@@ -119,7 +119,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 Details = dbData,
                 MenuLack2OpenDocument = "active",
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             };
             return PartialView("_Lack2OpenDoc", model);
         }
@@ -134,7 +136,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbData = _lack2Bll.GetCompletedByParam(input);
             var model = new Lack2IndexViewModel { Details = dbData };
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return PartialView("_Lack2OpenDoc", model);
         }
 

@@ -151,7 +151,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterOpenDocument(Pbck1ViewModel model)
         {
             model.Details = GetOpenDocument(model.SearchInput);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return PartialView("_Pbck1Table", model);
         }
 
@@ -1014,7 +1016,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterCompletedDocument(Pbck1ViewModel model)
         {
             model.Details = GetCompletedDocument(model.SearchInput);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return PartialView("_Pbck1CompletedDocumentTable", model);
         }
 
