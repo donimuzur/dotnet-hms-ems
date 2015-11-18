@@ -29,9 +29,12 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changeHistoryBll;
         private IWasteStockBLL _wasteStockBll;
         private IMaterialBLL _materialBll;
+        private IUserPlantMapBLL _userPlantMapBll;
+        private IPOAMapBLL _poaMapBll;
 
         public WasteController(IPageBLL pageBll, IWasteBLL wasteBll, ICompanyBLL companyBll, IPlantBLL plantBll,
-            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll, IWasteStockBLL wasteStockBll, IMaterialBLL materialBll)
+            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll, 
+            IWasteStockBLL wasteStockBll, IMaterialBLL materialBll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _wasteBll = wasteBll;
@@ -43,6 +46,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _changeHistoryBll = changesHistoryBll;
             _wasteStockBll = wasteStockBll;
             _materialBll = materialBll;
+            _userPlantMapBll = userPlantMapBll;
+            _poaMapBll = poaMapBll;
         }
 
 
@@ -63,7 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = Mapper.Map<List<WasteDetail>>(dbData);
 
             return model;
-            
+
         }
 
         //
@@ -138,7 +143,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+
+            var companyList = GlobalFunctions.GetCompanyList(_companyBll);
+            var userPlantMap = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaMap = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctCompany = companyList.Where(x => userPlantMap.Contains(x.Value) || poaMap.Contains(x.Value));
+            var getCompany = new SelectList(distinctCompany, "Value", "Text");
+
+            model.CompanyCodeList = getCompany;
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
 
@@ -166,7 +178,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<WasteDto>(model);
-                
+
 
                 try
                 {
@@ -191,8 +203,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            var companyList = GlobalFunctions.GetCompanyList(_companyBll);
+            var userPlantMap = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaMap = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctCompany = companyList.Where(x => userPlantMap.Contains(x.Value) || poaMap.Contains(x.Value));
+            var getCompany = new SelectList(distinctCompany, "Value", "Text");
 
-            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.CompanyCodeList = getCompany;
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
 
@@ -218,7 +235,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
 
             model = Mapper.Map<WasteDetail>(dbWaste);
-            
+
             model = IniEdit(model);
 
             model.CompanyCodeX = model.CompanyCode;
@@ -331,7 +348,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ChangesHistoryList =
                Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
                    "Waste_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + wasteProductionDate.ToString("ddMMMyyyy")));
-            
+
             model = InitDetail(model);
             return View(model);
 
@@ -467,8 +484,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult CompanyListPartialProduction(string companyId)
         {
             var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
+            var userPlantMap = _userPlantMapBll.GetPlantByUserId(CurrentUser.USER_ID);
+            var poaMap = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctPlant = listPlant.Where(x => userPlantMap.Contains(x.Value) || poaMap.Contains(x.Value));
+            var listPlantNew = new SelectList(distinctPlant, "Value", "Text");
 
-            var model = new WasteDetail() { PlantWerkList = listPlant };
+            var model = new WasteDetail() { PlantWerkList = listPlantNew };
 
             return Json(model);
         }
