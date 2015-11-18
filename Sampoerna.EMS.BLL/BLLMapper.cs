@@ -260,9 +260,9 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PBCK1, ZAIDM_EX_NPPBKCCompositeDto>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<PBCK1, T001WCompositeDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.SUPPLIER_PLANT_WERKS) ? src.SUPPLIER_PLANT_WERKS : src.SUPPLIER_PLANT))
                 .ForMember(dest => dest.DROPDOWNTEXTFIELD,
-                    opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS + "-" + src.SUPPLIER_PLANT));
+                    opt => opt.MapFrom(src => (!string.IsNullOrEmpty(src.SUPPLIER_PLANT_WERKS) ? src.SUPPLIER_PLANT_WERKS : src.SUPPLIER_PLANT) + "-" + src.SUPPLIER_PLANT));
             Mapper.CreateMap<PBCK1, ZAIDM_EX_GOODTYPCompositeDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.EXT_TYP_DESC, opt => opt.MapFrom(src => src.EXC_TYP_DESC))
                 ;

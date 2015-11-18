@@ -4004,9 +4004,35 @@ namespace Sampoerna.EMS.BLL
                 }
                 // ck5MaterialDto.CONVERTED_UOM_ID
             }
-            
+
+            //create group by material by plant, material, converted uom , sum converted qty
+            dataXmlDto.Ck5Material = CreateGroupByCk5MaterialForXml(dataXmlDto.Ck5Material);
+
             return dataXmlDto;
 
+        }
+
+        /// <summary>
+        /// create group by material by plant, material, converted uom , sum converted qty 
+        /// </summary>
+        private List<CK5MaterialDto> CreateGroupByCk5MaterialForXml(List<CK5MaterialDto> Ck5Material)
+        {
+            var listNewMaterial = Ck5Material.GroupBy(c => new
+            {
+                c.CK5_ID,
+                c.PLANT_ID,
+                c.BRAND,
+                c.CONVERTED_UOM
+            }).Select(x => new CK5MaterialDto()
+            {
+                CK5_ID = x.Key.CK5_ID,
+                PLANT_ID = x.Key.PLANT_ID,
+                BRAND = x.Key.BRAND,
+                CONVERTED_UOM = x.Key.CONVERTED_UOM,
+                CONVERTED_QTY = x.Sum(c => c.CONVERTED_QTY)
+            });
+
+            return listNewMaterial.ToList();
         }
 
         public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId, int exgrouptype, Enums.CK5Type ck5type)
