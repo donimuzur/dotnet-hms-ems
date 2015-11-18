@@ -459,7 +459,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsTriggerSto)
+                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsTriggerSto && !Model.IsCk5Waste)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
@@ -569,7 +569,14 @@
                                         <th>Excise Value</th>
                                         <th>USD Value</th>
                                         <th>Note</th>
-                                        <th>Message</th>
+                                        @if (Model.IsCk5Waste)
+                                        {
+                                            <th>Waste Stock</th>
+                                        }
+                                        else
+                                        {
+                                            <th>Message</th>
+                                        }
                                        
                                     </tr>
                                 </thead>
@@ -592,7 +599,14 @@
                                                     <td>@row.ExciseValue</td>
                                                     <td>@row.UsdValue</td>
                                                     <td>@row.Note</td>
-                                                    <td>@row.Message</td>
+                                                    @if (Model.IsCk5Waste)
+                                                    {
+                                                       <td>@row.WasteStock</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>@row.Message</td>
+                                                    }
                                                    
                                                     
 
@@ -793,7 +807,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                @if (Model.AllowAttachmentCompleted)
+                                @if (Model.AllowAttachmentCompleted || Model.AllowWasteDisposal)
                                 {
                                     <div class="col-md-6">
                                         <div class="row">
@@ -842,7 +856,7 @@
                                     </div>
                                 }
                             </div>
-                            @if (Model.AllowAttachmentCompleted)
+                            @if (Model.AllowAttachmentCompleted || Model.AllowWasteDisposal)
                             {
                                 <div class="row">
                                     <div class="col-md-6">

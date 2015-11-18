@@ -33,6 +33,20 @@
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnGiCreated" />
                         }
+                         else if (Model.AllowWasteDisposal || Model.AllowWasteApproval)
+                        {
+                            
+                            if (Model.AllowWasteApproval)
+                            {
+                                <input type="button" class="btn btn-blue" value="Approve" id="btnSaveWaste" />
+                                <input type="button" class="btn btn-danger" value="Reject" id="btnDisposalReject" />
+                            }
+                            else
+                            {
+                                <input type="button" class="btn btn-blue" value="Save" id="btnSaveWaste" /> 
+                            }
+
+                        }
 
                         if (Model.AllowManagerReject)
                         {
@@ -207,14 +221,14 @@
 </div>
 
 
-<div id="Ck5ModalGovReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div id="Ck5ModalDisposalReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Government Reject document</h4>
+                <h4 class="modal-title">Disposal Reject document</h4>
             </div>
-            @using (Html.BeginForm("GovRejectDocument", "CK5"))
+            @using (Html.BeginForm("RejectDisposalDocument", "CK5"))
             {
                 <div class="modal-body">
                     @Html.HiddenFor(model => model.Ck5Id)
@@ -222,7 +236,7 @@
                         <div class="row">
                             <label class="col-md-3">Add Comment<span class="red">*</span></label>
                             <div class="col-md-9">
-                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                                @Html.TextAreaFor(model => model.Comment, new { @id="CommentDisposalReject", @rows = "5", @class = "col-md-9" })
                             </div>
                         </div>
                     </div>
@@ -230,44 +244,12 @@
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmGovReject" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmDisposalReject" />
                 </div>
             }
         </div>
     </div>
 </div>
-
-
-<div id="Ck5ModalGovCancel" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Government Cancel document</h4>
-            </div>
-            @using (Html.BeginForm("GovCancelDocument", "CK5"))
-            {
-                <div class="modal-body">
-                    @Html.HiddenFor(model => model.Ck5Id)
-                    <div class="form-excise" role="form">
-                        <div class="row">
-                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
-                            <div class="col-md-9">
-                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovCancel" })
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                    <input type="submit" class="btn btn-danger" value="Cancel" disabled id="btnConfirmGovCancel" />
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
 
 <div id="ModalCk5ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
@@ -329,7 +311,7 @@
 @section scripts {
     <script src="~/Scripts/CK5Scripts.js"></script>
     @if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
-         || Model.AllowAttachmentCompleted)
+         || Model.AllowAttachmentCompleted || Model.AllowWasteDisposal)
     {
         <script src="~/Scripts/jquery.form.min.js"></script>
         <script src="~/Scripts/UploadExcel.js"></script>
@@ -339,74 +321,79 @@
 
 
     <script type="text/javascript">
-    $(document).ready(function () {
+        $(document).ready(function() {
 
+       
 
-        if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
-            OnReadyFunction('@Model.DocumentStatus');
-            if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
-                $('#liCK5MarketReturnCompleted').addClass('active');
-            }
-
-        } else {
-            OnReadyFunction('@Model.Ck5Type.ToString()');
-        }
-        openGovStatusBlock();
-
-        $('#btn-changelog-export-xls').click(function () {
-            location.href = '@Url.Action("ExportXls", "CK5", new {ck5Id = Model.Ck5Id})';
-        });
-
-        $('#btnBack').click(function (e) {
-
-            if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()')
+            if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
+                OnReadyFunction('@Model.DocumentStatus');
                 if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
-                    location.href = '@Url.Action("CK5MarketReturnCompleted", "CK5")';
-                } else {
-                    location.href = '@Url.Action("CK5Completed", "CK5")';
+                    $('#liCK5MarketReturnCompleted').addClass('active');
                 }
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
-                location.href = '@Url.Action("Index", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
-                location.href = '@Url.Action("Index", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
-                location.href = '@Url.Action("CK5Export", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
-                location.href = '@Url.Action("CK5Import", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
-                location.href = '@Url.Action("CK5Manual", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
-                location.href = '@Url.Action("CK5MarketReturn", "CK5")';
 
-        });
-
-        $("#btnSaveGovStatus").click(function () {
-            if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
-                if (ValidateGovMarketReturn()) {
-                    $('#GovApproveForm').submit();
-                    //alert('submit');
-                }
             } else {
-                if (ValidateGovInput()) {
-                    $('#GovApproveForm').submit();
-                }
+                OnReadyFunction('@Model.Ck5Type.ToString()');
             }
+            openGovStatusBlock();
 
-        });
+            $('#btn-changelog-export-xls').click(function() {
+                location.href = '@Url.Action("ExportXls", "CK5", new {ck5Id = Model.Ck5Id})';
+            });
 
-        $('#divComment').hide();
+            $('#btnBack').click(function(e) {
 
-        $('#GovStatus').on('change', function (e) {
-            var valueSelected = this.value;
+                if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()')
+                    if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
+                        location.href = '@Url.Action("CK5MarketReturnCompleted", "CK5")';
+                    } else {
+                        location.href = '@Url.Action("CK5Completed", "CK5")';
+                    }
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                    location.href = '@Url.Action("CK5Export", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                    location.href = '@Url.Action("CK5Import", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                    location.href = '@Url.Action("CK5Manual", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+
+            });
+
+            $("#btnSaveGovStatus").click(function() {
+                if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
+                    if (ValidateGovMarketReturn()) {
+                        $('#GovApproveForm').submit();
+                        //alert('submit');
+                    }
+                } else {
+                    if (ValidateGovInput()) {
+                        $('#GovApproveForm').submit();
+                    }
+                }
+
+            });
 
             $('#divComment').hide();
 
-            if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
-                $('#divComment').show();
+            $('#GovStatus').on('change', function(e) {
+                var valueSelected = this.value;
 
-            }
+                $('#divComment').hide();
 
-        });
+                if (valueSelected == 'GovReject' || valueSelected == 'GovCancel') {
+                    $('#divComment').show();
+
+                }
+
+            });
+            $("#btnSaveWaste").click(function() {
+                $('#GovApproveForm').submit();
+            });
+        
 
         $("#btnGiCreated").click(function () {
 
@@ -443,7 +430,8 @@
         });
 
         if ('@Model.AllowGiCreated' == "True" || '@Model.AllowGrCreated' == "True"
-            || '@Model.AllowGoodIssue' == "True" || '@Model.AllowGoodReceive' == "True") {
+            || '@Model.AllowGoodIssue' == "True" || '@Model.AllowGoodReceive' == "True"
+            || '@Model.AllowWasteDisposal' == "True") {
             $('#collapseFour').removeClass('collapse');
             $('#collapseFour').addClass('in');
             $("#collapseFour").css({ height: "auto" });
@@ -507,21 +495,31 @@
         $('#Ck5ModalReject').modal('show');
 
     });
+    
+    $("#btnDisposalReject").click(function () {
+        $('#btnConfirmDisposalReject').attr('disabled', 'disabled');
 
+        $('#CommentDisposalReject').val('');
+
+        $('#Ck5ModalDisposalReject').modal('show');
+
+    });
 
     $('#Comment').bind('input propertychange', function () {
 
         $('#btnConfirmReject').attr('disabled', 'disabled');
-        //$('#btnConfirmGovReject').attr('disabled', 'disabled');
-        //$('#btnConfirmGovCancel').attr('disabled', 'disabled');
-
         if (this.value.length) {
             $('#btnConfirmReject').removeAttr('disabled');
-            //$('#btnConfirmGovReject').removeAttr('disabled');
-            //$('#btnConfirmGovCancel').removeAttr('disabled');
         }
     });
 
+    $('#CommentDisposalReject').bind('input propertychange', function () {
+        $('#btnConfirmDisposalReject').attr('disabled', 'disabled');
+        if (this.value.length) {
+            $('#btnConfirmDisposalReject').removeAttr('disabled');
+        }
+    });
+    
     function printPreview(url) {
 
         window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');

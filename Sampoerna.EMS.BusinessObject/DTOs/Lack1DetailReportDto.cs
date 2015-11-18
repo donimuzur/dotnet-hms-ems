@@ -66,5 +66,22 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal ConvertedQty { get; set; }
         public string ConvertedUomId { get; set; }
     }
+
+    public class Lack1DetailReportTempDto
+    {
+        public int LACK1_ID { get; set; }
+        public string LACK1_NUMBER { get; set; }
+        public Enums.Lack1Level LACK1_LEVEL { get; set; }
+        public decimal BEGINING_BALANCE { get; set; }
+        public decimal? WASTE_QTY { get; set; }
+        public string WASTE_UOM { get; set; }
+        public decimal? RETURN_QTY { get; set; }
+        public string RETURN_UOM { get; set; }
+        public decimal TOTAL_INCOME { get; set; }
+        public decimal USAGE { get; set; }
+        public ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
+        public ICollection<LACK1_TRACKING> LACK1_TRACKING { get; set; }
+        public DateTime PeriodDate { get; set; }
+    }
     
 }

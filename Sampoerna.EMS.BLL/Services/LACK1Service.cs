@@ -267,6 +267,8 @@ namespace Sampoerna.EMS.BLL.Services
                     queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.ReceivingPlantId));
             }
 
+            queryFilter = input.IsTisToTis ? queryFilter.And(c => c.IS_TIS_TO_TIS.HasValue && c.IS_TIS_TO_TIS.Value) : queryFilter.And(c => !c.IS_TIS_TO_TIS.HasValue || !c.IS_TIS_TO_TIS.Value);
+
             return _repository.Get(queryFilter).FirstOrDefault();
 
         }
@@ -386,17 +388,7 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilter = queryFilter.And(c => c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId);
             }
-            if (input.PeriodMonthFrom.HasValue && input.PeriodYearFrom.HasValue)
-            {
-                var dtFrom = new DateTime(input.PeriodYearFrom.Value, input.PeriodMonthFrom.Value, 1);
-                queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) >= dtFrom);
-            }
-            //if (input.PeriodMonthTo.HasValue && input.PeriodYearTo.HasValue)
-            //{
-            //    var dtTo = new DateTime(input.PeriodYearTo.Value, input.PeriodMonthTo.Value, 1);
-            //    queryFilter = queryFilter.And(c => new DateTime(c.PERIOD_YEAR.Value, c.PERIOD_MONTH.Value, 1) <= dtTo);
-            //}
-
+            
             if (input.Lack1Level.HasValue)
             {
                 queryFilter = queryFilter.And(c => c.LACK1_LEVEL == input.Lack1Level.Value);

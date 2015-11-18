@@ -253,9 +253,17 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label>Converted UOM<span class="red">*</span></label>
-                        @Html.DropDownListFor(model => model.PackageUomName, Model.PackageConvertedUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })
+                        @if (Model.IsCk5Waste)
+                        {
+                            <label>Converted UOM</label>
+                            @Html.TextBoxFor(model => model.ConvertedUomManual, new { @class = "form-control ", @disabled = "true" })
 
+                        }
+                        else
+                        {
+                            <label>Converted UOM<span class="red">*</span></label>
+                            @Html.DropDownListFor(model => model.PackageUomName, Model.PackageConvertedUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })
+                        }
                     </div>
 
                     <div class="col-md-6">
@@ -272,7 +280,15 @@
                         <label>Note</label>
                         <textarea class="form-control" id="uploadNote" cols="20" rows="5" maxlength="100"></textarea>
                     </div>
+                    
+                    @if (Model.IsCk5Waste)
+                    {
+                        <div class="col-md-6">
+                            <label class="col-md-4">Stock</label>
+                            @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadWasteStock", @disabled = "disabled" })
 
+                        </div>
+                    }
                 </div>
             </div>
             <div class="modal-footer">
@@ -310,6 +326,8 @@
                     location.href = '@Url.Action("CK5MarketReturn", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.TriggerSto.ToString()')
                     location.href = '@Url.Action("CK5TriggerSto", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Waste.ToString()')
+                    location.href = '@Url.Action("CK5Waste", "CK5")';
 
             });
 
@@ -362,9 +380,16 @@
 
             });
 
+           
             $('#CK5UploadSubmitBtn').click(function () {
-                GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")');
+                if ('@Model.Ck5Type.ToString()' == "Waste") {
+                    GenerateXlsCk5Material('@Url.Action("UploadFileCk5Waste", "CK5")', '@Model.Ck5Type.ToString()');
+                } else {
+                    GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")', '@Model.Ck5Type.ToString()');
+                }
+
             });
+
 
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
@@ -596,7 +621,12 @@
                 $('#ModalCk5Material').modal('show');
                 return;
             }
-            ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+            
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                ajaxGetListMaterial('@Url.Action("GetListMaterialWaste", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+            } else {
+                ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+            }
 
             $('#btnSaveMaterial').show();
             $('#btnUpdateMaterial').hide();
@@ -635,12 +665,23 @@
             materialInput.ConvertedUom = convertedUom;
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
-
             materialInput.ExGoodsType = goodTypeGroupId;
-            ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
-                AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', data);
+          
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                materialInput.WasteStock = $('#uploadWasteStock').val();
 
-            });
+                ajaxValidateMaterial('@Url.Action("ValidateManualCk5Waste", "CK5")', { input: materialInput }, function (data) {
+                    AddRowWaste('@Url.Action("GetListMaterialWaste", "CK5")', data);
+
+                });
+            } else {
+                ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
+                    AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', data);
+
+                });
+            }
+
+
         });
 
         $("#uploadMaterialNumber").change(function () {
@@ -655,7 +696,12 @@
                 } else {
                     var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
-                    ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    if ('@Model.Ck5Type.ToString()' == "Waste") {
+                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffWaste", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    } else {
+                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    }
+                    
                 }
             }
         });
@@ -689,12 +735,23 @@
             materialInput.ConvertedUom = convertedUom;
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
-
             materialInput.ExGoodsType = goodTypeGroupId;
-            ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
-                UpdateRow(data);
+          
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                materialInput.WasteStock = $('#uploadWasteStock').val();
 
-            });
+                ajaxValidateMaterial('@Url.Action("ValidateManualCk5Waste", "CK5")', { input: materialInput }, function (data) {
+                    UpdateRowWaste(data);
+
+                });
+            } else {
+                ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
+                    UpdateRow(data);
+
+                });
+            }
+
+
         });
 
         function EditRow(o, url) {
@@ -711,7 +768,15 @@
                 return;
             }
             
-            ajaxGetListMaterial(url, { plantId: plant, goodTypeGroup: goodTypeGroupId }, materialnumber);
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                ajaxGetListMaterial('@Url.Action("GetListMaterialWaste", "CK5")', { plantId: plant, goodTypeGroup: goodTypeGroupId }, materialnumber);
+            } else {
+                ajaxGetListMaterial(url, { plantId: plant, goodTypeGroup: goodTypeGroupId }, materialnumber);
+                @*ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });*@
+            }
+
+
+            
 
             $('#btnSaveMaterial').hide();
             $('#btnUpdateMaterial').show();
@@ -748,6 +813,8 @@
 
             $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
 
+            $('#uploadWasteStock').val(nRow.find("td").eq(20).html());
+            
             ClearValidation();
 
             $("#lblTitleInputManual").text('Edit Input');

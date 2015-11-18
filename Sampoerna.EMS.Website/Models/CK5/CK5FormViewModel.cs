@@ -261,6 +261,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool IsMarketReturn { get; set; }
         public bool IsTriggerSto { get; set; }
         public bool IsCompleted { get; set; }
+        public bool IsCk5Waste { get; set; }
 
         [Display(Name = "BACK-1 Number")]
         public string Back1Number { get; set; }
@@ -306,5 +307,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowGoodReceive { get; set; }
 
         public bool AllowPurchaseOrder { get; set; }
+
+        public string ConvertedUomManual { get; set; }
+
+        public bool AllowWasteDisposal { get; set; }
+
+        public bool AllowWasteApproval { get; set; }
     }
 }
