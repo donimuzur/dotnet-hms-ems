@@ -108,7 +108,8 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Quantity Packed<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "decimal form-control", disabled = "disabled", @maxlength = "19" })
+                                                                    @Html.HiddenFor(model => model.QtyPackedStr)
+                                                                    @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = " form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -135,7 +136,7 @@
                                                                 <label class="col-md-4">Product Quantity Stick</label>
                                                                 <div class="col-md-8">
                                                                     @Html.HiddenFor(model => model.ProdQtyStickStr)
-                                                                    @Html.TextBoxFor(model => model.ProdQtyStickStr, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                    @Html.TextBoxFor(model => model.ProdQtyStickStr, new { @class = "form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -144,7 +145,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4"> Bundle </label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.Bundle, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                    @Html.TextBoxFor(model => model.Bundle, new { @class = "form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -152,7 +153,7 @@
                                                             <div class="row">
                                                                 <label class="col-md-4"> Market </label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.Market, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                    @Html.TextBoxFor(model => model.Market, new { @class = "form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -161,7 +162,7 @@
                                                                 <label class="col-md-4"> Material Document Number </label>
                                                                 <div class="col-md-8">
                                                                     @Html.HiddenFor(model => model.Batch)
-                                                                    @Html.TextBoxFor(model => model.MatDoc, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                    @Html.TextBoxFor(model => model.MatDoc, new { @class = "form-control", disabled = "disabled" })
                                                                 </div>
                                                             </div>
                                                         </div>

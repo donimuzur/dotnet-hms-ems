@@ -17,6 +17,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
         public decimal? QtyUnpacked { get; set; }
+        //Qty Packed
+        public string QtyPackedStr
+        {
+            get;
+            set;
+        }
         public decimal? QtyPacked { get; set; }
         public string Uom { get; set; }
         public DateTime ProductionDate { get; set; }
@@ -28,8 +34,19 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? Tarif { get; set; }
         public string ProdCode { get; set; }
         public string Batch { get; set; }
-        public decimal? ProdQtyStick { get; set; }
-        public decimal? Qty { get; set; }
+        public string ProdQtyStickStr { get; set; }
+        public decimal? ProdQtyStick
+        {
+            get;
+            set;
+        }
+        //QTY
+        public string QtyStr { get; set; }
+        public decimal? Qty
+        {
+            get;
+            set;
+        }
         public int? Bundle { get; set; }
         public string Market { get; set; }
         public string Docgmvter { get; set; }
