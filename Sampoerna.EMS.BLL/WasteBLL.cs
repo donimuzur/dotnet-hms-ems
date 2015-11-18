@@ -212,7 +212,7 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var wasteStockDto in listWasteStockDto)
             {
-                //CHECK DI MATERIAL PLANT DAN STICKER CODE EXIST
+                //CHECK ON MATERIAL PLANT AND STICKER CODE EXIST
                 var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(wasteStockDto.WERKS, wasteStockDto.MATERIAL_NUMBER);
                 if (dbMaterial != null)
                 {
