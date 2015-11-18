@@ -1276,6 +1276,7 @@
     <Content Include="Views\WasteStock\Create.cshtml" />
     <Content Include="Views\WasteStock\Edit.cshtml" />
     <Content Include="Views\WasteStock\Detail.cshtml" />
+    <Content Include="Views\CK5\CK5TriggerSto.cshtml" />
     <Content Include="Views\CK5\CK5Waste.cshtml" />
   </ItemGroup>
   <ItemGroup>

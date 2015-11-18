@@ -259,6 +259,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public SelectList Ck5RefList { get; set; }
         public bool IsCk5ImporterToPlant { get; set; }
         public bool IsMarketReturn { get; set; }
+        public bool IsTriggerSto { get; set; }
         public bool IsCompleted { get; set; }
         public bool IsCk5Waste { get; set; }
 

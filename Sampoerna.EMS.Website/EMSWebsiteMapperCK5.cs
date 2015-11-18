@@ -115,6 +115,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<CK5Dto, CK5FormViewModel>().IgnoreAllNonExisting()
             .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
             .ForMember(dest => dest.Ck5Type, opt => opt.MapFrom(src => src.CK5_TYPE))
+            .ForMember(dest => dest.Ck5TypeString, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.CK5_TYPE)))
             .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
 
