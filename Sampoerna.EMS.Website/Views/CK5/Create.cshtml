@@ -270,6 +270,8 @@
                     location.href = '@Url.Action("CK5Manual", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
                     location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.TriggerSto.ToString()')
+                    location.href = '@Url.Action("CK5TriggerSto", "CK5")';
 
             });
 

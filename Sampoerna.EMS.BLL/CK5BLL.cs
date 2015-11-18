@@ -352,7 +352,8 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.TriggerSto)
                 return;
             
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
@@ -3484,18 +3485,23 @@ namespace Sampoerna.EMS.BLL
                 
                 dataXmlDto.SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
             }
-
-            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.Export) {
+            else if (dataXmlDto.CK5_TYPE == Enums.CK5Type.Export) {
                 var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.SOURCE_PLANT_COMPANY_CODE);
 
                 dataXmlDto.DEST_PLANT_ID = plantMap.EXPORT_PLANT_ID;
             }
-
-            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.PortToImporter) {
+            else if (dataXmlDto.CK5_TYPE == Enums.CK5Type.PortToImporter) {
                 var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
 
                 dataXmlDto.SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
                 dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+            }
+            else if (dataXmlDto.CK5_TYPE == Enums.CK5Type.TriggerSto)
+            {
+                dataXmlDto.CK5_TYPE = Enums.CK5Type.Intercompany;
+
+                if (dataXmlDto.SOURCE_PLANT_COMPANY_CODE == dataXmlDto.DEST_PLANT_COMPANY_CODE)
+                    dataXmlDto.CK5_TYPE = Enums.CK5Type.Domestic;
             }
 
             foreach (var ck5MaterialDto in dataXmlDto.Ck5Material)
@@ -3831,7 +3837,8 @@ namespace Sampoerna.EMS.BLL
                     if (!ck5.REDUCE_TRIAL.HasValue || !ck5.REDUCE_TRIAL.Value)
                         continue;
                 }
-                else if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                else if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn
+                    || ck5.CK5_TYPE == Enums.CK5Type.TriggerSto)
                     continue;
                 else if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
                     continue;

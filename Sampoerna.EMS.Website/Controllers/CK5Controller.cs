@@ -277,6 +277,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CK5MarketReturn", model);
         }
 
+        public ActionResult CK5TriggerSto()
+        {
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.TriggerSto);
+            return View("CK5TriggerSto", model);
+        }
 
         public ActionResult CK5MarketReturnCompleted()
         {
@@ -373,15 +378,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
             }
 
-            //if (!string.IsNullOrEmpty(model.SourcePlantId))
-            //{
-            //    var dataPlant = _plantBll.GetT001WById(model.SourcePlantId);
-            //    if (dataPlant != null)
-            //    {
-            //        if (model.Ck5Type == Enums.CK5Type.Domestic || model.Ck5Type == Enums.CK5Type.Manual)
-            //            model.DestPlantList = GlobalFunctions.GetPlantByCompany(dataPlant.CompanyCode);
-            //    }
-            //}
            
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
 
@@ -431,7 +427,6 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
-
         public ActionResult CreateExport()
         {
             if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
@@ -474,7 +469,6 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
-
         public ActionResult CreateCk5MarketReturn()
         {
             if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
@@ -495,6 +489,22 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             return View("CreateMarketReturn", model);
+        }
+
+        public ActionResult CreateTriggerSto()
+        {
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                //can't create CK5 Document
+                AddMessageInfo("Can't create CK5 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
+                return RedirectToAction("CK5TriggerSto");
+            }
+
+            
+            var model = InitCreateCK5(Enums.CK5Type.TriggerSto);
+            model.IsTriggerSto = true;
+
+            return View("Create", model);
         }
 
         [HttpPost]
@@ -674,7 +684,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (model.UploadItemModels.Count > 0)
                     {
                         if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                            || model.Ck5Type == Enums.CK5Type.MarketReturn)
+                            || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto)
                         {
 
                         }
@@ -1003,11 +1013,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.IsCk5PortToImporter = true;
                 }
+                else if (model.Ck5Type == Enums.CK5Type.TriggerSto)
+                {
+                    model.IsTriggerSto = true;
+                }
 
 
 
                 if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                    || model.Ck5Type == Enums.CK5Type.MarketReturn)
+                    || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto)
                 {
 
                 }
@@ -1101,7 +1115,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         {
                             //quota
                             if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                                || model.Ck5Type == Enums.CK5Type.MarketReturn)
+                                || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto)
                             {
 
                             }
@@ -1283,7 +1297,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CommentGov = outputHistory.Comment;
 
                 if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                    || model.Ck5Type == Enums.CK5Type.MarketReturn)
+                    || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto)
                 {
 
                 }
@@ -1435,7 +1449,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CommentGov = outputHistory.Comment;
 
                 if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                  || model.Ck5Type == Enums.CK5Type.MarketReturn)
+                  || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto)
                 {
 
                 }
@@ -2166,76 +2180,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private bool CK5WorkflowGovApproval(CK5FormViewModel model)
         {
-            //string fileName = "";
-            ////create xml first
-            //if (model.Ck5Type == Enums.CK5Type.Manual || model.Ck5Type == Enums.CK5Type.MarketReturn)
-            //{
-            //    //return true;
-            //}
-            //else
-            //{
-            //    try
-            //    {
-            //        //create xml file
-            //        var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
-
-            //        fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
-            //                       model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-
-            //        ck5XmlDto.Ck5PathXml = fileName;
-
-            //        XmlCK5DataWriter rt = new XmlCK5DataWriter();
-
-            //        //ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
-            //        rt.CreateCK5Xml(ck5XmlDto);
-
-            //        //return true;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        //don't need rollback
-            //        //_ck5Bll.GovApproveDocumentRollback(input);
-            //        AddMessageInfo("Failed Create CK5 XMl message : " + ex.Message, Enums.MessageInfoType.Error);
-            //        return false;
-            //    }
-            //}
-            //try
-            //{
-            //    DateTime registrationDate = DateTime.Now;
-            //    if (model.RegistrationDate.HasValue)
-            //        registrationDate = model.RegistrationDate.Value;
-
-            //    var input = new CK5WorkflowDocumentInput()
-            //    {
-            //        DocumentId = model.Ck5Id,
-            //        ActionType = Enums.ActionType.GovApprove,
-            //        UserRole = CurrentUser.UserRole,
-            //        UserId = CurrentUser.USER_ID,
-            //        Ck5Type = model.Ck5Type,
-            //        AdditionalDocumentData = new CK5WorkflowDocumentData()
-            //        {
-            //            RegistrationNumber = model.RegistrationNumber,
-            //            RegistrationDate = registrationDate,
-            //            Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList),
-            //            Back1Number = model.Back1Number,
-            //            Back1Date = model.Back1Date
-            //        }
-            //    };
-            //    _ck5Bll.CK5Workflow(input);
-            //    return true;
-            //}
-            //catch (Exception ex)
-            //{
-            //    //remove xml file that already create
-            //    if (System.IO.File.Exists(fileName))
-            //        System.IO.File.Delete(fileName);
-
-            //    AddMessageInfo("Failed Gov Approval CK5 XMl : " + ex.Message, Enums.MessageInfoType.Error);
-            //    return false;
-            //}
-
-
-
+            
             DateTime registrationDate = DateTime.Now;
             if (model.RegistrationDate.HasValue)
                 registrationDate = model.RegistrationDate.Value;
