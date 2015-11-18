@@ -36,7 +36,9 @@ namespace Sampoerna.EMS.Core
             POAMap = 29,
             Vendor = 30,
             KPPBC = 31,
-            UserPlantMap = 32
+            UserPlantMap = 32,
+            WasteRole = 33,
+            WasteStock = 34
         }
         public enum PBCK1Type
         {
@@ -395,7 +397,11 @@ namespace Sampoerna.EMS.Core
             User = 1,
             POA = 2,
             Manager = 3,
-            System = 10
+            Viewer = 4,
+            System = 10,
+            Administrator = 15,
+            SuperAdmin = 16
+            
         }
 
         public enum FormViewType
@@ -616,5 +622,18 @@ namespace Sampoerna.EMS.Core
             [Description("Cancelled")]
             Cancelled = 3
         }
+
+        public enum WasteGroup
+        {
+            [Description("Factory Logistic")]
+            FactoryLogistic = 1,
+            [Description("Disposal Team")]
+            DisposalTeam = 2,
+            [Description("Transportation")]
+            Transportation = 3,
+            [Description("Waste Approver")]
+            WasteApprover = 4
+        }
+
     }
 }

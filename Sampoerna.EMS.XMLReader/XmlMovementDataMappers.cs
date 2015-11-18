@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
@@ -58,7 +59,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.POSTING_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("PstngDate")));
                         item.ENTRY_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EntryDate")));
                         item.CREATED_USER = _xmlMapper.GetElementValue(xElement.Element("Username"));
-                        item.ORDR = _xmlMapper.GetElementValue(xElement.Element("ORDR"));
+                        item.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
                         items.Add(item);
                     }
                     catch (Exception ex)
@@ -76,7 +77,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public string InsertToDatabase()
+        public MovedFileOutput InsertToDatabase()
         {
             
             

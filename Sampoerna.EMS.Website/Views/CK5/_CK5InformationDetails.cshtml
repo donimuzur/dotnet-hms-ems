@@ -22,29 +22,7 @@
                 <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                     <div class="panel-body">
                         <div class="form-excise" role="form">
-                            @*@if (Model.IsCk5PortToImporter)
-                            {
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Company Name</label>
-                                            <div class="col-md-8">
-                                                @Html.TextBoxFor(model => model.SourceCompanyName, new { @disabled = "disabled", @class = "form-control" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Address</label>
-                                            <div class="col-md-8">
-                                                @Html.TextAreaFor(model => model.SourceAddress, new { @disabled = "disabled", @rows = "5", @class = "form-control" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {*@
+                            
                                 <div class="row">
 
                                     <div class="col-md-6">
@@ -545,7 +523,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Grand Total Exciseable</label>
                                         <div class="col-md-4">
-                                            @Html.TextBoxFor(model => model.GrandTotalEx, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.GrandTotalExDisplay, new { @disabled = false, @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
                                             @Html.TextBoxFor(model => model.PackageUomName, new { @disabled = false, @class = "form-control" })

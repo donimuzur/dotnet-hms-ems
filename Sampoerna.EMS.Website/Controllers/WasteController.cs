@@ -68,7 +68,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
-                WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy")
+                WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("Index", data);
@@ -113,6 +114,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = new WasteDetail();
             model = InitCreate(model);
             model.WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy");
@@ -164,6 +171,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
                 data.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
 
+                data.StampWasteQty = model.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(model.StampWasteQtyStr);
+
                 try
                 {
                     _wasteBll.Save(data, CurrentUser.USER_ID);
@@ -199,6 +208,17 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Production/Edit
         public ActionResult Edit(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Edit", "Production", new
+                {
+                    companyCode = companyCode,
+                    plantWerk = plantWerk,
+                    faCode = faCode,
+                    wasteProductionDate = wasteProductionDate
+                });
+            }
+
             var model = new WasteDetail();
             var dbWaste = _wasteBll.GetById(companyCode, plantWerk, faCode, wasteProductionDate);
 
@@ -212,6 +232,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //Waste Stick
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
             model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
+            //stamp Waste
+            model.StampWasteQtyStr = model.StampWasteQty == null ? string.Empty : model.StampWasteQty.ToString();
 
             model = IniEdit(model);
 
@@ -270,6 +292,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //waste stick
             dbWasteNew.DustWasteStickQty = model.DustStickStr == null ? 0 : Convert.ToDecimal(model.DustStickStr);
             dbWasteNew.FloorWasteStickQty = model.FloorStickStr == null ? 0 : Convert.ToDecimal(model.FloorStickStr);
+            //Stamp Waste
+            dbWasteNew.StampWasteQty = model.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(model.StampWasteQtyStr);
 
             try
             {
@@ -350,6 +374,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //Waste Stick
             model.DustStickStr = model.DustWasteStickQty == null ? string.Empty : model.DustWasteStickQty.ToString();
             model.FloorStickStr = model.FloorWasteStickQty == null ? string.Empty : model.FloorWasteStickQty.ToString();
+            //stamp waste
+            model.StampWasteQtyStr = model.StampWasteQty == null ? string.Empty : model.StampWasteQty.ToString();
 
             model = InitDetail(model);
             return View(model);
@@ -458,9 +484,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.PackerRejectStickQty = dataRow[5];
                     item.DustWasteGramQty = dataRow[6];
                     item.FloorWasteGramQty = dataRow[7];
-                    item.DustWasteStickQty = dataRow[8];
-                    item.FloorWasteStickQty = dataRow[9];
-                    item.WasteProductionDate = dataRow[10]; 
+                    //item.DustWasteStickQty = dataRow[8];
+                    //item.FloorWasteStickQty = dataRow[9];
+                    item.StampWasteQty = dataRow[8];
+                    item.WasteProductionDate = dataRow[9]; 
                    
                     {
                         model.Add(item);

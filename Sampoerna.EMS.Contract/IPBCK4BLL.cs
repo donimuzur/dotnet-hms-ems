@@ -50,5 +50,7 @@ namespace Sampoerna.EMS.Contract
        void SendMailCompletedPbck4Document(Pbck4WorkflowDocumentInput input);
 
        void UpdateUploadedFileCompleted(List<PBCK4_DOCUMENTDto> input);
+
+       List<Pbck4Dto> GetAllByParam(Pbck4DasboardParamInput input);
    }
 }

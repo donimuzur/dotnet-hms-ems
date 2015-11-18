@@ -42,10 +42,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPrintHistoryBLL _printHistoryBll;
+        private IMonthBLL _monthBll;
+      
+       
 
         public PBCK4Controller(IPageBLL pageBLL, IPOABLL poabll, IZaidmExNPPBKCBLL nppbkcBll,
             IPBCK4BLL pbck4Bll, IPlantBLL plantBll, IWorkflowBLL workflowBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IPrintHistoryBLL printHistoryBll)
+            IWorkflowHistoryBLL workflowHistoryBll, IPrintHistoryBLL printHistoryBll, IMonthBLL monthBll)
             : base(pageBLL, Enums.MenuList.PBCK4)
         {
             _poaBll = poabll;
@@ -56,6 +59,9 @@ namespace Sampoerna.EMS.Website.Controllers
             _changesHistoryBll = changesHistoryBll;
             _workflowHistoryBll = workflowHistoryBll;
             _printHistoryBll = printHistoryBll;
+            _monthBll = monthBll;
+           
+
         }
 
         //
@@ -85,7 +91,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = Enums.MenuList.PBCK4;
             model.CurrentMenu = PageInfo;
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             //var listPbck4 = _ck5Bll.GetAll();
             //model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
@@ -164,9 +171,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Create()
         {
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
-                AddMessageInfo("Can't create PBCK-4 Document for User with " + EnumHelper.GetDescription(Enums.UserRole.Manager) + " Role", Enums.MessageInfoType.Error);
+                AddMessageInfo("Can't create PBCK-4 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
 
@@ -270,6 +277,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new Pbck4FormViewModel();
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", "PBCK4", new { @id = model.Pbck4Id });
+            }
+
             try
             {
                 var pbck4Details = _pbck4Bll.GetDetailsPbck4(id);
@@ -338,6 +350,46 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                model.MainMenu = Enums.MenuList.PBCK4;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View(model);
+        }
+
+        public ActionResult Detail(int id)
+        {
+            var model = new Pbck4FormViewModel();
+
+            try
+            {
+                var pbck4Details = _pbck4Bll.GetDetailsPbck4(id);
+
+
+                Mapper.Map(pbck4Details.Pbck4Dto, model);
+
+
+                model.MainMenu = Enums.MenuList.PBCK4;
+                model.CurrentMenu = PageInfo;
+
+
+                // model = GetInitDetailsData(model);
+                model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(pbck4Details.Pbck4ItemsDto);
+
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(pbck4Details.ListChangesHistorys);
+                model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(pbck4Details.ListWorkflowHistorys);
+
+                model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(pbck4Details.ListPrintHistorys);
+
+                model.Pbck4FileUploadModelList = Mapper.Map<List<Pbck4FileUploadViewModel>>(pbck4Details.Pbck4Dto.Pbck4DocumentDtos.Where(c => c.DOC_TYPE == 1));
+                model.Pbck4FileUploadModelList2 = Mapper.Map<List<Pbck4FileUploadViewModel>>(pbck4Details.Pbck4Dto.Pbck4DocumentDtos.Where(c => c.DOC_TYPE == 2));
+
+                model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
             }
             catch (Exception ex)
             {
@@ -441,6 +493,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(int id)
         {
             var model = new Pbck4FormViewModel();
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", "PBCK4", new { @id = model.Pbck4Id });
+            }
 
             try
             {
@@ -639,14 +696,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input.Comment = model.Comment;
             input.GovStatusInput = model.GovStatus;
 
-            //input.UploadItemDto = new List<Pbck4ItemDto>();
-            //foreach (var pbck4UploadItem in model.UploadItemModels)
-            //{
-            //    if (pbck4UploadItem.IsUpdated)
-            //        input.UploadItemDto.Add(Mapper.Map<Pbck4ItemDto>(pbck4UploadItem));
-                
-            //}
-
+       
 
             if (model.GovStatus == Enums.DocumentStatusGov.FullApproved
                 || model.GovStatus == Enums.DocumentStatusGov.PartialApproved)
@@ -665,8 +715,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                //manual first .. 
-                //input.UploadItemDto = Mapper.Map<List<Pbck4ItemDto>>(model.UploadItemModels);
+               
                 input.UploadItemDto = new List<Pbck4ItemDto>();
                 foreach (var pbck4UploadItem in model.UploadItemModels)
                 {
@@ -837,41 +886,72 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
-                    RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                    return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
                 }
 
-                if (model.Pbck4FileUploadModelList2 == null)
-                    model.Pbck4FileUploadModelList2 = new List<Pbck4FileUploadViewModel>();
-
-                if (model.Pbck4FileUploadFileList2 != null)
+                if (model.Pbck4FileUploadModelList.Count == 0)
                 {
-                    foreach (var item in model.Pbck4FileUploadFileList2)
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Details", "PBCK4", new {id = model.Pbck4Id});
+                }
+                
+                bool resultDoc = false;
+                foreach (var pbck4FileUploadViewModel in model.Pbck4FileUploadModelList)
+                {
+                    if (!pbck4FileUploadViewModel.IsDeleted)
                     {
-                        if (item != null)
-                        {
-                            var filenameCk5Check = item.FileName;
-                            if (filenameCk5Check.Contains("\\"))
-                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
-
-                            var pbck4UploadFile = new Pbck4FileUploadViewModel
-                            {
-                                FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck4Id,"C"),
-                                DOC_TYPE = 2 , //ck-3
-                                PBCK4_ID = model.Pbck4Id,
-                                IsDeleted = false
-                            };
-                            model.Pbck4FileUploadModelList2.Add(pbck4UploadFile);
-                        }
-
+                        resultDoc = true;
+                        break;
                     }
                 }
-                else
+                if (!resultDoc)
                 {
-                    AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
-                    RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
                 }
 
+                if (model.GovStatus != Enums.DocumentStatusGov.Rejected)
+                {
+                    if (model.Pbck4FileUploadModelList2 == null)
+                        model.Pbck4FileUploadModelList2 = new List<Pbck4FileUploadViewModel>();
+
+                    if (model.Pbck4FileUploadFileList2 != null)
+                    {
+                        foreach (var item in model.Pbck4FileUploadFileList2)
+                        {
+                            if (item != null)
+                            {
+                                var filenameCk5Check = item.FileName;
+                                if (filenameCk5Check.Contains("\\"))
+                                    filenameCk5Check =
+                                        filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                                var pbck4UploadFile = new Pbck4FileUploadViewModel
+                                {
+                                    FILE_NAME = filenameCk5Check,
+                                    FILE_PATH = SaveUploadedFile(item, model.Pbck4Id, "C"),
+                                    DOC_TYPE = 2, //ck-3
+                                    PBCK4_ID = model.Pbck4Id,
+                                    IsDeleted = false
+                                };
+                                model.Pbck4FileUploadModelList2.Add(pbck4UploadFile);
+                            }
+
+                        }
+                    }
+                    //else
+                    //{
+                    //    AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
+                    //    return RedirectToAction("Details", "PBCK4", new {id = model.Pbck4Id});
+                    //}
+
+                    //if (model.Pbck4FileUploadModelList2.Count == 0)
+                    //{
+                    //    AddMessageInfo("Empty File CK-3 Doc", Enums.MessageInfoType.Error);
+                    //    return RedirectToAction("Details", "PBCK4", new { id = model.Pbck4Id });
+                    //}
+
+                }
                 PBCK4GovWorkflow(model);
                 if (model.GovStatus == Enums.DocumentStatusGov.FullApproved)
                     AddMessageInfo("Success Gov FullApproved Document", Enums.MessageInfoType.Success);
@@ -1801,6 +1881,70 @@ namespace Sampoerna.EMS.Website.Controllers
             return ck1Date;
         }
 
+        #endregion
+
+        #region DashBoard
+
+        public ActionResult Dashboard()
+        {
+            var model = InitDashboardModel(new Pbck4DashBoardViewModel
+            {
+                MainMenu = Enums.MenuList.PBCK4,
+                CurrentMenu = PageInfo,
+                MonthList = GlobalFunctions.GetMonthList(_monthBll),
+                YearList = pbck4cDashboardYear(),
+                PoaList = GlobalFunctions.GetPoaAll(_poaBll),
+                UserList = GlobalFunctions.GetCreatorList()
+            });
+            return View("Dashboard", model);
+        }
+
+        private Pbck4DashBoardViewModel InitDashboardModel(Pbck4DashBoardViewModel model)
+        {
+            var listPbck4 = GetAllDocument(model);
+            model.Detail.DraftTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
+            model.Detail.WaitingForPoaTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
+            model.Detail.WaitingForManagerTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            model.Detail.WaitingForGovTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
+            model.Detail.CompletedTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
+            model.Detail.WaitingForAppTotal = listPbck4.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            
+
+            return model;
+
+        }
+
+        private List<Pbck4Dto> GetAllDocument(Pbck4DashBoardViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                var pbck4 = _pbck4Bll.GetAllByParam(new Pbck4DasboardParamInput());
+                return pbck4;
+            }
+
+            var input = Mapper.Map<Pbck4DasboardParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            var dbData = _pbck4Bll.GetAllByParam(input);
+            return dbData;
+        }
+
+        private SelectList pbck4cDashboardYear()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
+
+         [HttpPost]
+        public PartialViewResult FilterDashboardPage(Pbck4DashBoardViewModel model)
+        {
+            var data = InitDashboardModel(model);
+
+            return PartialView("_ChartStatus", data.Detail);
+        }
         #endregion
 
     }

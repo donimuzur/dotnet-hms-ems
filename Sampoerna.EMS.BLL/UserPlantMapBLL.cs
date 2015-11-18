@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BLL.Services;
@@ -71,6 +70,11 @@ namespace Sampoerna.EMS.BLL
         {
             //return _repository.Get(p => p.USER_ID == userid && p.PLANT_ID == plantid, null, _includeTables).FirstOrDefault();
             return _userPlantService.GetByUserIdAndPlant(userid, plantid);
+        }
+
+        public USER_PLANT_MAP GetByUserPlantNppbkcId(UserPlantMapGetByUserPlantNppbkcIdParamInput input)
+        {
+            return _userPlantService.GetByUserPlantNppbkcId(input);
         }
 
         public void Delete(int id)

@@ -154,6 +154,28 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => (c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year == input.Year.Value)
                     || (c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year == input.Year.Value));
             }
+
+            if (!string.IsNullOrEmpty(input.UserId))
+            {
+                if (input.UserRole == Enums.UserRole.POA)
+                {
+                    var nppbkc = _nppbkcbll.GetNppbkcMainPlantOnlyByPoa(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID)) || c.STATUS == Enums.DocumentStatus.Completed));
+                }
+                else if (input.UserRole == Enums.UserRole.Manager)
+                {
+                    var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
+                }
+                else
+                {
+                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId || c.STATUS == Enums.DocumentStatus.Completed);
+                }
+            }
+
             return queryFilter;
         }
 
@@ -231,14 +253,16 @@ namespace Sampoerna.EMS.BLL
                 {
                     dbData.STATUS = Enums.DocumentStatus.Draft;
                 }
+
+                ChangeDocNumberByReportedOn(dbData);
             }
             else
             {
                 //Insert
                 var generateNumberInput = new GenerateDocNumberInput()
                 {
-                    Year = input.Pbck1.PeriodFrom.Year,
-                    Month = input.Pbck1.PeriodFrom.Month,
+                    Year = input.Pbck1.ReportedOn.Value.Year,
+                    Month = input.Pbck1.ReportedOn.Value.Month,
                     NppbkcId = input.Pbck1.NppbkcId
                 };
 
@@ -1887,6 +1911,13 @@ namespace Sampoerna.EMS.BLL
                                 .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
                     }
 
+                    var tipeMadya = kppbcDetail.KPPBC_TYPE;
+                    if (kppbcDetail.KPPBC_TYPE.ToLower().Contains("madya"))
+                    {
+                        tipeMadya = "Tipe " + tipeMadya;
+                    }
+
+                    rc.Detail.TipeMadya = tipeMadya;
                 }
                 else
                 {
@@ -2378,6 +2409,9 @@ namespace Sampoerna.EMS.BLL
         {
             PBCK1 dbData = _repository.Get(c => c.PBCK1_ID == input.Id, null, includeTables).FirstOrDefault();
             dbData.REPORTED_ON = input.ReportedOn;
+
+            ChangeDocNumberByReportedOn(dbData);
+
             _uow.SaveChanges();
         }
 
@@ -2584,5 +2618,22 @@ namespace Sampoerna.EMS.BLL
             return list;
         }
         
+        private void ChangeDocNumberByReportedOn(PBCK1 data)
+        {
+            var oldDocNumber = data.NUMBER;
+            var splitNumber = data.NUMBER.Split('/');
+            var newDocNumber = splitNumber[0] + "/" + splitNumber[1] + "/" + splitNumber[2] + "/" + 
+                            MonthHelper.ConvertToRomansNumeral(data.REPORTED_ON.Value.Month) + "/" + data.REPORTED_ON.Value.Year;
+
+            var listWorkflow = _workflowHistoryBll.GetByFormNumber(oldDocNumber);
+
+            foreach(var item in listWorkflow)
+            {
+                item.FORM_NUMBER = newDocNumber;
+                _workflowHistoryBll.Save(item);
+            }
+
+            data.NUMBER = newDocNumber;
+        }
     }
 }

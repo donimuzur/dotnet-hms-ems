@@ -111,6 +111,12 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
+        public static SelectList GetBaseUomList(IUnitOfMeasurementBLL uomBll)
+        {
+            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true && x.IS_EMS == true && (x.UOM_ID == "G" || x.UOM_ID == "KG" || x.UOM_ID == "L"));
+            return new SelectList(data, "UOM_ID", "UOM_DESC");
+        }
+
         public static SelectList GetCk5AllowedUomList(IUnitOfMeasurementBLL uomBll)
         {
             var data = uomBll.GetCK5ConvertedUoms();

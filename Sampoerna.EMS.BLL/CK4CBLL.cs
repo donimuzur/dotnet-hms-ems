@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.BLL
         private IProductionBLL _productionBll;
         private IPOAMapBLL _poaMapBll;
         private IUserPlantMapBLL _userPlantBll;
+        private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -71,13 +72,55 @@ namespace Sampoerna.EMS.BLL
             _productionBll = new ProductionBLL(_logger, _uow);
             _poaMapBll = new POAMapBLL(_uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
+            _documentSequenceNumberBll = new DocumentSequenceNumberBLL(_uow, _logger);
         }
 
-        public List<Ck4CDto> GetAllByParam(Ck4CGetByParamInput input)
+        public List<Ck4CDto> GetAllByParam(Ck4CDashboardParamInput input)
         {
-            var queryFilter = ProcessQueryFilter(input);
+            Expression<Func<CK4C, bool>> queryFilter = PredicateHelper.True<CK4C>();
 
-            return Mapper.Map<List<Ck4CDto>>(GetCk4cData(queryFilter, input.ShortOrderColumn));
+            if (input.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.REPORTED_MONTH == input.Month);
+            }
+            if (input.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.REPORTED_YEAR == input.Year);
+            }
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                var nppbkc = _poaMapBll.GetNppbkcByPoaId(input.Poa);
+
+                queryFilter = queryFilter.And(c => nppbkc.Contains(c.NPPBKC_ID));
+            }
+
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var listNppbkc = _userPlantBll.GetNppbkcByUserId(input.UserId);
+
+                var nppbkc = _poaMapBll.GetNppbkcByPoaId(input.UserId);
+
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed));
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poabll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+                queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+            else
+            {
+                var listNppbkc = _userPlantBll.GetNppbkcByUserId(input.UserId);
+
+                queryFilter = queryFilter.And(c => listNppbkc.Contains(c.NPPBKC_ID) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+
+            return Mapper.Map<List<Ck4CDto>>(GetCk4cData(queryFilter, null));
         }
 
         public List<Ck4CDto> GetOpenDocument()
@@ -118,6 +161,13 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
+                    var inputDoc = new GenerateDocNumberInput();
+                    inputDoc.Month = item.ReportedMonth;
+                    inputDoc.Year = item.ReportedYears;
+                    inputDoc.NppbkcId = item.NppbkcId;
+
+                    item.Number = _documentSequenceNumberBll.GenerateNumber(inputDoc);
+
                     model = Mapper.Map<CK4C>(item);
                     _repository.InsertOrUpdate(model);
                 }

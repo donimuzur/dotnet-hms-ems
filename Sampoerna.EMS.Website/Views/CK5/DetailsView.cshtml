@@ -13,7 +13,7 @@
 
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK5", new { id = @Model.Ck5Id })')" />
-                    
+
                 </div>
             </div>
         </div>
@@ -38,108 +38,120 @@
                         @Html.HiddenFor(model => model.IsCk5PortToImporter)
                         @Html.HiddenFor(model => model.IsCk5ImporterToPlant)
 
-                        @Html.Partial("_CK5InformationDetails")
+                        @if (Model.IsMarketReturn)
+                        {
+                            @Html.Partial("_CK5InformationDetailsMarketReturn")
+                        }
+                        else
+                        {
+                            @Html.Partial("_CK5InformationDetails")
+                        }
                         @Html.Partial("_CK5Printout")
                         @Html.Partial("_CK5ChangeLog")
 
 
 
                     </div>
-                  
+
                 </div>
             </div>
         </div>
     </div>
 
-   
+
 }
 
 
 @section scripts {
     <script src="~/Scripts/CK5Scripts.js"></script>
-  
+
     <script type="text/javascript">
-    $(document).ready(function () {
+        $(document).ready(function () {
 
 
-
-        if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
-            OnReadyFunction('@Model.DocumentStatus');
-
-        } else {
-            OnReadyFunction('@Model.Ck5Type.ToString()');
-        }
-      
-
-        $('#btn-changelog-export-xls').click(function () {
-            location.href = '@Url.Action("ExportXls", "CK5", new { ck5Id = Model.Ck5Id })';
-        });
-
-        $('#btnBack').click(function (e) {
-
-            if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()')
-                location.href = '@Url.Action("CK5Completed", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
-                location.href = '@Url.Action("Index", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
-                location.href = '@Url.Action("Index", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
-                location.href = '@Url.Action("CK5Export", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
-                location.href = '@Url.Action("CK5Import", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
-                location.href = '@Url.Action("CK5Manual", "CK5")';
-            else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
-                location.href = '@Url.Action("CK5MarketReturn", "CK5")';
-
-        });
-
-      
-    });
-
-   
-    function printPreview(url) {
-
-        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
-    }
-
-    function PrintOutClick(reportUrl, addHistoryUrl, id) {
-
-        window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
-        $.ajax({
-            type: 'POST',
-            url: addHistoryUrl,
-            data: { id: id },
-            success: function (response) {
-                $('#PrintOutHistoryTable').html("");
-                $('#PrintOutHistoryTable').html(response);
-                ResetPrintHistoryDataTable();
-            }
-        });
-    }
-
-    function ResetPrintHistoryDataTable() {
-        // DataTable
-        var table = null;
-        if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
-            table = $('#printHistoryTable').DataTable();
-            table.destroy();
-        }
-
-        table = $('#printHistoryTable').DataTable(
-            {
-                "sDom": "Rlfrtip",
-                "language": {
-                    "zeroRecords": "No records found",
-                    "infoFiltered": "(filtered from _MAX_ total records)"
+            if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
+                OnReadyFunction('@Model.DocumentStatus');
+                if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
+                    $('#liCK5MarketReturnCompleted').addClass('active');
                 }
+
+            } else {
+                OnReadyFunction('@Model.Ck5Type.ToString()');
+            }
+
+
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportXls", "CK5", new {ck5Id = Model.Ck5Id})';
+            });
+
+            $('#btnBack').click(function (e) {
+
+                if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
+                    if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
+                        location.href = '@Url.Action("CK5MarketReturnCompleted", "CK5")';
+                    } else {
+                        location.href = '@Url.Action("CK5Completed", "CK5")';
+                    }
+                } else if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                    location.href = '@Url.Action("CK5Export", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                    location.href = '@Url.Action("CK5Import", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                    location.href = '@Url.Action("CK5Manual", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+
             });
 
 
-    }
+        });
 
-    
+
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
+
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+        }
+
     </script>
 }

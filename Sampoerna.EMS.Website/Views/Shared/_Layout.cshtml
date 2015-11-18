@@ -177,7 +177,19 @@
                                         KPPBC
                                     </a>
                                 </li>
-
+                                <li>
+                                    <a id="MenuWasteRole" href="@Url.Action("Index", "WasteRole")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Waste Role
+                                    </a>
+                                </li>
+                                
+                                <li>
+                                    <a id="MenuWasteStock" href="@Url.Action("Index", "WasteStock")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Waste Stock
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -364,7 +376,10 @@
                             break;
                         case Enums.MenuList.CK4C:
                         <div class="list-group">
-
+                            @*<a href="@Url.Action("Dashboard", "CK4C")" class="list-group-item">
+                                    <i class="fa fa-tachometer"></i>
+                                    <span>Dashboard</span>
+                                </a>*@
                             <div id="menuCk4COpenDocuments" class="collapse-menu open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>
@@ -395,6 +410,10 @@
 
                         case Enums.MenuList.PBCK4:
                         <div class="list-group">
+                            @*<a href="@Url.Action("Dashboard", "PBCK4")" class="list-group-item">
+                                <i class="fa fa-tachometer"></i>
+                                <span>Dashboard</span>
+                            </a>*@
                             <div id="menuPbck4OpenDocuments" class="collapse-menu open">
                                 <a href="#" class="list-group-item list-parent">
                                     <i class="fa fa-clipboard"></i>

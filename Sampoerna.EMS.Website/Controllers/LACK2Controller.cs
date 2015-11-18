@@ -13,6 +13,7 @@ using System.Web;
 using System.Web.Mvc;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.Website.Models.Dashboard;
 using Sampoerna.EMS.Website.Models.LACK2;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -93,10 +94,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.MenuLack2OpenDocument = "active";
             model.MenuLack2CompletedDocument = "";
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.Details = dbData;
             model.FilterActionController = "FilterOpenDocument";
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return View("Index", model);
         }
@@ -153,15 +155,16 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = dbData;
             model.MenuLack2OpenDocument = "";
             model.MenuLack2CompletedDocument = "active";
-            model.IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager;
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return View("Index", model);
         }
 
         #endregion
 
         #region --------------- Create ----------
-        
+
         /// <summary>
         /// Create LACK2
         /// </summary>
@@ -169,8 +172,8 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
+
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -180,7 +183,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Manager,
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer,
                 IsCreateNew = true
             };
 
@@ -262,14 +266,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
             if (CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 //redirect to details for approval/rejected
                 return RedirectToAction("Detail", new { id });
             }
 
-            if (CurrentUser.USER_ID == lack2Data.CreatedBy &&
-                (lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            if ((lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
                  lack2Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
             {
                 return RedirectToAction("Detail", new { id });
@@ -330,10 +338,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         Lack2Workflow(model.Lack2Id, Enums.ActionType.Submit, string.Empty, saveResult.IsModifiedHistory);
                         AddMessageInfo("Success Submit Document", Enums.MessageInfoType.Success);
-                        return RedirectToAction("Detail", "Lack2", new {id = model.Lack2Id});
+                        return RedirectToAction("Detail", "Lack2", new { id = model.Lack2Id });
                     }
                     AddMessageInfo("Save Successfully", Enums.MessageInfoType.Info);
-                    return RedirectToAction("Edit", new {id = model.Lack2Id});
+                    return RedirectToAction("Edit", new { id = model.Lack2Id });
                 }
                 model = OnFailedEdit(model);
                 AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
@@ -438,7 +446,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
         {
             bool isAllow = CurrentUser.USER_ID == userId;
-            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected 
+            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected
                 || status == Enums.DocumentStatus.WaitingGovApproval || status == Enums.DocumentStatus.Completed))
             {
                 isAllow = false;
@@ -471,8 +479,32 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
             var model = InitDetailModel(lack1Data);
-            
+
+            return View(model);
+        }
+
+        public ActionResult Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack2Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = InitDetailModel(lack1Data);
+
             return View(model);
         }
 
@@ -571,7 +603,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var outGeneratedData = _lack2Bll.GenerateLack2DataByParam(input);
             return Json(outGeneratedData);
         }
-        
+
         [HttpPost]
         public JsonResult GetPlantByNppbkcId(string companyId, string nppbkcId)
         {
@@ -598,7 +630,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             return Json(GetNppbkcDataByCompanyId(companyId));
         }
-        
+
         public void ExportChangesLogToExcel(int id)
         {
 
@@ -650,7 +682,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn++;
 
                 slDocument.SetCellValue(iRow, iColumn, item.USERNAME);
-                
+
                 iRow++;
             }
 
@@ -674,7 +706,7 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(1, iColumn, "User");
-            
+
             endColumnIndex = iColumn;
 
             return slDocument;
@@ -716,7 +748,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return path;
         }
-        
+
         #endregion
 
         #region Summary Reports
@@ -1792,7 +1824,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 UserId = CurrentUser.USER_ID,
                 CompanyCode = companyId,
-                NppbkcId =  nppbkcId
+                NppbkcId = nppbkcId
             });
             return data;
         }
@@ -1803,12 +1835,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var selectItemSource = yearList.Select(year => new SelectItemModel
             {
                 // ReSharper disable SpecifyACultureInStringConversionExplicitly
-                TextField = year.ToString(), ValueField = year.ToString()
+                TextField = year.ToString(),
+                ValueField = year.ToString()
                 // ReSharper restore SpecifyACultureInStringConversionExplicitly
             }).ToList();
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
-        
+
         /// <summary>
         /// Fills the select lists for the IndexViewModel
         /// </summary>
@@ -1843,7 +1876,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
-        #region Print and print preview 
+        #region Print and print preview
 
         [EncryptedParameter]
         public ActionResult PrintOut(int? id)
@@ -1919,7 +1952,7 @@ namespace Sampoerna.EMS.Website.Controllers
             drow[5] = lack2.ExTypDesc;
             drow[6] = lack2.PeriodNameInd + " " + lack2.PeriodYear;
             drow[7] = lack2.LevelPlantCity;
-            
+
             drow[8] = lack2.SubmissionDate == null ? null : string.Format("{0} {1} {2}", lack2.SubmissionDate.Value.Day, _monthBll.GetMonth(lack2.SubmissionDate.Value.Month).MONTH_NAME_IND, lack2.SubmissionDate.Value.Year);
             if (lack2.ApprovedBy != null)
             {
@@ -2044,7 +2077,84 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-        
+
+        #region ----------------- Dashboard Page -------------
+
+        public ActionResult Dashboard()
+        {
+            var model = new Lack2DashboardViewModel
+            {
+                SearchViewModel = new Lack2DashboardSearchViewModel()
+            };
+            model = InitSelectListDashboardViewModel(model);
+            model = InitDashboardViewModel(model);
+            return View("Dashboard", model);
+        }
+
+        private Lack2DashboardViewModel InitSelectListDashboardViewModel(Lack2DashboardViewModel model)
+        {
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            model.SearchViewModel.UserList = GlobalFunctions.GetCreatorList();
+            model.SearchViewModel.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchViewModel.YearList = GetDashboardYear();
+            model.SearchViewModel.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            return model;
+        }
+
+        private Lack2DashboardViewModel InitDashboardViewModel(Lack2DashboardViewModel model)
+        {
+            var data = GetDashboardData(model.SearchViewModel);
+            if (data.Count == 0) return model;
+
+            model.Detail = new DashboardDetilModel
+            {
+                WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                DraftTotal = data.Count(x => x.Status == Enums.DocumentStatus.Draft),
+                WaitingForPoaTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval),
+                WaitingForManagerTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                WaitingForGovTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingGovApproval),
+                CompletedTotal = data.Count(x => x.Status == Enums.DocumentStatus.Completed)
+            };
+
+            return model;
+        }
+
+        private List<Lack2Dto> GetDashboardData(Lack2DashboardSearchViewModel filter = null)
+        {
+            if (filter == null)
+            {
+                //get All Data
+                var data = _lack2Bll.GetDashboardDataByParam(new Lack2GetDashboardDataByParamInput());
+                return data;
+            }
+
+            var input = Mapper.Map<Lack2GetDashboardDataByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            
+
+            return _lack2Bll.GetDashboardDataByParam(input);
+        }
+
+        private SelectList GetDashboardYear()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterDashboardPage(Lack2DashboardViewModel model)
+        {
+            var data = InitDashboardViewModel(model);
+            return PartialView("_ChartStatus", data.Detail);
+        }
+
+        #endregion
+
     }
 
 }

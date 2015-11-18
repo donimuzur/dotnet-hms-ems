@@ -111,6 +111,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.GrandTotalExcisableCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => c.Qty).ToArray())))
                 ;
 
+            Mapper.CreateMap<Pbck1DashboardModel, Pbck1GetByParamInput>().IgnoreAllNonExisting();
+
             #endregion
 
             Mapper.CreateMap<Pbck1ProdPlanModel, Pbck1ProdPlanInput>().IgnoreAllNonExisting();

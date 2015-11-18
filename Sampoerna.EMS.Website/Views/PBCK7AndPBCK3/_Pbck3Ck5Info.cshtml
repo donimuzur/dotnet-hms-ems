@@ -1,5 +1,87 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck3ViewModel
 
+<div class="panel-group" id="accordion-3" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                    Destination Plant
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <div class="panel-body">
+                <div class="form-excise" role="form">
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Plant</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.DestPlantId, new { @disabled = false, @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">NPWP</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.DestNpwp, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">NPPBKC ID</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.DestNppbkcId, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Company Name</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.DestCompanyName, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Address</label>
+                                <div class="col-md-8">
+                                    @Html.TextAreaFor(model => model.Ck5FormViewModel.DestAddress, new { @disabled = "disabled", @class = "form-control", @row = "5" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">KPPBC Name, Office ID</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.Ck5FormViewModel.DestKppbcName, new { @disabled = "disabled", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
 <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingTwo">
@@ -70,7 +152,7 @@
                         </div>
                     </div>
 
-                   
+
 
                 </div>
             </div>
@@ -78,86 +160,6 @@
     </div>
 </div>
 
-<div class="panel-group" id="accordion-3" role="tablist" aria-multiselectable="true">
-    <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingThree">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-                    Destination Plant
-                    <i class="fa fa-caret-down"></i>
-                </a>
-            </h4>
-        </div>
-        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-            <div class="panel-body">
-                <div class="form-excise" role="form">
-
-                   
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">Plant</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestPlantId, new { @disabled = false, @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">NPWP</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestNpwp, new { @disabled = "disabled", @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">NPPBKC ID</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestNppbkcId, new { @disabled = "disabled", @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">Company Name</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestCompanyName, new { @disabled = "disabled", @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">Address</label>
-                                    <div class="col-md-8">
-                                        @Html.TextAreaFor(model => model.Ck5FormViewModel.DestAddress, new { @disabled = "disabled", @class = "form-control", @row = "5" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">KPPBC Name, Office ID</label>
-                                    <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.Ck5FormViewModel.DestKppbcName, new { @disabled = "disabled", @class = "form-control" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                   
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
@@ -182,7 +184,7 @@
                                 </div>
                             </div>
                         </div>
-                       
+
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -275,7 +277,7 @@
                             </div>
                         </div>
                     </div>
-                   
+
                 </div>
 
             </div>
@@ -315,7 +317,7 @@
                             </div>
                         </div>
                     </div>
-                  
+
 
                     <div class="row">
                         <div class="col-md-6">
@@ -376,7 +378,7 @@
                                 <th>Excise Value</th>
                                 <th>USD Value</th>
                                 <th>Note</th>
-                               
+
                             </tr>
                         </thead>
                         <tbody>
@@ -404,7 +406,7 @@
                                             <td>@row.ExciseValue</td>
                                             <td>@row.UsdValue</td>
                                             <td>@row.Note</td>
-                                            
+
                                         </tr>
 
                                         counter = counter + 1;

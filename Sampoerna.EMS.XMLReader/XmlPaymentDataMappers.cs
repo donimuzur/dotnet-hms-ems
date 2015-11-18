@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
@@ -55,8 +56,8 @@ namespace Sampoerna.EMS.XMLReader
              
         }
 
-      
-        public string InsertToDatabase()
+
+        public MovedFileOutput InsertToDatabase()
         {
           return _xmlMapper.InsertToDatabase<CK1>(Items);
         }
@@ -69,7 +70,7 @@ namespace Sampoerna.EMS.XMLReader
         public CK1 GetCk1(string ck1Number)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<CK1>()
-                .Get(x => x.CK1_NUMBER == ck1Number).FirstOrDefault();
+                .Get(x => x.CK1_SAP_NUMBER == ck1Number).FirstOrDefault();
             return existingData;
         }
 

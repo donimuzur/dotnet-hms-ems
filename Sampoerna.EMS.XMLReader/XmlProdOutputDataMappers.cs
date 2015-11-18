@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.Contract;
+﻿using Sampoerna.EMS.BusinessObject.Outputs;
+﻿using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebComponents.Logger;
@@ -136,21 +137,26 @@ namespace Sampoerna.EMS.XMLReader
                             zaapShftRptItem.COMPANY_CODE = item.COMPANY_CODE;
                             zaapShftRptItem.FA_CODE = item.FA_CODE;
                             zaapShftRptItem.QTY = item.QTY;
+                            zaapShftRptItem.UOM = item.UOM;
                             zaapShftRptItem.ORIGINAL_QTY = qty;
                             zaapShftRptItem.ORIGINAL_UOM = bun;
                             zaapShftRptItem.PRODUCTION_DATE = item.PRODUCTION_DATE;
                             zaapShftRptItem.WERKS = item.WERKS;
+                            
 
                             var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
                             if (existingZaap != null)
                             {
-                                zaapShftRptItem.CREATED_BY = "PI";
-                                zaapShftRptItem.CREATED_DATE = DateTime.Now;
+                                zaapShftRptItem.MODIFIED_BY = "PI";
+                                zaapShftRptItem.MODIFIED_DATE = DateTime.Now;
+                                zaapShftRptItem.CREATED_DATE = existingZaap.CREATED_DATE;
+                                zaapShftRptItem.CREATED_BY = existingZaap.CREATED_BY;
+                                
                             }
                             else
                             {
-                                zaapShftRptItem.MODIFIED_BY = "PI";
-                                zaapShftRptItem.MODIFIED_DATE = DateTime.Now;
+                                zaapShftRptItem.CREATED_BY = "PI";
+                                zaapShftRptItem.CREATED_DATE = DateTime.Now;
                             }
                             
                             _xmlMapper.InsertOrUpdate(zaapShftRptItem);    
@@ -205,7 +211,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public string InsertToDatabase()
+        public MovedFileOutput InsertToDatabase()
         {
 
 

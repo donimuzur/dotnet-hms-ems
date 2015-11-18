@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
@@ -58,9 +59,16 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowBLL _workflowBll;
         private ILack1IncomeDetailService _lack1IncomeDetailService;
         private ILack2ItemService _lack2ItemService;
+        private IBrandRegistrationService _brandRegistration;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
+
+        private List<string> _allowedCk5MarketReturnProdCode= new List<string>(new string[] { "01", "02", "03","04","05","06" });
+
+        private List<string> _listCk5MarketReturnProdCodeBatang = new List<string>(new string[] { "01", "02", "03", "04" });
+
+        private List<string> _listCk5MarketReturnProdCodeGram = new List<string>(new string[] {  "05", "06" });
 
         public CK5BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -99,6 +107,7 @@ namespace Sampoerna.EMS.BLL
 
             _lack1IncomeDetailService = new Lack1IncomeDetailService(_uow, _logger);
             _lack2ItemService = new Lack2ItemService(_uow, _logger);
+            _brandRegistration = new BrandRegistrationService(_uow, _logger);
         }
         
 
@@ -172,7 +181,7 @@ namespace Sampoerna.EMS.BLL
             {
                 var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
 
-                if (input.Ck5Type == Enums.CK5Type.PortToImporter)
+                if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
                     queryFilter =
                         queryFilter.And(
@@ -181,7 +190,7 @@ namespace Sampoerna.EMS.BLL
                                  (c.STATUS_ID != Enums.DocumentStatus.Draft &&
                                   nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID))));
                 }
-                else if (input.Ck5Type == Enums.CK5Type.Manual)
+                else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
                     queryFilter =
                        queryFilter.And(
@@ -189,10 +198,11 @@ namespace Sampoerna.EMS.BLL
                                (c.CREATED_BY == input.UserId ||
                                 (
                                 (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                 (c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                 ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
                                              nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
                                   ) ||
                                             nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
+                                            )
                                             )
 
                                 )
@@ -507,6 +517,73 @@ namespace Sampoerna.EMS.BLL
 
 
         }
+        private List<CK5MaterialOutput> ValidateCk5MarketReturnMaterial(List<CK5MaterialInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<CK5MaterialOutput>();
+
+            foreach (var ck5MaterialInput in inputs)
+            {
+                messageList.Clear();
+              
+                var output = Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
+
+               
+                //validate
+                var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                if (dbBrand == null)
+                    messageList.Add("Material Number Not Exist");
+                else
+                {
+                      if (!_allowedCk5MarketReturnProdCode.Contains(dbBrand.PROD_CODE))
+                        messageList.Add("Material Number in Brand must have prod code 01-06");
+                }
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
+                    messageList.Add("Qty not valid");
+
+                if (!_uomBll.IsUomIdExist(ck5MaterialInput.Uom))
+                    messageList.Add("UOM not exist");
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
+                    messageList.Add("Convertion not valid");
+               
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
+                    messageList.Add("UsdValue not valid");
+
+
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                outputList.Add(output);
+            }
+
+          
+            return outputList;
+        }
+
+        public CK5MaterialOutput ValidateCk5MarketReturnMaterial(CK5MaterialInput input)
+        {
+            var messageList = new List<string>();
+            var inputs = new List<CK5MaterialInput>();
+            inputs.Add(input);
+            return ValidateCk5MarketReturnMaterial(inputs).FirstOrDefault();
+        }
+
+
 
         private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType)
         {
@@ -622,7 +699,7 @@ namespace Sampoerna.EMS.BLL
                 if (isConvertionExist)
                 {
                     //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                    var umren = matUom.Where(x => x.MEINH == input.ConvertedUom).Single().UMREN;
+                    var umren = matUom.Where(x => x.MEINH == input.ConvertedUom).FirstOrDefault().UMREN;
                     if (umren == null)
                     {
                         output.Message = "convertion to SAP in material master is null";
@@ -742,6 +819,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
+                    output.MaterialDesc = dbMaterial.MATERIAL_DESC;
                     if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
                         messageList.Add("Material is not Excisable goods");
                     else
@@ -796,6 +874,38 @@ namespace Sampoerna.EMS.BLL
 
             //return outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid);
             return outputList;
+        }
+
+        private CK5MaterialOutput GetAdditionalValueCk5MarketReturnMaterial(CK5MaterialOutput input)
+        {
+            
+            input.ConvertedQty = Utils.ConvertHelper.GetDecimal(input.Qty) * Utils.ConvertHelper.GetDecimal(input.Convertion);
+
+            input.Convertion = Utils.ConvertHelper.GetDecimal(input.Convertion).ToString();
+
+            var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(input.Plant, input.Brand);
+            if (dbBrand == null)
+            {
+                input.Hje = 0;
+                input.Tariff = 0;
+
+            }
+            else
+            {
+                input.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
+                input.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
+                input.MaterialDesc = dbBrand.BRAND_CE;
+
+                if (_listCk5MarketReturnProdCodeBatang.Contains(dbBrand.PROD_CODE))
+                    input.ConvertedUom = "Btg";
+                else if (_listCk5MarketReturnProdCodeGram.Contains(dbBrand.PROD_CODE))
+                    input.ConvertedUom = "G";
+               
+            }
+            input.ExciseQty = input.ConvertedQty;
+            input.ExciseValue = input.ConvertedQty * input.Tariff;
+
+            return input;
         }
 
         private CK5MaterialOutput GetAdditionalValueCk5Material(CK5MaterialOutput input)
@@ -865,7 +975,31 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
+        public List<CK5MaterialOutput> Ck5MarketReturnMaterialProcess(List<CK5MaterialInput> inputs)
+        {
+            var outputList = ValidateCk5MarketReturnMaterial(inputs);
+
+            if (!outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid))
+                return outputList;
+
+            foreach (var output in outputList)
+            {
+                var resultValue = GetAdditionalValueCk5MarketReturnMaterial(output);
+
+                output.ConvertedQty = resultValue.ConvertedQty;
+                output.Hje = resultValue.Hje;
+                output.Tariff = resultValue.Tariff;
+                output.ExciseValue = resultValue.ExciseValue;
+                output.ConvertedUom = resultValue.ConvertedUom;
+                output.ExciseUom = resultValue.ConvertedUom;
+                output.ExciseQty = resultValue.ExciseQty;
+            }
+
+            return outputList;
+        }
+
        
+
         private void SetChangeHistory(string oldValue, string newValue, string fieldName, string userId, string ck5Id)
         {
             var changes = new CHANGES_HISTORY();
@@ -911,24 +1045,24 @@ namespace Sampoerna.EMS.BLL
                         changes.NEW_VALUE = data.BRAND;
                         break;
                     case "QTY":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.QTY);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.QTY);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.QTY);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.QTY);
                         break;
                     case "UOM":
                         changes.OLD_VALUE = origin.UOM;
                         changes.NEW_VALUE = data.UOM;
                         break;
                     case "CONVERTION":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.CONVERTION);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.CONVERTION);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.CONVERTION);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.CONVERTION);
                         break;
                     case "CONVERTED_UOM":
                         changes.OLD_VALUE = origin.CONVERTED_UOM;
                         changes.NEW_VALUE = data.CONVERTED_UOM;
                         break;
                     case "USD_VALUE":
-                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToString(origin.USD_VALUE);
-                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToString(data.USD_VALUE);
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.USD_VALUE);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.USD_VALUE);
                         break;
                     case "NOTE":
                         changes.OLD_VALUE = origin.NOTE;
@@ -970,6 +1104,9 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("DESTINATION_COUNTRY", origin.DEST_COUNTRY_NAME == data.DEST_COUNTRY_NAME);
 
             changesData.Add("SUBMISSION_DATE", origin.SUBMISSION_DATE == data.SUBMISSION_DATE);
+
+            if (origin.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                changesData.Add("SOURCE_PLANT_ADDRESS", origin.SOURCE_PLANT_ADDRESS == (data.SOURCE_PLANT_ADDRESS));
 
             foreach (var listChange in changesData)
             {
@@ -1034,8 +1171,8 @@ namespace Sampoerna.EMS.BLL
                         break;
 
                     case "GRAND_TOTAL_EX":
-                        changes.OLD_VALUE = origin.GRAND_TOTAL_EX.ToString();
-                        changes.NEW_VALUE = data.GRAND_TOTAL_EX.ToString();
+                        changes.OLD_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(origin.GRAND_TOTAL_EX);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDecimalToStringMoneyFormat(data.GRAND_TOTAL_EX);
                         break;
 
                     case "PACKAGE_UOM_ID":
@@ -1049,6 +1186,10 @@ namespace Sampoerna.EMS.BLL
                     case "SUBMISSION_DATE":
                         changes.OLD_VALUE = origin.SUBMISSION_DATE != null ? origin.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
                         changes.NEW_VALUE = data.SUBMISSION_DATE != null ? data.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty;
+                        break;
+                    case "SOURCE_PLANT_ADDRESS":
+                        changes.OLD_VALUE = origin.SOURCE_PLANT_ADDRESS;
+                        changes.NEW_VALUE = data.SOURCE_PLANT_ADDRESS;
                         break;
                 }
                 _changesHistoryBll.AddHistory(changes);
@@ -1088,6 +1229,11 @@ namespace Sampoerna.EMS.BLL
             {
                 input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
             }
+            //else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
+            //    dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+            //{
+            //    input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+            //}
             else
             {
                 input.NPPBKC_Id = dtData.SOURCE_PLANT_NPPBKC_ID;    
@@ -1121,14 +1267,14 @@ namespace Sampoerna.EMS.BLL
                 exGoodTypeList = _goodTypeGroupBLL.GetById((int)Enums.ExGoodsType.EtilAlcohol).EX_GROUP_TYPE_DETAILS.Select(x => x.GOODTYPE_ID).ToList();
             }
             var data = _pbck1Bll.GetExternalSupplierList(exGoodTypeList);
-            return Mapper.Map<List<CK5ExternalSupplierDto>>(data);
+            return data;
         }
 
         public CK5ExternalSupplierDto GetExternalSupplierItem(string plantId, Enums.CK5Type ck5Type)
         {
             var dataList = GetExternalSupplierList(ck5Type);
 
-            return dataList.SingleOrDefault(x => x.SUPPLIER_PLANT == plantId);
+            return dataList.FirstOrDefault(x => x.SUPPLIER_PLANT == plantId);
         }
 
         #region workflow
@@ -1360,11 +1506,13 @@ namespace Sampoerna.EMS.BLL
                                     poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     break;
                                 case Enums.CK5Type.Manual:
+                                case Enums.CK5Type.MarketReturn:
                                     if (ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                                         poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     else
                                         poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
                                     break;
+                                
                                 default:
                                     poaList = _poaBll.GetPoaByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
                                     break;
@@ -1443,6 +1591,7 @@ namespace Sampoerna.EMS.BLL
                             rc.To.Add(poaDto.POA_EMAIL);
                         }
                     }
+                    //else if(ck5Dto.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || ck5Dto.ck)
                     
 
                     break;
@@ -1516,9 +1665,11 @@ namespace Sampoerna.EMS.BLL
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
-            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter || dbData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dbData.CK5_TYPE == Enums.CK5Type.MarketReturn)
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
             else if (dbData.CK5_TYPE == Enums.CK5Type.Manual && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+            else if (dbData.CK5_TYPE == Enums.CK5Type.MarketReturn && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                 nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
 
             var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
@@ -1679,7 +1830,11 @@ namespace Sampoerna.EMS.BLL
                 //insert to pbck3
                 var inputPbck3 = new InsertPbck3FromCk5MarketReturnInput();
                 inputPbck3.Ck5Id = dbData.CK5_ID;
+                
                 inputPbck3.NppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
+                if (dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                    inputPbck3.NppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+
                 inputPbck3.UserId = input.UserId;
                 var pbck3Number = _pbck3Services.InsertPbck3FromCk5MarketReturn(inputPbck3);
 
@@ -2089,8 +2244,7 @@ namespace Sampoerna.EMS.BLL
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             //for manual
-            if (dbData.CK5_TYPE == Enums.CK5Type.Manual
-                && dbData.CK5_MANUAL_TYPE != Enums.Ck5ManualType.Trial)
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
             {
                 //change status
                 dbData.STATUS_ID = Enums.DocumentStatus.WaitingForUnSealing;
@@ -2145,8 +2299,7 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
 
-            if (dbData.CK5_TYPE == Enums.CK5Type.Manual &&
-                dbData.CK5_MANUAL_TYPE != Enums.Ck5ManualType.Trial)
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual )
             {
                 if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
                        && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
@@ -2547,8 +2700,8 @@ namespace Sampoerna.EMS.BLL
             {
                 if (dtData.SOURCE_PLANT_NPPBKC_ID.Length >= 4)
                 {
-                    result.ReportDetails.OfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
-                    result.ReportDetails.SourceOfficeCode = "00" + dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4);
+                    result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
+                    result.ReportDetails.SourceOfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
                 }
             }
             
@@ -2586,19 +2739,38 @@ namespace Sampoerna.EMS.BLL
             //if (dtData.REGISTRATION_DATE.HasValue)
             //    result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value, false);
 
-            result.ReportDetails.RegistrationNumber = "";
-            result.ReportDetails.RegistrationDate = "";
+            result.ReportDetails.RegistrationNumber = dtData.REGISTRATION_NUMBER;
+            if (dtData.REGISTRATION_DATE.HasValue)
+                result.ReportDetails.RegistrationDate = DateReportDisplayString(dtData.REGISTRATION_DATE.Value,false);
+            else
+            {
+                result.ReportDetails.RegistrationDate = "";
+            }
+
+            if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+            {
+                PBCK1 pbck1Data = Mapper.Map<PBCK1>(GetPbck1ImporterToPlantByRefId(dtData.CK5_ID));
+                dtData.PBCK1 = pbck1Data;
+            }
 
             if (dtData.PBCK1 != null)
             {
                 if (dtData.PBCK1.DECREE_DATE.HasValue)
                 {
-                    if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter || dtData.CK5_TYPE == Enums.CK5Type.ImporterToPlant)
+                    if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter ||
+                        dtData.CK5_TYPE == Enums.CK5Type.ImporterToPlant)
+                    {
+                        result.ReportDetails.FacilityNumber = dtData.PBCK1.NUMBER;
                         result.ReportDetails.FacilityDate = DateReportDisplayString(dtData.PBCK1.DECREE_DATE.Value,
                             false);
+                    }
+                        
+                        
                     else
                         result.ReportDetails.FacilityDate = dtData.PBCK1.DECREE_DATE.Value.ToString("dd MMM yyyy");
                 }
+
+                
             }
             if (dtData.INVOICE_DATE.HasValue)
                 result.ReportDetails.InvoiceDate = DateReportDisplayString(dtData.INVOICE_DATE.Value, false);
@@ -2661,7 +2833,7 @@ namespace Sampoerna.EMS.BLL
 
                 result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID;
                 if (dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
-                    result.ReportDetails.DestOfficeCode = "00" + dtData.DEST_PLANT_NPPBKC_ID.Substring(0,4);
+                    result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
 
                 var dbNppbkcDest = _nppbkcBll.GetById(dtData.DEST_PLANT_NPPBKC_ID);
                 if (dbNppbkcDest != null)
@@ -2804,7 +2976,7 @@ namespace Sampoerna.EMS.BLL
                         sourcePlant = _plantBll.GetT001WByIdImport(ck5UploadFileDocuments.SourcePlantId);
                     }
                     else if (output.CK5_TYPE == Enums.CK5Type.DomesticAlcohol 
-                        //|| output.CK5_TYPE == Enums.CK5Type.PortToImporter
+                        || output.CK5_TYPE == Enums.CK5Type.PortToImporter
                         )
                     {
 
@@ -2835,29 +3007,42 @@ namespace Sampoerna.EMS.BLL
                     {
                         destPlant = _plantBll.GetT001WByIdImport(ck5UploadFileDocuments.DestPlantId);
                     }
-                    else if (output.CK5_TYPE == Enums.CK5Type.Export)
-                    {
-                        
-                    }
                     else
                     {
                         destPlant = _plantBll.GetT001WById(ck5UploadFileDocuments.DestPlantId);    
                     }
-                    
 
-                    if (destPlant == null)
-                        messageList.Add("Destination Plant Not Exist");
+
+                    if (output.CK5_TYPE == Enums.CK5Type.Export)
+                    {
+                        output.DEST_COUNTRY_CODE = ck5UploadFileDocuments.DEST_COUNTRY_CODE;
+                        output.DEST_COUNTRY_NAME = ck5UploadFileDocuments.DEST_COUNTRY_NAME;
+                        output.DEST_PLANT_COMPANY_NAME = ck5UploadFileDocuments.DEST_PLANT_COMPANY_NAME;
+                        output.DEST_PLANT_ADDRESS = ck5UploadFileDocuments.DEST_PLANT_ADDRESS;
+                        output.LOADING_PORT = ck5UploadFileDocuments.LOADING_PORT;
+                        output.LOADING_PORT_ID = ck5UploadFileDocuments.LOADING_PORT_ID;
+                        output.LOADING_PORT_NAME = ck5UploadFileDocuments.LOADING_PORT_NAME;
+                        output.FINAL_PORT = ck5UploadFileDocuments.LOADING_PORT;
+                        output.FINAL_PORT_ID = ck5UploadFileDocuments.LOADING_PORT_ID;
+                        output.FINAL_PORT_NAME = ck5UploadFileDocuments.LOADING_PORT_NAME;
+                    }
                     else
                     {
-                        output.DEST_PLANT_ID = destPlant.WERKS;
-                        output.DEST_PLANT_NPWP = destPlant.Npwp;
-                        output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
-                        output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
-                        output.DEST_PLANT_COMPANY_NAME = destPlant.CompanyName;
-                        output.DEST_PLANT_ADDRESS = destPlant.CompanyAddress;
-                        output.DEST_PLANT_KPPBC_NAME_OFFICE = destPlant.KppbcCity + "-" + destPlant.KppbcNo;
-                        output.DEST_PLANT_NAME = destPlant.NAME1;
+                        if (destPlant == null)
+                            messageList.Add("Destination Plant Not Exist");
+                        else
+                        {
+                            output.DEST_PLANT_ID = destPlant.WERKS;
+                            output.DEST_PLANT_NPWP = destPlant.Npwp;
+                            output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
+                            output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
+                            output.DEST_PLANT_COMPANY_NAME = destPlant.CompanyName;
+                            output.DEST_PLANT_ADDRESS = destPlant.CompanyAddress;
+                            output.DEST_PLANT_KPPBC_NAME_OFFICE = destPlant.KppbcCity + "-" + destPlant.KppbcNo;
+                            output.DEST_PLANT_NAME = destPlant.NAME1;
+                        }
                     }
+                    
                 }
                 
 
@@ -2985,6 +3170,7 @@ namespace Sampoerna.EMS.BLL
                 inputCk5Material.ConvertedUom = ck5UploadFileDocumentsInput.ConvertedUom;
                 inputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
                 inputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
+                //inputCk5Material.
                 
                 inputCk5Material.ExGoodsType = ck5UploadFileDocumentsInput.EX_GOODS_TYPE;
                 lisCk5Material.Add(inputCk5Material);
@@ -3033,6 +3219,7 @@ namespace Sampoerna.EMS.BLL
                 outputCk5Material.ConvertedUom = ck5UploadFileDocumentsInput.ConvertedUom;
                 outputCk5Material.UsdValue = ck5UploadFileDocumentsInput.UsdValue;
                 outputCk5Material.Note = ck5UploadFileDocumentsInput.Note;
+                
 
                 var resultValue = GetAdditionalValueCk5Material(outputCk5Material);
 
@@ -3040,6 +3227,7 @@ namespace Sampoerna.EMS.BLL
                 ck5UploadFileDocumentsInput.Hje = resultValue.Hje;
                 ck5UploadFileDocumentsInput.Tariff = resultValue.Tariff;
                 ck5UploadFileDocumentsInput.ExciseValue = resultValue.ExciseValue;
+                
 
             }
 
@@ -3121,7 +3309,7 @@ namespace Sampoerna.EMS.BLL
             //    FormType = Enums.FormType.CK5
             //};
 
-            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
+            
             if (!input.Ck5Dto.SUBMISSION_DATE.HasValue) {
                 input.Ck5Dto.SUBMISSION_DATE = DateTime.Now;
             }
@@ -3166,23 +3354,22 @@ namespace Sampoerna.EMS.BLL
                 {
                     ck5Material.PLANT_ID = dbData.SOURCE_PLANT_ID;
                 }
-
-                if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                if (input.Ck5Dto.CK5_TYPE != Enums.CK5Type.MarketReturn)
                 {
-                    dbData.PACKAGE_UOM_ID = "G";
-
+                    if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                        dbData.PACKAGE_UOM_ID = "G";
+                    else
+                        dbData.PACKAGE_UOM_ID = "L";
+                   
                 }
-                else
-                {
-                    dbData.PACKAGE_UOM_ID = "L";
-                }
-                if(ck5Material.CONVERTED_QTY.HasValue)
-                    tempTotal += ck5Material.CONVERTED_QTY.Value;
+                //if(ck5Material.CONVERTED_QTY.HasValue)
+                //    tempTotal += ck5Material.CONVERTED_QTY.Value;
                 
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
-
-            dbData.GRAND_TOTAL_EX = tempTotal;
+            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
+            //dbData.GRAND_TOTAL_EX = tempTotal;
+            dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
             _repository.Insert(dbData);
             
             inputWorkflowHistory.DocumentId = dbData.CK5_ID;
@@ -3329,13 +3516,25 @@ namespace Sampoerna.EMS.BLL
                 if (isConvertionExist)
                 {
                     //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                    var umren = matUom.Single(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).UMREN;
-                    if (umren != null)
-                        ck5MaterialDto.CONVERTED_QTY = ck5MaterialDto.CONVERTED_QTY * umren.Value;
+                    var dbMaterialConv = matUom.FirstOrDefault(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM);
+                    if (dbMaterialConv != null)
+                    {
+                        var umren = dbMaterialConv.UMREN;
+                        if (umren != null)
+                            ck5MaterialDto.CONVERTED_QTY = ck5MaterialDto.CONVERTED_QTY*umren.Value;
+                        else
+                        {
+
+                            throw new Exception(
+                                String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
+                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
+                        }
+                    }
                     else
                     {
-                        
-                        throw new Exception(String.Format("Conversion value for {0} in {1} to {2} is not found in material master",ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID,ck5MaterialDto.CONVERTED_UOM_ID));
+                        throw new Exception(
+                                String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
+                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
                     }
                     ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
                 }
@@ -3346,9 +3545,35 @@ namespace Sampoerna.EMS.BLL
                 }
                 // ck5MaterialDto.CONVERTED_UOM_ID
             }
-            
+
+            //create group by material by plant, material, converted uom , sum converted qty
+            dataXmlDto.Ck5Material = CreateGroupByCk5MaterialForXml(dataXmlDto.Ck5Material);
+
             return dataXmlDto;
 
+        }
+
+        /// <summary>
+        /// create group by material by plant, material, converted uom , sum converted qty 
+        /// </summary>
+        private List<CK5MaterialDto> CreateGroupByCk5MaterialForXml(List<CK5MaterialDto> Ck5Material)
+        {
+            var listNewMaterial = Ck5Material.GroupBy(c => new
+            {
+                c.CK5_ID,
+                c.PLANT_ID,
+                c.BRAND,
+                c.CONVERTED_UOM
+            }).Select(x => new CK5MaterialDto()
+            {
+                CK5_ID = x.Key.CK5_ID,
+                PLANT_ID = x.Key.PLANT_ID,
+                BRAND = x.Key.BRAND,
+                CONVERTED_UOM = x.Key.CONVERTED_UOM,
+                CONVERTED_QTY = x.Sum(c => c.CONVERTED_QTY)
+            });
+
+            return listNewMaterial.ToList();
         }
 
         public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1(int pbckId, int exgrouptype, Enums.CK5Type ck5type)
@@ -3606,7 +3831,7 @@ namespace Sampoerna.EMS.BLL
                     if (!ck5.REDUCE_TRIAL.HasValue || !ck5.REDUCE_TRIAL.Value)
                         continue;
                 }
-                else if (ck5.CK5_TYPE == Enums.CK5Type.Export)
+                else if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn)
                     continue;
                 else if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
                     continue;
@@ -3729,6 +3954,13 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<GetListMaterialMarketReturnOutput> GetListMaterialMarketReturn(string plantId)
+        {
+            var listBrand = _brandRegistration.GetBrandByPlantAndListProdCode(plantId, _allowedCk5MarketReturnProdCode);
+
+            return Mapper.Map<List<GetListMaterialMarketReturnOutput>>(listBrand);
+        }
+
         private void ValidateCk5MaterialConvertedUom(CK5SaveInput input)
         {
             foreach (var ck5MaterialDto in input.Ck5Material)
@@ -3744,7 +3976,7 @@ namespace Sampoerna.EMS.BLL
                 if (isConvertionExist)
                 {
                     //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
-                    var umren = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).Single().UMREN;
+                    var umren = matUom.Where(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM).FirstOrDefault().UMREN;
                     if (umren == null)
                         throw new BLLException(ExceptionCodes.BLLExceptions.ConvertedSAPNull);
 
@@ -3753,6 +3985,45 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.ConvertedSAPNotExist);
             }
 
+        }
+
+        public GetBrandByPlantAndMaterialNumberOutput GetBrandByPlantAndMaterialNumber(string plantId, string materialNumber)
+        {
+            var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(plantId, materialNumber);
+
+            var result = new GetBrandByPlantAndMaterialNumberOutput();
+            if (dbBrand == null)
+            {
+                result.Hje = 0;
+                result.Tariff = 0;
+                result.Uom = "";
+                result.MaterialDesc = "";
+            }
+            else
+            {
+                result.Hje = dbBrand.HJE_IDR.HasValue ? dbBrand.HJE_IDR.Value : 0;
+                result.Tariff = dbBrand.TARIFF.HasValue ? dbBrand.TARIFF.Value : 0;
+                if (_listCk5MarketReturnProdCodeBatang.Contains(dbBrand.PROD_CODE))
+                    result.Uom = "Btg";
+                else if (_listCk5MarketReturnProdCodeGram.Contains(dbBrand.PROD_CODE))
+                    result.Uom = "G";
+                else 
+                    result.Uom = "";
+                result.MaterialDesc = dbBrand.BRAND_CE;
+            }
+
+            return result;
+        }
+
+        public Pbck1Dto GetPbck1ImporterToPlantByRefId(long ck5PortToImporterId)
+        {
+            long pbck1Id = 0;
+            var ck5 = _repository.Get(x => x.CK5_REF_ID == ck5PortToImporterId && x.CK5_TYPE == Enums.CK5Type.ImporterToPlant,null).FirstOrDefault();
+            if (ck5 != null)
+                pbck1Id = ck5.PBCK1_DECREE_ID.HasValue ? ck5.PBCK1_DECREE_ID.Value : 0;
+            if (pbck1Id != 0)
+                return _pbck1Bll.GetById(pbck1Id);
+            return null;
         }
     }
 }

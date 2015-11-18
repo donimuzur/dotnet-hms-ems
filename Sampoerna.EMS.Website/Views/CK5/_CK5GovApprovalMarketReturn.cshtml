@@ -8,78 +8,6 @@
 <div role="tabpanel" class="tab-pane active" id="information">
     <div class="tab-wrapper">
 
-
-        <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingTwo">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion-2" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                            Origin Plant
-                            <i class="fa fa-caret-down"></i>
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                    <div class="panel-body">
-                        <div class="form-excise" role="form">
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Plant</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SourcePlantId, new { @disabled = false, @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">NPWP</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SourceNpwp, new { @disabled = "disabled", @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">NPPBKC ID</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SourceNppbkcId, new { @disabled = "disabled", @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Company Name</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SourceCompanyName, new { @disabled = "disabled", @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Address</label>
-                                        <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.SourceAddress, new { @row = "5", @disabled = "disabled", @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">KPPBC Name, Office ID</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.SourceKppbcName, new { @disabled = "disabled", @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="panel-group" id="accordion-3" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingThree">
@@ -159,6 +87,77 @@
                 </div>
             </div>
 
+        </div>
+
+        <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-2" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                            Origin Plant
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Plant</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.SourcePlantId, new { @disabled = false, @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">NPWP</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.SourceNpwp, new { @disabled = "disabled", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">NPPBKC ID</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.SourceNppbkcId, new { @disabled = "disabled", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Company Name</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.SourceCompanyName, new { @disabled = "disabled", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Address</label>
+                                        <div class="col-md-8">
+                                            @Html.TextAreaFor(model => model.SourceAddress, new { @row = "5", @disabled = "disabled", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">KPPBC Name, Office ID</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.SourceKppbcName, new { @disabled = "disabled", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -340,7 +339,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Grand Total Exciseable</label>
                                         <div class="col-md-4">
-                                            @Html.TextBoxFor(model => model.GrandTotalEx, new { @disabled = false, @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.GrandTotalExDisplay, new { @disabled = false, @class = "form-control" })
                                         </div>
                                         <div class="col-md-4">
                                             @Html.TextBoxFor(model => model.PackageUomName, new { @disabled = false, @class = "form-control" })

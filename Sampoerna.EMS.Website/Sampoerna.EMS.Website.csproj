@@ -232,6 +232,8 @@
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
     <Compile Include="Controllers\WasteController.cs" />
+    <Compile Include="Controllers\WasteRoleController.cs" />
+    <Compile Include="Controllers\WasteStockController.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
@@ -293,12 +295,9 @@
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
-    <Compile Include="Models\CK4C\Ck4cCreateViewModel.cs" />
-    <Compile Include="Models\CK4C\Ck4CCreateWasteProductionViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cDashboardModel.cs" />
     <Compile Include="Models\CK4C\Ck4cDecreeDocModel.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
-    <Compile Include="Models\CK4C\Ck4CIndexViewModel.cs" />
-    <Compile Include="Models\CK4C\Ck4CIndexWasteProductionViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CSummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5ExternalSupplierModel.cs" />
     <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
@@ -314,6 +313,7 @@
     <Compile Include="Models\CK5\CK5SummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
+    <Compile Include="Models\Dashboard\DashboardDetilModel.cs" />
     <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupDetailsViewModel.cs" />
@@ -327,6 +327,7 @@
     <Compile Include="Models\LACK1\Lack1BaseItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
     <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DashboardViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1EditViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
@@ -342,6 +343,7 @@
     <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2BaseItemModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DashboardViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2DetailReportsViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2DetailViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2EditViewModel.cs" />
@@ -364,6 +366,7 @@
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
     <Compile Include="Models\Material\MaterialListViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
+    <Compile Include="Models\PBCK1\Pbck1DashboardModel.cs" />
     <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ListCK5Model.cs" />
@@ -376,6 +379,7 @@
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4DashBoardViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FileUploadViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
@@ -385,6 +389,7 @@
     <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3ViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3DashboardViewModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck3SummaryReportModel.cs" />
     <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
@@ -417,17 +422,14 @@
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
     <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
+    <Compile Include="Models\WasteRole\WasteRoleFormViewModel.cs" />
+    <Compile Include="Models\WasteRole\WasteRoleIndexViewModel.cs" />
+    <Compile Include="Models\WasteStock\WasteStockFormViewModel.cs" />
+    <Compile Include="Models\WasteStock\WasteStockIndexViewModel.cs" />
     <Compile Include="Models\Waste\WasteUploadViewModel.cs" />
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reports\CK4C\DaftarRincian.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DaftarRincian.rpt</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Reports\CK4C\Preview.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -591,6 +593,7 @@
     <Content Include="Content\assets\images\sort_desc_disabled.png" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.min.css" />
     <Content Include="Content\css\lack1preview.css" />
     <Content Include="Content\css\main.min.css" />
@@ -669,6 +672,7 @@
     <Content Include="Content\css\main.min.css.map" />
     <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
+    <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
     <Content Include="Scripts\ck4cscript.js" />
     <Content Include="Scripts\ck4c\doccompleted.js" />
@@ -677,6 +681,7 @@
     <Content Include="Scripts\CK5Scripts.js" />
     <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
     <Content Include="Scripts\colReorderWithResize.js" />
+    <Content Include="Scripts\Dashboard.js" />
     <Content Include="Scripts\DataTables-1.10.7\Contributing.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\Readme.md" />
     <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\Readme.md" />
@@ -1245,6 +1250,32 @@
     <Content Include="Views\CK5\_CK5OriginalPlantDestination.cshtml" />
     <Content Include="Views\CK5\_CK5GoodIssue.cshtml" />
     <Content Include="Views\CK5\_CK5GoodReceive.cshtml" />
+    <Content Include="Views\CK5\CreateMarketReturn.cshtml" />
+    <Content Include="Views\CK5\EditMarketReturn.cshtml" />
+    <Content Include="Views\CK4C\Dashboard.cshtml" />
+    <Content Include="Views\Shared\_ChartStatus.cshtml" />
+    <Content Include="Views\CK5\_CK5POReceive.cshtml" />
+    <Content Include="Views\LACK2\Dashboard.cshtml" />
+    <Content Include="Views\PBCK1\Dashboard.cshtml" />
+    <Content Include="Views\LACK1\Dashboard.cshtml" />
+    <Content Include="Views\PBCK4\Dashboard.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Dashboard.cshtml" />
+    <Content Include="Views\Error\ErrorHandler.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationCreateMarketReturn.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationEditMarketReturn.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationDetailsMarketReturn.cshtml" />
+    <Content Include="Views\PBCK4\Detail.cshtml" />
+    <Content Include="Views\WasteRole\Index.cshtml" />
+    <Content Include="Views\WasteRole\Create.cshtml" />
+    <Content Include="Views\WasteRole\Edit.cshtml" />
+    <Content Include="Views\LACK2\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\DetailsPbck3.cshtml" />
+    <Content Include="Views\WasteRole\Detail.cshtml" />
+    <Content Include="Views\WasteStock\Index.cshtml" />
+    <Content Include="Views\WasteStock\Create.cshtml" />
+    <Content Include="Views\WasteStock\Edit.cshtml" />
+    <Content Include="Views\WasteStock\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1362,11 +1393,6 @@
       <LastGenOutput>Preview.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Reports\CK4C\DaftarRincian.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>DaftarRincian.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Reports\LACK1\Lack1Items.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Lack1Items.cs</LastGenOutput>
@@ -1425,7 +1451,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com/</IISUrl>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

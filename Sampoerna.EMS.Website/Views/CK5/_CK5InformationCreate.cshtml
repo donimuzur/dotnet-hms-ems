@@ -157,7 +157,7 @@
                             else
                             {
                                 <div class="row">
-                                    @if (Model.IsCk5Manual)
+                                    @if (Model.IsCk5Manual )
                                     {
 
                                         <div class="col-md-6">
@@ -330,8 +330,6 @@
             </div>
         </div>
 
-
-
         <div class="panel-group" id="accordion-6" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="heading6">
@@ -368,7 +366,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter)
+                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsMarketReturn)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
@@ -421,7 +419,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Carriage Method</label>
+                                        <label class="col-md-4">Carriage Method<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.EnumDropDownListFor(model => model.CarriageMethod, Model.CarriageMethodList, "Select", new { @class = "form-control" })
                                         </div>
@@ -431,8 +429,8 @@
                                     <div class="row">
                                         <label class="col-md-4">Grand Total Exciseable</label>
                                         <div class="col-md-4">
-                                            @*<input type="text" class="form-control" value="">*@
-                                            @Html.TextBoxFor(model => model.GrandTotalEx, new { @class = "form-control", @readonly = "readonly" })
+                                            @Html.HiddenFor(model=>model.GrandTotalEx)
+                                            @Html.TextBoxFor(model => model.GrandTotalExDisplay, new { @class = "form-control", @readonly = "readonly" })
                                         </div>
                                         <div class="col-md-4">
                                             @Html.TextBoxFor(model => model.PackageUomName, new { @class = "form-control", @readonly = "readonly" })

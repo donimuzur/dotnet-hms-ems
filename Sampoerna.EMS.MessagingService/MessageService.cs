@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mail;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.MessagingService
@@ -61,9 +62,7 @@ namespace Sampoerna.EMS.MessagingService
                 // error not thrown, log error here
                 _logger.Error("MessagingService.Messager SendEmail: " + ex);
 
-                //throw the error only if needed for upper layers logic
-                if (throwError)
-                    throw;
+                throw new BLLException(ExceptionCodes.BLLExceptions.ServerIsBusy);
             }
         }
 
@@ -127,9 +126,7 @@ namespace Sampoerna.EMS.MessagingService
                 // error not thrown, log error here
                 _logger.Error("MessagingService.Messager SendEmail: " + ex);
 
-                //throw the error only if needed for upper layers logic
-                if (throwError)
-                    throw;
+                throw new BLLException(ExceptionCodes.BLLExceptions.ServerIsBusy);
             }
         }
     }

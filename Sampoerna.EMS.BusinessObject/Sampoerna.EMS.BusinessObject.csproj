@@ -153,6 +153,7 @@
     <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
     <Compile Include="DTOs\Lack1SummaryReportDto.cs" />
     <Compile Include="DTOs\Lack1TrackingDto.cs" />
+    <Compile Include="DTOs\Lack2DashboardDto.cs" />
     <Compile Include="DTOs\Lack2DetailReportDto.cs" />
     <Compile Include="DTOs\Lack2Dto.cs" />
     <Compile Include="DTOs\Lack2GeneratedDto.cs" />
@@ -193,6 +194,8 @@
     <Compile Include="DTOs\UserAuthorizationDto.cs" />
     <Compile Include="DTOs\UserPlantMapDto.cs" />
     <Compile Include="DTOs\WasteDto.cs" />
+    <Compile Include="DTOs\WasteRoleDto.cs" />
+    <Compile Include="DTOs\WasteStockDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_GOODTYPCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
@@ -236,6 +239,7 @@
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
     <Compile Include="Inputs\Lack1Input.cs" />
+    <Compile Include="Inputs\Lack2GetDashboardDataByParamInput.cs" />
     <Compile Include="Inputs\Lack2Input.cs" />
     <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\Lack2GetByParamInput.cs" />
@@ -255,6 +259,8 @@
     <Compile Include="Inputs\UserPlantMapInputs.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
     <Compile Include="Inputs\WasteGetByParamInput.cs" />
+    <Compile Include="Inputs\WasteRoleInputs.cs" />
+    <Compile Include="Inputs\WasteStockInput.cs" />
     <Compile Include="Inputs\WasteUploadItemsInput.cs" />
     <Compile Include="Inputs\WorkflowHistoryInput.cs" />
     <Compile Include="Inputs\WorkflowInput.cs" />
@@ -314,6 +320,8 @@
     <Compile Include="Outputs\CK5MaterialOutput.cs" />
     <Compile Include="Outputs\CK5Outputs.cs" />
     <Compile Include="Outputs\InventoryMovementOutputs.cs" />
+    <Compile Include="Outputs\Lack2GetDashboardDataOutput.cs" />
+    <Compile Include="Outputs\MovedFileOutput.cs" />
     <Compile Include="Outputs\Pbck3Output.cs" />
     <Compile Include="Outputs\Lack2CreateOutput.cs" />
     <Compile Include="Outputs\Lack2GeneratedOutput.cs" />
@@ -332,6 +340,7 @@
     <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />
     <Compile Include="Outputs\ProductionUploadItemsOutput.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
+    <Compile Include="Outputs\WasteStockOutput.cs" />
     <Compile Include="Outputs\WasteUploadItemsOutput.cs" />
     <Compile Include="Outputs\WorkflowHistoryOutput.cs" />
     <Compile Include="Outputs\ZaidmExNPPBKCOutput.cs" />
@@ -433,6 +442,12 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WASTE.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WASTE_ROLE.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WASTE_STOCK.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WORKFLOW_HISTORY.cs">

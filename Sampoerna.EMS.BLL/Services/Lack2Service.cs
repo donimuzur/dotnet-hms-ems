@@ -67,8 +67,8 @@ namespace Sampoerna.EMS.BLL.Services
             switch (input.UserRole)
             {
                 case Enums.UserRole.POA:
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId 
-                        || (c.STATUS != Enums.DocumentStatus.Draft 
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId
+                        || (c.STATUS != Enums.DocumentStatus.Draft
                         && input.NppbkcList.Contains(c.NPPBKC_ID))));
                     break;
                 case Enums.UserRole.Manager:
@@ -112,7 +112,7 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
-            
+
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
 
             if (!string.IsNullOrEmpty(input.SortOrderColumn))
@@ -263,9 +263,51 @@ namespace Sampoerna.EMS.BLL.Services
             if (input.PeriodYear.HasValue)
                 queryFilter =
                     queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
-            
+
             var rc = _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5").ToList();
             return rc;
+        }
+
+        public List<LACK2> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
+        {
+            var queryFilter = PredicateHelper.True<LACK2>();
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa || c.CREATED_BY == input.Poa);
+            }
+
+            if (input.PeriodMonth.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.PERIOD_MONTH == input.PeriodMonth.Value);
+            }
+
+            if (input.PeriodYear.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
+            }
+
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft
+                       && input.NppbkcList.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && input.DocumentNumberList.Contains(c.LACK2_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
+            }
+
+            return _repository.Get(queryFilter).ToList();
+
         }
 
     }

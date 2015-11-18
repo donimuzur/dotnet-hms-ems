@@ -215,7 +215,6 @@
         <EntityTypeShape EntityType="EMSModel.CK1" Width="1.5" PointX="25.5" PointY="47.75" />
         <AssociationConnector Association="EMSModel.FK_CK1_ITEM_CK1" />
         <AssociationConnector Association="EMSModel.FK_PBCK4_ITEM_CK1" />
-        <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="5.75" PointY="11.75" />
         <EntityTypeShape EntityType="EMSModel.PBCK7_ITEM" Width="1.5" PointX="13.125" PointY="73" />
         <AssociationConnector Association="EMSModel.FK_PBCK7_ITEM_PBCK7" />
         <EntityTypeShape EntityType="EMSModel.BACK1" Width="1.5" PointX="26" PointY="36.375" />
@@ -240,6 +239,19 @@
         <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_T001W" />
         <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_USER" />
         <EntityTypeShape EntityType="EMSModel.ZAAP_SHIFT_RPT" Width="1.5" PointX="11.375" PointY="7.75" />
+        <EntityTypeShape EntityType="EMSModel.WASTE_ROLE" Width="1.5" PointX="18" PointY="54.625" />
+        <EntityTypeShape EntityType="EMSModel.WASTE_STOCK" Width="1.5" PointX="20.25" PointY="51.125" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_ROLE_T001W" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_ROLE_USER" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_ROLE_USER1" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_ROLE_USER2" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_STOCK_USER" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_STOCK_USER1" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_STOCK_USER2" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_STOCK_ZAIDM_EX_MATERIAL" />
+        <AssociationConnector Association="EMSModel.FK_USER_PLANT_MAP_ZAIDM_EX_NPPBKC" />
+        <AssociationConnector Association="EMSModel.FK_WASTE_STOCK_T001W" />
+        <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="5.375" PointY="11.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,9 +1,11 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Controllers;
 using Voxteneo.WebCompoments.NLogLogger;
 using Voxteneo.WebComponents.Logger;
 using SimpleInjector;
@@ -89,6 +91,8 @@ namespace Sampoerna.EMS.Website
             container.Register<ICK1BLL, CK1BLL>();
             container.Register<IWasteBLL, WasteBLL>();
             container.Register<IBlockStockBLL, BlockStockBLL>();
+            container.Register<IWasteRoleBLL, WasteRoleBLL>();
+            container.Register<IWasteStockBLL, WasteStockBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
@@ -97,7 +101,8 @@ namespace Sampoerna.EMS.Website
             _container = container;
 
         }
-        
+      
+
         protected void Application_Start()
         {
             //SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
@@ -113,5 +118,13 @@ namespace Sampoerna.EMS.Website
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(_container));
             
         }
+
+        //protected void Application_Error(object sender, EventArgs e)
+        //{
+        //    Exception exception = Server.GetLastError();
+        //    Server.ClearError();
+        //    Response.Redirect("Error/ErrorHandling");
+        //}
+       
     }
 }

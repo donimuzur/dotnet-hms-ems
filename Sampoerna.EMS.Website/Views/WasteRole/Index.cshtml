@@ -1,0 +1,137 @@
+﻿@model Sampoerna.EMS.Website.Models.WasteRole.WasteRoleIndexViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Waste Role List</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "WasteRole")">
+                    <button class="btn btn-blue">NEW</button>
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="wasteRoleTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row"> Filter </th>
+                            <th>User Id</th>
+                            <th>User Name</th>
+                            <th>Plant</th>
+                            <th>Group Role</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+
+                        </tr>
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th> Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.ListWasteRoles)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "WasteRole", new { id = item.WasteRoleId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+
+                                    <a href="@Url.Action("Edit", "WasteRole", new { id = item.WasteRoleId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+
+                                </td>
+                                <td>@Html.DisplayFor(model => item.UserId)</td>
+                                <td>@Html.DisplayFor(model => item.FirstName)</td>
+                                <td>@Html.DisplayFor(model => item.PlantDescription)</td>
+                                <td>@Html.DisplayFor(model => item.WasteGroupDescription)</td>
+                                <td>@Html.DisplayFor(model => item.EmailAddress)</td>
+                                <td>@Html.DisplayFor(model => item.Phone)</td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+             $('#MenuWasteRole').addClass('active');
+
+            setupDataTables();
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#wasteRoleTable')) {
+                table = $('#wasteRoleTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#wasteRoleTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#wasteRoleTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+
+
+    </script>
+}
