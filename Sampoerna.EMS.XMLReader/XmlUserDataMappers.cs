@@ -94,7 +94,7 @@ namespace Sampoerna.EMS.XMLReader
 
                         if (!role.BROLE_DESC.ToUpper().Contains("POA_MANAGER") && role.BROLE_DESC.ToUpper().Contains("POA"))
                         {
-                            InsertPOA(user);
+                            InsertPoa(user);
                             roleMap.ROLEID = Enums.UserRole.POA;
                         }
                         else if (role.BROLE_DESC.ToUpper().Contains("POA_MANAGER"))
@@ -118,12 +118,8 @@ namespace Sampoerna.EMS.XMLReader
                             roleMap.ROLEID = Enums.UserRole.Administrator;
                         }
 
-                        var existRoleMap = GetBroleMap(roleMap.BROLE, roleMap.MSACCT);
-                        if (existRoleMap != null)
-                        {
-                            roleMap.BROLE_MAP_ID = existRoleMap.BROLE_MAP_ID;
-                        }
-                       _xmlMapper.InsertOrUpdate(roleMap);
+                        InsertBroleMap(roleMap);
+                        
                         items.Add(user);
 
 
@@ -157,6 +153,12 @@ namespace Sampoerna.EMS.XMLReader
             return _xmlMapper.Errors;
         }
 
+        public string GetInnerException(Exception ex)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public USER GetUser(string UserId)
         {
             var exisitingUser = _xmlMapper.uow.GetGenericRepository<USER>()
@@ -176,6 +178,13 @@ namespace Sampoerna.EMS.XMLReader
             return existingData;
         }
 
+        public IEnumerable<BROLE_MAP> GetOtherBroleMaps(BROLE_MAP broleMap)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<BROLE_MAP>()
+                .Get(x => x.BROLE != broleMap.BROLE && x.MSACCT == broleMap.MSACCT);
+            return existingData;
+        }
+
         public bool IsUserPoa(USER userData)
         {
             var isPoa = _xmlMapper.uow.GetGenericRepository<POA>()
@@ -184,20 +193,33 @@ namespace Sampoerna.EMS.XMLReader
             return isPoa;
         }
 
-        public void InsertPOA(USER userdata)
+        private void DeletePoaByMsAccount(string msacct)
+        {
+            var existingPoa = _xmlMapper.uow.GetGenericRepository<POA>()
+                .GetByID(msacct);
+
+            POA poa = existingPoa;
+            
+            if(poa != null)
+            {
+                poa.IS_ACTIVE = false;
+            }
+        }
+
+        public void InsertPoa(USER userdata)
         {
             
-            var existingPOA = _xmlMapper.uow.GetGenericRepository<POA>()
+            var existingPoa = _xmlMapper.uow.GetGenericRepository<POA>()
                 .GetByID(userdata.USER_ID);
 
-            POA poa = existingPOA;
+            POA poa = existingPoa;
             if (poa == null)
             {
                 poa = new POA();
                 poa.IS_ACTIVE = true;
                 poa.POA_ID = userdata.USER_ID;
                 poa.LOGIN_AS = userdata.USER_ID;
-                poa.PRINTED_NAME = userdata.FIRST_NAME + " " + userdata.LAST_NAME;
+                poa.PRINTED_NAME = userdata.LAST_NAME + " " + userdata.FIRST_NAME;
                 poa.POA_EMAIL = userdata.EMAIL;
                 poa.CREATED_BY = "PI";
                 poa.POA_ADDRESS = "";
@@ -235,5 +257,37 @@ namespace Sampoerna.EMS.XMLReader
             }
         }
 
+        public void InsertBroleMap(BROLE_MAP roleMap)
+        {
+
+            var broleMapToDelete = GetOtherBroleMaps(roleMap);
+            if (broleMapToDelete.Any())
+            {
+                DeleteBroleMap(broleMapToDelete);
+                
+            }
+            
+            var existRoleMap = GetBroleMap(roleMap.BROLE, roleMap.MSACCT);
+            if (existRoleMap!= null)
+            {
+                roleMap.BROLE_MAP_ID = existRoleMap.BROLE_MAP_ID;
+            }
+            _xmlMapper.InsertOrUpdate(roleMap);
+
+            if (roleMap.ROLEID.HasValue && roleMap.ROLEID.Value != Enums.UserRole.POA)
+            {
+                DeletePoaByMsAccount(roleMap.MSACCT);
+            }
+        }
+
+
+        private void DeleteBroleMap(IEnumerable<BROLE_MAP> broleMaps)
+        {
+            foreach (var broleMap in broleMaps)
+            {
+                _xmlMapper.uow.GetGenericRepository<BROLE_MAP>().Delete(broleMap);
+            }
+            _xmlMapper.uow.SaveChanges();
+        }
     }
 }
