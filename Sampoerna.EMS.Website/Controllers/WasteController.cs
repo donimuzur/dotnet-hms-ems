@@ -89,6 +89,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = Mapper.Map<List<WasteDetail>>(dbData);
             var viewModel = new WasteViewModel();
             viewModel.Details = result;
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_WasteTableIndex", viewModel);
         }
 
@@ -105,6 +106,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = Mapper.Map<List<WasteDetail>>(dbData);
             var viewModel = new WasteViewModel();
             viewModel.Details = result;
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_WasteTableIndex", viewModel);
         }
 
