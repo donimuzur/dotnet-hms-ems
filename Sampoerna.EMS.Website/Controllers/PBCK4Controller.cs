@@ -144,6 +144,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult Filter(Pbck4IndexViewModel model)
         {
             model.DetailsList = GetPbck4Items(model.IsCompletedType,model.SearchView);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_Pbck4OpenListDocuments", model);
         }
 

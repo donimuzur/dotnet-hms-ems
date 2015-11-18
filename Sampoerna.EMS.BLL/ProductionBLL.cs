@@ -125,6 +125,9 @@ namespace Sampoerna.EMS.BLL
             #endregion
            
             var dbProduction = Mapper.Map<PRODUCTION>(productionDto);
+            dbProduction.QTY_PACKED = productionDto.QtyPackedStr == null ? 0 : Convert.ToDecimal(productionDto.QtyPackedStr);
+            dbProduction.QTY = productionDto.QtyStr == null ? 0 : Convert.ToDecimal(productionDto.QtyStr);
+            dbProduction.PROD_QTY_STICK = productionDto.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(productionDto.ProdQtyStickStr);
 
             var origin = _repository.GetByID(productionDto.CompanyCodeX, productionDto.PlantWerksX, productionDto.FaCodeX,
                Convert.ToDateTime(productionDto.ProductionDateX));
@@ -182,6 +185,9 @@ namespace Sampoerna.EMS.BLL
 
             var dbData = _repository.GetByID(companyCode, plantWerk, faCode, productionDate);
             var item = Mapper.Map<ProductionDto>(dbData);
+            item.QtyPackedStr = item.QtyPacked == null ? string.Empty : item.QtyPacked.ToString();
+            item.QtyStr = item.Qty == null ? string.Empty : item.Qty.ToString();
+            item.ProdQtyStickStr = item.ProdQtyStick == null ? string.Empty : item.ProdQtyStick.ToString();
 
             if (dbData == null)
             {

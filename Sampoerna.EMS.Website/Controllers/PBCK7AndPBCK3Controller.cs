@@ -189,6 +189,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Pbck7IndexViewModel();
 
             viewModel.Detail = result;
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return PartialView("_Pbck7TableIndex", viewModel);
         }
@@ -256,6 +257,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Pbck3IndexViewModel();
 
             viewModel.Detail = result;
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return PartialView("_Pbck3TableIndex", viewModel);
 
