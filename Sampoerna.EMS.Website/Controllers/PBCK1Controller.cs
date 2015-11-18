@@ -412,7 +412,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 },
                 IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
             return View("Index", model);
         }
@@ -456,7 +458,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("Details", new { id });
             }
@@ -469,12 +473,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model = ModelInitial(model);
 
-                if (CurrentUser.UserRole == Enums.UserRole.Manager)
-                {
-                    //redirect to details for approval/rejected
-                    //return RedirectToAction("Details", new { id });
-                    isCurrManager = true;
-                }
+                //first code when manager exists
+                //if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                //{
+                //    //redirect to details for approval/rejected
+                //    //return RedirectToAction("Details", new { id });
+                //    isCurrManager = true;
+                //}
 
                 var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
@@ -795,8 +800,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                 DocumentNumber = model.Detail.Pbck1Number,
-                NppbkcId = model.Detail.NppbkcId,
-                ManagerApprove = model.Detail.ApprovedByManagerId
+                NppbkcId = model.Detail.NppbkcId
+                //first code when manager exists
+                //ManagerApprove = model.Detail.ApprovedByManagerId
             };
 
             ////workflow
@@ -806,7 +812,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //first code when manager exists
+                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
             else if (CurrentUser.UserRole == Enums.UserRole.POA)
             {
@@ -973,7 +980,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DocumentType = Enums.Pbck1DocumentType.CompletedDocument
                 },
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
             return View("CompletedDocument", model);
         }
@@ -2929,9 +2938,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var listCk4c = GetAllDocument(model);
 
             model.Detil.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
-            model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
-            model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //first code when manager exists
+            //model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
             model.Detil.CompletedTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
 

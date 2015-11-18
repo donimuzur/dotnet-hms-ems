@@ -46,6 +46,7 @@
                 </td>
                 <td class="number">@string.Format("{0:N2}", item.RequestQty)</td>
                 <td>
+                    @*first code when manager exists
                     @if (item.Status == Enums.DocumentStatus.WaitingForApprovalManager && item.ApprovedByPoaId != null)
                     {
                         @item.ApprovedByPoaId
@@ -53,6 +54,10 @@
                     else if (item.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
                         @item.ApprovedByManagerId
+                    }*@
+                    @if (item.Status == Enums.DocumentStatus.WaitingGovApproval && item.ApprovedByPoaId != null)
+                    {
+                        @item.ApprovedByPoaId
                     }
                     else
                     {

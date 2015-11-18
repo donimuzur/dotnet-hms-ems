@@ -125,10 +125,11 @@ namespace Sampoerna.EMS.BLL
 
                  result.Add(CreateWaitingApprovalRecord(input));
             }
-            else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
-            {
-                result.Add(CreateWaitingApprovalRecord(input));
-            }
+            //first code when manager exists
+            //else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+            //{
+            //    result.Add(CreateWaitingApprovalRecord(input));
+            //}
 
             return result;
         }
@@ -162,37 +163,38 @@ namespace Sampoerna.EMS.BLL
 
                     newRecord.ROLE = Enums.UserRole.POA;
                 }
-                else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
-                {
-                    //get action by poa
-                    var poaId = GetPoaByDocumentNumber(input.FormNumber);
-                    displayUserId = _poaBll.GetManagerIdByPoaId(poaId);
-                    //var historyWorkflow =
-                    //    _repository.Get(
-                    //        c =>
-                    //            c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Approve &&
-                    //            c.ROLE == Enums.UserRole.POA).FirstOrDefault();
+                //first code when manager exists
+                //else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+                //{
+                //    //get action by poa
+                //    var poaId = GetPoaByDocumentNumber(input.FormNumber);
+                //    displayUserId = _poaBll.GetManagerIdByPoaId(poaId);
+                //    //var historyWorkflow =
+                //    //    _repository.Get(
+                //    //        c =>
+                //    //            c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Approve &&
+                //    //            c.ROLE == Enums.UserRole.POA).FirstOrDefault();
 
-                    //if (historyWorkflow != null)
-                    //{
-                    //    displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
-                    //}
-                    //else
-                    //{
-                    //    historyWorkflow =
-                    //        _repository.Get(
-                    //            c =>
-                    //                c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Submit &&
-                    //                c.ROLE == Enums.UserRole.POA).FirstOrDefault();
+                //    //if (historyWorkflow != null)
+                //    //{
+                //    //    displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
+                //    //}
+                //    //else
+                //    //{
+                //    //    historyWorkflow =
+                //    //        _repository.Get(
+                //    //            c =>
+                //    //                c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Submit &&
+                //    //                c.ROLE == Enums.UserRole.POA).FirstOrDefault();
 
-                    //    if (historyWorkflow != null)
-                    //    {
-                    //        displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
-                    //    }
+                //    //    if (historyWorkflow != null)
+                //    //    {
+                //    //        displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
+                //    //    }
 
-                    //}
-                    newRecord.ROLE = Enums.UserRole.Manager;
-                }
+                //    //}
+                //    newRecord.ROLE = Enums.UserRole.Manager;
+                //}
             }
             
 
