@@ -33,9 +33,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUnitOfMeasurementBLL _uomBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
         private IChangesHistoryBLL _changeHistoryBll;
+        private IUserPlantMapBLL _userPlantMapBll;
+        private IPOAMapBLL _poaMapBll;
 
         public ProductionController(IPageBLL pageBll, IProductionBLL productionBll, ICompanyBLL companyBll, IPlantBLL plantBll, IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changeHistorybll)
+            IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changeHistorybll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _productionBll = productionBll;
@@ -45,6 +47,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _uomBll = uomBll;
             _brandRegistrationBll = brandRegistrationBll;
             _changeHistoryBll = changeHistorybll;
+            _userPlantMapBll = userPlantMapBll;
+            _poaMapBll = poaMapBll;
         }
 
         #region Index
@@ -120,9 +124,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private ProductionDetail InitCreate(ProductionDetail model)
         {
+            var company = GlobalFunctions.GetCompanyList(_companyBll);
+            var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value) || poaMapCompany.Contains(x.Value));
+            var getCompany = new SelectList(distinctCompany, "Value", "Text");
+
+
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.CompanyCodeList = getCompany;
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
             model.UomList = GlobalFunctions.GetUomStickGram(_uomBll);
@@ -152,10 +163,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<ProductionDto>(model);
-
-                data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
-                data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
-
 
                 try
                 {
@@ -214,21 +221,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbProduction = _productionBll.GetById(companyCode, plantWerk, faCode, productionDate);
 
             model = Mapper.Map<ProductionDetail>(dbProduction);
-
-
-
-            model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
-            model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
-            model.ProdQtyStickStr = model.ProdQtyStick == null ? string.Empty : model.ProdQtyStick.ToString();
-
-
             model = IniEdit(model);
-
             model.CompanyCodeX = model.CompanyCode;
             model.PlantWerksX = model.PlantWerks;
             model.ProductionDateX = model.ProductionDate;
             model.FaCodeX = model.FaCode;
-
 
             return View(model);
         }
@@ -238,7 +235,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
+            var company = GlobalFunctions.GetCompanyList(_companyBll);
+            var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value) || poaMapCompany.Contains(x.Value));
+            var getCompany = new SelectList(distinctCompany, "Value", "Text");
+
+            model.CompanyCodeList = getCompany;
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
             model.UomList = GlobalFunctions.GetUomStickGram(_uomBll);
@@ -283,11 +286,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var dbPrductionNew = Mapper.Map<ProductionDto>(model);
-
-                dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
-                dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
-                dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
-
 
                 if (!ModelState.IsValid)
                 {
@@ -360,11 +358,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ChangesHistoryList =
                 Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
                   "Daily_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + productionDate.ToString("ddMMMyyyy")));
-
-            model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
-
-            model.ProdQtyStickStr = model.ProdQtyStick == null ? string.Empty : model.ProdQtyStick.ToString();
-            model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
 
             model = InitDetail(model);
 
@@ -522,8 +515,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult CompanyListPartialProduction(string companyId)
         {
             var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
+            var userPlnatMap = _userPlantMapBll.GetPlantByUserId(CurrentUser.USER_ID);
+            var poaMap = _poaMapBll.GetPlantByPoaId(CurrentUser.USER_ID);
+            var distinctPlant = listPlant.Where(x => userPlnatMap.Contains(x.Value) || poaMap.Contains(x.Value));
+            var listPlanNew = new SelectList(distinctPlant, "Value", "Text");
 
-            var model = new ProductionDetail() { PlantWerkList = listPlant };
+            var model = new ProductionDetail() { PlantWerkList = listPlanNew };
 
             return Json(model);
         }
