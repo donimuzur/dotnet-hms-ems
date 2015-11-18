@@ -120,24 +120,24 @@ namespace Sampoerna.EMS.Website
             
         }
 
-        protected void Application_Error(object sender, EventArgs e)
-        {
-            Exception exception = Server.GetLastError();
-            //Server.ClearError();
-            //Response.Redirect("Error/ErrorHandling");
-            var routeData = new RouteData();
-            routeData.Values["controller"] = "Error";
-            routeData.Values["action"] = "GeneralError";
-            routeData.Values["Exception"] = exception;
-            Response.StatusCode = 500;
+        //protected void Application_Error(object sender, EventArgs e)
+        //{
+        //    Exception exception = Server.GetLastError();
+        //    //Server.ClearError();
+        //    //Response.Redirect("Error/ErrorHandling");
+        //    var routeData = new RouteData();
+        //    routeData.Values["controller"] = "Error";
+        //    routeData.Values["action"] = "GeneralError";
+        //    routeData.Values["Exception"] = exception;
+        //    Response.StatusCode = 500;
 
-            Response.Clear();
-            Server.ClearError();
+        //    Response.Clear();
+        //    Server.ClearError();
 
-            IController errorsController = new ErrorController();
-            var rc = new RequestContext(new HttpContextWrapper(Context), routeData);
-            errorsController.Execute(rc);
-        }
+        //    IController errorsController = new ErrorController();
+        //    var rc = new RequestContext(new HttpContextWrapper(Context), routeData);
+        //    errorsController.Execute(rc);
+        //}
        
     }
 }
