@@ -98,7 +98,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.Details = dbData;
             model.FilterActionController = "FilterOpenDocument";
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return View("Index", model);
         }
@@ -157,7 +159,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MenuLack2CompletedDocument = "active";
             model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return View("Index", model);
         }
 
@@ -266,19 +270,24 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("Details", new { id });
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
-                //redirect to details for approval/rejected
-                return RedirectToAction("Detail", new { id });
-            }
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            //{
+            //    //redirect to details for approval/rejected
+            //    return RedirectToAction("Detail", new { id });
+            //}
 
-            if ((lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
-                 lack2Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+            //first code when manager exists
+            //if ((lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            //     lack2Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+            if (lack2Data.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 return RedirectToAction("Detail", new { id });
             }
@@ -393,7 +402,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //first code when manager exists
+                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
@@ -479,7 +489,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("Details", new { id });
             }
@@ -537,7 +549,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
                 input.ManagerApprove = lack2Data.ApprovedByManager;
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //first code when manager exists
+                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
@@ -1019,11 +1032,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Poa);
                     iColumn = iColumn + 1;
                 }
-                if (modelExport.BPoaManager)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.PoaManager);
-                    iColumn = iColumn + 1;
-                }
+                //first code when manager exists
+                //if (modelExport.BPoaManager)
+                //{
+                //    slDocument.SetCellValue(iRow, iColumn, data.PoaManager);
+                //    iColumn = iColumn + 1;
+                //}
                 if (modelExport.BCreatedDate)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.CreatedDate);
@@ -1163,11 +1177,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "POA");
                 iColumn = iColumn + 1;
             }
-            if (modelExport.BPoaManager)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "POA  Manager");
-                iColumn = iColumn + 1;
-            }
+            //first code when manager exists
+            //if (modelExport.BPoaManager)
+            //{
+            //    slDocument.SetCellValue(iRow, iColumn, "POA  Manager");
+            //    iColumn = iColumn + 1;
+            //}
             if (modelExport.BCreatedDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Created Date");
@@ -2109,10 +2124,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.Detail = new DashboardDetilModel
             {
-                WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                //first code when manager exists
+                //WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 DraftTotal = data.Count(x => x.Status == Enums.DocumentStatus.Draft),
                 WaitingForPoaTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval),
-                WaitingForManagerTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                //first code when manager exists
+                //WaitingForManagerTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 WaitingForGovTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingGovApproval),
                 CompletedTotal = data.Count(x => x.Status == Enums.DocumentStatus.Completed)
             };
