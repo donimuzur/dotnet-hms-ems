@@ -1473,17 +1473,25 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.PeriodYear = input.PeriodYear;
-
+            
+            var noteTemp = new List<string>();
             //format for noted
-            var uomWasteAmountDescription = _uomBll.GetById(input.WasteAmountUom);
-            input.WasteAmountUom = uomWasteAmountDescription.UOM_DESC;
-            var uomReturnDescription = _uomBll.GetById(input.ReturnAmountUom);
-            input.ReturnAmountUom = uomReturnDescription.UOM_DESC;
+            if (!string.IsNullOrEmpty(input.WasteAmountUom))
+            {
+                var uomWasteAmountDescription = _uomBll.GetById(input.WasteAmountUom);
+                input.WasteAmountUom = uomWasteAmountDescription.UOM_ID;
+                noteTemp.Add(GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, uomWasteAmountDescription.UOM_DESC));
+            }
 
-            var wasteNoted = GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, input.WasteAmountUom);
-            var returnNoted = GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, input.ReturnAmountUom);
-            rc.Noted = string.Join(Environment.NewLine, new List<string>() { wasteNoted, returnNoted }).Replace(Environment.NewLine, "<br />");
+            if (!string.IsNullOrEmpty(input.ReturnAmountUom))
+            {
+                var uomReturnDescription = _uomBll.GetById(input.ReturnAmountUom);
+                input.ReturnAmountUom = uomReturnDescription.UOM_ID;
+                noteTemp.Add(GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, uomReturnDescription.UOM_DESC));
+            }
 
+            rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
+            rc.Noted = input.Noted;
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage;
 
             oReturn.Data = rc;
@@ -1881,9 +1889,39 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailReportByParamInput(input);
 
+            var tempData = Mapper.Map<List<Lack1DetailReportTempDto>>(dbData.ToList());
+
+            DateTime? dtFrom = null;
+            DateTime? dtTo = null;
+
+            if (input.PeriodMonthFrom.HasValue && input.PeriodYearFrom.HasValue)
+            {
+                dtFrom = new DateTime(input.PeriodYearFrom.Value, input.PeriodMonthFrom.Value, 1);
+            }
+            if (input.PeriodMonthTo.HasValue && input.PeriodYearTo.HasValue)
+            {
+                dtTo = new DateTime(input.PeriodYearTo.Value, input.PeriodMonthTo.Value, 1);
+            }
+
+            if (dtFrom.HasValue && dtTo.HasValue)
+            {
+                tempData = tempData.Where(c => c.PeriodDate >= dtFrom.Value && c.PeriodDate <= dtTo.Value).ToList();
+            }
+            else
+            {
+                if (dtFrom.HasValue)
+                {
+                    tempData = tempData.Where(c => c.PeriodDate >= dtFrom.Value).ToList();
+                }
+                if (dtTo.HasValue)
+                {
+                    tempData = tempData.Where(c => c.PeriodDate <= dtTo.Value).ToList();
+                }
+            }
+
             var rc = new List<Lack1DetailReportDto>();
 
-            foreach (var data in dbData)
+            foreach (var data in tempData)
             {
                 var item = new Lack1DetailReportDto()
                 {
@@ -1891,7 +1929,7 @@ namespace Sampoerna.EMS.BLL
                     Lack1Number = data.LACK1_NUMBER,
                     Lack1Level = data.LACK1_LEVEL,
                     BeginingBalance = data.BEGINING_BALANCE,
-                    EndingBalance = data.BEGINING_BALANCE + data.TOTAL_INCOME - data.USAGE,
+                    EndingBalance = data.BEGINING_BALANCE + data.TOTAL_INCOME - data.USAGE - (data.RETURN_QTY.HasValue ? data.RETURN_QTY.Value : 0),
                     TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>()
                 };
 
