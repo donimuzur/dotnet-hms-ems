@@ -99,6 +99,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = Mapper.Map<List<ProductionDetail>>(dbData);
             var viewModel = new ProductionViewModel();
             viewModel.Details = result;
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_ProductionTableIndex", viewModel);
         }
         #endregion
@@ -164,10 +165,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var data = Mapper.Map<ProductionDto>(model);
 
-                data.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
-                data.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
-
-
                 try
                 {
 
@@ -225,21 +222,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbProduction = _productionBll.GetById(companyCode, plantWerk, faCode, productionDate);
 
             model = Mapper.Map<ProductionDetail>(dbProduction);
-
-
-
-            model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
-            model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
-            model.ProdQtyStickStr = model.ProdQtyStick == null ? string.Empty : model.ProdQtyStick.ToString();
-
-
             model = IniEdit(model);
-
             model.CompanyCodeX = model.CompanyCode;
             model.PlantWerksX = model.PlantWerks;
             model.ProductionDateX = model.ProductionDate;
             model.FaCodeX = model.FaCode;
-
 
             return View(model);
         }
@@ -300,11 +287,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var dbPrductionNew = Mapper.Map<ProductionDto>(model);
-
-                dbPrductionNew.QtyPacked = model.QtyPackedStr == null ? 0 : Convert.ToDecimal(model.QtyPackedStr);
-                dbPrductionNew.Qty = model.QtyStr == null ? 0 : Convert.ToDecimal(model.QtyStr);
-                dbPrductionNew.ProdQtyStick = model.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(model.ProdQtyStickStr);
-
 
                 if (!ModelState.IsValid)
                 {
@@ -377,11 +359,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ChangesHistoryList =
                 Mapper.Map<List<ChangesHistoryItemModel>>(_changeHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
                   "Daily_" + companyCode + "_" + plantWerk + "_" + faCode + "_" + productionDate.ToString("ddMMMyyyy")));
-
-            model.QtyPackedStr = model.QtyPacked == null ? string.Empty : model.QtyPacked.ToString();
-
-            model.ProdQtyStickStr = model.ProdQtyStick == null ? string.Empty : model.ProdQtyStick.ToString();
-            model.QtyStr = model.Qty == null ? string.Empty : model.Qty.ToString();
 
             model = InitDetail(model);
 

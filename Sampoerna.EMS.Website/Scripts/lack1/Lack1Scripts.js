@@ -11,6 +11,7 @@
     param.ExcisableGoodsType = $('#ExGoodsTypeId').find("option:selected").val();
     param.ExcisableGoodsTypeDesc = $('#ExGoodsType').find("option:selected").text();
     param.SupplierPlantId = $('#SupplierPlantId').find("option:selected").val();
+    param.Noted = $('#Noted').val();
     
     param.IsTisToTisReport = ($('#IsTisToTisReport').is(':checked'));
 

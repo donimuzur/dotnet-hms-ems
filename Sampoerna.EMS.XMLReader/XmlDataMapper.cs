@@ -138,7 +138,7 @@ namespace Sampoerna.EMS.XMLReader
             catch (Exception ex)
             {
                 errorCount++;
-                logger.Error(ex.ToString());
+                logger.Error(ex.Message);
                 this.Errors.Add(ex.Message);
                 //uow.RevertChanges();
             }
@@ -161,9 +161,18 @@ namespace Sampoerna.EMS.XMLReader
         public void InsertOrUpdate<T>(T entity) where T: class 
         {
             var repo = uow.GetGenericRepository<T>();
-
-            repo.InsertOrUpdate(entity);
-            uow.SaveChanges();
+            try
+            {
+                repo.InsertOrUpdate(entity);
+                uow.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+                uow.RevertChanges();
+                
+            }
+            
 
 
         }
@@ -314,15 +323,5 @@ namespace Sampoerna.EMS.XMLReader
 
     }
 
-    public class FileStatus
-    {
-        public string FileName { get; set; }
-        public bool IsError { get; set; }
-
-        public FileStatus(string fileName, bool isError = false)
-        {
-            this.FileName = fileName;
-            this.IsError = isError;
-        }
-    }
+    
 }

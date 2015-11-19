@@ -308,7 +308,8 @@ namespace Sampoerna.EMS.BLL
                         }
                         else
                         {
-                            var poaList = _poabll.GetPoaByNppbkcId(nppbkc);
+                            var poaList = _poabll.GetPoaActiveByNppbkcId(nppbkc);
+                            if (plant != null) poaList = _poabll.GetPoaActiveByPlantId(ck4cData.PlantId);
                             foreach (var poaDto in poaList)
                             {
                                 rc.To.Add(poaDto.POA_EMAIL);
@@ -324,6 +325,7 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(userData.EMAIL);
 
                         var poaList = _poabll.GetPoaByNppbkcIdAndMainPlant(nppbkc);
+                        if (plant != null) poaList = _poabll.GetPoaActiveByPlantId(ck4cData.PlantId);
                         foreach (var poaDto in poaList)
                         {
                             if (userData.USER_ID != poaDto.POA_ID)
@@ -347,7 +349,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
-                        var poaData = _poabll.GetById(ck4cData.CreatedBy);
+                        var poaData = _poabll.GetActivePoaById(ck4cData.CreatedBy);
                         if (poaData != null)
                         {
                             //creator is poa user
@@ -382,7 +384,7 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovApprove:
-                    var poaData3 = _poabll.GetById(ck4cData.CreatedBy);
+                    var poaData3 = _poabll.GetActivePoaById(ck4cData.CreatedBy);
                     if (poaData3 != null)
                     {
                         //creator is poa user
@@ -400,7 +402,7 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovReject:
-                    var poaData5 = _poabll.GetById(ck4cData.CreatedBy);
+                    var poaData5 = _poabll.GetActivePoaById(ck4cData.CreatedBy);
                     if (poaData5 != null)
                     {
                         //creator is poa user

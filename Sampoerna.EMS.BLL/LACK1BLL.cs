@@ -1457,17 +1457,26 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.PeriodYear = input.PeriodYear;
-
             //format for noted
-            var uomWasteAmountDescription = _uomBll.GetById(input.WasteAmountUom);
-            input.WasteAmountUom = uomWasteAmountDescription.UOM_DESC;
-            var uomReturnDescription = _uomBll.GetById(input.ReturnAmountUom);
-            input.ReturnAmountUom = uomReturnDescription.UOM_DESC;
+            var noteTemp = new List<string>();
+            //format for noted
+            if (!string.IsNullOrEmpty(input.WasteAmountUom))
+            {
+                var uomWasteAmountDescription = _uomBll.GetById(input.WasteAmountUom);
+                input.WasteAmountUom = uomWasteAmountDescription.UOM_ID;
+                noteTemp.Add(GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, uomWasteAmountDescription.UOM_DESC));
+            }
 
-            var wasteNoted = GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, input.WasteAmountUom);
-            var returnNoted = GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, input.ReturnAmountUom);
-            rc.DocumentNoted = string.Join(Environment.NewLine, new List<string>() { wasteNoted, returnNoted }).Replace(Environment.NewLine, "<br />");
+            if (!string.IsNullOrEmpty(input.ReturnAmountUom))
+            {
+                var uomReturnDescription = _uomBll.GetById(input.ReturnAmountUom);
+                input.ReturnAmountUom = uomReturnDescription.UOM_ID;
+                noteTemp.Add(GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, uomReturnDescription.UOM_DESC));
+            }
+
+            rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
             rc.Noted = input.Noted;
+
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
 

@@ -235,11 +235,11 @@
 
             if (poa == '')
             {
-                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
-
-                if(nppbkc == '')
-                {
+                if (plant != '') {
                     ajaxSelectNppbck({ plantId: plant }, urlPlant);
+                }
+                else {
+                    ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
                 }
             }
         }
