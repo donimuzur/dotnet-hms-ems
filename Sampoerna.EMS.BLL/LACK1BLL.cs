@@ -1490,8 +1490,8 @@ namespace Sampoerna.EMS.BLL
                 noteTemp.Add(GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, uomReturnDescription.UOM_DESC));
             }
 
-            rc.Noted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
-
+            rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
+            rc.Noted = input.Noted;
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage;
 
             oReturn.Data = rc;
