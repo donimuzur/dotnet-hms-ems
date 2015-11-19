@@ -49,6 +49,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string Lack1UomId { get; set; }
         public string Lack1UomName { get; set; }
+        public string Noted { get; set; }
+        public string DocumentNoted { get; set; }
 
     }
 
@@ -114,6 +116,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1ProductionDetailDto> Lack1ProductionDetail { get; set; }
         public List<Lack1ProductionSummaryByProdTypeDto> Lack1ProductionDetailSummaryByProdType { get; set; }
         public string Noted { get; set; }
+        public string DocumentNoted { get; set; }
     }
 
 }
