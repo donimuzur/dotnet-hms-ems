@@ -57,93 +57,94 @@
 {
     <script src="~/Scripts/ck4cscript.js"></script>
     <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-            SetBasedOn();
+    $(document).ready(function () {
+        SetBasedOn();
 
-            SetPoaList();
+        SetPoaList();
 
-            $('#divComment').hide();
+        $('#divComment').hide();
 
-            $('#btnCancel').click(function (e) {
-                location.href = '@Url.Action("DocumentList", "CK4C")';
-            });
-
-            $('#btnCancelCompleted').click(function (e) {
-                location.href = '@Url.Action("CompletedDocument", "CK4C")';
-            });
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("DocumentList", "CK4C")';
         });
 
-        function SetPoaList() {
-            var poa = '@Model.Details.ApprovedByPoa';
-            var nppbkc = '@Model.Details.NppbkcId';
-            var plant = '@Model.Details.PlantId';
-            var url = '@Url.Action("PoaListPartial", "CK4C")';
-            var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
+        $('#btnCancelCompleted').click(function (e) {
+            location.href = '@Url.Action("CompletedDocument", "CK4C")';
+        });
 
-            if (poa == '')
-            {
-                if (plant != '') {
-                    ajaxSelectNppbck({ plantId: plant }, urlPlant);
-                }
-                else {
-                    ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
-                }
+        $('#btnExportCk4cItem').click(function (e) {
+            location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
+        });
+    });
+
+    function SetPoaList() {
+        var poa = '@Model.Details.ApprovedByPoa';
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plant = '@Model.Details.PlantId';
+        var url = '@Url.Action("PoaListPartial", "CK4C")';
+        var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
+
+        if (poa == '') {
+            if (plant != '') {
+                ajaxSelectNppbck({ plantId: plant }, urlPlant);
+            }
+            else {
+                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
             }
         }
+    }
 
-        function SetBasedOn() {
-            var nppbkc = '@Model.Details.NppbkcId';
-            var plantId = '@Model.Details.PlantId';
-            var plantName = '@Model.Details.PlantName';
+    function SetBasedOn() {
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plantId = '@Model.Details.PlantId';
+        var plantName = '@Model.Details.PlantName';
 
-            if (plantId == '')
-            {
-                $('#basedNppbkc').prop('checked', true);
-            }
-
-            if(plantId != '')
-            {
-                $('#Details_PlantName').val(plantId + '-' + plantName);
-            }
+        if (plantId == '') {
+            $('#basedNppbkc').prop('checked', true);
         }
 
-        function printPreview(url) {
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        if (plantId != '') {
+            $('#Details_PlantName').val(plantId + '-' + plantName);
+        }
+    }
+
+    function printPreview(url) {
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+    }
+
+    function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+        window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        $.ajax({
+            type: 'POST',
+            url: addHistoryUrl,
+            data: { id: id },
+            success: function (response) {
+                $('#PrintOutHistoryTable').html("");
+                $('#PrintOutHistoryTable').html(response);
+                ResetPrintHistoryDataTable();
+            }
+        });
+    }
+
+    function ResetPrintHistoryDataTable() {
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+            table = $('#printHistoryTable').DataTable();
+            table.destroy();
         }
 
-        function PrintOutClick(reportUrl, addHistoryUrl, id) {
-
-            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
-            $.ajax({
-                type: 'POST',
-                url: addHistoryUrl,
-                data: { id: id },
-                success: function (response) {
-                    $('#PrintOutHistoryTable').html("");
-                    $('#PrintOutHistoryTable').html(response);
-                    ResetPrintHistoryDataTable();
+        table = $('#printHistoryTable').DataTable(
+            {
+                "sDom": "Rlfrtip",
+                "language": {
+                    "zeroRecords": "No records found",
+                    "infoFiltered": "(filtered from _MAX_ total records)"
                 }
             });
-        }
-
-        function ResetPrintHistoryDataTable() {
-            // DataTable
-            var table = null;
-            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
-                table = $('#printHistoryTable').DataTable();
-                table.destroy();
-            }
-
-            table = $('#printHistoryTable').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "zeroRecords": "No records found",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
-        }
+    }
 
     </script>
 }

@@ -1576,7 +1576,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 iRow++;
             }
 
-            return CreateXlsFileSummaryReports(slDocument, iColumn, iRow);
+            return CreateXlsFile(slDocument, iColumn, iRow);
 
         }
 
@@ -1746,7 +1746,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private string CreateXlsFileSummaryReports(SLDocument slDocument, int iColumn, int iRow)
+        private string CreateXlsFile(SLDocument slDocument, int iColumn, int iRow)
         {
 
             //create style
@@ -1760,13 +1760,162 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.AutoFitColumn(1, iColumn - 1);
             slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
 
-            var fileName = "CK4C" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            var fileName = "CK4C_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
 
             var path = Path.Combine(Server.MapPath(Constans.UploadPath), fileName);
 
             slDocument.SaveAs(path);
 
             return path;
+        }
+
+        #endregion
+
+        #region CK4C Item Exports
+
+        public void ExportXlsCk4cItem(int id)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsCk4cItem(id);
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsCk4cItem(int ck4cId)
+        {
+            var dataExportItem = SearchDataItem(ck4cId);
+
+            int iRow = 1;
+            var slDocument = new SLDocument();
+
+            //create header
+            slDocument = CreateHeaderExcelForCk4cItem(slDocument);
+
+            iRow++;
+            int iColumn = 1;
+            foreach (var data in dataExportItem)
+            {
+                iColumn = 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ProductionDate);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Plant);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.TobbacoProdType);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.FaCode);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.BrandDesc);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ProdQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ProdQtyUom);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PackedQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.UnpackedQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Remarks);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Content);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.TotalPack);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Hje);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Tariff);
+                iColumn = iColumn + 1;
+
+                iRow++;
+            }
+
+            return CreateXlsFile(slDocument, iColumn, iRow);
+
+        }
+
+        private SLDocument CreateHeaderExcelForCk4cItem(SLDocument slDocument)
+        {
+            int iColumn = 1;
+            int iRow = 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Production Date (3)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Plant");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Tobbaco Product Type (4)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "FA Code");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Brand Description (7)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Produced QTY (5)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Produced QTY UoM");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Packed QTY (6)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Unpacked QTY (11)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Remarks (12)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Content (8)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Total Pack (10)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "HJE (9)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Tariff");
+            iColumn = iColumn + 1;
+
+            return slDocument;
+
+        }
+
+        private List<Ck4cExportItem> SearchDataItem(int ck4cId)
+        {
+            List<Ck4cItemExportDto> dbData;
+
+            dbData = _ck4CBll.GetCk4cItemById(ck4cId);
+
+            return Mapper.Map<List<Ck4cExportItem>>(dbData);
         }
 
         #endregion
