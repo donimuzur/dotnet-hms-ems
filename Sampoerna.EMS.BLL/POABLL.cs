@@ -158,5 +158,26 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<POADto>>(poaList.ToList());
         }
 
+
+
+        public POA GetActivePoaById(string id)
+        {
+            return _repository.Get(p => p.POA_ID == id && p.IS_ACTIVE == true, null, includeTables).FirstOrDefault();
+        }
+
+        public POADto GetActivePoaDetailsById(string id)
+        {
+            return Mapper.Map<POADto>(_repository.Get(p => p.POA_ID == id && p.IS_ACTIVE == true, null, includeTables).FirstOrDefault());
+        }
+
+        public string GetManagerIdByActivePoaId(string poaId)
+        {
+            var result = "";
+            var dtData = _repository.Get(c => c.POA_ID == poaId && c.IS_ACTIVE == true).FirstOrDefault();
+            if (dtData != null)
+                result = dtData.MANAGER_ID;
+
+            return result;
+        }
     }
 }
