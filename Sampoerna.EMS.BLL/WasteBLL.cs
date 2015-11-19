@@ -275,7 +275,7 @@ namespace Sampoerna.EMS.BLL
 
         public void SaveUpload(WasteUploadItems wasteUpload, string userId)
         {
-            bool isNewData = true;
+            bool isNewData = false;
             var dbUpload = Mapper.Map<WASTE>(wasteUpload);
 
             var dbResult = _repository.GetByID(dbUpload.COMPANY_CODE, dbUpload.WERKS, dbUpload.FA_CODE,
@@ -283,7 +283,7 @@ namespace Sampoerna.EMS.BLL
 
             if (dbResult == null)
             {
-                isNewData = false;
+                isNewData = true;
             }
             _repository.InsertOrUpdate(dbUpload);
 
