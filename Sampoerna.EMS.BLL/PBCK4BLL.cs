@@ -801,7 +801,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         if (rejected != null)
                         {
-                            rc.To.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
+                            rc.To.Add(_poaBll.GetActivePoaById(rejected.ACTION_BY).POA_EMAIL);
                         }
                         else
                         {
@@ -815,7 +815,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var poaData = _poaBll.GetById(pbck4Dto.CREATED_BY);
+                        var poaData = _poaBll.GetActivePoaById(pbck4Dto.CREATED_BY);
                         rc.To.Add(GetManagerEmail(pbck4Dto.CREATED_BY));
                         rc.CC.Add(poaData.POA_EMAIL);
 
@@ -834,7 +834,7 @@ namespace Sampoerna.EMS.BLL
 
                         if (rejected != null)
                         {
-                            rc.CC.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
+                            rc.CC.Add(_poaBll.GetActivePoaById(rejected.ACTION_BY).POA_EMAIL);
                         }
                         else
                         {
@@ -849,7 +849,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
-                        var poaData = _poaBll.GetById(pbck4Dto.CREATED_BY);
+                        var poaData = _poaBll.GetActivePoaById(pbck4Dto.CREATED_BY);
                         if (poaData != null)
                         {
                             //creator is poa user
@@ -861,7 +861,7 @@ namespace Sampoerna.EMS.BLL
                             //creator is excise executive
                             var userData = _userBll.GetUserById(pbck4Dto.CREATED_BY);
                             rc.To.Add(userData.EMAIL);
-                            rc.CC.Add(_poaBll.GetById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
+                            rc.CC.Add(_poaBll.GetActivePoaById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
                             rc.CC.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
                         }
                     }
@@ -870,13 +870,13 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(pbck4Dto.CREATED_BY);
-                    var poaData2 = _poaBll.GetById(pbck4Dto.CREATED_BY);
+                    var poaData2 = _poaBll.GetActivePoaById(pbck4Dto.CREATED_BY);
 
                     if (pbck4Dto.APPROVED_BY_POA != null || poaData2 != null)
                     {
                         if (poaData2 == null)
                         {
-                            var poa = _poaBll.GetById(pbck4Dto.APPROVED_BY_POA);
+                            var poa = _poaBll.GetActivePoaById(pbck4Dto.APPROVED_BY_POA);
                             rc.To.Add(userDetail.EMAIL);
                             rc.CC.Add(poa.POA_EMAIL);
                             rc.CC.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
@@ -906,7 +906,7 @@ namespace Sampoerna.EMS.BLL
 
                         var userData = _userBll.GetUserById(pbck4Dto.CREATED_BY);
                         rc.To.Add(userData.EMAIL);
-                        var poaData3 = _poaBll.GetById(pbck4Dto.CREATED_BY);
+                        var poaData3 = _poaBll.GetActivePoaById(pbck4Dto.CREATED_BY);
 
                         if (poaData3 != null)
                         {
@@ -917,7 +917,7 @@ namespace Sampoerna.EMS.BLL
                         else
                         {
                             //creator is excise executive
-                            rc.CC.Add(_poaBll.GetById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
+                            rc.CC.Add(_poaBll.GetActivePoaById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
                             rc.CC.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
 
 

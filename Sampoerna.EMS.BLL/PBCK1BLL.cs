@@ -2357,7 +2357,7 @@ namespace Sampoerna.EMS.BLL
 
         private string GetManagerEmail(string poaId)
         {
-            var managerId = _poaBll.GetManagerIdByActivePoaId(poaId);
+            var managerId = _poaBll.GetManagerIdByPoaId(poaId);
             var managerDetail = _userBll.GetUserById(managerId);
             return managerDetail.EMAIL;
         }

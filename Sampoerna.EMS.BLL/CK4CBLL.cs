@@ -426,7 +426,7 @@ namespace Sampoerna.EMS.BLL
         {
             var managerMail = string.Empty;
 
-            var managerId = _poabll.GetManagerIdByActivePoaId(poaId);
+            var managerId = _poabll.GetManagerIdByPoaId(poaId);
             var managerDetail = _userBll.GetUserById(managerId);
 
             managerMail = managerDetail == null ? string.Empty : managerDetail.EMAIL;
