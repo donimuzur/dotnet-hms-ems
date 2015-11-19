@@ -114,6 +114,11 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
+                //poa must be active
+                var poa = _poabll.GetActivePoaById(input.CurrentUser);
+                if (poa == null)
+                    return false;
+
                 return IsOneNppbkc(input.NppbkcId, input.CurrentUser);
             }
             
