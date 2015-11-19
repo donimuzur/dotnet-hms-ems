@@ -25,6 +25,8 @@
         public Sampoerna.EMS.Core.Enums.FormType FormType { get; set; }
 
         public string FormNumberSource { get; set; }
+
+        public string Plant_Id { get; set; }
     }
 
     

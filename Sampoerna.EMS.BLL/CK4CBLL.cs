@@ -308,7 +308,8 @@ namespace Sampoerna.EMS.BLL
                         }
                         else
                         {
-                            var poaList = _poabll.GetPoaByNppbkcId(nppbkc);
+                            var poaList = _poabll.GetPoaActiveByNppbkcId(nppbkc);
+                            if (plant != null) poaList = _poabll.GetPoaActiveByPlantId(ck4cData.PlantId);
                             foreach (var poaDto in poaList)
                             {
                                 rc.To.Add(poaDto.POA_EMAIL);
@@ -324,6 +325,7 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(userData.EMAIL);
 
                         var poaList = _poabll.GetPoaByNppbkcIdAndMainPlant(nppbkc);
+                        if (plant != null) poaList = _poabll.GetPoaActiveByPlantId(ck4cData.PlantId);
                         foreach (var poaDto in poaList)
                         {
                             if (userData.USER_ID != poaDto.POA_ID)
