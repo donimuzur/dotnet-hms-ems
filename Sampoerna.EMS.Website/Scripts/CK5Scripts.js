@@ -163,7 +163,7 @@ function OnReadyFunction(ck5Type) {
 
     $('#collapseTwo').addClass('in');
     $('#collapseThree').addClass('in');
-
+    $('#collapse6').addClass('in');
 }
 
 
@@ -846,7 +846,7 @@ function ValidateCk5Form(ck5Type) {
     if (result) {
 
         if (ck5Type == 'Export' || ck5Type == "Manual" || ck5Type == 'PortToImporter'
-            || ck5Type == 'MarketReturn' || ck5Type == 'TriggerSto')
+            || ck5Type == 'MarketReturn' || ck5Type == 'TriggerSto'
             || ck5Type == 'Waste')
             return result;
 
