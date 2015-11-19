@@ -1677,14 +1677,7 @@ namespace Sampoerna.EMS.BLL
 
         private void SendEmailWorkflow(CK5WorkflowDocumentInput input)
         {
-        //    //todo: body message from email template
-        //    //todo: to = ?
-        //    //todo: subject = from email template
-        //    var to = "irmansulaeman41@gmail.com";
-        //    var subject = "this is subject for " + input.DocumentNumber;
-        //    var body = "this is body message for " + input.DocumentNumber;
-        //    //var from = "a@gmail.com";
-
+     
             var ck5Dto = Mapper.Map<CK5Dto>(_repository.Get(c => c.CK5_ID == input.DocumentId).FirstOrDefault());
 
             var mailProcess = ProsesMailNotificationBody(ck5Dto, input.ActionType);
@@ -1786,12 +1779,32 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(userData.EMAIL);
 
                     }
-                    else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+                    else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval)
                     {
-                        var managerId = _poaBll.GetManagerIdByPoaId(ck5Dto.CREATED_BY);
-                        var managerDetail = _userBll.GetUserById(managerId);
-                        rc.To.Add(managerDetail.EMAIL);
+                        var poaData = _poaBll.GetById(ck5Dto.CREATED_BY);
+                        if (poaData != null)
+                        {
+                            //creator is poa user
+                            rc.To.Add(poaData.POA_EMAIL);
+                        }
+                        else
+                        {
+                            //creator is excise executive
+                            var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                            var poaUserData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+
+                            rc.To.Add(userData.EMAIL);
+                            if (poaUserData != null)
+                                rc.CC.Add(poaUserData.EMAIL);
+                        }
                     }
+
+                    //else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+                    //{
+                    //    var managerId = _poaBll.GetManagerIdByPoaId(ck5Dto.CREATED_BY);
+                    //    var managerDetail = _userBll.GetUserById(managerId);
+                    //    rc.To.Add(managerDetail.EMAIL);
+                    //}
 
                     //Transportation and FactoryLogistic
                     if (listEmailTransportAndFacLogistic.Count > 0)
@@ -1805,17 +1818,18 @@ namespace Sampoerna.EMS.BLL
 
                     break;
                 case Enums.ActionType.Approve:
-                    if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
-                    {
-                        rc.To.Add(GetManagerEmail(ck5Dto.APPROVED_BY_POA));
-                        var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
-                        var creatorData = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                        if(poaData != null)
-                            rc.CC.Add(poaData.EMAIL);
-                        if(creatorData != null)
-                            rc.CC.Add(creatorData.EMAIL);
-                    }
-                    else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval)
+                    //if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+                    //{
+                    //    rc.To.Add(GetManagerEmail(ck5Dto.APPROVED_BY_POA));
+                    //    var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                    //    var creatorData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                    //    if(poaData != null)
+                    //        rc.CC.Add(poaData.EMAIL);
+                    //    if(creatorData != null)
+                    //        rc.CC.Add(creatorData.EMAIL);
+                    //}
+                    //else 
+                        if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval)
                     {
                         var poaData = _poaBll.GetById(ck5Dto.CREATED_BY);
                         if (poaData != null)
@@ -1973,12 +1987,12 @@ namespace Sampoerna.EMS.BLL
             return rc;
         }
 
-        private string GetManagerEmail(string poaId)
-        {
-            var managerId = _poaBll.GetManagerIdByPoaId(poaId);
-            var managerDetail = _userBll.GetUserById(managerId);
-            return managerDetail.EMAIL;
-        }
+        //private string GetManagerEmail(string poaId)
+        //{
+        //    var managerId = _poaBll.GetManagerIdByPoaId(poaId);
+        //    var managerDetail = _userBll.GetUserById(managerId);
+        //    return managerDetail.EMAIL;
+        //}
 
         private void SubmitDocument(CK5WorkflowDocumentInput input)
         {
@@ -2006,8 +2020,10 @@ namespace Sampoerna.EMS.BLL
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval);
                     break;
                 case Enums.UserRole.POA:
-                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                    //dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
+                    //newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
                     break;
                 default:
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -2018,12 +2034,7 @@ namespace Sampoerna.EMS.BLL
                 //set change history
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId,dbData.CK5_ID.ToString());
             }
-            else
-            {
-                //remove modified workflow history    
-            }
-            
-
+           
         }
 
         private void ApproveDocument(CK5WorkflowDocumentInput input)
@@ -2032,10 +2043,6 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-
-            //if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
-            //    dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager)
-            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
             if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter || dbData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dbData.CK5_TYPE == Enums.CK5Type.MarketReturn)
@@ -2066,26 +2073,28 @@ namespace Sampoerna.EMS.BLL
             {
                 if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApproval)
                 {
-                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
+                    //dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
                     dbData.APPROVED_BY_POA = input.UserId;
                     dbData.APPROVED_DATE_POA = DateTime.Now;
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
-                }
-                else
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
-                {
-                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
-                    dbData.APPROVED_BY_MANAGER = input.UserId;
-                    dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+                    //newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
                 }
                 else
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
+            //else if (input.UserRole == Enums.UserRole.Manager)
+            //{
+            //    if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+            //    {
+            //        dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+            //        dbData.APPROVED_BY_MANAGER = input.UserId;
+            //        dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+            //        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+            //    }
+            //    else
+            //        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            //}
 
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
@@ -2105,7 +2114,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager &&
+                //dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager &&
                 dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
