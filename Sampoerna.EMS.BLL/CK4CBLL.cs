@@ -985,7 +985,7 @@ namespace Sampoerna.EMS.BLL
 
             var poaUser = dtData.APPROVED_BY_POA == null ? dtData.CREATED_BY : dtData.APPROVED_BY_POA;
 
-            var poa = _poabll.GetActivePoaDetailsById(poaUser);
+            var poa = _poabll.GetDetailsById(poaUser);
             if (poa != null)
             {
                 result.Detail.Poa = poa.PRINTED_NAME;

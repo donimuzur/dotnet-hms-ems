@@ -165,11 +165,6 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(p => p.POA_ID == id && p.IS_ACTIVE == true, null, includeTables).FirstOrDefault();
         }
 
-        public POADto GetActivePoaDetailsById(string id)
-        {
-            return Mapper.Map<POADto>(_repository.Get(p => p.POA_ID == id && p.IS_ACTIVE == true, null, includeTables).FirstOrDefault());
-        }
-
         public string GetManagerIdByActivePoaId(string poaId)
         {
             var result = "";

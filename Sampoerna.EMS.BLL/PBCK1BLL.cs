@@ -2214,7 +2214,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var poaData = _poaBll.GetById(pbck1Data.CreatedById);
+                        var poaData = _poaBll.GetActivePoaById(pbck1Data.CreatedById);
                         rc.To.Add(GetManagerEmail(pbck1Data.CreatedById));
                         rc.CC.Add(_userBll.GetUserById(poaData.POA_ID).EMAIL);
                         
@@ -2248,7 +2248,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (pbck1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
-                        var poaData = _poaBll.GetById(pbck1Data.CreatedById);
+                        var poaData = _poaBll.GetActivePoaById(pbck1Data.CreatedById);
                         if (poaData != null)
                         {
                             //creator is poa user
@@ -2269,13 +2269,13 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(pbck1Data.CreatedById);
-                    var poaData2 = _poaBll.GetById(pbck1Data.CreatedById);
+                    var poaData2 = _poaBll.GetActivePoaById(pbck1Data.CreatedById);
 
                     if (pbck1Data.ApprovedByPoaId != null || poaData2 != null)
                     {
                         if (poaData2 == null)
                         {
-                            var poa = _poaBll.GetById(pbck1Data.ApprovedByPoaId);
+                            var poa = _poaBll.GetActivePoaById(pbck1Data.ApprovedByPoaId);
                             rc.To.Add(userDetail.EMAIL);
                             rc.CC.Add(_userBll.GetUserById(poa.POA_ID).EMAIL);
                             rc.CC.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));
@@ -2297,7 +2297,7 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovApprove:
-                     var poaData3 = _poaBll.GetById(pbck1Data.CreatedById);
+                    var poaData3 = _poaBll.GetActivePoaById(pbck1Data.CreatedById);
                         if (poaData3 != null)
                         {
                             //creator is poa user
@@ -2315,7 +2315,7 @@ namespace Sampoerna.EMS.BLL
                         rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovPartialApprove:
-                    var poaData4 = _poaBll.GetById(pbck1Data.CreatedById);
+                    var poaData4 = _poaBll.GetActivePoaById(pbck1Data.CreatedById);
                         if (poaData4 != null)
                         {
                             //creator is poa user
@@ -2333,7 +2333,7 @@ namespace Sampoerna.EMS.BLL
                         rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovReject:
-                    var poaData5 = _poaBll.GetById(pbck1Data.CreatedById);
+                    var poaData5 = _poaBll.GetActivePoaById(pbck1Data.CreatedById);
                         if (poaData5 != null)
                         {
                             //creator is poa user
@@ -2357,7 +2357,7 @@ namespace Sampoerna.EMS.BLL
 
         private string GetManagerEmail(string poaId)
         {
-            var managerId = _poaBll.GetManagerIdByPoaId(poaId);
+            var managerId = _poaBll.GetManagerIdByActivePoaId(poaId);
             var managerDetail = _userBll.GetUserById(managerId);
             return managerDetail.EMAIL;
         }

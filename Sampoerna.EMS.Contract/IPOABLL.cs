@@ -24,7 +24,6 @@ namespace Sampoerna.EMS.Contract
         List<POADto> GetPoaByNppbkcIdAndMainPlant(string nppbkcId);
 
         POA GetActivePoaById(string id);
-        POADto GetActivePoaDetailsById(string id);
         string GetManagerIdByActivePoaId(string poaId);
 
         List<POADto> GetPoaActiveByNppbkcId(string nppbkcId);
