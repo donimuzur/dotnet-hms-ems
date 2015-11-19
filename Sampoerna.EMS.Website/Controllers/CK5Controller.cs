@@ -1380,7 +1380,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject)
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                    //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
 
