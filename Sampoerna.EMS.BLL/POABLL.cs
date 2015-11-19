@@ -179,5 +179,13 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        public List<POADto> GetPoaActiveByNppbkcId(string nppbkcId)
+        {
+            Expression<Func<POA_MAP, bool>> queryFilter = c => c.NPPBKC_ID == nppbkcId && c.POA.IS_ACTIVE.Value;
+            var dbData = _poaMapRepository.Get(queryFilter, null, "POA");
+            var poaList = dbData.ToList().Select(d => d.POA);
+            return Mapper.Map<List<POADto>>(poaList.ToList());
+        }
     }
 }
