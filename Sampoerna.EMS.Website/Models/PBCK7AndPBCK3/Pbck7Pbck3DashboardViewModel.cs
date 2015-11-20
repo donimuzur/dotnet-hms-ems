@@ -6,6 +6,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 {
     public class Pbck7Pbck3DashboardViewModel : BaseModel
     {
+        public Pbck7Pbck3DashboardViewModel()
+        {
+            Detail = new DashboardDetilModel();
+        }
         public Pbck7Pbck3DashboardSearchViewModel SearchViewModel { get; set; }
         public DashboardDetilModel Detail { get; set; }
     }
