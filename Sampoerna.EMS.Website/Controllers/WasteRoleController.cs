@@ -7,6 +7,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
@@ -70,7 +71,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.UserList = GetUserIdList();
             model.PlantList = GlobalFunctions.GetPlantAll();
+            var listDetailsWaste = new List<WasteRoleFormDetails>();
 
+            foreach (Enums.WasteGroup val in Enum.GetValues(typeof(Enums.WasteGroup)))
+            {
+                var detailsWaste = new WasteRoleFormDetails();
+                detailsWaste.IsChecked = false;
+                detailsWaste.WasteGroup = val;
+                detailsWaste.WasteGroupDescription = EnumHelper.GetDescription(val);
+
+                listDetailsWaste.Add(detailsWaste);
+            }
+
+            model.Details = listDetailsWaste;
             return model;
         }
 

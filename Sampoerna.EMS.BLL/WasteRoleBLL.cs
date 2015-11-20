@@ -78,6 +78,19 @@ namespace Sampoerna.EMS.BLL
             return GetById(id);
         }
 
+        private void UpdatePlantByUserId(string userId, string plantUpdate)
+        {
+            var listWasteRole = _repository.Get(c => c.USER_ID == userId).ToList();
+            foreach (var waste in listWasteRole)
+            {
+                var wasteRole = _repository.GetByID(waste.WASTE_ROLE_ID);
+                if (wasteRole != null)
+                {
+                    wasteRole.WERKS = plantUpdate;
+                    _repository.Update(wasteRole);
+                }
+            }
+        }
         private void ValidateWasteRole(WasteRoleSaveInput input)
         {
             var listData = _repository.Get(c => c.USER_ID == input.WasteRoleDto.USER_ID).ToList();
