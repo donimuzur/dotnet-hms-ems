@@ -2465,27 +2465,28 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
 
-            //if (!string.IsNullOrEmpty(dbData.DN_NUMBER))
-            //{
-                if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
-                    && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
-                    && dbData.SEALING_NOTIF_DATE.HasValue
-                    && dbData.UNSEALING_NOTIF_DATE.HasValue)
-                {
 
-                    oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
-                    //set change history
-                    SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+            //if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
+            //    && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
+            //    && dbData.SEALING_NOTIF_DATE.HasValue
+            //    && dbData.UNSEALING_NOTIF_DATE.HasValue)
+            if (!string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
+               && dbData.UNSEALING_NOTIF_DATE.HasValue)
+            {
 
-                    dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+                newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed);
+                //set change history
+                SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
-                    input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+                dbData.STATUS_ID = Enums.DocumentStatus.Completed;
 
-                    //AddWorkflowHistory(input);
-                }
-            //}
-          
+                input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+                //AddWorkflowHistory(input);
+            }
+
+
         }
         #endregion
 
