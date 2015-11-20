@@ -2275,7 +2275,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         if (poaData2 == null)
                         {
-                            var poa = _poaBll.GetActivePoaById(pbck1Data.ApprovedByPoaId);
+                            var poa = _poaBll.GetById(pbck1Data.ApprovedByPoaId);
                             rc.To.Add(userDetail.EMAIL);
                             rc.CC.Add(_userBll.GetUserById(poa.POA_ID).EMAIL);
                             rc.CC.Add(GetManagerEmail(pbck1Data.ApprovedByPoaId));

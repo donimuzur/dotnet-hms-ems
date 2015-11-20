@@ -1193,7 +1193,7 @@ namespace Sampoerna.EMS.BLL
             var rc = new MailNotification();
 
             var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck7Dto.Pbck7Id, FormType = Enums.FormType.PBCK7 });
-            var poaList = _poaBll.GetPoaByNppbkcId(pbck7Dto.NppbkcId);
+            var poaList = _poaBll.GetPoaActiveByNppbkcId(pbck7Dto.NppbkcId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
             string companyCode = "";
@@ -1257,7 +1257,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (pbck7Dto.Pbck7Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var poaData = _poaBll.GetById(pbck7Dto.CreatedBy);
+                        var poaData = _poaBll.GetActivePoaById(pbck7Dto.CreatedBy);
                         rc.To.Add(GetManagerEmail(pbck7Dto.CreatedBy));
                         rc.CC.Add(poaData.POA_EMAIL);
 
@@ -1291,7 +1291,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (pbck7Dto.Pbck7Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
-                        var poaData = _poaBll.GetById(pbck7Dto.CreatedBy);
+                        var poaData = _poaBll.GetActivePoaById(pbck7Dto.CreatedBy);
                         if (poaData != null)
                         {
                             //creator is poa user
@@ -1312,7 +1312,7 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(pbck7Dto.CreatedBy);
-                    var poaData2 = _poaBll.GetById(pbck7Dto.CreatedBy);
+                    var poaData2 = _poaBll.GetActivePoaById(pbck7Dto.CreatedBy);
 
                     if (pbck7Dto.ApprovedBy != null || poaData2 != null)
                     {
@@ -1349,7 +1349,7 @@ namespace Sampoerna.EMS.BLL
 
                         var userData = _userBll.GetUserById(pbck7Dto.CreatedBy);
                         rc.To.Add(userData.EMAIL);
-                        var poaData3 = _poaBll.GetById(pbck7Dto.CreatedBy);
+                        var poaData3 = _poaBll.GetActivePoaById(pbck7Dto.CreatedBy);
 
                         if (poaData3 != null)
                         {
@@ -2507,7 +2507,7 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            var poaList = _poaBll.GetPoaByNppbkcId(nppbkcId);
+            var poaList = _poaBll.GetPoaActiveByNppbkcId(nppbkcId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
             string companyCode = "";
@@ -2592,7 +2592,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (pbck3CompositeDto.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var poaData = _poaBll.GetById(pbck3CompositeDto.CREATED_BY);
+                        var poaData = _poaBll.GetActivePoaById(pbck3CompositeDto.CREATED_BY);
                         rc.To.Add(GetManagerEmail(pbck3CompositeDto.CREATED_BY));
                         rc.CC.Add(poaData.POA_EMAIL);
 
@@ -2626,7 +2626,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (pbck3CompositeDto.STATUS == Enums.DocumentStatus.WaitingGovApproval)
                     {
-                        var poaData = _poaBll.GetById(pbck3CompositeDto.CREATED_BY);
+                        var poaData = _poaBll.GetActivePoaById(pbck3CompositeDto.CREATED_BY);
                         if (poaData != null)
                         {
                             //creator is poa user
@@ -2647,7 +2647,7 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(pbck3CompositeDto.CREATED_BY);
-                    var poaData2 = _poaBll.GetById(pbck3CompositeDto.CREATED_BY);
+                    var poaData2 = _poaBll.GetActivePoaById(pbck3CompositeDto.CREATED_BY);
 
                     if (pbck3CompositeDto.APPROVED_BY != null || poaData2 != null)
                     {
@@ -2683,7 +2683,7 @@ namespace Sampoerna.EMS.BLL
 
                         var userData = _userBll.GetUserById(pbck3CompositeDto.CREATED_BY);
                         rc.To.Add(userData.EMAIL);
-                        var poaData3 = _poaBll.GetById(pbck3CompositeDto.CREATED_BY);
+                        var poaData3 = _poaBll.GetActivePoaById(pbck3CompositeDto.CREATED_BY);
 
                         if (poaData3 != null)
                         {
@@ -2957,7 +2957,7 @@ namespace Sampoerna.EMS.BLL
 
         private Pbck73PrintOutDto SetPoaData(Pbck73PrintOutDto data, string poaId)
         {
-            var poaData = _poabll.GetById(poaId);
+            var poaData = _poabll.GetActivePoaById(poaId);
             if (poaData != null)
             {
                 data.PoaId = poaData.POA_ID;
