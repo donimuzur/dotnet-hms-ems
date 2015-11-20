@@ -134,14 +134,18 @@ namespace Sampoerna.EMS.Website
 
             #region SummaryReports
 
-            Mapper.CreateMap<Ck4CSummaryReportDto, Ck4CSummaryReportsItem>().IgnoreAllNonExisting()
-                ;
+            Mapper.CreateMap<Ck4CSummaryReportDto, Ck4CSummaryReportsItem>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<Ck4CSearchSummaryReportsViewModel, Ck4CGetSummaryReportByParamInput>().IgnoreAllNonExisting()
                 .ForMember(src => src.Ck4CNo, opt => opt.MapFrom(dest => dest.Ck4CNo))
                 .ForMember(src => src.PlantId, opt => opt.MapFrom(dest => dest.PlantId))
-                .ForMember(src => src.isForExport, opt => opt.MapFrom(dest => dest.isForExport))
-                ;
+                .ForMember(src => src.isForExport, opt => opt.MapFrom(dest => dest.isForExport));
+
+            #endregion
+
+            #region ExportItem
+
+            Mapper.CreateMap<Ck4cItemExportDto, Ck4cExportItem>().IgnoreAllNonExisting();
 
             #endregion
         }

@@ -26,5 +26,7 @@ namespace Sampoerna.EMS.Contract
         POA GetActivePoaById(string id);
 
         List<POADto> GetPoaActiveByNppbkcId(string nppbkcId);
+
+        List<POADto> GetPoaActiveByPlantId(string plantId);
     }
 }

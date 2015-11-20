@@ -746,7 +746,7 @@ namespace Sampoerna.EMS.BLL
             var rc = new MailNotification();
 
             var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck4Dto.PBCK4_ID, FormType = Enums.FormType.PBCK4 });
-            var poaList = _poaBll.GetPoaByNppbkcId(pbck4Dto.NppbkcId);
+            var poaList = _poaBll.GetPoaActiveByNppbkcId(pbck4Dto.NppbkcId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
