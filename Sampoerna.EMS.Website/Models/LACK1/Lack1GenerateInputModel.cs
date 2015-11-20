@@ -23,5 +23,6 @@
         public string Noted { get; set; }
 
         public bool IsCreateNew { get; set; }
+        public bool IsTisToTisReport { get; set; }
     }
 }

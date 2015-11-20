@@ -42,5 +42,13 @@ namespace Sampoerna.EMS.Contract
 
         bool AllowDomesticAlcoholPurchaseOrder(WorkflowAllowApproveAndRejectInput input);
 
+        bool AllowWasteDisposal(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowWasteApproval(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowWasteGoodIssue(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowWasteGoodReceive(WorkflowAllowApproveAndRejectInput input);
+
     }
 }

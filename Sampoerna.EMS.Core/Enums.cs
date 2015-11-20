@@ -67,7 +67,10 @@ namespace Sampoerna.EMS.Core
             [Description("Completed")]
             Completed = 7,
             [Description("Market Return")]
-            MarketReturn = 8
+            MarketReturn = 8,
+            [Description("Waste")]
+            Waste = 9
+
         }
 
 
@@ -174,6 +177,12 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
+            [Description("Disposal")]
+            WasteDisposal = 96,
+            [Description("Waste Approval")]
+            WasteApproval = 97,
+            [Description("Disposal Rejected")]
+            WasteDisposalRejected = 98,
             [Description("Cancelled")]
             Cancelled = 100,
 
@@ -325,6 +334,12 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
+            [Description("Disposal")]
+            WasteDisposal = 96,
+            [Description("Waste Approval")]
+            WasteApproval = 97,
+            [Description("Disposal Rejected")]
+            WasteDisposalRejected = 98,
             [Description("Cancelled")]
             Cancelled = 100,
             [Description("STOB Good Issue Completed")]

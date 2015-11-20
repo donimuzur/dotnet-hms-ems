@@ -20,13 +20,14 @@
 
                         <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                     }
-                    else
+                    //first code when manager exists
+                    @*else
                     {
                         if (Model.AllowManagerReject)
                         {
                             <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                         }
-                    }
+                    }*@
 
                     @if (Model.Details.Status == Enums.DocumentStatus.Completed && Model.AllowEditCompleted)
                     {
