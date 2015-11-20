@@ -683,7 +683,7 @@ namespace Sampoerna.EMS.BLL
                 messageList.Clear();
 
                 var output = Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
-
+                output.ConvertedUom = "G";
 
                 //validate
                 var dbBrand = _materialBll.GetByPlantIdAndStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
@@ -715,7 +715,8 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("UsdValue not valid");
 
                 if (ConvertHelper.IsNumeric(ck5MaterialInput.Qty)
-                    && ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
+                    && ConvertHelper.IsNumeric(ck5MaterialInput.Convertion)
+                    && dbBrand != null)
                 {
 
                     var wasteStock = ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.WasteStock);
@@ -1462,11 +1463,10 @@ namespace Sampoerna.EMS.BLL
             {
                 input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
             }
-            //else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
-            //    dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-            //{
-            //    input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
-            //}
+            else if (dtData.CK5_TYPE == Enums.CK5Type.Waste)
+            {
+                input.Plant_Id = dtData.DEST_PLANT_ID;
+            }
             else
             {
                 input.NPPBKC_Id = dtData.SOURCE_PLANT_NPPBKC_ID;    
@@ -1654,11 +1654,11 @@ namespace Sampoerna.EMS.BLL
                     if (input.Ck5Type == Enums.CK5Type.Waste)
                         isNeedSendNotif = true;
                     break;
-                case Enums.ActionType.WasteDisposal:
+                case Enums.ActionType.WasteDisposalUploaded:
                     WasteDisposalDocument(input);
                     isNeedSendNotif = true;
                     break;
-                case Enums.ActionType.WasteApproval:
+                case Enums.ActionType.WasteApproved:
                     WasteApprovalDocument(input);
                     isNeedSendNotif = true;
                     break;
@@ -1678,14 +1678,7 @@ namespace Sampoerna.EMS.BLL
 
         private void SendEmailWorkflow(CK5WorkflowDocumentInput input)
         {
-        //    //todo: body message from email template
-        //    //todo: to = ?
-        //    //todo: subject = from email template
-        //    var to = "irmansulaeman41@gmail.com";
-        //    var subject = "this is subject for " + input.DocumentNumber;
-        //    var body = "this is body message for " + input.DocumentNumber;
-        //    //var from = "a@gmail.com";
-
+      
             var ck5Dto = Mapper.Map<CK5Dto>(_repository.Get(c => c.CK5_ID == input.DocumentId).FirstOrDefault());
 
             var mailProcess = ProsesMailNotificationBody(ck5Dto, input.ActionType);
@@ -1909,7 +1902,7 @@ namespace Sampoerna.EMS.BLL
 
                     break;
 
-                case Enums.ActionType.WasteDisposal: // status doc = waste approval ck5waste
+                case Enums.ActionType.WasteDisposalUploaded: // status doc = waste approval ck5waste
                     //send notification to creator
                     var userWasteDisposal = _userBll.GetUserById(ck5Dto.CREATED_BY);
                     rc.To.Add(userWasteDisposal.EMAIL);
@@ -1951,7 +1944,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     break;
 
-                case Enums.ActionType.WasteApproval: // status doc = waste approval ck5waste
+                case Enums.ActionType.WasteApproved: // status doc = waste approval ck5waste
                     //send notification to creator
                     var userWasteApproval = _userBll.GetUserById(ck5Dto.CREATED_BY);
                     rc.To.Add(userWasteApproval.EMAIL);
@@ -4503,26 +4496,40 @@ namespace Sampoerna.EMS.BLL
 
         public WasteStockQuotaOutput GetWasteStockQuota(string plantId, string materialNumber)
         {
+            var result = new WasteStockQuotaOutput();
+
             var dbWaste = _wasteStockServices.GetByPlantAndMaterialNumber(plantId, materialNumber);
             
             //get from ck5 
+            if (dbWaste != null)
+            {
+                var dbCk5 = _repository.Get(c => c.CK5_TYPE == Enums.CK5Type.Waste
+                                                 && c.SOURCE_PLANT_ID == plantId &&
+                                                 (c.STATUS_ID != Enums.DocumentStatus.Cancelled), null, "CK5_MATERIAL");
 
-            var dbCk5 = _repository.Get(c => c.CK5_TYPE == Enums.CK5Type.Waste
-                                             && c.SOURCE_PLANT_ID == plantId &&
-                                             (c.STATUS_ID != Enums.DocumentStatus.Cancelled), null, "CK5_MATERIAL");
+                decimal wasteStockUsed =
+                    dbCk5.Sum(
+                        c =>
+                            c.CK5_MATERIAL.Where(ck5Material => ck5Material.BRAND == materialNumber)
+                                .Sum(
+                                    ck5Material =>
+                                        ck5Material.CONVERTED_QTY.HasValue ? ck5Material.CONVERTED_QTY.Value : 0));
 
-            decimal wasteStockUsed =
-                dbCk5.Sum(
-                    c =>
-                        c.CK5_MATERIAL.Where(ck5Material => ck5Material.BRAND == materialNumber)
-                            .Sum(ck5Material => ck5Material.CONVERTED_QTY.HasValue ? ck5Material.CONVERTED_QTY.Value : 0));
+              
 
-            var result = new WasteStockQuotaOutput();
-            result.WasteStock = ConvertHelper.ConvertDecimalToStringMoneyFormat(dbWaste.STOCK);
-            result.WasteStockUsed = ConvertHelper.ConvertDecimalToStringMoneyFormat(wasteStockUsed);
-            result.WasteStockRemaining = ConvertHelper.ConvertDecimalToStringMoneyFormat((dbWaste.STOCK - wasteStockUsed));
-            result.WasteStockRemainingCount = dbWaste.STOCK - wasteStockUsed;
-
+                result.WasteStock = ConvertHelper.ConvertDecimalToStringMoneyFormat(dbWaste.STOCK);
+                result.WasteStockUsed = ConvertHelper.ConvertDecimalToStringMoneyFormat(wasteStockUsed);
+                result.WasteStockRemaining =
+                    ConvertHelper.ConvertDecimalToStringMoneyFormat((dbWaste.STOCK - wasteStockUsed));
+                result.WasteStockRemainingCount = dbWaste.STOCK - wasteStockUsed;
+            }
+            else
+            {
+                result.WasteStock = "0";
+                result.WasteStockUsed = "0";
+                result.WasteStockRemaining = "0";
+                result.WasteStockRemainingCount = 0;
+            }
             return result;
 
         }

@@ -101,19 +101,18 @@ namespace Sampoerna.EMS.BLL.Services
 
         public List<string> GetUserDisposalTeamByPlant(string plantId)
         {
-            var result = new List<string>();
             var dbWaste =
                 _repository.Get(c => c.WERKS == plantId && c.GROUP_ROLE == Enums.WasteGroup.DisposalTeam).ToList();
 
-            foreach (var wasteRole in dbWaste)
-            {
-                if (wasteRole.USER != null)
-                {
-                    result.Add(wasteRole.USER_ID);
-                }
-            }
+            return dbWaste.Select(wasteRole => wasteRole.USER_ID).ToList();
+        }
 
-            return result;
+        public List<string> GetUserWasteApproverByPlant(string plantId)
+        {
+            var dbWaste =
+                _repository.Get(c => c.WERKS == plantId && c.GROUP_ROLE == Enums.WasteGroup.WasteApprover).ToList();
+
+            return dbWaste.Select(wasteRole => wasteRole.USER_ID).ToList();
         }
 
         public string GetPlantIdByUserId(string userId)

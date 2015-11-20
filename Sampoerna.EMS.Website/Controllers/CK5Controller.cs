@@ -2267,7 +2267,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
 
-                input.ActionType = Enums.ActionType.WasteDisposal;
+                input.ActionType = Enums.ActionType.WasteDisposalUploaded;
                 model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
                 if (model.Ck5FileUploadFileList != null)
                 {
@@ -2331,11 +2331,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
 
-                input.ActionType = Enums.ActionType.WasteApproval;
+                input.ActionType = Enums.ActionType.WasteApproved;
 
-                //input.GiDate = model.GiDate;
-                //input.SealingNumber = model.SealingNotifNumber;
-                //input.SealingDate = model.SealingNotifDate;
+           
 
                 _ck5Bll.CK5Workflow(input);
 

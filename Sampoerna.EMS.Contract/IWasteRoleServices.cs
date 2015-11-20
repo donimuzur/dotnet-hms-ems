@@ -16,6 +16,8 @@ namespace Sampoerna.EMS.Contract
 
         List<string> GetUserDisposalTeamByPlant(string plantId);
 
+        List<string> GetUserWasteApproverByPlant(string plantId);
+
         string GetPlantIdByUserId(string userId);
     }
 }
