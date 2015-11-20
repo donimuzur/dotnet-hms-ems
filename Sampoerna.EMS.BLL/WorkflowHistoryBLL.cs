@@ -156,6 +156,7 @@ namespace Sampoerna.EMS.BLL
                     }else{
                         //var listPoa = _poaMapBll.GetPOAByNPPBKCID(input.NPPBKC_Id);
                         var listPoa = _poaBll.GetPoaActiveByNppbkcId(input.NPPBKC_Id);
+                        if (input.Plant_Id != null) listPoa = _poaBll.GetPoaActiveByPlantId(input.Plant_Id);
                         displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
                     }
                     if (displayUserId.Length > 0)

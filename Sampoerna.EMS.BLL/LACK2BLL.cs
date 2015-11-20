@@ -704,9 +704,14 @@ namespace Sampoerna.EMS.BLL
 
         private string GetManagerEmail(string poaId)
         {
+            var managerMail = string.Empty;
+
             var managerId = _poaBll.GetManagerIdByPoaId(poaId);
             var managerDetail = _userBll.GetUserById(managerId);
-            return managerDetail.EMAIL;
+
+            managerMail = managerDetail == null ? string.Empty : managerDetail.EMAIL;
+
+            return managerMail;
         }
 
         private MailNotification ProsesMailNotificationBody(Lack2Dto lackData, Lack2WorkflowDocumentInput input)
@@ -720,7 +725,7 @@ namespace Sampoerna.EMS.BLL
                 FormType = Enums.FormType.LACK2
             });
 
-            var poaList = _poaBll.GetPoaByNppbkcId(lackData.NppbkcId);
+            var poaList = _poaBll.GetPoaActiveByNppbkcId(lackData.NppbkcId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -802,7 +807,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (lackData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
-                        var poaData = _poaBll.GetById(lackData.CreatedBy);
+                        var poaData = _poaBll.GetActivePoaById(lackData.CreatedBy);
                         if (poaData != null)
                         {
                             //creator is poa user
@@ -813,6 +818,7 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(lackData.CreatedBy);
+
                             rc.To.Add(userData.EMAIL);
                             rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
                             rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
@@ -823,7 +829,7 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(lackData.CreatedBy);
-                    var poaData2 = _poaBll.GetById(lackData.CreatedBy);
+                    var poaData2 = _poaBll.GetActivePoaById(lackData.CreatedBy);
 
                     if (lackData.ApprovedBy != null || poaData2 != null)
                     {
@@ -854,7 +860,7 @@ namespace Sampoerna.EMS.BLL
                     break;
 
                 case Enums.ActionType.GovApprove:
-                    var poaData3 = _poaBll.GetById(lackData.CreatedBy);
+                    var poaData3 = _poaBll.GetActivePoaById(lackData.CreatedBy);
                     if (poaData3 != null)
                     {
                         //creator is poa user
@@ -872,7 +878,7 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovPartialApprove:
-                    var poaData4 = _poaBll.GetById(lackData.CreatedBy);
+                    var poaData4 = _poaBll.GetActivePoaById(lackData.CreatedBy);
                     if (poaData4 != null)
                     {
                         //creator is poa user
@@ -894,7 +900,7 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovReject:
-                    var poaData5 = _poaBll.GetById(lackData.CreatedBy);
+                    var poaData5 = _poaBll.GetActivePoaById(lackData.CreatedBy);
                     if (poaData5 != null)
                     {
                         //creator is poa user
@@ -905,6 +911,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         //creator is excise executive
                         var userData = _userBll.GetUserById(lackData.CreatedBy);
+
                         rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
                         rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
                         rc.CC.Add(userData.EMAIL);

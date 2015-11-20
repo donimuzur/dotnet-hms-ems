@@ -92,12 +92,12 @@ namespace Sampoerna.EMS.XMLReader
                         //UserItems.Add(user);
                         _xmlMapper.InsertOrUpdate(user);
 
-                        if (!role.BROLE_DESC.ToUpper().Contains("POA_MANAGER") && role.BROLE_DESC.ToUpper().Contains("POA"))
+                        if (!role.BROLE_DESC.ToUpper().Contains("POA MANAGER") && role.BROLE_DESC.ToUpper().Contains("POA"))
                         {
                             InsertPoa(user);
                             roleMap.ROLEID = Enums.UserRole.POA;
                         }
-                        else if (role.BROLE_DESC.ToUpper().Contains("POA_MANAGER"))
+                        else if (role.BROLE_DESC.ToUpper().Contains("POA MANAGER"))
                         {
                             roleMap.ROLEID = Enums.UserRole.Manager;
                         }
@@ -109,7 +109,7 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             roleMap.ROLEID = Enums.UserRole.User;
                         }
-                        else if (role.BROLE_DESC.ToUpper().Contains("SUPER_ADMINISTRATOR"))
+                        else if (role.BROLE_DESC.ToUpper().Contains("SUPER ADMINISTRATOR"))
                         {
                             roleMap.ROLEID = Enums.UserRole.SuperAdmin;
                         }
