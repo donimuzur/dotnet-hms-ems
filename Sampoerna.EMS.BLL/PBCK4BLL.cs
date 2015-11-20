@@ -1891,7 +1891,7 @@ namespace Sampoerna.EMS.BLL
 
         public string GetListPoaByNppbkcId(string nppbkcId)
         {
-            var dbPoa = _poaBll.GetPoaByNppbkcId(nppbkcId);
+            var dbPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId);
             var result = "";
 
             foreach (var poaDto in dbPoa)

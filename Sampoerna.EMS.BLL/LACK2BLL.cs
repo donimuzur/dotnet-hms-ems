@@ -725,7 +725,7 @@ namespace Sampoerna.EMS.BLL
                 FormType = Enums.FormType.LACK2
             });
 
-            var poaList = _poaBll.GetPoaByNppbkcId(lackData.NppbkcId);
+            var poaList = _poaBll.GetPoaActiveByNppbkcId(lackData.NppbkcId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -829,7 +829,7 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(lackData.CreatedBy);
-                    var poaData2 = _poaBll.GetById(lackData.CreatedBy);
+                    var poaData2 = _poaBll.GetActivePoaById(lackData.CreatedBy);
 
                     if (lackData.ApprovedBy != null || poaData2 != null)
                     {
@@ -878,7 +878,7 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovPartialApprove:
-                    var poaData4 = _poaBll.GetById(lackData.CreatedBy);
+                    var poaData4 = _poaBll.GetActivePoaById(lackData.CreatedBy);
                     if (poaData4 != null)
                     {
                         //creator is poa user

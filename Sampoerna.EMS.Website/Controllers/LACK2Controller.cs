@@ -459,7 +459,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private string GetPoaListByNppbkcId(string nppbkcId)
         {
-            var data = _poabll.GetPoaByNppbkcId(nppbkcId);
+            var data = _poabll.GetPoaActiveByNppbkcId(nppbkcId);
             return data == null ? string.Empty : string.Join(", ", data.Distinct().Select(d => d.PRINTED_NAME).ToList());
         }
 
@@ -616,7 +616,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult GetPoaByNppbkcId(string nppbkcId)
         {
-            var data = _poabll.GetPoaByNppbkcId(nppbkcId);
+            var data = _poabll.GetPoaActiveByNppbkcId(nppbkcId);
             return Json(data.Distinct());
         }
 
