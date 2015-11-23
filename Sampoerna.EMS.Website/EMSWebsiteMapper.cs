@@ -929,6 +929,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
                 .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => Mapper.Map<List<WasteRoleDetailsDto>>(src.Details)))
                 ;
 
             Mapper.CreateMap<WasteRoleDto, WasteRoleFormViewModel>().IgnoreAllNonExisting()
@@ -945,11 +946,17 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.WERKS + "-" + src.PlantDescription))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
-                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => Mapper.Map<List<WasteRoleFormDetails>>(src.Details)))
                 ;
 
+            Mapper.CreateMap<WasteRoleDetailsDto, WasteRoleFormDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.WasteRoleId, opt => opt.MapFrom(src => src.WASTE_ROLE_ID));
 
+            Mapper.CreateMap<WasteRoleFormDetails, WasteRoleDetailsDto>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.WASTE_ROLE_ID, opt => opt.MapFrom(src => src.WasteRoleId))
+              ;
 
             #endregion
 

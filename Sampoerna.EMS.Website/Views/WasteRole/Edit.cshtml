@@ -107,14 +107,37 @@
 
                                             
 
-                                            <div class="col-md-6">
+                                            @*<div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-4">Group Role<span class="red">*</span></label>
                                                     <div class="col-md-8">
                                                         @Html.EnumDropDownListFor(model => model.WasteGroup, Model.WasteGroupList, "Select", new { @class = "form-control" })
                                                     </div>
                                                 </div>
+                                            </div>*@
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Group Role<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        <div>
+                                                            <input type="checkbox" id="selecctall" />
+                                                            <b>Select All</b>
+                                                        </div>
+                                                        @for (int i = 0; i < Model.Details.Count; i++)
+                                                        {
+                                                            <div>
+                                                                @Html.HiddenFor(model => model.Details[i].WasteGroup)
+                                                                @Html.HiddenFor(model => model.Details[i].WasteRoleId)
+                                                                @Html.CheckBoxFor(model => model.Details[i].IsChecked, new { @class = "checkgroup" })
+                                                                @Html.Label(Model.Details[i].WasteGroupDescription)
+                                                            </div>
+
+                                                        }
+                                                        @Html.ValidationMessageFor(model => model.Details)
+                                                    </div>
+                                                </div>
                                             </div>
+
 
                                             <div class="col-md-6">
                                                 <div class="row">
@@ -170,7 +193,21 @@
                 }
             });
 
-           // OnChangeUser();
+            // OnChangeUser();
+            
+            $('#selecctall').change(function () {
+                if ($(this).is(':checked')) {
+                    $('.checkgroup').prop('checked', this.checked);
+
+                } else {
+                    $('.checkgroup').each(function () {
+                        this.checked = false;
+                    });
+
+
+                }
+            });
+            
         });
 
 
@@ -210,43 +247,6 @@
                 $('#' + objName).addClass('input-validation-error');
             }
         }
-
-        @*function OnChangeUser() {
-            $("#UserId").change(function () {
-                if ($("#UserId").length) {
-                    var userId = $(this).find("option:selected").val();
-
-
-                    if (userId == '') {
-                        $("input[name='FirstName']").val('');
-                        $("input[name='LastName']").val('');
-                        $("input[name='EmailAddress']").val('');
-                        $("input[name='Phone']").val('');
-
-
-                    } else {
-
-                        ajaxGetUserDetails('@Url.Action("GetUserDetails", "WasteRole")', { userId: userId });
-                    }
-                }
-            });
-        }
-
-        function ajaxGetUserDetails(url, formData) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $("input[name='FirstName']").val(data.FirstName);
-                        $("input[name='LastName']").val(data.LastName);
-                        $("input[name='EmailAddress']").val(data.EmailAddress);
-                        $("input[name='Phone']").val(data.Phone);
-
-                    }
-                });
-
-        }*@
 
 
     </script>

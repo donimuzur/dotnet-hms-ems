@@ -41,6 +41,7 @@ namespace Sampoerna.EMS.Website.Models.WasteRole
 
     public class WasteRoleFormDetails
     {
+        public int WasteRoleId { get; set; }
         public Enums.WasteGroup WasteGroup { get; set; }
         public string WasteGroupDescription { get; set; }
         public bool IsChecked { get; set; }

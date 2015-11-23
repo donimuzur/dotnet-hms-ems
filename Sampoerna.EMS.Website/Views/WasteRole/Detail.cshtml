@@ -99,11 +99,29 @@
                                                         </div>
 
 
-                                                        <div class="col-md-6">
+                                                        @*<div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4">Group Role</label>
                                                                 <div class="col-md-8">
                                                                     @Html.TextBoxFor(model => model.WasteGroupDescription, new { @class = "form-control", @disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>*@
+                                                        
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Group Role</label>
+                                                                <div class="col-md-8">
+                                                                  
+                                                                    @for (int i = 0; i < Model.Details.Count; i++)
+                                                                    {
+                                                                        <div>
+                                                                            @Html.CheckBoxFor(model => model.Details[i].IsChecked, new { @class = "checkgroup" , @disabled="disabled"})
+                                                                            @Html.Label(Model.Details[i].WasteGroupDescription)
+                                                                        </div>
+
+                                                                    }
+                                                                    
                                                                 </div>
                                                             </div>
                                                         </div>

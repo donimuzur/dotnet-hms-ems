@@ -31,6 +31,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     public class WasteRoleDetailsDto
     {
+        public int WASTE_ROLE_ID { get; set; }
         public Enums.WasteGroup WasteGroup { get; set; }
         public string WasteGroupDescription { get; set; }
         public bool IsChecked { get; set; }

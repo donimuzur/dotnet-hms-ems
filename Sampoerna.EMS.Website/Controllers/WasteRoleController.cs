@@ -41,7 +41,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new WasteRoleIndexViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.ListWasteRoles = Mapper.Map<List<WasteRoleFormViewModel>>(_wasteRoleBll.GetAllDataOrderByUserAndGroupRole());
+            //model.ListWasteRoles = Mapper.Map<List<WasteRoleFormViewModel>>(_wasteRoleBll.GetAllDataOrderByUserAndGroupRole());
+            model.ListWasteRoles = Mapper.Map<List<WasteRoleFormViewModel>>(_wasteRoleBll.GetAllDataGroupByRoleOrderByUserAndGroupRole());
 
             return View("Index",model);
         }
@@ -71,6 +72,39 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.UserList = GetUserIdList();
             model.PlantList = GlobalFunctions.GetPlantAll();
+
+            //var listDetailsWaste = new List<WasteRoleFormDetails>();
+
+            //foreach (Enums.WasteGroup val in Enum.GetValues(typeof(Enums.WasteGroup)))
+            //{
+            //    var detailsWaste = new WasteRoleFormDetails();
+            //    detailsWaste.IsChecked = false;
+            //    detailsWaste.WasteGroup = val;
+            //    detailsWaste.WasteGroupDescription = EnumHelper.GetDescription(val);
+            //    detailsWaste.WasteRoleId = 0;
+
+            //    foreach (var wasteRoleFormDetailse in model.Details)
+            //    {
+            //        if (wasteRoleFormDetailse.WasteGroup == detailsWaste.WasteGroup)
+            //        {
+            //            detailsWaste.IsChecked = true;
+            //            detailsWaste.WasteRoleId = wasteRoleFormDetailse.WasteRoleId;
+            //            break;
+            //        }
+            //    }
+
+            //    listDetailsWaste.Add(detailsWaste);
+            //}
+
+            //model.Details = listDetailsWaste;
+            //return model;
+
+            return SetDetailGroupRole(model);
+        }
+
+        private WasteRoleFormViewModel SetDetailGroupRole(WasteRoleFormViewModel model)
+        {
+            
             var listDetailsWaste = new List<WasteRoleFormDetails>();
 
             foreach (Enums.WasteGroup val in Enum.GetValues(typeof(Enums.WasteGroup)))
@@ -79,6 +113,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailsWaste.IsChecked = false;
                 detailsWaste.WasteGroup = val;
                 detailsWaste.WasteGroupDescription = EnumHelper.GetDescription(val);
+                detailsWaste.WasteRoleId = 0;
+
+                foreach (var wasteRoleFormDetailse in model.Details)
+                {
+                    if (wasteRoleFormDetailse.WasteGroup == detailsWaste.WasteGroup)
+                    {
+                        detailsWaste.IsChecked = true;
+                        detailsWaste.WasteRoleId = wasteRoleFormDetailse.WasteRoleId;
+                        break;
+                    }
+                }
 
                 listDetailsWaste.Add(detailsWaste);
             }
@@ -100,7 +145,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                model = Mapper.Map<WasteRoleFormViewModel>(_wasteRoleBll.GetById(id, true));
+                model = Mapper.Map<WasteRoleFormViewModel>(_wasteRoleBll.GetDetailsById(id));
                 model = SetListModel(model);
             }
             catch (Exception ex)
@@ -118,14 +163,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                model = Mapper.Map<WasteRoleFormViewModel>(_wasteRoleBll.GetById(id, true));
+                model = Mapper.Map<WasteRoleFormViewModel>(_wasteRoleBll.GetDetailsById(id));
 
                 model.MainMenu = _mainMenu;
                 model.CurrentMenu = PageInfo;
+                model = SetDetailGroupRole(model);
+
+                var listId = new List<string>();
+                foreach (var wasteRoleFormDetails in model.Details)
+                {
+                    listId.Add(wasteRoleFormDetails.WasteRoleId.ToString());
+                }
 
                 model.ChangesHistoryList =
                     Mapper.Map<List<ChangesHistoryItemModel>>(
-                        _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.WasteRole, id.ToString()));
+                        _changesHistoryBll.GetByFormTypeAndListFormId(Enums.MenuList.WasteRole, listId));
 
 
             }
@@ -157,10 +209,15 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 try
                 {
-                    SaveWasteRoleToDatabase(model);
-                    AddMessageInfo("Success create Waste Role", Enums.MessageInfoType.Success);
-                    return RedirectToAction("Index");
-
+                    bool isChecked = model.Details.Any(wasteRoleFormDetailse => wasteRoleFormDetailse.IsChecked);
+                    if (isChecked)
+                    {
+                        SaveWasteRoleToDatabase(model);
+                        AddMessageInfo("Success create Waste Role", Enums.MessageInfoType.Success);
+                        return RedirectToAction("Index");
+                    }
+                    
+                    ModelState.AddModelError("Details", "Choose at least one type");
                 }
                 catch (Exception ex)
                 {
@@ -180,10 +237,15 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 try
                 {
-                    SaveWasteRoleToDatabase(model);
-                    AddMessageInfo("Success update Waste Role", Enums.MessageInfoType.Success);
-                    return RedirectToAction("Index");
+                    bool isChecked = model.Details.Any(wasteRoleFormDetailse => wasteRoleFormDetailse.IsChecked);
+                    if (isChecked)
+                    {
+                        SaveWasteRoleToDatabase(model);
+                        AddMessageInfo("Success update Waste Role", Enums.MessageInfoType.Success);
+                        return RedirectToAction("Index");
+                    }
 
+                    ModelState.AddModelError("Details", "Choose at least one type");
                 }
                 catch (Exception ex)
                 {

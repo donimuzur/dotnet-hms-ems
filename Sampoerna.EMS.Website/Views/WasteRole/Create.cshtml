@@ -108,12 +108,13 @@
                                                             {
                                                                 <div>
                                                                     @Html.HiddenFor(model=>model.Details[i].WasteGroup)
-                                                                    @*@Html.EditorFor(x => x.Details[i].IsChecked, new {})*@
+                                                                    @Html.HiddenFor(model=>model.Details[i].WasteRoleId)
                                                                     @Html.CheckBoxFor(model => model.Details[i].IsChecked, new {@class = "checkgroup"})
                                                                     @Html.Label(Model.Details[i].WasteGroupDescription)
                                                                 </div>
 
                                                             }
+                                                        @Html.ValidationMessageFor(model => model.Details)
                                                     </div>
                                                 </div>
                                             </div>
