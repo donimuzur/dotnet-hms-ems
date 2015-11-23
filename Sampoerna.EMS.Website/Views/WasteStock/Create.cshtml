@@ -175,11 +175,11 @@
                 }
             }
             
-            if ($.isNumeric($('#StockDisplay').val().replace(',','')) == false) {
+            if ($.isNumeric($('#StockDisplay').val().replace(/\,/g, '')) == false) {
                 AddValidationClass(false, 'StockDisplay');
                 result = false;
             } else {
-                if (parseFloat($('#StockDisplay').val().replace(',', '')) <= 0) {
+                if (parseFloat($('#StockDisplay').val().replace(/\,/g, '')) <= 0) {
                     AddValidationClass(false, 'StockDisplay');
                     result = false;
                 }
