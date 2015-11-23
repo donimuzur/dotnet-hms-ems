@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PLANT_RECEIVE_MATERIAL1 = new HashSet<PLANT_RECEIVE_MATERIAL>();
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
             this.ZAIDM_EX_MATERIAL = new HashSet<ZAIDM_EX_MATERIAL>();
+            this.GOOD_PROD_TYPE_MAPPING = new HashSet<GOOD_PROD_TYPE_MAPPING>();
         }
     
         public string EXC_GOOD_TYP { get; set; }
@@ -36,5 +37,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PLANT_RECEIVE_MATERIAL> PLANT_RECEIVE_MATERIAL1 { get; set; }
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
         public virtual ICollection<ZAIDM_EX_MATERIAL> ZAIDM_EX_MATERIAL { get; set; }
+        public virtual ICollection<GOOD_PROD_TYPE_MAPPING> GOOD_PROD_TYPE_MAPPING { get; set; }
     }
 }

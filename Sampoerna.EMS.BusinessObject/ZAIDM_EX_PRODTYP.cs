@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BusinessObject
         public ZAIDM_EX_PRODTYP()
         {
             this.ZAIDM_EX_BRAND = new HashSet<ZAIDM_EX_BRAND>();
+            this.GOOD_PROD_TYPE_MAPPING = new HashSet<GOOD_PROD_TYPE_MAPPING>();
         }
     
         public string PROD_CODE { get; set; }
@@ -29,5 +30,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string MODIFIED_BY { get; set; }
     
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual ICollection<GOOD_PROD_TYPE_MAPPING> GOOD_PROD_TYPE_MAPPING { get; set; }
     }
 }
