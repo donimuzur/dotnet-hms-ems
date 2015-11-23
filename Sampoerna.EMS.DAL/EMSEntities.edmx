@@ -524,6 +524,17 @@
           <Property Name="INVENTORY_MOVEMENT_ID" Type="bigint" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="LACK1_TRACKING_ALCOHOL">
+          <Key>
+            <PropertyRef Name="LACK1_TRACKING_ALCOHOL_ID" />
+          </Key>
+          <Property Name="LACK1_TRACKING_ALCOHOL_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_ID" Type="int" Nullable="false" />
+          <Property Name="INVENTORY_MOVEMENT_ID" Type="bigint" Nullable="false" />
+          <Property Name="IS_FIRST_LEVEL" Type="bit" Nullable="false" />
+          <Property Name="IS_FINAL_GOODS" Type="bit" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="LACK2">
           <Key>
             <PropertyRef Name="LACK2_ID" />
@@ -1488,7 +1499,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+        <Association Name="FK_CHANGES_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1929,6 +1940,30 @@
             </Principal>
             <Dependent Role="LACK1">
               <PropertyRef Name="RETURN_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT">
+          <End Role="INVENTORY_MOVEMENT" Type="Self.INVENTORY_MOVEMENT" Multiplicity="1" />
+          <End Role="LACK1_TRACKING_ALCOHOL" Type="Self.LACK1_TRACKING_ALCOHOL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="INVENTORY_MOVEMENT">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Principal>
+            <Dependent Role="LACK1_TRACKING_ALCOHOL">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_TRACKING_ALCOHOL_LACK1">
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="1" />
+          <End Role="LACK1_TRACKING_ALCOHOL" Type="Self.LACK1_TRACKING_ALCOHOL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_TRACKING_ALCOHOL">
+              <PropertyRef Name="LACK1_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3270,6 +3305,7 @@
           <EntitySet Name="LACK1_PLANT" EntityType="Self.LACK1_PLANT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_PRODUCTION_DETAIL" EntityType="Self.LACK1_PRODUCTION_DETAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_TRACKING" EntityType="Self.LACK1_TRACKING" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK1_TRACKING_ALCOHOL" EntityType="Self.LACK1_TRACKING_ALCOHOL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2" EntityType="Self.LACK2" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2_DOCUMENT" EntityType="Self.LACK2_DOCUMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2_ITEM" EntityType="Self.LACK2_ITEM" Schema="dbo" store:Type="Tables" />
@@ -3352,7 +3388,7 @@
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
@@ -3499,6 +3535,14 @@
           <AssociationSet Name="FK_LACK1_RETURN_UOM" Association="Self.FK_LACK1_RETURN_UOM">
             <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT" Association="Self.FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT">
+            <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
+            <End Role="LACK1_TRACKING_ALCOHOL" EntitySet="LACK1_TRACKING_ALCOHOL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_TRACKING_ALCOHOL_LACK1" Association="Self.FK_LACK1_TRACKING_ALCOHOL_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_TRACKING_ALCOHOL" EntitySet="LACK1_TRACKING_ALCOHOL" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_TRACKING_INVENTORY_MOVEMENT" Association="Self.FK_LACK1_TRACKING_INVENTORY_MOVEMENT">
             <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
@@ -4659,6 +4703,15 @@
             <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
           </AssociationSet>
           <EntitySet Name="WASTE" EntityType="EMSModel.WASTE" />
+          <EntitySet Name="LACK1_TRACKING_ALCOHOL" EntityType="EMSModel.LACK1_TRACKING_ALCOHOL" />
+          <AssociationSet Name="FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT" Association="EMSModel.FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT">
+            <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
+            <End Role="LACK1_TRACKING_ALCOHOL" EntitySet="LACK1_TRACKING_ALCOHOL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_TRACKING_ALCOHOL_LACK1" Association="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_TRACKING_ALCOHOL" EntitySet="LACK1_TRACKING_ALCOHOL" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -6719,6 +6772,7 @@
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="IS_TIS_TO_TIS" Type="Boolean" />
           <Property Name="DOCUMENT_NOTED" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LACK1_TRACKING_ALCOHOL" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1" ToRole="LACK1_TRACKING_ALCOHOL" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -7012,6 +7066,7 @@
           <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LACK1_TRACKING" Relationship="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" FromRole="INVENTORY_MOVEMENT" ToRole="LACK1_TRACKING" />
           <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LACK1_TRACKING_ALCOHOL" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT" FromRole="INVENTORY_MOVEMENT" ToRole="LACK1_TRACKING_ALCOHOL" />
         </EntityType>
         <EntityType Name="CK4C_ITEM">
           <Key>
@@ -8300,6 +8355,43 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STAMP_WASTE_QTY" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
+        <EntityType Name="LACK1_TRACKING_ALCOHOL">
+          <Key>
+            <PropertyRef Name="LACK1_TRACKING_ALCOHOL_ID" />
+          </Key>
+          <Property Name="LACK1_TRACKING_ALCOHOL_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK1_ID" Type="Int32" Nullable="false" />
+          <Property Name="INVENTORY_MOVEMENT_ID" Type="Int64" Nullable="false" />
+          <Property Name="IS_FIRST_LEVEL" Type="Boolean" Nullable="false" />
+          <Property Name="IS_FINAL_GOODS" Type="Boolean" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="INVENTORY_MOVEMENT" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT" FromRole="LACK1_TRACKING_ALCOHOL" ToRole="INVENTORY_MOVEMENT" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1_TRACKING_ALCOHOL" ToRole="LACK1" />
+        </EntityType>
+        <Association Name="FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT">
+          <End Type="EMSModel.INVENTORY_MOVEMENT" Role="INVENTORY_MOVEMENT" Multiplicity="1" />
+          <End Type="EMSModel.LACK1_TRACKING_ALCOHOL" Role="LACK1_TRACKING_ALCOHOL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="INVENTORY_MOVEMENT">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Principal>
+            <Dependent Role="LACK1_TRACKING_ALCOHOL">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_TRACKING_ALCOHOL_LACK1">
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
+          <End Type="EMSModel.LACK1_TRACKING_ALCOHOL" Role="LACK1_TRACKING_ALCOHOL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_TRACKING_ALCOHOL">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9782,6 +9874,18 @@
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
                 <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_TRACKING_ALCOHOL">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_TRACKING_ALCOHOL">
+              <MappingFragment StoreEntitySet="LACK1_TRACKING_ALCOHOL">
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="IS_FINAL_GOODS" ColumnName="IS_FINAL_GOODS" />
+                <ScalarProperty Name="IS_FIRST_LEVEL" ColumnName="IS_FIRST_LEVEL" />
+                <ScalarProperty Name="INVENTORY_MOVEMENT_ID" ColumnName="INVENTORY_MOVEMENT_ID" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_TRACKING_ALCOHOL_ID" ColumnName="LACK1_TRACKING_ALCOHOL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
