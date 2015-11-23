@@ -17,5 +17,9 @@ namespace Sampoerna.EMS.Contract
         void DeleteByFormIdAndNewValue(string formId, string newValue);
 
         void MoveHistoryToNewData(CHANGES_HISTORY history, string formId);
+
+        void UpdateHistoryFormIdByFormType(string oldFormId, string newFormId, Enums.MenuList formType);
+
+        List<CHANGES_HISTORY> GetByFormTypeAndListFormId(Enums.MenuList formTypeId, List<string> listId);
     }
 }

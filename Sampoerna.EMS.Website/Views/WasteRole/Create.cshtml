@@ -22,82 +22,129 @@
             <div class="col-sm-12">
                 <div class="white-wrapper">
                     @*<div class="scroll">*@
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingOne">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Create Waste Role
-                                            <i class="fa fa-caret-down"></i>
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                    <div class="panel-body">
-                                        <form class="form-excise" role="form">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">User Id<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-                                                            @Html.DropDownListFor(model => model.UserId, Model.UserList, "Select", new { @class = "form-control selectpicker" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Plant<span class="red">*</span></label>
-                                                        <div class="col-md-8">
-
-                                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "form-control selectpicker" })
-                                                        </div>
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Create Waste Role
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">User Id<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.UserId, Model.UserList, "Select", new { @class = "form-control selectpicker" })
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">First Name</label>
-                                                        <div class="col-md-8">
-                                                            @Html.HiddenFor(model => model.FirstName)
-                                                            @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", @disabled = "disabled" })
-                                                        </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Plant<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+
+                                                        @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "form-control selectpicker" })
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Last Name</label>
-                                                        <div class="col-md-8">
-                                                            @Html.HiddenFor(model => model.LastName)
-                                                            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @disabled = "disabled" })
-                                                        </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">First Name</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.FirstName)
+                                                        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", @disabled = "disabled" })
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Email Address</label>
-                                                        <div class="col-md-8">
-                                                            @Html.HiddenFor(model => model.EmailAddress)
-                                                            @Html.TextBoxFor(model => model.EmailAddress, new { @class = "form-control", @disabled = "disabled" })
-                                                        </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Last Name</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.LastName)
+                                                        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @disabled = "disabled" })
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <label class="col-md-4">Phone</label>
-                                                        <div class="col-md-8">
-                                                            @Html.HiddenFor(model => model.Phone)
-                                                            @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", @disabled = "disabled" })
-                                                        </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Email Address</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.EmailAddress)
+                                                        @Html.TextBoxFor(model => model.EmailAddress, new { @class = "form-control", @disabled = "disabled" })
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                               
-                                                <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Phone</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.Phone)
+                                                        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Group Role<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        <div>
+                                                            <input type="checkbox" id="selecctall" />
+                                                            <b>Select All</b>
+                                                        </div>
+                                                        @for (int i = 0; i < Model.Details.Count; i++)
+                                                            {
+                                                                <div>
+                                                                    @Html.HiddenFor(model=>model.Details[i].WasteGroup)
+                                                                    @Html.HiddenFor(model=>model.Details[i].WasteRoleId)
+                                                                    @Html.CheckBoxFor(model => model.Details[i].IsChecked, new {@class = "checkgroup"})
+                                                                    @Html.Label(Model.Details[i].WasteGroupDescription)
+                                                                </div>
+
+                                                            }
+                                                        @Html.ValidationMessageFor(model => model.Details)
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @*<div class="col-md-6">
+                                                <div class="row">
+
+                                                </div>
+                                            </div>*@
+                                            @*<div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Group Role <span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            <div class="row">
+                                                                <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                                @for (int i = 0; i < Model.Details.Count; i++)
+                                                                    {
+                                                                    <div class="col-md-12">
+                                                                        @Html.EditorFor(x => x.Details[i].IsChecked)
+                                                                        @Html.Label(Model.Details[i].WasteGroupDescription)
+                                                                    </div>
+
+                                                                    }
+
+                                                                @Html.ValidationMessageFor(model => model.Details)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                            @*<div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Group Role<span class="red">*</span></label>
                                                         <div class="col-md-8">
@@ -105,25 +152,25 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-md-6">
                                                     <div class="row">
 
                                                     </div>
-                                                </div>
+                                                </div>*@
 
-                                            </div>
+                                        </div>
 
 
-                                        </form>
+                                    </form>
 
-                                    </div>
                                 </div>
-                               
                             </div>
-                           
+
                         </div>
-                      
+
+                    </div>
+
                     @*</div>*@
                     <div class="row">
 
@@ -140,24 +187,24 @@
     </div>
 
     <div id="ModalWasteRole" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"> Error</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    <span id="modalBodyMessage">Error</span>
-                </p>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Error</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <span id="modalBodyMessage">Error</span>
+                    </p>
 
-            </div>
-            <div class="modal-footer">
-                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+                </div>
             </div>
         </div>
     </div>
-</div>
-   
+
 }
 @section scripts {
 
@@ -166,27 +213,42 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script type="text/javascript" language="javascript">
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#MenuWasteRole').addClass('active');
 
-            $('#btnBack').click(function(e) {
+            $('#btnBack').click(function (e) {
                 location.href = '@Url.Action("Index", "WasteRole")';
             });
 
-            $("#btnSave").click(function() {
+            $("#btnSave").click(function () {
                 if (ValidateWasteRoleForm()) {
                     $('#SaveWasteRoleForms').submit();
                 }
             });
 
             OnChangeUser();
+            
+            $('#selecctall').change(function () {
+                if ($(this).is(':checked')) {
+                    $('.checkgroup').prop('checked', this.checked);
+                   
+                } else {
+                    $('.checkgroup').each(function () {
+                        this.checked = false;
+                    });
+
+                  
+                }
+            });
+
+
         });
 
 
         function ValidateWasteRoleForm() {
             var result = true;
             var blModal = false;
-            
+
             if ($('#UserId').find("option:selected").val() == '') {
                 AddValidationClass(false, 'UserId');
                 result = false;
@@ -233,7 +295,7 @@
                 if ($("#UserId").length) {
                     var userId = $(this).find("option:selected").val();
 
-                 
+
                     if (userId == '') {
                         $("input[name='FirstName']").val('');
                         $("input[name='LastName']").val('');
@@ -248,21 +310,21 @@
                 }
             });
         }
-        
-        function ajaxGetUserDetails(url, formData) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $("input[name='FirstName']").val(data.FirstName);
-                        $("input[name='LastName']").val(data.LastName);
-                        $("input[name='EmailAddress']").val(data.EmailAddress);
-                        $("input[name='Phone']").val(data.Phone);
 
-                    }
-                });
-           
+        function ajaxGetUserDetails(url, formData) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    $("input[name='FirstName']").val(data.FirstName);
+                    $("input[name='LastName']").val(data.LastName);
+                    $("input[name='EmailAddress']").val(data.EmailAddress);
+                    $("input[name='Phone']").val(data.Phone);
+
+                }
+            });
+
         }
 
 

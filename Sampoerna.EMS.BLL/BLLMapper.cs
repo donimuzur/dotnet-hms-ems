@@ -440,7 +440,12 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<WasteDto, WasteGetByParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantWerks));
-                
+
+            Mapper.CreateMap<WASTE_ROLE, WasteRoleDetailsDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.WASTE_ROLE_ID, opt => opt.MapFrom(src => src.WASTE_ROLE_ID))
+                .ForMember(dest => dest.WasteGroup, opt => opt.MapFrom(src => src.GROUP_ROLE))
+                .ForMember(dest => dest.WasteGroupDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GROUP_ROLE)))
+                ;
 
             #endregion
 
