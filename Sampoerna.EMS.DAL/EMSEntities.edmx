@@ -375,10 +375,10 @@
         </EntityType>
         <EntityType Name="GOOD_PROD_TYPE">
           <Key>
-            <PropertyRef Name="EXC_GOOD_TYP" />
+            <PropertyRef Name="PROD_CODE" />
           </Key>
-          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
+          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER">
           <Key>
@@ -8403,10 +8403,10 @@
         </Association>
         <EntityType Name="GOOD_PROD_TYPE">
           <Key>
-            <PropertyRef Name="EXC_GOOD_TYP" />
+            <PropertyRef Name="PROD_CODE" />
           </Key>
-          <Property Name="EXC_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="EXC_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -9908,8 +9908,8 @@
           <EntitySetMapping Name="GOOD_PROD_TYPE">
             <EntityTypeMapping TypeName="EMSModel.GOOD_PROD_TYPE">
               <MappingFragment StoreEntitySet="GOOD_PROD_TYPE">
-                <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
                 <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
+                <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

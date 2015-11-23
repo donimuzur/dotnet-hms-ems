@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class GOOD_PROD_TYPE
     {
-        public string EXC_GOOD_TYP { get; set; }
         public string PROD_CODE { get; set; }
+        public string EXC_GOOD_TYP { get; set; }
     }
 }
