@@ -373,12 +373,11 @@
           <Property Name="FILE_NAME" Type="nvarchar" MaxLength="100" />
           <Property Name="UPLOAD_DATE" Type="datetime" />
         </EntityType>
-        <EntityType Name="GOOD_PROD_TYPE_MAPPING">
+        <EntityType Name="GOOD_PROD_TYPE">
           <Key>
-            <PropertyRef Name="GOOD_PROD_MAPPING_ID" />
+            <PropertyRef Name="EXC_GOOD_TYP" />
           </Key>
-          <Property Name="GOOD_PROD_MAPPING_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="EX_GOOD_TYPE" Type="nvarchar" MaxLength="2" Nullable="false" />
+          <Property Name="EXC_GOOD_TYP" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
         </EntityType>
         <EntityType Name="HEADER_FOOTER">
@@ -1780,30 +1779,6 @@
             </Principal>
             <Dependent Role="EX_GROUP_TYPE_DETAILS">
               <PropertyRef Name="GOODTYPE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_GOODTYP">
-          <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Role="GOOD_PROD_TYPE_MAPPING" Type="Self.GOOD_PROD_TYPE_MAPPING" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Principal>
-            <Dependent Role="GOOD_PROD_TYPE_MAPPING">
-              <PropertyRef Name="EX_GOOD_TYPE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_PRODTYP">
-          <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" />
-          <End Role="GOOD_PROD_TYPE_MAPPING" Type="Self.GOOD_PROD_TYPE_MAPPING" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_PRODTYP">
-              <PropertyRef Name="PROD_CODE" />
-            </Principal>
-            <Dependent Role="GOOD_PROD_TYPE_MAPPING">
-              <PropertyRef Name="PROD_CODE" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3327,7 +3302,7 @@
           <EntitySet Name="EX_GROUP_TYPE" EntityType="Self.EX_GROUP_TYPE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EX_GROUP_TYPE_DETAILS" EntityType="Self.EX_GROUP_TYPE_DETAILS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FILE_UPLOAD" EntityType="Self.FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="GOOD_PROD_TYPE_MAPPING" EntityType="Self.GOOD_PROD_TYPE_MAPPING" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GOOD_PROD_TYPE" EntityType="Self.GOOD_PROD_TYPE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER" EntityType="Self.HEADER_FOOTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HEADER_FOOTER_FORM_MAP" EntityType="Self.HEADER_FOOTER_FORM_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="INVENTORY_MOVEMENT" EntityType="Self.INVENTORY_MOVEMENT" Schema="dbo" store:Type="Tables" />
@@ -3512,14 +3487,6 @@
           <AssociationSet Name="FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP" Association="Self.FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP">
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="EX_GROUP_TYPE_DETAILS" EntitySet="EX_GROUP_TYPE_DETAILS" />
-          </AssociationSet>
-          <AssociationSet Name="FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_GOODTYP" Association="Self.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="GOOD_PROD_TYPE_MAPPING" EntitySet="GOOD_PROD_TYPE_MAPPING" />
-          </AssociationSet>
-          <AssociationSet Name="FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_PRODTYP" Association="Self.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_PRODTYP">
-            <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
-            <End Role="GOOD_PROD_TYPE_MAPPING" EntitySet="GOOD_PROD_TYPE_MAPPING" />
           </AssociationSet>
           <AssociationSet Name="FK_HEADER_FOOTER_CREATED_BY_USER" Association="Self.FK_HEADER_FOOTER_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
@@ -4753,15 +4720,7 @@
             <End Role="LACK1" EntitySet="LACK1" />
             <End Role="LACK1_TRACKING_ALCOHOL" EntitySet="LACK1_TRACKING_ALCOHOL" />
           </AssociationSet>
-          <EntitySet Name="GOOD_PROD_TYPE_MAPPING" EntityType="EMSModel.GOOD_PROD_TYPE_MAPPING" />
-          <AssociationSet Name="FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_GOODTYP" Association="EMSModel.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_GOODTYP">
-            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
-            <End Role="GOOD_PROD_TYPE_MAPPING" EntitySet="GOOD_PROD_TYPE_MAPPING" />
-          </AssociationSet>
-          <AssociationSet Name="FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_PRODTYP" Association="EMSModel.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_PRODTYP">
-            <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
-            <End Role="GOOD_PROD_TYPE_MAPPING" EntitySet="GOOD_PROD_TYPE_MAPPING" />
-          </AssociationSet>
+          <EntitySet Name="GOOD_PROD_TYPE" EntityType="EMSModel.GOOD_PROD_TYPE" />
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -6164,7 +6123,6 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IS_DELETED" Type="Boolean" />
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="ZAIDM_EX_MATERIAL" />
-          <NavigationProperty Name="GOOD_PROD_TYPE_MAPPING" Relationship="EMSModel.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_GOODTYP" ToRole="GOOD_PROD_TYPE_MAPPING" />
         </EntityType>
         <Association Name="FK_EX_GROUP_TYPE_DETAILS_ZAIDM_EX_GOODTYP">
           <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="0..1" />
@@ -6465,7 +6423,6 @@
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_PRODTYP" ToRole="ZAIDM_EX_BRAND" />
-          <NavigationProperty Name="GOOD_PROD_TYPE_MAPPING" Relationship="EMSModel.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_PRODTYP" ToRole="GOOD_PROD_TYPE_MAPPING" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
           <End Type="EMSModel.ZAIDM_EX_PRODTYP" Role="ZAIDM_EX_PRODTYP" Multiplicity="1" />
@@ -8444,40 +8401,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="GOOD_PROD_TYPE_MAPPING">
+        <EntityType Name="GOOD_PROD_TYPE">
           <Key>
-            <PropertyRef Name="GOOD_PROD_MAPPING_ID" />
+            <PropertyRef Name="EXC_GOOD_TYP" />
           </Key>
-          <Property Name="GOOD_PROD_MAPPING_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EX_GOOD_TYPE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="EXC_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_GOODTYP" FromRole="GOOD_PROD_TYPE_MAPPING" ToRole="ZAIDM_EX_GOODTYP" />
-          <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_PRODTYP" FromRole="GOOD_PROD_TYPE_MAPPING" ToRole="ZAIDM_EX_PRODTYP" />
         </EntityType>
-        <Association Name="FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_GOODTYP">
-          <End Type="EMSModel.ZAIDM_EX_GOODTYP" Role="ZAIDM_EX_GOODTYP" Multiplicity="1" />
-          <End Type="EMSModel.GOOD_PROD_TYPE_MAPPING" Role="GOOD_PROD_TYPE_MAPPING" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_GOODTYP">
-              <PropertyRef Name="EXC_GOOD_TYP" />
-            </Principal>
-            <Dependent Role="GOOD_PROD_TYPE_MAPPING">
-              <PropertyRef Name="EX_GOOD_TYPE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_PRODTYP">
-          <End Type="EMSModel.ZAIDM_EX_PRODTYP" Role="ZAIDM_EX_PRODTYP" Multiplicity="1" />
-          <End Type="EMSModel.GOOD_PROD_TYPE_MAPPING" Role="GOOD_PROD_TYPE_MAPPING" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_PRODTYP">
-              <PropertyRef Name="PROD_CODE" />
-            </Principal>
-            <Dependent Role="GOOD_PROD_TYPE_MAPPING">
-              <PropertyRef Name="PROD_CODE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9975,12 +9905,11 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="GOOD_PROD_TYPE_MAPPING">
-            <EntityTypeMapping TypeName="EMSModel.GOOD_PROD_TYPE_MAPPING">
-              <MappingFragment StoreEntitySet="GOOD_PROD_TYPE_MAPPING">
+          <EntitySetMapping Name="GOOD_PROD_TYPE">
+            <EntityTypeMapping TypeName="EMSModel.GOOD_PROD_TYPE">
+              <MappingFragment StoreEntitySet="GOOD_PROD_TYPE">
                 <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
-                <ScalarProperty Name="EX_GOOD_TYPE" ColumnName="EX_GOOD_TYPE" />
-                <ScalarProperty Name="GOOD_PROD_MAPPING_ID" ColumnName="GOOD_PROD_MAPPING_ID" />
+                <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
