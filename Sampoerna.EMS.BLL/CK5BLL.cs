@@ -703,6 +703,10 @@ namespace Sampoerna.EMS.BLL
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
                     messageList.Add("Qty not valid");
+                
+                if (ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Qty) <= 0)
+                    messageList.Add("Qty <= 0");
+
 
                 if (!_uomBll.IsUomIdExist(ck5MaterialInput.Uom))
                     messageList.Add("UOM not exist");
