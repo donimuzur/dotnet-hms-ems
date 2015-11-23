@@ -255,6 +255,9 @@
         <EntityTypeShape EntityType="EMSModel.LACK1_TRACKING_ALCOHOL" Width="1.5" PointX="15.75" PointY="17.375" />
         <AssociationConnector Association="EMSModel.FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT" />
         <AssociationConnector Association="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" />
+        <EntityTypeShape EntityType="EMSModel.GOOD_PROD_TYPE_MAPPING" Width="1.5" PointX="13.5" PointY="23.375" />
+        <AssociationConnector Association="EMSModel.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_GOODTYP" />
+        <AssociationConnector Association="EMSModel.FK_GOOD_PROD_TYPE_MAPPING_ZAIDM_EX_PRODTYP" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

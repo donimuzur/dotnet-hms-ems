@@ -218,6 +218,9 @@
     <Compile Include="FILE_UPLOAD.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="GOOD_PROD_TYPE_MAPPING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="HEADER_FOOTER.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
