@@ -13,6 +13,7 @@ using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using DocumentFormat.OpenXml.Spreadsheet;
 using iTextSharp.text.pdf;
+using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -409,7 +410,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 NppbkcId = nppbkcId,
                 ExciseableGoodsTypeId = excisableGoodsType
             });
-            return new SelectList(data, "WERKS", "DROPDOWNTEXTFIELD");
+
+            var plantListOnNppbkcFlagged = _plantBll.GetCompositeListByNppbkcIdWithFlag(nppbkcId);
+
+            var dataSource = data;
+            dataSource.AddRange(plantListOnNppbkcFlagged);
+            dataSource = dataSource.DistinctBy(c => c.WERKS).ToList();
+
+            return new SelectList(dataSource, "WERKS", "DROPDOWNTEXTFIELD");
         }
 
         private Lack1CreateViewModel InitialModel(Lack1CreateViewModel model)
