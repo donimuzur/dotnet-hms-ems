@@ -3070,6 +3070,21 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.StoBNumber);
                     iColumn = iColumn + 1;
                 }
+                if (modelExport.DnNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.DnNumber);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.GrDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.GrDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.GiDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.GiDate);
+                    iColumn = iColumn + 1;
+                }
                 if (modelExport.Status)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Status);
@@ -3309,6 +3324,21 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.StoBNumber)
             {
                 slDocument.SetCellValue(iRow, iColumn, "STOB Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.DnNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "DN Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.GrDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "GR  Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.GiDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "GI Date");
                 iColumn = iColumn + 1;
             }
             if (modelExport.Status)

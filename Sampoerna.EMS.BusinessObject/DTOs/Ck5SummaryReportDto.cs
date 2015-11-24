@@ -54,6 +54,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string StoNumberSender { get; set; }
         public string StoNumberReciever { get; set; }
         public string StoBNumber { get; set; }
+        public string DnNumber { get; set; }
+        public string GrDate { get; set; }
+        public string GiDate { get; set; }
         public string Status { get; set; }
     }
 }

@@ -168,6 +168,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.StoBNumber, opt => opt.MapFrom(src => src.STOB_NUMBER))
                 .ForMember(dest => dest.StoNumberSender, opt => opt.MapFrom(src => src.STO_SENDER_NUMBER))
                 .ForMember(dest => dest.StoNumberReciever, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
+                .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
+                .ForMember(dest => dest.GiDate, opt => opt.MapFrom(src => src.GI_DATE.HasValue ? src.GI_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.GrDate, opt => opt.MapFrom(src => src.GR_DATE.HasValue ? src.GR_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
                 ;
 
