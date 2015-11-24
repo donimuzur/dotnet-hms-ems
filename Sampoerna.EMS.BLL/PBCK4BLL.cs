@@ -185,6 +185,7 @@ namespace Sampoerna.EMS.BLL
             input.FormNumber = dtData.PBCK4_NUMBER;
             input.DocumentStatus = dtData.STATUS;
             input.NPPBKC_Id = dtData.NPPBKC_ID;
+            input.Plant_Id = dtData.PLANT_ID;
 
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
 
@@ -746,7 +747,7 @@ namespace Sampoerna.EMS.BLL
             var rc = new MailNotification();
 
             var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck4Dto.PBCK4_ID, FormType = Enums.FormType.PBCK4 });
-            var poaList = _poaBll.GetPoaActiveByNppbkcId(pbck4Dto.NppbkcId);
+            var poaList = _poaBll.GetPoaActiveByPlantId(pbck4Dto.PlantId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
