@@ -987,6 +987,7 @@ namespace Sampoerna.EMS.BLL
             workflowInput.DocumentStatus = result.STATUS;
             workflowInput.NPPBKC_Id = result.NPPBKC;
             workflowInput.FormType = Enums.FormType.PBCK7;
+            workflowInput.Plant_Id = result.PLANT_ID;
 
             output.WorkflowHistoryPbck7 = _workflowHistoryBll.GetByFormNumber(workflowInput);
 
@@ -995,6 +996,7 @@ namespace Sampoerna.EMS.BLL
             workflowInput.DocumentStatus = output.Pbck3Dto.Pbck3Status;
             workflowInput.NPPBKC_Id = result.NPPBKC;
             workflowInput.FormType = Enums.FormType.PBCK3;
+            workflowInput.Plant_Id = result.PLANT_ID;
 
             output.WorkflowHistoryPbck3 = _workflowHistoryBll.GetByFormNumber(workflowInput);
 
@@ -1193,7 +1195,7 @@ namespace Sampoerna.EMS.BLL
             var rc = new MailNotification();
 
             var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck7Dto.Pbck7Id, FormType = Enums.FormType.PBCK7 });
-            var poaList = _poaBll.GetPoaActiveByNppbkcId(pbck7Dto.NppbkcId);
+            var poaList = _poaBll.GetPoaActiveByPlantId(pbck7Dto.PlantId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
             string companyCode = "";
@@ -1782,6 +1784,7 @@ namespace Sampoerna.EMS.BLL
                 input.FormNumber = data.CK5.SUBMISSION_NUMBER;
                 input.DocumentStatus = data.CK5.STATUS_ID;
                 input.NPPBKC_Id = data.CK5.SOURCE_PLANT_NPPBKC_ID;
+                input.Plant_Id = data.CK5.SOURCE_PLANT_ID;
 
                 result.Ck5Composite.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
 
@@ -2507,7 +2510,7 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            var poaList = _poaBll.GetPoaActiveByNppbkcId(nppbkcId);
+            var poaList = _poaBll.GetPoaActiveByPlantId(plantId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
             string companyCode = "";

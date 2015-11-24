@@ -725,7 +725,7 @@ namespace Sampoerna.EMS.BLL
                 FormType = Enums.FormType.LACK2
             });
 
-            var poaList = _poaBll.GetPoaActiveByNppbkcId(lackData.NppbkcId);
+            var poaList = _poaBll.GetPoaActiveByPlantId(lackData.LevelPlantId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
