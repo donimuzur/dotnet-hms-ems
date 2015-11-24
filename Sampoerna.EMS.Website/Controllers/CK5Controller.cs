@@ -3055,6 +3055,21 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.LoadingPortName);
                     iColumn = iColumn + 1;
                 }
+                if (modelExport.StoNumberSender)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StoNumberSender);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.StoNumberReciever)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StoNumberReciever);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.StoBNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StoBNumber);
+                    iColumn = iColumn + 1;
+                }
                 if (modelExport.Status)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Status);
@@ -3279,6 +3294,21 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.LoadingPortName)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Loading Port Name");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.StoNumberSender)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "STO Sender Number ");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.StoNumberReciever)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "STO Reciever Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.StoBNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "STOB Number");
                 iColumn = iColumn + 1;
             }
             if (modelExport.Status)

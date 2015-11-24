@@ -169,7 +169,7 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.Ck5TypeDescription, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1", @Name = "Ck5Type1" })CK5 Type
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Ck5TypeDescription, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1"})CK5 Type
                                                     </label>
                                                 </div>
 
@@ -366,7 +366,22 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.Status, new { @class = "checkbox checkexport", @datacolumn = "40" })Status
+                                                        @Html.CheckBoxFor(model => model.ExportModel.StoNumberSender, new { @class = "checkbox checkexport", @datacolumn = "40" })STO Sender Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.StoNumberReciever, new { @class = "checkbox checkexport", @datacolumn = "41" })STO Reciever Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.StoBNumber, new { @class = "checkbox checkexport", @datacolumn = "42" })STOB Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Status, new { @class = "checkbox checkexport", @datacolumn = "43" })Status
                                                     </label>
                                                 </div>
 
@@ -456,7 +471,7 @@
                     $('.checkexport').each(function () {
                         this.checked = true;
                     });
-                    for (var i = 0; i < 41; i++) {
+                    for (var i = 0; i < 44; i++) {
                         table.column(i).visible(true);
                     }
                     $('#ck5Table').parents('div.dataTables_wrapper').first().show();
@@ -466,7 +481,7 @@
                     $('.checkexport').each(function () {
                         this.checked = false;
                     });
-                    for (var i = 0; i < 41; i++) {
+                    for (var i = 0; i < 44; i++) {
                         table.column(i).visible(false);
                     }
                     $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
@@ -485,7 +500,7 @@
                 
                 $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
 
-                for (var i = 0; i < 41; i++) {
+                for (var i = 0; i < 44; i++) {
                     if (table.column(i).visible()) {
                         $('#ck5Table').parents('div.dataTables_wrapper').first().show();
                         return;
@@ -495,7 +510,7 @@
             });
 
             if (blFirst) {
-                for (var i = 11; i < 41; i++) {
+                for (var i = 11; i < 44; i++) {
                     table.column(i).visible(false);
                 }
             } else {

@@ -153,7 +153,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.OriginCompanyNppbkc, opt => opt.MapFrom(src => src.SOURCE_PLANT_NPPBKC_ID))
                 .ForMember(dest => dest.OriginCompanyAddress, opt => opt.MapFrom(src => src.SOURCE_PLANT_ADDRESS))
                 .ForMember(dest => dest.DestinationCountry, opt => opt.MapFrom(src => src.DEST_COUNTRY_NAME))
-                 .ForMember(dest => dest.NumberBox, opt => opt.ResolveUsing<Ck5MaterialNumberBoxUomSummaryReportsResolver>().FromMember(src => src))
+                .ForMember(dest => dest.NumberBox, opt => opt.ResolveUsing<Ck5MaterialNumberBoxUomSummaryReportsResolver>().FromMember(src => src))
                 .ForMember(dest => dest.ContainPerBox, opt => opt.ResolveUsing<Ck5MaterialConvertionSummaryReportsResolver>().FromMember(src => src))
                 .ForMember(dest => dest.TotalOfExcisableGoods, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.HasValue ? src.GRAND_TOTAL_EX.Value.ToString("#,##0.#0") : "0"))
                 .ForMember(dest => dest.BanderolPrice, opt => opt.ResolveUsing<Ck5MaterialHjeSummaryReportsResolver>().FromMember(src => src))
@@ -165,6 +165,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.DestCompanyName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
                 .ForMember(dest => dest.LoadingPort, opt => opt.MapFrom(src => src.LOADING_PORT))
                 .ForMember(dest => dest.LoadingPortName, opt => opt.MapFrom(src => src.LOADING_PORT_NAME))
+                .ForMember(dest => dest.StoBNumber, opt => opt.MapFrom(src => src.STOB_NUMBER))
+                .ForMember(dest => dest.StoNumberSender, opt => opt.MapFrom(src => src.STO_SENDER_NUMBER))
+                .ForMember(dest => dest.StoNumberReciever, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
                 ;
 
