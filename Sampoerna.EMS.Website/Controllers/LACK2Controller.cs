@@ -426,7 +426,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack2Number,
                 DocumentStatus = model.Status,
-                NPPBKC_Id = model.NppbkcId
+                NPPBKC_Id = model.NppbkcId,
+                Plant_Id = model.SourcePlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -576,7 +577,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack2Number,
                 DocumentStatus = model.Status,
-                NPPBKC_Id = model.NppbkcId
+                NPPBKC_Id = model.NppbkcId,
+                Plant_Id = model.SourcePlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
