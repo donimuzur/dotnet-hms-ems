@@ -27,11 +27,13 @@
                             <th>Material</th>
                             <th>UOM</th>
                             <th>Stock</th>
+                            <th>Remaining</th>
                         </tr>
                     </thead>
                     <thead class="filters">
                         <tr>
                             <th> Action</th>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -46,14 +48,14 @@
                                 <td class="action">
                                     <a href="@Url.Action("Detail", "WasteStock", new { id = item.WasteStockId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
 
-                                    <a href="@Url.Action("Edit", "WasteStock", new { id = item.WasteStockId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    @*<a href="@Url.Action("Edit", "WasteStock", new { id = item.WasteStockId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>*@
 
                                 </td>
                                 <td>@Html.DisplayFor(model => item.PlantDescription)</td>
                                 <td>@Html.DisplayFor(model => item.MaterialNumber)</td>
                                 <td>@Html.DisplayFor(model => item.UomDescription)</td>
                                 <td class="number">@string.Format("{0:N2}", item.Stock)</td>
-
+                                <td class="number">@Html.DisplayFor(model => item.StockRemainingDisplay)</td>
                             </tr>
 
                         }
