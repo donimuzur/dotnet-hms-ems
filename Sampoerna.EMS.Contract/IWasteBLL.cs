@@ -28,6 +28,6 @@ namespace Sampoerna.EMS.Contract
 
         List<WasteUploadItemsOuput> ValidationWasteUploadDocumentProcess(List<WasteUploadItemsInput> inputs);
 
-        List<WasteDto> CalculateWasteQuantity(List<WasteDto> wasteDtos);
+        WasteDto CalculateWasteQuantity(List<WasteDto> wasteDtos);
     }
 }

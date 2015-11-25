@@ -22,6 +22,6 @@ namespace Sampoerna.EMS.Contract
 
         void SaveDataFromWaste(List<WasteStockDto> input, string userId);
      
-        void UpdateWasteStockFromWaste(WasteStockDto input);
+        void UpdateWasteStockFromWaste(WasteStockDto input, string userId);
     }
 }

@@ -126,7 +126,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             ServerIsBusy,
             
             [Description("Missing PBCK-1 Production Converter")]
-            Lack1MissingPbckProdConverter
+            Lack1MissingPbckProdConverter,
+
+            [Description("Please  Register Code W Sapon, W Gagang, and W Stem in material master")]
+            PlantInWasteNotHaveStickerCode
         }
 
         /// <summary>

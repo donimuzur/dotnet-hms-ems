@@ -270,7 +270,7 @@ namespace Sampoerna.EMS.BLL
         //    return Mapper.Map<WasteStockDto>(dbdata);
         //}
 
-        public void UpdateWasteStockFromWaste(WasteStockDto input)
+        public void UpdateWasteStockFromWaste(WasteStockDto input, string userId)
         {
             var dbWasteStock =
                 _repository.Get(c => c.WERKS == input.WERKS && c.MATERIAL_NUMBER == input.MATERIAL_NUMBER)
@@ -291,8 +291,18 @@ namespace Sampoerna.EMS.BLL
 
                 dbWasteStock.MODIFIED_BY = input.CREATED_BY;
                 dbWasteStock.MODIFIED_DATE = DateTime.Now;
+                var dbData = _repository.GetByID(dbWasteStock.WASTE_STOCK_ID);
+
+                var origin = Mapper.Map<WasteStockDto>(dbData);
+                if (origin.WASTE_STOCK_ID > 0)
+                {
+                    SetChangesHistory(origin, input, userId);
+                }
             }
+           
             _repository.InsertOrUpdate(dbWasteStock);
+         
+            
         }
     }
 }
