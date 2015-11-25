@@ -63,6 +63,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public Nullable<bool> IS_TIS_TO_TIS { get; set; }
         public string DOCUMENT_NOTED { get; set; }
+        public Nullable<decimal> USAGE_TISTOTIS { get; set; }
     
         public virtual MONTH MONTH { get; set; }
         public virtual UOM UOM { get; set; }

@@ -453,7 +453,7 @@
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
           <Property Name="BEGINING_BALANCE" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="TOTAL_INCOME" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="USAGE" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="USAGE" Type="decimal" Precision="18" Scale="5" Nullable="false" />
           <Property Name="LACK1_LEVEL" Type="int" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
@@ -469,6 +469,7 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_TIS_TO_TIS" Type="bit" />
           <Property Name="DOCUMENT_NOTED" Type="nvarchar" MaxLength="255" />
+          <Property Name="USAGE_TISTOTIS" Type="decimal" Precision="18" Scale="5" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -6753,7 +6754,7 @@
           <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="BEGINING_BALANCE" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="TOTAL_INCOME" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="USAGE" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="USAGE" Type="Decimal" Precision="18" Scale="5" Nullable="false" />
           <Property Name="LACK1_LEVEL" Type="EMSModel.Lack1Level" Nullable="false" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
@@ -6782,6 +6783,7 @@
           <Property Name="IS_TIS_TO_TIS" Type="Boolean" />
           <Property Name="DOCUMENT_NOTED" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LACK1_TRACKING_ALCOHOL" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1" ToRole="LACK1_TRACKING_ALCOHOL" />
+          <Property Name="USAGE_TISTOTIS" Type="Decimal" Precision="18" Scale="5" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -9253,6 +9255,7 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="USAGE_TISTOTIS" ColumnName="USAGE_TISTOTIS" />
                 <ScalarProperty Name="DOCUMENT_NOTED" ColumnName="DOCUMENT_NOTED" />
                 <ScalarProperty Name="IS_TIS_TO_TIS" ColumnName="IS_TIS_TO_TIS" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />

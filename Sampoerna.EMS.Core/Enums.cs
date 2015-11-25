@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.Core
             Completed = 7,
             [Description("Market Return")]
             MarketReturn = 8,
-            [Description("Trigger STO")]
+            [Description("Return")]
             TriggerSto = 9,
             [Description("Waste")]
             Waste = 10
