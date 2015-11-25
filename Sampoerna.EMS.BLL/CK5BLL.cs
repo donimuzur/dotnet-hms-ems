@@ -63,6 +63,7 @@ namespace Sampoerna.EMS.BLL
         private IWasteStockServices _wasteStockServices;
         private IWasteRoleServices _wasteRoleServices;
         private IUserPlantMapBLL _userPlantMapBll;
+        private ICK5Service _ck5Service;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
@@ -114,6 +115,8 @@ namespace Sampoerna.EMS.BLL
             _wasteStockServices = new WasteStockServices(_uow, _logger);
             _wasteRoleServices = new WasteRoleServices(_uow, _logger);
             _userPlantMapBll = new UserPlantMapBLL(_uow, _logger);
+
+            _ck5Service = new CK5Service(_uow, _logger);
         }
         
 
@@ -4507,25 +4510,26 @@ namespace Sampoerna.EMS.BLL
             //get from ck5 
             if (dbWaste != null)
             {
-                var dbCk5 = _repository.Get(c => c.CK5_TYPE == Enums.CK5Type.Waste
-                                                 && c.SOURCE_PLANT_ID == plantId &&
-                                                 (c.STATUS_ID != Enums.DocumentStatus.Cancelled), null, "CK5_MATERIAL");
+                //var dbCk5 = _repository.Get(c => c.CK5_TYPE == Enums.CK5Type.Waste
+                //                                 && c.SOURCE_PLANT_ID == plantId &&
+                //                                 (c.STATUS_ID != Enums.DocumentStatus.Cancelled), null, "CK5_MATERIAL");
 
-                decimal wasteStockUsed =
-                    dbCk5.Sum(
-                        c =>
-                            c.CK5_MATERIAL.Where(ck5Material => ck5Material.BRAND == materialNumber)
-                                .Sum(
-                                    ck5Material =>
-                                        ck5Material.CONVERTED_QTY.HasValue ? ck5Material.CONVERTED_QTY.Value : 0));
+                //decimal wasteStockUsed =
+                //    dbCk5.Sum(
+                //        c =>
+                //            c.CK5_MATERIAL.Where(ck5Material => ck5Material.BRAND == materialNumber)
+                //                .Sum(
+                //                    ck5Material =>
+                //                        ck5Material.CONVERTED_QTY.HasValue ? ck5Material.CONVERTED_QTY.Value : 0));
 
               
 
-                result.WasteStock = ConvertHelper.ConvertDecimalToStringMoneyFormat(dbWaste.STOCK);
-                result.WasteStockUsed = ConvertHelper.ConvertDecimalToStringMoneyFormat(wasteStockUsed);
-                result.WasteStockRemaining =
-                    ConvertHelper.ConvertDecimalToStringMoneyFormat((dbWaste.STOCK - wasteStockUsed));
-                result.WasteStockRemainingCount = dbWaste.STOCK - wasteStockUsed;
+                //result.WasteStock = ConvertHelper.ConvertDecimalToStringMoneyFormat(dbWaste.STOCK);
+                //result.WasteStockUsed = ConvertHelper.ConvertDecimalToStringMoneyFormat(wasteStockUsed);
+                //result.WasteStockRemaining =
+                //    ConvertHelper.ConvertDecimalToStringMoneyFormat((dbWaste.STOCK - wasteStockUsed));
+                //result.WasteStockRemainingCount = dbWaste.STOCK - wasteStockUsed;
+                result = _ck5Service.GetWasteStockQuota(dbWaste.STOCK, plantId, materialNumber);
             }
             else
             {
