@@ -18,6 +18,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
        public Enums.Ck5ManualType Ck5ManualType { get; set; }
         //for modul pbck3
        public string DocumentNumberSource { get; set; }
+       public bool IsUsePlant { get; set; }
+       public string PlantId { get; set; }
     }
 
     public class WorkflowAllowEditAndSubmitInput

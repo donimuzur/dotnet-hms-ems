@@ -985,18 +985,19 @@ namespace Sampoerna.EMS.BLL
             workflowInput.FormId = result.PBCK7_ID;
             workflowInput.FormNumber = result.PBCK7_NUMBER;
             workflowInput.DocumentStatus = result.STATUS;
-            workflowInput.NPPBKC_Id = result.NPPBKC;
+            workflowInput.NppbkcId = result.NPPBKC;
             workflowInput.FormType = Enums.FormType.PBCK7;
-            workflowInput.Plant_Id = result.PLANT_ID;
+            workflowInput.PlantId = result.PLANT_ID;
+            workflowInput.IsUsePlant = true;
 
             output.WorkflowHistoryPbck7 = _workflowHistoryBll.GetByFormNumber(workflowInput);
 
             workflowInput.FormId = output.Pbck3Dto.Pbck3Id;
             workflowInput.FormNumber = output.Pbck3Dto.Pbck3Number;
             workflowInput.DocumentStatus = output.Pbck3Dto.Pbck3Status;
-            workflowInput.NPPBKC_Id = result.NPPBKC;
+            workflowInput.NppbkcId = result.NPPBKC;
             workflowInput.FormType = Enums.FormType.PBCK3;
-            workflowInput.Plant_Id = result.PLANT_ID;
+            workflowInput.PlantId = result.PLANT_ID;
 
             output.WorkflowHistoryPbck3 = _workflowHistoryBll.GetByFormNumber(workflowInput);
 
@@ -1783,9 +1784,9 @@ namespace Sampoerna.EMS.BLL
                 var input = new GetByFormNumberInput();
                 input.FormNumber = data.CK5.SUBMISSION_NUMBER;
                 input.DocumentStatus = data.CK5.STATUS_ID;
-                input.NPPBKC_Id = data.CK5.SOURCE_PLANT_NPPBKC_ID;
-                input.Plant_Id = data.CK5.SOURCE_PLANT_ID;
-
+                input.NppbkcId = data.CK5.SOURCE_PLANT_NPPBKC_ID;
+                input.PlantId = data.CK5.SOURCE_PLANT_ID;
+                input.IsUsePlant = true;
                 result.Ck5Composite.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
 
             }
