@@ -151,12 +151,13 @@ namespace Sampoerna.EMS.BLL
                 if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
                 {
                     if(input.FormType == Enums.FormType.PBCK1){
-                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NPPBKC_Id);
+                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId);
                         displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
                     }else{
-                        //var listPoa = _poaMapBll.GetPOAByNPPBKCID(input.NPPBKC_Id);
-                        var listPoa = _poaBll.GetPoaActiveByNppbkcId(input.NPPBKC_Id);
-                        if (input.Plant_Id != null) listPoa = _poaBll.GetPoaActiveByPlantId(input.Plant_Id);
+                        List<POADto> listPoa;
+                        listPoa = input.PlantId != null ? _poaBll.GetPoaActiveByPlantId(input.PlantId) 
+                            : _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId);
+                        
                         displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
                     }
                     if (displayUserId.Length > 0)
@@ -169,30 +170,7 @@ namespace Sampoerna.EMS.BLL
                     //get action by poa
                     var poaId = GetPoaByDocumentNumber(input.FormNumber);
                     displayUserId = _poaBll.GetManagerIdByPoaId(poaId);
-                    //var historyWorkflow =
-                    //    _repository.Get(
-                    //        c =>
-                    //            c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Approve &&
-                    //            c.ROLE == Enums.UserRole.POA).FirstOrDefault();
-
-                    //if (historyWorkflow != null)
-                    //{
-                    //    displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
-                    //}
-                    //else
-                    //{
-                    //    historyWorkflow =
-                    //        _repository.Get(
-                    //            c =>
-                    //                c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Submit &&
-                    //                c.ROLE == Enums.UserRole.POA).FirstOrDefault();
-
-                    //    if (historyWorkflow != null)
-                    //    {
-                    //        displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
-                    //    }
-
-                    //}
+                   
                     newRecord.ROLE = Enums.UserRole.Manager;
                 }
             }

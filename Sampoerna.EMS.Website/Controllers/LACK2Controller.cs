@@ -385,7 +385,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = curUser.USER_ID,
                 CurrentUserGroup = curUser.USER_GROUP_ID,
                 DocumentNumber = model.Lack2Number,
-                NppbkcId = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                PlantId = model.SourcePlantId
             };
 
             ////workflow
@@ -426,7 +427,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack2Number,
                 DocumentStatus = model.Status,
-                NPPBKC_Id = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                PlantId = model.SourcePlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -528,7 +530,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = curUser.USER_ID,
                 CurrentUserGroup = curUser.USER_GROUP_ID,
                 DocumentNumber = model.Lack2Number,
-                NppbkcId = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                PlantId = model.SourcePlantId
             };
 
             ////workflow
@@ -576,7 +579,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack2Number,
                 DocumentStatus = model.Status,
-                NPPBKC_Id = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                PlantId = model.SourcePlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));

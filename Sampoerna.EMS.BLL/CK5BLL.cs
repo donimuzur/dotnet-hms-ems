@@ -1219,28 +1219,18 @@ namespace Sampoerna.EMS.BLL
             var input = new GetByFormNumberInput();
             input.FormNumber = dtData.SUBMISSION_NUMBER;
             input.DocumentStatus = dtData.STATUS_ID;
+            input.PlantId = dtData.SOURCE_PLANT_ID;
 
             if (dtData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
             {
-                input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+                input.PlantId = dtData.DEST_PLANT_ID;
             }
             else if (dtData.CK5_TYPE == Enums.CK5Type.Manual &&
                      dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
             {
-                input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+                input.PlantId = dtData.DEST_PLANT_ID;
             }
-            //else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
-            //    dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-            //{
-            //    input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
-            //}
-            else
-            {
-                input.NPPBKC_Id = dtData.SOURCE_PLANT_NPPBKC_ID;    
-            }
-            
-
-            //output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(dtData.SUBMISSION_NUMBER);
+         
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
 
 
@@ -1428,14 +1418,7 @@ namespace Sampoerna.EMS.BLL
 
         private void SendEmailWorkflow(CK5WorkflowDocumentInput input)
         {
-        //    //todo: body message from email template
-        //    //todo: to = ?
-        //    //todo: subject = from email template
-        //    var to = "irmansulaeman41@gmail.com";
-        //    var subject = "this is subject for " + input.DocumentNumber;
-        //    var body = "this is body message for " + input.DocumentNumber;
-        //    //var from = "a@gmail.com";
-
+       
             var ck5Dto = Mapper.Map<CK5Dto>(_repository.Get(c => c.CK5_ID == input.DocumentId).FirstOrDefault());
 
             var mailProcess = ProsesMailNotificationBody(ck5Dto, input.ActionType);
@@ -1499,24 +1482,32 @@ namespace Sampoerna.EMS.BLL
                         else
                         {
                             List<POADto> poaList;
+                            string plantId;
                             switch (ck5Dto.CK5_TYPE)
                             {
                                 case Enums.CK5Type.PortToImporter:
                                 case Enums.CK5Type.DomesticAlcohol:
-                                    poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                    //poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                    //poaList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID);
+                                    plantId = ck5Dto.DEST_PLANT_ID;
                                     break;
                                 case Enums.CK5Type.Manual:
                                 case Enums.CK5Type.MarketReturn:
                                     if (ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-                                        poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                        plantId = ck5Dto.DEST_PLANT_ID;
+                                        //poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
                                     else
-                                        poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                                        plantId = ck5Dto.SOURCE_PLANT_ID;
+                                        //poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
                                     break;
                                 
                                 default:
-                                    poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                                    //poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                                    plantId = ck5Dto.SOURCE_PLANT_ID;
                                     break;
                             }
+
+                            poaList = _poaBll.GetPoaActiveByPlantId(plantId);
 
                             foreach (var poaDto in poaList)
                             {
@@ -1585,7 +1576,8 @@ namespace Sampoerna.EMS.BLL
                         (ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.SourceFreeText &&
                          ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.DestFreeText))
                     {
-                        var poaReceiverList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
+                        //var poaReceiverList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
+                        var poaReceiverList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct();
                         foreach (var poaDto in poaReceiverList)
                         {
                             rc.To.Add(poaDto.POA_EMAIL);

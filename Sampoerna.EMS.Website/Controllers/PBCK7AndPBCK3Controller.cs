@@ -522,6 +522,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.NppbkcId = model.NppbkcId;
                 input.ManagerApprove = model.ApprovedByManager;
 
+                input.PlantId = existingData.Pbck7Dto.PlantId;
+                
+
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
@@ -2228,9 +2231,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.FormType = Enums.FormType.PBCK3;
 
                 if (model.FromPbck7)
+                {
                     input.DocumentNumberSource = model.Pbck7Number;
+                    input.PlantId = existingData.Pbck3CompositeDto.Pbck7Composite.PlantId;
+                }
                 else
+                {
                     input.DocumentNumberSource = model.Ck5FormViewModel.SubmissionNumber;
+                    input.PlantId = existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_ID;
+                }
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
@@ -2316,9 +2325,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.FormType = Enums.FormType.PBCK3;
 
                 if (model.FromPbck7)
+                {
                     input.DocumentNumberSource = model.Pbck7Number;
+                    input.PlantId = existingData.Pbck3CompositeDto.Pbck7Composite.PlantId;
+                }
                 else
+                {
                     input.DocumentNumberSource = model.Ck5FormViewModel.SubmissionNumber;
+                    input.PlantId = existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_ID;
+                }
+
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
             }

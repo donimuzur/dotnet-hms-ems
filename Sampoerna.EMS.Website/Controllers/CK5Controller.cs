@@ -1242,20 +1242,27 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.SubmissionNumber;
                 input.NppbkcId = model.SourceNppbkcId;
+                input.PlantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
+
                 if (model.Ck5Type == Enums.CK5Type.PortToImporter)
                 {
                     input.NppbkcId = model.DestNppbkcId;
                     model.IsCk5PortToImporter = true;
+
+                    input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
-                    input.NppbkcId = model.DestNppbkcId;
+                    input.NppbkcId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                     model.IsDomesticAlcohol = true;
+
+                    input.PlantId = model.DestPlantId;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Manual &&
                          model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                 {
                     input.NppbkcId = model.DestNppbkcId;
+                    input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                 }
               
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
@@ -3055,6 +3062,36 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.LoadingPortName);
                     iColumn = iColumn + 1;
                 }
+                if (modelExport.StoNumberSender)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StoNumberSender);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.StoNumberReciever)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StoNumberReciever);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.StoBNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StoBNumber);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.DnNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.DnNumber);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.GrDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.GrDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.GiDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.GiDate);
+                    iColumn = iColumn + 1;
+                }
                 if (modelExport.Status)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Status);
@@ -3279,6 +3316,36 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.LoadingPortName)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Loading Port Name");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.StoNumberSender)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "STO Sender Number ");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.StoNumberReciever)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "STO Reciever Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.StoBNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "STOB Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.DnNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "DN Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.GrDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "GR  Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.GiDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "GI Date");
                 iColumn = iColumn + 1;
             }
             if (modelExport.Status)

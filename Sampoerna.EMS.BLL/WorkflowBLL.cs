@@ -68,11 +68,15 @@ namespace Sampoerna.EMS.BLL
             var data = poaApprovalUserData.Where(c => c.NPPBKC_ID == nppbkcId).ToList();
 
             return data.Count > 0;
+        }
 
-            //var poaCreatedUserData = _poaMapBll.GetByUserLogin(createdUser);
-            //var poaApprovalUserData = _poaMapBll.GetByUserLogin(approvalUser);
-            //return poaCreatedUserData != null && poaApprovalUserData != null &&
-            //       poaApprovalUserData.NPPBKC_ID == poaCreatedUserData.NPPBKC_ID;
+        private bool IsOnePlant(string plantId, string approvalUser)
+        {
+            var listApprovalUser = _poabll.GetPoaActiveByPlantId(plantId);
+
+            var data = listApprovalUser.FirstOrDefault(c => c.POA_ID == approvalUser);
+
+            return data != null;
         }
 
         /// <summary>
@@ -84,8 +88,7 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.CreatedUser == input.CurrentUser)
                 return false;
-
-
+            
             //need approve by POA only
             if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
             {
@@ -119,6 +122,9 @@ namespace Sampoerna.EMS.BLL
                 if (poa == null)
                     return false;
 
+                if (input.PlantId != null)
+                    return IsOnePlant(input.PlantId, input.CurrentUser);
+                
                 return IsOneNppbkc(input.NppbkcId, input.CurrentUser);
             }
             

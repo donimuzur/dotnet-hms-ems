@@ -44,8 +44,15 @@
             <th>Last Storage Location's CE Office</th>
             <th>Loading Port</th>
             <th>Loading Port Name</th>
+            <th>STO Sender Number </th>
+            <th>STO Reciever</th>
+            <th>STOB Number</th>
+            <th>DN Number</th>
+            <th>GR Date</th>
+            <th>GI Date</th>
             <th>Status</th>
-        </tr>
+            
+           </tr>
     </thead>
    
     <tbody>
@@ -98,7 +105,13 @@
                     <td>@Html.DisplayFor(model => item.DestCompanyName)</td>
                     <td>@Html.DisplayFor(model => item.LoadingPort)</td>
                     <td>@Html.DisplayFor(model => item.LoadingPortName)</td>
-                    <td class="last">@Html.DisplayFor(model => item.Status)</td>
+                    <td>@Html.DisplayFor(model => item.StoNumberSender)</td>
+                    <td>@Html.DisplayFor(model => item.StoNumberReciever)</td>
+                    <td>@Html.DisplayFor(model => item.StoBNumber)</td>
+                    <td>@Html.DisplayFor(model => item.DnNumber)</td>
+                    <td>@Html.DisplayFor(model => item.GrDate)</td>
+                    <td>@Html.DisplayFor(model => item.GiDate)</td>
+                    <td>@Html.DisplayFor(model => item.Status)</td>
                 </tr>
                 row = row + 1;
             }

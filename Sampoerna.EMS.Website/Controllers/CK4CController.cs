@@ -437,8 +437,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
-                workflowInput.NPPBKC_Id = nppbkcId;
-                if (plant != null) workflowInput.Plant_Id = ck4cData.PlantId;
+                workflowInput.NppbkcId = nppbkcId;
+                if (plant != null)
+                {
+                    workflowInput.PlantId = ck4cData.PlantId;
+                }
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -502,8 +505,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
-                workflowInput.NPPBKC_Id = nppbkcId;
-                if (plant != null) workflowInput.Plant_Id = ck4cData.PlantId;
+                workflowInput.NppbkcId = nppbkcId;
+                if (plant != null)
+                {
+                    workflowInput.PlantId = ck4cData.PlantId;
+                }
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -537,7 +543,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                     DocumentNumber = model.Details.Number,
                     NppbkcId = nppbkcId,
-                    ManagerApprove = model.Details.ApprovedByManager
+                    ManagerApprove = model.Details.ApprovedByManager,
+                    PlantId = ck4cData.PlantId
                 };
 
                 ////workflow
@@ -607,8 +614,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
-                workflowInput.NPPBKC_Id = nppbkcId;
-                if (plant != null) workflowInput.Plant_Id = ck4cData.PlantId;
+                workflowInput.NppbkcId = nppbkcId;
+                if (plant != null)
+                {
+                    workflowInput.PlantId = ck4cData.PlantId;
+                }
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -632,7 +642,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentUser = CurrentUser.USER_ID,
                     CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                     DocumentNumber = model.Details.Number,
-                    NppbkcId = nppbkcId
+                    NppbkcId = nppbkcId,
+                    PlantId = ck4cData.PlantId
                 };
 
                 ////workflow
