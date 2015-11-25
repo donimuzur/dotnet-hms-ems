@@ -32,5 +32,8 @@ namespace Sampoerna.EMS.Contract
         List<Plant> GetActivePlant();
 
         T001WDto GetT001WByIdImport(string id);
+
+        List<T001WCompositeDto> GetCompositeListByNppbkcIdWithFlag(string nppbkcId);
+
     }
 }
