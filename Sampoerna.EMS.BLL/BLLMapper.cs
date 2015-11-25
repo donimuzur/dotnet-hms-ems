@@ -438,6 +438,10 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<WasteRoleDto, WASTE_ROLE>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<WasteDto, WasteGetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantWerks));
+                
+
             #endregion
 
             #region Waste Stock

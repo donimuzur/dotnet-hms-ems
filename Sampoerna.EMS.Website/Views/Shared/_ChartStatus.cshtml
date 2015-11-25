@@ -19,10 +19,16 @@
             <h1 class="changeNumber1">@Html.DisplayFor(model => model.DraftTotal)</h1>
             <h5>Draft</h5>
         </div>
-        <div id="divWaitA" class="notif-wrapper radius-right" data-toggle="tooltip" data-placement="top" title="@Html.DisplayFor(model => model.WaitingForAppTotal)">
+        @*first code when manager exists
+        @*<div id="divWaitA" class="notif-wrapper radius-right" data-toggle="tooltip" data-placement="top" title="@Html.DisplayFor(model => model.WaitingForAppTotal)">
             <h1 id="waitPId" style="display:none">@Html.DisplayFor(model => model.WaitingForPoaTotal)</h1>
             <h1 id="waitMId" style="display:none">@Html.DisplayFor(model => model.WaitingForManagerTotal)</h1>
             <h1 class="changeNumber2">@Html.DisplayFor(model => model.WaitingForAppTotal)</h1>
+            <h5>Waiting for Approval</h5>
+        </div>*@
+        <div id="divWaitA" class="notif-wrapper radius-right" data-toggle="tooltip" data-placement="top" title="@Html.DisplayFor(model => model.WaitingForPoaTotal)">
+            <h1 id="waitPId" style="display:none">@Html.DisplayFor(model => model.WaitingForPoaTotal)</h1>
+            <h1 class="changeNumber2">@Html.DisplayFor(model => model.WaitingForPoaTotal)</h1>
             <h5>Waiting for Approval</h5>
         </div>
         <div id="divWaitG" class="notif-wrapper radius-left bottom" data-toggle="tooltip" data-placement="bottom" title="@Html.DisplayFor(model => model.WaitingForGovTotal)">

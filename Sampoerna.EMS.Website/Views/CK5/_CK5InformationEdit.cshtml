@@ -390,7 +390,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsMarketReturn)
+                            @if (!Model.IsCk5Export && !Model.IsCk5PortToImporter && !Model.IsMarketReturn && !Model.IsCk5Waste)
                             {
                                 <div class="row">
                                     <div class="col-md-6">
@@ -499,7 +499,14 @@
                                         <th>Excise Value</th>
                                         <th>USD Value</th>
                                         <th>Note</th>
-                                        <th>Message</th>
+                                        @if (Model.IsCk5Waste)
+                                        {
+                                            <th>Waste Stock</th>
+                                        }
+                                        else
+                                        {
+                                            <th>Message</th>
+                                        }
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -519,6 +526,10 @@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Note)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].MaterialDesc)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].CK5_MATERIAL_ID)
+                                         if (Model.IsCk5Waste)
+                                         {
+                                             @Html.HiddenFor(model => model.UploadItemModels[i].WasteStock)
+                                         }
                                         <tr>
                                             @*<td style="display: none"></td>*@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>
@@ -532,7 +543,15 @@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].ExciseValue)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].UsdValue)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Note)</td>
+                                           
+                                            @if (Model.IsCk5Waste)
+                                            {
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].WasteStock)</td>
+                                            }
+                                            else
+                                            {
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Message)</td>
+                                            }
                                             <td style="display: none">@Html.DisplayFor(model => model.UploadItemModels[i].Total)</td>
 
                                         </tr>
@@ -564,7 +583,7 @@
                     <div class="panel-body">
                         <div class="form-excise" role="form">
 
-                            @if (!Model.IsCk5Manual)
+                            @if (!Model.IsCk5Manual && !Model.IsCk5Waste)
                             {
 
                                 <div class="row">

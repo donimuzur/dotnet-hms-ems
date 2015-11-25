@@ -15,6 +15,11 @@
         public static string DelimeterSelectItem = " - ";
         public const string PI = "PI";
 
+
+        public const string WasteSapon = "W_SAPON";
+        public const string WasteGagang = "W_GAGANG";
+        public const string WasteStem = "W_STEM";
+
         /// <summary>
         /// list of SessionKey constanta
         /// </summary>

@@ -338,24 +338,25 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.ApprovedByPoaId, new { @class = "checkbox checkexport", @datacolumn = "35" })POA Approve
                                                     </label>
                                                 </div>
-                                                <div class="checkbox">
+                                                @*first code when manager exists
+                                                @*<div class="checkbox">
                                                     <label>
                                                         @Html.CheckBoxFor(model => model.ExportModel.ApprovedByManagerId, new { @class = "checkbox checkexport", @datacolumn = "36" })Manager Approve
                                                     </label>
-                                                </div>
+                                                </div>*@
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DocNumberCk5, new { @class = "checkbox checkexport", @datacolumn = "37" })Doc Number CK-5
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DocNumberCk5, new { @class = "checkbox checkexport", @datacolumn = "36" })Doc Number CK-5
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.StatusDoc, new { @class = "checkbox checkexport", @datacolumn = "38" })Status doc
+                                                        @Html.CheckBoxFor(model => model.ExportModel.StatusDoc, new { @class = "checkbox checkexport", @datacolumn = "37" })Status doc
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.GrandTotalExciseable, new { @class = "checkbox checkexport", @datacolumn = "39" })Grand Total Exciseable
+                                                        @Html.CheckBoxFor(model => model.ExportModel.GrandTotalExciseable, new { @class = "checkbox checkexport", @datacolumn = "38" })Grand Total Exciseable
                                                     </label>
                                                 </div>
                                             </div>
@@ -493,7 +494,7 @@
                 $('#pbckTable').parents('div.dataTables_wrapper').first().show();
             });
 
-            for (var i = 6; i < 40; i++) {
+            for (var i = 6; i < 39; i++) {
                 table.column(i).visible(false);
 
             }
@@ -504,7 +505,7 @@
                     // Show a column
                     $('#pbckTable').parents('div.dataTables_wrapper').first().show();
                     var table = $('#pbckTable').DataTable();
-                    for (var i = 0; i < 40; i++) {
+                    for (var i = 0; i < 39; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -519,7 +520,7 @@
 
                     });
                     var table = $('#pbckTable').DataTable();
-                    for (var i = 0; i < 40; i++) {
+                    for (var i = 0; i < 39; i++) {
                         table.column(i).visible(false);
 
                     }

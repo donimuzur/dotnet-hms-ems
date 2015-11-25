@@ -88,7 +88,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Ck4CDocument,
                 IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
             return View("DocumentList", data);
@@ -154,7 +156,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterOpenDocument(Ck4CIndexDocumentListViewModel model)
         {
             model.Detail = GetOpenDocument(model);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return PartialView("_CK4CTableDocumentList", model);
         }
 
@@ -169,7 +173,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.CompletedDocument,
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                //first code when manager exists
+                //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
             return View("CompletedDocument", data);
         }
@@ -178,7 +184,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterCompletedDocument(Ck4CIndexDocumentListViewModel model)
         {
             model.Detail = GetCompletedDocument(model);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return PartialView("_CK4CTableCompletedDocument", model);
         }
 
@@ -491,7 +499,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("Detail", new { id });
             }
@@ -551,10 +561,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
 
-                if (!allowApproveAndReject)
-                {
-                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
-                }
+                //first code when manager exists
+                //if (!allowApproveAndReject)
+                //{
+                //    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //}
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
 
@@ -590,12 +601,16 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new Ck4CIndexDocumentListViewModel();
             model = InitialModel(model);
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("Detail", new { id });
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || (CurrentUser.UserRole == Enums.UserRole.POA && ck4cData.Status == Enums.DocumentStatus.WaitingForApproval))
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Manager || (CurrentUser.UserRole == Enums.UserRole.POA && ck4cData.Status == Enums.DocumentStatus.WaitingForApproval))
+            if (CurrentUser.UserRole == Enums.UserRole.POA && ck4cData.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 //redirect to details for approval/rejected
                 return RedirectToAction("Details", new { id });
@@ -1572,11 +1587,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.ManagerApproved)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.ManagerApproved);
-                    iColumn = iColumn + 1;
-                }
+                //first code when manager exists
+                //if (modelExport.ManagerApproved)
+                //{
+                //    slDocument.SetCellValue(iRow, iColumn, data.ManagerApproved);
+                //    iColumn = iColumn + 1;
+                //}
 
                 if (modelExport.Status)
                 {
@@ -1741,11 +1757,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.ManagerApproved)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Manager Approved");
-                iColumn = iColumn + 1;
-            }
+            //first code when manager exists
+            //if (modelExport.ManagerApproved)
+            //{
+            //    slDocument.SetCellValue(iRow, iColumn, "Manager Approved");
+            //    iColumn = iColumn + 1;
+            //}
 
             if (modelExport.Status)
             {
@@ -1953,9 +1970,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var listCk4c = GetAllDocument(model);
 
             model.Detil.DraftTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Draft).Count();
-            model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //first code when manager exists
+            //model.Detil.WaitingForAppTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForPoaTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApproval).Count();
-            model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
+            //first code when manager exists
+            //model.Detil.WaitingForManagerTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager).Count();
             model.Detil.WaitingForGovTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.WaitingGovApproval).Count();
             model.Detil.CompletedTotal = listCk4c.Where(x => x.Status == Enums.DocumentStatus.Completed).Count();
 

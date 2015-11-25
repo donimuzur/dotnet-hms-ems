@@ -165,7 +165,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.CreatorList = GlobalFunctions.GetCreatorList();
             model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return model;
 
         }
@@ -180,8 +182,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.Pbck7Date = Convert.ToDateTime(input.Pbck7Date).ToString();
             }
 
-
-
             var dbData = _pbck7Pbck3Bll.GetPbck7ByParam(input, CurrentUser);
 
             var result = Mapper.Map<List<DataListIndexPbck7>>(dbData);
@@ -189,7 +189,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Pbck7IndexViewModel();
 
             viewModel.Detail = result;
-            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Pbck7TableIndex", viewModel);
         }
@@ -236,7 +238,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+
             return (model);
         }
 
@@ -257,7 +260,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Pbck3IndexViewModel();
 
             viewModel.Detail = result;
-            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Pbck3TableIndex", viewModel);
 
@@ -422,7 +427,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new Pbck7Pbck3CreateViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("Details", new { id });
             }
@@ -483,7 +490,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new Pbck7Pbck3CreateViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("Details", new { id });
             }
@@ -533,7 +542,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject)
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                    //first code when manager exists
+                    //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
@@ -2014,7 +2024,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new Pbck3ViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("DetailsPbck3", new { id });
             }
@@ -2173,7 +2185,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new Pbck3ViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 return RedirectToAction("DetailsPbck3", new { id });
             }
@@ -2247,7 +2261,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject)
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                    //first code when manager exists
+                    //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
@@ -2989,10 +3004,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail = new DashboardDetilModel
                 {
                     DraftTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.Draft),
-                    WaitingForAppTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApproval || x.Pbck7Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                    //first code when manager exists
+                    //WaitingForAppTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApproval || x.Pbck7Status == Enums.DocumentStatus.WaitingForApprovalManager),
                     WaitingForPoaTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApproval),
-                    WaitingForManagerTotal =
-                        data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                    //first code when manager exists
+                    //WaitingForManagerTotal =
+                    //    data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingForApprovalManager),
                     WaitingForGovTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.WaitingGovApproval),
                     CompletedTotal = data.Count(x => x.Pbck7Status == Enums.DocumentStatus.Completed)
                 };
@@ -3005,10 +3022,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail = new DashboardDetilModel
                 {
                     DraftTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.Draft),
-                    WaitingForAppTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApproval || x.Pbck3Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                    //first code when manager exists
+                    //WaitingForAppTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApproval || x.Pbck3Status == Enums.DocumentStatus.WaitingForApprovalManager),
                     WaitingForPoaTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApproval),
-                    WaitingForManagerTotal =
-                        data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                    //first code when manager exists
+                    //WaitingForManagerTotal =
+                    //    data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingForApprovalManager),
                     WaitingForGovTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.WaitingGovApproval),
                     CompletedTotal = data.Count(x => x.Pbck3Status == Enums.DocumentStatus.Completed)
                 };
