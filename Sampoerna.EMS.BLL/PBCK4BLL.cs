@@ -184,8 +184,9 @@ namespace Sampoerna.EMS.BLL
             var input = new GetByFormNumberInput();
             input.FormNumber = dtData.PBCK4_NUMBER;
             input.DocumentStatus = dtData.STATUS;
-            input.NPPBKC_Id = dtData.NPPBKC_ID;
-            input.Plant_Id = dtData.PLANT_ID;
+            input.NppbkcId = dtData.NPPBKC_ID;
+            input.PlantId = dtData.PLANT_ID;
+            input.IsUsePlant = true;
 
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
 

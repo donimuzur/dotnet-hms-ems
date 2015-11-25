@@ -437,8 +437,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
-                workflowInput.NPPBKC_Id = nppbkcId;
-                if (plant != null) workflowInput.Plant_Id = ck4cData.PlantId;
+                workflowInput.NppbkcId = nppbkcId;
+                if (plant != null)
+                {
+                    workflowInput.PlantId = ck4cData.PlantId;
+                    workflowInput.IsUsePlant = true;
+                }
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -502,8 +506,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
-                workflowInput.NPPBKC_Id = nppbkcId;
-                if (plant != null) workflowInput.Plant_Id = ck4cData.PlantId;
+                workflowInput.NppbkcId = nppbkcId;
+                if (plant != null)
+                {
+                    workflowInput.PlantId = ck4cData.PlantId;
+                    workflowInput.IsUsePlant = true;
+                }
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -607,8 +615,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
-                workflowInput.NPPBKC_Id = nppbkcId;
-                if (plant != null) workflowInput.Plant_Id = ck4cData.PlantId;
+                workflowInput.NppbkcId = nppbkcId;
+                if (plant != null)
+                {
+                    workflowInput.PlantId = ck4cData.PlantId;
+                    workflowInput.IsUsePlant = true;
+                }
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 

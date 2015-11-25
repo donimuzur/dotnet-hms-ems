@@ -1242,20 +1242,31 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.SubmissionNumber;
                 input.NppbkcId = model.SourceNppbkcId;
+                input.PlantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
+                input.IsUsePlant = true;
+
                 if (model.Ck5Type == Enums.CK5Type.PortToImporter)
                 {
                     input.NppbkcId = model.DestNppbkcId;
                     model.IsCk5PortToImporter = true;
+
+                    input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                    input.IsUsePlant = true;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
-                    input.NppbkcId = model.DestNppbkcId;
+                    input.NppbkcId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                     model.IsDomesticAlcohol = true;
+
+                    input.PlantId = model.DestPlantId;
+                    input.IsUsePlant = true;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Manual &&
                          model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                 {
                     input.NppbkcId = model.DestNppbkcId;
+                    input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                    input.IsUsePlant = true;
                 }
               
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)

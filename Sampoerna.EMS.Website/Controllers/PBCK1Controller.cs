@@ -485,7 +485,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var workflowInput = new GetByFormNumberInput();
                 workflowInput.FormNumber = pbck1Data.Pbck1Number;
                 workflowInput.DocumentStatus = pbck1Data.Status;
-                workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+                workflowInput.NppbkcId = pbck1Data.NppbkcId;
                 workflowInput.FormType = Enums.FormType.PBCK1;
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -707,7 +707,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowInput = new GetByFormNumberInput();
             workflowInput.FormNumber = model.Detail.Pbck1Number;
             workflowInput.DocumentStatus = model.Detail.Status;
-            workflowInput.NPPBKC_Id = model.Detail.NppbkcId;
+            workflowInput.NppbkcId = model.Detail.NppbkcId;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -728,7 +728,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowInput = new GetByFormNumberInput();
             workflowInput.FormNumber = model.Detail.Pbck1Number;
             workflowInput.DocumentStatus = model.Detail.Status;
-            workflowInput.NPPBKC_Id = model.Detail.NppbkcId;
+            workflowInput.NppbkcId = model.Detail.NppbkcId;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -762,7 +762,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowInput = new GetByFormNumberInput();
             workflowInput.FormNumber = pbck1Data.Pbck1Number;
             workflowInput.DocumentStatus = pbck1Data.Status;
-            workflowInput.NPPBKC_Id = pbck1Data.NppbkcId;
+            workflowInput.NppbkcId = pbck1Data.NppbkcId;
             workflowInput.FormType = Enums.FormType.PBCK1;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
