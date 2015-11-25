@@ -122,7 +122,7 @@ namespace Sampoerna.EMS.BLL
                 if (poa == null)
                     return false;
 
-                if (input.IsUsePlant)
+                if (input.PlantId != null)
                     return IsOnePlant(input.PlantId, input.CurrentUser);
                 
                 return IsOneNppbkc(input.NppbkcId, input.CurrentUser);

@@ -1243,7 +1243,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentNumber = model.SubmissionNumber;
                 input.NppbkcId = model.SourceNppbkcId;
                 input.PlantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
-                input.IsUsePlant = true;
 
                 if (model.Ck5Type == Enums.CK5Type.PortToImporter)
                 {
@@ -1251,7 +1250,6 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.IsCk5PortToImporter = true;
 
                     input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
-                    input.IsUsePlant = true;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
@@ -1259,14 +1257,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.IsDomesticAlcohol = true;
 
                     input.PlantId = model.DestPlantId;
-                    input.IsUsePlant = true;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Manual &&
                          model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                 {
                     input.NppbkcId = model.DestNppbkcId;
                     input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
-                    input.IsUsePlant = true;
                 }
               
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)

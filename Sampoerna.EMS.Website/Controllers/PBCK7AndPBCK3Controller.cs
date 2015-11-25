@@ -523,7 +523,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.ManagerApprove = model.ApprovedByManager;
 
                 input.PlantId = existingData.Pbck7Dto.PlantId;
-                input.IsUsePlant = true;
                 
 
                 //workflow
@@ -2230,7 +2229,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.NppbkcId = nppbkcId;
                 input.ManagerApprove = model.APPROVED_BY_MANAGER;
                 input.FormType = Enums.FormType.PBCK3;
-                input.IsUsePlant = true;
 
                 if (model.FromPbck7)
                 {
@@ -2325,7 +2323,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.NppbkcId = nppbkcId;
                 input.ManagerApprove = model.APPROVED_BY_MANAGER;
                 input.FormType = Enums.FormType.PBCK3;
-                input.IsUsePlant = true;
 
                 if (model.FromPbck7)
                 {

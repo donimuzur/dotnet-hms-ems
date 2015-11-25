@@ -155,7 +155,7 @@ namespace Sampoerna.EMS.BLL
                         displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
                     }else{
                         List<POADto> listPoa;
-                        listPoa = input.IsUsePlant ? _poaBll.GetPoaActiveByPlantId(input.PlantId) 
+                        listPoa = input.PlantId != null ? _poaBll.GetPoaActiveByPlantId(input.PlantId) 
                             : _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId);
                         
                         displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));

@@ -26,7 +26,6 @@
 
         public string FormNumberSource { get; set; }
         public string PlantId { get; set; }
-        public bool IsUsePlant { get; set; }
     }
 
     

@@ -441,7 +441,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (plant != null)
                 {
                     workflowInput.PlantId = ck4cData.PlantId;
-                    workflowInput.IsUsePlant = true;
                 }
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -510,7 +509,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (plant != null)
                 {
                     workflowInput.PlantId = ck4cData.PlantId;
-                    workflowInput.IsUsePlant = true;
                 }
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -545,7 +543,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                     DocumentNumber = model.Details.Number,
                     NppbkcId = nppbkcId,
-                    ManagerApprove = model.Details.ApprovedByManager
+                    ManagerApprove = model.Details.ApprovedByManager,
+                    PlantId = ck4cData.PlantId
                 };
 
                 ////workflow
@@ -619,7 +618,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (plant != null)
                 {
                     workflowInput.PlantId = ck4cData.PlantId;
-                    workflowInput.IsUsePlant = true;
                 }
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -644,7 +642,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentUser = CurrentUser.USER_ID,
                     CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                     DocumentNumber = model.Details.Number,
-                    NppbkcId = nppbkcId
+                    NppbkcId = nppbkcId,
+                    PlantId = ck4cData.PlantId
                 };
 
                 ////workflow

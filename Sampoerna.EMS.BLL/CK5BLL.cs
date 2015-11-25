@@ -1219,7 +1219,6 @@ namespace Sampoerna.EMS.BLL
             var input = new GetByFormNumberInput();
             input.FormNumber = dtData.SUBMISSION_NUMBER;
             input.DocumentStatus = dtData.STATUS_ID;
-            input.IsUsePlant = true;
             input.PlantId = dtData.SOURCE_PLANT_ID;
 
             if (dtData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
