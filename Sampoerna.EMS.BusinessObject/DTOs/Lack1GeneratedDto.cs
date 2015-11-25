@@ -11,8 +11,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             PlantList = new List<Lack1GeneratedPlantDto>();
             Pbck1List = new List<Lack1GeneratedPbck1DataDto>();
             IncomeList = new List<Lack1GeneratedIncomeDataDto>();
-            ProductionList = new List<Lack1GeneratedProductionDataDto>();
-            SummaryProductionList = new List<Lack1GeneratedSummaryProductionDataDto>();
+            //ProductionList = new List<Lack1GeneratedProductionDataDto>();
+            //SummaryProductionList = new List<Lack1GeneratedSummaryProductionDataDto>();
         }
 
         public string CompanyCode { get; set; }
@@ -40,17 +40,33 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalUsage { get; set; }
         public decimal TotalProduction { get; set; }
         public decimal EndingBalance { get; set; }
-        public List<Lack1GeneratedProductionDataDto> ProductionList { get; set; }
-        public List<Lack1GeneratedProductionSummaryByProdTypeDataDto> ProductionSummaryByProdTypeList { get; set; }
-        public List<Lack1GeneratedSummaryProductionDataDto> SummaryProductionList { get; set; }
+        
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
         public string Lack1UomId { get; set; }
+        public Lack1GeneratedInventoryAndProductionDto InventoryProductionTisToFa { get; set; }
+        public Lack1GeneratedInventoryAndProductionDto InventoryProductionTisToTis { get; set; }
+        
+    }
 
+    public class Lack1GeneratedInventoryAndProductionDto
+    {
+        public Lack1GeneratedInventoryMovementDto InvetoryMovementData { get; set; }
+        public Lack1GeneratedProductionDto ProductionData { get; set; }
+    }
+
+    public class Lack1GeneratedProductionDto
+    {
+        public List<Lack1GeneratedProductionDataDto> ProductionList { get; set; }
+        public List<Lack1GeneratedProductionSummaryByProdTypeDataDto> ProductionSummaryByProdTypeList { get; set; }
+        public List<Lack1GeneratedSummaryProductionDataDto> SummaryProductionList { get; set; }
+    }
+
+    public class Lack1GeneratedInventoryMovementDto
+    {
         public List<Lack1GeneratedTrackingDto> InvMovementAllList { get; set; }
         public List<Lack1GeneratedTrackingDto> InvMovementReceivingCk5List { get; set; }
         public List<Lack1GeneratedTrackingDto> InvMovementReceivingList { get; set; }
-        
     }
 
     public class Lack1GeneratedSummaryProductionDataDto

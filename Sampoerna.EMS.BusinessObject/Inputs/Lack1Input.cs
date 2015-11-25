@@ -9,6 +9,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Lack1DetailsDto Detail { get; set; }
         public string UserId { get; set; }
         public Enums.ActionType WorkflowActionType { get; set; }
+        public bool IsTisToTis { get; set; }
     }
 
     public class Lack1GetDashboardDataByParamInput

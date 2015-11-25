@@ -814,7 +814,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     UserId = CurrentUser.USER_ID,
                     WorkflowActionType = Enums.ActionType.Modified,
-                    Detail = lack1Data
+                    Detail = lack1Data,
+                    IsTisToTis = model.IsTisToTisReport
                 };
 
                 var saveResult = _lack1Bll.SaveEdit(input);
