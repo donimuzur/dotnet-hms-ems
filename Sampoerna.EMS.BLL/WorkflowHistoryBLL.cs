@@ -152,7 +152,7 @@ namespace Sampoerna.EMS.BLL
                 if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
                 {
                     if(input.FormType == Enums.FormType.PBCK1){
-                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Where(x => x.POA_ID != input.DocumentCreator).ToList();
+                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().Where(x => x.POA_ID != input.DocumentCreator).ToList();
                         displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
                     }else{
                         var listPoa = new List<POADto>();
@@ -160,11 +160,12 @@ namespace Sampoerna.EMS.BLL
 
                         if (creatorPoa != null)
                         {
-                            listPoa = _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId).Where(x => x.POA_ID != input.DocumentCreator).ToList();
+                            listPoa = _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId).Distinct().Where(x => x.POA_ID != input.DocumentCreator).ToList();
                         }
                         else
                         {
-                            listPoa = input.PlantId != null ? _poaBll.GetPoaActiveByPlantId(input.PlantId) : _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId);
+                            listPoa = input.PlantId != null ? _poaBll.GetPoaActiveByPlantId(input.PlantId).Distinct().ToList() 
+                                                                : _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId).Distinct().ToList();
                         }
                         
                         displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));

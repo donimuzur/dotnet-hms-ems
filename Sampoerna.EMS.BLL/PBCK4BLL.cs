@@ -749,7 +749,9 @@ namespace Sampoerna.EMS.BLL
             var rc = new MailNotification();
 
             var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck4Dto.PBCK4_ID, FormType = Enums.FormType.PBCK4 });
-            var poaList = _poaBll.GetPoaActiveByPlantId(pbck4Dto.PlantId);
+            var creatorPoa = _poaBll.GetById(pbck4Dto.CREATED_BY);
+            var poaList = creatorPoa == null ? _poaBll.GetPoaActiveByPlantId(pbck4Dto.PlantId) :
+                            _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck4Dto.NppbkcId).Where(x => x.POA_ID != pbck4Dto.CREATED_BY).ToList();
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -817,13 +819,6 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(_userBll.GetUserById(pbck4Dto.CREATED_BY).EMAIL);
 
                         rc.IsCCExist = true;
-                    }
-                    else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingGovApproval)
-                    {
-                        var userData = _userBll.GetUserById(pbck4Dto.CREATED_BY);
-                        rc.To.Add(userData.EMAIL);
-
-                        rc.IsCCExist = false;
                     }
                     //first code when manager exists
                     //else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingForApprovalManager)
@@ -1043,8 +1038,8 @@ namespace Sampoerna.EMS.BLL
                     //first code when manager exists
                     //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
                     //newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval);
                     break;
                 default:
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -1540,13 +1535,16 @@ namespace Sampoerna.EMS.BLL
             var nppbkcData = _nppbkcBll.GetById(dtData.NPPBKC_ID);
 
             var plantData = _plantBll.GetT001WById(dtData.PLANT_ID);
+            var creatorPoa = _poaBll.GetById(dtData.CREATED_BY);
+            var poaUser = creatorPoa == null ? dtData.APPROVED_BY_POA : dtData.CREATED_BY;
+            var poa = _poaBll.GetDetailsById(poaUser);
 
             var result = new Pbck4ReportDto();
             result.ReportDetails.Pbck4Number = dtData.PBCK4_NUMBER;
             result.ReportDetails.Pbck4Lampiran = "";
             result.ReportDetails.TextTo = nppbkcData != null ? nppbkcData.TEXT_TO : string.Empty;
             result.ReportDetails.CityTo = nppbkcData != null ? nppbkcData.CITY : string.Empty;
-            result.ReportDetails.PoaName = dtData.POA_PRINTED_NAME;// dtData.POA != null ? dtData.POA.PRINTED_NAME : string.Empty;
+            if (poa != null) result.ReportDetails.PoaName = poa.PRINTED_NAME;
             result.ReportDetails.PoaTitle = dtData.POA != null ? dtData.POA.TITLE : string.Empty;
             result.ReportDetails.CompanyName = dtData.COMPANY_NAME;
             result.ReportDetails.CompanyAddress = plantData != null ? plantData.ADDRESS : string.Empty;
@@ -1920,7 +1918,7 @@ namespace Sampoerna.EMS.BLL
 
         public string GetListPoaByNppbkcId(string nppbkcId)
         {
-            var dbPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId);
+            var dbPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId).Distinct();
             var result = "";
 
             foreach (var poaDto in dbPoa)
