@@ -4,11 +4,13 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using AutoMapper;
 using CrystalDecisions.Shared.Json;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -25,6 +27,7 @@ namespace Sampoerna.EMS.BLL
 
         private IChangesHistoryBLL _changesHistoryBll;
         private IMaterialBLL _materialBll;
+        private ICK5Service _ck5Service;
 
         private string _includeTables = "ZAIDM_EX_MATERIAL, USER, T001W";
 
@@ -36,6 +39,7 @@ namespace Sampoerna.EMS.BLL
 
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _materialBll = new MaterialBLL(_uow, _logger);
+            _ck5Service = new CK5Service(_uow, _logger);
         }
 
         public WasteStockDto GetById(int id)
@@ -82,11 +86,14 @@ namespace Sampoerna.EMS.BLL
             var dbMaterial = _materialBll.GetMaterialByPlantId(plantId);
             foreach (var material in dbMaterial)
             {
-                var data = new GetListMaterialByPlantOutput();
-                data.MaterialNumber = material.STICKER_CODE;
-                data.MaterialDescription = material.MATERIAL_DESC;
+                if (material.IS_FROM_SAP == false)
+                {
+                    var data = new GetListMaterialByPlantOutput();
+                    data.MaterialNumber = material.STICKER_CODE;
+                    data.MaterialDescription = material.MATERIAL_DESC;
 
-                output.Add(data);
+                    output.Add(data);
+                }
             }
 
             return output;
@@ -306,6 +313,13 @@ namespace Sampoerna.EMS.BLL
             _repository.InsertOrUpdate(dbWasteStock);
          
             
+        }
+
+        public string GetRemainingQuota(decimal wasteStock, string plantId, string materialNumber)
+        {
+            var remaingQuota = _ck5Service.GetWasteStockQuota(wasteStock, plantId, materialNumber);
+
+            return remaingQuota.WasteStockRemaining;
         }
     }
 }
