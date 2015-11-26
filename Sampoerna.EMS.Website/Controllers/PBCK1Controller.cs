@@ -495,6 +495,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 workflowInput.DocumentStatus = pbck1Data.Status;
                 workflowInput.NppbkcId = pbck1Data.NppbkcId;
                 workflowInput.FormType = Enums.FormType.PBCK1;
+                workflowInput.DocumentCreator = pbck1Data.CreatedById;
 
                 var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
                 model.WorkflowHistory = workflowHistory;
@@ -716,6 +717,7 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.FormNumber = model.Detail.Pbck1Number;
             workflowInput.DocumentStatus = model.Detail.Status;
             workflowInput.NppbkcId = model.Detail.NppbkcId;
+            workflowInput.DocumentCreator = model.Detail.CreatedById;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -737,6 +739,7 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.FormNumber = model.Detail.Pbck1Number;
             workflowInput.DocumentStatus = model.Detail.Status;
             workflowInput.NppbkcId = model.Detail.NppbkcId;
+            workflowInput.DocumentCreator = model.Detail.CreatedById;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 
@@ -772,6 +775,7 @@ namespace Sampoerna.EMS.Website.Controllers
             workflowInput.DocumentStatus = pbck1Data.Status;
             workflowInput.NppbkcId = pbck1Data.NppbkcId;
             workflowInput.FormType = Enums.FormType.PBCK1;
+            workflowInput.DocumentCreator = pbck1Data.CreatedById;
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
 

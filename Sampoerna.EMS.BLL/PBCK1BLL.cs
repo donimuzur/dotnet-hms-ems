@@ -1368,7 +1368,7 @@ namespace Sampoerna.EMS.BLL
                 case Enums.UserRole.POA:
                     //first code when manager exists
                     //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                     break;
                 default:
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -1826,7 +1826,8 @@ namespace Sampoerna.EMS.BLL
                 rc.Detail.NppbkcCity = nppbkcDetails.CITY;
             }
 
-            var poaId = !string.IsNullOrEmpty(dbData.APPROVED_BY_POA) ? dbData.APPROVED_BY_POA : dbData.CREATED_BY;
+            var creatorPoa = _poaBll.GetById(dbData.CREATED_BY);
+            var poaId = creatorPoa == null ? dbData.APPROVED_BY_POA : dbData.CREATED_BY;
 
             var poaDetails = _poaBll.GetDetailsById(poaId);
             if (poaDetails != null)
@@ -2168,7 +2169,7 @@ namespace Sampoerna.EMS.BLL
             var bodyMail = new StringBuilder();
             var rc = new Pbck1MailNotification();
             var rejected = _workflowHistoryBll.RejectedStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck1Data.Pbck1Id, FormType = Enums.FormType.PBCK1});
-            var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId);
+            var poaList = _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck1Data.NppbkcId).Where(x => x.POA_ID != pbck1Data.CreatedById).ToList();
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -2224,13 +2225,6 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(_userBll.GetUserById(pbck1Data.CreatedById).EMAIL);
 
                         rc.IsCCExist = true;
-                    }
-                    else if (pbck1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
-                    {
-                        var userData = _userBll.GetUserById(pbck1Data.CreatedById);
-                        rc.To.Add(userData.EMAIL);
-
-                        rc.IsCCExist = false;
                     }
                     //first code when manager exists
                     //else if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
