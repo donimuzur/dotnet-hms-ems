@@ -276,6 +276,8 @@ namespace Sampoerna.EMS.BLL
                 _repository.Get(c => c.WERKS == input.WERKS && c.MATERIAL_NUMBER == input.MATERIAL_NUMBER)
                     .FirstOrDefault();
 
+            var origin = Mapper.Map<WasteStockDto>(dbWasteStock);
+
             if (dbWasteStock == null)
             {
                 dbWasteStock = new WASTE_STOCK();
@@ -293,10 +295,11 @@ namespace Sampoerna.EMS.BLL
                 dbWasteStock.MODIFIED_DATE = DateTime.Now;
                 var dbData = _repository.GetByID(dbWasteStock.WASTE_STOCK_ID);
 
-                var origin = Mapper.Map<WasteStockDto>(dbData);
-                if (origin.WASTE_STOCK_ID > 0)
+                var inputNew = Mapper.Map<WasteStockDto>(dbData);
+                if (inputNew.WASTE_STOCK_ID > 0)
                 {
-                    SetChangesHistory(origin, input, userId);
+                   
+                    SetChangesHistory(origin, inputNew, userId);
                 }
             }
            

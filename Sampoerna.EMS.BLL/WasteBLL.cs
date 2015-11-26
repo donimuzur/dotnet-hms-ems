@@ -145,9 +145,6 @@ namespace Sampoerna.EMS.BLL
 
             if (originDto != null)
             {
-                dbWaste.CREATED_BY = origin.CREATED_BY;
-                dbWaste.CREATED_DATE = origin.CREATED_DATE;
-
                 SetChange(originDto, wasteDto, userId);
                 isNewData = false;
             }
@@ -299,8 +296,9 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-        private void SetChange(WasteDto origin, WasteDto data, string userId)
+        private bool SetChange(WasteDto origin, WasteDto data, string userId)
         {
+            bool isModified = false;
             var changeData = new Dictionary<string, bool>();
             changeData.Add("COMPANY_CODE", origin.CompanyCode == data.CompanyCode);
             changeData.Add("WERKS", origin.PlantWerks == data.PlantWerks);
@@ -309,16 +307,17 @@ namespace Sampoerna.EMS.BLL
             changeData.Add("BRAND_DESC", origin.BrandDescription == data.BrandDescription);
             changeData.Add("PLANT_NAME", origin.PlantName == data.PlantName);
             changeData.Add("COMPANY_NAME", origin.CompanyName == data.CompanyName);
-            changeData.Add("MARKER_REJECT_STICK_QTY", origin.MarkerRejectStickQty == data.MarkerRejectStickQty);
-            changeData.Add("PACKER_REJECT_STICK_QTY", origin.PackerRejectStickQty == data.PackerRejectStickQty);
-            changeData.Add("DUST_WASTE_GRAM_QTY", origin.DustWasteGramQty == data.DustWasteGramQty);
-            changeData.Add("FLOOR_WASTE_GRAM_QTY", origin.FloorWasteGramQty == data.FloorWasteGramQty);
-            changeData.Add("DUST_WASTE_STICK_QTY", origin.DustWasteStickQty == data.DustWasteStickQty);
-            changeData.Add("FLOOR_WASTE_STICK_QTY", origin.FloorWasteStickQty == data.FloorWasteStickQty);
+            changeData.Add("MARKER_REJECT_STICK_QTY", origin.MarkerRejectStickQty == Convert.ToDecimal(data.MarkerStr));
+            changeData.Add("PACKER_REJECT_STICK_QTY", origin.PackerRejectStickQty == Convert.ToDecimal(data.PackerStr));
+            changeData.Add("DUST_WASTE_GRAM_QTY", origin.DustWasteGramQty == Convert.ToDecimal(data.DustGramStr));
+            changeData.Add("FLOOR_WASTE_GRAM_QTY", origin.FloorWasteGramQty == Convert.ToDecimal(data.FloorGramStr));
+            //changeData.Add("DUST_WASTE_STICK_QTY", origin.DustWasteStickQty == data.DustWasteStickQty);
+            //changeData.Add("FLOOR_WASTE_STICK_QTY", origin.FloorWasteStickQty == data.FloorWasteStickQty);
+            changeData.Add("STAMP_WASTE_QTY", origin.StampWasteQty == Convert.ToDecimal(data.StampWasteQtyStr));
 
             foreach (var listChange in changeData)
             {
-                if (!listChange.Value)
+                if (listChange.Value) continue;
                 {
                     var changes = new CHANGES_HISTORY()
                     {
@@ -369,42 +368,47 @@ namespace Sampoerna.EMS.BLL
                             break;
                         case "MARKER_REJECT_STICK_QTY":
                             changes.OLD_VALUE = origin.MarkerRejectStickQty.ToString();
-                            changes.NEW_VALUE = data.MarkerRejectStickQty.ToString();
+                            changes.NEW_VALUE = data.MarkerStr;
                             changes.FIELD_NAME = "Maker Reject Cigarette(stick)";
                             break;
                         case "PACKER_REJECT_STICK_QTY":
                             changes.OLD_VALUE = origin.PackerRejectStickQty.ToString();
-                            changes.NEW_VALUE = data.PackerRejectStickQty.ToString();
+                            changes.NEW_VALUE = data.PackerStr;
                             changes.FIELD_NAME = "Packer Reject Cigarette(stick)";
                             break;
                         case "DUST_WASTE_GRAM_QTY":
                             changes.OLD_VALUE = origin.DustWasteGramQty.ToString();
-                            changes.NEW_VALUE = data.DustWasteGramQty.ToString();
+                            changes.NEW_VALUE = data.DustGramStr;
                             changes.FIELD_NAME = "Dust Waste QTY (gram)";
                             break;
                         case "FLOOR_WASTE_GRAM_QTY":
                             changes.OLD_VALUE = origin.FloorWasteGramQty.ToString();
-                            changes.NEW_VALUE = data.FloorWasteGramQty.ToString();
+                            changes.NEW_VALUE = data.FloorGramStr;
                             changes.FIELD_NAME = "Floor Waste QTY (gram)";
                             break;
-                        case "DUST_WASTE_STICK_QTY":
-                            changes.OLD_VALUE = origin.DustWasteStickQty.ToString();
-                            changes.NEW_VALUE = data.DustWasteStickQty.ToString();
-                            changes.FIELD_NAME = "Dust Waste QTY (Stick)";
-                            break;
-                        case "FLOOR_WASTE_STICK_QTY":
-                            changes.OLD_VALUE = origin.FloorWasteStickQty.ToString();
-                            changes.NEW_VALUE = data.FloorWasteStickQty.ToString();
-                            changes.FIELD_NAME = "Floor Waste QTY (Stick)";
+                        //case "DUST_WASTE_STICK_QTY":
+                        //    changes.OLD_VALUE = origin.DustWasteStickQty.ToString();
+                        //    changes.NEW_VALUE = data.DustWasteStickQty.ToString();
+                        //    changes.FIELD_NAME = "Dust Waste QTY (Stick)";
+                        //    break;
+                        //case "FLOOR_WASTE_STICK_QTY":
+                        //    changes.OLD_VALUE = origin.FloorWasteStickQty.ToString();
+                        //    changes.NEW_VALUE = data.FloorWasteStickQty.ToString();
+                        //    changes.FIELD_NAME = "Floor Waste QTY (Stick)";
+                        //    break;
+                        case "STAMP_WASTE_QTY":
+                            changes.OLD_VALUE = origin.StampWasteQty.ToString();
+                            changes.NEW_VALUE = data.StampWasteQtyStr;
                             break;
                         default: break;
                     }
+                 
                     _changesHistoryBll.AddHistory(changes);
-
+                    isModified = true;
                 }
-
+               
             }
-
+            return isModified;
         }
 
         public void DeleteOldData(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)

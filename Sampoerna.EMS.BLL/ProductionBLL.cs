@@ -290,24 +290,26 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        private void SetChange(ProductionDto origin, ProductionDto data, string userId)
+        private bool SetChange(ProductionDto origin, ProductionDto data, string userId)
         {
+            bool isModified = false;
+           
             var changeData = new Dictionary<string, bool>();
             changeData.Add("COMPANY_CODE", origin.CompanyCode == data.CompanyCode);
             changeData.Add("WERKS", origin.PlantWerks == data.PlantWerks);
             changeData.Add("FA_CODE", origin.FaCode == data.FaCode);
             changeData.Add("PRODUCTION_DATE", origin.ProductionDate == data.ProductionDate);
             changeData.Add("BRAND_DESC", origin.BrandDescription == data.BrandDescription);
-            changeData.Add("QTY_PACKED", origin.QtyPacked == data.QtyPacked);
-            changeData.Add("QTY", origin.Qty == data.Qty);
+            changeData.Add("QTY_PACKED", origin.QtyPacked == Convert.ToDecimal(data.QtyPackedStr));
+            changeData.Add("QTY", origin.Qty == Convert.ToDecimal(data.QtyStr));
             changeData.Add("UOM", origin.Uom == data.Uom);
-            changeData.Add("PROD_QTY_STICK", origin.ProdQtyStick == data.ProdQtyStick);
+            //changeData.Add("PROD_QTY_STICK", origin.ProdQtyStick == Convert.ToDecimal(data.ProdQtyStickStr));
 
             string isFromSapString = string.IsNullOrEmpty(origin.Batch) ? "" : "[FROM SAP]";
 
             foreach (var listChange in changeData)
             {
-                if (!listChange.Value)
+                if (listChange.Value) continue;
                 {
                     var changes = new CHANGES_HISTORY
                     {
@@ -347,12 +349,12 @@ namespace Sampoerna.EMS.BLL
                             break;
                         case "QTY_PACKED":
                             changes.OLD_VALUE = origin.QtyPacked.ToString();
-                            changes.NEW_VALUE = data.QtyPacked.ToString();
+                            changes.NEW_VALUE = data.QtyPackedStr;
                             changes.FIELD_NAME = "Qty Packed" + isFromSapString;
                             break;
                         case "QTY":
                             changes.OLD_VALUE = origin.Qty.ToString();
-                            changes.NEW_VALUE = data.Qty.ToString();
+                            changes.NEW_VALUE = data.QtyStr;
                             changes.FIELD_NAME = "Produced Qty" + isFromSapString;
                             break;
                         case "UOM":
@@ -360,11 +362,18 @@ namespace Sampoerna.EMS.BLL
                             changes.NEW_VALUE = data.Uom;
                             changes.FIELD_NAME = "Uom";
                             break;
+                        //case "PROD_QTY_STICK":
+                        //    changes.OLD_VALUE = origin.ProdQtyStick.ToString();
+                        //    changes.NEW_VALUE = data.ProdQtyStickStr;
+                        //    changes.FIELD_NAME = " Produced Qty Stick";
+                        //    break;
                         default: break;
                     }
                     _changesHistoryBll.AddHistory(changes);
+                    isModified = true;
                 }
             }
+            return isModified;
 
         }
 
