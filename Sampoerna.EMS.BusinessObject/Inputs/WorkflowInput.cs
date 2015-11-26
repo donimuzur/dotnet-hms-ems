@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         //for waste
        public string SourcePlant { get; set; }
        public string DestPlant { get; set; }
+       public string PlantId { get; set; }
     }
 
     public class WorkflowAllowEditAndSubmitInput

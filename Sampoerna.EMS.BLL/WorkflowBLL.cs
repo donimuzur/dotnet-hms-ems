@@ -99,8 +99,8 @@ namespace Sampoerna.EMS.BLL
                     return false;
                 
                 //created user need to as user
-                if (_poabll.GetUserRole(input.CreatedUser) != Enums.UserRole.User)
-                    return false;
+                //if (_poabll.GetUserRole(input.CreatedUser) != Enums.UserRole.User)
+                //    return false;
 
                 //if document was rejected then must approve by poa that rejected
                 var rejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);

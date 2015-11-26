@@ -990,6 +990,7 @@ namespace Sampoerna.EMS.BLL
             workflowInput.NppbkcId = result.NPPBKC;
             workflowInput.FormType = Enums.FormType.PBCK7;
             workflowInput.PlantId = result.PLANT_ID;
+            workflowInput.DocumentCreator = result.CREATED_BY;
 
             output.WorkflowHistoryPbck7 = _workflowHistoryBll.GetByFormNumber(workflowInput);
 
@@ -999,6 +1000,7 @@ namespace Sampoerna.EMS.BLL
             workflowInput.NppbkcId = result.NPPBKC;
             workflowInput.FormType = Enums.FormType.PBCK3;
             workflowInput.PlantId = result.PLANT_ID;
+            workflowInput.DocumentCreator = result.CREATED_BY;
 
             output.WorkflowHistoryPbck3 = _workflowHistoryBll.GetByFormNumber(workflowInput);
 
@@ -1813,6 +1815,7 @@ namespace Sampoerna.EMS.BLL
                 input.DocumentStatus = data.CK5.STATUS_ID;
                 input.NppbkcId = data.CK5.SOURCE_PLANT_NPPBKC_ID;
                 input.PlantId = data.CK5.SOURCE_PLANT_ID;
+                input.DocumentCreator = data.CK5.CREATED_BY;
                 result.Ck5Composite.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
 
             }

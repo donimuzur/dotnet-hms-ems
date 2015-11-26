@@ -81,15 +81,16 @@
         var poa = '@Model.Details.ApprovedByPoa';
         var nppbkc = '@Model.Details.NppbkcId';
         var plant = '@Model.Details.PlantId';
+        var creator = '@Model.Details.CreatedBy';
         var url = '@Url.Action("PoaListPartial", "CK4C")';
         var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
 
         if (poa == '') {
             if (plant != '') {
-                ajaxSelectNppbck({ plantId: plant }, urlPlant);
+                ajaxSelectNppbck({ plantId: plant, documentCreator: creator }, urlPlant);
             }
             else {
-                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+                ajaxSelectNppbck({ nppbkcid: nppbkc, documentCreator: creator }, url);
             }
         }
     }

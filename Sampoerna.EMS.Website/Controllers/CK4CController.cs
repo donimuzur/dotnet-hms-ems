@@ -248,18 +248,23 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult PoaListPartial(string nppbkcId)
+        public JsonResult PoaListPartial(string nppbkcId, string documentCreator)
         {
-            var listPoa = _poabll.GetPoaByNppbkcIdAndMainPlant(nppbkcId);
-            var model = new Ck4CIndexDocumentListViewModel() { PoaList = new SelectList(listPoa, "POA_ID", "PRINTED_NAME") };
+            var creator = documentCreator == null ? CurrentUser.USER_ID : documentCreator;
+            var listPoa = _poabll.GetPoaByNppbkcIdAndMainPlant(nppbkcId).Where(x => x.POA_ID != creator).ToList();
+            var model = new Ck4CIndexDocumentListViewModel() { PoaList = new SelectList(listPoa.Distinct(), "POA_ID", "PRINTED_NAME") };
             return Json(model);
         }
 
         [HttpPost]
-        public JsonResult GetPoaByPlantId(string plantId)
+        public JsonResult GetPoaByPlantId(string plantId, string documentCreator)
         {
-            var listPoa = _poabll.GetPoaActiveByPlantId(plantId);
-            var model = new Ck4CIndexDocumentListViewModel() { PoaList = new SelectList(listPoa, "POA_ID", "PRINTED_NAME") };
+            var creator = documentCreator == null ? CurrentUser.USER_ID : documentCreator;
+            var plant = _plantBll.GetT001WById(plantId);
+            var creatorPoa = _poabll.GetById(CurrentUser.USER_ID);
+            var listPoa = creatorPoa != null ? _poabll.GetPoaByNppbkcIdAndMainPlant(plant.NPPBKC_ID).Where(x => x.POA_ID != creator).ToList() :
+                            _poabll.GetPoaActiveByPlantId(plantId);
+            var model = new Ck4CIndexDocumentListViewModel() { PoaList = new SelectList(listPoa.Distinct(), "POA_ID", "PRINTED_NAME") };
 
             return Json(model);
         }
@@ -446,6 +451,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
                 workflowInput.NppbkcId = nppbkcId;
+                workflowInput.DocumentCreator = ck4cData.CreatedBy;
                 if (plant != null)
                 {
                     workflowInput.PlantId = ck4cData.PlantId;
@@ -516,6 +522,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
                 workflowInput.NppbkcId = nppbkcId;
+                workflowInput.DocumentCreator = ck4cData.CreatedBy;
                 if (plant != null)
                 {
                     workflowInput.PlantId = ck4cData.PlantId;
@@ -630,6 +637,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 workflowInput.FormNumber = ck4cData.Number;
                 workflowInput.DocumentStatus = ck4cData.Status;
                 workflowInput.NppbkcId = nppbkcId;
+                workflowInput.DocumentCreator = ck4cData.CreatedBy;
                 if (plant != null)
                 {
                     workflowInput.PlantId = ck4cData.PlantId;

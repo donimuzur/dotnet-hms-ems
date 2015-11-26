@@ -1454,12 +1454,12 @@ namespace Sampoerna.EMS.BLL
 
             if (dtData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
             {
-                input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+                input.NppbkcId = dtData.DEST_PLANT_NPPBKC_ID;
             }
             else if (dtData.CK5_TYPE == Enums.CK5Type.Manual &&
                      dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
             {
-                input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+                input.NppbkcId = dtData.DEST_PLANT_NPPBKC_ID;
             }
             //else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
             //    dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
@@ -1468,7 +1468,7 @@ namespace Sampoerna.EMS.BLL
             //}
             else
             {
-                input.NPPBKC_Id = dtData.SOURCE_PLANT_NPPBKC_ID;    
+                input.NppbkcId = dtData.SOURCE_PLANT_NPPBKC_ID;    
             }
             
 

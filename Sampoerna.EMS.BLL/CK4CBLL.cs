@@ -309,8 +309,21 @@ namespace Sampoerna.EMS.BLL
                         }
                         else
                         {
-                            var poaList = _poabll.GetPoaActiveByNppbkcId(nppbkc);
-                            if (plant != null) poaList = _poabll.GetPoaActiveByPlantId(ck4cData.PlantId);
+                            var creatorPoa = _poabll.GetById(ck4cData.CreatedBy);
+
+                            var poaList = new List<POADto>();
+
+                            if (creatorPoa != null)
+                            {
+                                poaList = _poabll.GetPoaActiveByNppbkcId(nppbkc)
+                                           .Where(x => x.POA_ID != ck4cData.CreatedBy).ToList();
+                            }
+                            else
+                            {
+                                poaList = plant != null ? _poabll.GetPoaActiveByPlantId(ck4cData.PlantId) :
+                                                        _poabll.GetPoaActiveByNppbkcId(nppbkc);
+                            }
+                            
                             foreach (var poaDto in poaList)
                             {
                                 rc.To.Add(poaDto.POA_EMAIL);
@@ -318,10 +331,6 @@ namespace Sampoerna.EMS.BLL
                         }
                         
                         rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
-                    }
-                    else if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
-                    {
-                        rc.To.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
                     }
                     //else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     //{
@@ -502,7 +511,7 @@ namespace Sampoerna.EMS.BLL
                 case Enums.UserRole.POA:
                     //first code when manager exists
                     //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                     break;
                 default:
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -1010,7 +1019,8 @@ namespace Sampoerna.EMS.BLL
             var nppbkc = dtData.NPPBKC_ID;
             result.Detail.Nppbkc = nppbkc;
 
-            var poaUser = dtData.APPROVED_BY_POA == null ? dtData.CREATED_BY : dtData.APPROVED_BY_POA;
+            var creatorPoa = _poabll.GetById(dtData.CREATED_BY);
+            var poaUser = creatorPoa == null ? dtData.APPROVED_BY_POA : dtData.CREATED_BY;
 
             var poa = _poabll.GetDetailsById(poaUser);
             if (poa != null)
