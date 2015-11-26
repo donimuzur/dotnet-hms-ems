@@ -265,6 +265,17 @@ namespace Sampoerna.EMS.BLL
             return false;
         }
 
+        public bool AllowAttachment(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.DocumentStatus <= Enums.DocumentStatus.WaitingGovApproval) return false;
+            if (input.CreatedUser == input.CurrentUser) return true;
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                return input.CurrentUser == input.PoaApprove;
+            }
+            return false;
+        }
+
         public bool AllowStoGiCompleted(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)

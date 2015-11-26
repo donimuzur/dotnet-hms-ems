@@ -91,5 +91,7 @@ namespace Sampoerna.EMS.Contract
        CK5MaterialOutput ValidateCk5MarketReturnMaterial(CK5MaterialInput input);
 
        GetBrandByPlantAndMaterialNumberOutput GetBrandByPlantAndMaterialNumber(string plantId, string materialNumber);
+
+       void AddAttachmentDocument(CK5WorkflowDocumentInput input);
    }
 }

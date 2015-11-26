@@ -273,6 +273,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool IsReducePbck1Ck5Trial { get; set; }
         public bool IsFreeTextSource { get; set; }
         public bool IsFreeTextDestination { get; set; }
+        public bool AllowAttachment { get; set; }
 
         //ORIGIN PLANT MANUAL
         
