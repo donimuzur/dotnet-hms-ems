@@ -42,5 +42,6 @@ namespace Sampoerna.EMS.Contract
 
         bool AllowDomesticAlcoholPurchaseOrder(WorkflowAllowApproveAndRejectInput input);
 
+        bool AllowAttachment(WorkflowAllowApproveAndRejectInput input);
     }
 }

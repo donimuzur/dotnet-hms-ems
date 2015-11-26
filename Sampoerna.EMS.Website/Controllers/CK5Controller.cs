@@ -1347,9 +1347,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.IsCompleted)
                 {
-
                     model.AllowAttachmentCompleted = _workflowBll.AllowAttachmentCompleted(input);
 
+                }
+                else
+                {
+                    //only show if no allow granted for all possible
+                    //if not it will cause double button show up in view
+                    if (!model.AllowGiCreated && !model.AllowGrCreated && !model.AllowGoodIssue
+                        && !model.AllowGoodReceive && !model.AllowTfPostedPortToImporter
+                        && !model.AllowPurchaseOrder)
+                    {
+                        model.AllowAttachment = _workflowBll.AllowAttachment(input);
+                    }
                 }
 
                 if (model.AllowGovApproveAndReject)
@@ -1367,9 +1377,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 else if (model.AllowAttachmentCompleted)
                     model.ActionType = "CK5CompletedAttachment";
                 else if (model.AllowPurchaseOrder)
-                {
                     model.ActionType = "POCreated";
-                }
+                else if (model.AllowAttachment)
+                    model.ActionType = "CK5AllowAttachment";
 
 
             }
@@ -1866,13 +1876,40 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
 
+        private List<CK5_FILE_UPLOADDto> GetFileUpload(CK5FormViewModel model)
+        {
+            model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
+
+            foreach (var item in model.Ck5FileUploadFileList)
+            {
+                if (item != null)
+                {
+                    var filenameCk5Check = item.FileName;
+                    if (filenameCk5Check.Contains("\\"))
+                        filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                    var ck5UploadFile = new CK5FileUploadViewModel
+                    {
+                        FILE_NAME = filenameCk5Check,
+                        FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                        CREATED_DATE = DateTime.Now,
+                        CREATED_BY = CurrentUser.USER_ID
+                    };
+                    model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                }
+
+            }
+
+            return Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
+
+        }
+
         [HttpPost]
         public ActionResult CK5GICreated(CK5FormViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
-                // return View("Details", model);
                 return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
             }
 
@@ -1907,6 +1944,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.SealingDate = model.SealingNotifDate;
                 input.GIDate = model.GiDate;
 
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
 
                 _ck5Bll.CK5Workflow(input);
 
@@ -1952,6 +1991,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DnNumber = model.DnNumber;
 
 
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
 
                 _ck5Bll.CK5Workflow(input);
 
@@ -2010,6 +2051,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 input.GRDate = model.GrDate;
 
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
+
                 _ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
@@ -2039,6 +2083,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.SealingNumber = model.SealingNotifNumber;
                 input.SealingDate = model.SealingNotifDate;
 
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
+
+
                 _ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Good Issue", Enums.MessageInfoType.Success);
@@ -2067,6 +2115,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.GrDate = model.GrDate;
                 input.UnSealingNumber = model.UnSealingNotifNumber;
                 input.UnSealingDate = model.UnsealingNotifDate;
+
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
 
                 _ck5Bll.CK5Workflow(input);
 
@@ -2098,9 +2149,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.UnSealingNumber = model.UnSealingNotifNumber;
                 input.UnSealingDate = model.UnsealingNotifDate;
 
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
+
                 _ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
+        public ActionResult CK5AllowAttachment(CK5FormViewModel model)
+        {
+            try
+            {
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
+
+                _ck5Bll.AddAttachmentDocument(input);
+
+                AddMessageInfo("Success update Attachment Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {

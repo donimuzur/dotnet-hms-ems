@@ -2116,6 +2116,16 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "GI_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.GI_DATE = input.GiDate;
 
+            if (input.AdditionalDocumentData != null
+             && input.AdditionalDocumentData.Ck5FileUploadList.Count > 0)
+            {
+                dbData.CK5_FILE_UPLOAD =
+                    Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
+
+                if (input.AdditionalDocumentData.Ck5FileUploadList.Any())
+                    CheckFileUploadChange(input);
+            }
+
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
            
             if (input.GiDate.HasValue
@@ -2164,6 +2174,17 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
+            if (input.AdditionalDocumentData != null
+           && input.AdditionalDocumentData.Ck5FileUploadList.Count > 0)
+            {
+                dbData.CK5_FILE_UPLOAD =
+                    Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
+
+                if (input.AdditionalDocumentData.Ck5FileUploadList.Any())
+                    CheckFileUploadChange(input);
+            }
+
+
             if (input.GrDate.HasValue
                 && !string.IsNullOrEmpty(input.UnSealingNumber)
                 && input.UnSealingDate.HasValue)
@@ -2194,7 +2215,15 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "DN_NUMBER(PO)", input.UserId, dbData.CK5_ID.ToString());
             dbData.DN_NUMBER = input.DnNumber;
 
+            if (input.AdditionalDocumentData != null
+              && input.AdditionalDocumentData.Ck5FileUploadList.Count > 0)
+            {
+                dbData.CK5_FILE_UPLOAD =
+                    Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
 
+                if (input.AdditionalDocumentData.Ck5FileUploadList.Any())
+                    CheckFileUploadChange(input);
+            }
 
             dbData.STATUS_ID = Enums.DocumentStatus.GoodIssue;
 
@@ -2232,6 +2261,16 @@ namespace Sampoerna.EMS.BLL
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "SEALING_NOTIF_NUMBER", input.UserId, dbData.CK5_ID.ToString());
             dbData.SEALING_NOTIF_DATE = input.SealingDate;
+
+            if (input.AdditionalDocumentData != null
+                && input.AdditionalDocumentData.Ck5FileUploadList.Count > 0)
+            {
+                dbData.CK5_FILE_UPLOAD =
+                    Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
+
+                if (input.AdditionalDocumentData.Ck5FileUploadList.Any())
+                    CheckFileUploadChange(input);
+            }
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
@@ -2290,6 +2329,16 @@ namespace Sampoerna.EMS.BLL
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
+
+            if (input.AdditionalDocumentData != null
+               && input.AdditionalDocumentData.Ck5FileUploadList.Count > 0)
+            {
+                dbData.CK5_FILE_UPLOAD =
+                    Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
+
+                if (input.AdditionalDocumentData.Ck5FileUploadList.Any())
+                    CheckFileUploadChange(input);
+            }
 
             if (dbData.CK5_TYPE == Enums.CK5Type.Manual )
             {
@@ -2457,11 +2506,16 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "UNSEALING_NOTIF_DATE", input.UserId, dbData.CK5_ID.ToString());
             dbData.UNSEALING_NOTIF_DATE = input.UnSealingDate;
 
+            if (input.AdditionalDocumentData != null
+            && input.AdditionalDocumentData.Ck5FileUploadList.Count > 0)
+            {
+                dbData.CK5_FILE_UPLOAD =
+                    Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
 
-            //if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
-            //    && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
-            //    && dbData.SEALING_NOTIF_DATE.HasValue
-            //    && dbData.UNSEALING_NOTIF_DATE.HasValue)
+                if (input.AdditionalDocumentData.Ck5FileUploadList.Any())
+                    CheckFileUploadChange(input);
+            }
+
             if (!string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
                && dbData.UNSEALING_NOTIF_DATE.HasValue)
             {
@@ -4017,6 +4071,38 @@ namespace Sampoerna.EMS.BLL
             if (pbck1Id != 0)
                 return _pbck1Bll.GetById(pbck1Id);
             return null;
+        }
+
+        public void AddAttachmentDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            var inputWorkflow = new WorkflowAllowApproveAndRejectInput();
+            inputWorkflow.DocumentStatus = dbData.STATUS_ID;
+            inputWorkflow.CreatedUser = dbData.CREATED_BY;
+            inputWorkflow.CurrentUser = input.UserId;
+            inputWorkflow.UserRole = input.UserRole;
+            inputWorkflow.PoaApprove = dbData.APPROVED_BY_POA;
+
+            if (!_workflowBll.AllowAttachment(inputWorkflow))
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            
+            if (input.AdditionalDocumentData != null
+                && input.AdditionalDocumentData.Ck5FileUploadList.Count > 0)
+            {
+                dbData.CK5_FILE_UPLOAD =
+                    Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
+
+                if (input.AdditionalDocumentData.Ck5FileUploadList.Any())
+                    CheckFileUploadChange(input);
+
+                _uow.SaveChanges();
+            }
+
+
         }
     }
 }
