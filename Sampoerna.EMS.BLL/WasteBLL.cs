@@ -186,7 +186,7 @@ namespace Sampoerna.EMS.BLL
 
             var wasStockWsapoon = new WasteStockDto();
             wasStockWsapoon.WERKS = dbQtyWaste.PlantWerks;
-            wasStockWsapoon.MATERIAL_NUMBER = Constans.WasteSapon;
+            wasStockWsapoon.MATERIAL_NUMBER = Constans.WasteFloor;
             wasStockWsapoon.STOCK = Convert.ToDecimal(updateValueFloor);
             wasStockWsapoon.CREATED_BY = userId;
 
@@ -194,7 +194,7 @@ namespace Sampoerna.EMS.BLL
 
             var wasteStockGagang = new WasteStockDto();
             wasteStockGagang.WERKS = dbQtyWaste.PlantWerks;
-            wasteStockGagang.MATERIAL_NUMBER = Constans.WasteGagang;
+            wasteStockGagang.MATERIAL_NUMBER = Constans.WasteDust;
             wasteStockGagang.STOCK = Convert.ToDecimal(updateValueDust);
             wasteStockGagang.CREATED_BY = userId;
 
