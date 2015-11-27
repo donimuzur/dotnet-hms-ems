@@ -500,7 +500,7 @@ namespace Sampoerna.EMS.BLL
                     case Enums.UserRole.POA:
                         //first code when manager exists
                         //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                         break;
                     default:
                         throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -762,7 +762,20 @@ namespace Sampoerna.EMS.BLL
                 FormType = Enums.FormType.LACK1
             });
 
-            var poaList = _poaBll.GetPoaActiveByNppbkcId(lack1Data.NppbkcId);
+            var creatorPoa = _poaBll.GetById(lack1Data.CreateBy);
+
+            var poaList = new List<POADto>();
+
+            if (creatorPoa != null)
+            {
+                poaList = _poaBll.GetPoaActiveByNppbkcId(lack1Data.NppbkcId)
+                           .Where(x => x.POA_ID != lack1Data.CreateBy).ToList();
+            }
+            else
+            {
+                poaList = lack1Data.Lack1Level == Enums.Lack1Level.Plant ? _poaBll.GetPoaActiveByPlantId(lack1Data.Lack1Plant.FirstOrDefault().PLANT_ID) :
+                                        _poaBll.GetPoaActiveByNppbkcId(lack1Data.NppbkcId);
+            }
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -1093,6 +1106,16 @@ namespace Sampoerna.EMS.BLL
                 {
                     dtToReturn.NppbkcCity = plant.ORT01;
                 }
+            }
+
+            //set Poa Printed Name
+            var creatorPoa = _poaBll.GetById(dbData.CREATED_BY);
+            var poaUser = creatorPoa == null ? dbData.APPROVED_BY_POA : dbData.CREATED_BY;
+
+            var poa = _poaBll.GetDetailsById(poaUser);
+            if (poa != null)
+            {
+                dtToReturn.PoaPrintedName = poa.PRINTED_NAME;
             }
 
             return dtToReturn;
