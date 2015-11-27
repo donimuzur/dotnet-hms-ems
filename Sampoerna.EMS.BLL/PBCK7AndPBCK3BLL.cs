@@ -1199,7 +1199,11 @@ namespace Sampoerna.EMS.BLL
             var rc = new MailNotification();
 
             var rejected = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = pbck7Dto.Pbck7Id, FormType = Enums.FormType.PBCK7 });
-            var poaList = _poaBll.GetPoaActiveByPlantId(pbck7Dto.PlantId);
+            //var poaList = _poaBll.GetPoaActiveByPlantId(pbck7Dto.PlantId);
+            var creatorPoa = _poaBll.GetById(pbck7Dto.CreatedBy);
+            var poaList = creatorPoa == null ? _poaBll.GetPoaActiveByPlantId(pbck7Dto.PlantId) :
+                            _poaBll.GetPoaByNppbkcIdAndMainPlant(pbck7Dto.NppbkcId).Where(x => x.POA_ID != pbck7Dto.CreatedBy).ToList();
+
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
             string companyCode = "";
@@ -1417,8 +1421,6 @@ namespace Sampoerna.EMS.BLL
             string newValue = "";
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
 
-            dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
-
             input.DocumentNumber = dbData.PBCK7_NUMBER;
 
             AddWorkflowHistory(input);
@@ -1426,16 +1428,17 @@ namespace Sampoerna.EMS.BLL
             switch (input.UserRole)
             {
                 case Enums.UserRole.User:
+                case Enums.UserRole.POA:
                     dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval);
                     break;
-                case Enums.UserRole.POA:
-                    //first code when manager exists
-                    //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    //newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
-                    break;
+                //case Enums.UserRole.POA:
+                //    //first code when manager exists
+                //    //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                //    //newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                //    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                //    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                //    break;
                 default:
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
@@ -1882,10 +1885,20 @@ namespace Sampoerna.EMS.BLL
             workflowInput.DocumentStatus = output.Pbck3CompositeDto.STATUS.HasValue ? output.Pbck3CompositeDto.STATUS.Value : Enums.DocumentStatus.Draft;
 
             workflowInput.FormType = Enums.FormType.PBCK3;
+            workflowInput.DocumentCreator = output.Pbck3CompositeDto.CREATED_BY;
+
             if (result.FromPbck7)
+            {
                 workflowInput.FormNumberSource = result.Pbck7Composite.Pbck7Number;
+                workflowInput.NppbkcId = result.Pbck7Composite.NppbkcId;
+                workflowInput.PlantId = result.Pbck7Composite.PlantId;
+            }
             else
+            {
                 workflowInput.FormNumberSource = result.Ck5Composite.Ck5Dto.SUBMISSION_NUMBER;
+                workflowInput.NppbkcId = result.Ck5Composite.Ck5Dto.DEST_PLANT_NPPBKC_ID;
+                workflowInput.PlantId = result.Ck5Composite.Ck5Dto.DEST_PLANT_ID;
+            }
 
             output.WorkflowHistoryPbck3 = _workflowHistoryBll.GetByFormNumber(workflowInput);
 
@@ -2083,8 +2096,6 @@ namespace Sampoerna.EMS.BLL
             string newValue = "";
             string oldValue = EnumHelper.GetDescription(dbData.STATUS);
 
-            dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
-
             input.DocumentNumber = dbData.PBCK3_NUMBER;
 
             AddWorkflowHistoryPbck3(input);
@@ -2092,16 +2103,17 @@ namespace Sampoerna.EMS.BLL
             switch (input.UserRole)
             {
                 case Enums.UserRole.User:
+                case Enums.UserRole.POA:
                     dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval);
                     break;
-                case Enums.UserRole.POA:
-                    //first code when manager exists
-                    //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    //newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
-                    break;
+                //case Enums.UserRole.POA:
+                //    //first code when manager exists
+                //    //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                //    //newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                //    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                //    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                //    break;
                 default:
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
@@ -2551,7 +2563,12 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            var poaList = _poaBll.GetPoaActiveByPlantId(plantId);
+            //var poaList = _poaBll.GetPoaActiveByPlantId(plantId);
+            var creatorPoa = _poaBll.GetById(pbck3CompositeDto.CREATED_BY);
+            var poaList = creatorPoa == null ? _poaBll.GetPoaActiveByPlantId(plantId) :
+                            _poaBll.GetPoaByNppbkcIdAndMainPlant(nppbkcId).Where(x => x.POA_ID != pbck3CompositeDto.CREATED_BY).ToList();
+
+
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
             string companyCode = "";
@@ -2902,7 +2919,10 @@ namespace Sampoerna.EMS.BLL
 
             //set exclude on mapper
             //get POA Data
-            var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            string poaId;
+            var poaInfo = _poaBll.GetDetailsById(dbData.CREATED_BY);
+            poaId = poaInfo == null ? dbData.APPROVED_BY : dbData.CREATED_BY;
+            //var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
             rc = SetPoaData(rc, poaId);
 
             //Get Company Data
@@ -2934,7 +2954,10 @@ namespace Sampoerna.EMS.BLL
 
             //set exclude on mapper
             //get POA Data
-            var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            //var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            string poaId;
+            var poaInfo = _poaBll.GetDetailsById(dbData.CREATED_BY);
+            poaId = poaInfo == null ? dbData.APPROVED_BY : dbData.CREATED_BY;
             rc = SetPoaData(rc, poaId);
 
 

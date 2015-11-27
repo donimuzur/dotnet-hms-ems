@@ -2225,10 +2225,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     model.Ck5FormViewModel.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.Pbck3CompositeDto.Ck5Composite.ListWorkflowHistorys);
 
-                    nppbkcId = model.Ck5FormViewModel.SourceNppbkcId;
-                    if (model.Ck5FormViewModel.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-                        nppbkcId = model.Ck5FormViewModel.DestNppbkcId;
-                    
+                    //nppbkcId = model.Ck5FormViewModel.SourceNppbkcId;
+                    //if (model.Ck5FormViewModel.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                    nppbkcId = model.Ck5FormViewModel.DestNppbkcId;
+
                 }
 
                 //validate approve and reject
@@ -2252,7 +2252,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     input.DocumentNumberSource = model.Ck5FormViewModel.SubmissionNumber;
-                    input.PlantId = existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_ID;
+                    input.PlantId = existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto.DEST_PLANT_ID;
                 }
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
