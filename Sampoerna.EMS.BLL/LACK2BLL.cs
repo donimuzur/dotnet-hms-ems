@@ -437,7 +437,7 @@ namespace Sampoerna.EMS.BLL
                     case Enums.UserRole.POA:
                         //first code when manager exists
                         //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                         break;
                     default:
                         throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -731,7 +731,9 @@ namespace Sampoerna.EMS.BLL
                 FormType = Enums.FormType.LACK2
             });
 
-            var poaList = _poaBll.GetPoaActiveByPlantId(lackData.LevelPlantId);
+            var creatorPoa = _poaBll.GetById(lackData.CreatedBy);
+            var poaList = creatorPoa == null ? _poaBll.GetPoaActiveByPlantId(lackData.LevelPlantId) :
+                            _poaBll.GetPoaByNppbkcIdAndMainPlant(lackData.NppbkcId).Where(x => x.POA_ID != lackData.CreatedBy).ToList();
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 

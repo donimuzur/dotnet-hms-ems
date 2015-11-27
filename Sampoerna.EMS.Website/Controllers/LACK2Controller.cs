@@ -1975,20 +1975,21 @@ namespace Sampoerna.EMS.Website.Controllers
             if (headerFooter != null)
             {
                 drow[3] = GetHeader(headerFooter.HEADER_IMAGE_PATH);
-                drow[4] = headerFooter.FOOTER_CONTENT;
+                drow[4] = headerFooter.FOOTER_CONTENT.Replace("<br />", Environment.NewLine);
             }
             drow[5] = lack2.ExTypDesc;
             drow[6] = lack2.PeriodNameInd + " " + lack2.PeriodYear;
             drow[7] = lack2.LevelPlantCity;
 
             drow[8] = lack2.SubmissionDate == null ? null : string.Format("{0} {1} {2}", lack2.SubmissionDate.Value.Day, _monthBll.GetMonth(lack2.SubmissionDate.Value.Month).MONTH_NAME_IND, lack2.SubmissionDate.Value.Year);
-            if (lack2.ApprovedBy != null)
+
+            var creatorPoa = _poabll.GetById(lack2.CreatedBy);
+            var poaUser = creatorPoa == null ? lack2.ApprovedBy : lack2.CreatedBy;
+
+            var poa = _poabll.GetDetailsById(poaUser);
+            if (poa != null)
             {
-                var poa = _poabll.GetDetailsById(lack2.ApprovedBy);
-                if (poa != null)
-                {
-                    drow[9] = poa.PRINTED_NAME;
-                }
+                drow[9] = poa.PRINTED_NAME;
             }
 
             drow[10] = printTitle;
