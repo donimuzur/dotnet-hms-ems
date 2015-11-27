@@ -619,7 +619,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.NppbkcCity = data.NppbkcCity;
             dMasterRow.NppbkcId = data.NppbkcId;
             dMasterRow.SubmissionDate = data.SubmissionDateDisplayString;
-            dMasterRow.CreatorName = data.ApprovedByPoa;
+            dMasterRow.CreatorName = data.PoaPrintedName;
             dMasterRow.PrintTitle = printTitle;
             if (data.HeaderFooter != null)
             {
@@ -868,7 +868,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack1Number,
                 DocumentStatus = model.Status,
-                NppbkcId = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                DocumentCreator = model.CreateBy,
+                PlantId = model.LevelPlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -982,7 +984,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack1Number,
                 DocumentStatus = model.Status,
-                NppbkcId = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                DocumentCreator = model.CreateBy,
+                PlantId = model.LevelPlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
