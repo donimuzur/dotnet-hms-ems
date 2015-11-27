@@ -1369,6 +1369,7 @@ namespace Sampoerna.EMS.BLL
 
         private Lack1GeneratedOutput GenerateLack1Data(Lack1GenerateDataParamInput input)
         {
+            var isWithTisToTisReport = input.IsTisToTis;
 
             var outValidation = ValidationOnGenerateLack1Data(ref input);
 
@@ -1378,7 +1379,8 @@ namespace Sampoerna.EMS.BLL
             {
                 Success = true,
                 ErrorCode = string.Empty,
-                ErrorMessage = string.Empty
+                ErrorMessage = string.Empty,
+                IsWithTisToTisReport = isWithTisToTisReport
             };
 
             var rc = new Lack1GeneratedDto
@@ -1508,9 +1510,8 @@ namespace Sampoerna.EMS.BLL
 
             rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
             rc.Noted = input.Noted;
-
-
-            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
+            
+            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) ) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
 
             oReturn.Data = rc;
 
@@ -2183,15 +2184,15 @@ namespace Sampoerna.EMS.BLL
                     Data = null
                 };
             }
-
+            decimal totalUsage;
             if (getInventoryMovementByParamOutput.IncludeInCk5List.Count == 0)
             {
-                rc.TotalUsage = 0;
+                totalUsage = 0;
             }
             else
             {
                 var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                rc.TotalUsage = totalUsageIncludeCk5;
+                totalUsage = totalUsageIncludeCk5;
             }
             if (isForTisToTis)
             {
@@ -2205,6 +2206,7 @@ namespace Sampoerna.EMS.BLL
                     InvMovementAllList =
                         Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
                 };
+                rc.TotalUsageTisToTis = totalUsage;
             }
             else
             {
@@ -2218,8 +2220,8 @@ namespace Sampoerna.EMS.BLL
                     InvMovementAllList =
                         Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
                 };
+                rc.TotalUsage = totalUsage;
             }
-            
             
             invMovementOutput = getInventoryMovementByParamOutput;
 

@@ -53,9 +53,17 @@
             if (response.Success) {
                 $('#generated-data-container').html("");
                 var data = response.Data;
-                var tableGenerated = generateTable(data);
-                /*console.log(tableGenerated);*/
-                $('#generated-data-container').append(tableGenerated);
+                console.log(response.IsWithTisToTisReport);
+                if (response.IsWithTisToTisReport) {
+                    var tableGenerated1 = generateTableWithTisToTis(data);
+                    /*console.log(tableGenerated1);*/
+                    $('#generated-data-container').append(tableGenerated1);
+                } else {
+                    var tableGenerated2 = generateTable(data);
+                    /*console.log(tableGenerated2);*/
+                    $('#generated-data-container').append(tableGenerated2);
+                }
+                
             } else {
                 /*alert(response.ErrorMessage);*/
                 $('#modalBodyMessage').text(response.ErrorMessage);
