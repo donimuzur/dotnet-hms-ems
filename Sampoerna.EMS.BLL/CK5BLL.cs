@@ -1451,25 +1451,25 @@ namespace Sampoerna.EMS.BLL
             var input = new GetByFormNumberInput();
             input.FormNumber = dtData.SUBMISSION_NUMBER;
             input.DocumentStatus = dtData.STATUS_ID;
+            input.NppbkcId = dtData.SOURCE_PLANT_NPPBKC_ID;
+            input.PlantId = dtData.SOURCE_PLANT_ID;
+            input.DocumentCreator = dtData.CREATED_BY;
 
             if (dtData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
             {
                 input.NppbkcId = dtData.DEST_PLANT_NPPBKC_ID;
+                input.PlantId = dtData.DEST_PLANT_ID;
             }
             else if (dtData.CK5_TYPE == Enums.CK5Type.Manual &&
                      dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
             {
                 input.NppbkcId = dtData.DEST_PLANT_NPPBKC_ID;
+                input.PlantId = dtData.DEST_PLANT_ID;
             }
-            //else if (dtData.CK5_TYPE == Enums.CK5Type.MarketReturn &&
-            //    dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+            //else
             //{
-            //    input.NPPBKC_Id = dtData.DEST_PLANT_NPPBKC_ID;
+            //    input.NppbkcId = dtData.SOURCE_PLANT_NPPBKC_ID;    
             //}
-            else
-            {
-                input.NppbkcId = dtData.SOURCE_PLANT_NPPBKC_ID;    
-            }
             
 
             //output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(dtData.SUBMISSION_NUMBER);
@@ -1748,24 +1748,51 @@ namespace Sampoerna.EMS.BLL
                         }
                         else
                         {
+                            string nppbkcId = "";
+                            string plantId = "";
                             List<POADto> poaList;
                             switch (ck5Dto.CK5_TYPE)
                             {
                                 case Enums.CK5Type.PortToImporter:
                                 case Enums.CK5Type.DomesticAlcohol:
-                                    poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                    //poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                    nppbkcId = ck5Dto.DEST_PLANT_NPPBKC_ID;
+                                    plantId = ck5Dto.DEST_PLANT_ID;
                                     break;
                                 case Enums.CK5Type.Manual:
                                 case Enums.CK5Type.MarketReturn:
                                     if (ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-                                        poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                    {
+                                        //poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID);
+                                        nppbkcId = ck5Dto.DEST_PLANT_NPPBKC_ID;
+                                        plantId = ck5Dto.DEST_PLANT_ID;
+                                    }
                                     else
-                                        poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                                    {
+                                        //poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                                        nppbkcId = ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+                                        plantId = ck5Dto.SOURCE_PLANT_ID;
+                                    }
                                     break;
                                 
                                 default:
-                                    poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                                    //poaList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.SOURCE_PLANT_NPPBKC_ID);
+                                    nppbkcId = ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+                                    plantId = ck5Dto.SOURCE_PLANT_ID;
                                     break;
+                            }
+
+                            if (_poaBll.GetById(ck5Dto.CREATED_BY) == null) //user.. get by plant
+                            {
+                                poaList = _poaBll.GetPoaActiveByPlantId(plantId);
+                            }
+                            else //poa get by nppbkc, except poa creator
+                            {
+                                poaList =
+                                    _poaBll.GetPoaActiveByNppbkcId(nppbkcId)
+                                        .Distinct()
+                                        .Where(x => x.POA_ID != ck5Dto.CREATED_BY)
+                                        .ToList();
                             }
 
                             foreach (var poaDto in poaList)
@@ -2022,8 +2049,8 @@ namespace Sampoerna.EMS.BLL
                 case Enums.UserRole.POA:
                     //dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
                     //newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
-                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApproval;
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval);
                     break;
                 default:
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -2073,16 +2100,19 @@ namespace Sampoerna.EMS.BLL
             {
                 if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApproval)
                 {
-                    //dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
+                   
                     dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
                     dbData.APPROVED_BY_POA = input.UserId;
                     dbData.APPROVED_DATE_POA = DateTime.Now;
-                    //newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
+                   
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
                 }
                 else
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
+            else
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
             //else if (input.UserRole == Enums.UserRole.Manager)
             //{
             //    if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
@@ -2114,7 +2144,6 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
-                //dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager &&
                 dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
@@ -3242,9 +3271,11 @@ namespace Sampoerna.EMS.BLL
 
             //get poa info
             POADto poaInfo;
-            poaInfo = _poaBll.GetDetailsById(dtData.APPROVED_BY_POA);
-            if (poaInfo == null)
-                poaInfo = _poaBll.GetDetailsById(dtData.CREATED_BY);
+
+            //poaInfo = _poaBll.GetDetailsById(dtData.APPROVED_BY_POA);
+            //if (poaInfo == null)
+            //    poaInfo = _poaBll.GetDetailsById(dtData.CREATED_BY);
+            poaInfo = _poaBll.GetDetailsById(dtData.CREATED_BY) ?? _poaBll.GetDetailsById(dtData.APPROVED_BY_POA);
 
             if (poaInfo != null)
             {
