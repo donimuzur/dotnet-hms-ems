@@ -107,6 +107,12 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string DestCompanyName { get; set; }
         public string LoadingPort { get; set; }
         public string LoadingPortName { get; set; }
+        public string StoNumberSender { get; set; }
+        public string StoNumberReciever { get; set; }
+        public string StoBNumber { get; set; }
+        public string DnNumber { get; set; }
+        public string GrDate { get; set; }
+        public string GiDate { get; set; }
         public string Status { get; set; }
 
 
@@ -156,6 +162,12 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool DestCompanyName { get; set; }
         public bool LoadingPort { get; set; }
         public bool LoadingPortName { get; set; }
+        public bool StoNumberSender { get; set; }
+        public bool StoNumberReciever { get; set; }
+        public bool StoBNumber { get; set; }
+        public bool DnNumber { get; set; }
+        public bool GrDate { get; set; }
+        public bool GiDate { get; set; }
         public bool Status { get; set; }
     }
 
