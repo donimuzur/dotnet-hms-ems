@@ -11,6 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             PlantList = new List<Lack1GeneratedPlantDto>();
             Pbck1List = new List<Lack1GeneratedPbck1DataDto>();
             IncomeList = new List<Lack1GeneratedIncomeDataDto>();
+            FusionSummaryProductionList = new List<Lack1GeneratedSummaryProductionDataDto>();
             //ProductionList = new List<Lack1GeneratedProductionDataDto>();
             //SummaryProductionList = new List<Lack1GeneratedSummaryProductionDataDto>();
         }
@@ -47,7 +48,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Lack1UomId { get; set; }
         public Lack1GeneratedInventoryAndProductionDto InventoryProductionTisToFa { get; set; }
         public Lack1GeneratedInventoryAndProductionDto InventoryProductionTisToTis { get; set; }
-        
+        public List<Lack1GeneratedSummaryProductionDataDto> FusionSummaryProductionList { get; set; }
     }
 
     public class Lack1GeneratedInventoryAndProductionDto

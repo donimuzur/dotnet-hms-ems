@@ -1391,6 +1391,7 @@ namespace Sampoerna.EMS.BLL
                 ExcisableGoodsType = input.ExcisableGoodsType,
                 ExcisableGoodsTypeDesc = input.ExcisableGoodsTypeDesc,
                 SupplierPlantId = input.SupplierPlantId,
+                FusionSummaryProductionList = new List<Lack1GeneratedSummaryProductionDataDto>(),
                 BeginingBalance = 0 //set default
             };
             
@@ -1465,6 +1466,8 @@ namespace Sampoerna.EMS.BLL
                 rc = prodDataOutTisToFa.Data;
             }
 
+            rc.FusionSummaryProductionList.AddRange(rc.InventoryProductionTisToFa.ProductionData.SummaryProductionList);
+
             if (input.IsTisToTis)
             {
 
@@ -1479,7 +1482,13 @@ namespace Sampoerna.EMS.BLL
                 if (!prodDataOut.Success) return prodDataOut;
 
                 rc = prodDataOut.Data;
-                
+                rc.FusionSummaryProductionList.AddRange(rc.InventoryProductionTisToTis.ProductionData.SummaryProductionList);
+            }
+
+            //process FusionSummaryProductionList
+            if (rc.FusionSummaryProductionList != null && rc.FusionSummaryProductionList.Count > 0)
+            {
+                rc.FusionSummaryProductionList = GetFusionSummaryGroupedProductionList(rc.FusionSummaryProductionList);
             }
             
             rc.PeriodMonthId = input.PeriodMonth;
@@ -1516,6 +1525,23 @@ namespace Sampoerna.EMS.BLL
             oReturn.Data = rc;
 
             return oReturn;
+        }
+
+        private List<Lack1GeneratedSummaryProductionDataDto> GetFusionSummaryGroupedProductionList(List<Lack1GeneratedSummaryProductionDataDto> list)
+        {
+            if (list.Count <= 0) return new List<Lack1GeneratedSummaryProductionDataDto>();
+            var groupedData = list.GroupBy(p => new
+            {
+                p.UomId,
+                p.UomDesc
+            }).Select(g => new Lack1GeneratedSummaryProductionDataDto()
+            {
+                UomId = g.Key.UomId,
+                UomDesc = g.Key.UomDesc,
+                Amount = g.Sum(p => p.Amount)
+            });
+
+            return groupedData.ToList();
         }
 
         private string GeneratedNoteFormat(string prefix, decimal? nominal, string uomId)
