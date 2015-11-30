@@ -1492,5 +1492,54 @@ namespace Sampoerna.EMS.BLL
         }
 
         #endregion
+        
+        public List<Ck4cItemExportDto> GetCk4cItemById(int id)
+        {
+            var rc = _repository.Get(c => c.CK4C_ID == id, null, includeTables).ToList();
+            
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            var data = SetDataItemForExport(rc);
+
+            return data;
+        }
+
+        private List<Ck4cItemExportDto> SetDataItemForExport(List<CK4C> listCk4C)
+        {
+            var result = new List<Ck4cItemExportDto>();
+
+            foreach (var dtData in listCk4C)
+            {
+                foreach (var ck4CItem in dtData.CK4C_ITEM)
+                {
+                    var itemDto = new Ck4cItemExportDto();
+                    var prodType = _prodTypeBll.GetByCode(ck4CItem.PROD_CODE);
+                    var brand = _brandBll.GetById(ck4CItem.WERKS, ck4CItem.FA_CODE);
+                    var total = brand.BRAND_CONTENT == null ? 0 : ck4CItem.PACKED_QTY.Value / Convert.ToInt32(brand.BRAND_CONTENT);
+
+                    itemDto.ProductionDate = ck4CItem.PROD_DATE.ToString("dd-MMM-yy");
+                    itemDto.Plant = ck4CItem.WERKS;
+                    itemDto.TobbacoProdType = prodType.PRODUCT_TYPE;
+                    itemDto.FaCode = ck4CItem.FA_CODE;
+                    itemDto.BrandDesc = brand.BRAND_CE;
+                    itemDto.ProdQty = String.Format("{0:n}", ck4CItem.PROD_QTY);
+                    itemDto.ProdQtyUom = ck4CItem.UOM_PROD_QTY;
+                    itemDto.PackedQty = String.Format("{0:n}", ck4CItem.PACKED_QTY.Value);
+                    itemDto.UnpackedQty = String.Format("{0:n}", ck4CItem.UNPACKED_QTY.Value);
+                    itemDto.Remarks = ck4CItem.REMARKS;
+                    itemDto.Content = String.Format("{0:n}", ck4CItem.CONTENT_PER_PACK.Value);
+                    itemDto.TotalPack = String.Format("{0:n}", total);
+                    itemDto.Hje = String.Format("{0:n}", ck4CItem.HJE_IDR.Value);
+                    itemDto.Tariff = String.Format("{0:n}", ck4CItem.TARIFF.Value);
+
+                    result.Add(itemDto);
+                }
+            }
+
+            return result;
+        }
     }
 }

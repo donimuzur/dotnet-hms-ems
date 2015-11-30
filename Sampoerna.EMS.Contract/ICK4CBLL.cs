@@ -36,5 +36,7 @@ namespace Sampoerna.EMS.Contract
         List<Ck4CSummaryReportDto> GetSummaryReportsByParam(Ck4CGetSummaryReportByParamInput input);
 
         bool AllowEditCompletedDocument(Ck4CDto item, string userId);
+
+        List<Ck4cItemExportDto> GetCk4cItemById(int id);
     }
 }
