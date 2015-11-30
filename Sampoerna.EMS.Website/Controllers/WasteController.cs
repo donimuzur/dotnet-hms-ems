@@ -180,11 +180,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 var data = Mapper.Map<WasteDto>(model);
-
-
-                try
+                
+                 try
                 {
-                    _wasteBll.Save(data, CurrentUser.USER_ID);
+                    _wasteBll.Save(data, CurrentUser.USER_ID );
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
 
                     return RedirectToAction("Index");
