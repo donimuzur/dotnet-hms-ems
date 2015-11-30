@@ -1883,8 +1883,31 @@ namespace Sampoerna.EMS.BLL
                             rc.To.Add(poaDto.POA_EMAIL);
                         }
                     }
-                    //else if(ck5Dto.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || ck5Dto.ck)
+
+                    if (listEmailTransportAndFacLogistic.Count > 0)
+                    {
+                        foreach (var emailUser in listEmailTransportAndFacLogistic)
+                        {
+                            rc.CC.Add(emailUser);
+                        }
+
+                    }
                     
+
+                    break;
+                case Enums.ActionType.GoodIssue: 
+                    //send notification to creator
+                    var userWasteCreator = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                    rc.To.Add(userWasteCreator.EMAIL);
+
+                    if (listEmailTransportAndFacLogistic.Count > 0)
+                    {
+                        foreach (var emailUser in listEmailTransportAndFacLogistic)
+                        {
+                            rc.CC.Add(emailUser);
+                        }
+
+                    }
 
                     break;
                 case Enums.ActionType.GoodReceive: // status doc = disposal ck5waste

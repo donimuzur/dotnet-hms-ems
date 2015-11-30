@@ -2208,7 +2208,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentId = model.Ck5Id;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-
+                input.Ck5Type = model.Ck5Type;
                 input.ActionType = Enums.ActionType.GoodIssue;
 
                 input.GiDate = model.GiDate;
@@ -2237,7 +2237,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentId = model.Ck5Id;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-
+                input.Ck5Type = model.Ck5Type;
                 input.ActionType = Enums.ActionType.GoodReceive;
 
                 input.GrDate = model.GrDate;
