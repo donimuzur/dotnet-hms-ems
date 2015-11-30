@@ -105,7 +105,7 @@ function generateTableWithTisToTis(data) {
     }
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "' + data.TotalIncome + '" />'
-        + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.SummaryProductionListFusionSummaryProductionList) + '</td><td colspan="2"></td></tr>' +
+        + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.FusionSummaryProductionList) + '</td><td colspan="2"></td></tr>' +
         '</tbody></table>';
     
     return rc;
