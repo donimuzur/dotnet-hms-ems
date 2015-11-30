@@ -1,0 +1,186 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK2.Lack2DetailViewModel
+@{
+    ViewBag.Title = "LACK-2 Details";
+}
+
+@using (Html.BeginForm(Model.ControllerAction, "LACK2", FormMethod.Post, new { @id = "detail-lack2-form" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>@ViewBag.Title</h3>
+                <label class="status">@Model.StatusName</label>
+                <div class="action-button">
+
+                    @if (Model.Status == Enums.DocumentStatus.Completed)
+                    {
+                        /*Completed Document*/
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed-list" />
+                    }
+                    else
+                    {
+                        /*Open Document*/
+                        <input type="button" value="Back" class="btn btn-grey" id="btn-back-open-document-list" />
+                    }
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "LACK2", new { id = @Model.Lack2Id })')" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
+                        {
+                            <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        }
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeDetail")
+                        @if (Model.Status >= Enums.DocumentStatus.WaitingGovApproval && Model.Status != Enums.DocumentStatus.Cancelled)
+                        {
+                            @Html.Partial("_PrintOut")
+                        }
+                        @Html.Partial("_ChangesLog")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="LackModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3><span id="lblTitleModal">Approval</span> </h3>
+            </div>
+            <div class="modal-body">
+                <span id="lblMessageModal">Approve Documents ?</span>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" id="btnConfirmGovApprove" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="LackModalReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Reject document</h4>
+            </div>
+            @using (Html.BeginForm("RejectDocument", "LACK2"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Lack2Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmReject" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+
+        $('#MenuLack2OpenDocument').addClass('@Model.MenuLack2OpenDocument');
+        $('#MenuLack2CompletedDocument').addClass('@Model.MenuLack2CompletedDocument');
+
+        $(document).ready(function () {
+
+            $('#btn-back-completed-list').click(function () {
+                location.href = '@Url.Action("ListCompletedDoc", "LACK2")';
+            });
+
+            $('#btn-back-open-document-list').click(function () {
+                location.href = '@Url.Action("Index", "LACK2")';
+            });
+
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportChangesLogToExcel", "Lack2", new { id = Model.Lack2Id })';
+            });
+
+            $('#Comment').bind('input propertychange', function () {
+
+                $('#btnConfirmReject').attr('disabled', 'disabled');
+                $('#btnConfirmGovReject').attr('disabled', 'disabled');
+                $('#btnConfirmGovPartApprove').attr('disabled', 'disabled');
+
+                if (this.value.length) {
+                    $('#btnConfirmReject').removeAttr('disabled');
+                    $('#btnConfirmGovReject').removeAttr('disabled');
+                    $('#btnConfirmGovPartApprove').removeAttr('disabled');
+                }
+            });
+
+            ResetPrintHistoryDataTable();
+
+        });
+
+        function printPreview(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        }
+
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+        }
+
+    </script>
+}

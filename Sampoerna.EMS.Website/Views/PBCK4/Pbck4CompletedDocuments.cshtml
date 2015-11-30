@@ -1,0 +1,106 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4IndexViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Completed Document</h3>
+           
+        </div>
+    </div>
+</div>
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+
+            @using (Ajax.BeginForm("Filter", "PBCK4",
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "POST",
+                                    InsertionMode = InsertionMode.Replace,
+                                    UpdateTargetId = "contenttable",
+                                    OnComplete = "ReloadDataTables"
+
+                                }))
+            {
+                @Html.Partial("_Pbck4Search")
+            }
+
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_Pbck4OpenListDocuments")
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function () {
+            $('#liPbck4OpenDocument').removeClass('active');
+            $('#liPbck4Completed').addClass('active');
+
+            setupDataTables();
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#pbck4Table')) {
+                table = $('#pbck4Table').DataTable();
+                table.destroy();
+            }
+
+            table = $('#pbck4Table').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#pbck4Table .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+
+        function OnReset() {
+
+            $(".selectreset").val($(".selectreset option:first").val());
+            $('#SearchView_ReportedOn').val('');
+        }
+
+
+    </script>
+}

@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.Contract
         void Update(TEntity entityToUpdate);
         void InsertOrUpdate(TEntity entity);
         bool Exists(TEntity entity);
+        void Detach(TEntity entity);
 
         IQueryable<TEntity> GetQuery(Expression<Func<TEntity, bool>> predicate = null);
     }

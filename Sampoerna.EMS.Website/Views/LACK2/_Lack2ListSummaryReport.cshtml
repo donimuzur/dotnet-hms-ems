@@ -1,0 +1,73 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2SummaryReportsViewModel
+
+<table id="lack2Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>LACK-2 Number</th>
+            <th>Document Type</th>
+            <th>Company Code</th>
+            <th>Company Name</th>
+            <th>NPPBKC ID</th>
+            <th>CK-5 Sending Plant</th>
+            <th>Sending Plant Address</th>
+            <th>LACK-2 Period</th>
+            <th>LACK-2 Date</th>
+            <th>Type of Excisable Goods</th>
+            <th>Total Delivered Excisable Goods (kg)</th>
+            <th>UOM</th>
+            <th>POA</th>
+            <th>POA  Manager</th>
+            <th>Created Date</th>
+            <th>Created Time</th>
+            <th>Created By</th>
+            <th>Approved Date</th>
+            <th>Approved Time</th>
+            <th>Approved By</th>
+            <th>Last Change Date</th>
+            <th>Last Change Time</th>
+            <th>Status</th>
+            <th>Legalize Date</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.Lack2Number)</td>
+                    <td>@Html.DisplayFor(model => item.DocumentType)</td>
+                    <td>@Html.DisplayFor(model => item.CompanyCode)</td>
+                    <td>@Html.DisplayFor(model => item.CompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.NppbkcId)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5SendingPlant)</td>
+                    <td>@Html.DisplayFor(model => item.SendingPlantAddress)</td>
+                    <td>@Html.DisplayFor(model => item.Lack2Period)</td>
+                    <td>@Html.DisplayFor(model => item.Lack2Date)</td>
+                    <td>@Html.DisplayFor(model => item.TypeExcisableGoodsDesc)</td>
+                    <td>@Html.DisplayFor(model => item.TotalDeliveryExcisable)</td>
+                    <td>@Html.DisplayFor(model => item.Uom)</td>
+                    <td>@Html.DisplayFor(model => item.Poa)</td>
+                    <td>@Html.DisplayFor(model => item.PoaManager)</td>
+                    <td>@Html.DisplayFor(model => item.CreatedDate)</td>
+                    <td>@Html.DisplayFor(model => item.CreatedTime)</td>
+                    <td>@Html.DisplayFor(model => item.CreatedBy)</td>
+                    <td>@Html.DisplayFor(model => item.ApprovedDate)</td>
+                    <td>@Html.DisplayFor(model => item.ApprovedTime)</td>
+                    <td>@Html.DisplayFor(model => item.ApprovedBy)</td>
+                    <td>@Html.DisplayFor(model => item.LastChangedDate)</td>
+                    <td>@Html.DisplayFor(model => item.LastChangedTime)</td>
+                    <td>@Html.DisplayFor(model => item.Status)</td>
+                    <td class="last">@Html.DisplayFor(model => item.LegalizeData)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+
+

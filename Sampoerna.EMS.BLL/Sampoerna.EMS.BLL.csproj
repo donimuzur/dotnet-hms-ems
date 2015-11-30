@@ -11,6 +11,8 @@
     <AssemblyName>Sampoerna.EMS.BLL</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,6 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
@@ -42,15 +51,6 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.94.0\lib\net45\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.EF6">
-      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.94.0\lib\net45\System.Data.SQLite.EF6.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.Linq">
-      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.94.1\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,11 +61,104 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BACK1BLL.cs" />
+    <Compile Include="BLLMapper.cs" />
+    <Compile Include="BLLMapperCK4C.cs" />
+    <Compile Include="BLLMapperCK5.cs" />
+    <Compile Include="BLLMapperLack1.cs" />
+    <Compile Include="BLLMapperLack2.cs" />
+    <Compile Include="BLLMapperPBCK1.cs" />
+    <Compile Include="BLLMapperPBCK4.cs" />
+    <Compile Include="BLLMapperPBCK7.cs" />
+    <Compile Include="BlockStockBLL.cs" />
+    <Compile Include="ChangesHistoryBLL.cs" />
+    <Compile Include="CK1BLL.cs" />
+    <Compile Include="CK4CDecreeDocBLL.cs" />
+    <Compile Include="CK4CItemBLL.cs" />
+    <Compile Include="CK5BLL.cs" />
+    <Compile Include="BrandRegistrationBLL.cs" />
+    <Compile Include="CountryBLL.cs" />
+    <Compile Include="LFA1BLL.cs" />
+    <Compile Include="PBCK4BLL.cs" />
+    <Compile Include="PBCK7AndPBCK3BLL.cs" />
+    <Compile Include="ProductionBLL.cs" />
+    <Compile Include="Services\Back1Services.cs" />
+    <Compile Include="Services\Back3Services.cs" />
+    <Compile Include="Services\BrandRegistrationService.cs" />
+    <Compile Include="Services\CK1Services.cs" />
+    <Compile Include="Services\CK2Services.cs" />
+    <Compile Include="Services\CK4CItemService.cs" />
+    <Compile Include="Services\CK5MaterialService.cs" />
+    <Compile Include="Services\CK5Service.cs" />
+    <Compile Include="Services\ExcisableGoodsTypeService.cs" />
+    <Compile Include="Services\ExGroupTypeService.cs" />
+    <Compile Include="Services\InventoryMovementService.cs" />
+    <Compile Include="Services\Lack1IncomeDetailService.cs" />
+    <Compile Include="Services\Lack1Pbck1MappingService.cs" />
+    <Compile Include="Services\Lack1PlantService.cs" />
+    <Compile Include="Services\Lack1ProductionDetailService.cs" />
+    <Compile Include="Services\LACK1Service.cs" />
+    <Compile Include="Services\Lack1TrackingService.cs" />
+    <Compile Include="Services\Lack2DocumentService.cs" />
+    <Compile Include="Services\Lack2ItemService.cs" />
+    <Compile Include="Services\Lack2Service.cs" />
+    <Compile Include="Services\PBCK1Service.cs" />
+    <Compile Include="Services\Pbck3Services.cs" />
+    <Compile Include="Services\T001KService.cs" />
+    <Compile Include="Services\T001Service.cs" />
+    <Compile Include="Services\T001WService.cs" />
+    <Compile Include="Services\UserPlantMapService.cs" />
+    <Compile Include="Services\ZaapShiftRptService.cs" />
+    <Compile Include="Services\ZaidmExNppbkcService.cs" />
+    <Compile Include="Services\ZaidmExProdTypeService.cs" />
+    <Compile Include="UserPlantMapBLL.cs" />
+    <Compile Include="LACK2BLL.cs" />
+    <Compile Include="Pbck1DecreeDocBLL.cs" />
+    <Compile Include="LACK1BLL.cs" />
+    <Compile Include="Pbck1ProdConverterBLL.cs" />
+    <Compile Include="EmailTemplateBLL.cs" />
+    <Compile Include="Pbck1ProdPlanBLL.cs" />
+    <Compile Include="Pbck1QuotaBLL.cs" />
+    <Compile Include="POASKBLL.cs" />
     <Compile Include="CompanyBLL.cs" />
-    <Compile Include="EmployeeBLL.cs" />
+    <Compile Include="DocumentSequenceNumberBLL.cs" />
+    <Compile Include="FileUploadBLL.cs" />
+    <Compile Include="HeaderFooterBLL.cs" />
+    <Compile Include="ExGroupTypeBLL.cs" />
+    <Compile Include="MasterDataBLL.cs" />
+    <Compile Include="MaterialBLL.cs" />
+    <Compile Include="MonthBLL.cs" />
+    <Compile Include="PageBLL.cs" />
+    <Compile Include="PBCK1BLL.cs" />
+    <Compile Include="CK4CBLL.cs" />
+    <Compile Include="PlantBLL.cs" />
+    <Compile Include="PrintHistoryBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SupplierPortBLL.cs" />
+    <Compile Include="POAMapBLL.cs" />
+    <Compile Include="T001KBLL.cs" />
+    <Compile Include="UnitOfMeasurementBLL.cs" />
+    <Compile Include="UserAuthorizationBLL.cs" />
+    <Compile Include="UserBLL.cs" />
+    <Compile Include="VirtualMappingPlantBLL.cs" />
+    <Compile Include="WasteBLL.cs" />
+    <Compile Include="WasteRoleBLL.cs" />
+    <Compile Include="WasteStockBLL.cs" />
+    <Compile Include="WorkflowBLL.cs" />
+    <Compile Include="WorkflowHistoryBLL.cs" />
+    <Compile Include="WorkflowSettingBLL.cs" />
+    <Compile Include="ZaidmExGoodTypeBLL.cs" />
+    <Compile Include="ZaidmExKPPBCBLL.cs" />
+    <Compile Include="ZaidmExNPPBKCBLL.cs" />
+    <Compile Include="POABLL.cs" />
+    <Compile Include="ZaidmExPOAMapBLL.cs" />
+    <Compile Include="ZaidmExProdTypeBLL.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sampoerna.EMS.AutoMapperExtensions\Sampoerna.EMS.AutoMapperExtensions.csproj">
+      <Project>{3cddfd06-1254-4bd5-82ed-283f26c38eea}</Project>
+      <Name>Sampoerna.EMS.AutoMapperExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">
       <Project>{3c89fdd1-a506-4047-89e3-40708cf6b2c5}</Project>
       <Name>Sampoerna.EMS.BusinessObject</Name>
@@ -74,8 +167,29 @@
       <Project>{7f4a15c1-8f58-49ea-ba04-0d7ea572954b}</Project>
       <Name>Sampoerna.EMS.Contract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Core\Sampoerna.EMS.Core.csproj">
+      <Project>{b4021a69-2836-401b-8e06-92e8a6008219}</Project>
+      <Name>Sampoerna.EMS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.LinqExtensions\Sampoerna.EMS.LinqExtensions.csproj">
+      <Project>{2c4b45ea-929b-4cc1-9bae-824d900af5f9}</Project>
+      <Name>Sampoerna.EMS.LinqExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.MessagingService\Sampoerna.EMS.MessagingService.csproj">
+      <Project>{c0c96fbc-d939-4121-b79c-1ab8b96092de}</Project>
+      <Name>Sampoerna.EMS.MessagingService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">
+      <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
+      <Name>Sampoerna.EMS.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

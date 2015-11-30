@@ -1,0 +1,92 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5SummaryReportsViewModel
+
+<table id="ck5Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>Tanggal Aju</th>
+            <th>Nomer Aju</th>
+            <th>Tanggal Pendaftaran</th>
+            <th>Nomor Pendaftaran</th> @*5*@
+            <th>Type of Excisable Goods</th>
+            <th>Type of Request</th>
+            <th>Origin CE Office</th>
+            <th>Origin Company</th>
+            <th>Origin Companys NPPBKC</th>@*10*@
+            <th>Origin Companys Address</th>
+            <th>Destination Country</th>
+            <th>Type of Tobacco Product</th>
+            <th>Number of Box</th>
+            <th>Contain per Box</th> @*15*@
+            <th>Total of Excisable Goods</th>
+            <th>Banderol Price</th>
+            <th>Excise Tariff</th>
+            <th>Excise Value</th>
+            <th>Foreign Exchange</th> @*20*@
+            <th>Type of Excise Settlement</th>
+            <th>Excise Status</th>
+            <th>Unpaid Excise Facility Number</th>
+            <th>Unpaid Excise Facility Date</th>
+            <th>Destination CE Office</th>@*25*@
+            <th>Last Storage Location</th>
+            <th>Last Storage Locations NPPBKC</th>
+            <th>Last Storage Location's CE Office</th>
+            <th>Loading Port</th>
+            <th>Loading Port CE Office</th> @*30*@
+            <th>Sealing Notification Date</th>
+            <th>Sealing Notification Number</th>
+            <th>Reported to LACK-1 Month</th>
+            <th>Reported to LACK-2 Month</th>
+           
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.SubmissionDate)</td>
+                    <td>@Html.DisplayFor(model => item.SubmissionNumber)</td>
+                    <td>@Html.DisplayFor(model => item.RegistrationDate)</td>
+                    <td>@Html.DisplayFor(model => item.RegistrationNumber)</td>@*5*@
+                    <td>@Html.DisplayFor(model => item.ExGoodTypeDesc)</td>
+                    <td>@Html.DisplayFor(model => item.RequestType)</td>
+                    <td>@Html.DisplayFor(model => item.SourceKppbcName)</td>
+                    <td>@Html.DisplayFor(model => item.SourceCompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.SourceNppbkcId)</td> @*10*@
+                    <td>@Html.DisplayFor(model => item.SourceCompanyAddress)</td>
+                    <td>@Html.DisplayFor(model => item.DestinationCountry)</td>
+                    <td>@Html.DisplayFor(model => item.TypeOfTobaccoProduct)</td>
+                    <td>@Html.DisplayFor(model => item.GrandTotal)</td>
+                    <td>@Html.DisplayFor(model => item.ContainBox)</td>@*15*@
+                    <td>@Html.DisplayFor(model => item.TotalExcisableGoods)</td>
+                    <td>@Html.DisplayFor(model => item.Hje)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseTariff)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseValue)</td>
+                    <td>@Html.DisplayFor(model => item.ForeignExchange)</td>@*20*@
+                    <td>@Html.DisplayFor(model => item.ExciseSettlement)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseStatus)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
+                    <td>@Html.DisplayFor(model => item.PbckDecreeDate)</td>
+                    <td>@Html.DisplayFor(model => item.DestKppbcName)</td>@*25*@
+                    <td>@Html.DisplayFor(model => item.DestNameAdress)</td>
+                    <td>@Html.DisplayFor(model => item.DestNppbkcId)</td>
+                    <td>@Html.DisplayFor(model => item.DestKppbcName)</td>
+                    <td>@Html.DisplayFor(model => item.LoadingPort)</td>
+                    <td>@Html.DisplayFor(model => item.LoadingPortOffice)</td>@*30*@
+                    <td>@Html.DisplayFor(model => item.SealingNotifDate)</td>
+                    <td>@Html.DisplayFor(model => item.SealingNotifNumber)</td>
+                    <td>@Html.DisplayFor(model => item.Lack1Number)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Lack2Number)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+
+

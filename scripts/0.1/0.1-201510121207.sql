@@ -1,0 +1,4 @@
+ALTER TABLE LACK1 alter column
+SUPPLIER_PLANT_ADDRESS nvarchar(200)
+GO
+

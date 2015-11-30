@@ -1,0 +1,46 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1ItemViewModel
+<div class="row">
+    <div class="col-md-6">
+        @if (Model.ProdPlanUploadValidateResult != null && !Model.ProdPlanUploadValidateResult.IsSuccess)
+        {
+            <span class="red">@Model.ProdPlanUploadValidateResult.ErrorMessage</span>
+        }
+    </div>
+</div>
+<table id="prod-plan-table" class="table table-bordered table-striped js-options-table">
+    <thead>
+        <tr>
+            <th style="display: none"></th>
+            <th style="display: none"></th>
+            <th style="display: none"></th>
+            <th>Month</th>
+            <th>Product Type Alias</th>
+            <th>Amount</th>
+            <th>BKC Required</th>
+            <th>BKC Required Uom</th>
+            <th style="display: none"></th>
+            <th>Message Error</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+            {
+                foreach (var row in Model.Detail.Pbck1ProdPlan)
+                {
+                    <tr>
+                        <td style="display: none">@row.ProductCode</td>
+                        <td style="display: none">@row.ProdTypeName</td>
+                        <td style="display: none">@row.Month</td>
+                        <td>@row.MonthName</td>
+                        <td>@row.ProdTypeAlias</td>
+                        <td class="decimal number">@row.Amount</td>
+                        <td class="decimal number">@row.BkcRequired</td>
+                        <td>@row.BkcRequiredUomId</td>
+                        <td style="display: none">@row.BkcRequiredUomName</td>
+                        <td>@row.Message</td>
+                    </tr>
+                }
+            }
+    </tbody>
+</table>
+

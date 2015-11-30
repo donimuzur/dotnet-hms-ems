@@ -1,0 +1,37 @@
+﻿@model Sampoerna.EMS.Website.Models.Waste.WasteUploadViewModel
+
+<div role="tabpanel" class="tab-pane active" id="upload">
+    <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a data-toggle="" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" class="collapsed">
+                        Upload Excel File
+                    </a>
+                </h4>
+            </div>
+            <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="file" id="itemExcelFile" name="itemExcelFile" data-filename-placement="inside" class="file-inputs">
+                                <input type="button" class="btn btn-grey" id="btn-generate-upload" value="Generate">
+                              
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-container" id="UploadLIst">
+        @Html.Partial("_UploadList")
+    </div>
+</div>
+
+
+
+
+

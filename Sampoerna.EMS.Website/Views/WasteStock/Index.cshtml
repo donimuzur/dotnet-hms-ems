@@ -1,0 +1,129 @@
+﻿@model Sampoerna.EMS.Website.Models.WasteStock.WasteStockIndexViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Waste Stock List</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "WasteStock")">
+                    <button class="btn btn-blue">NEW</button>
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="wasteStockTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row"> Filter </th>
+                            <th>Plant</th>
+                            <th>Material</th>
+                            <th>UOM</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th> Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.ListWasteStocks)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "WasteStock", new { id = item.WasteStockId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+
+                                    <a href="@Url.Action("Edit", "WasteStock", new { id = item.WasteStockId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+
+                                </td>
+                                <td>@Html.DisplayFor(model => item.PlantDescription)</td>
+                                <td>@Html.DisplayFor(model => item.MaterialNumber)</td>
+                                <td>@Html.DisplayFor(model => item.UomDescription)</td>
+                                <td class="number">@string.Format("{0:N2}", item.Stock)</td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuWasteStock').addClass('active');
+
+            setupDataTables();
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#wasteStockTable')) {
+                table = $('#wasteStockTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#wasteStockTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#wasteStockTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+
+
+    </script>
+}

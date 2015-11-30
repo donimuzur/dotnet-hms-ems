@@ -1,0 +1,72 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ListCK5Model
+@{
+    ViewBag.Title = "CK5 Detail PBCK-1";
+}
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>PBCK-1 Details</h3>
+                <div class="action-button">
+                    <input type="button" value="Back" class="btn btn-grey" id="btn-back-summary-report" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div role="form" class="form-excise">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-3">PBCK-1 No</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" value="@Model.Detail.Pbck1Number" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    @Html.Partial("_CK5Table")
+                </div>
+            </div>
+        </div>
+    </div>
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/pbck1script.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            ResetCK5DataTable();
+            $('#btn-back-summary-report').click(function (e) {
+                location.href = '@Url.Action("SummaryReports", "Pbck1")';
+            });
+        });
+        function ResetCK5DataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#ck5Table')) {
+                table = $('#ck5Table').DataTable();
+                table.destroy();
+            }
+
+            table = $('#ck5Table').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+        }
+    </script>
+}

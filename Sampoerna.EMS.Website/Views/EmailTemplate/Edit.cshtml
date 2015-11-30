@@ -1,0 +1,104 @@
+﻿@model Sampoerna.EMS.Website.Models.EmailTemplate.EmailTemplateModel
+
+@{
+    ViewBag.Title = "Edit Email Template";
+}
+
+@using (Html.BeginForm("Edit", "EmailTemplate", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3> Email Template</h3>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <a href="@Url.Action("Index", "EmailTemplate")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="scroll">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Edit Email Template
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <form class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Template Name<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(model => model.EmailTemplateName, new { @class = "form-control", maxlength = "18" })
+                                                            @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-4 long">Email Subject<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(model => model.EmailTemplateSubject, new { @class = "form-control", maxlength = "50" })
+                                                            @*@Html.ValidationMessageFor(model => model.MaterialDesc)*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Email Body</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextAreaFor(model => model.EmailTemplateBody, new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <span class="red">*</span> ) This Field Required
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterMaterial').addClass('active');
+
+
+    </script>
+}

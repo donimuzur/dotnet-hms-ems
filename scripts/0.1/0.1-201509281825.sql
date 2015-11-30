@@ -1,0 +1,3 @@
+ALTER TABLE CK5 ADD
+CK5_REF_ID bigint
+GO

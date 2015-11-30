@@ -1,0 +1,43 @@
+﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
+
+<div class="modal fade in upload-file ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Decree Doc</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="file-decree-doc-container" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary full add-files">Add Files</button>
+                            </div>
+                        </div>
+                        @if (Model.Details.Ck4cDecreeDoc != null)
+                        {
+                            var count = 0;
+                            foreach (var file in Model.Details.Ck4cDecreeDoc)
+                            {
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <i class="fa fa-file"></i>
+                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button class="btn btn-danger full" type="button" onclick="removeUploadButton(@count, $(this).closest('.row'))">Remove</button>
+                                    </div>
+                                </div>
+                                count++;
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" id="upload-file-sk" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>

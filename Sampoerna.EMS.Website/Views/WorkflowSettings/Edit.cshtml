@@ -1,0 +1,281 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.WorkflowSetting.WorkflowDetails
+
+@{
+    ViewBag.Title = "Workflow Settings Detail";
+}
+
+@using (Html.BeginForm("Edit", "WorkflowSettings", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3> Edit Workflow Settings Detail</h3>
+                <div class="action-button">
+                    @*<input type="submit" class="btn btn-blue" value="Save" />*@
+                    <a href="@Url.Action("Index", "WorkflowSettings")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="scroll">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Workflow Settings Detail
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <form class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-2">Modul</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(model => model.Modul, new { @class = "form-control", @disabled = "disabled" })
+                                                            @*@Html.ValidationMessageFor(model => model.MaterialNumber)*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-md-2">Mapping</label>
+                                                <div class="col-md-8">
+                                                    <div class="action-button pull-left">
+                                                        @*<input type="submit" class="btn btn-blue" value="Save" />*@
+                                                        <a href="#" onclick="GetMapping(@Model.Form_Id,null,'edit');" class="btn btn-blue">Add</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2">
+
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="table-container">
+
+                                                            <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="toggle-row"> Filter </th>
+                                                                        <th> State </th>
+                                                                        <th> Email Template </th>
+                                                                        <th> Sent to </th>
+                                                                    </tr>
+
+                                                                </thead>
+                                                                <thead class="filters">
+                                                                    <tr>
+                                                                        <th> Action </th>
+                                                                        <th> State </th>
+                                                                        <th> Email Template </th>
+                                                                        <th> Sent to </th>
+                                                                        @*<th> Deleted </th>*@
+                                                                    </tr>
+                                                                </thead>
+
+                                                                <tbody>
+
+                                                                    @foreach (var item in Model.Details)
+                                                                    {
+                                                                        <tr>
+                                                                            <td class="action">
+                                                                                <a href="#" onclick="GetMapping(@Model.Form_Id,@item.StateMappingId,'view')"  ><i class="fa fa-eye"></i></a>
+                                                                                <a href="#" onclick="GetMapping(@Model.Form_Id,@item.StateMappingId,'edit')"><i class="fa fa-pencil-square-o"></i></a>
+                                                                                
+                                                                            </td>
+                                                                            <td>
+                                                                                @Html.DisplayFor(modelItem => item.State)
+                                                                            </td>
+                                                                            <td>
+                                                                                @Html.DisplayFor(modelItem => item.EmailTemplateName)
+                                                                            </td>
+                                                                            <th>
+                                                                                @Html.DisplayFor(modelItem => item.SentTo)
+                                                                            </th>
+
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+
+
+
+
+
+
+</form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" data-toggle="modal" data-target=".update-state"  style="display:none"><i class="popupshow" ></i></a>
+    <div class="modal fade main-menu-child update-state" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-md">
+	    <div class="modal-content">
+
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+	          <h3>Update State</h3>
+	        </div>
+	        <div class="modal-body form">
+	        	
+	        </div>
+	        <div class="modal-footer">	        	
+		      <button type="button" class="btn btn-blue" onclick="saveData();">Save</button>
+		      <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+		    </div>
+      	</div>
+	  </div>
+	</div>
+}
+
+@section scripts{
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script type="text/javascript">
+    var mainmodel = JSON.parse(@(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))));
+    var worflowmappingdata = {};
+    var workflowuserdata = [];
+
+    function saveData() {
+        worflowmappingdata = {};
+        workflowuserdata = [];
+        $("#tbluser tr").each(function (index,el) {
+            var workflowuser = {};
+            workflowuser.User_Id = $(this).find("th.userid").html().trim();
+            workflowuser.Email = $(this).find("th.emailuser").html().trim();
+            workflowuserdata.push(workflowuser);
+        });
+        worflowmappingdata.EmailTemplateId = $("#EmailTemplateId").val();
+        worflowmappingdata.State = $("#ModulState").val();
+
+        $.ajax('@Url.Action("SaveForkflowMapping", "WorkflowSettings")', {
+            type: "POST",
+            dataType: "json",
+            traditional: true,
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify( {
+                'formid': "@Model.Form_Id" ,
+                'actionid': $("#stateid").val(),
+                'worflowusers': workflowuserdata,
+                'mappingdata' : worflowmappingdata
+            }),
+            success : function (data) {
+
+            },
+            error : function(data){
+
+            }
+
+        });
+    }
+
+    function addUser() {
+        //debugger;
+        var email = $("#userid").val();
+        var userid = $("#userid").children("option:selected").html();
+
+        if (checkexisting(userid)) {
+            return;
+        } else {
+            var count = $("#tbluser tr.datarow").length;
+            var row =
+                "<tr class='datarow'> \
+                    <th>"+ (count + 1).toString() + "</th>\
+                    <th class='userid'>"+ userid + " </th>\
+                    <th class='emailuser'>"+ email + " </th>\
+                </tr>";
+            if (count == 0) {
+                $("#tbluser").html(row);
+            } else {
+                $("#tbluser").append(row);
+            }
+        }
+
+
+    }
+
+
+    function checkexisting(userid) {
+        var isexist = false;
+
+        $("th.userid").each(function (obj) {
+
+            if ($(this).html().trim() === userid.trim()) {
+                isexist = true;
+                return false;
+            }
+        });
+
+        return isexist;
+    }
+    </script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuWorkflowSettings').addClass('active');
+        $(document).ready(function () {
+            $('#mydata .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 0) {
+                    var title = $('#mydata thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
+                }
+            });
+
+            // DataTable
+            var table = $('#mydata').DataTable();
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+            $("#mydata_filter").hide();
+            $('#mydata_length').hide();
+        });
+        
+        function GetMapping(_formid,_id,mode) {
+            $(".modal-body.form").load("@Url.Action("GetMapping", "WorkflowSettings")/" + _formid + "/" + _id, function (obj) {
+                if (_id != null) {
+                    $("#ModulState").attr("disabled", "disabled");
+                }
+                var table = $('#userDataTable').DataTable();
+                $(".popupshow").click();
+            });
+            
+            
+        }
+
+        
+    </script>
+}

@@ -1,0 +1,42 @@
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ZAAP_SHIFT_RPT](
+	[COMPANY_CODE] [nvarchar](4) NOT NULL,
+	[WERKS] [nvarchar](4) NOT NULL,
+	[FA_CODE] [nvarchar](18) NOT NULL,
+	
+	
+	[UOM] [nvarchar](5) NULL,
+	[PRODUCTION_DATE] [datetime] NOT NULL,
+	
+	
+	[BATCH] [nvarchar](35) NULL,
+	
+	[QTY] [decimal](15, 2) NULL,
+	[BUNDLE] [int] NULL,
+	[MARKET] [nvarchar](2) NULL,
+	[DOCGMVTER] [nvarchar](35) NULL,
+	[MATDOC] [nvarchar](10) NULL,
+	[ORDR] [nvarchar](10) NULL,
+	[CREATED_DATE] [datetime] NOT NULL,
+	[MODIFIED_DATE] [datetime] NULL,
+	[CREATED_BY] [nvarchar](50) NULL,
+	[MODIFIED_BY] [nvarchar](50) NULL,
+	[SHIFT] [nvarchar](10) NULL,
+ CONSTRAINT [PK_ZAAP_SFT_RPT] PRIMARY KEY CLUSTERED 
+(
+	[COMPANY_CODE] ASC,
+	[WERKS] ASC,
+	[FA_CODE] ASC,
+	[PRODUCTION_DATE] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+

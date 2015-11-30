@@ -1,0 +1,23 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+@using Sampoerna.EMS.Website.Helpers
+
+<table id="printHistoryTable" class="table table-bordered table-striped js-options-table" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row">Date</th>
+            <th>User</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.PrintHistoryListPbck3 != null)
+        {
+            foreach (var item in Model.PrintHistoryListPbck3)
+            {
+                <tr>
+                    <td>@item.PRINT_DATE.ToString("dd MMM yyyy HH:mm:ss")</td>
+                    <td>@item.PRINT_BY</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

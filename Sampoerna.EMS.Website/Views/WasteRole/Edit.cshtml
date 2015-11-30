@@ -1,0 +1,252 @@
+﻿@model Sampoerna.EMS.Website.Models.WasteRole.WasteRoleFormViewModel
+@using Sampoerna.EMS.Website.Helpers
+
+@using (Html.BeginForm("Edit", "WasteRole", FormMethod.Post, new { @class = "form-excise", @id = "SaveWasteRoleForms" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Waste Role</h3>
+                <div class="action-button">
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnBack" />
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.HiddenFor(model => model.WasteRoleId)
+    @Html.HiddenFor(model => model.CreatedBy)
+    @Html.HiddenFor(model => model.CreatedDate)
+    @Html.HiddenFor(model => model.ModifiedBy)
+    @Html.HiddenFor(model => model.ModifiedDate)
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    @*<div class="scroll">*@
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Update Waste Role
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">User Id</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model=>model.UserId)
+                                                        @*@Html.DropDownListFor(model => model.UserId, Model.UserList,null, new { @class = "form-control selectpicker" })*@
+                                                        @Html.TextBoxFor(model => model.UserId, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Plant</label>
+                                                    <div class="col-md-8">
+                                                        
+                                                        @Html.DropDownListFor(model => model.PlantId, Model.PlantList, null, new { @class = "form-control selectpicker" })
+                                                        
+                                                        @*@Html.HiddenFor(model => model.PlantId)
+                                                        @Html.TextBoxFor(model => model.PlantDescription, new { @class = "form-control", @disabled = "disabled" })*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">First Name</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.FirstName)
+                                                        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Last Name</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.LastName)
+                                                        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Email Address</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.EmailAddress)
+                                                        @Html.TextBoxFor(model => model.EmailAddress, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Phone</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.Phone)
+                                                        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Group Role<span class="red">*</span></label>
+                                                    <div class="col-md-8">
+                                                        @Html.EnumDropDownListFor(model => model.WasteGroup, Model.WasteGroupList, "Select", new { @class = "form-control" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                    </form>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    @*</div>*@
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <span class="red">*</span> ) This Field Required
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts {
+
+
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function() {
+            $('#MenuWasteRole').addClass('active');
+
+            $('#btnBack').click(function(e) {
+                location.href = '@Url.Action("Index", "WasteRole")';
+            });
+
+            $("#btnSave").click(function() {
+                if (ValidateWasteRoleForm()) {
+                    $('#SaveWasteRoleForms').submit();
+                }
+            });
+
+           // OnChangeUser();
+        });
+
+
+        function ValidateWasteRoleForm() {
+            var result = true;
+
+            //if ($('#UserId').find("option:selected").val() == '') {
+            //    AddValidationClass(false, 'UserId');
+            //    result = false;
+            //}
+            //if ($('#PlantId').find("option:selected").val() == '') {
+            //    AddValidationClass(false, 'PlantId');
+            //    result = false;
+            //}
+            if ($('#WasteGroup').find("option:selected").val() == '') {
+                AddValidationClass(false, 'WasteGroup');
+                result = false;
+            }
+
+
+            if (!result) {
+                $('#collapseOne').removeClass('collapse');
+                $('#collapseOne').addClass('in');
+                $("#collapseOne").css({ height: "auto" });
+            }
+
+
+            return result;
+        }
+
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
+            }
+        }
+
+        @*function OnChangeUser() {
+            $("#UserId").change(function () {
+                if ($("#UserId").length) {
+                    var userId = $(this).find("option:selected").val();
+
+
+                    if (userId == '') {
+                        $("input[name='FirstName']").val('');
+                        $("input[name='LastName']").val('');
+                        $("input[name='EmailAddress']").val('');
+                        $("input[name='Phone']").val('');
+
+
+                    } else {
+
+                        ajaxGetUserDetails('@Url.Action("GetUserDetails", "WasteRole")', { userId: userId });
+                    }
+                }
+            });
+        }
+
+        function ajaxGetUserDetails(url, formData) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $("input[name='FirstName']").val(data.FirstName);
+                        $("input[name='LastName']").val(data.LastName);
+                        $("input[name='EmailAddress']").val(data.EmailAddress);
+                        $("input[name='Phone']").val(data.Phone);
+
+                    }
+                });
+
+        }*@
+
+
+    </script>
+}
