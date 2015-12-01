@@ -1369,15 +1369,20 @@ namespace Sampoerna.EMS.BLL
             //set Pbck-1 Data by selection criteria
             rc = SetPbck1DataBySelectionCriteria(rc, input);
 
-            if (rc.Pbck1List.Count == 0)
+            var supplierPlantInfo = _t001WServices.GetById(input.SupplierPlantId);
+            if (supplierPlantInfo == null || supplierPlantInfo.NPPBKC_ID != input.NppbkcId)
             {
-                return new Lack1GeneratedOutput()
+                //validation here
+                if (rc.Pbck1List.Count == 0)
                 {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected),
-                    Data = null
-                };
+                    return new Lack1GeneratedOutput()
+                    {
+                        Success = false,
+                        ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected.ToString(),
+                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected),
+                        Data = null
+                    };
+                }
             }
 
             //Set Income List by selection Criteria
