@@ -1,13 +1,15 @@
-USE [EMS_TRN]
+USE [EMS_TRN] -- change this with database name which this script to be executed on
 GO
 
---select * from MATERIAL_UOM where MATERIAL_UOM.MEINH = 'G';
---select CURRENT_TIMESTAMP;
+
 SET NOCOUNT ON;
 
 DECLARE @uom_id varchar(10), @umren decimal(18,4)
 ,@werks varchar(4), @sticker_code nvarchar(18)
-, @uomexist int,@formtypematerialmaster int,@modifieduser varchar(50);
+, @uomexist int,@formtypematerialmaster int,@modifieduser varchar(50)
+,@goodtyp varchar(5),@tempgoodtyp varchar(5);
+
+set @goodtyp = '02'; -- good type code for TIS
 
 set @uom_id = 'G';
 set @umren = 0.0010;
@@ -25,8 +27,9 @@ INTO @werks, @sticker_code;
 WHILE @@FETCH_STATUS = 0
 BEGIN
 	select @uomexist = count(*) from MATERIAL_UOM where WERKS = @werks and STICKER_CODE = @sticker_code and MEINH = @uom_id ;
+	select @tempgoodtyp = EXC_GOOD_TYP from ZAIDM_EX_MATERIAL where WERKS = @werks and STICKER_CODE = @sticker_code;
 
-	if @uomexist = 0
+	if @uomexist = 0 and @tempgoodtyp = @goodtyp
 	begin
 		insert into MATERIAL_UOM(STICKER_CODE,WERKS,MEINH,UMREN) values(@sticker_code,@werks,@uom_id,@umren);
 		insert into CHANGES_HISTORY(FORM_TYPE_ID,FORM_ID,FIELD_NAME,OLD_VALUE,NEW_VALUE,MODIFIED_DATE,MODIFIED_BY)
