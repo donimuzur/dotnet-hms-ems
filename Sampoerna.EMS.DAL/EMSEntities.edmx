@@ -522,6 +522,7 @@
           <Property Name="UOM_ID" Type="nvarchar" MaxLength="5" Nullable="false" />
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" />
           <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
+          <Property Name="IS_TISTOTIS_DATA" Type="bit" />
         </EntityType>
         <EntityType Name="LACK1_TRACKING">
           <Key>
@@ -531,6 +532,7 @@
           <Property Name="LACK1_ID" Type="int" />
           <Property Name="INVENTORY_MOVEMENT_ID" Type="bigint" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="IS_TISTOTIS_DATA" Type="bit" />
         </EntityType>
         <EntityType Name="LACK1_TRACKING_ALCOHOL">
           <Key>
@@ -7228,6 +7230,7 @@
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="INVENTORY_MOVEMENT" Relationship="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" FromRole="LACK1_TRACKING" ToRole="INVENTORY_MOVEMENT" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_TRACKING_LACK1" FromRole="LACK1_TRACKING" ToRole="LACK1" />
+          <Property Name="IS_TISTOTIS_DATA" Type="Boolean" />
         </EntityType>
         <Association Name="FK_LACK1_INCOME_DETAIL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -7341,6 +7344,7 @@
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_UOM" FromRole="LACK1_PRODUCTION_DETAIL" ToRole="UOM" />
           <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="IS_TISTOTIS_DATA" Type="Boolean" />
         </EntityType>
         <Association Name="FK_LACK1_PLANT_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="0..1" />
@@ -9502,6 +9506,7 @@
           <EntitySetMapping Name="LACK1_TRACKING">
             <EntityTypeMapping TypeName="EMSModel.LACK1_TRACKING">
               <MappingFragment StoreEntitySet="LACK1_TRACKING">
+                <ScalarProperty Name="IS_TISTOTIS_DATA" ColumnName="IS_TISTOTIS_DATA" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="INVENTORY_MOVEMENT_ID" ColumnName="INVENTORY_MOVEMENT_ID" />
                 <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
@@ -9523,6 +9528,7 @@
           <EntitySetMapping Name="LACK1_PRODUCTION_DETAIL">
             <EntityTypeMapping TypeName="EMSModel.LACK1_PRODUCTION_DETAIL">
               <MappingFragment StoreEntitySet="LACK1_PRODUCTION_DETAIL">
+                <ScalarProperty Name="IS_TISTOTIS_DATA" ColumnName="IS_TISTOTIS_DATA" />
                 <ScalarProperty Name="ORDR" ColumnName="ORDR" />
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="UOM_ID" ColumnName="UOM_ID" />
