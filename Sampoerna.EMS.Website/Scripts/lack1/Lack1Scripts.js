@@ -16,7 +16,7 @@
     param.IsTisToTisReport = ($('#IsTisToTisReport').is(':checked'));
 
     param.Noted = $('#Noted').val();
-    console.log(param.IsTisToTisReport);
+    //console.log(param.IsTisToTisReport);
     
     if ($('#WasteQty').val() != '') {
         param.WasteAmount = parseFloat($('#WasteQty').val());
@@ -53,7 +53,7 @@
             if (response.Success) {
                 $('#generated-data-container').html("");
                 var data = response.Data;
-                console.log(response.IsWithTisToTisReport);
+                //console.log(response.IsWithTisToTisReport);
                 if (response.IsWithTisToTisReport) {
                     var tableGenerated1 = generateTableWithTisToTis(data);
                     /*console.log(tableGenerated1);*/

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using Org.BouncyCastle.Crypto.Agreement.Srp;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -133,8 +132,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingItemModel>>(src.Lack1Pbck1Mapping)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantItemModel>>(src.Lack1Plant)))
-                .ForMember(dest => dest.ProductionList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.Lack1ProductionDetail)))
-                .ForMember(dest => dest.ProductionSummaryByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.Lack1ProductionDetailSummaryByProdType)))
                 ;
 
             Mapper.CreateMap<Lack1DetailsDto, Lack1EditViewModel>().IgnoreAllNonExisting()
@@ -144,14 +141,34 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
                 .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.EndingBalance))
+                .ForMember(dest => dest.IsTisToTisReport, opt => opt.MapFrom(src => src.IsTisToTis))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
+                .ForMember(dest => dest.TotalUsageTisToTis, opt => opt.MapFrom(src => src.UsageTisToTis))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Noted) ? src.Noted.Replace("<br />", Environment.NewLine) : ""))
                 .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DocumentNoted))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
-                .ForMember(dest => dest.ProductionList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.Lack1ProductionDetail)))
-                .ForMember(dest => dest.ProductionSummaryByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.Lack1ProductionDetailSummaryByProdType)))
+                .ForMember(dest => dest.InventoryProductionTisToFa, opt => opt.MapFrom(src => Mapper.Map<Lack1InventoryAndProductionModel>(src.InventoryProductionTisToFa)))
+                .ForMember(dest => dest.InventoryProductionTisToTis, opt => opt.MapFrom(src => Mapper.Map<Lack1InventoryAndProductionModel>(src.InventoryProductionTisToTis)))
+                .ForMember(dest => dest.FusionSummaryProductionByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.FusionSummaryProductionByProdTypeList)))
                 ;
+
+            Mapper.CreateMap<Lack1ProductionSummaryByProdTypeDto, Lack1ProductionDetailItemSummaryByProdTypeModel>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1InventoryAndProductionDto, Lack1InventoryAndProductionModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductionData,
+                    opt =>
+                        opt.MapFrom(src => Mapper.Map<Lack1ProductionModel>(src.ProductionData)));
+
+            Mapper.CreateMap<Lack1ProductionDto, Lack1ProductionModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductionList,
+                    opt =>
+                        opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.ProductionList)))
+                .ForMember(dest => dest.ProductionSummaryByProdTypeList,
+                    opt =>
+                        opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.ProductionSummaryByProdTypeList)))
+                        ;
 
             Mapper.CreateMap<HEADER_FOOTER_MAPDto, Lack1HeaderFooter>().IgnoreAllNonExisting();
 
@@ -164,8 +181,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingItemModel>>(src.Lack1Pbck1Mapping)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantItemModel>>(src.Lack1Plant)))
-                .ForMember(dest => dest.ProductionList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.Lack1ProductionDetail)))
-                .ForMember(dest => dest.ProductionSummaryByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.Lack1ProductionDetailSummaryByProdType)))
                 .ForMember(dest => dest.HeaderFooter, opt => opt.MapFrom(src => Mapper.Map<Lack1HeaderFooter>(src.HeaderFooter)))
                 ;
 
@@ -210,9 +225,7 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.Lack1Document)))
                 .ForMember(dest => dest.Lack1IncomeDetail,
                     opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.IncomeList)))
-                .ForMember(dest => dest.Lack1ProductionDetail,
-                    opt =>
-                        opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.ProductionList)));
+                ;
 
 
             #region ----------- Summary Report -----------

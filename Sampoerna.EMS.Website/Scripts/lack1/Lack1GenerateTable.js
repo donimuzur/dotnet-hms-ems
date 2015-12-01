@@ -6,7 +6,7 @@
 }
 
 function generateTable(data) {
-    console.log(data);
+    console.log('Only Tis To Fa');
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
 
@@ -68,6 +68,7 @@ function generateTable(data) {
 }
 
 function generateTableWithTisToTis(data) {
+    console.log('With Tis To Tis');
     console.log(data);
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
@@ -193,13 +194,19 @@ function generateJenisHasilProduksi(data) {
     var rc = "";
     if (data && data.ProductionSummaryByProdTypeList) {
         rc = '<div id="jumlah-hasil-produksi-data">';
-        for (var i = 0; i < data.ProductionSummaryByProdTypeList.length; i++) {
-            if (i == data.ProductionSummaryByProdTypeList.length) {
-                rc = rc + data.ProductionSummaryByProdTypeList[i].ProductAlias;
-            } else {
-                rc = rc + data.ProductionSummaryByProdTypeList[i].ProductAlias + "<br/>";
+        if (data.ProductionSummaryByProdTypeList.length == 0) {
+            //there is no record found
+            rc = '-';
+        } else {
+            for (var i = 0; i < data.ProductionSummaryByProdTypeList.length; i++) {
+                if (i == data.ProductionSummaryByProdTypeList.length) {
+                    rc = rc + data.ProductionSummaryByProdTypeList[i].ProductAlias;
+                } else {
+                    rc = rc + data.ProductionSummaryByProdTypeList[i].ProductAlias + "<br/>";
+                }
             }
         }
+        
         rc = rc + '</div>';
     } else {
         rc = "-";
@@ -210,14 +217,20 @@ function generateJenisHasilProduksi(data) {
 function generateJumlahHasilProduksi(data) {
     var rc = "";
     if (data && data.ProductionSummaryByProdTypeList) {
-        for (var i = 0; i < data.ProductionSummaryByProdTypeList.length; i++) {
-            if (i == data.ProductionSummaryByProdTypeList.length) {
-                rc = rc + (data.ProductionSummaryByProdTypeList[i].TotalAmount < 0 ? '-' : '') + ThausandSeperator(data.ProductionSummaryByProdTypeList[i].TotalAmount, 3);
-            } else {
-                rc = rc + (data.ProductionSummaryByProdTypeList[i].TotalAmount < 0 ? '-' : '') + ThausandSeperator(data.ProductionSummaryByProdTypeList[i].TotalAmount, 3) + " "
-                    + data.ProductionSummaryByProdTypeList[i].UomDesc + "<br/>";
+        if (data.ProductionSummaryByProdTypeList.length == 0) {
+            //there is no record found
+            rc = '-';
+        } else {
+            for (var i = 0; i < data.ProductionSummaryByProdTypeList.length; i++) {
+                if (i == data.ProductionSummaryByProdTypeList.length) {
+                    rc = rc + (data.ProductionSummaryByProdTypeList[i].TotalAmount < 0 ? '-' : '') + ThausandSeperator(data.ProductionSummaryByProdTypeList[i].TotalAmount, 3);
+                } else {
+                    rc = rc + (data.ProductionSummaryByProdTypeList[i].TotalAmount < 0 ? '-' : '') + ThausandSeperator(data.ProductionSummaryByProdTypeList[i].TotalAmount, 3) + " "
+                        + data.ProductionSummaryByProdTypeList[i].UomDesc + "<br/>";
+                }
             }
         }
+        
     } else {
         rc = "-";
     }

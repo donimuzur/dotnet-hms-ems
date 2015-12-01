@@ -625,7 +625,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dsReport.Lack1.AddLack1Row(dMasterRow);
             
             //for total
-            var prodList = Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(data.Lack1ProductionDetailSummaryByProdType);
+            var prodList = Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(data.FusionSummaryProductionByProdTypeList);
             var summaryProductionList = ProcessSummaryProductionDetails(prodList);
             var totalSummaryProductionList = string.Join(Environment.NewLine,
                 summaryProductionList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
@@ -932,7 +932,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             model.Lack1Type = lack1Type;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionSummaryByProdTypeList);
+
+            model.FusionSummaryProductionList = ProcessSummaryProductionDetails(model.FusionSummaryProductionByProdTypeList);
 
             SetEditActiveMenu(model, lack1Type);
 
@@ -1010,7 +1011,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             model.Lack1Type = lack1Type;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionSummaryByProdTypeList);
+            //model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionSummaryByProdTypeList);
 
             SetActiveMenu(model, lack1Type);
 

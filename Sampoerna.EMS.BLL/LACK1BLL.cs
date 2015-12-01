@@ -177,16 +177,31 @@ namespace Sampoerna.EMS.BLL
             var allTrackingList = new List<Lack1GeneratedTrackingDto>();  
             if (generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData != null)
             {
-                allTrackingList = generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementAllList;
-                allTrackingList.AddRange(generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingList);
+                //tis_to_fa
+                var toAddRange = generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementAllList;
+                toAddRange.AddRange(generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingList);
+
+                for (var i = 0; i < toAddRange.Count; i++)
+                {
+                    toAddRange[i].IsTisToTisData = false;
+                }
+                
+                allTrackingList = toAddRange;
             }
             if (input.IsTisToTis)
             {
                 //Tis To Tis
                 if (generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData != null)
                 {
-                    allTrackingList.AddRange(generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementAllList);
-                    allTrackingList.AddRange(generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementReceivingList);
+                    var toAddRange = generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementAllList;
+                    toAddRange.AddRange(generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementReceivingList);
+
+                    for (var i = 0; i < toAddRange.Count; i++)
+                    {
+                        toAddRange[i].IsTisToTisData = true;
+                    }
+
+                    allTrackingList.AddRange(toAddRange);
                 }
             }
             
@@ -208,12 +223,33 @@ namespace Sampoerna.EMS.BLL
 
             //set LACK1_PRODUCTION_DETAIL
             data.LACK1_PRODUCTION_DETAIL = null;
-            var productionDetail = generatedData.Data.InventoryProductionTisToFa.ProductionData != null ? generatedData.Data.InventoryProductionTisToFa.ProductionData.ProductionList : new List<Lack1GeneratedProductionDataDto>();
+            var productionDetail = new List<Lack1GeneratedProductionDataDto>();
+
+            //tis to fa
+            if (generatedData.Data.InventoryProductionTisToFa.ProductionData != null)
+            {
+                var toAddRange = generatedData.Data.InventoryProductionTisToFa.ProductionData.ProductionList;
+                for (var i = 0; i < toAddRange.Count; i++)
+                {
+                    toAddRange[i].IsTisToTisData = false;
+                }
+                productionDetail.AddRange(toAddRange);
+            }
+
             if (input.IsTisToTis)
             {
+                //tis to tis
                 if (generatedData.Data.InventoryProductionTisToTis.ProductionData != null)
-                    productionDetail.AddRange(generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList);
+                {
+                    var toAddRange = generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList;
+                    for (var i = 0; i < toAddRange.Count; i++)
+                    {
+                        toAddRange[i].IsTisToTisData = false;
+                    }
+                    productionDetail.AddRange(toAddRange);
+                }
             }
+
             data.LACK1_PRODUCTION_DETAIL =
                 Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(productionDetail.Distinct().ToList());
 
@@ -333,12 +369,33 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK1_PBCK1_MAPPING = Mapper.Map<List<LACK1_PBCK1_MAPPING>>(generatedData.Data.Pbck1List);
                 
                 //set LACK1_PRODUCTION_DETAIL
-                var productionDetail = generatedData.Data.InventoryProductionTisToFa.ProductionData != null ? generatedData.Data.InventoryProductionTisToFa.ProductionData.ProductionList : new List<Lack1GeneratedProductionDataDto>();
+                var productionDetail = new List<Lack1GeneratedProductionDataDto>();
+
+                //tis to fa
+                if (generatedData.Data.InventoryProductionTisToFa.ProductionData != null)
+                {
+                    var toAddRange = generatedData.Data.InventoryProductionTisToFa.ProductionData.ProductionList;
+                    for (var i = 0; i < toAddRange.Count; i++)
+                    {
+                        toAddRange[i].IsTisToTisData = false;
+                    }
+                    productionDetail.AddRange(toAddRange);
+                }
+
                 if (input.IsTisToTis)
                 {
+                    //tis to tis
                     if (generatedData.Data.InventoryProductionTisToTis.ProductionData != null)
-                        productionDetail.AddRange(generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList);
+                    {
+                        var toAddRange = generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList;
+                        for (var i = 0; i < toAddRange.Count; i++)
+                        {
+                            toAddRange[i].IsTisToTisData = false;
+                        }
+                        productionDetail.AddRange(toAddRange);
+                    }
                 }
+
                 dbData.LACK1_PRODUCTION_DETAIL =
                     Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(productionDetail.Distinct().ToList());
 
@@ -346,18 +403,31 @@ namespace Sampoerna.EMS.BLL
                 var allTrackingList = new List<Lack1GeneratedTrackingDto>();
                 if (generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData != null)
                 {
-                    allTrackingList =
-                        generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementAllList;
-                    allTrackingList.AddRange(generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingList);
+                    //tis_to_fa
+                    var toAddRange = generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementAllList;
+                    toAddRange.AddRange(generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingList);
+
+                    for (var i = 0; i < toAddRange.Count; i++)
+                    {
+                        toAddRange[i].IsTisToTisData = false;
+                    }
+
+                    allTrackingList = toAddRange;
                 }
-                
                 if (input.IsTisToTis)
                 {
                     //Tis To Tis
                     if (generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData != null)
                     {
-                        allTrackingList.AddRange(generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementAllList);
-                        allTrackingList.AddRange(generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementReceivingList);    
+                        var toAddRange = generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementAllList;
+                        toAddRange.AddRange(generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementReceivingList);
+
+                        for (var i = 0; i < toAddRange.Count; i++)
+                        {
+                            toAddRange[i].IsTisToTisData = true;
+                        }
+
+                        allTrackingList.AddRange(toAddRange);
                     }
                 }
 
@@ -439,7 +509,37 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var rc = Mapper.Map<Lack1DetailsDto>(dbData);
-            rc.Lack1ProductionDetailSummaryByProdType = GetProductionDetailSummaryByProdType(rc.Lack1ProductionDetail);
+            rc.FusionSummaryProductionByProdTypeList = GetProductionDetailSummaryByProdType(rc.Lack1ProductionDetail);
+
+            //process separate between tis to tis and tis to fa from production detail
+            if (rc.Lack1ProductionDetail != null && rc.Lack1ProductionDetail.Count > 0)
+            {
+                var tisToTisData =
+                    rc.Lack1ProductionDetail.Where(c => c.IS_TISTOTIS_DATA.HasValue && c.IS_TISTOTIS_DATA.Value)
+                        .ToList();
+
+                var tisToFaData =
+                    rc.Lack1ProductionDetail.Where(c => !c.IS_TISTOTIS_DATA.HasValue || !c.IS_TISTOTIS_DATA.Value)
+                        .ToList();
+
+                rc.InventoryProductionTisToFa = new Lack1InventoryAndProductionDto()
+                {
+                    ProductionData = new Lack1ProductionDto()
+                    {
+                        ProductionList = tisToFaData,
+                        ProductionSummaryByProdTypeList = GetProductionDetailSummaryByProdType(tisToFaData)
+                    }
+                };
+                rc.InventoryProductionTisToTis = new Lack1InventoryAndProductionDto()
+                {
+                    ProductionData = new Lack1ProductionDto()
+                    {
+                        ProductionSummaryByProdTypeList = GetProductionDetailSummaryByProdType(tisToTisData),
+                        ProductionList = tisToTisData
+                    }
+                };
+            }
+
             return rc;
         }
 
@@ -1046,7 +1146,7 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
-            dtToReturn.Lack1ProductionDetailSummaryByProdType =
+            dtToReturn.FusionSummaryProductionByProdTypeList =
                 GetProductionDetailSummaryByProdType(dtToReturn.Lack1ProductionDetail);
 
             if (dtToReturn.Lack1Pbck1Mapping.Count > 0)
