@@ -801,7 +801,7 @@ namespace Sampoerna.EMS.BLL
                 FormType = Enums.FormType.LACK1
             });
 
-            var poaList = _poaBll.GetPoaByNppbkcId(lack1Data.NppbkcId);
+            var poaList = _poaBll.GetPoaActiveByNppbkcId(lack1Data.NppbkcId);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -849,7 +849,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var poaData = _poaBll.GetById(lack1Data.CreateBy);
+                        var poaData = _poaBll.GetActivePoaById(lack1Data.CreateBy);
                         rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
                         rc.CC.Add(poaData.POA_EMAIL);
 
@@ -883,7 +883,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else if (lack1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
-                        var poaData = _poaBll.GetById(lack1Data.CreateBy);
+                        var poaData = _poaBll.GetActivePoaById(lack1Data.CreateBy);
                         if (poaData != null)
                         {
                             //creator is poa user
@@ -922,7 +922,7 @@ namespace Sampoerna.EMS.BLL
                     //break;
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(lack1Data.CreateBy);
-                    var poaData2 = _poaBll.GetById(lack1Data.CreateBy);
+                    var poaData2 = _poaBll.GetActivePoaById(lack1Data.CreateBy);
 
                     if (lack1Data.ApprovedByPoa != null || poaData2 != null)
                     {
@@ -953,7 +953,7 @@ namespace Sampoerna.EMS.BLL
                     break;
 
                 case Enums.ActionType.GovApprove:
-                    var poaData3 = _poaBll.GetById(lack1Data.CreateBy);
+                    var poaData3 = _poaBll.GetActivePoaById(lack1Data.CreateBy);
                     if (poaData3 != null)
                     {
                         //creator is poa user
@@ -971,7 +971,7 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovPartialApprove:
-                    var poaData4 = _poaBll.GetById(lack1Data.CreateBy);
+                    var poaData4 = _poaBll.GetActivePoaById(lack1Data.CreateBy);
                     if (poaData4 != null)
                     {
                         //creator is poa user
@@ -989,7 +989,7 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.GovReject:
-                    var poaData5 = _poaBll.GetById(lack1Data.CreateBy);
+                    var poaData5 = _poaBll.GetActivePoaById(lack1Data.CreateBy);
                     if (poaData5 != null)
                     {
                         //creator is poa user
@@ -1419,15 +1419,20 @@ namespace Sampoerna.EMS.BLL
             //set Pbck-1 Data by selection criteria
             rc = SetPbck1DataBySelectionCriteria(rc, input);
 
-            if (rc.Pbck1List.Count == 0)
+            var supplierPlantInfo = _t001WServices.GetById(input.SupplierPlantId);
+            if (supplierPlantInfo == null || supplierPlantInfo.NPPBKC_ID != input.NppbkcId)
             {
-                return new Lack1GeneratedOutput()
+                //validation here
+                if (rc.Pbck1List.Count == 0)
                 {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected),
-                    Data = null
-                };
+                    return new Lack1GeneratedOutput()
+                    {
+                        Success = false,
+                        ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected.ToString(),
+                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbck1Selected),
+                        Data = null
+                    };
+                }
             }
 
             //Set Income List by selection Criteria

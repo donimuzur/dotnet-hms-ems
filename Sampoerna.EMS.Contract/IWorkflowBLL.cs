@@ -49,6 +49,9 @@ namespace Sampoerna.EMS.Contract
         bool AllowWasteGoodIssue(WorkflowAllowApproveAndRejectInput input);
 
         bool AllowWasteGoodReceive(WorkflowAllowApproveAndRejectInput input);
+        
+                bool AllowAttachment(WorkflowAllowApproveAndRejectInput input);
+
 
     }
 }

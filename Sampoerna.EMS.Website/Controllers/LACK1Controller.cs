@@ -640,7 +640,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
             var endingBalance = (data.BeginingBalance - data.Usage + data.TotalIncome);
-            var noted = !string.IsNullOrEmpty(data.DocumentNoted) ? data.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty;
+            var noted = !string.IsNullOrEmpty(data.Noted) ? data.Noted.Replace("<br />", Environment.NewLine) : string.Empty;
+            var docNoted = !string.IsNullOrEmpty(data.DocumentNoted) ? data.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty;
             foreach (var item in data.Lack1IncomeDetail)
             {
                 var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
@@ -652,7 +653,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.ListJenisBKC = summaryProductionJenis;
                 detailRow.ListJumlahBKC = summaryProductionAmount;
                 detailRow.EndingBalance = endingBalance.ToString("N2");
-                detailRow.Noted = noted;
+                detailRow.Noted = noted + docNoted;
                 detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
                 detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
 
@@ -859,7 +860,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack1Number,
                 DocumentStatus = model.Status,
-                NPPBKC_Id = model.NppbkcId
+                NppbkcId = model.NppbkcId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -972,7 +973,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack1Number,
                 DocumentStatus = model.Status,
-                NPPBKC_Id = model.NppbkcId
+                NppbkcId = model.NppbkcId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));

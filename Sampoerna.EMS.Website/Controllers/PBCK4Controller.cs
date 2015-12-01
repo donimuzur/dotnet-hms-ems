@@ -318,6 +318,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentNumber = model.Pbck4Number;
                 input.NppbkcId = model.NppbkcId;
                 input.ManagerApprove = model.APPROVED_BY_MANAGER;
+
+                input.PlantId = pbck4Details.Pbck4Dto.PlantId;
+
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;

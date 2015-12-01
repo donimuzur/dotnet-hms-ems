@@ -277,11 +277,13 @@ namespace Sampoerna.EMS.BLL
         //    return Mapper.Map<WasteStockDto>(dbdata);
         //}
 
-        public void UpdateWasteStockFromWaste(WasteStockDto input)
+        public void UpdateWasteStockFromWaste(WasteStockDto input, string userId)
         {
             var dbWasteStock =
                 _repository.Get(c => c.WERKS == input.WERKS && c.MATERIAL_NUMBER == input.MATERIAL_NUMBER)
                     .FirstOrDefault();
+
+            var origin = Mapper.Map<WasteStockDto>(dbWasteStock);
 
             if (dbWasteStock == null)
             {
@@ -298,8 +300,19 @@ namespace Sampoerna.EMS.BLL
 
                 dbWasteStock.MODIFIED_BY = input.CREATED_BY;
                 dbWasteStock.MODIFIED_DATE = DateTime.Now;
+                var dbData = _repository.GetByID(dbWasteStock.WASTE_STOCK_ID);
+
+                var inputNew = Mapper.Map<WasteStockDto>(dbData);
+                if (inputNew.WASTE_STOCK_ID > 0)
+                {
+                   
+                    SetChangesHistory(origin, inputNew, userId);
+                }
             }
+           
             _repository.InsertOrUpdate(dbWasteStock);
+         
+            
         }
 
         public string GetRemainingQuota(decimal wasteStock, string plantId, string materialNumber)

@@ -181,6 +181,7 @@
 
         $('#btnGenerate').click(function (e) {
             getProductionData('@Url.Action("GetProductionData", "CK4C")');
+            $('#btnExportCk4cItem').prop('disabled', true);
         });
 
         $("#btnSaveCk4c").click(function () {
@@ -188,6 +189,8 @@
 
             if (ValidateInput()) {
                 $('#EditForm').submit();
+
+                $('#btnExportCk4cItem').prop('disabled', false);
             }
         });
 
@@ -210,6 +213,10 @@
 
         $("#btnSaveRemarks").click(function () {
             UpdateRow();
+        });
+
+        $('#btnExportCk4cItem').click(function (e) {
+            location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
         });
     });
 
